@@ -1,0 +1,8 @@
+Email,FirstName,LastName,Gender,Nationality,YearOfBirth,PhoneNumber,Personality
+greg.newitt@unimelb.edu.au,Greg,Newitt,Male,Australian,1971,0447304209,None
+miguel.wood@unimelb.edu.au,Miguel,Wood,Male,Australian,1970,0488446661,Minimal
+alan.gao@unimelb.edu.au,Alan,Gao,Male,Chinese,1992,0420291555,Loads
+james.kotsias@unimelb.edu.au,James,Kotsias,Male,Australian,1991,0419152404,Some
+drew.smith@curtin.edu.au,Drew,Smith,Male,Australian,1993,,Handful
+,,,,,,,
+"CREATE(greg{email:'greg.newitt@unimelb.edu.au',FirstName:'Greg',LastName:'Newitt',Gender:'Male',Nationality:'Australian',YearOfBirth:'1970',PhoneNumber:'0447304209',Personality:'None'})",,,,,,,
