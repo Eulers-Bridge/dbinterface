@@ -74,4 +74,28 @@ public class Student
 		if (LOG.isDebugEnabled()) LOG.debug("getPersonality() = "+personality);
 		return personality;
 	}
+	
+	public String toString()
+	{
+		StringBuffer buff=new StringBuffer("[ email = ");
+		String retValue;
+		buff.append(email);
+		buff.append(", firstName = ");
+		buff.append(firstName);
+		buff.append(", lastName = ");
+		buff.append(lastName);
+		buff.append(", gender = ");
+		buff.append(gender);
+		buff.append(", nationality = ");
+		buff.append(nationality);
+		buff.append(", yearOfBirth = ");
+		buff.append(yearOfBirth);
+		buff.append(", personality = ");
+		buff.append(personality);
+		buff.append(" ]");
+		retValue=buff.toString();
+		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
+		return retValue;
+	}	
+
 }
