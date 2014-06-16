@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Institution 
 {
 	String name;
@@ -7,13 +10,15 @@ public class Institution
 	String state;
 	String country;
 	
+    private static Logger LOG = LoggerFactory.getLogger(Institution.class);
 	public Institution()
 	{
-		
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
 	public String getName()
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("getName() = "+name);
 		return name;
 	}
 	public void setName(String name)
@@ -22,6 +27,7 @@ public class Institution
 	}
 	public String getCampus()
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("getCampus() = "+campus);
 		return campus;
 	}
 	public void setCampus(String campus)
@@ -30,6 +36,7 @@ public class Institution
 	}
 	public String getState()
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("getState() = "+state);
 		return state;
 	}
 	public void setState(String state)
@@ -38,6 +45,7 @@ public class Institution
 	}
 	public String getCountry()
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("getCountry() = "+country);
 		return country;
 	}
 	public void setCountry(String country)
@@ -48,6 +56,7 @@ public class Institution
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ name = ");
+		String retValue;
 		buff.append(name);
 		buff.append(", campus = ");
 		buff.append(campus);
@@ -56,6 +65,8 @@ public class Institution
 		buff.append(", country = ");
 		buff.append(country);
 		buff.append(" ]");
-		return buff.toString();
+		retValue=buff.toString();
+		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
+		return retValue;
 	}
 }
