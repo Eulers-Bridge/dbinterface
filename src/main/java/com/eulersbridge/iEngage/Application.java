@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +17,11 @@ import com.eulersbridge.iEngage.core.domain.Login;
 @EnableGlobalMethodSecurity
 public class Application 
 {
+    private static Logger LOG = LoggerFactory.getLogger(Application.class);
+
     public static void main(String[] args) 
     {
+    	if (LOG.isDebugEnabled()) LOG.debug("main()");
         SpringApplication app=new SpringApplication(Application.class);
         app.setShowBanner(false);
     	app.run(args);
