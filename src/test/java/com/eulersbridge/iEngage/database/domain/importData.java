@@ -13,10 +13,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.rest.controller.LoginController;
-
 public class importData {
-    private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
+    private static Logger LOG = LoggerFactory.getLogger(importData.class);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
