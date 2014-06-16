@@ -10,6 +10,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Greg Newitt
@@ -17,7 +19,9 @@ import org.junit.Test;
  */
 public class TestInstitution {
 
-	/**
+    private static Logger LOG = LoggerFactory.getLogger(TestInstitution.class);
+
+    /**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
@@ -51,6 +55,7 @@ public class TestInstitution {
 	@Test
 	public final void testInstitution() 
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("Test Instituion Constructor");
 		Institution testObj=new Institution();
 		if (testObj.getClass()!=Institution.class)
 			fail("University constructor does not return a class of type institution."); 
@@ -62,6 +67,7 @@ public class TestInstitution {
 	@Test
 	public final void testInstitutionStringStringStringString() 
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("Test Instituion Constructor");
 		Institution testObj=new Institution("University of Melbourne","Parkville","VIC","Australia");
 		if (testObj.getClass()!=Institution.class)
 			fail("University constructor does not return a class of type institution."); 
@@ -73,6 +79,7 @@ public class TestInstitution {
 	@Test
 	public final void testGetName() 
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("Test getName()");
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
@@ -88,6 +95,7 @@ public class TestInstitution {
 	@Test
 	public final void testSetName() 
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("Test setName()");
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
@@ -105,6 +113,7 @@ public class TestInstitution {
 	@Test
 	public final void testGetCampus() 
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("Test getCampus()");
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
@@ -119,6 +128,7 @@ public class TestInstitution {
 	 */
 	@Test
 	public final void testSetCampus() {
+		if (LOG.isDebugEnabled()) LOG.debug("Test setCampus()");
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
@@ -135,6 +145,7 @@ public class TestInstitution {
 	 */
 	@Test
 	public final void testGetState() {
+		if (LOG.isDebugEnabled()) LOG.debug("Test getState()");
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
@@ -149,6 +160,7 @@ public class TestInstitution {
 	 */
 	@Test
 	public final void testSetState() {
+		if (LOG.isDebugEnabled()) LOG.debug("Test setState()");
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
@@ -166,6 +178,7 @@ public class TestInstitution {
 	@Test
 	public final void testGetCountry() 
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("Test getCountry()");
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
@@ -180,6 +193,7 @@ public class TestInstitution {
 	 */
 	@Test
 	public final void testSetCountry() {
+		if (LOG.isDebugEnabled()) LOG.debug("Test setCountry()");
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
