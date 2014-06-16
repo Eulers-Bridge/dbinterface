@@ -16,6 +16,15 @@ public class Institution
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
+	public Institution(String name,String campus,String state,String country)
+	{
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+name+','+campus+','+state+','+country+')');
+		this.name=name;
+		this.campus=campus;
+		this.state=state;
+		this.country=country;
+	}
+	
 	public String getName()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getName() = "+name);
