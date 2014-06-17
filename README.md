@@ -15,6 +15,9 @@ Minimum requirements for compile are:
 Java 1.7
 Maven 3
 
+Then use mvn spring-boot:run to execute it in situ.
+Alternatively mvn package will create a war file that can be deployed.
+
 * Configuration
 * Dependencies
 * Database configuration
