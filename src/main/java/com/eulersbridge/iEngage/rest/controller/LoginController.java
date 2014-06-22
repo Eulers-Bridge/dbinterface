@@ -2,9 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,19 +14,30 @@ import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.domain.Login;
 import com.eulersbridge.iEngage.core.domain.Logout;
-import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
-import com.eulersbridge.iEngage.rest.domain.Country;
 import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.SignUp;
 
 @RestController
-@EnableGlobalMethodSecurity
 public class LoginController {
 
     private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
     private final AtomicLong counter = new AtomicLong();
 
+/*    
+//    @Secured({ "ROLE_USER" })
+    @RequestMapping("/general-info")
+    public @ResponseBody Country[] generalInfo()
+    {
+    	if (LOG.isInfoEnabled()) LOG.info("general info called. ");
+    	ClassPathXmlApplicationContext ctx=new ClassPathXmlApplicationContext("application-context.xml");
+    	CountriesFactory cf=(CountriesFactory)ctx.getBean("countryFactory");
+    	
+    	Country[] retValue=cf.getCountries();
+    	ctx.close();
+    	return retValue;
+    }
+*/    
     @Secured({ "ROLE_USER" })
     @RequestMapping(value="/login",method=RequestMethod.GET)
   	public @ResponseBody Response login( @RequestParam(value="username", required=true) String username,
@@ -65,19 +74,6 @@ public class LoginController {
     	Response response=signup.process();
     	
         return response;
-    }
-    
-    @Secured({ "ROLE_USER" })
-    @RequestMapping("/general-info")
-    public @ResponseBody Country[] generalInfo()
-    {
-    	if (LOG.isInfoEnabled()) LOG.info("general info called. ");
-    	ClassPathXmlApplicationContext ctx=new ClassPathXmlApplicationContext("application-context.xml");
-    	CountriesFactory cf=(CountriesFactory)ctx.getBean("countryFactory");
-    	
-    	Country[] retValue=cf.getCountries();
-    	ctx.close();
-    	return retValue;
     }
     
     
