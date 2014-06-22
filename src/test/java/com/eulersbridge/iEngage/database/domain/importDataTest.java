@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class importData {
-    private static Logger LOG = LoggerFactory.getLogger(importData.class);
+public class importDataTest {
+    private static Logger LOG = LoggerFactory.getLogger(importDataTest.class);
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
