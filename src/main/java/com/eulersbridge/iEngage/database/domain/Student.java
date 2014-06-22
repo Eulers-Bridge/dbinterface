@@ -2,10 +2,13 @@ package com.eulersbridge.iEngage.database.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.NodeEntity;
 
+@NodeEntity
 public class Student 
 {
-	private String email;
+	@GraphId private String email;
 	private String firstName;
 	private String lastName;
 	private String gender;
