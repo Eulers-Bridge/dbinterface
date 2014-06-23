@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.support.MappingInfrastructureFactoryBean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 
 import com.eulersbridge.iEngage.core.domain.Login;
 
@@ -40,7 +41,7 @@ public class Application extends Neo4jConfiguration
  @Bean
     public GraphDatabaseService graphDatabaseService() 
  	{
-	 	return new org.springframework.data.neo4j.rest.SpringRestGraphDatabase("http://ec2-54-79-49-160.ap-southeast-2.compute.amazonaws.com:7474/db/data");
+	 	return new SpringRestGraphDatabase("http://ec2-54-79-49-160.ap-southeast-2.compute.amazonaws.com:7474/db/data");
     }
 
 @Override
