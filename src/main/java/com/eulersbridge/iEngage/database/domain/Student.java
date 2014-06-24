@@ -79,23 +79,30 @@ public class Student
 		return personality;
 	}
 	
+	public Long getNodeId()
+	{
+		return nodeId;
+	}
+	
 	public String toString()
 	{
-		StringBuffer buff=new StringBuffer("[ email = ");
+		StringBuffer buff=new StringBuffer("[ nodeId = ");
 		String retValue;
-		buff.append(email);
+		buff.append(getNodeId());
+		buff.append(", email = ");
+		buff.append(getEmail());
 		buff.append(", firstName = ");
-		buff.append(firstName);
+		buff.append(getFirstName());
 		buff.append(", lastName = ");
-		buff.append(lastName);
+		buff.append(getLastName());
 		buff.append(", gender = ");
-		buff.append(gender);
+		buff.append(getGender());
 		buff.append(", nationality = ");
-		buff.append(nationality);
+		buff.append(getNationality());
 		buff.append(", yearOfBirth = ");
-		buff.append(yearOfBirth);
+		buff.append(getYearOfBirth());
 		buff.append(", personality = ");
-		buff.append(personality);
+		buff.append(getPersonality());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);

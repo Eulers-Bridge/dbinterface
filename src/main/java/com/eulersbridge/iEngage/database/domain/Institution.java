@@ -66,17 +66,24 @@ public class Institution
 		this.country=country;
 	}
 	
+	public Long getNodeId()
+	{
+		return nodeId;
+	}
+	
 	public String toString()
 	{
-		StringBuffer buff=new StringBuffer("[ name = ");
+		StringBuffer buff=new StringBuffer("[ nodeId = ");
 		String retValue;
-		buff.append(name);
+		buff.append(getNodeId());
+		buff.append(", name = ");
+		buff.append(getName());
 		buff.append(", campus = ");
-		buff.append(campus);
+		buff.append(getCampus());
 		buff.append(", state = ");
-		buff.append(state);
+		buff.append(getState());
 		buff.append(", country = ");
-		buff.append(country);
+		buff.append(getCountry());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
