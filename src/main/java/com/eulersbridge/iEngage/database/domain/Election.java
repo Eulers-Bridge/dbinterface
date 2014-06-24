@@ -2,11 +2,13 @@ package com.eulersbridge.iEngage.database.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 
 @NodeEntity
 public class Election 
 {
+	@GraphId Long nodeId;
 	private String year;
 	private String start;
 	private String end;

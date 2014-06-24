@@ -8,7 +8,8 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 @NodeEntity
 public class Student 
 {
-	@GraphId private String email;
+	@GraphId Long nodeId;
+	private String email;
 	private String firstName;
 	private String lastName;
 	private String gender;
