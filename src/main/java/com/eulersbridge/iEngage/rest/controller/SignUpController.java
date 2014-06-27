@@ -31,7 +31,7 @@ public class SignUpController {
     private static Logger LOG = LoggerFactory.getLogger(ElectionController.class);
 
 
-    @RequestMapping(method=RequestMethod.PUT,value="/signUp/")
+    @RequestMapping(method=RequestMethod.PUT,value="/signUp")
     public @ResponseBody Student saveNewUser(
             @RequestParam(value="email", required=true) String email,
             @RequestParam(value="firstName", required=true) String firstName,
