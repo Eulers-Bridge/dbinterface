@@ -11,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Student;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.StudentRepository;
 
 @RestController
@@ -19,7 +21,8 @@ import com.eulersbridge.iEngage.database.repository.StudentRepository;
 
 public class SignUpController {
 
-	@Autowired StudentRepository repo;
+	@Autowired StudentRepository studentRepo;
+	@Autowired InstitutionRepository instRepo;
 
 	public SignUpController() {
 		// TODO Auto-generated constructor stub
@@ -43,10 +46,12 @@ public class SignUpController {
     {
     	if (LOG.isInfoEnabled()) LOG.info(email+" attempting to save student. ");
 		Student student=new Student(email,lastName,firstName,personality,nationality,yearOfBirth,gender,password);
-    	Student test = repo.save(student);
+    	Institution inst=instRepo.findOne(institutionId);
+		student.setInstitution(inst);
+		Student test = studentRepo.save(student);
 		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
-		if (LOG.isDebugEnabled()) LOG.debug("Count = "+repo.count());
-		Student result = repo.findOne(test.getNodeId());
+		if (LOG.isDebugEnabled()) LOG.debug("Count = "+studentRepo.count());
+		Student result = studentRepo.findOne(test.getNodeId());
     	return result;
     }
     
