@@ -1,9 +1,13 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import java.util.Set;
+
+import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 
 @NodeEntity
 public class Institution 
@@ -13,6 +17,8 @@ public class Institution
 	String campus;
 	String state;
 	String country;
+	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
+	Set<Student> students;
 	
     private static Logger LOG = LoggerFactory.getLogger(Institution.class);
 	public Institution()

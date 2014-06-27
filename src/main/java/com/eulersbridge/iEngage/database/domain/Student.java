@@ -1,9 +1,11 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 
 @NodeEntity
 public class Student 
@@ -17,6 +19,9 @@ public class Student
 	private String yearOfBirth;
 	private String personality;
 	private String password;
+	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
+	private
+	Institution institution; 
 	
     private static Logger LOG = LoggerFactory.getLogger(Student.class);
     
@@ -114,6 +119,14 @@ public class Student
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}	
 
 }
