@@ -4,12 +4,13 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 
 @NodeEntity
 public class NewsArticle {
 
-	private String id;
+	@GraphId Long nodeId;
 	private String title;
 	private String content;
 	private String picture;
@@ -25,10 +26,9 @@ public class NewsArticle {
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public NewsArticle(String id, String title,String content,String picture, Date date, String creator, Date created, Date modified)
+	public NewsArticle(String title,String content,String picture, Date date, String creator, Date created, Date modified)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+id+','+title+','+content+','+picture+','+date.toString()+','+creator+','+created.toString()+','+modified.toString()+')');
-		this.id=id;
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+title+','+content+','+picture+','+date.toString()+','+creator+','+created.toString()+','+modified.toString()+')');
 		this.title=title;
 		this.content=content;
 		this.picture=picture;
@@ -38,10 +38,10 @@ public class NewsArticle {
 		this.modified=modified;
 	}
 	
-	public String getId()
+	public Long getNodeId()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getId() = "+id);
-		return id;
+		if (LOG.isDebugEnabled()) LOG.debug("getNodeId() = "+nodeId);
+		return nodeId;
 	}
 	
 	public String getTitle()
@@ -88,23 +88,23 @@ public class NewsArticle {
 	
 	public String toString()
 	{
-		StringBuffer buff=new StringBuffer("[ id = ");
+		StringBuffer buff=new StringBuffer("[ nodeId = ");
 		String retValue;
-		buff.append(id);
+		buff.append(getNodeId());
 		buff.append(", title = ");
-		buff.append(title);
+		buff.append(getTitle());
 		buff.append(", content = ");
-		buff.append(content);
+		buff.append(getContent());
 		buff.append(", picture = ");
-		buff.append(picture);
+		buff.append(getPicture());
 		buff.append(", date = ");
-		buff.append(date.toString());
+		buff.append(getDate().toString());
 		buff.append(", creator = ");
-		buff.append(creator);
+		buff.append(getCreator());
 		buff.append(", created = ");
-		buff.append(created.toString());
+		buff.append(getCreated().toString());
 		buff.append(", modified = ");
-		buff.append(modified.toString());
+		buff.append(getModified().toString());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
