@@ -2,9 +2,13 @@ package com.eulersbridge.iEngage.database.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.NodeEntity;
 
+@NodeEntity
 public class VoteReminder {
 
+	@GraphId Long nodeId;
 	private String date;
 	private String time;
 	private String location;
@@ -22,6 +26,11 @@ public class VoteReminder {
 		this.date=date;
 		this.time=time;
 		this.location=location;
+	}
+	
+	public Long getNodeId()
+	{
+		return nodeId;
 	}
 	
 	public String getDate()
@@ -44,8 +53,10 @@ public class VoteReminder {
 	
 	public String toString()
 	{
-		StringBuffer buff=new StringBuffer("[ date = ");
+		StringBuffer buff=new StringBuffer("[ nodeId = ");
 		String retValue;
+		buff.append(getNodeId());
+		buff.append(", date = ");
 		buff.append(date);
 		buff.append(", time = ");
 		buff.append(time);
