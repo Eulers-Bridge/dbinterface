@@ -2,10 +2,13 @@ package com.eulersbridge.iEngage.database.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.NodeEntity;
 
+@NodeEntity
 public class Volunteer {
 	
-	private String id;
+	@GraphId Long nodeId;
 	private String title;
 	private String description;
 	
@@ -16,18 +19,17 @@ public class Volunteer {
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public Volunteer(String id, String title, String description)
+	public Volunteer(String title, String description)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+id+','+title+','+description+')');
-		this.id=id;
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+title+','+description+')');
 		this.title=title;
 		this.description=description;
 	}
 	
-	public String getId()
+	public Long getNodeId()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getId() = "+id);
-		return id;
+		if (LOG.isDebugEnabled()) LOG.debug("getId() = "+nodeId);
+		return nodeId;
 	}
 	
 	public String getTitle()
@@ -44,13 +46,13 @@ public class Volunteer {
 	
 	public String toString()
 	{
-		StringBuffer buff=new StringBuffer("[ id = ");
+		StringBuffer buff=new StringBuffer("[ nodeId = ");
 		String retValue;
-		buff.append(id);
+		buff.append(getNodeId());
 		buff.append(", title = ");
-		buff.append(title);
+		buff.append(getTitle());
 		buff.append(", description = ");
-		buff.append(description);
+		buff.append(getDescription());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
