@@ -16,6 +16,7 @@ public class Student
 	private String nationality;
 	private String yearOfBirth;
 	private String personality;
+	private String password;
 	
     private static Logger LOG = LoggerFactory.getLogger(Student.class);
     
@@ -24,7 +25,7 @@ public class Student
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public Student(String email,String firstName,String lastName,String gender, String nationality, String yearOfBirth, String personality)
+	public Student(String email,String firstName,String lastName,String gender, String nationality, String yearOfBirth, String personality, String password)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+firstName+','+lastName+','+gender+','+
 														  nationality+','+yearOfBirth+','+personality+')');
@@ -35,6 +36,7 @@ public class Student
 		this.nationality=nationality;
 		this.yearOfBirth=yearOfBirth;
 		this.personality=personality;
+		this.password=password;
 	}
 	
 	public String getEmail()
@@ -77,6 +79,11 @@ public class Student
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getPersonality() = "+personality);
 		return personality;
+	}
+	
+	public boolean comparePassword(String password)
+	{
+		return password.equals(this.password);
 	}
 	
 	public Long getNodeId()
