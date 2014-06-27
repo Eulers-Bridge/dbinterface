@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 /**
@@ -30,14 +32,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 /*	@Override
 	public void configure(WebSecurity webSec) throws Exception
 	{
-		
+		webSec.
 	}
-
+*/
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
-		String loginPage="/general-info";
+	    http.authorizeRequests()
+        	.antMatchers("/general-info").permitAll()
+        	.antMatchers("/signUp").permitAll()
+        	.antMatchers("/**").hasRole("USER")
+        .and()
+        	.formLogin()
+        		.permitAll()
+        .and()
+        	.logout()
+        		.permitAll();
+/*		String loginPage="/general-info";
+		http.authorizeRequests().antMatchers("/*").authenticated().and()
+		.anonymous().
 		http.authorizeRequests().anyRequest().fullyAuthenticated().and().formLogin().loginPage(loginPage).permitAll();
-	}
-*/	
+*/	}
+	
 }
