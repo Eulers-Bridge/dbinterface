@@ -10,7 +10,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 @NodeEntity
 public class ElectionEvent {
 
-	@GraphId Long id;
+	@GraphId Long nodeId;
 	private String name;
 	private String location;
 	private Calendar date;
@@ -27,10 +27,9 @@ public class ElectionEvent {
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 
-	public ElectionEvent(Long id,String name,String location,Calendar date, String description, String picture, Volunteer[] volunteers, Calendar created, Calendar modified)
+	public ElectionEvent(String name,String location,Calendar date, String description, String picture, Volunteer[] volunteers, Calendar created, Calendar modified)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+id+','+name+','+location+','+date+','+description+','+picture+','+volunteers+','+created+','+modified+')');
-		this.id=id;
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+name+','+location+','+date+','+description+','+picture+','+volunteers+','+created+','+modified+')');
 		this.name=name;
 		this.location=location;
 		this.date=date;
@@ -41,10 +40,10 @@ public class ElectionEvent {
 		this.modified=modified;
 	}
 	
-	public Long getId()
+	public Long getNodeId()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getId() = "+id);
-		return id;
+		if (LOG.isDebugEnabled()) LOG.debug("getId() = "+nodeId);
+		return nodeId;
 	}
 	
 	public String getName()
@@ -103,9 +102,9 @@ public class ElectionEvent {
 	
 	public String toString()
 	{
-		StringBuffer buff=new StringBuffer("[ id = ");
+		StringBuffer buff=new StringBuffer("[ nodeId = ");
 		String retValue;
-		buff.append(id);
+		buff.append(nodeId);
 		buff.append(", name = ");
 		buff.append(name);
 		buff.append(", location = ");
