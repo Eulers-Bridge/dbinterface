@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +29,14 @@ public class StudentController {
 
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping(value="/student/{email}/{lastName}/{firstName}/{phoneNumber}/{personality}/{nationality}/{yearOfBirth}/{gender}")
+    @RequestMapping(method=RequestMethod.PUT,value="/student/{email}/{lastName}/{firstName}/{phoneNumber}/{personality}/{nationality}/{yearOfBirth}/{gender}/{password}")
     public @ResponseBody Student addStudent(
             @PathVariable String email, @PathVariable String lastName,@PathVariable String firstName,@PathVariable String phoneNumber, 
-            @PathVariable String personality, @PathVariable String nationality,@PathVariable String yearOfBirth,@PathVariable String gender) 
+            @PathVariable String personality, @PathVariable String nationality,@PathVariable String yearOfBirth,
+            @PathVariable String gender, @PathVariable String password) 
     {
     	if (LOG.isInfoEnabled()) LOG.info(email+" attempting to save student. ");
-    	Student student=new Student(email,lastName,firstName,personality,nationality,yearOfBirth,gender);
+    	Student student=new Student(email,lastName,firstName,personality,nationality,yearOfBirth,gender,password);
 		Student test = repo.save(student);
 		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
 		if (LOG.isDebugEnabled()) LOG.debug("Count = "+repo.count());
@@ -41,9 +44,9 @@ public class StudentController {
     	return result;
     }
     
-    @RequestMapping(value="/student/{email}")
+    @RequestMapping(method=RequestMethod.GET,value="/student")
     public @ResponseBody Student findStudent(
-            @PathVariable String email) 
+    		@RequestParam(value="email", required=true) String email) 
     {
     	if (LOG.isInfoEnabled()) LOG.info(email+" attempting to retrieve student. ");
 		Result <Student> students = repo.findAll();
