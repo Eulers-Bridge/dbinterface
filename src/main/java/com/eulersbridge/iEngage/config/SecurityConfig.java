@@ -40,14 +40,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	{
 	    http.authorizeRequests()
         	.antMatchers("/general-info").permitAll()
-        	.antMatchers("/signUp").permitAll()
+        	.antMatchers("/signUp/*").permitAll()
+        	.antMatchers("/displayParams/**").permitAll()
         	.antMatchers("/**").hasRole("USER")
         .and()
         	.formLogin()
         		.permitAll()
         .and()
         	.logout()
-        		.permitAll();
+        		.permitAll()
+        .and().csrf().disable();
+//TODO reenable CSRF security
 /*		String loginPage="/general-info";
 		http.authorizeRequests().antMatchers("/*").authenticated().and()
 		.anonymous().
