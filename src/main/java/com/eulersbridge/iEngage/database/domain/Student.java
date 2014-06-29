@@ -86,6 +86,12 @@ public class Student
 		return personality;
 	}
 	
+	public String getPassword()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("getPassword() = "+password);
+		return password;
+	}
+	
 	public boolean comparePassword(String password)
 	{
 		return password.equals(this.password);
