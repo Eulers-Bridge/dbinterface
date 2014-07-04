@@ -22,7 +22,7 @@ public class User
 //	private Password password;
 	private String password;
 	private boolean accountVerified=false;
-	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
+	@RelatedTo(type = "USER_OF", direction=Direction.OUTGOING)
 	private
 	Institution institution; 
 	
