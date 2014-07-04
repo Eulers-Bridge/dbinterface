@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 
+import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,7 +47,7 @@ public class SignUpController {
  * 
 
 		*/
-    @RequestMapping(method=RequestMethod.PUT,value="/signUp/{institutionId}")
+    @RequestMapping(method=RequestMethod.PUT,value="/api/signUp/{institutionId}")
     public @ResponseBody Student saveNewUser(
             @RequestBody Student user,
             @PathVariable Long institutionId
@@ -58,8 +59,21 @@ public class SignUpController {
     	if (inst!=null)
     	{
     		user.setInstitution(inst);
-    		Student test = studentRepo.save(user);
-    		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
+/*    		Transaction tx=graphDatabaseService.beginTx();
+    		try
+    		{
+*/    			Student test = studentRepo.save(user);
+/*    			tx.success();
+    		}
+    		catch (Exception e)
+    		{
+    			tx.failure();
+    		}
+    		finally
+    		{
+    			tx.finish();
+    		}
+*/    		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
     		if (LOG.isDebugEnabled()) LOG.debug("Count = "+studentRepo.count());
     		result = studentRepo.findOne(test.getNodeId());
     	}
@@ -71,7 +85,7 @@ public class SignUpController {
     }
     
     
-    @RequestMapping(value="/displayParams/{institutionId}")
+    @RequestMapping(value="/api/displayParams/{institutionId}")
     public @ResponseBody boolean displayDetails(
             @RequestBody Student user,
             @PathVariable Long institutionId
