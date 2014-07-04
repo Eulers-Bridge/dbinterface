@@ -21,7 +21,7 @@ public class GeneralInfoController {
 //	    private final AtomicLong counter = new AtomicLong();
 
 //	    @Secured({ "ROLE_USER" })
-	    @RequestMapping("/general-info")
+	    @RequestMapping("/api/general-info")
 	    public @ResponseBody Country[] generalInfo()
 	    {
 	    	if (LOG.isInfoEnabled()) LOG.info("general info called. ");

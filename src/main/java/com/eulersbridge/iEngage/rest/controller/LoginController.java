@@ -39,7 +39,7 @@ public class LoginController {
     }
 */    
     @Secured({ "ROLE_USER" })
-    @RequestMapping(value="/login",method=RequestMethod.GET)
+    @RequestMapping(value="/api/login",method=RequestMethod.GET)
   	public @ResponseBody Response login( @RequestParam(value="username", required=true) String username,
             @RequestParam(value="password", required=true) String password) 
     {
@@ -49,7 +49,7 @@ public class LoginController {
 		return response;
     }
     
-    @RequestMapping(value="/logout/{username}")
+    @RequestMapping(value="/api/logout/{username}")
     public @ResponseBody Response logout(
             @PathVariable String username) 
     {
