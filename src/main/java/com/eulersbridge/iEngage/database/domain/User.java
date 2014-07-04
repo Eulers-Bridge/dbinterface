@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
 @NodeEntity
-public class Student 
+public class User 
 {
 	@GraphId Long nodeId;
 	private String email;
@@ -18,19 +18,22 @@ public class Student
 	private String nationality;
 	private String yearOfBirth;
 	private String personality;
+//	@RelatedTo(type = "HAS_PASSWORD", direction=Direction.OUTGOING)
+//	private Password password;
 	private String password;
+	private boolean accountVerified=false;
 	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
 	private
 	Institution institution; 
 	
-    private static Logger LOG = LoggerFactory.getLogger(Student.class);
+    private static Logger LOG = LoggerFactory.getLogger(User.class);
     
-	public Student()
+	public User()
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public Student(String email,String firstName,String lastName,String gender, String nationality, String yearOfBirth, String personality, String password)
+	public User(String email,String firstName,String lastName,String gender, String nationality, String yearOfBirth, String personality, String password)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+firstName+','+lastName+','+gender+','+
 														  nationality+','+yearOfBirth+','+personality+')');
@@ -41,7 +44,6 @@ public class Student
 		this.nationality=nationality;
 		this.yearOfBirth=yearOfBirth;
 		this.personality=personality;
-		this.password=password;
 	}
 	
 	public String getEmail()
@@ -86,12 +88,6 @@ public class Student
 		return personality;
 	}
 	
-	public String getPassword()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("getPassword() = "+password);
-		return password;
-	}
-	
 	public boolean comparePassword(String password)
 	{
 		return password.equals(this.password);
@@ -133,6 +129,33 @@ public class Student
 
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
+	}
+	
+//	public Password getPassword()
+	public String getPassword()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("getPassword() = "+password);
+		return password;
+	}
+	
+//	public void setPassword(Password password) 
+	public void setPassword(String password) 
+	{
+		this.password = password;
+	}
+
+	/**
+	 * @return the verified
+	 */
+	public boolean isAccountVerified() {
+		return accountVerified;
+	}
+
+	/**
+	 * @param verified the verified to set
+	 */
+	public void setAccountVerified(boolean accountVerified) {
+		this.accountVerified = accountVerified;
 	}	
 
 }

@@ -18,7 +18,7 @@ public class Institution
 	String state;
 	String country;
 	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
-	Set<Student> students;
+	Set<User> students;
 	
     private static Logger LOG = LoggerFactory.getLogger(Institution.class);
 	public Institution()

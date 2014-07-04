@@ -2,8 +2,8 @@ package com.eulersbridge.iEngage.database.repository;
 
 import org.springframework.data.neo4j.repository.GraphRepository;
 
-import com.eulersbridge.iEngage.database.domain.Student;
+import com.eulersbridge.iEngage.database.domain.User;
 
-public interface StudentRepository extends GraphRepository<Student> 
+public interface UserRepository extends GraphRepository<User> 
 {
 }

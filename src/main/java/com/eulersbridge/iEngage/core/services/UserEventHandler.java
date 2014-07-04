@@ -6,30 +6,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Student;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.StudentRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 public class UserEventHandler implements UserService {
 
-	@Autowired StudentRepository studentRepo;
+	@Autowired UserRepository studentRepo;
 	@Autowired InstitutionRepository instRepo;
 
-    private static Logger LOG = LoggerFactory.getLogger(Student.class);
+    private static Logger LOG = LoggerFactory.getLogger(User.class);
 
 	@Override
 	@Transactional
-	public Student signUpNewUser(Student newUser, Long institutionId) 
+	public User signUpNewUser(User newUser, Long institutionId) 
 	{
     	Institution inst=instRepo.findOne(institutionId);
-    	Student result=newUser;
+    	User result=newUser;
     	if (inst!=null)
     	{
     		newUser.setInstitution(inst);
 /*    		Transaction tx=graphDatabaseService.beginTx();
     		try
     		{
-*/    			Student test = studentRepo.save(newUser);
+*/    			User test = studentRepo.save(newUser);
 /*    			tx.success();
     		}
     		catch (Exception e)
@@ -48,7 +48,7 @@ public class UserEventHandler implements UserService {
 	}
 
 	@Override
-	public Student findUserByEmail(String emailAddress) 
+	public User findUserByEmail(String emailAddress) 
 	{
 		// TODO Auto-generated method stub
 		return null;

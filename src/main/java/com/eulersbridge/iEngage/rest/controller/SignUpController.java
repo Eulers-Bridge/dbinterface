@@ -13,16 +13,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Student;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.StudentRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 @RestController
 
 
 public class SignUpController {
 
-	@Autowired StudentRepository studentRepo;
+	@Autowired UserRepository userRepo;
 	@Autowired InstitutionRepository instRepo;
 
 	public SignUpController() {
@@ -48,21 +48,21 @@ public class SignUpController {
 
 		*/
     @RequestMapping(method=RequestMethod.PUT,value="/api/signUp/{institutionId}")
-    public @ResponseBody Student saveNewUser(
-            @RequestBody Student user,
+    public @ResponseBody User saveNewUser(
+            @RequestBody User user,
             @PathVariable Long institutionId
             ) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save user "+user);
     	Institution inst=instRepo.findOne(institutionId);
-    	Student result;
+    	User result;
     	if (inst!=null)
     	{
     		user.setInstitution(inst);
 /*    		Transaction tx=graphDatabaseService.beginTx();
     		try
     		{
-*/    			Student test = studentRepo.save(user);
+*/    			User test = userRepo.save(user);
 /*    			tx.success();
     		}
     		catch (Exception e)
@@ -74,8 +74,8 @@ public class SignUpController {
     			tx.finish();
     		}
 */    		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
-    		if (LOG.isDebugEnabled()) LOG.debug("Count = "+studentRepo.count());
-    		result = studentRepo.findOne(test.getNodeId());
+    		if (LOG.isDebugEnabled()) LOG.debug("Count = "+userRepo.count());
+    		result = userRepo.findOne(test.getNodeId());
     	}
     	else
     	{
@@ -87,7 +87,7 @@ public class SignUpController {
     
     @RequestMapping(value="/api/displayParams/{institutionId}")
     public @ResponseBody boolean displayDetails(
-            @RequestBody Student user,
+            @RequestBody User user,
             @PathVariable Long institutionId
             ) 
     {

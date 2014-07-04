@@ -14,54 +14,54 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eulersbridge.iEngage.database.domain.Student;
-import com.eulersbridge.iEngage.database.repository.StudentRepository;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 @RestController
-public class StudentController {
+public class UserController {
 
-	@Autowired StudentRepository repo;
-	public StudentController() {
+	@Autowired UserRepository repo;
+	public UserController() {
 		// TODO Auto-generated constructor stub
 	}
 
-    private static Logger LOG = LoggerFactory.getLogger(StudentController.class);
+    private static Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping(method=RequestMethod.PUT,value="/student/{email}/{lastName}/{firstName}/{phoneNumber}/{personality}/{nationality}/{yearOfBirth}/{gender}/{password}")
-    public @ResponseBody Student addStudent(
+    @RequestMapping(method=RequestMethod.PUT,value="/api/user/{email}/{lastName}/{firstName}/{phoneNumber}/{personality}/{nationality}/{yearOfBirth}/{gender}/{password}")
+    public @ResponseBody User addStudent(
             @PathVariable String email, @PathVariable String lastName,@PathVariable String firstName,@PathVariable String phoneNumber, 
             @PathVariable String personality, @PathVariable String nationality,@PathVariable String yearOfBirth,
             @PathVariable String gender, @PathVariable String password) 
     {
-    	if (LOG.isInfoEnabled()) LOG.info(email+" attempting to save student. ");
-    	Student student=new Student(email,lastName,firstName,personality,nationality,yearOfBirth,gender,password);
-		Student test = repo.save(student);
+    	if (LOG.isInfoEnabled()) LOG.info(email+" attempting to save user. ");
+    	User student=new User(email,lastName,firstName,personality,nationality,yearOfBirth,gender,password);
+		User test = repo.save(student);
 		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
 		if (LOG.isDebugEnabled()) LOG.debug("Count = "+repo.count());
-		Student result = repo.findOne(test.getNodeId());
+		User result = repo.findOne(test.getNodeId());
     	return result;
     }
     
-    @RequestMapping(method=RequestMethod.GET,value="/student")
-    public @ResponseBody Student findStudent(
+    @RequestMapping(method=RequestMethod.GET,value="/api/user")
+    public @ResponseBody User findStudent(
     		@RequestParam(value="email", required=true) String email) 
     {
-    	if (LOG.isInfoEnabled()) LOG.info(email+" attempting to retrieve student. ");
-		Result <Student> students = repo.findAll();
-		Iterator<Student> iter=students.iterator();
-		Student student=null;
+    	if (LOG.isInfoEnabled()) LOG.info(email+" attempting to retrieve user. ");
+		Result <User> users = repo.findAll();
+		Iterator<User> iter=users.iterator();
+		User user=null;
 		while (iter.hasNext())
 		{
-			Student res=iter.next();
+			User res=iter.next();
 			if (res.getEmail().equals(email))
-				student=res;
+				user=res;
 			if (LOG.isDebugEnabled()) LOG.debug("res = "+res);
 		}
-		if (LOG.isDebugEnabled()) LOG.debug("student = "+student);
+		if (LOG.isDebugEnabled()) LOG.debug("student = "+user);
 		if (LOG.isDebugEnabled()) LOG.debug("Count = "+repo.count());
-    	return student;
+    	return user;
     }
 	    
 	    
