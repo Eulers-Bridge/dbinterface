@@ -8,13 +8,16 @@ import org.springframework.context.annotation.Configuration;
 
 import com.eulersbridge.iEngage.core.services.UserEventHandler;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 @Configuration
 public class CoreConfig 
 {
 	@Autowired
-	UserRepository repo;
+	UserRepository userRepo;
+	@Autowired
+	InstitutionRepository instRepo;
 	
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -27,7 +30,7 @@ public class CoreConfig
 	public UserService createService() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createService()");
-	    return new UserEventHandler(repo);
+	    return new UserEventHandler(userRepo,instRepo);
 	}
 
 /*	  @Bean
