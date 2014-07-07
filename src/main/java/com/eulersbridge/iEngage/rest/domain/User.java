@@ -2,15 +2,6 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
-
-import org.neo4j.graphdb.Direction;
-import org.springframework.data.neo4j.annotation.RelatedTo;
-import org.springframework.hateoas.Link;
-
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.rest.controller.UserController;
