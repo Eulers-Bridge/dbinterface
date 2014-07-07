@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.conversion.Result;
+import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
@@ -23,9 +24,14 @@ public class UserEventHandler implements UserService {
     private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
 
     private UserRepository userRepository;
+    private InstitutionRepository instRepository;
+    
+    @Autowired 
+    Neo4jOperations template;
 
-    public UserEventHandler(final UserRepository userRepository) {
+    public UserEventHandler(final UserRepository userRepository, final InstitutionRepository instRepo) {
       this.userRepository = userRepository;
+      this.instRepository = instRepo;
     }
     
 /*	public UserEventHandler() 
@@ -74,26 +80,18 @@ public class UserEventHandler implements UserService {
 	}
 
 	@Override
-	public ReadUserEvent requestReadUser(RequestReadUserEvent requestReadUserEvent) {
-//TODO	    User user = userRepository.findByEmail(requestReadUserEvent.getEmail());
+	public ReadUserEvent requestReadUser(RequestReadUserEvent requestReadUserEvent) 
+	{
 	    if (LOG.isDebugEnabled()) LOG.debug("requestReadUser("+requestReadUserEvent.getEmail()+")");
-		Result <User> users = userRepository.findAll();
-		Iterator<User> iter=users.iterator();
-		User user=null;
-		while (iter.hasNext())
-		{
-			User res=iter.next();
-			if ((res.getEmail()!=null)&&(res.getEmail().equals(requestReadUserEvent.getEmail())))
-			{	
-				user=res;
-				if (LOG.isDebugEnabled()) LOG.debug("res = "+res);
-			}
-		}
+	    User user = userRepository.findByEmail(requestReadUserEvent.getEmail());
 
-
-	    if (user == null) {
+	    if (user == null) 
+	    {
 	      return ReadUserEvent.notFound(requestReadUserEvent.getEmail());
 	    }
+
+//	    template.fetch(user.getInstitution());
+
 	    UserDetails result=user.toUserDetails();
 	    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
 	    return new ReadUserEvent(requestReadUserEvent.getEmail(), result);
