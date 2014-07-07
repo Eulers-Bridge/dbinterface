@@ -4,6 +4,7 @@ import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
@@ -24,8 +25,7 @@ public class User
 	private String password;
 	private boolean accountVerified=false;
 	@RelatedTo(type = "USER_OF", direction=Direction.OUTGOING)
-	private
-	Institution institution; 
+	@Fetch private Institution institution; 
 	
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
@@ -175,5 +175,11 @@ public class User
 
 		    return user;
 		  }
+	  
+	  public boolean equals(User user2)
+	  {
+		  if (nodeId.equals(user2.nodeId)) return true;
+		  else return false;
+	  }
 
 }
