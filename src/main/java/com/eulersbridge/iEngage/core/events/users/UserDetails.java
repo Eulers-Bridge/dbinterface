@@ -5,6 +5,9 @@ package com.eulersbridge.iEngage.core.events.users;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.eulersbridge.iEngage.database.domain.Institution;
 
 /**
@@ -25,6 +28,8 @@ public class UserDetails
 	private boolean accountVerified=false;
 	private	Institution institution;
 	
+    private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
+    
 	public String getLastName() {
 		return lastName;
 	}
@@ -132,5 +137,31 @@ public class UserDetails
 	public void setAccountVerified(boolean accountVerified) {
 		this.accountVerified = accountVerified;
 	}
-
+	
+	public String toString()
+	{
+		StringBuffer buff=new StringBuffer("[ email = ");
+		String retValue;
+		buff.append(getEmail());
+		buff.append(", firstName = ");
+		buff.append(getFirstName());
+		buff.append(", lastName = ");
+		buff.append(getLastName());
+		buff.append(", gender = ");
+		buff.append(getGender());
+		buff.append(", nationality = ");
+		buff.append(getNationality());
+		buff.append(", yearOfBirth = ");
+		buff.append(getYearOfBirth());
+		buff.append(", personality = ");
+		buff.append(getPersonality());
+		buff.append(", password = ");
+		buff.append(getPassword());
+		buff.append(", accountVerified = ");
+		buff.append(isAccountVerified());
+		buff.append(" ]");
+		retValue=buff.toString();
+		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
+		return retValue;
+	}
 }
