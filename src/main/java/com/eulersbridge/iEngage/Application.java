@@ -57,6 +57,7 @@ public class Application extends Neo4jConfiguration
     public GraphDatabaseService graphDatabaseService() throws IOException
  	{
 //    	String url=propResolver.getRequiredProperty("neo4j.server.url");
+//    	if (LOG.isDebugEnabled()) LOG.debug("url = "+url);
 	 	return new SpringRestGraphDatabase("http://ec2-54-79-49-160.ap-southeast-2.compute.amazonaws.com:7474/db/data");
     }
 
