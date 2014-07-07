@@ -83,7 +83,7 @@ public class UserEventHandler implements UserService {
 		while (iter.hasNext())
 		{
 			User res=iter.next();
-			if (res.getEmail().equals(requestReadUserEvent.getEmail()))
+			if ((res.getEmail()!=null)&&(res.getEmail().equals(requestReadUserEvent.getEmail())))
 			{	
 				user=res;
 				if (LOG.isDebugEnabled()) LOG.debug("res = "+res);
