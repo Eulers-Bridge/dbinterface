@@ -29,7 +29,7 @@ public class SignUpController {
 		// TODO Auto-generated constructor stub
 	}
 
-    private static Logger LOG = LoggerFactory.getLogger(ElectionController.class);
+    private static Logger LOG = LoggerFactory.getLogger(SignUpController.class);
 
 
 /**
@@ -47,7 +47,7 @@ public class SignUpController {
  * 
 
 		*/
-    @RequestMapping(method=RequestMethod.PUT,value="/api/signUp/{institutionId}")
+    @RequestMapping(method=RequestMethod.POST,value="/api/signUp/{institutionId}")
     public @ResponseBody User saveNewUser(
             @RequestBody User user,
             @PathVariable Long institutionId
@@ -99,6 +99,4 @@ public class SignUpController {
     	}
     	return true;
     }
-    
-    
 }
