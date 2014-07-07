@@ -3,9 +3,12 @@ package com.eulersbridge.iEngage.database.domain;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 
 @NodeEntity
 public class User 
@@ -18,8 +21,6 @@ public class User
 	private String nationality;
 	private String yearOfBirth;
 	private String personality;
-//	@RelatedTo(type = "HAS_PASSWORD", direction=Direction.OUTGOING)
-//	private Password password;
 	private String password;
 	private boolean accountVerified=false;
 	@RelatedTo(type = "USER_OF", direction=Direction.OUTGOING)
@@ -156,6 +157,23 @@ public class User
 	 */
 	public void setAccountVerified(boolean accountVerified) {
 		this.accountVerified = accountVerified;
-	}	
+	}
+	
+	public UserDetails toUserDetails() 
+	{
+		    UserDetails details = new UserDetails();
+
+		    BeanUtils.copyProperties(this, details);
+
+		    return details;
+	}
+
+	  public static User fromUserDetails(UserDetails userDetails) {
+		    User user = new User();
+
+		    BeanUtils.copyProperties(userDetails, user);
+
+		    return user;
+		  }
 
 }
