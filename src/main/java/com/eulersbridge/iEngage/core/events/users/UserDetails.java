@@ -7,8 +7,9 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 
-import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.rest.domain.Institution;
 
 /**
  * @author Greg Newitt
@@ -26,10 +27,12 @@ public class UserDetails
 	private String personality;
 	private String password;
 	private boolean accountVerified=false;
-	private	Institution institution;
+//	private	Institution institution;
+	private	Long institutionId;
 	
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     
+    @Bean
 	public String getLastName() {
 		return lastName;
 	}
@@ -38,6 +41,7 @@ public class UserDetails
 		this.lastName = lastName;
 	}
 
+	@Bean
 	public String getGender() {
 		return gender;
 	}
@@ -78,16 +82,24 @@ public class UserDetails
 		this.password = password;
 	}
 
-	public Institution getInstitution() {
+/*	public Institution getInstitution() {
 		return institution;
 	}
 
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
 	}
-
+*/
 	public UserDetails() 
 	{
+	}
+
+	public Long getInstitutionId() {
+		return institutionId;
+	}
+
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
 	}
 
 	public UserDetails(String email) 
@@ -103,11 +115,6 @@ public class UserDetails
 
 	public String getEmail() {
 		return email;
-	}
-
-	public Map<String, Integer> getUserItems() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
