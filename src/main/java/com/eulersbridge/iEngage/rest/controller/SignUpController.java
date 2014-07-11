@@ -1,8 +1,9 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 
-import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,18 +13,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.domain.User;
 
 @RestController
 
 
 public class SignUpController {
 
-	@Autowired UserRepository userRepo;
-	@Autowired InstitutionRepository instRepo;
+    @Autowired UserService userService;
 
 	public SignUpController() {
 		// TODO Auto-generated constructor stub
@@ -48,21 +48,22 @@ public class SignUpController {
 
 		*/
     @RequestMapping(method=RequestMethod.POST,value="/api/signUp/{institutionId}")
-    public @ResponseBody User saveNewUser(
+    public @ResponseBody ResponseEntity<User> saveNewUser(
             @RequestBody User user,
             @PathVariable Long institutionId
             ) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save user "+user);
-    	Institution inst=instRepo.findOne(institutionId);
-    	User result;
-    	if (inst!=null)
+//    	Institution inst=instRepo.findOne(institutionId);
+    	institutionId=user.getInstitutionId();
+    	UserCreatedEvent userEvent=userService.signUpNewUser(new CreateUserEvent(user.toUserDetails()));
+/*    	if (inst!=null)
     	{
     		user.setInstitution(inst);
 /*    		Transaction tx=graphDatabaseService.beginTx();
     		try
     		{
-*/    			User test = userRepo.save(user);
+*    			User test = userRepo.save(user);
 /*    			tx.success();
     		}
     		catch (Exception e)
@@ -73,7 +74,7 @@ public class SignUpController {
     		{
     			tx.finish();
     		}
-*/    		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
+*    		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
     		if (LOG.isDebugEnabled()) LOG.debug("Count = "+userRepo.count());
     		result = userRepo.findOne(test.getNodeId());
     	}
@@ -81,7 +82,13 @@ public class SignUpController {
     	{
     		result=user;
     	}
-    	return result;
+*/
+    	if (userEvent.getKey()==null)
+    	{
+    		return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+    	}
+    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
+    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     }
     
     
