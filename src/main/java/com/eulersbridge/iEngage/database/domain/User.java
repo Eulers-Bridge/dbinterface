@@ -45,6 +45,7 @@ public class User
 		this.nationality=nationality;
 		this.yearOfBirth=yearOfBirth;
 		this.personality=personality;
+		this.password=password;
 	}
 	
 	public String getEmail()
@@ -161,24 +162,42 @@ public class User
 	
 	public UserDetails toUserDetails() 
 	{
-		    UserDetails details = new UserDetails();
+	    if (LOG.isDebugEnabled()) LOG.debug("toUserDetails()");
+	    
+	    UserDetails details = new UserDetails();
+	    if (LOG.isDebugEnabled()) LOG.debug("user "+this);
 
-		    BeanUtils.copyProperties(this, details);
+	    BeanUtils.copyProperties(this, details);
+	    if (LOG.isDebugEnabled()) LOG.debug("userDetails "+details);
 
-		    return details;
+	    return details;
 	}
 
-	  public static User fromUserDetails(UserDetails userDetails) {
-		    User user = new User();
+	  public static User fromUserDetails(UserDetails userDetails) 
+	  {
+		    if (LOG.isDebugEnabled()) LOG.debug("fromUserDetails()");
 
-		    BeanUtils.copyProperties(userDetails, user);
+		    User user = new User();
+		    if (LOG.isDebugEnabled()) LOG.debug("userDetails "+userDetails);
+		    user.email=userDetails.getEmail();
+		    user.firstName=userDetails.getFirstName();
+		    user.gender=userDetails.getGender();
+		    userDetails.getInstitutionId();
+		    user.lastName=userDetails.getLastName();
+		    user.nationality=userDetails.getNationality();
+		    user.password=userDetails.getPassword();
+		    user.personality=userDetails.getPersonality();
+		    user.yearOfBirth=userDetails.getYearOfBirth();
+		    user.accountVerified=userDetails.isAccountVerified();
+//		    BeanUtils.copyProperties( userDetails,user);
+		    if (LOG.isDebugEnabled()) LOG.debug("user "+user);
 
 		    return user;
 		  }
 	  
 	  public boolean equals(User user2)
 	  {
-		  if (nodeId.equals(user2.nodeId)) return true;
+		  if ((nodeId!=null)&&(nodeId.equals(user2.nodeId))) return true;
 		  else return false;
 	  }
 
