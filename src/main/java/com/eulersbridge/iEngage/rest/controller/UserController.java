@@ -55,7 +55,7 @@ public class UserController {
     	{
     		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
     	}
-    	User restUser=User.fromRequestUser(userEvent.getReadUserDetails());
+    	User restUser=User.fromUserDetails(userEvent.getReadUserDetails());
     	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     }	    
 }
