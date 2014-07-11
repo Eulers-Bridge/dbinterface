@@ -6,13 +6,13 @@ import static com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture.*
 
 public class RestEventFixtures 
 {
-	public static UserSignUpEvent userStatusNotFound(String email)
+/*	public static CreateUserEvent userStatusNotFound(String email)
 	{
-		return UserSignUpEvent.notFound(email);
+		return CreateUserEvent.notFound(email);
 	}
-	public static UserSignUpEvent userSignedUp(String email)
+*/	public static CreateUserEvent userSignedUp(String email)
 	{
-		return new UserSignUpEvent(email,customEmailUser(email));
+		return new CreateUserEvent(email,customEmailUser(email));
 	}
 	public static ReadUserEvent requestUserEvent(String email)
 	{
