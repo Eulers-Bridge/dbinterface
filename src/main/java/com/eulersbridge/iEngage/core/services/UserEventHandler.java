@@ -1,16 +1,15 @@
 package com.eulersbridge.iEngage.core.services;
 
-import java.util.Iterator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -41,16 +40,22 @@ public class UserEventHandler implements UserService {
 */
 	@Override
 	@Transactional
-	public User signUpNewUser(UserDetails newUser) 
+	public UserCreatedEvent signUpNewUser(CreateUserEvent createUserEvent) 
 	{
-//    	Institution inst=instRepo.findOne(newUser.getInstitution().getNodeId());
+		UserDetails newUser=createUserEvent.getUserDetails();
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with instId = "+newUser.getInstitutionId());
+    	Institution inst=instRepository.findOne(newUser.getInstitutionId());
+    	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
+    	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+newUser);
     	User userToInsert=User.fromUserDetails(newUser);
-//    	userToInsert.setInstitution(inst);
+    	if (LOG.isDebugEnabled()) LOG.debug("userToInsert :"+userToInsert);
+    	userToInsert.setInstitution(inst);
     	
     	User result=null;
-//    	if (inst!=null)
+    	if (inst!=null)
     	{
-//    		newUser.setInstitution(inst);
+    		userToInsert.setInstitution(inst);
+    		userToInsert.setAccountVerified(false);
 /*    		Transaction tx=graphDatabaseService.beginTx();
     		try
     		{
@@ -69,7 +74,7 @@ public class UserEventHandler implements UserService {
     		if (LOG.isDebugEnabled()) LOG.debug("Count = "+userRepository.count());
     		result = userRepository.findOne(test.getNodeId());
     	}
-    	return result;
+    	return new UserCreatedEvent(result.getNodeId(),result.toUserDetails());
 	}
 
 	@Override
@@ -95,6 +100,12 @@ public class UserEventHandler implements UserService {
 	    UserDetails result=user.toUserDetails();
 	    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
 	    return new ReadUserEvent(requestReadUserEvent.getEmail(), result);
+	}
+
+	@Override
+	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
