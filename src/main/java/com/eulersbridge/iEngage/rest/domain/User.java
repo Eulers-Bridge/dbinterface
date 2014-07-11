@@ -3,8 +3,10 @@ package com.eulersbridge.iEngage.rest.domain;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.rest.controller.UserController;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.ResourceSupport;
 
 
@@ -18,9 +20,10 @@ public class User extends ResourceSupport
 	private String personality;
 	private String password;
 	private boolean accountVerified=false;
-	private	Institution institution; 
+	private	Long institutionId; 
 	private String email;
 
+    private static Logger LOG = LoggerFactory.getLogger(User.class);
 	public String getEmail() 
 	{
 	    return email;
@@ -94,15 +97,15 @@ public class User extends ResourceSupport
 		this.accountVerified = accountVerified;
 	}
 
-	public Institution getInstitution() {
-		return institution;
+	public Long getInstitutionId() {
+		return institutionId;
 	}
 
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
 	}
 
-	public UserDetails toReadUser() 
+	public UserDetails toUserDetails() 
 	  {
 		  UserDetails details = new UserDetails(email);
 
@@ -114,13 +117,13 @@ public class User extends ResourceSupport
 	    details.setPersonality(getPersonality());
 	    details.setPassword(getPassword());
 	    details.setAccountVerified(isAccountVerified());
-	    details.setInstitution(getInstitution());
+	    details.setInstitutionId(getInstitutionId());
 
 	    return details;
 	  }
 
 	  // {!begin fromOrderDetails}
-	  public static User fromRequestUser(UserDetails readUser) {
+	  public static User fromUserDetails(UserDetails readUser) {
 	    User user = new User();
 
 	    user.email = readUser.getEmail();
@@ -132,7 +135,7 @@ public class User extends ResourceSupport
 	    user.personality = readUser.getPersonality();
 	    user.password = readUser.getPassword();
 	    user.accountVerified = readUser.isAccountVerified();
-	    user.institution = readUser.getInstitution();
+	    user.institutionId = readUser.getInstitutionId();
 	    
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
@@ -150,4 +153,32 @@ public class User extends ResourceSupport
 	    return user;
 	  }
 
+		public String toString()
+		{
+			StringBuffer buff=new StringBuffer("[ email = ");
+			String retValue;
+			buff.append(getEmail());
+			buff.append(", firstName = ");
+			buff.append(getFirstName());
+			buff.append(", lastName = ");
+			buff.append(getLastName());
+			buff.append(", gender = ");
+			buff.append(getGender());
+			buff.append(", nationality = ");
+			buff.append(getNationality());
+			buff.append(", yearOfBirth = ");
+			buff.append(getYearOfBirth());
+			buff.append(", password = ");
+			buff.append(getPassword());
+			buff.append(", institutionId = ");
+			buff.append(getInstitutionId());
+			buff.append(", accountVerified = ");
+			buff.append(isAccountVerified());
+			buff.append(", personality = ");
+			buff.append(getPersonality());
+			buff.append(" ]");
+			retValue=buff.toString();
+			if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
+			return retValue;
+		}
 }
