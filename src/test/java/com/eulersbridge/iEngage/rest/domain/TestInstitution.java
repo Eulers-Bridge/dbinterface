@@ -15,7 +15,7 @@ import org.junit.Test;
  * @author Greg Newitt
  *
  */
-public class TestUniversity 
+public class TestInstitution 
 {
 
 	/**
@@ -47,36 +47,36 @@ public class TestUniversity
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.University#University(int, java.lang.String)}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Institution#University(int, java.lang.String)}.
 	 */
 	@Test
 	public final void testShouldCreateUniversityObject() 
 	{
-		University testObj=new University(1, "University of Melbourne");
-		if (testObj.getClass()!=University.class)
+		Institution testObj=new Institution(new Long(1), "University of Melbourne");
+		if (testObj.getClass()!=Institution.class)
 		fail("University constructor does not return a class of type university."); 
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.University#getUniversityId()}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Institution#getUniversityId()}.
 	 */
 	@Test
 	public final void testShouldGetUniversityId() 
 	{
-		University testObj=new University(1, "University of Melbourne");
-		if (testObj.getUniversityId()!=1)
+		Institution testObj=new Institution(new Long(1), "University of Melbourne");
+		if (testObj.getId().compareTo(new Long(1))!=0)
 			fail("Id returned does not match id object created with.");
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.University#getUniversityName()}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Institution#getUniversityName()}.
 	 */
 	@Test
 	public final void testShouldGetUniversityName() 
 	{
 		String name="University of Melbourne";
-		University testObj=new University(1, name);
-		if (!testObj.getUniversityName().equals(name))
+		Institution testObj=new Institution(new Long(1), name);
+		if (!testObj.getName().equals(name))
 			fail("Name returned does not match name object created with.");
 	}
 

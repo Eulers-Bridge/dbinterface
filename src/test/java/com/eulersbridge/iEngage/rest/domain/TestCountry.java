@@ -39,12 +39,12 @@ public class TestCountry {
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Country#Country(int, java.lang.String,University[])}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Country#Country(int, java.lang.String,Institution[])}.
 	 */
 	@Test
 	public final void testShouldCreateCountryObject() 
 	{
-		University unis[]={new University(1, "University of Melbourne")};
+		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(61, name, unis);
 		if (testObj.getClass()!=Country.class)
@@ -57,7 +57,7 @@ public class TestCountry {
 	@Test
 	public final void testShouldGetCountryId() 
 	{
-		University unis[]={new University(1, "University of Melbourne")};
+		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(61, name, unis);
 		if (testObj.getCountryId()!=61)
@@ -70,7 +70,7 @@ public class TestCountry {
 	@Test
 	public final void testShouldGetCountryName() 
 	{
-		University unis[]={new University(1, "University of Melbourne")};
+		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(61, name, unis);
 		if (!testObj.getCountryName().equals(name))
@@ -83,7 +83,7 @@ public class TestCountry {
 	@Test
 	public final void testShouldGetUniversityObjects() 
 	{
-		University unis[]={new University(1, "University of Melbourne")};
+		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(61, name, unis);
 		if (!testObj.getUniversities()[0].equals(unis[0]))

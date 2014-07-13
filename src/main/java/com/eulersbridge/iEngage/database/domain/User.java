@@ -3,12 +3,16 @@ package com.eulersbridge.iEngage.database.domain;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+
 @NodeEntity
-public class Student 
+public class User 
 {
 	@GraphId Long nodeId;
 	private String email;
@@ -19,18 +23,18 @@ public class Student
 	private String yearOfBirth;
 	private String personality;
 	private String password;
-	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
-	private
-	Institution institution; 
+	private boolean accountVerified=false;
+	@RelatedTo(type = "USER_OF", direction=Direction.OUTGOING)
+	@Fetch private Institution institution; 
 	
-    private static Logger LOG = LoggerFactory.getLogger(Student.class);
+    private static Logger LOG = LoggerFactory.getLogger(User.class);
     
-	public Student()
+	public User()
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public Student(String email,String firstName,String lastName,String gender, String nationality, String yearOfBirth, String personality, String password)
+	public User(String email,String firstName,String lastName,String gender, String nationality, String yearOfBirth, String personality, String password)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+firstName+','+lastName+','+gender+','+
 														  nationality+','+yearOfBirth+','+personality+')');
@@ -86,12 +90,6 @@ public class Student
 		return personality;
 	}
 	
-	public String getPassword()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("getPassword() = "+password);
-		return password;
-	}
-	
 	public boolean comparePassword(String password)
 	{
 		return password.equals(this.password);
@@ -100,6 +98,11 @@ public class Student
 	public Long getNodeId()
 	{
 		return nodeId;
+	}
+	
+	public void setNodeId(Long nodeId)
+	{
+		this.nodeId=nodeId;
 	}
 	
 	public String toString()
@@ -133,6 +136,78 @@ public class Student
 
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
-	}	
+	}
+	
+//	public Password getPassword()
+	public String getPassword()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("getPassword() = "+password);
+		return password;
+	}
+	
+//	public void setPassword(Password password) 
+	public void setPassword(String password) 
+	{
+		this.password = password;
+	}
+
+	/**
+	 * @return the verified
+	 */
+	public boolean isAccountVerified() {
+		return accountVerified;
+	}
+
+	/**
+	 * @param verified the verified to set
+	 */
+	public void setAccountVerified(boolean accountVerified) {
+		this.accountVerified = accountVerified;
+	}
+	
+	public UserDetails toUserDetails() 
+	{
+	    if (LOG.isDebugEnabled()) LOG.debug("toUserDetails()");
+	    
+	    UserDetails details = new UserDetails();
+	    if (LOG.isDebugEnabled()) LOG.debug("user "+this);
+
+	    BeanUtils.copyProperties(this, details);
+	    details.setInstitutionId(this.getInstitution().getNodeId());
+	    if (LOG.isDebugEnabled()) LOG.debug("userDetails "+details);
+
+	    return details;
+	}
+
+	  public static User fromUserDetails(UserDetails userDetails) 
+	  {
+		    if (LOG.isDebugEnabled()) LOG.debug("fromUserDetails()");
+
+		    User user = new User();
+		    if (LOG.isDebugEnabled()) LOG.debug("userDetails "+userDetails);
+		    user.email=userDetails.getEmail();
+		    user.firstName=userDetails.getFirstName();
+		    user.gender=userDetails.getGender();
+		    userDetails.getInstitutionId();
+		    user.lastName=userDetails.getLastName();
+		    user.nationality=userDetails.getNationality();
+		    user.password=userDetails.getPassword();
+		    user.personality=userDetails.getPersonality();
+		    user.yearOfBirth=userDetails.getYearOfBirth();
+		    user.accountVerified=userDetails.isAccountVerified();
+		    Institution inst=new Institution();
+		    inst.setNodeId(userDetails.getInstitutionId());
+		    user.institution=inst;
+//		    BeanUtils.copyProperties( userDetails,user);
+		    if (LOG.isDebugEnabled()) LOG.debug("user "+user);
+
+		    return user;
+		  }
+	  
+	  public boolean equals(User user2)
+	  {
+		  if ((nodeId!=null)&&(nodeId.equals(user2.nodeId))) return true;
+		  else return false;
+	  }
 
 }

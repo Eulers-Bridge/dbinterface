@@ -1,0 +1,184 @@
+package com.eulersbridge.iEngage.rest.domain;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.rest.controller.UserController;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.ResourceSupport;
+
+
+public class User extends ResourceSupport
+{
+	private String firstName;
+	private String lastName;
+	private String gender;
+	private String nationality;
+	private String yearOfBirth;
+	private String personality;
+	private String password;
+	private boolean accountVerified=false;
+	private	Long institutionId; 
+	private String email;
+
+    private static Logger LOG = LoggerFactory.getLogger(User.class);
+	public String getEmail() 
+	{
+	    return email;
+	}
+
+	  public void setEmail(String email) {
+	    this.email = email;
+	  }
+
+	  public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getNationality() {
+		return nationality;
+	}
+
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+
+	public String getYearOfBirth() {
+		return yearOfBirth;
+	}
+
+	public void setYearOfBirth(String yearOfBirth) {
+		this.yearOfBirth = yearOfBirth;
+	}
+
+	public String getPersonality() {
+		return personality;
+	}
+
+	public void setPersonality(String personality) {
+		this.personality = personality;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public boolean isAccountVerified() {
+		return accountVerified;
+	}
+
+	public void setAccountVerified(boolean accountVerified) {
+		this.accountVerified = accountVerified;
+	}
+
+	public Long getInstitutionId() {
+		return institutionId;
+	}
+
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
+	}
+
+	public UserDetails toUserDetails() 
+	  {
+		  UserDetails details = new UserDetails(email);
+
+	    details.setFirstName(getFirstName());
+	    details.setLastName(getLastName());
+	    details.setGender(getGender());
+	    details.setNationality(getNationality());
+	    details.setYearOfBirth(getYearOfBirth());
+	    details.setPersonality(getPersonality());
+	    details.setPassword(getPassword());
+	    details.setAccountVerified(isAccountVerified());
+	    details.setInstitutionId(getInstitutionId());
+
+	    return details;
+	  }
+
+	  // {!begin fromOrderDetails}
+	  public static User fromUserDetails(UserDetails readUser) {
+	    User user = new User();
+
+	    user.email = readUser.getEmail();
+	    user.firstName = readUser.getFirstName();
+	    user.lastName = readUser.getLastName();
+	    user.gender = readUser.getGender();
+	    user.nationality = readUser.getNationality();
+	    user.yearOfBirth = readUser.getYearOfBirth();
+	    user.personality = readUser.getPersonality();
+	    user.password = readUser.getPassword();
+	    user.accountVerified = readUser.isAccountVerified();
+	    user.institutionId = readUser.getInstitutionId();
+	    
+	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
+	    //this section is all that is actually needed in our model to add hateoas support.
+
+	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
+	    //We have explicitly avoided that.
+	    // {!begin selfRel}
+	    user.add(linkTo(UserController.class).slash(user.email).withSelfRel());
+	    // {!end selfRel}
+	    // {!begin status}
+	    user.add(linkTo(UserController.class).slash(user.email).slash("status").withRel("User Status"));
+	    // {!end status}
+	    user.add(linkTo(UserController.class).slash(user.email).slash("details").withRel("User Details"));
+
+	    return user;
+	  }
+
+		public String toString()
+		{
+			StringBuffer buff=new StringBuffer("[ email = ");
+			String retValue;
+			buff.append(getEmail());
+			buff.append(", firstName = ");
+			buff.append(getFirstName());
+			buff.append(", lastName = ");
+			buff.append(getLastName());
+			buff.append(", gender = ");
+			buff.append(getGender());
+			buff.append(", nationality = ");
+			buff.append(getNationality());
+			buff.append(", yearOfBirth = ");
+			buff.append(getYearOfBirth());
+			buff.append(", password = ");
+			buff.append(getPassword());
+			buff.append(", institutionId = ");
+			buff.append(getInstitutionId());
+			buff.append(", accountVerified = ");
+			buff.append(isAccountVerified());
+			buff.append(", personality = ");
+			buff.append(getPersonality());
+			buff.append(" ]");
+			retValue=buff.toString();
+			if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
+			return retValue;
+		}
+}

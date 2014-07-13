@@ -8,24 +8,24 @@ public class stubCountryFactory extends CountriesFactory
 	
 	public stubCountryFactory()
 	{
-		University uniOfMelb=new University(1,"University of Melbourne");
-		University deakin=new University(2,"Deakin University");
-		University monash=new University(3,"Monash University");
+		Institution uniOfMelb=new Institution(new Long(1),"University of Melbourne");
+		Institution deakin=new Institution(new Long(2),"Deakin University");
+		Institution monash=new Institution(new Long(3),"Monash University");
 		
-		ArrayList<University> ozUniversities=new ArrayList<University>();
+		ArrayList<Institution> ozUniversities=new ArrayList<Institution>();
 		ozUniversities.add(uniOfMelb);
 		ozUniversities.add(deakin);
 		ozUniversities.add(monash);
 		
-		University cambridge=new University(1,"Cambridge University");
-		University oxford=new University(2,"Oxford University");
-		ArrayList<University> ukUniversities=new ArrayList<University>();
+		Institution cambridge=new Institution(new Long(1),"Cambridge University");
+		Institution oxford=new Institution(new Long(2),"Oxford University");
+		ArrayList<Institution> ukUniversities=new ArrayList<Institution>();
 		ukUniversities.add(cambridge);
 		ukUniversities.add(oxford);
 		
-		University[] ozUnis=new University[1];
+		Institution[] ozUnis=new Institution[1];
 		ozUnis=ozUniversities.toArray(ozUnis);
-		University[] ukUnis=new University[1];
+		Institution[] ukUnis=new Institution[1];
 		ukUnis=ukUniversities.toArray(ukUnis);
 		Country australia=new Country(61,"Australia",ozUnis);
 		Country uk=new Country(44,"United Kingdom",ukUnis);

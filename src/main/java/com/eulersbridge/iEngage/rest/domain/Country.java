@@ -4,9 +4,9 @@ public class Country
 {
 	int countryId;
 	String countryName;
-	University universities[];
+	Institution universities[];
 	
-	public Country(int id,String name,University unis[])
+	public Country(int id,String name,Institution unis[])
 	{
 		countryId=id;
 		countryName=name;
@@ -23,7 +23,7 @@ public class Country
 		return countryName;
 	}
 	
-	public University[] getUniversities()
+	public Institution[] getUniversities()
 	{
 		return universities;
 	}

@@ -27,8 +27,8 @@ public class InstitutionController
     private static Logger LOG = LoggerFactory.getLogger(InstitutionController.class);
 
 
-    @RequestMapping(value="/institution/{name}/{campus}/{state}/{country}")
-    public @ResponseBody Institution logout(
+    @RequestMapping(value="/api/institution/{name}/{campus}/{state}/{country}")
+    public @ResponseBody Institution addInstitution(
             @PathVariable String name, @PathVariable String campus,@PathVariable String state,@PathVariable String country) 
     {
     	if (LOG.isInfoEnabled()) LOG.info(name+" attempting to save institution. ");
@@ -41,8 +41,8 @@ public class InstitutionController
 //Institution inst=repo.findByPropertyValue("name", name);
     }
     
-    @RequestMapping(value="/institution/{name}")
-    public @ResponseBody Institution logout(
+    @RequestMapping(value="/api/institution/{name}")
+    public @ResponseBody Institution getInstitutionByName(
             @PathVariable String name) 
     {
     	if (LOG.isInfoEnabled()) LOG.info(name+" attempting to retrieve institution. ");

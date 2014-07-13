@@ -14,11 +14,10 @@ import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
 import com.eulersbridge.iEngage.rest.domain.Country;
 
 @RestController
+@RequestMapping("/api")
 public class GeneralInfoController {
 
 	    private static Logger LOG = LoggerFactory.getLogger(GeneralInfoController.class);
-
-//	    private final AtomicLong counter = new AtomicLong();
 
 //	    @Secured({ "ROLE_USER" })
 	    @RequestMapping("/general-info")

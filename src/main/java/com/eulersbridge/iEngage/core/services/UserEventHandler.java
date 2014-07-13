@@ -1,0 +1,140 @@
+package com.eulersbridge.iEngage.core.services;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.template.Neo4jOperations;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
+import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
+
+public class UserEventHandler implements UserService 
+{
+
+    private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
+
+    private UserRepository userRepository;
+    private InstitutionRepository instRepository;
+    
+    @Autowired 
+    Neo4jOperations template;
+
+    public UserEventHandler(final UserRepository userRepository, final InstitutionRepository instRepo) {
+      this.userRepository = userRepository;
+      this.instRepository = instRepo;
+    }
+    
+	@Override
+	@Transactional
+	public UserCreatedEvent signUpNewUser(CreateUserEvent createUserEvent) 
+	{
+		UserDetails newUser=createUserEvent.getUserDetails();
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with instId = "+newUser.getInstitutionId());
+    	Institution inst=instRepository.findOne(newUser.getInstitutionId());
+    	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+newUser);
+    	User userToInsert=User.fromUserDetails(newUser);
+    	
+    	User result=null;
+    	if (inst!=null)
+    	{
+        	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
+    		userToInsert.setInstitution(inst);
+    		userToInsert.setAccountVerified(false);
+        	if (LOG.isDebugEnabled()) LOG.debug("userToInsert :"+userToInsert);
+    		User test = userRepository.save(userToInsert);
+    		//TODO what happens if this fails?
+    		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
+    		result = userRepository.findOne(test.getNodeId());
+    	}
+    	else
+    	{
+    		return UserCreatedEvent.instituteNotFound(newUser.getEmail());
+    	}
+    	return new UserCreatedEvent(result.getEmail(),result.toUserDetails());
+	}
+
+	@Override
+	public ReadUserEvent requestReadUser(RequestReadUserEvent requestReadUserEvent) 
+	{
+	    if (LOG.isDebugEnabled()) LOG.debug("requestReadUser("+requestReadUserEvent.getEmail()+")");
+	    User user = userRepository.findByEmail(requestReadUserEvent.getEmail());
+
+	    if (user == null) 
+	    {
+	      return ReadUserEvent.notFound(requestReadUserEvent.getEmail());
+	    }
+
+//	    template.fetch(user.getInstitution());
+
+	    UserDetails result=user.toUserDetails();
+	    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
+	    return new ReadUserEvent(requestReadUserEvent.getEmail(), result);
+	}
+
+	@Override
+	@Transactional
+	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent) 
+	{
+	    if (LOG.isDebugEnabled()) LOG.debug("requestReadUser("+deleteUserEvent.getEmail()+")");
+	    User user=userRepository.findByEmail(deleteUserEvent.getEmail());
+	    if (user==null)
+	    {
+	    	return UserDeletedEvent.notFound(deleteUserEvent.getEmail());
+	    }
+	    userRepository.delete(user.getNodeId());
+	    return new UserDeletedEvent(deleteUserEvent.getEmail(),user.toUserDetails());
+	}
+
+	@Override
+	@Transactional
+	public UserUpdatedEvent updateUser(UpdateUserEvent updateUserEvent) 
+	{
+		UserDetails newUser=updateUserEvent.getUserDetails();
+		User user=null,result=null,userToUpdate=User.fromUserDetails(newUser);
+    	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+newUser);
+	    user=userRepository.findByEmail(updateUserEvent.getEmail());
+	    if (null==user)
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("User does not exist, adding another.");
+	    	// Do not allow a new user to be created with account verified set to true.
+	    	newUser.setAccountVerified(false);
+	    }
+	    else
+	    {
+	    	userToUpdate.setNodeId(user.getNodeId());
+	    }
+    	if (LOG.isDebugEnabled()) LOG.debug("userToInsert :"+userToUpdate);
+
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with instId = "+newUser.getInstitutionId());
+    	Institution inst=instRepository.findOne(newUser.getInstitutionId());
+
+    	if (inst!=null)
+    	{
+        	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
+        	userToUpdate.setInstitution(inst);
+   			User test = userRepository.save(userToUpdate);
+    		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
+    		if (LOG.isDebugEnabled()) LOG.debug("Count = "+userRepository.count());
+    		result = userRepository.findOne(test.getNodeId());
+    	}
+    	else
+    	{
+    		return UserUpdatedEvent.instituteNotFound(updateUserEvent.getEmail());
+    	}
+
+    	return new UserUpdatedEvent(result.getEmail(),result.toUserDetails());
+	}
+
+}

@@ -27,7 +27,7 @@ public class ElectionController {
     private static Logger LOG = LoggerFactory.getLogger(ElectionController.class);
 
 
-    @RequestMapping(value="/election/{year}/{start}/{end}/{votingStart}/{votingEnd}")
+    @RequestMapping(value="/api/election/{year}/{start}/{end}/{votingStart}/{votingEnd}")
     public @ResponseBody Election saveElection(
             @PathVariable String year, @PathVariable String start, @PathVariable String end,@PathVariable String votingStart,@PathVariable String votingEnd) 
     {
@@ -40,7 +40,7 @@ public class ElectionController {
     	return result;
     }
     
-    @RequestMapping(value="/election/{year}")
+    @RequestMapping(value="/api/election/{year}")
     public @ResponseBody Election findElection(
             @PathVariable String year) 
     {
