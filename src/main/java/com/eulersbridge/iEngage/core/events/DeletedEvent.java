@@ -1,9 +1,11 @@
 package com.eulersbridge.iEngage.core.events;
 
-public class DeletedEvent {
+public class DeletedEvent 
+{
   protected boolean entityFound = true;
 
-  public boolean isEntityFound() {
+  public boolean isEntityFound() 
+  {
     return entityFound;
   }
 }
