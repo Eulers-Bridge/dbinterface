@@ -173,6 +173,7 @@ public class User
 	    if (LOG.isDebugEnabled()) LOG.debug("user "+this);
 
 	    BeanUtils.copyProperties(this, details);
+	    details.setInstitutionId(this.getInstitution().getNodeId());
 	    if (LOG.isDebugEnabled()) LOG.debug("userDetails "+details);
 
 	    return details;
