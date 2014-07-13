@@ -100,6 +100,11 @@ public class User
 		return nodeId;
 	}
 	
+	public void setNodeId(Long nodeId)
+	{
+		this.nodeId=nodeId;
+	}
+	
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
