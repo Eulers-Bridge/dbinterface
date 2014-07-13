@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.email;
 
 import com.eulersbridge.iEngage.config.SecurityConfig;
-import com.eulersbridge.iEngage.database.domain.Student;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 
@@ -32,12 +32,12 @@ public class EmailVerificationService  {
     }
 
     @Transactional
-    public VerificationToken sendEmailVerificationToken(Student student) 
+    public VerificationToken sendEmailVerificationToken(User user) 
     {
         VerificationToken token = new VerificationToken(
         		VerificationToken.VerificationTokenType.emailVerification,
         		EMAIL_EXPIRY_TIME_IN_MINS);
-        emailSender.sendVerificationEmail(new EmailVerification(student, token));
+        emailSender.sendVerificationEmail(new EmailVerification(user, token));
         return token;
     }
 }

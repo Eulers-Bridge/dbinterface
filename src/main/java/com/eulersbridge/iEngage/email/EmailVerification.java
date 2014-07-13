@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 
-import com.eulersbridge.iEngage.database.domain.Student;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 
 public class EmailVerification implements Serializable {
@@ -15,11 +15,11 @@ public class EmailVerification implements Serializable {
     private final VerificationToken.VerificationTokenType tokenType;
 
 
-    public EmailVerification(Student student, VerificationToken token) {
-        this.emailAddress = student.getEmail();
+    public EmailVerification(User user, VerificationToken token) {
+        this.emailAddress = user.getEmail();
         this.token = token.getToken();
         this.tokenType = token.getTokenType();
-        this.recipientName = student.getFirstName() + " " + student.getLastName();
+        this.recipientName = user.getFirstName() + " " + user.getLastName();
     }
 
     public String getEmailAddress() {
