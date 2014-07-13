@@ -84,6 +84,7 @@ public class UserEventHandler implements UserService
 	}
 
 	@Override
+	@Transactional
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent) 
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("requestReadUser("+deleteUserEvent.getEmail()+")");
@@ -97,6 +98,7 @@ public class UserEventHandler implements UserService
 	}
 
 	@Override
+	@Transactional
 	public UserUpdatedEvent updateUser(UpdateUserEvent updateUserEvent) 
 	{
 		UserDetails newUser=updateUserEvent.getUserDetails();
