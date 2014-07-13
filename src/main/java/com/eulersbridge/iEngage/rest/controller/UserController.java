@@ -12,12 +12,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.User;
 
-//@Controller
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -31,32 +36,138 @@ public class UserController {
 
     private static Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-    @RequestMapping(method=RequestMethod.POST,value="/user")
-    public @ResponseBody User addStudent(
+    /**
+     * Is passed all the necessary data to update a user.
+     * Or potentially create a new one.
+     * The request must be a PUT with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting user object. 
+     * There will also be a relationship set up with the 
+     * institution the user belongs to.
+     * 
+     * @param email the email address of the user to be updated.
+     * @param user the user object passed across as JSON.
+     * @return the user object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.PUT,value="/user/{email}")
+    public @ResponseBody ResponseEntity<User> alterStudent(@PathVariable String email,
     		@RequestBody User user) 
     {
-    	if (LOG.isInfoEnabled()) LOG.info(user.getEmail()+" attempting to save user. ");
-//		User test = repo.save(user);
-//		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
-//		if (LOG.isDebugEnabled()) LOG.debug("Count = "+repo.count());
-//		User result = repo.findOne(test.getNodeId());
-		User result = user;
-    	return result;
+    	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit user. "+user.getEmail());
+    	
+    	UserUpdatedEvent userEvent=userService.updateUser(new UpdateUserEvent(email,user.toUserDetails()));
+
+    	if (!userEvent.isInstituteFound())
+    	{
+    		return new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
+    	}
+    	else
+    	{
+    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
+      	return new ResponseEntity<User>(restUser,HttpStatus.OK);
+    	}
     }
     
-    @RequestMapping(method=RequestMethod.GET,value="/user/{email}")
-//    @ResponseStatus(HttpStatus.OK);
-    public @ResponseBody ResponseEntity<User> findUser(@PathVariable String email) 
+    /**
+     * Is passed all the necessary data to read a user from the database.
+     * The request must be a GET with the user email presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the user object read from the database.
+     * 
+     * @param email the email address of the user object to be read.
+     * @return the user object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.GET,value="/user/{email}")
+	public @ResponseBody ResponseEntity<User> findUser(@PathVariable String email) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. "+email);
+		ReadUserEvent userEvent=userService.requestReadUser(new RequestReadUserEvent(email));
+  	
+		if (!userEvent.isEntityFound())
+		{
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		User restUser=User.fromUserDetails(userEvent.getReadUserDetails());
+		return new ResponseEntity<User>(restUser,HttpStatus.OK);
+	}
+    
+    /**
+     * Is passed all the necessary data to delete a user.
+     * The request must be a DELETE with the user email presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the deleted user object.
+     * 
+     * @param email the email address of the user object to be deleted.
+     * @return the user object deleted.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.DELETE,value="/user/{email}")
+	public @ResponseBody ResponseEntity<User> deleteUser(@PathVariable String email) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete user. "+email);
+		UserDeletedEvent userEvent=userService.deleteUser(new DeleteUserEvent(email));
+  	
+		if (!userEvent.isEntityFound())
+		{
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		User restUser=User.fromUserDetails(userEvent.getDetails());
+		return new ResponseEntity<User>(restUser,HttpStatus.OK);
+	}
+    
+    
+    /**
+     * Is passed all the necessary data to create a new user.
+     * The request must be a POST with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting user object.
+     * There will also be a relationship set up with the 
+     * institution the user belongs to.
+     * 
+     * @param user the user object passed across as JSON.
+     * @return the user object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.POST,value="/signUp")
+    public @ResponseBody ResponseEntity<User> saveNewUser(@RequestBody User user) 
     {
-    	if (LOG.isInfoEnabled()) LOG.info(email+" attempting to retrieve user. ");
-    	ReadUserEvent userEvent=userService.requestReadUser(new RequestReadUserEvent(email));
-    	
-    	if (!userEvent.isEntityFound())
+    	if (LOG.isInfoEnabled()) LOG.info("attempting to save user "+user);
+    	UserCreatedEvent userEvent=userService.signUpNewUser(new CreateUserEvent(user.toUserDetails()));
+
+    	if (userEvent.getEmail()==null)
     	{
-    		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+    		return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
     	}
-    	User restUser=User.fromUserDetails(userEvent.getReadUserDetails());
+    	else if (!userEvent.isInstituteFound())
+    	{
+    		return new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
+    	}
+    	else
+    	{
+    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
     	return new ResponseEntity<User>(restUser,HttpStatus.OK);
-    }	    
+    	}
+    }
+    
+    @RequestMapping(value="/displayParams")
+    public @ResponseBody ResponseEntity<Boolean> displayDetails(@RequestBody User user) 
+    {
+    	if (LOG.isInfoEnabled()) 
+    		LOG.info("user = "+user);
+    	return new ResponseEntity<Boolean>(true,HttpStatus.OK);
+    }
+    
 }
 
