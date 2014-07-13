@@ -3,13 +3,8 @@
  */
 package com.eulersbridge.iEngage.core.events.users;
 
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
-
-import com.eulersbridge.iEngage.rest.domain.Institution;
 
 /**
  * @author Greg Newitt
@@ -32,7 +27,10 @@ public class UserDetails
 	
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     
-    @Bean
+	public UserDetails() 
+	{
+	}
+
 	public String getLastName() {
 		return lastName;
 	}
@@ -41,7 +39,6 @@ public class UserDetails
 		this.lastName = lastName;
 	}
 
-	@Bean
 	public String getGender() {
 		return gender;
 	}
@@ -80,18 +77,6 @@ public class UserDetails
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-/*	public Institution getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
-	}
-*/
-	public UserDetails() 
-	{
 	}
 
 	public Long getInstitutionId() {
