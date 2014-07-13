@@ -5,20 +5,26 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 public class UserCreatedEvent extends CreatedEvent 
 {
 	private UserDetails userDetails;
-	private Long key;
+	private String email;
+	protected boolean instituteFound = true;
 
-	public UserCreatedEvent(Long nodeId, UserDetails userDetails) 
+	public UserCreatedEvent(String email, UserDetails userDetails) 
 	{
 		this.userDetails=userDetails;
-		this.key=nodeId;
+		this.email=email;
 	}
 
-	public Long getKey() {
-		return key;
+	public UserCreatedEvent(String email) 
+	{
+		this.email=email;
 	}
 
-	public void setKey(Long key) {
-		this.key = key;
+	public String getEmail() {
+		return email;
+	}
+
+	public void setKey(String email) {
+		this.email = email;
 	}
 
 	public void setUserDetails(UserDetails userDetails) {
@@ -29,5 +35,19 @@ public class UserCreatedEvent extends CreatedEvent
 	{
 	    return userDetails;
 	}
+	
+
+	public static UserCreatedEvent instituteNotFound(String email) 
+	{
+		UserCreatedEvent ev = new UserCreatedEvent(email);
+	    ev.instituteFound=false;
+	    return ev;
+	}
+	
+	public boolean isInstituteFound() 
+	{
+		return instituteFound;
+	}
+
 
 }
