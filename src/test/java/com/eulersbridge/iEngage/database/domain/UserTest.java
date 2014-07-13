@@ -227,6 +227,7 @@ public class UserTest {
 		assertEquals("LastName must be equal",userDetails.getLastName(), userDetails2.getLastName());
 		assertEquals("Gender must be equal",userDetails.getGender(), userDetails2.getGender());
 		assertEquals("Personality must be equal",userDetails.getPersonality(), userDetails2.getPersonality());
+		assertEquals("Institution Ids must be equal",userDetails.getInstitutionId(), userDetails2.getInstitutionId());
 	}
 
 	/**
@@ -242,6 +243,7 @@ public class UserTest {
 		assertEquals("LastName must be equal",userDetails.getLastName(), user.getLastName());
 		assertEquals("Gender must be equal",userDetails.getGender(), user.getGender());
 		assertEquals("Personality must be equal",userDetails.getPersonality(), user.getPersonality());
+		assertEquals("Institutions must be equal",userDetails.getInstitutionId(), user.getInstitution().getNodeId());
 		
 	}
 
