@@ -1,0 +1,12 @@
+<html>
+    <body>
+        <h3>Hi ${email.recipientName}, welcome to Euler's Bridge!</h3>
+
+        <div>
+        	Please verify your email address ${email.emailAddress} by clicking in the following link
+        	<a href="http://eulersbridge.com/emailverification/${email.userId}/${email.token}"></a>
+        	<br>
+        	or by pasting the url in your browser address bar
+        </div>
+    </body>
+</html>
