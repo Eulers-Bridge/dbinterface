@@ -195,6 +195,9 @@ public class User
 		    user.personality=userDetails.getPersonality();
 		    user.yearOfBirth=userDetails.getYearOfBirth();
 		    user.accountVerified=userDetails.isAccountVerified();
+		    Institution inst=new Institution();
+		    inst.setNodeId(userDetails.getInstitutionId());
+		    user.institution=inst;
 //		    BeanUtils.copyProperties( userDetails,user);
 		    if (LOG.isDebugEnabled()) LOG.debug("user "+user);
 
