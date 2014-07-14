@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import java.util.Date;
+import java.util.Calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +14,10 @@ public class NewsArticle {
 	private String title;
 	private String content;
 	private String picture;
-	private Date date;
+	private Calendar date;
 	private String creator;
-	private Date created;
-	private Date modified;
+	private Calendar created;
+	private Calendar modified;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 	
@@ -26,7 +26,7 @@ public class NewsArticle {
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public NewsArticle(String title,String content,String picture, Date date, String creator, Date created, Date modified)
+	public NewsArticle(String title,String content,String picture, Calendar date, String creator, Calendar created, Calendar modified)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+title+','+content+','+picture+','+date.toString()+','+creator+','+created.toString()+','+modified.toString()+')');
 		this.title=title;
@@ -62,7 +62,7 @@ public class NewsArticle {
 		return picture;
 	}
 	
-	public Date getDate()
+	public Calendar getDate()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getDate() = "+date.toString());
 		return date;
@@ -74,13 +74,13 @@ public class NewsArticle {
 		return creator;
 	}
 	
-	public Date getCreated()
+	public Calendar getCreated()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getCreated() = "+created.toString());
 		return created;
 	}
 	
-	public Date getModified()
+	public Calendar getModified()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getModified() = "+modified);
 		return modified;
@@ -109,7 +109,6 @@ public class NewsArticle {
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
-	}	
-	
+	}		
 
 }

@@ -1,9 +1,11 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+
 public class Response 
 {
 	public boolean success;
 	String errorReason;
+	Object responseObject;
 	
 	public Response(boolean success,String errorReason)
 	{
@@ -19,5 +21,10 @@ public class Response
 	public String getErrorReason()
 	{
 		return errorReason;
+	}
+	
+	public Object getResponseObject()
+	{
+		return responseObject;
 	}
 }
