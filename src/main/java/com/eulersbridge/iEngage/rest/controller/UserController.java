@@ -20,6 +20,7 @@ import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.User;
 
@@ -28,6 +29,7 @@ import com.eulersbridge.iEngage.rest.domain.User;
 public class UserController {
 
     @Autowired UserService userService;
+    @Autowired EmailService emailService;
     
 	public UserController() 
 	{
@@ -156,8 +158,9 @@ public class UserController {
     	}
     	else
     	{
-    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
-    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
+	    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
+	    	emailService.sendEmail(userEvent.getVerificationEmail());
+	    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     	}
     }
     
