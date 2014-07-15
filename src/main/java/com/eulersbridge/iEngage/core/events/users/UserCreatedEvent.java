@@ -1,17 +1,20 @@
 package com.eulersbridge.iEngage.core.events.users;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.email.EmailVerification;
 
 public class UserCreatedEvent extends CreatedEvent 
 {
 	private UserDetails userDetails;
 	private String email;
 	protected boolean instituteFound = true;
+	private EmailVerification verifyEmail;
 
-	public UserCreatedEvent(String email, UserDetails userDetails) 
+	public UserCreatedEvent(String email, UserDetails userDetails, EmailVerification verifyEmail) 
 	{
 		this.userDetails=userDetails;
 		this.email=email;
+		this.verifyEmail=verifyEmail;
 	}
 
 	public UserCreatedEvent(String email) 
@@ -47,6 +50,16 @@ public class UserCreatedEvent extends CreatedEvent
 	public boolean isInstituteFound() 
 	{
 		return instituteFound;
+	}
+
+	public EmailVerification getVerificationEmail() 
+	{
+		return verifyEmail;
+	}
+
+	public void setVerificationEmail(EmailVerification verifyEmail) 
+	{
+		this.verifyEmail=verifyEmail;
 	}
 
 
