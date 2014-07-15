@@ -97,4 +97,12 @@ public class EmailSender {
          this.mailSender.send(preparator);
          return emailVerificationModel;
     }
+
+
+	public void sendEmail(Email email) 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("to: "+email.getEmailAddress()+" recipient "+email.getRecipientName());
+		// TODO Auto-generated method stub
+		
+	}
 }
