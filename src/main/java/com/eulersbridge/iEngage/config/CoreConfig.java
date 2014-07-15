@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.eulersbridge.iEngage.core.services.InstitutionEventHandler;
+import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.core.services.UserEventHandler;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 
 @Configuration
 public class CoreConfig 
@@ -18,6 +21,8 @@ public class CoreConfig
 	UserRepository userRepo;
 	@Autowired
 	InstitutionRepository instRepo;
+	@Autowired
+	VerificationTokenRepository tokenRepo;
 	
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -27,16 +32,18 @@ public class CoreConfig
 	}
 
 	@Bean
-	public UserService createService() 
+	public UserService createUserService() 
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("createService()");
-	    return new UserEventHandler(userRepo,instRepo);
+		if (LOG.isDebugEnabled()) LOG.debug("createUserService()");
+	    return new UserEventHandler(userRepo,instRepo,tokenRepo);
+	}
+	
+	@Bean
+	public InstitutionService createInstitutionService()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("createInstitutionService()");
+		return new InstitutionEventHandler(instRepo);
 	}
 
-/*	  @Bean
-	  public OrdersRepository createRepo() {
-	    return new OrdersMemoryRepository(new HashMap<UUID, Order>());
-	  }
-*/
 
 }
