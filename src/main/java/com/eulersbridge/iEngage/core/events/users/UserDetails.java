@@ -22,13 +22,17 @@ public class UserDetails
 	private String personality;
 	private String password;
 	private boolean accountVerified=false;
-//	private	Institution institution;
 	private	Long institutionId;
 	
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     
 	public UserDetails() 
 	{
+	}
+
+	public UserDetails(String email) 
+	{
+		this.email=email;
 	}
 
 	public String getLastName() {
@@ -85,11 +89,6 @@ public class UserDetails
 
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
-	}
-
-	public UserDetails(String email) 
-	{
-		this.email=email;
 	}
 
 	public void setEmail(String email) 
