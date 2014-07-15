@@ -64,7 +64,7 @@ public class TestInstitution
 	public final void testShouldGetUniversityId() 
 	{
 		Institution testObj=new Institution(new Long(1), "University of Melbourne");
-		if (testObj.getId().compareTo(new Long(1))!=0)
+		if (testObj.getInstitutionId().compareTo(new Long(1))!=0)
 			fail("Id returned does not match id object created with.");
 	}
 

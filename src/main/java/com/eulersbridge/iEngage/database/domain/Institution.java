@@ -5,9 +5,12 @@ import java.util.Set;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+
+import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 
 @NodeEntity
 public class Institution 
@@ -100,4 +103,41 @@ public class Institution
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
 	}
+	
+	public InstitutionDetails toInstDetails() 
+	{
+	    if (LOG.isTraceEnabled()) LOG.trace("toInstDetails()");
+	    
+	    InstitutionDetails details = new InstitutionDetails(getNodeId());
+	    if (LOG.isTraceEnabled()) LOG.trace("institution "+this);
+
+	    BeanUtils.copyProperties(this, details);
+	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
+
+	    return details;
+	}
+
+	  public static Institution fromInstDetails(InstitutionDetails instDetails) 
+	  {
+		    if (LOG.isTraceEnabled()) LOG.trace("fromInstDetails()");
+
+		    Institution inst = new Institution();
+		    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+instDetails);
+		    inst.nodeId=instDetails.getInstitutionId();
+		    inst.name=instDetails.getName();
+		    inst.campus=instDetails.getCampus();
+		    inst.country=instDetails.getCountry();
+		    inst.state=instDetails.getState();
+		    if (LOG.isTraceEnabled()) LOG.trace("inst "+inst);
+
+		    return inst;
+		  }
+	  
+	  public boolean equals(User user2)
+	  {
+		  if ((nodeId!=null)&&(nodeId.equals(user2.nodeId))) return true;
+		  else return false;
+	  }
+
+
 }
