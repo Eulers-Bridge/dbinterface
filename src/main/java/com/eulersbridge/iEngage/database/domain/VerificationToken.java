@@ -9,15 +9,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 
+import com.eulersbridge.iEngage.email.EmailConstants;
+
+
 @NodeEntity
 public class VerificationToken {
-
-    private static final int DEFAULT_EXPIRY_TIME_IN_MINS = 60 * 24; //24 hours
-
     
-    @GraphId String token;
-    private Calendar expiryDate;
-    private VerificationTokenType tokenType;
+    @GraphId Long nodeId; 
+    private String token;
+    private Long expiryDate;
+    private String tokenType;
     private boolean verified;
 
     private static Logger LOG = LoggerFactory.getLogger(VerificationToken.class);
@@ -26,18 +27,18 @@ public class VerificationToken {
     	
     	this.token = UUID.randomUUID().toString();
         if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+tokenType+','+verified+')');
-		this.expiryDate = calculateExpiryDate(DEFAULT_EXPIRY_TIME_IN_MINS);
+		this.expiryDate = calculateExpiryDate(EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS).getTimeInMillis();
     }
 
     public VerificationToken(VerificationTokenType tokenType, int expirationTimeInMinutes) {
     	
     	this.token = UUID.randomUUID().toString();
     	if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expirationTimeInMinutes+','+tokenType+')');
-		this.tokenType = tokenType;
-        this.expiryDate = calculateExpiryDate(expirationTimeInMinutes);
+		this.tokenType = tokenType.name();
+        this.expiryDate = calculateExpiryDate(expirationTimeInMinutes).getTimeInMillis();
     }
 
-    public VerificationTokenType getTokenType() {
+    public String getTokenType() {
         return tokenType;
     }
 
@@ -49,7 +50,7 @@ public class VerificationToken {
         this.verified = verified;
     }
 
-    public Calendar getExpiryDate() {
+    public Long getExpiryDate() {
         return expiryDate;
     }
 
@@ -67,13 +68,15 @@ public class VerificationToken {
         return expiryDate;
     }
     
-    public enum VerificationTokenType {
+    public enum VerificationTokenType 
+    {
 
         lostPassword, emailVerification, emailRegistration
     }
 
-    public boolean hasExpired() {
-        Calendar tokenDate = getExpiryDate();
-        return tokenDate.before(new Date());
+    public boolean hasExpired() 
+    {
+    	Date now=new Date();
+        return (getExpiryDate()<now.getTime());
     }
 }
