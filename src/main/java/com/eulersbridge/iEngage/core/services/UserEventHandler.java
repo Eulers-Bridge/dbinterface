@@ -3,7 +3,6 @@ package com.eulersbridge.iEngage.core.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -17,8 +16,13 @@ import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
+import com.eulersbridge.iEngage.email.EmailSender;
+import com.eulersbridge.iEngage.email.EmailVerification;
+import com.eulersbridge.iEngage.email.EmailConstants;
 
 public class UserEventHandler implements UserService 
 {
@@ -27,13 +31,13 @@ public class UserEventHandler implements UserService
 
     private UserRepository userRepository;
     private InstitutionRepository instRepository;
+    private VerificationTokenRepository tokenRepository;
     
-    @Autowired 
-    Neo4jOperations template;
-
-    public UserEventHandler(final UserRepository userRepository, final InstitutionRepository instRepo) {
+    public UserEventHandler(final UserRepository userRepository, final InstitutionRepository instRepo, final VerificationTokenRepository tokenRepo) 
+    {
       this.userRepository = userRepository;
       this.instRepository = instRepo;
+      this.tokenRepository = tokenRepo;
     }
     
 	@Override
@@ -45,8 +49,9 @@ public class UserEventHandler implements UserService
     	Institution inst=instRepository.findOne(newUser.getInstitutionId());
     	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+newUser);
     	User userToInsert=User.fromUserDetails(newUser);
+    	UserCreatedEvent result;   	
     	
-    	User result=null;
+    	User createdUser=null;
     	if (inst!=null)
     	{
         	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
@@ -56,13 +61,21 @@ public class UserEventHandler implements UserService
     		User test = userRepository.save(userToInsert);
     		//TODO what happens if this fails?
     		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
-    		result = userRepository.findOne(test.getNodeId());
+    		createdUser = userRepository.findOne(test.getNodeId());
+    		
+            VerificationToken token = new VerificationToken(
+            		VerificationToken.VerificationTokenType.emailVerification,
+            		EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS);
+            tokenRepository.save(token);
+            EmailVerification verifyEmail=new EmailVerification(createdUser,token);
+            result=new UserCreatedEvent(createdUser.getEmail(),createdUser.toUserDetails(),verifyEmail);
+    		
     	}
     	else
     	{
-    		return UserCreatedEvent.instituteNotFound(newUser.getEmail());
+    		result=UserCreatedEvent.instituteNotFound(newUser.getEmail());
     	}
-    	return new UserCreatedEvent(result.getEmail(),result.toUserDetails());
+    	return result;
 	}
 
 	@Override
