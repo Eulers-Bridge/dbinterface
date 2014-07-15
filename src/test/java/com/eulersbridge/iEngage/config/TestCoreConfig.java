@@ -11,17 +11,23 @@ import org.springframework.context.annotation.Configuration;
 
 import com.eulersbridge.iEngage.core.services.UserEventHandler;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 
 @Configuration
 public class TestCoreConfig 
 {
 	Map<Long, User> users= new HashMap<Long,User>();
+	Map<Long, Institution> institutions= new HashMap<Long,Institution>();
+	Map<Long, VerificationToken> tokens= new HashMap<Long,VerificationToken>();
 	UserRepository userRepo=new UserMemoryRepository(users);
 	InstitutionRepository instRepo;
+	VerificationTokenRepository tokenRepo;
 	
     private static Logger LOG = LoggerFactory.getLogger(TestCoreConfig.class);
 
@@ -31,10 +37,10 @@ public class TestCoreConfig
 	}
 
 	@Bean
-	public UserService createService() 
+	public UserService createUserService() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createService()");
-	    return new UserEventHandler(userRepo,instRepo);
+	    return new UserEventHandler(userRepo,instRepo,tokenRepo);
 	}
 
 /*	  @Bean
