@@ -50,43 +50,43 @@ public class User
 	
 	public String getEmail()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getEmail() = "+email);
+		if (LOG.isTraceEnabled()) LOG.trace("getEmail() = "+email);
 		return email;
 	}
 
 	public String getFirstName()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getFirstName() = "+firstName);
+		if (LOG.isTraceEnabled()) LOG.trace("getFirstName() = "+firstName);
 		return firstName;
 	}
 	
 	public String getLastName()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getLastName() = "+lastName);
+		if (LOG.isTraceEnabled()) LOG.trace("getLastName() = "+lastName);
 		return lastName;
 	}
 	
 	public String getGender()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getGender() = "+gender);
+		if (LOG.isTraceEnabled()) LOG.trace("getGender() = "+gender);
 		return gender;
 	}
 	
 	public String getNationality()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getNationality() = "+nationality);
+		if (LOG.isTraceEnabled()) LOG.trace("getNationality() = "+nationality);
 		return nationality;
 	}
 	
 	public String getYearOfBirth()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getYearOfBirth() = "+yearOfBirth);
+		if (LOG.isTraceEnabled()) LOG.trace("getYearOfBirth() = "+yearOfBirth);
 		return yearOfBirth;
 	}
 	
 	public String getPersonality()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getPersonality() = "+personality);
+		if (LOG.isTraceEnabled()) LOG.trace("getPersonality() = "+personality);
 		return personality;
 	}
 	
@@ -126,7 +126,7 @@ public class User
 		buff.append(getPersonality());
 		buff.append(" ]");
 		retValue=buff.toString();
-		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
+		if (LOG.isTraceEnabled()) LOG.trace("toString() = "+retValue);
 		return retValue;
 	}
 
@@ -141,7 +141,7 @@ public class User
 //	public Password getPassword()
 	public String getPassword()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getPassword() = "+password);
+		if (LOG.isTraceEnabled()) LOG.trace("getPassword() = "+password);
 		return password;
 	}
 	
@@ -167,24 +167,24 @@ public class User
 	
 	public UserDetails toUserDetails() 
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("toUserDetails()");
+	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
 	    
 	    UserDetails details = new UserDetails();
-	    if (LOG.isDebugEnabled()) LOG.debug("user "+this);
+	    if (LOG.isTraceEnabled()) LOG.trace("user "+this);
 
 	    BeanUtils.copyProperties(this, details);
 	    details.setInstitutionId(this.getInstitution().getNodeId());
-	    if (LOG.isDebugEnabled()) LOG.debug("userDetails "+details);
+	    if (LOG.isTraceEnabled()) LOG.trace("userDetails "+details);
 
 	    return details;
 	}
 
 	  public static User fromUserDetails(UserDetails userDetails) 
 	  {
-		    if (LOG.isDebugEnabled()) LOG.debug("fromUserDetails()");
+		    if (LOG.isTraceEnabled()) LOG.trace("fromUserDetails()");
 
 		    User user = new User();
-		    if (LOG.isDebugEnabled()) LOG.debug("userDetails "+userDetails);
+		    if (LOG.isTraceEnabled()) LOG.trace("userDetails "+userDetails);
 		    user.email=userDetails.getEmail();
 		    user.firstName=userDetails.getFirstName();
 		    user.gender=userDetails.getGender();
@@ -199,7 +199,7 @@ public class User
 		    inst.setNodeId(userDetails.getInstitutionId());
 		    user.institution=inst;
 //		    BeanUtils.copyProperties( userDetails,user);
-		    if (LOG.isDebugEnabled()) LOG.debug("user "+user);
+		    if (LOG.isTraceEnabled()) LOG.trace("user "+user);
 
 		    return user;
 		  }
