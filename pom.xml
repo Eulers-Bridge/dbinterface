@@ -92,15 +92,14 @@
 		<version>1.5.1</version>
 		</dependency>
 	<dependency>
-			<groupId>org.apache.velocity</groupId>
-			<artifactId>velocity</artifactId>
-			<version>1.7</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-velocity</artifactId>
 	</dependency>
-  		<dependency>
-  			<groupId>org.springframework</groupId>
-  			<artifactId>org.springframework.context.support</artifactId>
-  			<version>${org.springframework.version}</version>
-		</dependency>
+	<dependency>
+	       <groupId>javax.mail</groupId>
+	       <artifactId>mail</artifactId>
+	       <version>1.4.7</version>
+	 </dependency>
     </dependencies>
 
 
