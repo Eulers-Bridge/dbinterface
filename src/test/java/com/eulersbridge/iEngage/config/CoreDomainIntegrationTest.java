@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -21,7 +22,8 @@ import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {Application.class})
+@SpringApplicationConfiguration(classes=Application.class)
+//@ContextConfiguration(classes = {Application.class})
 public class CoreDomainIntegrationTest 
 {
     private static Logger LOG = LoggerFactory.getLogger(CoreDomainIntegrationTest.class);
