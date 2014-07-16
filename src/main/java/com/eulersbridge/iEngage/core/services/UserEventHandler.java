@@ -66,6 +66,7 @@ public class UserEventHandler implements UserService
             VerificationToken token = new VerificationToken(
             		VerificationToken.VerificationTokenType.emailVerification,
             		EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS);
+            if (LOG.isDebugEnabled()) LOG.debug("Verification token = "+token.toString());
             tokenRepository.save(token);
             EmailVerification verifyEmail=new EmailVerification(createdUser,token);
             result=new UserCreatedEvent(createdUser.getEmail(),createdUser.toUserDetails(),verifyEmail);
