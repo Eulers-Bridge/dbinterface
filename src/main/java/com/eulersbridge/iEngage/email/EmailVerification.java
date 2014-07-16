@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -23,14 +24,18 @@ public class EmailVerification extends Email implements Serializable
 
     private final String token;
     private final String tokenType;
+    private final String velocityModel;
+    private final VelocityEngine velocityEngine;
 
     private static Logger LOG = LoggerFactory.getLogger(EmailVerification.class);
 
     public EmailVerification(User user, VerificationToken token) 
     {
-    	super(user.getEmail(),user.getFirstName() + " " + user.getLastName());
+    	super(user.getEmail(),user.getFirstName() + " " + user.getLastName(),"testinfo@eulersbirdge.com","Email Verification Test");
         this.token = token.getToken();
         this.tokenType = token.getTokenType();
+        this.velocityModel = "com/eulersbridge/iEngage/email/validateEmailBody.vm";
+        this.velocityEngine = new VelocityEngine();
     }
 
     public String getEncodedToken() 
@@ -47,19 +52,24 @@ public class EmailVerification extends Email implements Serializable
         return tokenType;
     }
     
-    
-    MimeMessagePreparator preparator = new MimeMessagePreparator() 
+    @Override
+    public MimeMessagePreparator generatePreparator() throws MessagingException
     {
-        public void prepare(MimeMessage mimeMessage) throws Exception 
-        {
-            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
-            message.setTo(new InternetAddress(getEmailAddress()));
-            String body=null;
-            message.setReplyTo(new InternetAddress("info@eulersbridge.com"));
-            message.setFrom(new InternetAddress("info@eulersbridge.com"));
-            message.setSubject("Account Verification");
+    	MimeMessagePreparator preparator = new MimeMessagePreparator() 
+    	{
+    		public void prepare(MimeMessage mimeMessage) throws Exception 
+    		{
+    			MimeMessageHelper message = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
+    			message.setTo(new InternetAddress(getRecipientEmailAddress()));
+    			String body=null;
+    			message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
+    			message.setFrom(new InternetAddress(getSenderEmailAddress()));
+    			message.setSubject(getSubject());
+    			final Map<String, Object> hTemplateVariables = null;
 
-            body="This is a test email.";
+    			hTemplateVariables.put("email", this);
+    			body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, velocityModel,"UTF-8", hTemplateVariables);
+            
             if(LOG.isDebugEnabled()) LOG.debug("body={}", body);
             message.setText(body, true);
 
@@ -70,7 +80,11 @@ public class EmailVerification extends Email implements Serializable
           	  //If you are doing it the other way around, it won't work!
         	   addInlineResource(message, hTemplateVariables.get(resourceIdentifier).toString(), resourceIdentifier);
            }*/
-        }
-     };
+                 
+    		}
+    	};
+    	
+    	return preparator;
+    }
 
 }
