@@ -19,15 +19,15 @@ public class VerificationToken {
     private String token;
     private Long expiryDate;
     private String tokenType;
-    private boolean verified;
+    private boolean verified=false;
 
     private static Logger LOG = LoggerFactory.getLogger(VerificationToken.class);
 
     public VerificationToken() {
     	
     	this.token = UUID.randomUUID().toString();
-        if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+tokenType+','+verified+')');
 		this.expiryDate = calculateExpiryDate(EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS).getTimeInMillis();
+        if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+verified+')');
     }
 
     public VerificationToken(VerificationTokenType tokenType, int expirationTimeInMinutes) {
@@ -36,6 +36,7 @@ public class VerificationToken {
     	if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expirationTimeInMinutes+','+tokenType+')');
 		this.tokenType = tokenType.name();
         this.expiryDate = calculateExpiryDate(expirationTimeInMinutes).getTimeInMillis();
+        if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+tokenType+','+verified+')');
     }
 
     public String getTokenType() {
@@ -78,5 +79,17 @@ public class VerificationToken {
     {
     	Date now=new Date();
         return (getExpiryDate()<now.getTime());
+    }
+    
+    public String toString()
+    {
+    	StringBuffer res=new StringBuffer("Token = ");
+    	res.append(token);
+    	res.append(" expriyDate = ");
+    	res.append(expiryDate);
+    	res.append("token type = ");
+    	res.append(tokenType);
+    	return res.toString();
+    	
     }
 }
