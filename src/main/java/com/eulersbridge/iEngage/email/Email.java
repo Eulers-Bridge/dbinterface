@@ -10,6 +10,9 @@ public class Email implements Serializable
 {
 	private final String emailAddress;
 	private final String recipientName;
+	private String subject;
+	private String from;
+	private String body;
     private static Logger LOG = LoggerFactory.getLogger(Email.class);
     
     private MimeMessagePreparator preparator;
@@ -26,13 +29,37 @@ public class Email implements Serializable
         return emailAddress;
     }
 
-	protected String getRecipientName() {
+	public String getRecipientName() {
 		return recipientName;
 	}
 	
 	public MimeMessagePreparator getPreparator()
 	{
 		return preparator;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getFrom() {
+		return from;
+	}
+
+	public void setFrom(String from) {
+		this.from = from;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public void setBody(String body) {
+		this.body = body;
 	}
 
 
