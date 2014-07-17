@@ -35,7 +35,7 @@ public class EmailEventHandler implements EmailService
     }
 
 	@Override
-	public void sendEmail(EmailVerification email) {
+	public void sendEmail(Email email) {
     	if (LOG.isTraceEnabled()) LOG.trace("sendEmail()");
     	
     	MimeMessagePreparator preparator=email.getPreparator();
@@ -45,11 +45,11 @@ public class EmailEventHandler implements EmailService
     	
     	try
     	{
-        	InternetAddress to=new InternetAddress("gnewitt@hotmail.com");
+        	InternetAddress to=new InternetAddress(email.getEmailAddress());
     		helper.setTo(to);
-    		helper.setSubject("Testing");
-    		helper.setFrom(new InternetAddress("greg.newitt@eulersbridge.com"));
-    		helper.setText("This is a test message.");
+    		helper.setSubject(email.getSubject());
+    		helper.setFrom(new InternetAddress(email.getFrom()));
+    		helper.setText(email.getBody());
     		emailSender.send(message);
 //    		emailSender.send(preparator);
     	}
