@@ -70,9 +70,6 @@ public class UserEventHandler implements UserService
             if (LOG.isDebugEnabled()) LOG.debug("Verification token = "+token.toString());
             tokenRepository.save(token);
             EmailVerification verifyEmail=new EmailVerification(createdUser,token);
-            verifyEmail.setBody("This is a test verification message.");
-            verifyEmail.setFrom("greg.newitt@eulersbridge.com");
-            verifyEmail.setSubject("Account Verification Email");
             result=new UserCreatedEvent(createdUser.getEmail(),createdUser.toUserDetails(),verifyEmail);
     		
     	}
