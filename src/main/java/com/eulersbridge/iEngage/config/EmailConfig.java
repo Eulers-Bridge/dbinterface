@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 import com.eulersbridge.iEngage.core.services.EmailEventHandler;
 import com.eulersbridge.iEngage.core.services.EmailService;
@@ -51,6 +53,17 @@ public class EmailConfig
 		if (LOG.isDebugEnabled()) LOG.debug("Sender = "+sender);
 		return sender;
 		
+	}
+	
+	@Bean
+	public VelocityEngineFactoryBean velocityEngine()
+	{
+		VelocityEngineFactoryBean ve=new VelocityEngineFactoryBean();
+		Properties velocityProperties=new Properties();
+		velocityProperties.setProperty("resource.loader", "class");
+		velocityProperties.setProperty("class.respource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		ve.setVelocityProperties(velocityProperties);
+		return ve;
 	}
 	
 	private Properties getSmtpMailProperties()

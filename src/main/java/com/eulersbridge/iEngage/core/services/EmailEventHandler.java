@@ -4,6 +4,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class EmailEventHandler implements EmailService
 {
 	@Autowired
     private JavaMailSender emailSender;
+	
     private static Logger LOG = LoggerFactory.getLogger(EmailEventHandler.class);
 
     public EmailEventHandler() 
