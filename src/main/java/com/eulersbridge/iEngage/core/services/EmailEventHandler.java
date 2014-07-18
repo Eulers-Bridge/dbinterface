@@ -8,13 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import com.eulersbridge.iEngage.email.Email;
-import com.eulersbridge.iEngage.email.EmailSender;
 import com.eulersbridge.iEngage.email.EmailVerification;
 
 public class EmailEventHandler implements EmailService
@@ -33,25 +30,54 @@ public class EmailEventHandler implements EmailService
     	if (LOG.isTraceEnabled()) LOG.trace("Constructor(emailSender)");
         this.emailSender = emailSender;
     }
-
-	@Override
-	public void sendEmail(Email email) {
+    
+    @Override
+	public void sendEmail() {
     	if (LOG.isTraceEnabled()) LOG.trace("sendEmail()");
-    	
-    	MimeMessagePreparator preparator=email.getPreparator();
     	
     	MimeMessage message=emailSender.createMimeMessage();
     	MimeMessageHelper helper=new MimeMessageHelper(message);
     	
     	try
     	{
-        	InternetAddress to=new InternetAddress(email.getEmailAddress());
+        	InternetAddress to=new InternetAddress("gnewitt@hotmail.com");
     		helper.setTo(to);
-    		helper.setSubject(email.getSubject());
-    		helper.setFrom(new InternetAddress(email.getFrom()));
-    		helper.setText(email.getBody());
+    		helper.setSubject("Testing");
+    		helper.setFrom(new InternetAddress("greg.newitt@eulersbridge.com"));
+    		helper.setText("This is a test message.");
     		emailSender.send(message);
-//    		emailSender.send(preparator);
+    	}
+    	catch (MailException | MessagingException ex)
+    	{
+    		LOG.error(ex.toString());
+    	}
+    	
+        return ;
+	}
+    
+    @Override
+	public void sendEmail(Email email) {
+    	if (LOG.isTraceEnabled()) LOG.trace("sendEmail(Email email)");
+    	
+    	try
+    	{
+    		emailSender.send(email.generatePreparator());
+    	}
+    	catch (MailException | MessagingException ex)
+    	{
+    		LOG.error(ex.toString());
+    	}
+    	
+        return ;
+	}
+
+	@Override
+	public void sendEmail(EmailVerification email) {
+    	if (LOG.isTraceEnabled()) LOG.trace("sendEmail(EmailVerification email)");
+    	
+    	try
+    	{
+    		emailSender.send(email.generatePreparator());
     	}
     	catch (MailException | MessagingException ex)
     	{

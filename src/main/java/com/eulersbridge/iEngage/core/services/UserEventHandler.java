@@ -10,17 +10,18 @@ import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
-import com.eulersbridge.iEngage.email.EmailSender;
 import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.email.EmailConstants;
 
@@ -153,5 +154,64 @@ public class UserEventHandler implements UserService
 
     	return new UserUpdatedEvent(result.getEmail(),result.toUserDetails());
 	}
+	
+	@Override
+	@Transactional
+	public UserAccountVerifiedEvent validateUserAccount(VerifyUserAccountEvent verifyUserAccountEvent)
+	{
+		String emailToVerify = verifyUserAccountEvent.getEmail();
+		String tokenString = verifyUserAccountEvent.getToken();
+		User user=null,resultUser=null;
+		VerificationToken token=null, resultToken=null;
+		UserAccountVerifiedEvent verificationResult = null;
+    	if (LOG.isDebugEnabled()) LOG.debug("Verification Details :"+ emailToVerify + " " + token);
+	    user=userRepository.findByEmail(emailToVerify);
+	    token=tokenRepository.findByToken(tokenString);
+	    if (null==user)
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("User not found, cannot be verified.");
+	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify);
+	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.userNotFound);
+	    }
+	    else if(null == token)
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("Token does not exist, cannot be verified.");
+	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
+	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists);
+	    }
+	    else if(token.isVerified())
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("Token previously used, cannot be verified twice.");
+	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
+	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed);
+	    }
+	    else if(token.hasExpired())
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("Token already expired, cannot be used anymore.");
+	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
+	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired);
+	    }
+	    else if(token.getTokenType() != VerificationToken.VerificationTokenType.emailVerification.toString())
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("Token type mismatch, " + token.getTokenType() +" cannot be used for email verification.");
+	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
+	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch);
+	    }
+	    else
+	    {
+	    	user.setAccountVerified(true);
+	    	if (LOG.isDebugEnabled()) LOG.debug("userToVerify :"+user);
+	    	resultUser = userRepository.save(user);
+	    	
+	    	token.setVerified(true);
+	    	if (LOG.isDebugEnabled()) LOG.debug("tokenToVerify :"+token);
+	    	resultToken = tokenRepository.save(token);
+	    	
+	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify,resultUser.toUserDetails(),resultToken.isVerified());
+	    }
+
+	    return verificationResult;
+	}
+
 
 }

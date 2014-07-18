@@ -43,6 +43,12 @@ public class VerificationToken {
         return tokenType;
     }
 
+    public Long getNodeId()
+    {
+    	if (LOG.isTraceEnabled()) LOG.trace("getNodeId() = "+nodeId);
+    	return nodeId;
+    }
+
     public boolean isVerified() {
         return verified;
     }
@@ -71,7 +77,6 @@ public class VerificationToken {
     
     public enum VerificationTokenType 
     {
-
         lostPassword, emailVerification, emailRegistration
     }
 

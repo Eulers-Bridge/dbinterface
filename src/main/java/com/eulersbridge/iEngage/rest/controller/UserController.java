@@ -20,6 +20,8 @@ import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
+import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.User;
@@ -160,6 +162,50 @@ public class UserController {
     	{
 	    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
 	    	emailService.sendEmail(userEvent.getVerificationEmail());
+	    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
+    	}
+    }
+    
+    /**
+     * Is passed all the necessary data to verify a user account.
+     * The request must be a POST with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the user object owner of the verified account.
+     * 
+     * @param email the email address of the user account to be verified.
+     * @param token the token string to be used to verify the user account.
+     * @return the user object returned by the Graph Database.
+     * 
+	*/
+     @RequestMapping(method=RequestMethod.POST,value="/emailVerification/{email}/{token}")
+    public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
+    {
+    	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
+    	UserAccountVerifiedEvent userAccountVerifiedEvent=userService.validateUserAccount(new VerifyUserAccountEvent(email,token));
+
+    	if (!userAccountVerifiedEvent.isAccountVerified())
+    	{
+    		String verfError = userAccountVerifiedEvent.getVerificationError();
+    		
+    		if(verfError == UserAccountVerifiedEvent.VerificationErrorType.userNotFound.toString())
+    			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+    		else
+    		{ 
+    			User resultUser = User.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
+    			if(verfError == UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists.toString())
+    			return new ResponseEntity<User>(resultUser,HttpStatus.BAD_REQUEST);
+    		else if(verfError == UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed.toString()
+    				|| verfError == UserAccountVerifiedEvent.VerificationErrorType.tokenExpired.toString()
+    				|| verfError == UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch.toString())
+    			return new ResponseEntity<User>(resultUser,HttpStatus.FAILED_DEPENDENCY);
+    		else
+    			return new ResponseEntity<User>(resultUser,HttpStatus.BAD_REQUEST);
+    		}
+    	}
+    	else
+    	{
+	    	User restUser=User.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
 	    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     	}
     }
