@@ -161,6 +161,7 @@ public class UserController {
     	else
     	{
 	    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
+	    	if (LOG.isDebugEnabled()) LOG.debug(userEvent.getVerificationEmail().toString());
 	    	emailService.sendEmail(userEvent.getVerificationEmail());
 	    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     	}
