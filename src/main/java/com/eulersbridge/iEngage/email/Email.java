@@ -67,5 +67,19 @@ public class Email implements Serializable
 	public String getSubject() {
 		return subject;
 	}
+	
+	public String toString()
+	{
+		StringBuffer buff=new StringBuffer();
+		buff.append("To:");
+		buff.append(recipientEmailAddress);
+		buff.append(" Recipient:");
+		buff.append(recipientName);
+		buff.append(" From:");
+		buff.append(senderEmailAddress);
+		buff.append(" Subject:");
+		buff.append(subject);
+		return buff.toString();
+	}
 
 }
