@@ -31,7 +31,7 @@ public class EmailVerification extends Email implements Serializable
 
     public EmailVerification(User user, VerificationToken token) 
     {
-    	super(user.getEmail(),user.getFirstName() + " " + user.getLastName(),"testinfo@eulersbirdge.com","Email Verification Test");
+    	super(user.getEmail(),user.getFirstName() + " " + user.getLastName(),"greg.newitt@eulersbridge.com","Email Verification Test");
         this.token = token.getToken();
         this.tokenType = token.getTokenType();
         this.velocityModel = "com/eulersbridge/iEngage/email/validateEmailBody.vm";
@@ -65,9 +65,11 @@ public class EmailVerification extends Email implements Serializable
     			message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
     			message.setFrom(new InternetAddress(getSenderEmailAddress()));
     			message.setSubject(getSubject());
-    			final Map<String, Object> hTemplateVariables = null;
+    			final Map<String, Object> hTemplateVariables = new HashMap<String,Object>();
 
     			hTemplateVariables.put("email", this);
+    			if (LOG.isDebugEnabled()) LOG.debug("Velocity engine :"+velocityEngine);
+    			if (LOG.isDebugEnabled())
     			body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, velocityModel,"UTF-8", hTemplateVariables);
             
             if(LOG.isDebugEnabled()) LOG.debug("body={}", body);
