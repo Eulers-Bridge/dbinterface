@@ -5,7 +5,7 @@
         <div>
         	Please verify your email address ${email.emailAddress} by clicking in the following link
         	<a href="http://eulersbridge.com/emailverification/${email.recipientEmailAddress}/${email.token}"></a>
-        	<br>
+        	<br/>
         	or by pasting the url in your browser address bar
         </div>
     </body>
