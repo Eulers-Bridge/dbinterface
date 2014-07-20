@@ -61,7 +61,7 @@ public class EmailConfig
 		VelocityEngineFactoryBean ve=new VelocityEngineFactoryBean();
 		Properties velocityProperties=new Properties();
 		velocityProperties.setProperty("resource.loader", "class");
-		velocityProperties.setProperty("class.respource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		velocityProperties.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 		ve.setVelocityProperties(velocityProperties);
 		return ve;
 	}
