@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 @EnableAutoConfiguration
 public class TestEmailConfig 
 {
-	@Value("localhost")
+	@Value("local")
 	private String host;
 	
 	private Integer port=25;
@@ -65,6 +66,13 @@ public class TestEmailConfig
 		if (LOG.isDebugEnabled()) LOG.debug("Sender = "+sender);
 		return sender;
 		
+	}
+	
+	@Bean
+	public ClasspathResourceLoader resLoader()
+	{
+		ClasspathResourceLoader resLoader=new ClasspathResourceLoader();
+		return resLoader;
 	}
 	
 	@Bean
