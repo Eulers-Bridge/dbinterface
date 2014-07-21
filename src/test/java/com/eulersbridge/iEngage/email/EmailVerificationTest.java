@@ -45,6 +45,7 @@ public class EmailVerificationTest
 		token=new VerificationToken(tokenType, 60);
 		User user=new User("gnewitt@bigfoot.com","Greg","Newitt","","","","","");
 		email=new EmailVerification(user, token);
+		if (LOG.isDebugEnabled()) LOG.debug("verification email - "+email);
 	}
 
 	@After
