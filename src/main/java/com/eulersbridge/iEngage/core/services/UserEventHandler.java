@@ -65,7 +65,7 @@ public class UserEventHandler implements UserService
     		createdUser = userRepository.findOne(test.getNodeId());
     		
             VerificationToken token = new VerificationToken(
-            		VerificationToken.VerificationTokenType.emailVerification,
+            		VerificationToken.VerificationTokenType.emailVerification,test,
             		EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS);
             if (LOG.isDebugEnabled()) LOG.debug("Verification token = "+token.toString());
             tokenRepository.save(token);
@@ -188,9 +188,10 @@ public class UserEventHandler implements UserService
 	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
 	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired);
 	    }
-	    else if(token.getTokenType() != VerificationToken.VerificationTokenType.emailVerification.toString())
+	    else if(!(token.getTokenType().equals(VerificationToken.VerificationTokenType.emailVerification.toString())))
 	    {
 	    	if (LOG.isDebugEnabled()) LOG.debug("Token type mismatch, " + token.getTokenType() +" cannot be used for email verification.");
+	    	if (LOG.isDebugEnabled()) LOG.debug("Token type = " + token.getTokenType() +" VerificationToken.VerificationTokenType = "+VerificationToken.VerificationTokenType.emailVerification.toString());
 	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
 	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch);
 	    }
