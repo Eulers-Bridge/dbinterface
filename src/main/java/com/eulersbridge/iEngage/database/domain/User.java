@@ -1,11 +1,16 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
@@ -15,7 +20,7 @@ import com.eulersbridge.iEngage.core.events.users.UserDetails;
 public class User 
 {
 	@GraphId Long nodeId;
-	private String email;
+	@NotNull @NotBlank @Email@Indexed(unique=true) private String email;
 	private String firstName;
 	private String lastName;
 	private String gender;
@@ -25,7 +30,8 @@ public class User
 	private String password;
 	private boolean accountVerified=false;
 	@RelatedTo(type = "USER_OF", direction=Direction.OUTGOING)
-	@Fetch private Institution institution; 
+	@Fetch private Institution institution;
+	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH)private Iterable<VerificationToken> verificationToken;
 	
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
