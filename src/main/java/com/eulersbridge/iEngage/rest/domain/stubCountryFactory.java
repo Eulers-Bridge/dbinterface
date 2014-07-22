@@ -8,9 +8,9 @@ public class stubCountryFactory extends CountriesFactory
 	
 	public stubCountryFactory()
 	{
-		Institution uniOfMelb=new Institution(new Long(1),"University of Melbourne");
-		Institution deakin=new Institution(new Long(2),"Deakin University");
-		Institution monash=new Institution(new Long(3),"Monash University");
+		Institution uniOfMelb=new Institution(new Long(26),"University of Melbourne");
+		Institution deakin=new Institution(new Long(25),"Deakin University");
+		Institution monash=new Institution(new Long(27),"Monash University");
 		
 		ArrayList<Institution> ozUniversities=new ArrayList<Institution>();
 		ozUniversities.add(uniOfMelb);

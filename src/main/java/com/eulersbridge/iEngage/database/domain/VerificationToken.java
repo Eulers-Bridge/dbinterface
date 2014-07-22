@@ -4,10 +4,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import com.eulersbridge.iEngage.email.EmailConstants;
 
@@ -20,6 +22,7 @@ public class VerificationToken {
     private Long expiryDate;
     private String tokenType;
     private boolean verified=false;
+	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH)private User user;
 
     private static Logger LOG = LoggerFactory.getLogger(VerificationToken.class);
 
@@ -30,11 +33,12 @@ public class VerificationToken {
         if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+verified+')');
     }
 
-    public VerificationToken(VerificationTokenType tokenType, int expirationTimeInMinutes) {
+    public VerificationToken(VerificationTokenType tokenType, User user, int expirationTimeInMinutes) {
     	
     	this.token = UUID.randomUUID().toString();
     	if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expirationTimeInMinutes+','+tokenType+')');
 		this.tokenType = tokenType.name();
+		this.user=user;
         this.expiryDate = calculateExpiryDate(expirationTimeInMinutes).getTimeInMillis();
         if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+tokenType+','+verified+')');
     }
