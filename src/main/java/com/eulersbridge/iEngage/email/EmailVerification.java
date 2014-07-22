@@ -98,7 +98,7 @@ public class EmailVerification extends Email implements Serializable
     			if (LOG.isDebugEnabled()) LOG.debug("Velocity engine :"+velocityEngine);
     			if (LOG.isDebugEnabled())
 //    			body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, velocityModel,"UTF-8", hTemplateVariables);
-    			body="Dear "+getRecipientName()+", your token is "+getEncodedToken()+" your url is http://eulersbridge.com:8080/api/emailVerification/"+getRecipientEmailAddress()+"/"+getEncodedToken()+" Thankyou.";
+    			body="Dear "+getRecipientName()+", your token is "+getToken()+" your url is \nhttp://eulersbridge.com:8080/api/emailVerification/"+getRecipientEmailAddress()+"/"+getEncodedToken()+" Thankyou.";
     			if(LOG.isDebugEnabled()) LOG.debug("body={}", body);
     			message.setText(body, true);
 
