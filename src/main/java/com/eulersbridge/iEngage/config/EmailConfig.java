@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -15,6 +16,7 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 import com.eulersbridge.iEngage.core.services.EmailEventHandler;
 import com.eulersbridge.iEngage.core.services.EmailService;
 
+@PropertySource("classpath:/com/eulersbridge/iEngage/email/email.properties")
 @Configuration
 public class EmailConfig 
 {
