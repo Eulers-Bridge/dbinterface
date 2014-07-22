@@ -48,8 +48,10 @@ public class EmailConfig
 		sender.setPort(port);
 		sender.setUsername(username);
 		sender.setPassword(password);
-		sender.setJavaMailProperties(getSmtpMailProperties());
+		Properties smtpProperties=getSmtpMailProperties();
+		sender.setJavaMailProperties(smtpProperties);
 		if (LOG.isDebugEnabled()) LOG.debug("host = "+host+" port = "+port);
+		if (LOG.isDebugEnabled()) LOG.debug("properties = "+smtpProperties);
 		if (LOG.isDebugEnabled()) LOG.debug("Sender = "+sender);
 		return sender;
 		
