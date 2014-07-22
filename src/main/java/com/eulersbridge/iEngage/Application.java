@@ -12,6 +12,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.PropertyResolver;
 import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
@@ -26,6 +28,7 @@ import com.eulersbridge.iEngage.core.domain.Login;
 @EnableNeo4jRepositories(basePackages={"com.eulersbridge.iEngage.database.repository"})
 @EnableAutoConfiguration
 @EnableGlobalMethodSecurity
+@PropertySource("classpath:application.properties")
 public class Application extends Neo4jConfiguration
 {
 	@Resource
@@ -67,5 +70,10 @@ public class Application extends Neo4jConfiguration
         mapping.afterPropertiesSet();
         return mapping;
     }
+@Bean
+public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() 
+{
+   return new PropertySourcesPlaceholderConfigurer();
+}
 
 }
