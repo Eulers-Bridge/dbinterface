@@ -53,6 +53,6 @@ public class UserAccountVerifiedEvent {
 	
 	public enum VerificationErrorType 
     {
-        tokenExpired, tokenAlreadyUsed, tokenDoesntExists, userNotFound, tokenTypeMismatch
+        tokenExpired, tokenAlreadyUsed, tokenDoesntExists, userNotFound, tokenTypeMismatch, tokenUserMismatch
     }
 }

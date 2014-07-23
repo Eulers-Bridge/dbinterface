@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
@@ -22,7 +23,8 @@ public class VerificationToken {
     private Long expiryDate;
     private String tokenType;
     private boolean verified=false;
-	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH)private User user;
+	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH) @Fetch
+	private User user;
 
     private static Logger LOG = LoggerFactory.getLogger(VerificationToken.class);
 
@@ -69,7 +71,14 @@ public class VerificationToken {
         return token;
     }
 
-    private Calendar calculateExpiryDate(int expiryTimeInMinutes) {
+    /**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
+	}
+
+	private Calendar calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar expiryDate = Calendar.getInstance();
         expiryDate.set(Calendar.HOUR, 0);
         expiryDate.set(Calendar.MINUTE, 0);;

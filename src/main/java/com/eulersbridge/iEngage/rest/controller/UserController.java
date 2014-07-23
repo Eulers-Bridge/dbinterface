@@ -161,6 +161,10 @@ public class UserController {
     	{
     		return new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
     	}
+    	else if (!userEvent.isUserUnique())
+    	{
+    		return new ResponseEntity<User>(HttpStatus.CONFLICT);
+    	}
     	else
     	{
 	    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
@@ -182,7 +186,8 @@ public class UserController {
      * @return the user object returned by the Graph Database.
      * 
 	*/
-     @RequestMapping(method=RequestMethod.POST,value="/emailVerification/{email}/{token}")
+//    @RequestMapping(method=RequestMethod.POST,value="/emailVerification/{email}/{token}")
+    @RequestMapping(value="/emailVerification/{email}/{token}")
     public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
