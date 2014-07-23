@@ -55,7 +55,7 @@ public class UserEventHandler implements UserService
     	User createdUser=null,existingUser=null;
     	
 		existingUser = userRepository.findByEmail(userToInsert.getEmail());
-
+//TODO potentially check if existing user is verified.  User might want another verification email
     	if ((inst!=null)&&(null==existingUser))
     	{
         	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
