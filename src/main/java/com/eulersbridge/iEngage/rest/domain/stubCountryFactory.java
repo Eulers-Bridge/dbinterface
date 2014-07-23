@@ -27,8 +27,8 @@ public class stubCountryFactory extends CountriesFactory
 		ozUnis=ozUniversities.toArray(ozUnis);
 		Institution[] ukUnis=new Institution[1];
 		ukUnis=ukUniversities.toArray(ukUnis);
-		Country australia=new Country(61,"Australia",ozUnis);
-		Country uk=new Country(44,"United Kingdom",ukUnis);
+		Country australia=new Country(new Long(61),"Australia",ozUnis);
+		Country uk=new Country(new Long(44),"United Kingdom",ukUnis);
 		ArrayList<Country> cList=new ArrayList<Country>();
 		cList.add(australia);
 		cList.add(uk);
