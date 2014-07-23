@@ -182,7 +182,8 @@ public class UserController {
      * @return the user object returned by the Graph Database.
      * 
 	*/
-     @RequestMapping(method=RequestMethod.POST,value="/emailVerification/{email}/{token}")
+//    @RequestMapping(method=RequestMethod.POST,value="/emailVerification/{email}/{token}")
+    @RequestMapping(value="/emailVerification/{email}/{token}")
     public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
