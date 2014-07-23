@@ -213,6 +213,4 @@ public class InstitutionController
 		
     	return new ResponseEntity<Iterator<Institution>> (iter,HttpStatus.OK);
     }
-    
-    
 }
