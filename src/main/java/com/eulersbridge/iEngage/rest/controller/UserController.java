@@ -161,6 +161,10 @@ public class UserController {
     	{
     		return new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
     	}
+    	else if (!userEvent.isUserUnique())
+    	{
+    		return new ResponseEntity<User>(HttpStatus.CONFLICT);
+    	}
     	else
     	{
 	    	User restUser=User.fromUserDetails(userEvent.getUserDetails());

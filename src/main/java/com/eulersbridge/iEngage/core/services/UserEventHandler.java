@@ -52,8 +52,11 @@ public class UserEventHandler implements UserService
     	User userToInsert=User.fromUserDetails(newUser);
     	UserCreatedEvent result;   	
     	
-    	User createdUser=null;
-    	if (inst!=null)
+    	User createdUser=null,existingUser=null;
+    	
+		existingUser = userRepository.findByEmail(userToInsert.getEmail());
+
+    	if ((inst!=null)&&(null==existingUser))
     	{
         	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
     		userToInsert.setInstitution(inst);
@@ -73,9 +76,13 @@ public class UserEventHandler implements UserService
             result=new UserCreatedEvent(createdUser.getEmail(),createdUser.toUserDetails(),verifyEmail);
     		
     	}
-    	else
+    	else if (null==inst)
     	{
     		result=UserCreatedEvent.instituteNotFound(newUser.getEmail());
+    	}
+    	else
+    	{
+    		result=UserCreatedEvent.userNotUnique(newUser.getEmail());
     	}
     	return result;
 	}
@@ -176,9 +183,15 @@ public class UserEventHandler implements UserService
 	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
 	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists);
 	    }
-	    else if(token.isVerified())
+	    else if (!(token.getUser().getNodeId().equals(user.getNodeId())))
 	    {
-	    	if (LOG.isDebugEnabled()) LOG.debug("Token previously used, cannot be verified twice.");
+	    	if (LOG.isDebugEnabled()) LOG.debug("Token does not match, specified user.  Cannot be verified.");
+	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
+	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenUserMismatch);
+	    }
+	    else if((token.isVerified())||(user.isAccountVerified()))
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("User is already verified, cannot be verified twice.");
 	    	verificationResult = new UserAccountVerifiedEvent(emailToVerify, user.toUserDetails());
 	    	verificationResult.setVerificationError(UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed);
 	    }
