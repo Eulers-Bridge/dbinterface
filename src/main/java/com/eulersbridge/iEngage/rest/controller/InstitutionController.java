@@ -29,7 +29,7 @@ import com.eulersbridge.iEngage.rest.domain.Institution;
 @RequestMapping("/api")
 public class InstitutionController 
 {
-//	@Autowired InstitutionService instService;
+@Autowired InstitutionService instService;
 
     private static Logger LOG = LoggerFactory.getLogger(InstitutionController.class);
 
@@ -59,21 +59,35 @@ public class InstitutionController
     public @ResponseBody ResponseEntity<Institution> alterInstitution(@PathVariable Long institutionId,
     		@RequestBody Institution inst) 
     {
-    	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit institution. "+inst.getId());
+    	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit institution. "+institutionId);
+    	if (LOG.isInfoEnabled()) LOG.info("institution. "+inst);
     	Institution restInst=null;
     	ResponseEntity<Institution> result;
-    	
-//TODO    	InstitutionUpdatedEvent instEvent=instService.updateInstitution(new UpdateInstitutionEvent(institutionId,inst.toInstitutionDetails()));
+    	inst.setId(institutionId);
+    	UpdateInstitutionEvent updEvt=new UpdateInstitutionEvent(institutionId,inst.toInstitutionDetails());
+    	if (LOG.isDebugEnabled()) LOG.debug("updateEvt = "+updEvt);
+    	InstitutionUpdatedEvent instEvent=instService.updateInstitution(updEvt);
 
-/*    	if (!instEvent.isCountryFound())
+    	if ((null==instEvent)||(!instEvent.isCountryFound()))
     	{
+    		if (LOG.isDebugEnabled())
+    		{
+	    		if (null==instEvent)
+	    		{
+	    			LOG.debug("instEvent = null");
+	    		}
+	    		else
+	    		{
+	    			LOG.debug("countryFound = "+instEvent.isCountryFound());
+	    		}
+    		}
     		result=new ResponseEntity<Institution>(HttpStatus.FAILED_DEPENDENCY);
     	}
     	else
     	{
-//    	Institution restInst=Institution.fromInstDetails(instEvent.getInstDetails());
-*/      	result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
-//    	}
+    		restInst=Institution.fromInstDetails(instEvent.getInstDetails());
+    		result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
+    	}
     	return result;
     }
     
@@ -95,14 +109,17 @@ public class InstitutionController
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve institution. "+institutionId);
     	Institution restInst=null;
     	ResponseEntity<Institution> result;
-//TODO		ReadInstitutionEvent instEvent=instService.requestReadInstitution(new RequestReadInstitutionEvent(institutionId));
+		ReadInstitutionEvent instEvent=instService.requestReadInstitution(new RequestReadInstitutionEvent(institutionId));
   	
-/*		if (!instEvent.isEntityFound())
+		if (!instEvent.isEntityFound())
 		{
 			result=new ResponseEntity<Institution>(HttpStatus.NOT_FOUND);
 		}
-		Institution restInst=Institution.fromInstDetails(instEvent.getInstitutionDetails());
-*/		result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
+		else
+		{
+			restInst=Institution.fromInstDetails(instEvent.getInstitutionDetails());
+			result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
+		}
 		return result;
 	}
     
@@ -124,17 +141,17 @@ public class InstitutionController
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete institution. "+institutionId);
     	Institution restInst=null;
     	ResponseEntity<Institution> result;
-//TODO		InstitutionDeletedEvent instEvent=instService.deleteInstitution(new DeleteInstitutionEvent(institutionId));
+		InstitutionDeletedEvent instEvent=instService.deleteInstitution(new DeleteInstitutionEvent(institutionId));
   	
-/*		if (!instEvent.isEntityFound())
+		if (!instEvent.isEntityFound())
 		{
 			result=new ResponseEntity<Institution>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Institution restInst=Institution.fromInstDetails(instEvent.getDetails());
-*/			result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
-//		}
+			restInst=Institution.fromInstDetails(instEvent.getDetails());
+			result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
+		}
 		return result;
 	}
     
@@ -160,9 +177,9 @@ public class InstitutionController
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save institution "+inst);
     	Institution restInst=null;
     	ResponseEntity<Institution> result;
-//TODO    	InstitutionCreatedEvent instEvent=instService.createInstitution(new CreateInstitutionEvent(inst.toInstitutionDetails()));
+    	InstitutionCreatedEvent instEvent=instService.createInstitution(new CreateInstitutionEvent(inst.toInstitutionDetails()));
 
-/*    	if (instEvent.getId()==null)
+    	if (instEvent.getId()==null)
     	{
     		result=new ResponseEntity<Institution>(HttpStatus.BAD_REQUEST);
     	}
@@ -172,9 +189,9 @@ public class InstitutionController
     	}
     	else
     	{
-    		Institution restInst=Institution.fromInstDetails(instEvent.getInstitutionDetails());
-*/    		result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
-//    	}
+    		restInst=Institution.fromInstDetails(instEvent.getInstitutionDetails());
+    		result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
+    	}
 		return result;
     }
     
@@ -187,24 +204,14 @@ public class InstitutionController
     }
 
 
-    @RequestMapping(value="/api/institutions")
-    public @ResponseBody Institution getInstitutions() 
+    @RequestMapping(value="/institutions")
+    public @ResponseBody ResponseEntity<Iterator<Institution>> getInstitutions() 
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions. ");
     	
-//		Iterator<Institution> iter=institutions.iterator();
-		Institution institution=null;
-/*		while (iter.hasNext())
-		{
-			Institution res=iter.next();
-			if (res.getName().equals(name))
-				institution=res;
-			if (LOG.isDebugEnabled()) LOG.debug("res = "+res);
-		}
-		if (LOG.isDebugEnabled()) LOG.debug("institution = "+institution);
-		if (LOG.isDebugEnabled()) LOG.debug("Count = "+repo.count());
-*/    	return institution;
-//Institution inst=repo.findByPropertyValue("name", name);
+		Iterator<Institution> iter=instService.getInstitutions();
+		
+    	return new ResponseEntity<Iterator<Institution>> (iter,HttpStatus.OK);
     }
     
     

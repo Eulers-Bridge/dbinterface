@@ -1,7 +1,11 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
@@ -39,10 +43,9 @@ public class InstitutionEventHandler implements InstitutionService {
     	
     	Institution createdInst=null;
     	if (LOG.isDebugEnabled()) LOG.debug("instToInsert :"+instToInsert);
-    	Institution test = instRepository.save(instToInsert);
+    	createdInst = instRepository.save(instToInsert);
 		//TODO what happens if this fails?
-		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
-		createdInst = instRepository.findOne(test.getNodeId());
+		if (LOG.isDebugEnabled()) LOG.debug("created inst = "+createdInst);
     		
         result=new InstitutionCreatedEvent(createdInst.getNodeId(),createdInst.toInstDetails());
     	return result;
@@ -71,8 +74,16 @@ public class InstitutionEventHandler implements InstitutionService {
 	public InstitutionUpdatedEvent updateInstitution(
 			UpdateInstitutionEvent updateInstitutionEvent) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+	    if (LOG.isDebugEnabled()) LOG.debug("updateInstitution("+updateInstitutionEvent.getId()+")");
+		InstitutionDetails updInst=updateInstitutionEvent.getInstDetails();
+		Institution result=null,instToUpdate=Institution.fromInstDetails(updInst);
+		instToUpdate.setNodeId(updateInstitutionEvent.getId());
+    	if (LOG.isDebugEnabled()) LOG.debug("Inst Details :"+updInst);
+    	if (LOG.isDebugEnabled()) LOG.debug("instToUpdate :"+instToUpdate);
+		result = instRepository.save(instToUpdate);
+		if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
+    	return new InstitutionUpdatedEvent(result.getNodeId(),result.toInstDetails());
+
 	}
 
 	@Override
@@ -88,6 +99,23 @@ public class InstitutionEventHandler implements InstitutionService {
 	    }
 	    instRepository.delete(inst.getNodeId());
 	    return new InstitutionDeletedEvent(deleteInstitutionEvent.getId(),inst.toInstDetails());
+	}
+
+	@Override
+	public Iterator<com.eulersbridge.iEngage.rest.domain.Institution> getInstitutions() 
+	{
+		Result<Institution> returned=instRepository.findAll();
+		ArrayList<com.eulersbridge.iEngage.rest.domain.Institution> instList=new ArrayList<com.eulersbridge.iEngage.rest.domain.Institution>();
+		Iterator<Institution> iter=returned.iterator();
+		while (iter.hasNext())
+		{
+			Institution inst=iter.next();
+			InstitutionDetails dets=inst.toInstDetails();
+			
+			com.eulersbridge.iEngage.rest.domain.Institution restInst=com.eulersbridge.iEngage.rest.domain.Institution.fromInstDetails(dets);
+			instList.add(restInst);
+		}
+		return instList.iterator();
 	}
 
 }

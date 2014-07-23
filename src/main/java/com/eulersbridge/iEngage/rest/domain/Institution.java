@@ -7,9 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.rest.controller.InstitutionController;
-import com.eulersbridge.iEngage.rest.controller.UserController;
 
 public class Institution extends ResourceSupport
 {
@@ -106,10 +104,6 @@ public class Institution extends ResourceSupport
 	    // {!begin selfRel}
 	    inst.add(linkTo(InstitutionController.class).slash(inst.institutionId).withSelfRel());
 	    // {!end selfRel}
-	    // {!begin status}
-	    inst.add(linkTo(InstitutionController.class).slash(inst.institutionId).slash("status").withRel("Institution Status"));
-	    // {!end status}
-	    inst.add(linkTo(InstitutionController.class).slash(inst.institutionId).slash("details").withRel("Institution Details"));
 
 	    return inst;
 	  }
