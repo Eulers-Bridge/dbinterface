@@ -4,8 +4,11 @@ import java.util.Calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 
 @NodeEntity
 public class NewsArticle {
@@ -16,8 +19,6 @@ public class NewsArticle {
 	private String picture;
 	private Calendar date;
 	private String creator;
-	private Calendar created;
-	private Calendar modified;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 	
@@ -26,16 +27,14 @@ public class NewsArticle {
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public NewsArticle(String title,String content,String picture, Calendar date, String creator, Calendar created, Calendar modified)
+	public NewsArticle(String title,String content,String picture, Calendar date, String creator)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+title+','+content+','+picture+','+date.toString()+','+creator+','+created.toString()+','+modified.toString()+')');
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+title+','+content+','+picture+','+date.toString()+','+creator+')');
 		this.title=title;
 		this.content=content;
 		this.picture=picture;
 		this.date=date;
 		this.creator=creator;
-		this.created=created;
-		this.modified=modified;
 	}
 	
 	public Long getNodeId()
@@ -74,18 +73,6 @@ public class NewsArticle {
 		return creator;
 	}
 	
-	public Calendar getCreated()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("getCreated() = "+created.toString());
-		return created;
-	}
-	
-	public Calendar getModified()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("getModified() = "+modified);
-		return modified;
-	}
-	
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
@@ -101,14 +88,46 @@ public class NewsArticle {
 		buff.append(getDate().toString());
 		buff.append(", creator = ");
 		buff.append(getCreator());
-		buff.append(", created = ");
-		buff.append(getCreated().toString());
-		buff.append(", modified = ");
-		buff.append(getModified().toString());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
-	}		
+	}
+	
+	public NewsArticleDetails toNewsArticleDetails() 
+	{
+	    if (LOG.isTraceEnabled()) LOG.trace("toNewsArtDetails()");
+	    
+	    NewsArticleDetails details = new NewsArticleDetails(getNodeId());
+	    if (LOG.isTraceEnabled()) LOG.trace("newsArticle "+this);
+
+	    BeanUtils.copyProperties(this, details);
+	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
+
+	    return details;
+	}
+
+	  public static NewsArticle fromNewsArticleDetails(NewsArticleDetails newsArtDetails) 
+	  {
+		    if (LOG.isTraceEnabled()) LOG.trace("fromNewsArticleDetails()");
+
+		    NewsArticle newsArt = new NewsArticle();
+		    if (LOG.isTraceEnabled()) LOG.trace("newsArtDetails "+newsArtDetails);
+		    newsArt.nodeId=newsArtDetails.getNewsArticleId();
+		    newsArt.title=newsArtDetails.getTitle();
+		    newsArt.content=newsArtDetails.getContent();
+		    newsArt.picture=newsArtDetails.getPicture();
+		    newsArt.date=newsArtDetails.getDate();
+		    newsArt.creator=newsArtDetails.getCreator();
+		    if (LOG.isTraceEnabled()) LOG.trace("newsArt "+newsArt);
+
+		    return newsArt;
+		  }
+	  
+	  public boolean equals(NewsArticle newsArticle2)
+	  {
+		  if ((nodeId!=null)&&(nodeId.equals(newsArticle2.nodeId))) return true;
+		  else return false;
+	  }
 
 }
