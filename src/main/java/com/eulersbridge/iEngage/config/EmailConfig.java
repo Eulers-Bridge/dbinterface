@@ -16,7 +16,7 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 import com.eulersbridge.iEngage.core.services.EmailEventHandler;
 import com.eulersbridge.iEngage.core.services.EmailService;
 
-@PropertySource("classpath:/com/eulersbridge/iEngage/email/email.properties")
+@PropertySource("classpath:email.properties")
 @Configuration
 public class EmailConfig 
 {
