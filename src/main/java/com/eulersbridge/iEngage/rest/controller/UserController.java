@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.UUID;
+
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -183,6 +186,9 @@ public class UserController {
     public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
+    	byte[] decodedTokenBytes=Base64.decodeBase64(token);
+    	UUID decodedToken=UUID.nameUUIDFromBytes(decodedTokenBytes);
+    	if (LOG.isDebugEnabled()) LOG.debug("Decoded token - "+decodedToken);
     	UserAccountVerifiedEvent userAccountVerifiedEvent=userService.validateUserAccount(new VerifyUserAccountEvent(email,token));
 
     	if (!userAccountVerifiedEvent.isAccountVerified())
