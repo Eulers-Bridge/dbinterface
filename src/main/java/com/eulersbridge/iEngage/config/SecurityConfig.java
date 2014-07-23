@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         	.antMatchers("/api/user/**").permitAll()
         	.antMatchers("/api/emailVerification/**").permitAll()
         	.antMatchers("/api/institution/**").permitAll()
+        	.antMatchers("/api/institutions").permitAll()
         	.antMatchers("/dbInterface/api/**").permitAll()
         	.antMatchers("/**").hasRole("USER")
         .and()
