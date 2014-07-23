@@ -9,6 +9,7 @@ public class UserCreatedEvent extends CreatedEvent
 	private String email;
 	protected boolean instituteFound = true;
 	private EmailVerification verifyEmail;
+	private boolean userUnique=true;
 
 	public UserCreatedEvent(String email, UserDetails userDetails, EmailVerification verifyEmail) 
 	{
@@ -51,6 +52,11 @@ public class UserCreatedEvent extends CreatedEvent
 	{
 		return instituteFound;
 	}
+	
+	public boolean isUserUnique()
+	{
+		return userUnique;
+	}
 
 	public EmailVerification getVerificationEmail() 
 	{
@@ -60,6 +66,12 @@ public class UserCreatedEvent extends CreatedEvent
 	public void setVerificationEmail(EmailVerification verifyEmail) 
 	{
 		this.verifyEmail=verifyEmail;
+	}
+
+	public static UserCreatedEvent userNotUnique(String email) {
+		UserCreatedEvent ev = new UserCreatedEvent(email);
+	    ev.userUnique=false;
+	    return ev;
 	}
 
 
