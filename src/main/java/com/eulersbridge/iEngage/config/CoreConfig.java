@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.eulersbridge.iEngage.core.services.CountryEventHandler;
+import com.eulersbridge.iEngage.core.services.CountryService;
 import com.eulersbridge.iEngage.core.services.InstitutionEventHandler;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.core.services.UserEventHandler;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.repository.CountryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
@@ -21,6 +24,8 @@ public class CoreConfig
 	UserRepository userRepo;
 	@Autowired
 	InstitutionRepository instRepo;
+	@Autowired
+	CountryRepository countryRepo;
 	@Autowired
 	VerificationTokenRepository tokenRepo;
 	
@@ -43,6 +48,13 @@ public class CoreConfig
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createInstitutionService()");
 		return new InstitutionEventHandler(instRepo);
+	}
+
+	@Bean
+	public CountryService createCountryService()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("createCountryService()");
+		return new CountryEventHandler(countryRepo);
 	}
 
 
