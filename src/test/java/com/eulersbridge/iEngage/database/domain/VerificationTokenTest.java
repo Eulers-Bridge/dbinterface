@@ -14,20 +14,17 @@ import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTo
 
 public class VerificationTokenTest 
 {
-	User user;
-	VerificationTokenType tokenType;
-	int expirationtime;
-	VerificationToken token;
+	User user=new User("info@eulersbridge.com", "Euler", "Info", "Female", "Australian", "1942", "absolutely none", "test");
+	VerificationTokenType tokenType=VerificationTokenType.emailVerification;
+	int expirationtime=100;
+	VerificationToken token=new VerificationToken(tokenType,user, expirationtime);
 
     private static Logger LOG = LoggerFactory.getLogger(VerificationTokenTest.class);
 
 	@Before
 	public void setUp() throws Exception 
 	{
-		user=new User("info@eulersbridge.com", "Euler", "Info", "Female", "Australian", "1942", "absolutely none", "test");
-		tokenType=VerificationTokenType.emailVerification;
-		expirationtime=100;
-		token=new VerificationToken(tokenType,user, expirationtime);
+//		token=new VerificationToken(tokenType,user, expirationtime);
 
 	}
 
@@ -42,10 +39,8 @@ public class VerificationTokenTest
 	}
 
 	@Test
-	public void testVerificationTokenVerificationTokenTypeUserInt() {
-		User user=new User("info@eulersbridge.com", "Euler", "Info", "Female", "Australian", "1942", "absolutely none", "test");
-		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
-		int expirationtime=100;
+	public void testVerificationTokenVerificationTokenTypeUserInt() 
+	{
 		VerificationToken token=new VerificationToken(tokenType,user, expirationtime);
 	}
 
@@ -92,6 +87,9 @@ public class VerificationTokenTest
 		
         String encoded=new String(Base64.encodeBase64(token.getToken().getBytes()));
         if (LOG.isDebugEnabled()) LOG.debug("encoded token = "+encoded);
+        byte[] decodedBytes=Base64.decodeBase64(encoded);
+        String decoded=decodedBytes.toString();
+        if (LOG.isDebugEnabled()) LOG.debug("decoded token = "+decoded);
 	}
 
 	@Test
