@@ -133,11 +133,9 @@ public class Institution
 		    return inst;
 		  }
 	  
-	  public boolean equals(User user2)
+	  public boolean equals(Institution institution2)
 	  {
-		  if ((nodeId!=null)&&(nodeId.equals(user2.nodeId))) return true;
+		  if ((nodeId!=null)&&(nodeId.equals(institution2.nodeId))) return true;
 		  else return false;
 	  }
-
-
 }
