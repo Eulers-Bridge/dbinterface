@@ -72,7 +72,9 @@ public class InstitutionTest {
 	public final void testInstitutionStringStringStringString() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Test Instituion Constructor");
-		Institution testObj=new Institution("University of Melbourne","Parkville","VIC","Australia");
+		Country country=new Country();
+		country.setCountryName("Australia");
+		Institution testObj=new Institution("University of Melbourne","Parkville","VIC",country);
 		if (testObj.getClass()!=Institution.class)
 			fail("University constructor does not return a class of type institution."); 
 	}
@@ -87,7 +89,8 @@ public class InstitutionTest {
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
-		String country="Australia";
+		Country country=new Country();
+		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
 		if (testObj.getName()!=name)
 			fail("getName() does not return the value class was constructed with."); 
@@ -103,7 +106,8 @@ public class InstitutionTest {
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
-		String country="Australia";
+		Country country=new Country();
+		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
 		String name2="Monash University";
 		testObj.setName(name2);
@@ -121,7 +125,8 @@ public class InstitutionTest {
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
-		String country="Australia";
+		Country country=new Country();
+		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
 		if (testObj.getCampus()!=campus)
 			fail("getCampus() does not return the value class was constructed with."); 
@@ -136,7 +141,8 @@ public class InstitutionTest {
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
-		String country="Australia";
+		Country country=new Country();
+		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
 		String campus2="Clayton";
 		testObj.setCampus(campus2);
@@ -153,7 +159,8 @@ public class InstitutionTest {
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
-		String country="Australia";
+		Country country=new Country();
+		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
 		if (testObj.getState()!=state)
 			fail("getState() does not return the value class was constructed with."); 
@@ -168,7 +175,8 @@ public class InstitutionTest {
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
-		String country="Australia";
+		Country country=new Country();
+		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
 		String state2="NSW";
 		testObj.setState(state2);
@@ -186,9 +194,10 @@ public class InstitutionTest {
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
-		String country="Australia";
+		Country country=new Country();
+		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
-		if (testObj.getCountry()!=country)
+		if (!(testObj.getCountry()).equals(country))
 			fail("getCountry() does not return the value class was constructed with."); 
 	}
 
@@ -201,11 +210,13 @@ public class InstitutionTest {
 		String name="University of Melbourne";
 		String campus="Parkville";
 		String state="VIC";
-		String country="Australia";
+		Country country=new Country();
+		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
-		String country2="UK";
+		Country country2=new Country();
+		country.setCountryName("Australia");
 		testObj.setCountry(country2);
-		if (testObj.getCountry()!=country2)
+		if (!(testObj.getCountry()).equals(country2))
 			fail("getCountry() does not return the value that setter should have set it to."); 
 	}
 
@@ -219,7 +230,9 @@ public class InstitutionTest {
 	@Autowired InstitutionRepository repo;
 	@Test @Transactional public void persistedInstitutionShouldBeRetrievableFromGraphDb()
 	{
-		Institution uniMelb = new Institution("University of Melbourne","Parkville","VIC","Australia");
+		Country country=new Country();
+		country.setCountryName("Australia");
+		Institution uniMelb = new Institution("University of Melbourne","Parkville","VIC",country);
 		// repo.findByPropertyValue("Name", "University of Melbourne");
 //				template.save(new Institution("University of Melbourne","Parkville","VIC","Australia"));
 		if (LOG.isDebugEnabled()) LOG.debug("uniMelb = "+uniMelb);
