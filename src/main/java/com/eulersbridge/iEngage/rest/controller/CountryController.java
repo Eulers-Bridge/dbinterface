@@ -24,7 +24,6 @@ import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.core.services.CountryService;
 import com.eulersbridge.iEngage.rest.domain.Country;
-import com.eulersbridge.iEngage.rest.domain.Institution;
 
 @RestController
 @RequestMapping("/api")
@@ -34,18 +33,16 @@ public class CountryController
 
     private static Logger LOG = LoggerFactory.getLogger(CountryController.class);
     /**
-     * Is passed all the necessary data to update an institution.
+     * Is passed all the necessary data to update a country.
      * Or potentially create a new one.
      * The request must be a PUT with the necessary parameters in the
      * attached data.
      * <p/>
-     * This method will return the resulting user object. 
-     * There will also be a relationship set up with the 
-     * country the institution belongs to.
+     * This method will return the resulting country object. 
      * 
-     * @param id the id of the institution to be updated.
-     * @param institution the institution object passed across as JSON.
-     * @return the institution object returned by the Graph Database.
+     * @param id the id of the country to be updated.
+     * @param country the country object passed across as JSON.
+     * @return the country object returned by the Graph Database.
      * 
 
 	*/
@@ -80,14 +77,14 @@ public class CountryController
     }
     
     /**
-     * Is passed all the necessary data to read an institution from the database.
-     * The request must be a GET with the institution id presented
+     * Is passed all the necessary data to read a country from the database.
+     * The request must be a GET with the country id presented
      * as the final portion of the URL.
      * <p/>
-     * This method will return the institution object read from the database.
+     * This method will return the country object read from the database.
      * 
-     * @param institutionid the institution id of the institution object to be read.
-     * @return the institution object.
+     * @param countryid the country id of the country object to be read.
+     * @return the country object.
      * 
 
 	*/
@@ -112,14 +109,14 @@ public class CountryController
 	}
     
     /**
-     * Is passed all the necessary data to delete an institution.
-     * The request must be a DELETE with the user email presented
+     * Is passed all the necessary data to delete a country.
+     * The request must be a DELETE with the country id presented
      * as the final portion of the URL.
      * <p/>
-     * This method will return the deleted user object.
+     * This method will return the deleted country object.
      * 
-     * @param email the email address of the user object to be deleted.
-     * @return the user object deleted.
+     * @param countryid the country idmof the country object to be deleted.
+     * @return the country object deleted.
      * 
 
 	*/
@@ -145,16 +142,14 @@ public class CountryController
     
     
     /**
-     * Is passed all the necessary data to create a new user.
+     * Is passed all the necessary data to create a new country.
      * The request must be a POST with the necessary parameters in the
      * attached data.
      * <p/>
-     * This method will return the resulting user object.
-     * There will also be a relationship set up with the 
-     * institution the user belongs to.
+     * This method will return the resulting country object.
      * 
-     * @param user the user object passed across as JSON.
-     * @return the user object returned by the Graph Database.
+     * @param country the country object passed across as JSON.
+     * @return the country object returned by the Graph Database.
      * 
 
 	*/
@@ -179,8 +174,8 @@ public class CountryController
 		return result;
     }
     
-    @RequestMapping(value="/displayInstParams")
-    public @ResponseBody ResponseEntity<Boolean> displayDetails(@RequestBody Institution inst) 
+    @RequestMapping(value="/displayCountryParams")
+    public @ResponseBody ResponseEntity<Boolean> displayDetails(@RequestBody Country inst) 
     {
     	if (LOG.isInfoEnabled()) 
     		LOG.info("inst = "+inst);
