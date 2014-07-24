@@ -146,10 +146,9 @@ public class UserEventHandler implements UserService
     	{
         	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
         	userToUpdate.setInstitution(inst);
-   			User test = userRepository.save(userToUpdate);
-    		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
+   			result = userRepository.save(userToUpdate);
+    		if (LOG.isDebugEnabled()) LOG.debug("test = "+result);
     		if (LOG.isDebugEnabled()) LOG.debug("Count = "+userRepository.count());
-    		result = userRepository.findOne(test.getNodeId());
     	}
     	else
     	{
