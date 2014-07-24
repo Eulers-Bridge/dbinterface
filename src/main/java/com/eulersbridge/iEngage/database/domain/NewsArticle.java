@@ -2,11 +2,14 @@ package com.eulersbridge.iEngage.database.domain;
 
 import java.util.Calendar;
 
+import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 
@@ -16,9 +19,10 @@ public class NewsArticle {
 	@GraphId Long nodeId;
 	private String title;
 	private String content;
-	private String picture;
+	private Iterable<String> picture;
 	private Long date;
-	private String creator;
+	@RelatedTo(type = "CREATED_BY", direction=Direction.BOTH) @Fetch
+	private User creator;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 	
@@ -27,7 +31,7 @@ public class NewsArticle {
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public NewsArticle(String title,String content,String picture, Calendar date, String creator)
+	public NewsArticle(String title,String content,Iterable<String> picture, Calendar date, User creator)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+title+','+content+','+picture+','+date.toString()+','+creator+')');
 		this.title=title;
@@ -55,7 +59,7 @@ public class NewsArticle {
 		return content;
 	}
 	
-	public String getPicture()
+	public Iterable<String> getPicture()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getPicture() = "+picture);
 		return picture;
@@ -67,7 +71,7 @@ public class NewsArticle {
 		return date;
 	}
 	
-	public String getCreator()
+	public User getCreator()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getCreator() = "+creator);
 		return creator;
@@ -118,7 +122,8 @@ public class NewsArticle {
 		    newsArt.content=newsArtDetails.getContent();
 		    newsArt.picture=newsArtDetails.getPicture();
 		    newsArt.date=newsArtDetails.getDate();
-		    newsArt.creator=newsArtDetails.getCreator();
+		    User creator=new User(newsArtDetails.getCreatorEmail(),null,null,null, null, null, null, null);
+		    newsArt.creator=creator;
 		    if (LOG.isTraceEnabled()) LOG.trace("newsArt "+newsArt);
 
 		    return newsArt;

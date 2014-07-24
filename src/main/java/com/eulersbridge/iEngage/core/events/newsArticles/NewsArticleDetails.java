@@ -10,9 +10,9 @@ public class NewsArticleDetails {
 	private Long newsArticleId;
 	private String title;
 	private String content;
-	private String picture;
+	private Iterable<String> picture;
 	private Long date;
-	private String creator;
+	private String creatorEmail;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticleDetails.class);
 	
@@ -44,11 +44,11 @@ public class NewsArticleDetails {
 	{
 		this.content = content;
 	}
-	public String getPicture()
+	public Iterable<String> getPicture()
 	{
 		return this.picture;
 	}
-	public void setPicture(String picture)
+	public void setPicture(Iterable<String> picture)
 	{
 		this.picture = picture;
 	}
@@ -64,13 +64,13 @@ public class NewsArticleDetails {
 	{
 		this.date = date.getTimeInMillis();
 	}
-	public String getCreator()
+	public String getCreatorEmail()
 	{
-		return this.creator;
+		return this.creatorEmail;
 	}
-	public void setCreator(String creator)
+	public void setCreatorEmail(String creatorEmail)
 	{
-		this.creator = creator;
+		this.creatorEmail = creatorEmail;
 	}
 	public String toString()
 	{
@@ -86,7 +86,7 @@ public class NewsArticleDetails {
 		buff.append(", date = ");
 		buff.append(getDate().toString());
 		buff.append(", creator = ");
-		buff.append(getCreator());
+		buff.append(getCreatorEmail());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
