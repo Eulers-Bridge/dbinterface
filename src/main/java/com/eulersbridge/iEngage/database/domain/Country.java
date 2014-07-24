@@ -23,10 +23,9 @@ public class Country
 
     private static Logger LOG = LoggerFactory.getLogger(Country.class);
 
-    public Country(String countryName)
+    public Country()
 	{
     	if (LOG.isDebugEnabled()) LOG.debug("Constructor("+countryName+')');
-		this.countryName=countryName;
 	}
 	
 	public Long getNodeId() 
@@ -73,8 +72,9 @@ public class Country
 		    if (LOG.isTraceEnabled()) LOG.trace("fromCountryDetails()");
 
 		    if (LOG.isTraceEnabled()) LOG.trace("countryDetails "+countryDetails);
-		    Country country = new Country(countryDetails.getCountryName());
-		    country.nodeId=countryDetails.getCountryId();
+		    Country country = new Country();
+		    country.setNodeId(countryDetails.getCountryId());
+		    country.setCountryName(countryDetails.getCountryName());
 		    if (LOG.isTraceEnabled()) LOG.trace("country "+country);
 
 		    return country;
