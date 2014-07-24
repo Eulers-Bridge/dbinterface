@@ -9,4 +9,6 @@ import com.eulersbridge.iEngage.database.domain.Country;
 public interface CountryRepository extends GraphRepository<Country>
 {
 	   static Logger LOG = LoggerFactory.getLogger(CountryRepository.class);
+	   
+	   Country findByCountryName(String countryName);
 }
