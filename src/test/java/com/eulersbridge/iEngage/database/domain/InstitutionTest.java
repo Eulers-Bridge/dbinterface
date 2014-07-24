@@ -214,7 +214,7 @@ public class InstitutionTest {
 		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
 		Country country2=new Country();
-		country.setCountryName("Australia");
+		country2.setCountryName("Australia");
 		testObj.setCountry(country2);
 		if (!(testObj.getCountry().getCountryName()).equals(country2.getCountryName()))
 			fail("getCountry() does not return the value that setter should have set it to."); 
