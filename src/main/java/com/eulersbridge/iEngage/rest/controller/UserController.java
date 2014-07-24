@@ -67,7 +67,8 @@ public class UserController {
     	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit user. "+user.getEmail());
     	
     	UserUpdatedEvent userEvent=userService.updateUser(new UpdateUserEvent(email,user.toUserDetails()));
-
+    	if ((null!=userEvent)&&(LOG.isDebugEnabled()))
+    		LOG.debug("userEvent - "+userEvent);
     	if (!userEvent.isInstituteFound())
     	{
     		return new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
@@ -75,6 +76,7 @@ public class UserController {
     	else
     	{
     	User restUser=User.fromUserDetails(userEvent.getUserDetails());
+    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restUser);
       	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     	}
     }
