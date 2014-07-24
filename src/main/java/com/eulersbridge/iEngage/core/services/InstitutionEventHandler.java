@@ -17,7 +17,9 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
+import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.repository.CountryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
 public class InstitutionEventHandler implements InstitutionService {
@@ -25,10 +27,12 @@ public class InstitutionEventHandler implements InstitutionService {
     private static Logger LOG = LoggerFactory.getLogger(InstitutionEventHandler.class);
 
     private InstitutionRepository instRepository;
+    private CountryRepository countryRepository;
     
-    public InstitutionEventHandler(final InstitutionRepository instRepo) 
+    public InstitutionEventHandler(final InstitutionRepository instRepo, final CountryRepository countryRepo) 
     {
       this.instRepository = instRepo;
+      this.countryRepository = countryRepo;
     }
     
 	@Override
@@ -38,15 +42,22 @@ public class InstitutionEventHandler implements InstitutionService {
 	{
 		InstitutionDetails newInst=createInstitutionEvent.getDetails();
     	if (LOG.isDebugEnabled()) LOG.debug("Institution Details :"+newInst);
+		if (LOG.isDebugEnabled()) LOG.debug("Finding country with countryName = "+newInst.getCountryName());
+    	Country country=countryRepository.findByCountryName(newInst.getCountryName());
+
     	Institution instToInsert=Institution.fromInstDetails(newInst);
     	InstitutionCreatedEvent result;   	
     	
     	Institution createdInst=null;
-    	if (LOG.isDebugEnabled()) LOG.debug("instToInsert :"+instToInsert);
-    	createdInst = instRepository.save(instToInsert);
-		//TODO what happens if this fails?
-		if (LOG.isDebugEnabled()) LOG.debug("created inst = "+createdInst);
-    		
+    	
+    	if (country!=null)
+    	{	
+    		instToInsert.setCountry(country);
+	    	if (LOG.isDebugEnabled()) LOG.debug("instToInsert :"+instToInsert);
+	    	createdInst = instRepository.save(instToInsert);
+			//TODO what happens if this fails?
+			if (LOG.isDebugEnabled()) LOG.debug("created inst = "+createdInst);
+    	}	
         result=new InstitutionCreatedEvent(createdInst.getNodeId(),createdInst.toInstDetails());
     	return result;
 	}
@@ -79,8 +90,21 @@ public class InstitutionEventHandler implements InstitutionService {
 		Institution result=null,instToUpdate=Institution.fromInstDetails(updInst);
 		instToUpdate.setNodeId(updateInstitutionEvent.getId());
     	if (LOG.isDebugEnabled()) LOG.debug("Inst Details :"+updInst);
+    	
+		if (LOG.isDebugEnabled()) LOG.debug("Finding country with countryName = "+updInst.getCountryName());
+    	Country country=countryRepository.findByCountryName(updInst.getCountryName());
+    	if (country!=null)
+    	{
+    	instToUpdate.setCountry(country);
     	if (LOG.isDebugEnabled()) LOG.debug("instToUpdate :"+instToUpdate);
+    	
+    	
 		result = instRepository.save(instToUpdate);
+    	}
+    	else
+    	{
+    		return InstitutionUpdatedEvent.countryNotFound(updateInstitutionEvent.getId());
+    	}
 		if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
     	return new InstitutionUpdatedEvent(result.getNodeId(),result.toInstDetails());
 

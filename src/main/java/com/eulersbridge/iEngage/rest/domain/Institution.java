@@ -81,7 +81,7 @@ public class Institution extends ResourceSupport
 	    details.setName(getName());
 	    details.setCampus(getCampus());
 	    details.setState(getState());
-	    details.setCountry(getCountry());
+	    details.setCountryName(getCountry());
 
 	    return details;
 	  }
@@ -94,7 +94,7 @@ public class Institution extends ResourceSupport
 	    inst.name = readInstitute.getName();
 	    inst.campus = readInstitute.getCampus();
 	    inst.state = readInstitute.getState();
-	    inst.country = readInstitute.getCountry();
+	    inst.country = readInstitute.getCountryName();
 	    
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.

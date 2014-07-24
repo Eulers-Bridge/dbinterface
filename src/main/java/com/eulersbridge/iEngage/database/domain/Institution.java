@@ -6,6 +6,7 @@ import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
@@ -19,7 +20,8 @@ public class Institution
 	String name;
 	String campus;
 	String state;
-	String country;
+	@RelatedTo(type = "HAS_INSTITUTIONS", direction=Direction.BOTH) @Fetch
+	private	Country  country; 
 	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
 	Set<User> students;
 	
@@ -29,7 +31,7 @@ public class Institution
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public Institution(String name,String campus,String state,String country)
+	public Institution(String name,String campus,String state,Country country)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+name+','+campus+','+state+','+country+')');
 		this.name=name;
@@ -65,12 +67,12 @@ public class Institution
 	{
 		this.state=state;
 	}
-	public String getCountry()
+	public Country getCountry()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getCountry() = "+country);
 		return country;
 	}
-	public void setCountry(String country)
+	public void setCountry(Country country)
 	{
 		this.country=country;
 	}
@@ -126,7 +128,8 @@ public class Institution
 		    inst.nodeId=instDetails.getInstitutionId();
 		    inst.name=instDetails.getName();
 		    inst.campus=instDetails.getCampus();
-		    inst.country=instDetails.getCountry();
+		    inst.country=new Country();
+		    inst.country.setCountryName(instDetails.getCountryName());
 		    inst.state=instDetails.getState();
 		    if (LOG.isTraceEnabled()) LOG.trace("inst "+inst);
 

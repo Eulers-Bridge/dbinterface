@@ -10,7 +10,7 @@ public class InstitutionDetails
 	private String name;
 	private String campus;
 	private String state;
-	private String country;
+	private String countryName;
 	
     private static Logger LOG = LoggerFactory.getLogger(InstitutionDetails.class);
 
@@ -42,11 +42,11 @@ public class InstitutionDetails
 	public void setState(String state) {
 		this.state = state;
 	}
-	public String getCountry() {
-		return country;
+	public String getCountryName() {
+		return countryName;
 	}
-	public void setCountry(String country) {
-		this.country = country;
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
 	}
 	
 	public String toString()
@@ -60,9 +60,8 @@ public class InstitutionDetails
 		buff.append(getCampus());
 		buff.append(", state = ");
 		buff.append(getState());
-		buff.append(", country = ");
-		buff.append(getCountry());
-		buff.append(", yearOfBirth = ");
+		buff.append(", countryName = ");
+		buff.append(getCountryName());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
