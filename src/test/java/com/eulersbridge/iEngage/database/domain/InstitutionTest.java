@@ -197,7 +197,7 @@ public class InstitutionTest {
 		Country country=new Country();
 		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
-		if (!(testObj.getCountry()).equals(country))
+		if (!(testObj.getCountry().getCountryName()).equals(country.getCountryName()))
 			fail("getCountry() does not return the value class was constructed with."); 
 	}
 
@@ -216,7 +216,7 @@ public class InstitutionTest {
 		Country country2=new Country();
 		country.setCountryName("Australia");
 		testObj.setCountry(country2);
-		if (!(testObj.getCountry()).equals(country2))
+		if (!(testObj.getCountry().getCountryName()).equals(country2.getCountryName()))
 			fail("getCountry() does not return the value that setter should have set it to."); 
 	}
 
