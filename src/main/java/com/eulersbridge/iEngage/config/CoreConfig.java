@@ -47,7 +47,7 @@ public class CoreConfig
 	public InstitutionService createInstitutionService()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createInstitutionService()");
-		return new InstitutionEventHandler(instRepo);
+		return new InstitutionEventHandler(instRepo,countryRepo);
 	}
 
 	@Bean
