@@ -11,7 +11,7 @@ public class NewsArticleDetails {
 	private String title;
 	private String content;
 	private String picture;
-	private Calendar date;
+	private Long date;
 	private String creator;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticleDetails.class);
@@ -52,13 +52,17 @@ public class NewsArticleDetails {
 	{
 		this.picture = picture;
 	}
-	public Calendar getDate()
+	public Long getDate()
 	{
 		return this.date;
 	}
-	public void setDate(Calendar date)
+	public void setDate(Long date)
 	{
 		this.date = date;
+	}
+	public void setDate(Calendar date)
+	{
+		this.date = date.getTimeInMillis();
 	}
 	public String getCreator()
 	{

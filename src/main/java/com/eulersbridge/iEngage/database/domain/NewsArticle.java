@@ -17,7 +17,7 @@ public class NewsArticle {
 	private String title;
 	private String content;
 	private String picture;
-	private Calendar date;
+	private Long date;
 	private String creator;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
@@ -33,7 +33,7 @@ public class NewsArticle {
 		this.title=title;
 		this.content=content;
 		this.picture=picture;
-		this.date=date;
+		this.date=date.getTimeInMillis();
 		this.creator=creator;
 	}
 	
@@ -61,7 +61,7 @@ public class NewsArticle {
 		return picture;
 	}
 	
-	public Calendar getDate()
+	public Long getDate()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getDate() = "+date.toString());
 		return date;
@@ -85,7 +85,7 @@ public class NewsArticle {
 		buff.append(", picture = ");
 		buff.append(getPicture());
 		buff.append(", date = ");
-		buff.append(getDate().toString());
+		buff.append(getDate());
 		buff.append(", creator = ");
 		buff.append(getCreator());
 		buff.append(" ]");
