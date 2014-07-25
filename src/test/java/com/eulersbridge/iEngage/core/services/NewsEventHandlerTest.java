@@ -6,6 +6,8 @@ package com.eulersbridge.iEngage.core.services;
 import static org.junit.Assert.*;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,6 +18,7 @@ import org.junit.Test;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
 
 /**
@@ -47,7 +50,7 @@ public class NewsEventHandlerTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		testRepo=new NewsArticleMemoryRepository();
+		testRepo=new NewsArticleMemoryRepository(new HashMap<Long, NewsArticle>());
 		newsService=new NewsEventHandler(testRepo);
 	}
 
