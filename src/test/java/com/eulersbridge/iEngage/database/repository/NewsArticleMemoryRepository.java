@@ -89,9 +89,11 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 	 * @see org.springframework.data.repository.CrudRepository#delete(java.io.Serializable)
 	 */
 	@Override
-	public void delete(Long arg0) {
-		// TODO Auto-generated method stub
-
+	public void delete(Long id) 
+	{
+	    Map<Long, NewsArticle> modifiableNews = new HashMap<Long, NewsArticle>(newsArticles);
+		NewsArticle na=modifiableNews.remove(id);
+	    this.newsArticles = Collections.unmodifiableMap(modifiableNews);
 	}
 
 	/* (non-Javadoc)
