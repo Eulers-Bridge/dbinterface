@@ -43,7 +43,7 @@ public class importDataTest {
 
 	  InputStream is=getClass().getResourceAsStream(fileName);
 	  InputStreamReader isr=new InputStreamReader(is);
-	  CsvInstitution.readWithCsvBeanReader(isr);
+//	  CsvInstitution.readWithCsvBeanReader(isr);
 //		  CsvInstitution.readWithCsvBeanReader2(filePath.toString());
 //		  CsvInstitution.readWithCsvListReader(filePath.toString());
 //		  CsvInstitution.readWithCsvMapReader(filePath.toString());
