@@ -3,6 +3,8 @@
  */
 package com.eulersbridge.iEngage.database.repository;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -12,12 +14,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
+import com.eulersbridge.iEngage.database.domain.User;
 
 /**
  * @author Greg
  *
  */
-public class NewsArticleMemoryRepository implements NewsArticleRepository {
+public class NewsArticleMemoryRepository implements NewsArticleRepository 
+{
+
+	private Map<Long, NewsArticle> newsArticles;
+	  
+	public NewsArticleMemoryRepository(final Map<Long, NewsArticle> newsArticles) 
+	{
+		this.newsArticles = Collections.unmodifiableMap(newsArticles);
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.springframework.data.neo4j.repository.CRUDRepository#findAll()
@@ -140,9 +152,13 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository {
 	 * @see org.springframework.data.repository.CrudRepository#save(java.lang.Object)
 	 */
 	@Override
-	public <S extends NewsArticle> S save(S arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public <S extends NewsArticle> S save(S newsArticle) 
+	{
+	    Map<Long, NewsArticle> modifiableNews = new HashMap<Long, NewsArticle>(newsArticles);
+	    modifiableNews.put(newsArticle.getNodeId(), newsArticle);
+	    this.newsArticles = Collections.unmodifiableMap(modifiableNews);
+
+	    return newsArticle;
 	}
 
 	/* (non-Javadoc)
