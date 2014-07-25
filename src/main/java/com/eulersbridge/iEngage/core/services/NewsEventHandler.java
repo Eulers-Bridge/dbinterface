@@ -4,10 +4,12 @@ import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
+import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
 
 public class NewsEventHandler implements NewsService 
@@ -21,9 +23,13 @@ public class NewsEventHandler implements NewsService
 
 	@Override
 	public NewsArticleCreatedEvent createNewsArticle(
-			CreateNewsArticleEvent createNewsArticleEvent) {
-		// TODO Auto-generated method stub
-		return null;
+			CreateNewsArticleEvent createNewsArticleEvent) 
+	{
+		NewsArticleDetails nADs = createNewsArticleEvent.getNewsArticleDetails();
+		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
+		NewsArticle result=newsRepo.save(na);
+		NewsArticleCreatedEvent nACE=new NewsArticleCreatedEvent(result.getNodeId(), result.toNewsArticleDetails());
+		return nACE;
 	}
 
 	@Override
