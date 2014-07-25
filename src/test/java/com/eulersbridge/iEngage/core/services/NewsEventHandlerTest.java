@@ -106,7 +106,7 @@ public class NewsEventHandlerTest
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.NewsEventHandler#requestReadUser(com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent)}.
 	 */
 	@Test
-	public void testRequestReadUser() 
+	public void testRequestReadNewsArticle() 
 	{
 		RequestReadNewsArticleEvent rnae=new RequestReadNewsArticleEvent(new Long(1));
 		assertEquals("1 == 1",rnae.getNewsArticleId(),new Long(1));
