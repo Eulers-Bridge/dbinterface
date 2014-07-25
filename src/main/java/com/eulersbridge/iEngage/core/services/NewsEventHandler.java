@@ -36,8 +36,9 @@ public class NewsEventHandler implements NewsService
 	public ReadNewsArticleEvent requestReadUser(
 			RequestReadNewsArticleEvent requestReadNewsArticleEvent) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		NewsArticle na=newsRepo.findOne(requestReadNewsArticleEvent.getNewsArticleId());
+		ReadNewsArticleEvent nade=new ReadNewsArticleEvent(requestReadNewsArticleEvent.getNewsArticleId(), na.toNewsArticleDetails());
+		return nade;
 	}
 
 	@Override
@@ -53,9 +54,11 @@ public class NewsEventHandler implements NewsService
 
 	@Override
 	public NewsArticleDeletedEvent deleteUser(
-			DeleteNewsArticleEvent deleteNewsArticleEvent) {
-		// TODO Auto-generated method stub
-		return null;
+			DeleteNewsArticleEvent deleteNewsArticleEvent) 
+	{
+		newsRepo.delete(deleteNewsArticleEvent.getNewsArticleId());
+		NewsArticleDeletedEvent nade=new NewsArticleDeletedEvent(deleteNewsArticleEvent.getNewsArticleId(), null);
+		return nade;
 	}
 
 }

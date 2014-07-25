@@ -16,9 +16,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -102,8 +106,13 @@ public class NewsEventHandlerTest
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.NewsEventHandler#requestReadUser(com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent)}.
 	 */
 	@Test
-	public void testRequestReadUser() {
-		fail("Not yet implemented");
+	public void testRequestReadUser() 
+	{
+		RequestReadNewsArticleEvent rnae=new RequestReadNewsArticleEvent(new Long(1));
+		assertEquals("1 == 1",rnae.getNewsArticleId(),new Long(1));
+		ReadNewsArticleEvent rane=newsService.requestReadUser(rnae);
+		if (null==rane)
+			fail("Not yet implemented");
 	}
 
 	/**
@@ -131,7 +140,9 @@ public class NewsEventHandlerTest
 	@Test
 	public void testDeleteUser() 
 	{
-		fail("Not yet implemented");
+		DeleteNewsArticleEvent deleteNewsArticleEvent=new DeleteNewsArticleEvent(new Long(1));
+		NewsArticleDeletedEvent nUDe = newsService.deleteUser(deleteNewsArticleEvent);
+		if (null==nUDe)	fail("Not yet implemented");
 	}
 
 }

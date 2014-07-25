@@ -143,9 +143,10 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 	 * @see org.springframework.data.repository.CrudRepository#findOne(java.io.Serializable)
 	 */
 	@Override
-	public NewsArticle findOne(Long arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public NewsArticle findOne(Long arg0) 
+	{
+		NewsArticle one=newsArticles.get(arg0);
+		return one;
 	}
 
 	/* (non-Javadoc)
