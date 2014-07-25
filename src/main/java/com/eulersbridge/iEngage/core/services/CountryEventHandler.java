@@ -17,22 +17,11 @@ import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
-import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
-import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
-public class CountryEventHandler implements CountryService {
-
+public class CountryEventHandler implements CountryService 
+{
     private static Logger LOG = LoggerFactory.getLogger(CountryEventHandler.class);
 
     private CountryRepository countryRepository;
