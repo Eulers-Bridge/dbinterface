@@ -10,10 +10,13 @@ import com.eulersbridge.iEngage.core.services.CountryEventHandler;
 import com.eulersbridge.iEngage.core.services.CountryService;
 import com.eulersbridge.iEngage.core.services.InstitutionEventHandler;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.core.services.NewsEventHandler;
+import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.core.services.UserEventHandler;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 
@@ -28,6 +31,8 @@ public class CoreConfig
 	CountryRepository countryRepo;
 	@Autowired
 	VerificationTokenRepository tokenRepo;
+	@Autowired
+	NewsArticleRepository newsRepo;
 	
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -55,6 +60,13 @@ public class CoreConfig
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createCountryService()");
 		return new CountryEventHandler(countryRepo);
+	}
+
+	@Bean
+	public NewsService createNewsService()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("createNewsService()");
+		return new NewsEventHandler(newsRepo);
 	}
 
 
