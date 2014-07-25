@@ -34,16 +34,21 @@ public class NewsEventHandler implements NewsService
 
 	@Override
 	public ReadNewsArticleEvent requestReadUser(
-			RequestReadNewsArticleEvent requestReadNewsArticleEvent) {
+			RequestReadNewsArticleEvent requestReadNewsArticleEvent) 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public NewsArticleUpdatedEvent updateUser(
-			UpdateNewsArticleEvent updateNewsArticleEvent) {
-		// TODO Auto-generated method stub
-		return null;
+			UpdateNewsArticleEvent updateNewsArticleEvent) 
+	{
+		NewsArticleDetails nADs = updateNewsArticleEvent.getUNewsArticleDetails();
+		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
+		NewsArticle result=newsRepo.save(na);
+		NewsArticleUpdatedEvent nACE=new NewsArticleUpdatedEvent(result.getNodeId(), result.toNewsArticleDetails());
+		return nACE;
 	}
 
 	@Override
