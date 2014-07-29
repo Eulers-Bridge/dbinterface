@@ -5,6 +5,8 @@ package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -20,6 +22,10 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
+import com.eulersbridge.iEngage.database.domain.Country;
+import com.eulersbridge.iEngage.database.repository.CountryMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
+import com.eulersbridge.iEngage.database.domain.Institution;
 
 /**
  * @author Greg Newitt
@@ -28,7 +34,8 @@ import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 public class InstitutionEventHandlerTest 
 {
 	InstitutionService instService;
-
+	InstitutionMemoryRepository testInstRepo;
+	CountryMemoryRepository testCountryRepo;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -47,8 +54,27 @@ public class InstitutionEventHandlerTest
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() throws Exception 
+	{
+		HashMap<Long, Country> countrys=new HashMap<Long, Country>();
+		Country initialCountry=new Country();
+		initialCountry.setCountryName("Australia");
+		countrys.put(new Long(1), initialCountry);
+		initialCountry.setNodeId(new Long(1));
+		testCountryRepo=new CountryMemoryRepository(countrys);
+
+		HashMap<Long, Institution> institutions=new HashMap<Long, Institution>();
+		Institution initialInst=new Institution();
+		initialInst.setName("University of Melbourne");
+		initialInst.setCampus("Parkville");
+		initialInst.setState("Victoria");
+		initialInst.setCountry(initialCountry);
+		institutions.put(new Long(1), initialInst);
+		testInstRepo=new InstitutionMemoryRepository(institutions);
+
+		instService=new InstitutionEventHandler(testInstRepo, testCountryRepo);
 	}
+
 
 	/**
 	 * @throws java.lang.Exception
@@ -62,7 +88,8 @@ public class InstitutionEventHandlerTest
 	 */
 	@Test
 	public void testInstitutionEventHandler() {
-		fail("Not yet implemented");
+		InstitutionService instService2=new InstitutionEventHandler(testInstRepo, testCountryRepo);
+		assertNotNull("Constructor did not create service.",instService2);
 	}
 
 	/**
