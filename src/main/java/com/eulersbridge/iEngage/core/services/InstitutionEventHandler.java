@@ -57,8 +57,13 @@ public class InstitutionEventHandler implements InstitutionService {
 	    	createdInst = instRepository.save(instToInsert);
 			//TODO what happens if this fails?
 			if (LOG.isDebugEnabled()) LOG.debug("created inst = "+createdInst);
-    	}	
-        result=new InstitutionCreatedEvent(createdInst.getNodeId(),createdInst.toInstDetails());
+	        result=new InstitutionCreatedEvent(createdInst.getNodeId(),createdInst.toInstDetails());
+    	}
+    	else
+    	{
+    		if (LOG.isErrorEnabled()) LOG.error("Country returned was null.");
+			result=InstitutionCreatedEvent.countryNotFound(new Long(0));
+    	}
     	return result;
 	}
 
@@ -128,7 +133,7 @@ public class InstitutionEventHandler implements InstitutionService {
 	@Override
 	public Iterator<com.eulersbridge.iEngage.rest.domain.Institution> getInstitutions() 
 	{
-		Result<Institution> returned=instRepository.findAll();
+		Iterable<Institution> returned=instRepository.findAll();
 		ArrayList<com.eulersbridge.iEngage.rest.domain.Institution> instList=new ArrayList<com.eulersbridge.iEngage.rest.domain.Institution>();
 		Iterator<Institution> iter=returned.iterator();
 		while (iter.hasNext())
