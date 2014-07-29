@@ -23,10 +23,12 @@ import com.eulersbridge.iEngage.database.domain.NewsArticle;
 public class CountryMemoryRepository implements CountryRepository {
 
 	private Map<Long, Country> countrys;
+	Long maxKey=(long) 0;
 	  
 	public CountryMemoryRepository(final Map<Long, Country> countrys) 
 	{
 		this.countrys = Collections.unmodifiableMap(countrys);
+		maxKey=(long) countrys.size();
 	}
 
 	/* (non-Javadoc)
@@ -36,7 +38,7 @@ public class CountryMemoryRepository implements CountryRepository {
 	public Result<Country> findAll() 
 	{
 		// TODO Auto-generated method stub
-		return (Result<Country>)this.countrys;
+		return (Result<Country>)this.countrys.values();
 	}
 
 	/* (non-Javadoc)
@@ -154,8 +156,14 @@ public class CountryMemoryRepository implements CountryRepository {
 	 * @see org.springframework.data.repository.CrudRepository#save(java.lang.Object)
 	 */
 	@Override
-	public <S extends Country> S save(S country) {
+	public <S extends Country> S save(S country) 
+	{
 	    Map<Long, Country> modifiableNews = new HashMap<Long, Country>(countrys);
+	    if (null==country.getNodeId())
+	    {
+	    	maxKey++;
+	    	country.setNodeId(maxKey);
+	    }
 	    modifiableNews.put(country.getNodeId(), country);
 	    this.countrys = Collections.unmodifiableMap(modifiableNews);
 
