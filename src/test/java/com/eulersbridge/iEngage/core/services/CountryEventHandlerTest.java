@@ -105,7 +105,7 @@ public class CountryEventHandlerTest
 	@Test
 	public void testGetCountrys() 
 	{
-		Iterator<com.eulersbridge.iEngage.rest.domain.Country> countrys=countryService.getCountrys();
+		Iterator<com.eulersbridge.iEngage.rest.domain.Country> countrys=null; //TODO countryService.getCountrys();
 		if (null==countrys) fail("Not yet implemented");
 	}
 
