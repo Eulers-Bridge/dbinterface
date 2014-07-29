@@ -22,6 +22,7 @@ import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
@@ -29,6 +30,7 @@ import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
+import com.eulersbridge.iEngage.database.domain.Country;
 
 /**
  * @author Greg Newitt
@@ -65,7 +67,14 @@ public class UserEventHandlerTest
 		User user=new User("gnewitt@hotmail.com", "Greg", "Newitt", "Male", "Australian", "1971", "None", "test123");
 		users.put(new Long(1), user);
 		userRepo=new UserMemoryRepository(users);
-		instRepo=new InstitutionMemoryRepository();
+		HashMap<Long, Institution> institutions=new HashMap<Long, Institution>();
+		Country initialCountry=new Country();
+		initialCountry.setNodeId((long)1);
+		initialCountry.setCountryName("Australia");
+		Institution initialInst=new Institution("University of Melbourne","Parkville","Victoria",initialCountry);
+		institutions.put(new Long(1), initialInst);
+		instRepo=new InstitutionMemoryRepository(institutions);
+
 		tokenRepo=new VerificationTokenMemoryRepository();
 		userService=new UserEventHandler(userRepo, instRepo, tokenRepo);
 	}
