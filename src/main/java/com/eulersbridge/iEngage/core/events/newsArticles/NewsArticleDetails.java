@@ -16,9 +16,8 @@ public class NewsArticleDetails {
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticleDetails.class);
 	
-	public NewsArticleDetails(Long id)
+	public NewsArticleDetails()
 	{
-		this.newsArticleId = id;
 	}
 	public Long getNewsArticleId()
 	{
