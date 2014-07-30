@@ -3,11 +3,6 @@ package com.eulersbridge.iEngage.database.repository;
 
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
-import com.eulersbridge.iEngage.core.events.CreateEvent;
-import com.eulersbridge.iEngage.core.events.DeleteEvent;
-import com.eulersbridge.iEngage.core.events.RequestReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.users.*;
 
 import java.util.*;
 
@@ -20,15 +15,22 @@ import org.springframework.data.neo4j.conversion.Result;
 public class UserMemoryRepository implements UserRepository {
 
   private Map<Long, User> users;
+	Long maxKey=(long) 0;
 
   public UserMemoryRepository(final Map<Long, User> users) {
     this.users = Collections.unmodifiableMap(users);
   }
 
   @Override
-  public synchronized User save(User user) {
+  public synchronized <S extends User> S save(S user) {
 
     Map<Long, User> modifiableUsers = new HashMap<Long, User>(users);
+    if (null==user.getNodeId())
+    {
+    	maxKey++;
+    	user.setNodeId(maxKey);
+    }
+
     modifiableUsers.put(user.getNodeId(), user);
     this.users = Collections.unmodifiableMap(modifiableUsers);
 
@@ -177,8 +179,18 @@ public <N> Iterable<User> findAllByTraversal(N arg0, TraversalDescription arg1) 
 }
 
 @Override
-public User findByEmail(String email) {
-	// TODO Auto-generated method stub
+public User findByEmail(String email) 
+{
+	Collection<User> values = users.values();
+	Iterator<User> iter=values.iterator();
+	while (iter.hasNext())
+	{
+		User user=iter.next();
+		if (user.getEmail()==email)
+		{
+			return user;
+		}
+	}
 	return null;
 }
 
