@@ -24,10 +24,12 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 {
 
 	private Map<Long, NewsArticle> newsArticles;
+	Long maxKey=(long) 0;
 	  
 	public NewsArticleMemoryRepository(final Map<Long, NewsArticle> newsArticles) 
 	{
 		this.newsArticles = Collections.unmodifiableMap(newsArticles);
+		maxKey=(long)newsArticles.size();
 	}
 
 
@@ -158,6 +160,11 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 	public <S extends NewsArticle> S save(S newsArticle) 
 	{
 	    Map<Long, NewsArticle> modifiableNews = new HashMap<Long, NewsArticle>(newsArticles);
+	    if (null==newsArticle.getNodeId())
+	    {
+	    	maxKey++;
+	    	newsArticle.setNodeId(maxKey);
+	    }
 	    modifiableNews.put(newsArticle.getNodeId(), newsArticle);
 	    this.newsArticles = Collections.unmodifiableMap(modifiableNews);
 
