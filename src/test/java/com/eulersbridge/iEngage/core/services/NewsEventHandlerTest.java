@@ -26,6 +26,7 @@ import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleE
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
 
 /**
@@ -58,7 +59,7 @@ public class NewsEventHandlerTest
 	public void setUp() throws Exception 
 	{
 		HashMap<Long, NewsArticle> newsArticles=new HashMap<Long, NewsArticle>();
-		User creator=new User("gnewitt@hotmail.com", "Greg", "Newitt", "Male", "Australian", "1971", "None", "test123");
+		User creator=DatabaseDataFixture.populateUserGnewitt();
 		Iterable<String> picture=null;
 		NewsArticle initialArticle=new NewsArticle("Test Article", "Contents of the Test Article", picture, Calendar.getInstance(), creator);
 		newsArticles.put(new Long(1), initialArticle);
@@ -91,15 +92,23 @@ public class NewsEventHandlerTest
 	{
 		CreateNewsArticleEvent createNewsArticleEvent;
 		NewsArticleDetails nADs;
-		Long id=new Long(2);
-		nADs=new NewsArticleDetails(id);
+		nADs=new NewsArticleDetails();
 		nADs.setDate(new Date().getTime());
 		nADs.setCreatorEmail("gnewitt@hotmail.com");
 		nADs.setContent("Per ardua ad astra.");
 		nADs.setTitle("Per ardua ad astra.");
 		createNewsArticleEvent=new CreateNewsArticleEvent(nADs);
 		NewsArticleCreatedEvent nace = newsService.createNewsArticle(createNewsArticleEvent);
-		if (null==nace) fail("Not yet implemented");
+//		nace.
+		assertNotNull("News article created event null.",nace);
+		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(nace.getNewsArticleId()));
+		NewsArticleDetails nADs2=rane.getReadNewsArticleDetails();
+		assertEquals("Content not equal",nADs.getContent(),nADs2.getContent());
+		assertEquals("Creator email not equal",nADs.getCreatorEmail(),nADs2.getCreatorEmail());
+		assertEquals("Dates don't match",nADs.getDate(),nADs2.getDate());
+		assertEquals("News Article Ids not equal",nace.getNewsArticleId(),nADs2.getNewsArticleId());
+		assertEquals("Titles not the same.",nADs.getTitle(),nADs2.getTitle());
+		assertEquals("Pictures not the same.",nADs.getPicture(),nADs2.getPicture());
 	}
 
 	/**
@@ -110,19 +119,19 @@ public class NewsEventHandlerTest
 	{
 		RequestReadNewsArticleEvent rnae=new RequestReadNewsArticleEvent(new Long(1));
 		assertEquals("1 == 1",rnae.getNewsArticleId(),new Long(1));
-		ReadNewsArticleEvent rane=newsService.requestReadUser(rnae);
-		if (null==rane)
-			fail("Not yet implemented");
+		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(rnae);
+		assertNotNull("Null read news article event returned.",rane);
 	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.NewsEventHandler#updateUser(com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent)}.
 	 */
 	@Test
-	public void testUpdateUser() 
+	public void testUpdateNewsArticle() 
 	{
 		NewsArticleDetails nADs;
-		nADs=new NewsArticleDetails(new Long(1));
+		nADs=new NewsArticleDetails();
+		nADs.setNewsArticleId((long)1);
 		nADs.setContent("Blah blah");
 		nADs.setTitle("Whatever");
 		Iterable<String> picture=null;
@@ -130,7 +139,7 @@ public class NewsEventHandlerTest
 		nADs.setDate(new Date().getTime());
 		
 		UpdateNewsArticleEvent updateNewsArticleEvent=new UpdateNewsArticleEvent(nADs.getNewsArticleId(), nADs);
-		NewsArticleUpdatedEvent nude = newsService.updateUser(updateNewsArticleEvent);
+		NewsArticleUpdatedEvent nude = newsService.updateNewsArticle(updateNewsArticleEvent);
 		if (null==nude) fail("Not yet implemented");
 	}
 
@@ -138,10 +147,10 @@ public class NewsEventHandlerTest
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.NewsEventHandler#deleteUser(com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent)}.
 	 */
 	@Test
-	public void testDeleteUser() 
+	public void testDeleteNewsArticle() 
 	{
 		DeleteNewsArticleEvent deleteNewsArticleEvent=new DeleteNewsArticleEvent(new Long(1));
-		NewsArticleDeletedEvent nUDe = newsService.deleteUser(deleteNewsArticleEvent);
+		NewsArticleDeletedEvent nUDe = newsService.deleteNewsArticle(deleteNewsArticleEvent);
 		if (null==nUDe)	fail("Not yet implemented");
 	}
 
