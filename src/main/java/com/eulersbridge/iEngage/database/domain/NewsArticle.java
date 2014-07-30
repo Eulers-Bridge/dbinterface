@@ -20,6 +20,8 @@ public class NewsArticle {
 	private String title;
 	private String content;
 	private Iterable<String> picture;
+	@RelatedTo(type="LIKED_BY",direction=Direction.BOTH)
+	private Iterable<User> likers;
 	private Long date;
 	@RelatedTo(type = "CREATED_BY", direction=Direction.BOTH) @Fetch
 	private User creator;
@@ -47,6 +49,13 @@ public class NewsArticle {
 		return nodeId;
 	}
 	
+	/**
+	 * @param nodeId the nodeId to set
+	 */
+	public void setNodeId(Long nodeId) {
+		this.nodeId = nodeId;
+	}
+
 	public String getTitle()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getTitle() = "+title);
@@ -65,6 +74,13 @@ public class NewsArticle {
 		return picture;
 	}
 	
+	/**
+	 * @return the likers
+	 */
+	public Iterable<User> getLikers() {
+		return likers;
+	}
+
 	public Long getDate()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getDate() = "+date.toString());
@@ -102,7 +118,8 @@ public class NewsArticle {
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toNewsArtDetails()");
 	    
-	    NewsArticleDetails details = new NewsArticleDetails(getNodeId());
+	    NewsArticleDetails details = new NewsArticleDetails();
+	    details.setNewsArticleId(getNodeId());
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticle "+this);
 
 	    BeanUtils.copyProperties(this, details);
