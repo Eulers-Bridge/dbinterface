@@ -31,7 +31,10 @@ public class User
 	private boolean accountVerified=false;
 	@RelatedTo(type = "USER_OF", direction=Direction.OUTGOING)
 	@Fetch private Institution institution;
-	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH)private Iterable<VerificationToken> verificationToken;
+	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH)
+	private Iterable<VerificationToken> verificationToken;
+	@RelatedTo(type="LIKED_BY",direction=Direction.BOTH)
+	private Iterable<NewsArticle> likes;
 	
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
