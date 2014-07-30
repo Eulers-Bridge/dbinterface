@@ -33,7 +33,7 @@ public class NewsEventHandler implements NewsService
 	}
 
 	@Override
-	public ReadNewsArticleEvent requestReadUser(
+	public ReadNewsArticleEvent requestReadNewsArticle(
 			RequestReadNewsArticleEvent requestReadNewsArticleEvent) 
 	{
 		NewsArticle na=newsRepo.findOne(requestReadNewsArticleEvent.getNewsArticleId());
@@ -42,7 +42,7 @@ public class NewsEventHandler implements NewsService
 	}
 
 	@Override
-	public NewsArticleUpdatedEvent updateUser(
+	public NewsArticleUpdatedEvent updateNewsArticle(
 			UpdateNewsArticleEvent updateNewsArticleEvent) 
 	{
 		NewsArticleDetails nADs = updateNewsArticleEvent.getUNewsArticleDetails();
@@ -53,7 +53,7 @@ public class NewsEventHandler implements NewsService
 	}
 
 	@Override
-	public NewsArticleDeletedEvent deleteUser(
+	public NewsArticleDeletedEvent deleteNewsArticle(
 			DeleteNewsArticleEvent deleteNewsArticleEvent) 
 	{
 		newsRepo.delete(deleteNewsArticleEvent.getNewsArticleId());

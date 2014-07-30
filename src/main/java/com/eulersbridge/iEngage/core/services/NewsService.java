@@ -12,8 +12,8 @@ import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 public interface NewsService 
 {
 	public NewsArticleCreatedEvent createNewsArticle(CreateNewsArticleEvent createNewsArticleEvent);
-	public ReadNewsArticleEvent requestReadUser(RequestReadNewsArticleEvent requestReadNewsArticleEvent);
-	public NewsArticleUpdatedEvent updateUser(UpdateNewsArticleEvent updateNewsArticleEvent);
-	public NewsArticleDeletedEvent deleteUser(DeleteNewsArticleEvent deleteNewsArticleEvent);
+	public ReadNewsArticleEvent requestReadNewsArticle(RequestReadNewsArticleEvent requestReadNewsArticleEvent);
+	public NewsArticleUpdatedEvent updateNewsArticle(UpdateNewsArticleEvent updateNewsArticleEvent);
+	public NewsArticleDeletedEvent deleteNewsArticle(DeleteNewsArticleEvent deleteNewsArticleEvent);
 
 }
