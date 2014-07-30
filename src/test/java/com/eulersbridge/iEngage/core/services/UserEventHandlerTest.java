@@ -31,6 +31,7 @@ import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 import com.eulersbridge.iEngage.database.domain.Country;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
  * @author Greg Newitt
@@ -64,14 +65,12 @@ public class UserEventHandlerTest
 	public void setUp() throws Exception 
 	{
 		HashMap<Long, User> users=new HashMap<Long, User>();
-		User user=new User("gnewitt@hotmail.com", "Greg", "Newitt", "Male", "Australian", "1971", "None", "test123");
-		users.put(new Long(1), user);
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		users.put((long)1, user);
 		userRepo=new UserMemoryRepository(users);
 		HashMap<Long, Institution> institutions=new HashMap<Long, Institution>();
-		Country initialCountry=new Country();
-		initialCountry.setNodeId((long)1);
-		initialCountry.setCountryName("Australia");
-		Institution initialInst=new Institution("University of Melbourne","Parkville","Victoria",initialCountry);
+		Country initialCountry=DatabaseDataFixture.populateCountryAust();
+		Institution initialInst=DatabaseDataFixture.populateInstUniMelb();
 		institutions.put(new Long(1), initialInst);
 		instRepo=new InstitutionMemoryRepository(institutions);
 
@@ -139,18 +138,31 @@ public class UserEventHandlerTest
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#updateUser(com.eulersbridge.iEngage.core.events.users.UpdateUserEvent)}.
 	 */
 	@Test
-	public void testUpdateUser() 
+	public void shouldUpdateUser() 
 	{
 		UserDetails nADs;
-		nADs=new UserDetails("gnewitt@bigfoot.com");
-		nADs.setFirstName("Greg");
-		nADs.setLastName("Newitt");
-		nADs.setNationality("British");;
-		nADs.setYearOfBirth("1971");
+		nADs=new UserDetails("gnewitt@hotmail.com");
+		nADs.setFirstName("Gregory");
+		nADs.setLastName("Lawson");
+		nADs.setNationality("British");
+		nADs.setYearOfBirth("1974");
+		nADs.setPersonality("Some");
+		nADs.setGender("Female");
+		nADs.setInstitutionId((long)1);
+		nADs.setPassword("123");
 		
 		UpdateUserEvent updateUserEvent=new UpdateUserEvent(nADs.getEmail(), nADs);
 		UserUpdatedEvent nude = userService.updateUser(updateUserEvent);
-		if (null==nude) fail("Not yet implemented");
+		assertNotNull("UserUpdatedEvent returned null",nude);
+		assertNotNull("UserDetails returned null",nude.getUserDetails());
+		assertEquals("Email address not updated.",nude.getEmail(),nADs.getEmail());
+		assertEquals("Nationality not updated.",nude.getUserDetails().getNationality(),nADs.getNationality());
+		assertEquals("First name not updated.",nude.getUserDetails().getFirstName(),nADs.getFirstName());
+		assertEquals("Last name not updated.",nude.getUserDetails().getLastName(),nADs.getLastName());
+		assertEquals("Year of Birth not updated.",nude.getUserDetails().getYearOfBirth(),nADs.getYearOfBirth());
+		assertEquals("Gender not updated.",nude.getUserDetails().getGender(),nADs.getGender());
+		assertEquals("Personality of Birth not updated.",nude.getUserDetails().getPersonality(),nADs.getPersonality());
+		assertEquals("Password not updated.",nude.getUserDetails().getPassword(),nADs.getPassword());
 	}
 
 	/**
