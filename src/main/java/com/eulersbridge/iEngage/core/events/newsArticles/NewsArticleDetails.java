@@ -11,6 +11,7 @@ public class NewsArticleDetails {
 	private String title;
 	private String content;
 	private Iterable<String> picture;
+	private Iterable<String> likers;
 	private Long date;
 	private String creatorEmail;
 	
@@ -70,6 +71,18 @@ public class NewsArticleDetails {
 	public void setCreatorEmail(String creatorEmail)
 	{
 		this.creatorEmail = creatorEmail;
+	}
+	/**
+	 * @return the likers
+	 */
+	public Iterable<String> getLikers() {
+		return likers;
+	}
+	/**
+	 * @param likers the likers to set
+	 */
+	public void setLikers(Iterable<String> likers) {
+		this.likers = likers;
 	}
 	public String toString()
 	{
