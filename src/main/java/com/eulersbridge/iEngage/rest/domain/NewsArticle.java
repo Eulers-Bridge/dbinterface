@@ -1,10 +1,13 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.rest.controller.NewsController;
 
 public class NewsArticle extends ResourceSupport
 {
@@ -18,16 +21,47 @@ public class NewsArticle extends ResourceSupport
 
     private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 
-    public static NewsArticle fromNewsArticleDetails(NewsArticleDetails newsArticleDetails) 
+    public static NewsArticle fromNewsArticleDetails(NewsArticleDetails readNews) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+	    NewsArticle news = new NewsArticle();
+
+	    news.articleId= readNews.getNewsArticleId();
+	    news.content = readNews.getContent();
+	    news.creatorEmail = readNews.getCreatorEmail();
+	    news.date = readNews.getDate();
+	    news.likers = readNews.getLikers();
+	    news.picture = readNews.getPicture();
+	    news.title = readNews.getTitle();
+	    
+	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
+	    //this section is all that is actually needed in our model to add hateoas support.
+
+	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
+	    //We have explicitly avoided that.
+	    // {!begin selfRel}
+	    news.add(linkTo(NewsController.class).slash(news.articleId).withSelfRel());
+	    // {!end selfRel}
+	    // {!begin status}
+	    news.add(linkTo(NewsController.class).slash(news.articleId).slash("status").withRel("User Status"));
+	    // {!end status}
+	    news.add(linkTo(NewsController.class).slash(news.articleId).slash("details").withRel("User Details"));
+
+	    return news;
 	}
 
 	public NewsArticleDetails toNewsArticleDetails() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		NewsArticleDetails details = new NewsArticleDetails();
+
+	    details.setNewsArticleId(getArticleId());
+	    details.setTitle(getTitle());
+	    details.setContent(getContent());
+	    details.setPicture(getPicture());
+	    details.setLikers(getLikers());
+	    details.setDate(getDate());
+	    details.setCreatorEmail(creatorEmail);
+
+	    return details;
 	}
 
 	/**
