@@ -37,7 +37,11 @@ public class NewsEventHandler implements NewsService
 			RequestReadNewsArticleEvent requestReadNewsArticleEvent) 
 	{
 		NewsArticle na=newsRepo.findOne(requestReadNewsArticleEvent.getNewsArticleId());
-		ReadNewsArticleEvent nade=new ReadNewsArticleEvent(requestReadNewsArticleEvent.getNewsArticleId(), na.toNewsArticleDetails());
+		ReadNewsArticleEvent nade;
+		if (na!=null)
+			nade=new ReadNewsArticleEvent(requestReadNewsArticleEvent.getNewsArticleId(), na.toNewsArticleDetails());
+		else
+			nade=ReadNewsArticleEvent.notFound(requestReadNewsArticleEvent.getNewsArticleId());
 		return nade;
 	}
 
