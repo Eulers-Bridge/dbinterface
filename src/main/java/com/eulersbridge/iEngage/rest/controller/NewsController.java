@@ -78,7 +78,7 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value="/user/{articleId}")
+	@RequestMapping(method=RequestMethod.GET,value="/newsArticle/{articleId}")
 	public @ResponseBody ResponseEntity<NewsArticle> findArticle(@PathVariable Long articleId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news article. "+articleId);
@@ -104,7 +104,7 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.DELETE,value="/user/{articleId}")
+	@RequestMapping(method=RequestMethod.DELETE,value="/newsArticle/{articleId}")
 	public @ResponseBody ResponseEntity<NewsArticle> deleteNewsArticle(@PathVariable Long articleId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete news article. "+articleId);
@@ -134,7 +134,7 @@ public class NewsController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.POST,value="/create")
+    @RequestMapping(method=RequestMethod.POST,value="/newsArticle")
     public @ResponseBody ResponseEntity<NewsArticle> createNewsArticle(@RequestBody NewsArticle newsArticle) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to create news article "+newsArticle);
