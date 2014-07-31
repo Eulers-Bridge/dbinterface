@@ -123,6 +123,7 @@ public class NewsArticle {
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticle "+this);
 
 	    BeanUtils.copyProperties(this, details);
+	    if (getCreator()!=null) details.setCreatorEmail(getCreator().getEmail());
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
 
 	    return details;
