@@ -121,6 +121,7 @@ public class NewsEventHandlerTest
 		assertEquals("1 == 1",rnae.getNewsArticleId(),new Long(1));
 		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(rnae);
 		assertNotNull("Null read news article event returned.",rane);
+		assertEquals("article ids do not match.",rane.getNewsArticleId(),rnae.getNewsArticleId());
 	}
 
 	/**
@@ -140,7 +141,10 @@ public class NewsEventHandlerTest
 		
 		UpdateNewsArticleEvent updateNewsArticleEvent=new UpdateNewsArticleEvent(nADs.getNewsArticleId(), nADs);
 		NewsArticleUpdatedEvent nude = newsService.updateNewsArticle(updateNewsArticleEvent);
-		if (null==nude) fail("Not yet implemented");
+		assertNotNull("Null event returned",nude);
+		assertEquals("Content was not updated.",nude.getNewsArticleDetails().getContent(),nADs.getContent());
+		assertEquals("Title not updated.",nude.getNewsArticleDetails().getTitle(),nADs.getTitle());
+		assertEquals("Timestamp not updated.",nADs.getDate(),nude.getNewsArticleDetails().getDate());
 	}
 
 	/**
@@ -149,9 +153,12 @@ public class NewsEventHandlerTest
 	@Test
 	public void testDeleteNewsArticle() 
 	{
-		DeleteNewsArticleEvent deleteNewsArticleEvent=new DeleteNewsArticleEvent(new Long(1));
+		Long articleId=(long) 1;
+		DeleteNewsArticleEvent deleteNewsArticleEvent=new DeleteNewsArticleEvent(articleId);
 		NewsArticleDeletedEvent nUDe = newsService.deleteNewsArticle(deleteNewsArticleEvent);
-		if (null==nUDe)	fail("Not yet implemented");
+		assertNotNull("Null event returned",nUDe);
+		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
+		assertFalse("Entity was not deleted.",rane.isEntityFound());
 	}
 
 }
