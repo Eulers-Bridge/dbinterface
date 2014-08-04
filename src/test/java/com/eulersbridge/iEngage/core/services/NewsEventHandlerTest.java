@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,6 +29,7 @@ import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 
 /**
  * @author Greg Newitt
@@ -36,6 +38,7 @@ import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
 public class NewsEventHandlerTest 
 {
 	NewsArticleMemoryRepository testRepo;
+	UserMemoryRepository userRepo;
 	NewsEventHandler newsService;
 	/**
 	 * @throws java.lang.Exception
@@ -64,7 +67,10 @@ public class NewsEventHandlerTest
 		NewsArticle initialArticle=new NewsArticle("Test Article", "Contents of the Test Article", picture, Calendar.getInstance(), creator);
 		newsArticles.put(new Long(1), initialArticle);
 		testRepo=new NewsArticleMemoryRepository(newsArticles);
-		newsService=new NewsEventHandler(testRepo);
+		HashMap<Long, User> users=new HashMap<Long, User>();
+		users.put(new Long(1), creator);
+		userRepo=new UserMemoryRepository(users);
+		newsService=new NewsEventHandler(testRepo,userRepo);
 	}
 
 	/**
@@ -80,7 +86,7 @@ public class NewsEventHandlerTest
 	@Test
 	public void testNewsEventHandler() 
 	{
-		NewsService newsService=new NewsEventHandler(testRepo);
+		NewsService newsService=new NewsEventHandler(testRepo,userRepo);
 		assertNotNull("newsService not being created by constructor.",newsService);
 	}
 
@@ -135,7 +141,7 @@ public class NewsEventHandlerTest
 		nADs.setNewsArticleId((long)1);
 		nADs.setContent("Blah blah");
 		nADs.setTitle("Whatever");
-		Iterable<String> picture=null;
+		Set<String> picture=null;
 		nADs.setPicture(picture);
 		nADs.setDate(new Date().getTime());
 		
