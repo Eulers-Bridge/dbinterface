@@ -17,6 +17,7 @@ import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
+import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 
@@ -33,6 +34,8 @@ public class CoreConfig
 	VerificationTokenRepository tokenRepo;
 	@Autowired
 	NewsArticleRepository newsRepo;
+	@Autowired
+	StudentYearRepository syRepo;
 	
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -52,7 +55,7 @@ public class CoreConfig
 	public InstitutionService createInstitutionService()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createInstitutionService()");
-		return new InstitutionEventHandler(instRepo,countryRepo);
+		return new InstitutionEventHandler(instRepo,countryRepo,syRepo);
 	}
 
 	@Bean
@@ -66,7 +69,7 @@ public class CoreConfig
 	public NewsService createNewsService()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createNewsService()");
-		return new NewsEventHandler(newsRepo);
+		return new NewsEventHandler(newsRepo,userRepo);
 	}
 
 
