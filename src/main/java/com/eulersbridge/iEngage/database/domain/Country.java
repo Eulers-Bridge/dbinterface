@@ -30,7 +30,7 @@ public class Country
 
     public Country()
 	{
-    	if (LOG.isDebugEnabled()) LOG.debug("Constructor("+countryName+')');
+    	if (LOG.isDebugEnabled()) LOG.debug("Constructor()");
 	}
 	
 	public Long getNodeId() 
