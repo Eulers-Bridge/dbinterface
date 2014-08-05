@@ -23,7 +23,9 @@ public class Institution
 	@RelatedTo(type = "HAS_INSTITUTIONS", direction=Direction.BOTH) @Fetch
 	private	Country  country; 
 	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
-	Set<User> students;
+	Iterable<User> students;
+	@RelatedTo(type="HAS_STUDENT_YEAR", direction=Direction.OUTGOING)
+	private Iterable<StudentYear> studentYears;
 	
     private static Logger LOG = LoggerFactory.getLogger(Institution.class);
 	public Institution()
@@ -87,6 +89,34 @@ public class Institution
 		this.nodeId=nodeId;
 	}
 	
+	/**
+	 * @return the students
+	 */
+	public Iterable<User> getStudents() {
+		return students;
+	}
+
+	/**
+	 * @param students the students to set
+	 */
+	public void setStudents(Set<User> students) {
+		this.students = students;
+	}
+
+	/**
+	 * @return the studentYears
+	 */
+	public Iterable<StudentYear> getStudentYears() {
+		return studentYears;
+	}
+
+	/**
+	 * @param studentYears the studentYears to set
+	 */
+	public void setStudentYears(Iterable<StudentYear> studentYears) {
+		this.studentYears = studentYears;
+	}
+
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
@@ -114,6 +144,7 @@ public class Institution
 	    if (LOG.isTraceEnabled()) LOG.trace("institution "+this);
 
 	    BeanUtils.copyProperties(this, details);
+	    details.setCountryName(getCountry().getCountryName());
 	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
 
 	    return details;
