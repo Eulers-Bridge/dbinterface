@@ -1,7 +1,5 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import java.util.Set;
-
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
@@ -24,7 +22,7 @@ public class Country
 	@NotNull @NotBlank @Email@Indexed(unique=true) private String countryName;
 	@RelatedTo(type = "HAS_INSTITUTIONS", direction=Direction.BOTH)
 	private
-	Set<Institution>  institutions; 
+	Iterable<Institution>  institutions; 
 
     private static Logger LOG = LoggerFactory.getLogger(Country.class);
 
