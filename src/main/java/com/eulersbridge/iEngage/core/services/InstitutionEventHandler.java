@@ -181,4 +181,12 @@ public class InstitutionEventHandler implements InstitutionService {
     	return result;
 	}
 
+	//TODO Create the associate methods for Student Year.
+	/*
+	@Override
+	public StudentYearReadEvent readStudentYear(
+			ReadStudentYearEvent readStudentYearEvent) 
+	{
+	}
+	*/
 }
