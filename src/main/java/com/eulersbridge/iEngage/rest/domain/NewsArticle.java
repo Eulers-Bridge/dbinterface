@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.ResourceSupport;
@@ -14,8 +16,8 @@ public class NewsArticle extends ResourceSupport
 	private Long articleId;
 	private String title;
 	private String content;
-	private Iterable<String> picture;
-	private Iterable<String> likers;
+	private Set<String> picture;
+	private Set<String> likers;
 	private Long date;
 	private String creatorEmail;
 
@@ -109,28 +111,28 @@ public class NewsArticle extends ResourceSupport
 	/**
 	 * @return the picture
 	 */
-	public Iterable<String> getPicture() {
+	public Set<String> getPicture() {
 		return picture;
 	}
 
 	/**
 	 * @param picture the picture to set
 	 */
-	public void setPicture(Iterable<String> picture) {
+	public void setPicture(Set<String> picture) {
 		this.picture = picture;
 	}
 
 	/**
 	 * @return the likers
 	 */
-	public Iterable<String> getLikers() {
+	public Set<String> getLikers() {
 		return likers;
 	}
 
 	/**
 	 * @param likers the likers to set
 	 */
-	public void setLikers(Iterable<String> likers) {
+	public void setLikers(Set<String> likers) {
 		this.likers = likers;
 	}
 
