@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import java.util.Set;
+
 import org.neo4j.graphdb.Direction;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
@@ -18,6 +20,8 @@ public class StudentYear
 	Long end;
 	@RelatedTo(type = "HAS_STUDENT_YEAR", direction=Direction.BOTH) @Fetch
 	private	Institution  institution;
+	@RelatedTo(type = "HAS_NEWS", direction=Direction.BOTH)
+	private	Set<NewsArticle>  news;
 	
 	public static StudentYear fromDetails(StudentYearDetails newYear) 
 	{
@@ -103,6 +107,20 @@ public class StudentYear
 	public void setInstitution(Institution inst) 
 	{
 		this.institution=inst;
+	}
+
+	/**
+	 * @return the news
+	 */
+	public Set<NewsArticle> getNews() {
+		return news;
+	}
+
+	/**
+	 * @param news the news to set
+	 */
+	public void setNews(Set<NewsArticle> news) {
+		this.news = news;
 	}
 
 	/* (non-Javadoc)

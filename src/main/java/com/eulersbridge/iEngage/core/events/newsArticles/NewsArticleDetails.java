@@ -15,6 +15,7 @@ public class NewsArticleDetails {
 	private Set<String> likers;
 	private Long date;
 	private String creatorEmail;
+	private String studentYear;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticleDetails.class);
 	
@@ -84,6 +85,18 @@ public class NewsArticleDetails {
 	 */
 	public void setLikers(Set<String> likers) {
 		this.likers = likers;
+	}
+	/**
+	 * @return the studentYear
+	 */
+	public String getStudentYear() {
+		return studentYear;
+	}
+	/**
+	 * @param studentYear the studentYear to set
+	 */
+	public void setStudentYear(String studentYear) {
+		this.studentYear = studentYear;
 	}
 	public String toString()
 	{

@@ -27,6 +27,8 @@ public class NewsArticle {
 	@Indexed @NotNull private Long date;
 	@RelatedTo(type = "CREATED_BY", direction=Direction.BOTH) @Fetch
 	private User creator;
+	@RelatedTo(type = "HAS_NEWS", direction=Direction.BOTH) @Fetch
+	private StudentYear studentYear;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 	
@@ -100,6 +102,22 @@ public class NewsArticle {
 		this.creator=creator;
 	}
 
+	/**
+	 * @return the studentYear
+	 */
+	public StudentYear getStudentYear() 
+	{
+		return studentYear;
+	}
+
+	/**
+	 * @param studentYear the studentYear to set
+	 */
+	public void setStudentYear(StudentYear studentYear) 
+	{
+		this.studentYear = studentYear;
+	}
+
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
@@ -131,6 +149,7 @@ public class NewsArticle {
 
 	    BeanUtils.copyProperties(this, details);
 	    if (getCreator()!=null) details.setCreatorEmail(getCreator().getEmail());
+	    if (getStudentYear()!=null) details.setStudentYear(getStudentYear().getYear());
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
 
 	    return details;
@@ -149,6 +168,9 @@ public class NewsArticle {
 		    newsArt.date=newsArtDetails.getDate();
 		    User creator=new User(newsArtDetails.getCreatorEmail(),null,null,null, null, null, null, null);
 		    newsArt.creator=creator;
+		    StudentYear year=new StudentYear();
+		    year.setYear(newsArtDetails.getStudentYear());
+			newsArt.studentYear=year;
 		    if (LOG.isTraceEnabled()) LOG.trace("newsArt "+newsArt);
 
 		    return newsArt;
