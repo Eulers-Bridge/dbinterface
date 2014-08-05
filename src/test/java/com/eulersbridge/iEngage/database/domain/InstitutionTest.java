@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
 /**
@@ -232,10 +234,32 @@ public class InstitutionTest {
 	{
 		Country country=new Country();
 		country.setCountryName("Australia");
-		Institution uniMelb = new Institution("University of Melbourne","Parkville","VIC",country);
+		Institution uniMelb = DatabaseDataFixture.populateInstUniMelb();
 		// repo.findByPropertyValue("Name", "University of Melbourne");
 //				template.save(new Institution("University of Melbourne","Parkville","VIC","Australia"));
 		if (LOG.isDebugEnabled()) LOG.debug("uniMelb = "+uniMelb);
+	}
+	
+	@Test
+	public final void testToDetails()
+	{
+		Institution inst= DatabaseDataFixture.populateInstUniMelb();
+		InstitutionDetails dets = inst.toInstDetails();
+		assertEquals("Names don't match.", dets.getName(), inst.getName());
+		assertEquals("Campuses don't match.", dets.getCampus(),inst.getCampus());
+		assertEquals("States don't match.", dets.getState(),inst.getState());
+		assertEquals("Countrys don't match.",dets.getCountryName(),inst.getCountry().getCountryName());
+	}
+	
+	@Test
+	public final void testFromDetails()
+	{
+		Institution inst = DatabaseDataFixture.populateInstUniMelb();
+		Institution inst2 = Institution.fromInstDetails(inst.toInstDetails());
+		assertEquals("Names don't match.", inst2.getName(), inst.getName());
+		assertEquals("Campuses don't match.", inst2.getCampus(),inst.getCampus());
+		assertEquals("States don't match.", inst2.getState(),inst.getState());
+		assertEquals("Countrys don't match.",inst2.getCountry().getCountryName(),inst.getCountry().getCountryName());
 	}
 
 }
