@@ -5,6 +5,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.junit.After;
@@ -22,9 +23,14 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
 import com.eulersbridge.iEngage.database.domain.Country;
+import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.repository.CountryMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.StudentYearMemoryRepository;
 import com.eulersbridge.iEngage.database.domain.Institution;
 
 /**
@@ -36,6 +42,7 @@ public class InstitutionEventHandlerTest
 	InstitutionService instService;
 	InstitutionMemoryRepository testInstRepo;
 	CountryMemoryRepository testCountryRepo;
+	StudentYearMemoryRepository testSYRepo;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -71,8 +78,18 @@ public class InstitutionEventHandlerTest
 		initialInst.setCountry(initialCountry);
 		institutions.put(new Long(1), initialInst);
 		testInstRepo=new InstitutionMemoryRepository(institutions);
+		
+		HashMap<Long, StudentYear> years=new HashMap<Long, StudentYear>();
+		StudentYear initialYear=new StudentYear();
+		initialYear.setYear("2014");
+		Calendar now=Calendar.getInstance();
+		initialYear.setStart(now.getTimeInMillis());
+		initialYear.setEnd(now.getTimeInMillis()+200000);
+		initialYear.setInstitution(initialInst);
+		years.put(new Long(1), initialYear);
+		testSYRepo=new StudentYearMemoryRepository(years);
 
-		instService=new InstitutionEventHandler(testInstRepo, testCountryRepo);
+		instService=new InstitutionEventHandler(testInstRepo, testCountryRepo, testSYRepo);
 	}
 
 
@@ -88,7 +105,7 @@ public class InstitutionEventHandlerTest
 	 */
 	@Test
 	public void testInstitutionEventHandler() {
-		InstitutionService instService2=new InstitutionEventHandler(testInstRepo, testCountryRepo);
+		InstitutionService instService2=new InstitutionEventHandler(testInstRepo, testCountryRepo,testSYRepo);
 		assertNotNull("Constructor did not create service.",instService2);
 	}
 
@@ -148,7 +165,7 @@ public class InstitutionEventHandlerTest
 	{
 		DeleteInstitutionEvent deleteInstitutionEvent=new DeleteInstitutionEvent(new Long(1));
 		InstitutionDeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
-		if (null==nUDe)	fail("Not yet implemented");
+		assertNotNull("Institution Deleted Event returned null.",nUDe);
 	}
 
 	/**
@@ -157,6 +174,17 @@ public class InstitutionEventHandlerTest
 	@Test
 	public void testGetInstitutions() {
 		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testCreateStudentYear()
+	{
+		long start=44*365*24*60*60*1000;
+		long end=45*365*24*60*60*1000;
+		StudentYearDetails studentYearDetails=new StudentYearDetails("2014", start, end, (long)1);
+		CreateStudentYearEvent csye=new CreateStudentYearEvent(studentYearDetails);
+		StudentYearCreatedEvent syce=instService.createStudentYear(csye);
+		assertNotNull("Student year created event was null.",syce);
 	}
 
 }

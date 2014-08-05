@@ -10,6 +10,8 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
 import com.eulersbridge.iEngage.rest.domain.Institution;
 
 
@@ -20,5 +22,6 @@ public interface InstitutionService {
 	public InstitutionUpdatedEvent updateInstitution(UpdateInstitutionEvent updateInstitutionEvent);
 	public InstitutionDeletedEvent deleteInstitution(DeleteInstitutionEvent deleteInstitutionEvent);
 	public Iterator<Institution> getInstitutions();
+	public StudentYearCreatedEvent createStudentYear(CreateStudentYearEvent createStudentYearEvent);
 
 }

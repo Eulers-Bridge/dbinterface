@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
@@ -17,10 +16,15 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
 
 public class InstitutionEventHandler implements InstitutionService {
 
@@ -28,11 +32,13 @@ public class InstitutionEventHandler implements InstitutionService {
 
     private InstitutionRepository instRepository;
     private CountryRepository countryRepository;
+    private StudentYearRepository syRepository;
     
-    public InstitutionEventHandler(final InstitutionRepository instRepo, final CountryRepository countryRepo) 
+    public InstitutionEventHandler(final InstitutionRepository instRepo, final CountryRepository countryRepo, final StudentYearRepository syRepo) 
     {
       this.instRepository = instRepo;
       this.countryRepository = countryRepo;
+      this.syRepository = syRepo;
     }
     
 	@Override
@@ -145,6 +151,34 @@ public class InstitutionEventHandler implements InstitutionService {
 			instList.add(restInst);
 		}
 		return instList.iterator();
+	}
+
+	@Override
+	public StudentYearCreatedEvent createStudentYear(
+			CreateStudentYearEvent createStudentYearEvent) 
+	{
+		StudentYearDetails newYear=createStudentYearEvent.getStudentYearDetails();
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with institutionId = "+newYear.getInstitutionId());
+    	Institution inst=instRepository.findOne(newYear.getInstitutionId());
+    	if (LOG.isDebugEnabled()) LOG.debug("inst - "+inst);
+    	StudentYear yearToInsert=StudentYear.fromDetails(newYear);
+    	StudentYearCreatedEvent result;	
+    	StudentYear createdYear=null;
+    	
+    	if (inst!=null)
+    	{
+    		yearToInsert.setInstitution(inst);
+	    	if (LOG.isDebugEnabled()) LOG.debug("yearToInsert :"+yearToInsert);
+	    	createdYear = syRepository.save(yearToInsert);
+			//TODO what happens if this fails?
+			if (LOG.isDebugEnabled()) LOG.debug("created year = "+createdYear);
+	        result=new StudentYearCreatedEvent(createdYear.getNodeId(),createdYear.toDetails());
+    	}
+    	else
+    	{
+    		result=StudentYearCreatedEvent.institutionNotFound(null);
+    	}
+    	return result;
 	}
 
 }
