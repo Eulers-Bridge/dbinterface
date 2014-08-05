@@ -13,6 +13,13 @@ public class DatabaseDataFixture
 		Institution inst=populateInstUniMelb();
 		return populateUser("gnewitt@hotmail.com", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst);
 	}
+	public static User populateUserGnewitt2()
+	{
+		Long nodeId=(long)2;
+		boolean verified=true;
+		Institution inst=populateInstUniMelb();
+		return populateUser("greg.newitt@unimelb.edu.au", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst);
+	}
 	public static User populateUser(String email, String firstName, String lastName, String gender, String nationality, String yearOfBirth, String personality, String password, Long id, boolean verified, Institution inst)
 	{
 		User user=new User(email, firstName, lastName, gender, nationality, yearOfBirth, personality, password);
