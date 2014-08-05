@@ -93,6 +93,11 @@ public class NewsArticle {
 		return creator;
 	}
 	
+	public void setCreator(User creator) 
+	{
+		this.creator=creator;
+	}
+
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
