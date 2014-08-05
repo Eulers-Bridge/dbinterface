@@ -27,6 +27,7 @@ public class NewsArticleTest
 	final String content="The content.";
 	final Calendar date=Calendar.getInstance();
 	final User creator=DatabaseDataFixture.populateUserGnewitt();
+	final StudentYear year=new StudentYear();
 	final Long node1=new Long(1);
 	final Long node2=new Long(2);
 	/**
@@ -50,8 +51,10 @@ public class NewsArticleTest
 	public void setUp() throws Exception 
 	{
 		Iterable<String> picture=null;
+		year.setYear("2014");
 		news=new NewsArticle(title, content, picture, date, creator);
 		news.setNodeId(node1);
+		news.setStudentYear(year);
 	}
 
 	/**
@@ -181,6 +184,7 @@ public class NewsArticleTest
 		assertEquals("IDs don't match.",dets.getNewsArticleId(),news.getNodeId());
 		assertEquals("Pictures don't match.",dets.getPicture(),news.getPicture());
 		assertEquals("Likers don't match.",dets.getLikers(),news.getLikers());
+		assertEquals("Years don't match.",dets.getStudentYear(),news.getStudentYear().getYear());
 	}
 
 	/**
@@ -198,6 +202,7 @@ public class NewsArticleTest
 		assertEquals("IDs don't match.",news2.getNodeId(),news.getNodeId());
 		assertEquals("Pictures don't match.",news2.getPicture(),news.getPicture());
 		assertEquals("Likers don't match.",news2.getLikers(),news.getLikers());
+		assertEquals("Years don't match.",news2.getStudentYear().getYear(),news.getStudentYear().getYear());
 	}
 
 	/**
