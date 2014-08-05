@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
 import java.util.Calendar;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,8 @@ public class NewsArticleDetails {
 	private Long newsArticleId;
 	private String title;
 	private String content;
-	private Iterable<String> picture;
-	private Iterable<String> likers;
+	private Set<String> picture;
+	private Set<String> likers;
 	private Long date;
 	private String creatorEmail;
 	
@@ -44,11 +45,11 @@ public class NewsArticleDetails {
 	{
 		this.content = content;
 	}
-	public Iterable<String> getPicture()
+	public Set<String> getPicture()
 	{
 		return this.picture;
 	}
-	public void setPicture(Iterable<String> picture)
+	public void setPicture(Set<String> picture)
 	{
 		this.picture = picture;
 	}
@@ -75,13 +76,13 @@ public class NewsArticleDetails {
 	/**
 	 * @return the likers
 	 */
-	public Iterable<String> getLikers() {
+	public Set<String> getLikers() {
 		return likers;
 	}
 	/**
 	 * @param likers the likers to set
 	 */
-	public void setLikers(Iterable<String> likers) {
+	public void setLikers(Set<String> likers) {
 		this.likers = likers;
 	}
 	public String toString()
