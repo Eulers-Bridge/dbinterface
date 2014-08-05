@@ -22,7 +22,10 @@ import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.rest.domain.StudentYear;
 import com.eulersbridge.iEngage.rest.domain.Institution;
 
 @RestController
@@ -157,16 +160,16 @@ public class InstitutionController
     
     
     /**
-     * Is passed all the necessary data to create a new user.
+     * Is passed all the necessary data to create a new institution.
      * The request must be a POST with the necessary parameters in the
      * attached data.
      * <p/>
-     * This method will return the resulting user object.
+     * This method will return the resulting institution object.
      * There will also be a relationship set up with the 
-     * institution the user belongs to.
+     * country the institution belongs to.
      * 
-     * @param user the user object passed across as JSON.
-     * @return the user object returned by the Graph Database.
+     * @param institution the institution object passed across as JSON.
+     * @return the institution object returned by the Graph Database.
      * 
 
 	*/
@@ -191,6 +194,45 @@ public class InstitutionController
     	{
     		restInst=Institution.fromInstDetails(instEvent.getInstitutionDetails());
     		result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
+    	}
+		return result;
+    }
+    
+    /**
+     * Is passed all the necessary data to create a new institution.
+     * The request must be a POST with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting institution object.
+     * There will also be a relationship set up with the 
+     * country the institution belongs to.
+     * 
+     * @param institution the institution object passed across as JSON.
+     * @return the institution object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.POST,value="/institution/studentyear")
+    public @ResponseBody ResponseEntity<StudentYear> createStudentYear(@RequestBody StudentYear sy) 
+    {
+    	if (LOG.isInfoEnabled()) LOG.info("attempting to save studentYear "+sy);
+    	StudentYear restYear=null;
+    	ResponseEntity<StudentYear> result;
+    	StudentYearCreatedEvent syEvent=instService.createStudentYear(new CreateStudentYearEvent(sy.toStudentYearDetails()));
+
+    	if (syEvent.getId()==null)
+    	{
+    		result=new ResponseEntity<StudentYear>(HttpStatus.BAD_REQUEST);
+    	}
+    	else if (!syEvent.isInstitutionFound())
+    	{
+    		result=new ResponseEntity<StudentYear>(HttpStatus.FAILED_DEPENDENCY);
+    	}
+    	else
+    	{
+    		restYear=StudentYear.fromStudentYearDetails(syEvent.getStudentYearDetails());
+    		result=new ResponseEntity<StudentYear>(restYear,HttpStatus.OK);
     	}
 		return result;
     }
