@@ -23,7 +23,9 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.StudentYearReadEvent;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.rest.domain.StudentYear;
 import com.eulersbridge.iEngage.rest.domain.Institution;
@@ -199,16 +201,16 @@ public class InstitutionController
     }
     
     /**
-     * Is passed all the necessary data to create a new institution.
+     * Is passed all the necessary data to create a new student year.
      * The request must be a POST with the necessary parameters in the
      * attached data.
      * <p/>
-     * This method will return the resulting institution object.
+     * This method will return the resulting student year object.
      * There will also be a relationship set up with the 
-     * country the institution belongs to.
+     * institution the student year belongs to.
      * 
-     * @param institution the institution object passed across as JSON.
-     * @return the institution object returned by the Graph Database.
+     * @param student year the student year object passed across as JSON.
+     * @return the student year object returned by the Graph Database.
      * 
 
 	*/
@@ -234,6 +236,40 @@ public class InstitutionController
     		restYear=StudentYear.fromStudentYearDetails(syEvent.getStudentYearDetails());
     		result=new ResponseEntity<StudentYear>(restYear,HttpStatus.OK);
     	}
+		return result;
+    }
+    
+    /**
+     * Is passed all the necessary data to read a student year.
+     * The request must be a GET with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting student year object.
+     * 
+     * @param institutionid the institution id object passed across as JSON.
+     * @param syid the institution id object passed across as JSON.
+     * @return the institution object returned by the Graph Database.
+     * 
+
+	*/
+   //TODO 
+    @RequestMapping(method=RequestMethod.GET,value="/institution/{institutionId}/studentyear/{syId}")
+    public @ResponseBody ResponseEntity<StudentYear> readStudentYear(@PathVariable Long institutionId,@PathVariable Long syId) 
+    {
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve student year"+syId+" for . "+institutionId);
+    	StudentYear restSY=null;
+    	ResponseEntity<StudentYear> result;
+		StudentYearReadEvent syEvent=instService.readStudentYear(new ReadStudentYearEvent(syId));
+  	
+		if (!syEvent.isEntityFound())
+		{
+			result=new ResponseEntity<StudentYear>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			restSY=StudentYear.fromStudentYearDetails(syEvent.getReadStudentYearDetails());
+			result=new ResponseEntity<StudentYear>(restSY,HttpStatus.OK);
+		}
 		return result;
     }
     
