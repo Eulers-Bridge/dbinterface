@@ -13,7 +13,9 @@ import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
+import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
@@ -23,11 +25,13 @@ public class NewsEventHandler implements NewsService
 
     private UserRepository userRepository;
 	private NewsArticleRepository newsRepo;
+	private InstitutionRepository instRepo;
 
-	public NewsEventHandler(NewsArticleRepository newsRepo,UserRepository userRepository) 
+	public NewsEventHandler(NewsArticleRepository newsRepo,UserRepository userRepository, InstitutionRepository instRepo) 
 	{
 		this.newsRepo=newsRepo;
 		this.userRepository=userRepository;
+		this.instRepo=instRepo;
 	}
 
 	@Override
@@ -37,19 +41,30 @@ public class NewsEventHandler implements NewsService
 		NewsArticleDetails nADs = createNewsArticleEvent.getNewsArticleDetails();
 		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
 		
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with id = "+nADs.getInstitutionId());
+		StudentYear sy=instRepo.findLatestStudentYear(nADs.getInstitutionId());
+		if (LOG.isDebugEnabled()) LOG.debug("inst - "+sy);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding user with email = "+nADs.getCreatorEmail());
     	User creator=userRepository.findByEmail(nADs.getCreatorEmail());
     	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+creator);
     	NewsArticleCreatedEvent nACE;
-    	if (creator!=null)
+    	if ((creator!=null)&&(sy!=null))
     	{
     		na.setCreator(creator);
+    		na.setStudentYear(sy);
 			NewsArticle result=newsRepo.save(na);
 			nACE=new NewsArticleCreatedEvent(result.getNodeId(), result.toNewsArticleDetails());
     	}
     	else
     	{
-    		nACE=NewsArticleCreatedEvent.creatorNotFound(na.getNodeId());
+    		if (null==creator)
+    		{
+    			nACE=NewsArticleCreatedEvent.creatorNotFound(na.getNodeId());
+    		}
+    		else
+    		{
+    			nACE=NewsArticleCreatedEvent.institutionNotFound(na.getNodeId());
+    		}
     	}
 		return nACE;
 	}
