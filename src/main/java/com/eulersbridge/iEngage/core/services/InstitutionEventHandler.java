@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,10 @@ import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
+import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
+import com.eulersbridge.iEngage.core.events.studentYear.StudentYearReadEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
@@ -179,6 +182,30 @@ public class InstitutionEventHandler implements InstitutionService {
     		result=StudentYearCreatedEvent.institutionNotFound(null);
     	}
     	return result;
+	}
+
+	@Override
+	public StudentYearReadEvent readStudentYear(
+			ReadStudentYearEvent readStudentYearEvent) 
+	{
+		StudentYear sy=syRepository.findOne(readStudentYearEvent.getStudentYearId());
+		StudentYearReadEvent result;
+		if (sy!=null)
+		{
+			result=new StudentYearReadEvent(readStudentYearEvent.getStudentYearId(),sy.toDetails());
+		}
+		else
+		{
+			result=StudentYearReadEvent.notFound(readStudentYearEvent.getStudentYearId());
+		}
+		return result;
+	}
+
+	@Override
+	public Iterator<StudentYear> getStudentYears(Long institutionId) 
+	{
+		Set<StudentYear> years=syRepository.findStudentYears(institutionId);
+		return years.iterator();
 	}
 
 	//TODO Create the associate methods for Student Year.
