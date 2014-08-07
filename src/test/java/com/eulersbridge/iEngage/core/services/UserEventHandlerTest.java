@@ -30,7 +30,6 @@ import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
-import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -64,14 +63,9 @@ public class UserEventHandlerTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		HashMap<Long, User> users=new HashMap<Long, User>();
-		User user=DatabaseDataFixture.populateUserGnewitt();
-		users.put((long)1, user);
+		HashMap<Long, User> users=DatabaseDataFixture.populateUsers();
 		userRepo=new UserMemoryRepository(users);
-		HashMap<Long, Institution> institutions=new HashMap<Long, Institution>();
-		Country initialCountry=DatabaseDataFixture.populateCountryAust();
-		Institution initialInst=DatabaseDataFixture.populateInstUniMelb();
-		institutions.put(new Long(1), initialInst);
+		HashMap<Long, Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
 
 		tokenRepo=new VerificationTokenMemoryRepository();

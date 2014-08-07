@@ -21,6 +21,7 @@ import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.CountryMemoryRepository;
 /**
  * @author Greg Newitt
@@ -42,10 +43,7 @@ public class CountryEventHandlerTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		HashMap<Long, Country> countrys=new HashMap<Long, Country>();
-		Country initialCountry=new Country();
-		initialCountry.setCountryName("Australia");
-		countrys.put(new Long(1), initialCountry);
+		HashMap<Long, Country> countrys=DatabaseDataFixture.populateCountries();
 		testRepo=new CountryMemoryRepository(countrys);
 		countryService=new CountryEventHandler(testRepo);
 	}

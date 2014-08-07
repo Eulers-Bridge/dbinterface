@@ -5,7 +5,6 @@ package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
 
-import java.util.Calendar;
 import java.util.HashMap;
 
 import org.junit.After;
@@ -32,6 +31,7 @@ import com.eulersbridge.iEngage.database.repository.CountryMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.StudentYearMemoryRepository;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
  * @author Greg Newitt
@@ -63,30 +63,14 @@ public class InstitutionEventHandlerTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		HashMap<Long, Country> countrys=new HashMap<Long, Country>();
-		Country initialCountry=new Country();
-		initialCountry.setCountryName("Australia");
-		countrys.put(new Long(1), initialCountry);
-		initialCountry.setNodeId(new Long(1));
+		
+		HashMap<Long, Country> countrys=DatabaseDataFixture.populateCountries();
 		testCountryRepo=new CountryMemoryRepository(countrys);
 
-		HashMap<Long, Institution> institutions=new HashMap<Long, Institution>();
-		Institution initialInst=new Institution();
-		initialInst.setName("University of Melbourne");
-		initialInst.setCampus("Parkville");
-		initialInst.setState("Victoria");
-		initialInst.setCountry(initialCountry);
-		institutions.put(new Long(1), initialInst);
+		HashMap<Long, Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		testInstRepo=new InstitutionMemoryRepository(institutions);
 		
-		HashMap<Long, StudentYear> years=new HashMap<Long, StudentYear>();
-		StudentYear initialYear=new StudentYear();
-		initialYear.setYear("2014");
-		Calendar now=Calendar.getInstance();
-		initialYear.setStart(now.getTimeInMillis());
-		initialYear.setEnd(now.getTimeInMillis()+200000);
-		initialYear.setInstitution(initialInst);
-		years.put(new Long(1), initialYear);
+		HashMap<Long, StudentYear> years=DatabaseDataFixture.populateStudentYears();
 		testSYRepo=new StudentYearMemoryRepository(years);
 
 		instService=new InstitutionEventHandler(testInstRepo, testCountryRepo, testSYRepo);
