@@ -7,6 +7,7 @@ public class NewsArticleCreatedEvent extends CreatedEvent
 	private NewsArticleDetails newsArticleDetails;
 	private Long id;
 	private boolean creatorFound=true;
+	private boolean institutionFound=true;
 	
 	public NewsArticleCreatedEvent(Long id, NewsArticleDetails newsArticleDetails) 
 	{
@@ -52,10 +53,30 @@ public class NewsArticleCreatedEvent extends CreatedEvent
 		this.creatorFound = creatorFound;
 	}
 
+	/**
+	 * @return the institutionFound
+	 */
+	public boolean isInstitutionFound() {
+		return institutionFound;
+	}
+
+	/**
+	 * @param institutionFound the institutionFound to set
+	 */
+	public void setInstitutionFound(boolean institutionFound) {
+		this.institutionFound = institutionFound;
+	}
+
 	public static NewsArticleCreatedEvent creatorNotFound(Long nodeId) 
 	{
 		NewsArticleCreatedEvent ev = new NewsArticleCreatedEvent(nodeId);
 	    ev.setCreatorFound(false);
+	    return ev;
+	}
+
+	public static NewsArticleCreatedEvent institutionNotFound(Long nodeId) {
+		NewsArticleCreatedEvent ev = new NewsArticleCreatedEvent(nodeId);
+	    ev.setInstitutionFound(false);
 	    return ev;
 	}
 }

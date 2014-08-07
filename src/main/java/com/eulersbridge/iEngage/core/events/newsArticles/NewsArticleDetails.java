@@ -16,6 +16,7 @@ public class NewsArticleDetails {
 	private Long date;
 	private String creatorEmail;
 	private String studentYear;
+	private Long institutionId;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticleDetails.class);
 	
@@ -97,6 +98,18 @@ public class NewsArticleDetails {
 	 */
 	public void setStudentYear(String studentYear) {
 		this.studentYear = studentYear;
+	}
+	/**
+	 * @return the institutionId
+	 */
+	public Long getInstitutionId() {
+		return institutionId;
+	}
+	/**
+	 * @param institutionId the institutionId to set
+	 */
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
 	}
 	public String toString()
 	{

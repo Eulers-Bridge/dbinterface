@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.rest.controller.NewsController;
 public class NewsArticle extends ResourceSupport
 {
 	private Long articleId;
+	private Long institutionId;
 	private String title;
 	private String content;
 	private Set<String> picture;
@@ -34,6 +35,7 @@ public class NewsArticle extends ResourceSupport
 	    news.likers = readNews.getLikers();
 	    news.picture = readNews.getPicture();
 	    news.title = readNews.getTitle();
+	    news.institutionId = readNews.getInstitutionId();
 	    
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
@@ -62,6 +64,7 @@ public class NewsArticle extends ResourceSupport
 	    details.setLikers(getLikers());
 	    details.setDate(getDate());
 	    details.setCreatorEmail(creatorEmail);
+	    details.setInstitutionId(getInstitutionId());
 
 	    return details;
 	}
@@ -163,11 +166,27 @@ public class NewsArticle extends ResourceSupport
 	public void setCreatorEmail(String creatorEmail) {
 		this.creatorEmail = creatorEmail;
 	}
+	/**
+	 * @return the institutionId
+	 */
+	public Long getInstitutionId() {
+		return institutionId;
+	}
+
+	/**
+	 * @param institutionId the institutionId to set
+	 */
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
+	}
+
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ articleId = ");
 		String retValue;
 		buff.append(getArticleId());
+		buff.append(", institutionId = ");
+		buff.append(getInstitutionId());
 		buff.append(", title = ");
 		buff.append(getTitle());
 		buff.append(", content = ");
