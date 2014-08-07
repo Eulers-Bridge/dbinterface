@@ -25,9 +25,11 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 
@@ -40,6 +42,7 @@ public class NewsEventHandlerTest
 	NewsArticleMemoryRepository testRepo;
 	UserMemoryRepository userRepo;
 	NewsEventHandler newsService;
+	InstitutionMemoryRepository instRepo;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -67,10 +70,11 @@ public class NewsEventHandlerTest
 		NewsArticle initialArticle=new NewsArticle("Test Article", "Contents of the Test Article", picture, Calendar.getInstance(), creator);
 		newsArticles.put(new Long(1), initialArticle);
 		testRepo=new NewsArticleMemoryRepository(newsArticles);
-		HashMap<Long, User> users=new HashMap<Long, User>();
-		users.put(new Long(1), creator);
+		HashMap<Long, User> users=DatabaseDataFixture.populateUsers();
 		userRepo=new UserMemoryRepository(users);
-		newsService=new NewsEventHandler(testRepo,userRepo);
+		HashMap<Long,Institution> institutions=DatabaseDataFixture.populateInstitutions();
+		instRepo=new InstitutionMemoryRepository(institutions);
+		newsService=new NewsEventHandler(testRepo,userRepo,instRepo);
 	}
 
 	/**
@@ -86,7 +90,7 @@ public class NewsEventHandlerTest
 	@Test
 	public void testNewsEventHandler() 
 	{
-		NewsService newsService=new NewsEventHandler(testRepo,userRepo);
+		NewsService newsService=new NewsEventHandler(testRepo,userRepo,instRepo);
 		assertNotNull("newsService not being created by constructor.",newsService);
 	}
 
