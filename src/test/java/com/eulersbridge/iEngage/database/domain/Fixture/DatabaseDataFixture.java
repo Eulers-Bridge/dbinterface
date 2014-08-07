@@ -1,7 +1,11 @@
 package com.eulersbridge.iEngage.database.domain.Fixture;
 
+import java.util.Calendar;
+import java.util.HashMap;
+
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
 
 public class DatabaseDataFixture 
@@ -29,6 +33,15 @@ public class DatabaseDataFixture
 		user.setInstitution(inst);
 		return user;
 	}
+	public static HashMap<Long,User> populateUsers()
+	{
+		HashMap<Long, User> users=new HashMap<Long, User>();
+		User initialUser=populateUserGnewitt();
+		users.put(new Long(1), initialUser);
+		return users;
+	}
+	
+
 	public static Institution populateInstUniMelb()
 	{
 		Country country=populateCountryAust();
@@ -52,6 +65,49 @@ public class DatabaseDataFixture
 		country.setCountryName(countryName);
 		country.setNodeId(nodeId);
 		return country;
+	}
+	
+	public static StudentYear populateStudentYear2014()
+	{
+		return populateStudentYear((long)1,"Australia");
+	}
+	
+	public static StudentYear populateStudentYear(Long nodeId,String theYear)
+	{
+		StudentYear year=new StudentYear();
+		year.setYear(theYear);
+		Calendar now=Calendar.getInstance();
+		year.setStart(now.getTimeInMillis());
+		year.setEnd(now.getTimeInMillis()+200000);
+		year.setInstitution(populateInstUniMelb());
+		year.setNodeId(nodeId);
+		return year;
+	}
+	
+	public static HashMap<Long,Country> populateCountries()
+	{
+		HashMap<Long, Country> countrys=new HashMap<Long, Country>();
+		Country initialCountry=populateCountryAust();
+		countrys.put(new Long(1), initialCountry);
+		return countrys;
+	}
+	
+	public static HashMap<Long,Institution> populateInstitutions()
+	{
+		HashMap<Long, Institution> institutions=new HashMap<Long, Institution>();
+		Institution initialInst=populateInstUniMelb();
+		Long nodeId=new Long(1);
+		initialInst.setNodeId(nodeId);
+		institutions.put(nodeId, initialInst);
+		return institutions;
+	}
+	
+	public static HashMap<Long,StudentYear> populateStudentYears()
+	{
+		HashMap<Long, StudentYear> years=new HashMap<Long, StudentYear>();
+		StudentYear initialYear=populateStudentYear2014();
+		years.put(new Long(1), initialYear);
+		return years;
 	}
 
 }
