@@ -6,6 +6,7 @@ package com.eulersbridge.iEngage.database.repository;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.springframework.data.domain.Page;
@@ -238,6 +239,12 @@ public class StudentYearMemoryRepository implements StudentYearRepository
 	@Override
 	public <N> Iterable<StudentYear> findAllByTraversal(N arg0,
 			TraversalDescription arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<StudentYear> findStudentYears(Long institutionId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
