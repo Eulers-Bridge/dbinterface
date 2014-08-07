@@ -14,8 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 
-import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
 /**
@@ -254,6 +254,12 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public StudentYear findLatestStudentYear(Long institutionId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
