@@ -55,6 +55,12 @@ public class VerificationToken {
     	return nodeId;
     }
 
+	public void setNodeId(Long nodeId) 
+	{
+		this.nodeId=nodeId;
+		
+	}
+
     public boolean isVerified() {
         return verified;
     }
