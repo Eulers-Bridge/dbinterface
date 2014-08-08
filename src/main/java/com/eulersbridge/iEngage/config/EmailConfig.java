@@ -37,7 +37,12 @@ public class EmailConfig
 	@Bean
 	public EmailService createEmailService()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("createEmailService()");
+		if (LOG.isDebugEnabled())
+		{
+			LOG.debug("createEmailService()");
+			LOG.debug("host - "+host+" username "+username);
+		}
+		
 		return new EmailEventHandler();
 	}
 
