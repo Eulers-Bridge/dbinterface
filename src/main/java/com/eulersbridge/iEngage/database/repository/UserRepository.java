@@ -15,6 +15,6 @@ public interface UserRepository extends GraphRepository<User>
  	User findByEmail(String email);
  	
 	@Query("MATCH (u:`User`)-[r:verifiedBy]-(v:`VerificationToken`) where ID(u)={userId} AND ID(v)={tokenId} set u.accountVerified={isVerified} set v.verified={isVerified} ")
-	void verifyUser(@Param("userId") Long userId, @Param("tokenId") Long tokenId, boolean isVerified);
+	void verifyUser(@Param("userId") Long userId, @Param("tokenId") Long tokenId, @Param("isVerified") boolean isVerified);
 
 }
