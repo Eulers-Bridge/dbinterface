@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -23,12 +24,12 @@ import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 
 import com.eulersbridge.iEngage.core.domain.Login;
 
+@PropertySource("classpath:application.properties")
 @Configuration
 @ComponentScan
 @EnableNeo4jRepositories(basePackages={"com.eulersbridge.iEngage.database.repository"})
 @EnableAutoConfiguration
 @EnableGlobalMethodSecurity
-@PropertySource("classpath:application.properties")
 public class Application extends Neo4jConfiguration
 {
 	@Resource
@@ -59,9 +60,9 @@ public class Application extends Neo4jConfiguration
     @Bean(destroyMethod = "shutdown")
     public GraphDatabaseService graphDatabaseService() throws IOException
  	{
-//    	String url=propResolver.getRequiredProperty("neo4j.server.url");
-//    	if (LOG.isDebugEnabled()) LOG.debug("url = "+url);
-	 	return new SpringRestGraphDatabase("http://ec2-54-79-49-160.ap-southeast-2.compute.amazonaws.com:7474/db/data");
+    	String url=propResolver.getRequiredProperty("neo4j.server.url");
+    	if (LOG.isDebugEnabled()) LOG.debug("url = "+url);
+	 	return new SpringRestGraphDatabase(url);
     }
 
 @Override
