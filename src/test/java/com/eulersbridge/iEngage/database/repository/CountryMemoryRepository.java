@@ -5,6 +5,7 @@ package com.eulersbridge.iEngage.database.repository;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.domain.Country;
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
 
 /**
  * @author Greg Newitt
@@ -37,8 +37,10 @@ public class CountryMemoryRepository implements CountryRepository {
 	@Override
 	public Result<Country> findAll() 
 	{
-		// TODO Auto-generated method stub
-		return (Result<Country>)this.countrys.values();
+		Iterator<Country> iter=this.countrys.values().iterator();
+		ResultImpl<Country> result=new ResultImpl<Country>();
+		result.setIterator(iter);
+		return result;
 	}
 
 	/* (non-Javadoc)

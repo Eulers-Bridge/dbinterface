@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.slf4j.Logger;
@@ -16,11 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
+import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
+import com.eulersbridge.iEngage.core.events.countrys.ReadCountrysEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.core.services.CountryService;
 import com.eulersbridge.iEngage.rest.domain.Country;
@@ -188,9 +192,17 @@ public class CountryController
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve countrys. ");
     	
-		Iterator<Country> iter=countryService.getCountrys();
-		
-    	return new ResponseEntity<Iterator<Country>> (iter,HttpStatus.OK);
+		ReadCountrysEvent rce=new ReadCountrysEvent();
+		CountrysReadEvent cre = countryService.readCountrys(rce);
+		Iterator <CountryDetails> iter=cre.getCountrys().iterator();
+		ArrayList <Country> countrys=new ArrayList<Country>();
+		while(iter.hasNext())
+		{
+			CountryDetails dets=iter.next();
+			Country thisCountry=Country.fromCountryDetails(dets);
+			countrys.add(thisCountry);		
+		}
+    	return new ResponseEntity<Iterator<Country>> (countrys.iterator(),HttpStatus.OK);
     }
 
 }

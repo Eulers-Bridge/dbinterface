@@ -13,9 +13,11 @@ import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
+import com.eulersbridge.iEngage.core.events.countrys.ReadCountrysEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
@@ -102,20 +104,20 @@ public class CountryEventHandler implements CountryService
 	}
 
 	@Override
-	public Iterator<com.eulersbridge.iEngage.rest.domain.Country> getCountrys() 
+	public CountrysReadEvent readCountrys(ReadCountrysEvent rce) 
 	{
+	    if (LOG.isDebugEnabled()) LOG.debug("readCountrys()");
 		Result<Country> returned=countryRepository.findAll();
-		ArrayList<com.eulersbridge.iEngage.rest.domain.Country> countryList=new ArrayList<com.eulersbridge.iEngage.rest.domain.Country>();
+		ArrayList<CountryDetails> countryList=new ArrayList<CountryDetails>();
 		Iterator<Country> iter=returned.iterator();
 		while (iter.hasNext())
 		{
 			Country country=iter.next();
 			CountryDetails dets=country.toCountryDetails();
-			
-			com.eulersbridge.iEngage.rest.domain.Country restCountry=com.eulersbridge.iEngage.rest.domain.Country.fromCountryDetails(dets);
-			countryList.add(restCountry);
+			countryList.add(dets);
 		}
-		return countryList.iterator();
+		CountrysReadEvent evt=new CountrysReadEvent(countryList);
+		return evt;
 	}
 
 }

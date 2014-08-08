@@ -10,15 +10,19 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
+import com.eulersbridge.iEngage.core.events.countrys.ReadCountrysEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -32,7 +36,7 @@ public class CountryEventHandlerTest
 	CountryMemoryRepository testRepo;
 	CountryEventHandler countryService;
 
-	@BeforeClass
+    @BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
 
@@ -101,9 +105,10 @@ public class CountryEventHandlerTest
 	}
 
 	@Test
-	public void testGetCountrys() 
+	public void testReadCountrys() 
 	{
-		Iterator<com.eulersbridge.iEngage.rest.domain.Country> countrys=null; //TODO countryService.getCountrys();
+		ReadCountrysEvent rce=new ReadCountrysEvent();
+		CountrysReadEvent countrys=countryService.readCountrys(rce);
 		if (null==countrys) fail("Not yet implemented");
 	}
 
