@@ -107,6 +107,7 @@ public class NewsEventHandlerTest
 		nADs.setCreatorEmail("gnewitt@hotmail.com");
 		nADs.setContent("Per ardua ad astra.");
 		nADs.setTitle("Per ardua ad astra.");
+		nADs.setInstitutionId((long)1);
 		createNewsArticleEvent=new CreateNewsArticleEvent(nADs);
 		NewsArticleCreatedEvent nace = newsService.createNewsArticle(createNewsArticleEvent);
 //		nace.
