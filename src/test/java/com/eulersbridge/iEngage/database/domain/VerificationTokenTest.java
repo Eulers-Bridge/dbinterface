@@ -59,6 +59,14 @@ public class VerificationTokenTest
 	}
 
 	@Test
+	public void testSetNodeId() 
+	{
+		Long nodeId= new Long(2);
+		token.setNodeId(nodeId);
+		assertEquals("",nodeId,token.getNodeId());
+	}
+
+	@Test
 	public void testIsVerified() 
 	{
 		boolean verified=token.isVerified();
