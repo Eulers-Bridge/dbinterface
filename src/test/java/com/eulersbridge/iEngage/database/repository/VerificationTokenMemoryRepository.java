@@ -3,6 +3,9 @@
  */
 package com.eulersbridge.iEngage.database.repository;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -18,7 +21,16 @@ import com.eulersbridge.iEngage.database.domain.VerificationToken;
  *
  */
 public class VerificationTokenMemoryRepository implements
-		VerificationTokenRepository {
+		VerificationTokenRepository 
+{
+	  private Map<Long, VerificationToken> tokens;
+		Long maxKey=(long) 0;
+
+	  public VerificationTokenMemoryRepository(final Map<Long, VerificationToken> tokens) 
+	  {
+	    this.tokens = Collections.unmodifiableMap(tokens);
+	  }
+
 
 	/* (non-Javadoc)
 	 * @see org.springframework.data.neo4j.repository.CRUDRepository#findAll()
@@ -78,9 +90,13 @@ public class VerificationTokenMemoryRepository implements
 	 * @see org.springframework.data.repository.CrudRepository#delete(java.io.Serializable)
 	 */
 	@Override
-	public void delete(Long arg0) {
-		// TODO Auto-generated method stub
-
+	public void delete(Long key) 
+	{
+	    if (tokens.containsKey(key)) {
+	        Map<Long, VerificationToken> modifiableTokens = new HashMap<Long, VerificationToken>(tokens);
+	        modifiableTokens.remove(key);
+	        this.tokens = Collections.unmodifiableMap(modifiableTokens);
+	      }
 	}
 
 	/* (non-Javadoc)
@@ -132,18 +148,27 @@ public class VerificationTokenMemoryRepository implements
 	 * @see org.springframework.data.repository.CrudRepository#findOne(java.io.Serializable)
 	 */
 	@Override
-	public VerificationToken findOne(Long arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public VerificationToken findOne(Long tokenId) 
+	{
+		return tokens.get(tokenId);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.springframework.data.repository.CrudRepository#save(java.lang.Object)
 	 */
 	@Override
-	public <S extends VerificationToken> S save(S arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public <S extends VerificationToken> S save(S token) {
+	    Map<Long, VerificationToken> modifiableTokens = new HashMap<Long, VerificationToken>(tokens);
+	    if (null==token.getNodeId())
+	    {
+	    	maxKey++;
+	    	token.setNodeId(maxKey);
+	    }
+
+	    modifiableTokens.put(token.getNodeId(), token);
+	    this.tokens = Collections.unmodifiableMap(modifiableTokens);
+
+	    return token;
 	}
 
 	/* (non-Javadoc)
@@ -220,6 +245,17 @@ public class VerificationTokenMemoryRepository implements
 			TraversalDescription arg1) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public VerificationToken findToken()
+	{
+		VerificationToken token=null;
+		if (!(tokens.values().isEmpty()))
+		{
+			Iterator<VerificationToken> iter=tokens.values().iterator();
+			token=iter.next();
+		}
+		return token;
 	}
 
 	/* (non-Javadoc)
