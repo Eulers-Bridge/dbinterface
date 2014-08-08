@@ -69,7 +69,7 @@ public class DatabaseDataFixture
 	
 	public static StudentYear populateStudentYear2014()
 	{
-		return populateStudentYear((long)1,"Australia");
+		return populateStudentYear((long)1,"2014");
 	}
 	
 	public static StudentYear populateStudentYear(Long nodeId,String theYear)
