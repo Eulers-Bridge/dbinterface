@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
+import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
+import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
+import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
@@ -287,8 +291,31 @@ public class InstitutionController
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions. ");
     	
-		Iterator<Institution> iter=instService.getInstitutions();
+		ReadInstitutionsEvent rie=new ReadInstitutionsEvent();
+		return readInstitutions(rie);
+    }
+    
+    @RequestMapping(value="/institutions/{countryId}")
+    public @ResponseBody ResponseEntity<Iterator<Institution>> getInstitutions(@PathVariable Long countryId) 
+    {
+    	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions from country "+countryId+". ");
+    	
+		ReadInstitutionsEvent rie=new ReadInstitutionsEvent(countryId);
+		return readInstitutions(rie);
+    }
+    
+    public @ResponseBody ResponseEntity<Iterator<Institution>> readInstitutions(ReadInstitutionsEvent rie)
+    {
+		InstitutionsReadEvent ire=instService.readInstitutions(rie);
 		
-    	return new ResponseEntity<Iterator<Institution>> (iter,HttpStatus.OK);
+		Iterator <InstitutionDetails> iter=ire.getInstitutions().iterator();
+		ArrayList <Institution> institutions=new ArrayList<Institution>();
+		while(iter.hasNext())
+		{
+			InstitutionDetails dets=iter.next();
+			Institution thisInst=Institution.fromInstDetails(dets);
+			institutions.add(thisInst);		
+		}
+    	return new ResponseEntity<Iterator<Institution>> (institutions.iterator(),HttpStatus.OK);
     }
 }

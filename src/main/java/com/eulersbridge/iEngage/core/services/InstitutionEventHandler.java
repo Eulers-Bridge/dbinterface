@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
@@ -14,7 +15,9 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
+import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
@@ -140,20 +143,25 @@ public class InstitutionEventHandler implements InstitutionService {
 	}
 
 	@Override
-	public Iterator<com.eulersbridge.iEngage.rest.domain.Institution> getInstitutions() 
+	public InstitutionsReadEvent readInstitutions(ReadInstitutionsEvent readInstitutionsEvent) 
 	{
-		Iterable<Institution> returned=instRepository.findAll();
-		ArrayList<com.eulersbridge.iEngage.rest.domain.Institution> instList=new ArrayList<com.eulersbridge.iEngage.rest.domain.Institution>();
+	    if (LOG.isDebugEnabled()) LOG.debug("readInstitutions()");
+	    Result<Institution> returned=null;
+	    Long countryId=readInstitutionsEvent.getCountryId();
+	    if (null==countryId)
+			returned=instRepository.findAll();
+	    else
+	    	returned=instRepository.findByCountryId(countryId);
+		ArrayList<InstitutionDetails> instList=new ArrayList<InstitutionDetails>();
 		Iterator<Institution> iter=returned.iterator();
 		while (iter.hasNext())
 		{
-			Institution inst=iter.next();
-			InstitutionDetails dets=inst.toInstDetails();
-			
-			com.eulersbridge.iEngage.rest.domain.Institution restInst=com.eulersbridge.iEngage.rest.domain.Institution.fromInstDetails(dets);
-			instList.add(restInst);
+			Institution institution=iter.next();
+			InstitutionDetails dets=institution.toInstDetails();
+			instList.add(dets);
 		}
-		return instList.iterator();
+		InstitutionsReadEvent evt=new InstitutionsReadEvent(instList);
+		return evt;
 	}
 
 	@Override

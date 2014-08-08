@@ -3,8 +3,10 @@
  */
 package com.eulersbridge.iEngage.database.repository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -41,8 +43,10 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 	@Override
 	public Result<Institution> findAll() 
 	{
-		// TODO Auto-generated method stub
-		return (Result<Institution>)this.institutions.values();
+		Iterator<Institution> iter=this.institutions.values().iterator();
+		ResultImpl<Institution> result=new ResultImpl<Institution>();
+		result.setIterator(iter);
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -261,6 +265,23 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 	public StudentYear findLatestStudentYear(Long institutionId) 
 	{
 		return DatabaseDataFixture.populateStudentYear2014();
+	}
+
+
+	@Override
+	public Result<Institution> findByCountryId(Long countryId) 
+	{
+		Iterator<Institution> iter=this.institutions.values().iterator();
+		ArrayList<Institution> insts=new ArrayList<Institution>();
+		while(iter.hasNext())
+		{
+			Institution inst=iter.next();
+			if (countryId==inst.getCountry().getNodeId())
+				insts.add(inst);
+		}
+		ResultImpl<Institution> result=new ResultImpl<Institution>();
+		result.setIterator(insts.iterator());
+		return result;
 	}
 
 }

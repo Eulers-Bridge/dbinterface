@@ -19,7 +19,9 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
+import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
@@ -156,8 +158,14 @@ public class InstitutionEventHandlerTest
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.InstitutionEventHandler#getInstitutions()}.
 	 */
 	@Test
-	public void testGetInstitutions() {
-		fail("Not yet implemented");
+	public void testReadInstitutions() 
+	{
+		ReadInstitutionsEvent rie=new ReadInstitutionsEvent();
+		InstitutionsReadEvent institutions=instService.readInstitutions(rie);
+		if (null==institutions) fail("Not yet implemented");
+		rie=new ReadInstitutionsEvent((long)1);
+		institutions=instService.readInstitutions(rie);
+		if (null==institutions) fail("Not yet implemented");
 	}
 	
 	@Test
