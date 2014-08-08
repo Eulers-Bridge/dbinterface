@@ -38,7 +38,8 @@ public class UserMemoryRepository implements UserRepository {
   }
 
   @Override
-  public synchronized void delete(Long key) {
+  public synchronized void delete(Long key) 
+  {
     if (users.containsKey(key)) {
       Map<Long, User> modifiableusers = new HashMap<Long, User>(users);
       modifiableusers.remove(key);
@@ -125,9 +126,9 @@ public Iterable<User> findAll(Iterable<Long> arg0) {
 }
 
 @Override
-public User findOne(Long arg0) {
-	// TODO Auto-generated method stub
-	return null;
+public User findOne(Long nodeId) 
+{
+	return users.get(nodeId);
 }
 
 @Override
@@ -192,6 +193,13 @@ public User findByEmail(String email)
 		}
 	}
 	return null;
+}
+
+@Override
+public void verifyUser(Long userId, Long tokenId, boolean isVerified) 
+{
+	// TODO Auto-generated method stub
+	
 }
 
 }
