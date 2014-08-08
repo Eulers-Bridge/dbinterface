@@ -18,12 +18,15 @@ import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
@@ -39,7 +42,7 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 public class UserEventHandlerTest 
 {
 	UserService userService;
-	private VerificationTokenRepository tokenRepo;
+	private VerificationTokenMemoryRepository tokenRepo;
 	private UserRepository userRepo;
 	private InstitutionRepository instRepo;
 	/**
@@ -67,8 +70,9 @@ public class UserEventHandlerTest
 		userRepo=new UserMemoryRepository(users);
 		HashMap<Long, Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
-
-		tokenRepo=new VerificationTokenMemoryRepository();
+		
+		HashMap<Long,VerificationToken> tokens= new HashMap<Long,VerificationToken>();
+		tokenRepo=new VerificationTokenMemoryRepository(tokens);
 		userService=new UserEventHandler(userRepo, instRepo, tokenRepo);
 	}
 
@@ -97,12 +101,17 @@ public class UserEventHandlerTest
 	{
 		CreateUserEvent createUserEvent;
 		UserDetails nADs;
-		String email="gnewitt@hotmail.com";
+		String email="gnewitt2@hotmail.com";
 		nADs=new UserDetails(email);
 		nADs.setFirstName("Greg");
+		nADs.setInstitutionId((long)1);
 		createUserEvent=new CreateUserEvent(nADs);
 		UserCreatedEvent nace = userService.signUpNewUser(createUserEvent);
 		if (null==nace) fail("Not yet implemented");
+		VerificationToken token=tokenRepo.findToken();
+		VerifyUserAccountEvent verifyUserAccountEvent=new VerifyUserAccountEvent("gnewitt@hotmail.com", token.getToken());
+		UserAccountVerifiedEvent test = userService.validateUserAccount(verifyUserAccountEvent);
+		assertNotNull("account verified event returned.",test);
 	}
 
 	/**
@@ -110,8 +119,8 @@ public class UserEventHandlerTest
 	 */
 	@Test
 	public void testRequestReadUser() {
-		RequestReadUserEvent rnae=new RequestReadUserEvent("gnewitt@hotmail.com");
-		assertEquals("1 == 1",rnae.getEmail(),"gnewitt@hotmail.com");
+		RequestReadUserEvent rnae=new RequestReadUserEvent("gnewitt2@hotmail.com");
+		assertEquals("1 == 1",rnae.getEmail(),"gnewitt2@hotmail.com");
 		ReadUserEvent rane=userService.requestReadUser(rnae);
 		if (null==rane)
 			fail("Not yet implemented");
@@ -159,12 +168,5 @@ public class UserEventHandlerTest
 		assertEquals("Password not updated.",nude.getUserDetails().getPassword(),nADs.getPassword());
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#validateUserAccount(com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent)}.
-	 */
-	@Test
-	public void testValidateUserAccount() {
-		fail("Not yet implemented");
-	}
 
 }
