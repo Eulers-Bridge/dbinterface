@@ -16,6 +16,7 @@ import org.springframework.data.neo4j.support.Neo4jTemplate;
 
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
 /**
@@ -257,9 +258,9 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 	}
 
 	@Override
-	public StudentYear findLatestStudentYear(Long institutionId) {
-		// TODO Auto-generated method stub
-		return null;
+	public StudentYear findLatestStudentYear(Long institutionId) 
+	{
+		return DatabaseDataFixture.populateStudentYear2014();
 	}
 
 }
