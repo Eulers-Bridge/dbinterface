@@ -10,8 +10,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 
@@ -26,7 +24,6 @@ public class CountryTest {
 	final Long node1=new Long(1);
 	final Long node2=new Long(2);
 	
-    private static Logger LOG = LoggerFactory.getLogger(CountryTest.class);
 
 	/**
 	 * @throws java.lang.Exception

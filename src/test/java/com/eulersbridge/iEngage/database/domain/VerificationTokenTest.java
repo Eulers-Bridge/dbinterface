@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +35,14 @@ public class VerificationTokenTest
 	public void testVerificationToken() 
 	{
 		VerificationToken token=new VerificationToken();
+		assertNotNull("Token constructed is null",token);
 	}
 
 	@Test
 	public void testVerificationTokenVerificationTokenTypeUserInt() 
 	{
 		VerificationToken token=new VerificationToken(tokenType,user, expirationtime);
+		assertNotNull("Token constructed is null",token);
 	}
 
 	@Test

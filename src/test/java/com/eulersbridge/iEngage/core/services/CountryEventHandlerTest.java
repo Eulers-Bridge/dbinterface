@@ -3,15 +3,12 @@ package com.eulersbridge.iEngage.core.services;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
