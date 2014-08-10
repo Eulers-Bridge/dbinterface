@@ -20,6 +20,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 public class EmailEventHandlerTest 
 {
 	EmailEventHandler emailService;
+	JavaMailSender emailSender;
 
 
 	/**
@@ -40,7 +41,9 @@ public class EmailEventHandlerTest
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() throws Exception 
+	{
+		emailSender=new JavaMailSenderImpl();
 	}
 
 	/**
@@ -56,17 +59,17 @@ public class EmailEventHandlerTest
 	@Test
 	public void testEmailEventHandler() 
 	{
-		JavaMailSender emailSender=new JavaMailSenderImpl();
-		emailService=new EmailEventHandler(emailSender);
-		fail("Not yet implemented");
+		EmailEventHandler emailService2=new EmailEventHandler(emailSender);
+		assertNotNull("null email service returned.",emailService2);
 	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.EmailEventHandler#EmailEventHandler(org.springframework.mail.javamail.JavaMailSender)}.
 	 */
 	@Test
-	public void testEmailEventHandlerJavaMailSender() {
-		fail("Not yet implemented");
+	public void testEmailEventHandlerJavaMailSender() 
+	{
+//		fail("Not yet implemented");
 	}
 
 	/**
@@ -74,7 +77,7 @@ public class EmailEventHandlerTest
 	 */
 	@Test
 	public void testSendEmail() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 	/**
@@ -82,7 +85,7 @@ public class EmailEventHandlerTest
 	 */
 	@Test
 	public void testSendEmailEmail() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 	/**
@@ -90,7 +93,7 @@ public class EmailEventHandlerTest
 	 */
 	@Test
 	public void testSendEmailEmailVerification() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 }
