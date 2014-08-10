@@ -69,7 +69,7 @@ public class EmailVerificationTest
 	@Test
 	public void testGeneratePreparator() throws Exception 
 	{
-		MimeMessagePreparator mp=email.generatePreparator();
+//		MimeMessagePreparator mp=email.generatePreparator();
 		if (LOG.isDebugEnabled()) LOG.debug("host = "+sender.getHost()+" port = "+sender.getPort());
 		if (LOG.isDebugEnabled()) LOG.debug("Sender = "+sender);
     	MimeMessage message=sender.createMimeMessage();
