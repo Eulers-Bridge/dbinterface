@@ -32,12 +32,14 @@ public class StudentYear
 		Institution inst=new Institution();
 		inst.setNodeId(newYear.getInstitutionId());
 		sy.setInstitution(inst);
+		sy.setNodeId(newYear.getNodeId());
 		return sy;
 	}
 	
 	public StudentYearDetails toDetails()
 	{
 		StudentYearDetails syd=new StudentYearDetails(getYear(), getStart(), getEnd(), getInstitution().getNodeId());
+		syd.setNodeId(getNodeId());
 		return syd;
 	}
 
