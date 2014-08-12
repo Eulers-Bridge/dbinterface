@@ -68,6 +68,10 @@ public class DatabaseDataFixture
 		country.setNodeId(nodeId);
 		return country;
 	}
+	public static StudentYear populateStudentYear2013()
+	{
+		return populateStudentYear((long)2, "2013");
+	}
 	
 	public static StudentYear populateStudentYear2014()
 	{
@@ -139,8 +143,8 @@ public class DatabaseDataFixture
 	public static HashMap<Long,StudentYear> populateStudentYears()
 	{
 		HashMap<Long, StudentYear> years=new HashMap<Long, StudentYear>();
-		StudentYear initialYear=populateStudentYear2014();
-		years.put(new Long(1), initialYear);
+		years.put(new Long(1), populateStudentYear2014());
+		years.put(new Long(2), populateStudentYear2013());
 		return years;
 	}
 
