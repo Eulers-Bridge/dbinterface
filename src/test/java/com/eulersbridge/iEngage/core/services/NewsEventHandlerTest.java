@@ -192,7 +192,7 @@ public class NewsEventHandlerTest
 		while(iter.hasNext())
 		{
 			count++;
-			NewsArticleDetails dets=iter.next();
+			iter.next();
 		}
 		assertEquals(count,2);
 	}
@@ -215,7 +215,7 @@ public class NewsEventHandlerTest
 		while(iter.hasNext())
 		{
 			count++;
-			NewsArticleDetails dets=iter.next();
+			iter.next();
 		}
 		assertEquals(count,2);
 	}
@@ -232,11 +232,10 @@ public class NewsEventHandlerTest
 		Iterable <NewsArticleDetails> artDets=nare.getArticles();
 		Iterator <NewsArticleDetails> iter=artDets.iterator();
 		int count=0;
-		NewsArticleDetails dets=null;
 		while(iter.hasNext())
 		{
 			count++;
-			dets=iter.next();
+			iter.next();
 		}
 		assertEquals(count,0);
 	}
