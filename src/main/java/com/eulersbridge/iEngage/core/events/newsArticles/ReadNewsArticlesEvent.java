@@ -19,18 +19,17 @@ public class ReadNewsArticlesEvent extends RequestReadEvent
 		super();
 	}
 	
-	public ReadNewsArticlesEvent(Long instId)
+	public ReadNewsArticlesEvent(Long syId)
 	{
 		this();
-		this.instId=instId;
+		this.syId=syId;
 		// TODO throw exception if instId null.
 	}
 
 	public ReadNewsArticlesEvent(Long instId,Long syId)
 	{
-		this(instId);
+		this(syId);
 		this.instId=instId;
-		this.syId=syId;
 	}
 
 	/**
