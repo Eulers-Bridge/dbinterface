@@ -23,7 +23,9 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
@@ -73,15 +75,16 @@ public class NewsEventHandlerTest
 		Map<Long, NewsArticle> newsArticles=new HashMap<Long, NewsArticle>();
 		User creator=DatabaseDataFixture.populateUserGnewitt();
 		Iterable<String> picture=null;
-		NewsArticle initialArticle=new NewsArticle("Test Article", "Contents of the Test Article", picture, Calendar.getInstance(), creator);
-		newsArticles.put(new Long(1), initialArticle);
-		testRepo=new NewsArticleMemoryRepository(newsArticles);
 		Map<Long, User> users=DatabaseDataFixture.populateUsers();
 		userRepo=new UserMemoryRepository(users);
 		Map<Long,Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
-		Map<Long, StudentYear> years=new HashMap<Long, StudentYear>();
+		Map<Long, StudentYear> years=DatabaseDataFixture.populateStudentYears();
 		syRepo=new StudentYearMemoryRepository(years);
+		NewsArticle initialArticle=new NewsArticle("Test Article", "Contents of the Test Article", picture, Calendar.getInstance(), creator);
+		initialArticle.setStudentYear(DatabaseDataFixture.populateStudentYear2014());
+		newsArticles.put(new Long(1), initialArticle);
+		testRepo=new NewsArticleMemoryRepository(newsArticles);
 		newsService=new NewsEventHandler(testRepo,userRepo,instRepo,syRepo);
 	}
 
@@ -180,4 +183,15 @@ public class NewsEventHandlerTest
 		assertFalse("Entity was not deleted.",rane.isEntityFound());
 	}
 
+	@Test
+	public void testShouldReadNewsArticles()
+	{
+		Long syId=(long)1;
+		Long instId=(long)1;
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
+		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae);
+		assertNotNull(nare);
+		
+
+	}
 }
