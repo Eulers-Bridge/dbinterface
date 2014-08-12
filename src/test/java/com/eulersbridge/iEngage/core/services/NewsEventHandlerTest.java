@@ -221,6 +221,27 @@ public class NewsEventHandlerTest
 	}
 	
 	@Test
+	public void testShouldReadNewsArticlesWithSYID2OnlyNone()
+	{
+		Long syId=(long)2;
+		Long instId=(long)1;
+
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
+		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae);
+		assertNotNull(nare);
+		Iterable <NewsArticleDetails> artDets=nare.getArticles();
+		Iterator <NewsArticleDetails> iter=artDets.iterator();
+		int count=0;
+		NewsArticleDetails dets=null;
+		while(iter.hasNext())
+		{
+			count++;
+			dets=iter.next();
+		}
+		assertEquals(count,0);
+	}
+	
+	@Test
 	public void testShouldReadNewsArticlesWithSYID2Only()
 	{
 		Iterable<String> picture=null;
@@ -244,8 +265,5 @@ public class NewsEventHandlerTest
 		assertEquals(count,1);
 		assertEquals(dets.getTitle(), "Different year test");
 		assertEquals(dets.getContent(), "Testing to see if a different year will be picked up.");
-
-		
-		
 	}
 }
