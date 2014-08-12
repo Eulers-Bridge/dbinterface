@@ -21,12 +21,15 @@ public class NewsArticle extends ResourceSupport
 	private Set<String> likers;
 	private Long date;
 	private String creatorEmail;
+	private String studentYear;
 
     private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 
     public static NewsArticle fromNewsArticleDetails(NewsArticleDetails readNews) 
 	{
 	    NewsArticle news = new NewsArticle();
+	    String simpleName=NewsArticle.class.getSimpleName();
+	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 
 	    news.articleId= readNews.getNewsArticleId();
 	    news.content = readNews.getContent();
@@ -36,6 +39,7 @@ public class NewsArticle extends ResourceSupport
 	    news.picture = readNews.getPicture();
 	    news.title = readNews.getTitle();
 	    news.institutionId = readNews.getInstitutionId();
+	    news.studentYear = readNews.getStudentYear();
 	    
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
@@ -43,12 +47,12 @@ public class NewsArticle extends ResourceSupport
 	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
 	    //We have explicitly avoided that.
 	    // {!begin selfRel}
-	    news.add(linkTo(NewsController.class).slash(news.articleId).withSelfRel());
+	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).withSelfRel());
 	    // {!end selfRel}
 	    // {!begin status}
-	    news.add(linkTo(NewsController.class).slash(news.articleId).slash("status").withRel("User Status"));
+	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash("previous").withRel("Previous"));
 	    // {!end status}
-	    news.add(linkTo(NewsController.class).slash(news.articleId).slash("details").withRel("User Details"));
+	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash("next").withRel("Next"));
 
 	    return news;
 	}
@@ -178,6 +182,20 @@ public class NewsArticle extends ResourceSupport
 	 */
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
+	}
+
+	/**
+	 * @return the studentYear
+	 */
+	public String getStudentYear() {
+		return studentYear;
+	}
+
+	/**
+	 * @param studentYear the studentYear to set
+	 */
+	public void setStudentYear(String studentYear) {
+		this.studentYear = studentYear;
 	}
 
 	public String toString()

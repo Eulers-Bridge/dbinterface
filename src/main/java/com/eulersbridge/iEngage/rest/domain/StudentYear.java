@@ -96,13 +96,15 @@ public class StudentYear extends ResourceSupport
 		  studentYear.end = readStudentYear.getEnd();
 		  studentYear.institutionId = readStudentYear.getInstitutionId();
 	    
+		  String simpleName=Institution.class.getSimpleName();
+		  String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
 
 	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
 	    //We have explicitly avoided that.
 	    // {!begin selfRel}
-		  studentYear.add(linkTo(InstitutionController.class).slash(studentYear.nodeId).withSelfRel());
+		  studentYear.add(linkTo(InstitutionController.class).slash(name).slash(studentYear.nodeId).withSelfRel());
 	    // {!end selfRel}
 
 	    return studentYear;

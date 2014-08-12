@@ -56,6 +56,8 @@ public class Country extends ResourceSupport
 
 		country.countryId = readCountry.getCountryId();
 		country.countryName = readCountry.getCountryName();
+	    String simpleName=Country.class.getSimpleName();
+	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 	    
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
@@ -63,7 +65,7 @@ public class Country extends ResourceSupport
 	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
 	    //We have explicitly avoided that.
 	    // {!begin selfRel}
-	    country.add(linkTo(CountryController.class).slash(country.countryId).withSelfRel());
+	    country.add(linkTo(CountryController.class).slash(name).slash(country.countryId).withSelfRel());
 	    // {!end selfRel}
 
 	    return country;

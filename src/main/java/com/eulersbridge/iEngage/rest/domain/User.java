@@ -137,18 +137,21 @@ public class User extends ResourceSupport
 	    user.accountVerified = readUser.isAccountVerified();
 	    user.institutionId = readUser.getInstitutionId();
 	    
+	    String simpleName=User.class.getSimpleName();
+	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
+
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
 
 	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
 	    //We have explicitly avoided that.
 	    // {!begin selfRel}
-	    user.add(linkTo(UserController.class).slash(user.email).withSelfRel());
+	    user.add(linkTo(UserController.class).slash(name).slash(user.email).withSelfRel());
 	    // {!end selfRel}
 	    // {!begin status}
-	    user.add(linkTo(UserController.class).slash(user.email).slash("status").withRel("User Status"));
+	    user.add(linkTo(UserController.class).slash(name).slash(user.email).slash("status").withRel("User Status"));
 	    // {!end status}
-	    user.add(linkTo(UserController.class).slash(user.email).slash("details").withRel("User Details"));
+	    user.add(linkTo(UserController.class).slash(name).slash(user.email).slash("details").withRel("User Details"));
 
 	    return user;
 	  }

@@ -96,13 +96,17 @@ public class Institution extends ResourceSupport
 	    inst.state = readInstitute.getState();
 	    inst.country = readInstitute.getCountryName();
 	    
+	    String simpleName=Institution.class.getSimpleName();
+	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
+
+	    
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
 
 	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
 	    //We have explicitly avoided that.
 	    // {!begin selfRel}
-	    inst.add(linkTo(InstitutionController.class).slash(inst.institutionId).withSelfRel());
+	    inst.add(linkTo(InstitutionController.class).slash(name).slash(inst.institutionId).withSelfRel());
 	    // {!end selfRel}
 
 	    return inst;
