@@ -5,6 +5,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -194,5 +195,39 @@ public class NewsEventHandlerTest
 			NewsArticleDetails dets=iter.next();
 		}
 		assertEquals(count,2);
+		
+		Iterable<String> picture=null;
+		NewsArticle na=DatabaseDataFixture.populateNewsArticle("Different year test", "Testing to see if a different year will be picked up.", picture, DatabaseDataFixture.populateUserGnewitt2(), Calendar.getInstance(), null, DatabaseDataFixture.populateStudentYear2013());
+		testRepo.save(na);
+		nare=newsService.readNewsArticles(rnae);
+		assertNotNull(nare);
+		artDets=nare.getArticles();
+		iter=artDets.iterator();
+		count=0;
+		while(iter.hasNext())
+		{
+			count++;
+			NewsArticleDetails dets=iter.next();
+		}
+		assertEquals(count,2);
+		
+		rnae.setSyId((long)2);
+		nare=newsService.readNewsArticles(rnae);
+		assertNotNull(nare);
+		artDets=nare.getArticles();
+		iter=artDets.iterator();
+		count=0;
+		NewsArticleDetails dets=null;
+		while(iter.hasNext())
+		{
+			count++;
+			dets=iter.next();
+		}
+		assertEquals(count,1);
+		assertEquals(dets.getTitle(), "Different year test");
+		assertEquals(dets.getContent(), "Testing to see if a different year will be picked up.");
+
+		
+		
 	}
 }
