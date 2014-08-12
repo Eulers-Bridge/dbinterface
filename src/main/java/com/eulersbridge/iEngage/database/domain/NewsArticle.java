@@ -149,7 +149,12 @@ public class NewsArticle {
 
 	    BeanUtils.copyProperties(this, details);
 	    if (getCreator()!=null) details.setCreatorEmail(getCreator().getEmail());
-	    if (getStudentYear()!=null) details.setStudentYear(getStudentYear().getYear());
+	    if (getStudentYear()!=null)
+	    {
+	    	details.setStudentYear(getStudentYear().getYear());
+	    	if (getStudentYear().getInstitution()!=null)
+	    		details.setInstitutionId(getStudentYear().getInstitution().getNodeId());
+	    }
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
 
 	    return details;
