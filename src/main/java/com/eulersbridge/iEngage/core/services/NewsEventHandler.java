@@ -9,7 +9,9 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
@@ -17,6 +19,7 @@ import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
+import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 public class NewsEventHandler implements NewsService 
@@ -26,12 +29,14 @@ public class NewsEventHandler implements NewsService
     private UserRepository userRepository;
 	private NewsArticleRepository newsRepo;
 	private InstitutionRepository instRepo;
+    private StudentYearRepository syRepository;
 
-	public NewsEventHandler(NewsArticleRepository newsRepo,UserRepository userRepository, InstitutionRepository instRepo) 
+	public NewsEventHandler(NewsArticleRepository newsRepo,UserRepository userRepository, InstitutionRepository instRepo, StudentYearRepository syRepo) 
 	{
 		this.newsRepo=newsRepo;
 		this.userRepository=userRepository;
 		this.instRepo=instRepo;
+		this.syRepository=syRepo;
 	}
 
 	@Override
@@ -100,6 +105,14 @@ public class NewsEventHandler implements NewsService
 		newsRepo.delete(deleteNewsArticleEvent.getNewsArticleId());
 		NewsArticleDeletedEvent nade=new NewsArticleDeletedEvent(deleteNewsArticleEvent.getNewsArticleId(), null);
 		return nade;
+	}
+
+	@Override
+	public NewsArticlesReadEvent readNewsArticles(
+			ReadNewsArticlesEvent readNewsArticlesEvent) 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
