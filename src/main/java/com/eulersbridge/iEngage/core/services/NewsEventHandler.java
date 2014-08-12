@@ -142,6 +142,15 @@ public class NewsEventHandler implements NewsService
 				}
 				nare=new NewsArticlesReadEvent(institutionId,sy.getNodeId(),dets);
 			}
+			else
+			{
+				if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByStudentYear");
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findStudentYear");
+			nare=NewsArticlesReadEvent.studentYearNotFound();
 		}
 		return nare;
 	}

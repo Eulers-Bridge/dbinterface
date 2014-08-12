@@ -13,6 +13,9 @@ public class NewsArticlesReadEvent extends ReadEvent
 {
 	private Long instId;
 	private Long syId;
+	private boolean studentYearFound=true;
+	private boolean institutionFound=true;
+	private boolean articlesFound=true;
 	
 	private Iterable<NewsArticleDetails> articles;
 
@@ -68,6 +71,54 @@ public class NewsArticlesReadEvent extends ReadEvent
 	 */
 	public void setArticles(Iterable<NewsArticleDetails> articles) {
 		this.articles = articles;
+	}
+
+	/**
+	 * @return the studentYearFound
+	 */
+	public boolean isStudentYearFound() {
+		return studentYearFound;
+	}
+
+	/**
+	 * @param studentYearFound the studentYearFound to set
+	 */
+	public void setStudentYearFound(boolean studentYearFound) {
+		this.studentYearFound = studentYearFound;
+	}
+
+	/**
+	 * @return the institutionFound
+	 */
+	public boolean isInstitutionFound() {
+		return institutionFound;
+	}
+
+	/**
+	 * @param institutionFound the institutionFound to set
+	 */
+	public void setInstitutionFound(boolean institutionFound) {
+		this.institutionFound = institutionFound;
+	}
+
+	/**
+	 * @return the articlesFound
+	 */
+	public boolean isArticlesFound() {
+		return articlesFound;
+	}
+
+	/**
+	 * @param articlesFound the articlesFound to set
+	 */
+	public void setArticlesFound(boolean articlesFound) {
+		this.articlesFound = articlesFound;
+	}
+
+	public static NewsArticlesReadEvent studentYearNotFound() 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
