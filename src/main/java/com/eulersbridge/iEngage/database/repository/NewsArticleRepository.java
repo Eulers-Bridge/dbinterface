@@ -11,9 +11,9 @@ import com.eulersbridge.iEngage.database.domain.User;
 
 public interface NewsArticleRepository extends GraphRepository<NewsArticle> 
 {
-	   static Logger LOG = LoggerFactory.getLogger(NewsArticleRepository.class);
+	static Logger LOG = LoggerFactory.getLogger(NewsArticleRepository.class);
 	   
-	   Iterable<NewsArticle> findByStudentYear(StudentYear sy);
-	 	Iterable<NewsArticle> findByCreator(User creator);
+	Iterable<NewsArticle> findByStudentYear(StudentYear sy);
+	Iterable<NewsArticle> findByCreator(User creator);
 
 }
