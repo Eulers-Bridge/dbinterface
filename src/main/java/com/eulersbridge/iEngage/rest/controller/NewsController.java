@@ -175,12 +175,15 @@ public class NewsController
 	*/
 	@RequestMapping(method=RequestMethod.GET,value="/newsArticles/{studentYearId}")
 	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable Long studentYearId,
-																			@RequestParam(value="page",required=false,defaultValue="0") String page) 
+			@RequestParam(value="page",required=false,defaultValue="0") String page,
+			@RequestParam(value="pageSize",required=false,defaultValue="10") String pageSize) 
 	{
 		int pageNumber=0;
+		int pageLength=10;
 		pageNumber=Integer.parseInt(page);
+		pageLength=Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from student year. "+studentYearId);
-		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(studentYearId),pageNumber,2);
+		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(studentYearId),pageNumber,pageLength);
   	
 		if (!articleEvent.isEntityFound())
 		{
