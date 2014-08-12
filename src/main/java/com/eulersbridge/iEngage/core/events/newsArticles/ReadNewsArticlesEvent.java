@@ -14,16 +14,25 @@ public class ReadNewsArticlesEvent extends RequestReadEvent
 	Long instId;
 	Long syId;
 	
-	public ReadNewsArticlesEvent()
+	private ReadNewsArticlesEvent()
 	{
-		
+		super();
 	}
 	
+	public ReadNewsArticlesEvent(Long instId)
+	{
+		this();
+		this.instId=instId;
+		// TODO throw exception if instId null.
+	}
+
 	public ReadNewsArticlesEvent(Long instId,Long syId)
 	{
+		this(instId);
 		this.instId=instId;
 		this.syId=syId;
 	}
+
 	/**
 	 * @return the instId
 	 */
