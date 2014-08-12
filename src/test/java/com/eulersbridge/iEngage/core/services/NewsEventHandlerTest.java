@@ -5,9 +5,8 @@ package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,18 +71,13 @@ public class NewsEventHandlerTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		Map<Long, NewsArticle> newsArticles=new HashMap<Long, NewsArticle>();
-		User creator=DatabaseDataFixture.populateUserGnewitt();
-		Iterable<String> picture=null;
+		Map<Long, NewsArticle> newsArticles=DatabaseDataFixture.populateNewsArticles();
 		Map<Long, User> users=DatabaseDataFixture.populateUsers();
 		userRepo=new UserMemoryRepository(users);
 		Map<Long,Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
 		Map<Long, StudentYear> years=DatabaseDataFixture.populateStudentYears();
 		syRepo=new StudentYearMemoryRepository(years);
-		NewsArticle initialArticle=new NewsArticle("Test Article", "Contents of the Test Article", picture, Calendar.getInstance(), creator);
-		initialArticle.setStudentYear(DatabaseDataFixture.populateStudentYear2014());
-		newsArticles.put(new Long(1), initialArticle);
 		testRepo=new NewsArticleMemoryRepository(newsArticles);
 		newsService=new NewsEventHandler(testRepo,userRepo,instRepo,syRepo);
 	}
@@ -191,7 +185,14 @@ public class NewsEventHandlerTest
 		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae);
 		assertNotNull(nare);
-		
-
+		Iterable <NewsArticleDetails> artDets=nare.getArticles();
+		Iterator <NewsArticleDetails> iter=artDets.iterator();
+		int count=0;
+		while(iter.hasNext())
+		{
+			count++;
+			NewsArticleDetails dets=iter.next();
+		}
+		assertEquals(count,2);
 	}
 }
