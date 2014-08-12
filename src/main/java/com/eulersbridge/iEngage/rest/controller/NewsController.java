@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,18 +12,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.services.NewsService;
+import com.eulersbridge.iEngage.rest.domain.Country;
 import com.eulersbridge.iEngage.rest.domain.NewsArticle;
 
 @RestController
@@ -152,4 +161,42 @@ public class NewsController
     	}
     }
 
+    /**
+     * Is passed all the necessary data to read news articles from the database.
+     * The request must be a GET with the institutionId/student year presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the news articles read from the database.
+     * 
+     * @param email the email address of the user object to be read.
+     * @return the user object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.GET,value="/newsArticles/{studentYearId}")
+	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable Long studentYearId,
+																			@RequestParam(value="page",required=false,defaultValue="0") String page) 
+	{
+		int pageNumber=0;
+		pageNumber=Integer.parseInt(page);
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from student year. "+studentYearId);
+		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(studentYearId),pageNumber,2);
+  	
+		if (!articleEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<NewsArticle>>(HttpStatus.NOT_FOUND);
+		}
+		
+		Iterator <NewsArticleDetails> iter=articleEvent.getArticles().iterator();
+		ArrayList <NewsArticle> articles=new ArrayList<NewsArticle>();
+		while(iter.hasNext())
+		{
+			NewsArticleDetails dets=iter.next();
+			NewsArticle thisArticle=NewsArticle.fromNewsArticleDetails(dets);
+			articles.add(thisArticle);		
+		}
+
+		return new ResponseEntity<Iterator<NewsArticle>>(articles.iterator(),HttpStatus.OK);
+	}
+    
 }
