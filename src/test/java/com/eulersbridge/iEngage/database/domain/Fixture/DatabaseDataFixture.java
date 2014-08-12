@@ -2,9 +2,11 @@ package com.eulersbridge.iEngage.database.domain.Fixture;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
 
@@ -84,6 +86,38 @@ public class DatabaseDataFixture
 		return year;
 	}
 	
+	public static NewsArticle populateNewsArticle1()
+	{
+		Long nodeId=(long)1;
+		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", null, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateStudentYear2014());
+		initialArticle.setStudentYear(DatabaseDataFixture.populateStudentYear2014());
+		return initialArticle;
+	}
+	public static NewsArticle populateNewsArticle2()
+	{
+		Long nodeId=(long)2;
+		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", null, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateStudentYear2014());
+		initialArticle.setStudentYear(DatabaseDataFixture.populateStudentYear2014());
+		return initialArticle;
+	}
+	public static NewsArticle populateNewsArticle(String title, String content, Iterable<String> picture, User creator, Calendar date, Long id, StudentYear studentYear)
+	{
+		NewsArticle article=new NewsArticle(title, content, picture, date, creator);
+		Long nodeId=id;
+		article.setNodeId(nodeId);
+		article.setStudentYear(studentYear);
+		return article;
+	}
+	public static Map<Long,NewsArticle> populateNewsArticles()
+	{
+		HashMap<Long, NewsArticle> newsArticles=new HashMap<Long, NewsArticle>();
+		NewsArticle initialNews=populateNewsArticle1();
+		newsArticles.put(initialNews.getNodeId(), initialNews);
+		initialNews=populateNewsArticle2();
+		newsArticles.put(initialNews.getNodeId(), initialNews);
+		return newsArticles;
+	}
+
 	public static HashMap<Long,Country> populateCountries()
 	{
 		HashMap<Long, Country> countrys=new HashMap<Long, Country>();
