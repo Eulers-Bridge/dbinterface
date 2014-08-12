@@ -1,7 +1,11 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
@@ -111,8 +115,35 @@ public class NewsEventHandler implements NewsService
 	public NewsArticlesReadEvent readNewsArticles(
 			ReadNewsArticlesEvent readNewsArticlesEvent) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		Long institutionId=readNewsArticlesEvent.getInstId();
+		StudentYear sy;
+		Iterable <NewsArticle>articles=null;
+		ArrayList<NewsArticleDetails> dets=new ArrayList<NewsArticleDetails>();
+		NewsArticlesReadEvent nare=null;
+		if (null==readNewsArticlesEvent.getSyId())
+		{
+			sy=instRepo.findLatestStudentYear(institutionId);
+		}
+		else
+		{
+			sy=syRepository.findOne(readNewsArticlesEvent.getSyId());
+		}
+		if (sy!=null)
+		{
+			articles=newsRepo.findByStudentYear(sy);
+			if (articles!=null)
+			{
+				Iterator<NewsArticle> iter=articles.iterator();
+				while (iter.hasNext())
+				{
+					NewsArticle na=iter.next();
+					NewsArticleDetails det=na.toNewsArticleDetails();
+					dets.add(det);
+				}
+				nare=new NewsArticlesReadEvent(institutionId,sy.getNodeId(),dets);
+			}
+		}
+		return nare;
 	}
 
 }
