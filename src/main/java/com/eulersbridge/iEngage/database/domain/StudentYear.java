@@ -134,5 +134,10 @@ public class StudentYear
 		return "StudentYear [nodeId=" + nodeId + ", year=" + year + ", start="
 				+ start + ", end=" + end + ", institution=" + institution.getNodeId() + "]";
 	} 
+	  public boolean equals(StudentYear sy2)
+	  {
+		  if ((nodeId!=null)&&(nodeId.equals(sy2.nodeId))) return true;
+		  else return false;
+	  }
 
 }
