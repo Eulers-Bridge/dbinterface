@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
@@ -27,10 +28,13 @@ import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleE
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
+import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.StudentYearMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 
 /**
@@ -43,6 +47,8 @@ public class NewsEventHandlerTest
 	UserMemoryRepository userRepo;
 	NewsEventHandler newsService;
 	InstitutionMemoryRepository instRepo;
+	StudentYearRepository syRepo;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -64,17 +70,19 @@ public class NewsEventHandlerTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		HashMap<Long, NewsArticle> newsArticles=new HashMap<Long, NewsArticle>();
+		Map<Long, NewsArticle> newsArticles=new HashMap<Long, NewsArticle>();
 		User creator=DatabaseDataFixture.populateUserGnewitt();
 		Iterable<String> picture=null;
 		NewsArticle initialArticle=new NewsArticle("Test Article", "Contents of the Test Article", picture, Calendar.getInstance(), creator);
 		newsArticles.put(new Long(1), initialArticle);
 		testRepo=new NewsArticleMemoryRepository(newsArticles);
-		HashMap<Long, User> users=DatabaseDataFixture.populateUsers();
+		Map<Long, User> users=DatabaseDataFixture.populateUsers();
 		userRepo=new UserMemoryRepository(users);
-		HashMap<Long,Institution> institutions=DatabaseDataFixture.populateInstitutions();
+		Map<Long,Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
-		newsService=new NewsEventHandler(testRepo,userRepo,instRepo);
+		Map<Long, StudentYear> years=new HashMap<Long, StudentYear>();
+		syRepo=new StudentYearMemoryRepository(years);
+		newsService=new NewsEventHandler(testRepo,userRepo,instRepo,syRepo);
 	}
 
 	/**
@@ -90,7 +98,7 @@ public class NewsEventHandlerTest
 	@Test
 	public void testNewsEventHandler() 
 	{
-		NewsService newsService=new NewsEventHandler(testRepo,userRepo,instRepo);
+		NewsService newsService=new NewsEventHandler(testRepo,userRepo,instRepo,syRepo);
 		assertNotNull("newsService not being created by constructor.",newsService);
 	}
 

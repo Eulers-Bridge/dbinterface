@@ -69,7 +69,7 @@ public class CoreConfig
 	public NewsService createNewsService()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createNewsService()");
-		return new NewsEventHandler(newsRepo,userRepo, instRepo);
+		return new NewsEventHandler(newsRepo,userRepo, instRepo,syRepo);
 	}
 
 
