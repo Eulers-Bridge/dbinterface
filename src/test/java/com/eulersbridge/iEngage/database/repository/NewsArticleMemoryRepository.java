@@ -3,8 +3,10 @@
  */
 package com.eulersbridge.iEngage.database.repository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.neo4j.graphdb.traversal.TraversalDescription;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
+import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.domain.User;
 
 /**
  * @author Greg
@@ -241,6 +245,35 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 	@Override
 	public <N> Iterable<NewsArticle> findAllByTraversal(N arg0,
 			TraversalDescription arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Iterable<NewsArticle> findByStudentYear(StudentYear sy) 
+	{
+		Long syId=null;
+		ArrayList<NewsArticle> arts=new ArrayList<NewsArticle>();
+		if (sy!=null)
+			syId=sy.getNodeId();
+		if (null==syId)
+			return null;
+		Iterator<NewsArticle> iter=newsArticles.values().iterator();
+		while (iter.hasNext())
+		{
+			NewsArticle na=iter.next();
+			if (na.getStudentYear().getNodeId()==syId)
+			{
+				arts.add(na);
+			}
+		}
+		return arts;
+	}
+
+
+	@Override
+	public Iterable<NewsArticle> findByCreator(User creator) {
 		// TODO Auto-generated method stub
 		return null;
 	}
