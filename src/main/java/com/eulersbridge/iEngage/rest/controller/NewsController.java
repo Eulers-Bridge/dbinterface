@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -175,6 +176,7 @@ public class NewsController
 	*/
 	@RequestMapping(method=RequestMethod.GET,value="/newsArticles/{studentYearId}")
 	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable Long studentYearId,
+			@RequestParam(value="direction",required=false,defaultValue="DESC") String direction,
 			@RequestParam(value="page",required=false,defaultValue="0") String page,
 			@RequestParam(value="pageSize",required=false,defaultValue="10") String pageSize) 
 	{
@@ -183,7 +185,9 @@ public class NewsController
 		pageNumber=Integer.parseInt(page);
 		pageLength=Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from student year. "+studentYearId);
-		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(studentYearId),pageNumber,pageLength);
+		Direction sortDirection=Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
+		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(studentYearId),sortDirection, pageNumber,pageLength);
   	
 		if (!articleEvent.isEntityFound())
 		{

@@ -116,37 +116,38 @@ public class NewsEventHandler implements NewsService
 
 	@Override
 	public NewsArticlesReadEvent readNewsArticles(
-			ReadNewsArticlesEvent readNewsArticlesEvent) 
+			ReadNewsArticlesEvent readNewsArticlesEvent, Direction sortDirection,int pageNumber, int pageSize) 
 	{
 		Long institutionId=readNewsArticlesEvent.getInstId();
 		Long syId=readNewsArticlesEvent.getSyId();
 		StudentYear sy;
-		Iterable <NewsArticle>articles=null;
+		Page <NewsArticle>articles=null;
 		ArrayList<NewsArticleDetails> dets=new ArrayList<NewsArticleDetails>();
 		NewsArticlesReadEvent nare=null;
 		if (null==syId)
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
 			sy=instRepo.findLatestStudentYear(institutionId);
+			syId=sy.getNodeId();
 		}
-		else
+		if (syId!=null)
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Student Year Id "+syId);
-			sy=syRepository.findOne(syId);
-		}
-		if (sy!=null)
-		{
-			articles=newsRepo.findByStudentYear(sy);
+			Pageable pageable=new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
+			articles=newsRepo.findByStudentYearId(syId,pageable);
+			if (LOG.isDebugEnabled())
+					LOG.debug("Total elements = "+articles.getTotalElements()+" total pages ="+articles.getTotalPages());
 			if (articles!=null)
 			{
 				Iterator<NewsArticle> iter=articles.iterator();
 				while (iter.hasNext())
 				{
 					NewsArticle na=iter.next();
+					if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getTitle());
 					NewsArticleDetails det=na.toNewsArticleDetails();
 					dets.add(det);
 				}
-				nare=new NewsArticlesReadEvent(institutionId,sy.getNodeId(),dets);
+				nare=new NewsArticlesReadEvent(institutionId,syId,dets);
 			}
 			else
 			{
@@ -160,53 +161,4 @@ public class NewsEventHandler implements NewsService
 		}
 		return nare;
 	}
-
-	@Override
-	public NewsArticlesReadEvent readNewsArticles(
-			ReadNewsArticlesEvent readNewsArticlesEvent,int pageNumber, int pageSize) 
-	{
-		Long institutionId=readNewsArticlesEvent.getInstId();
-		Long syId=readNewsArticlesEvent.getSyId();
-		StudentYear sy;
-		Page<NewsArticle> articles=null;
-		ArrayList<NewsArticleDetails> dets=new ArrayList<NewsArticleDetails>();
-		NewsArticlesReadEvent nare=null;
-		if (null==syId)
-		{
-			if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
-			sy=instRepo.findLatestStudentYear(institutionId);
-		}
-		else
-		{
-			if (LOG.isDebugEnabled()) LOG.debug("Student Year Id "+syId);
-			sy=syRepository.findOne(syId);
-		}
-		if (sy!=null)
-		{
-			Pageable pageable=new PageRequest(pageNumber,pageSize,Direction.ASC,"Date");
-			articles=newsRepo.findAll(pageable);
-			if (articles!=null)
-			{
-				Iterator<NewsArticle> iter=articles.iterator();
-				while (iter.hasNext())
-				{
-					NewsArticle na=iter.next();
-					NewsArticleDetails det=na.toNewsArticleDetails();
-					dets.add(det);
-				}
-				nare=new NewsArticlesReadEvent(institutionId,sy.getNodeId(),dets);
-			}
-			else
-			{
-				if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByStudentYear");
-			}
-		}
-		else
-		{
-			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findStudentYear");
-			nare=NewsArticlesReadEvent.studentYearNotFound();
-		}
-		return nare;
-	}
-
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
@@ -251,7 +252,7 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 
 
 	@Override
-	public Iterable<NewsArticle> findByStudentYear(StudentYear sy) 
+	public Page<NewsArticle> findByStudentYear(Pageable p, StudentYear sy) 
 	{
 		Long syId=null;
 		ArrayList<NewsArticle> arts=new ArrayList<NewsArticle>();
@@ -268,7 +269,8 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 				arts.add(na);
 			}
 		}
-		return arts;
+		Page<NewsArticle> pages=new PageImpl<NewsArticle>(arts,p,arts.size());
+		return pages;
 	}
 
 
@@ -278,4 +280,23 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 		return null;
 	}
 
+
+	@Override
+	public Page<NewsArticle> findByStudentYearId(Long syId, Pageable p) 
+	{
+		ArrayList<NewsArticle> arts=new ArrayList<NewsArticle>();
+		if (null==syId)
+			return null;
+		Iterator<NewsArticle> iter=newsArticles.values().iterator();
+		while (iter.hasNext())
+		{
+			NewsArticle na=iter.next();
+			if (na.getStudentYear().getNodeId()==syId)
+			{
+				arts.add(na);
+			}
+		}
+		Page<NewsArticle> pages=new PageImpl<NewsArticle>(arts,p,arts.size());
+		return pages;
+	}
 }

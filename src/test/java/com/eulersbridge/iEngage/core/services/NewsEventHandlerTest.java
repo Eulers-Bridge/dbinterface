@@ -16,6 +16,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
@@ -51,6 +52,8 @@ public class NewsEventHandlerTest
 	InstitutionMemoryRepository instRepo;
 	StudentYearRepository syRepo;
 	
+	int page=0;
+	int size=10;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -184,7 +187,8 @@ public class NewsEventHandlerTest
 		Long syId=(long)1;
 		Long instId=(long)1;
 		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
-		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae);
+		Direction sortDirection=Direction.DESC;
+		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
 		Iterable <NewsArticleDetails> artDets=nare.getArticles();
 		Iterator <NewsArticleDetails> iter=artDets.iterator();
@@ -207,7 +211,8 @@ public class NewsEventHandlerTest
 		Long instId=(long)1;
 		
 		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
-		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae);
+		Direction sortDirection=Direction.DESC;
+		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
 		Iterable <NewsArticleDetails> artDets=nare.getArticles();
 		Iterator <NewsArticleDetails> iter=artDets.iterator();
@@ -225,9 +230,12 @@ public class NewsEventHandlerTest
 	{
 		Long syId=(long)2;
 		Long instId=(long)1;
+		int page=0;
+		int size=10;
 
 		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
-		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae);
+		Direction sortDirection=Direction.DESC;
+		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
 		Iterable <NewsArticleDetails> artDets=nare.getArticles();
 		Iterator <NewsArticleDetails> iter=artDets.iterator();
@@ -250,7 +258,8 @@ public class NewsEventHandlerTest
 		Long instId=(long)1;
 
 		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
-		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae);
+		Direction sortDirection=Direction.DESC;
+		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
 		Iterable <NewsArticleDetails> artDets=nare.getArticles();
 		Iterator <NewsArticleDetails> iter=artDets.iterator();

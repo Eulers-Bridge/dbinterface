@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
+import org.springframework.data.domain.Sort.Direction;
+
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
@@ -17,6 +19,6 @@ public interface NewsService
 	public ReadNewsArticleEvent requestReadNewsArticle(RequestReadNewsArticleEvent requestReadNewsArticleEvent);
 	public NewsArticleUpdatedEvent updateNewsArticle(UpdateNewsArticleEvent updateNewsArticleEvent);
 	public NewsArticleDeletedEvent deleteNewsArticle(DeleteNewsArticleEvent deleteNewsArticleEvent);
-	public NewsArticlesReadEvent readNewsArticles(ReadNewsArticlesEvent readNewsArticlesEvent);
-	public NewsArticlesReadEvent readNewsArticles(ReadNewsArticlesEvent readNewsArticlesEvent, int i, int j);
+//	public NewsArticlesReadEvent readNewsArticles(ReadNewsArticlesEvent readNewsArticlesEvent);
+	public NewsArticlesReadEvent readNewsArticles(ReadNewsArticlesEvent readNewsArticlesEvent,Direction sortDirection, int i, int j);
 }
