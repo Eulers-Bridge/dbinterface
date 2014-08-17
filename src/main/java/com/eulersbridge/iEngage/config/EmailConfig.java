@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
@@ -16,6 +15,7 @@ import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 import com.eulersbridge.iEngage.core.services.EmailEventHandler;
 import com.eulersbridge.iEngage.core.services.EmailService;
 
+//import org.springframework.core.io.Resource;
 @PropertySource("classpath:email.properties")
 @Configuration
 public class EmailConfig 
@@ -85,7 +85,7 @@ public class EmailConfig
 		return javaMailProperties;
 	}
 	
-	private Properties getAwsMailProperties()
+/*	private Properties getAwsMailProperties()
 	{
 		Properties awsMailProperties=new Properties();
 		awsMailProperties.setProperty("mail.transport.protocol", "aws");
@@ -94,6 +94,6 @@ public class EmailConfig
 		awsMailProperties.setProperty("mail.debug", "true");
 		return awsMailProperties;
 	}
-	
+*/	
 
 }
