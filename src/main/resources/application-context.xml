@@ -21,18 +21,12 @@
   
   <neo4j:repositories base-package="com.eulersbridge.iEngage.database.repository"></neo4j:repositories>
   
-  
   <tx:annotation-driven mode="proxy"/>
-  
-  
   
   <bean id="testLogin" class="com.eulersbridge.iEngage.core.domain.Login">
   	<constructor-arg value="0"/>
   	<constructor-arg value="testLogin"/>
   	<constructor-arg value="testLogin tested"/>
   </bean>
-  
-  <bean id="countryFactory" class="com.eulersbridge.iEngage.rest.domain.stubCountryFactory" >
-  </bean>
-  
+    
 </beans>
