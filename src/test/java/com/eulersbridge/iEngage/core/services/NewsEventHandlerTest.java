@@ -20,9 +20,11 @@ import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
@@ -274,4 +276,39 @@ public class NewsEventHandlerTest
 		assertEquals(dets.getTitle(), "Different year test");
 		assertEquals(dets.getContent(), "Testing to see if a different year will be picked up.");
 	}
+	
+	@Test
+	public void testShouldAddLikeForArticle()
+	{
+		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikeNewsArticleEvent likeNewsArticlesEvent=new LikeNewsArticleEvent(newsArticle,user);
+		NewsArticleLikedEvent res = newsService.likeNewsArticle(likeNewsArticlesEvent);
+		assertNotNull(res);
+	}
+	
+	@Test
+	public void testShouldReturnFalseForSecondLikeForArticle()
+	{
+		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikeNewsArticleEvent likeNewsArticlesEvent=new LikeNewsArticleEvent(newsArticle,user);
+		NewsArticleLikedEvent res = newsService.likeNewsArticle(likeNewsArticlesEvent);
+		assertNotNull(res);
+		assertEquals(true, res.isResultSuccess());
+		res = newsService.likeNewsArticle(likeNewsArticlesEvent);
+		assertEquals(false,res.isResultSuccess());
+	}
+	
+	@Test
+	public void testShouldReturnUserNotFound()
+	{
+		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikeNewsArticleEvent likeNewsArticlesEvent=new LikeNewsArticleEvent(newsArticle.getNodeId(),"test@hotmail.com");
+		NewsArticleLikedEvent res = newsService.likeNewsArticle(likeNewsArticlesEvent);
+		assertNotNull(res);
+		assertEquals(false, res.isResultSuccess());
+	}
+	
 }
