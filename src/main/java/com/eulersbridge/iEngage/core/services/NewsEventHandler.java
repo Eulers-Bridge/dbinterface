@@ -12,15 +12,18 @@ import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
+import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -160,5 +163,36 @@ public class NewsEventHandler implements NewsService
 			nare=NewsArticlesReadEvent.studentYearNotFound();
 		}
 		return nare;
+	}
+
+	@Override
+	public NewsArticleLikedEvent likeNewsArticle(
+			LikeNewsArticleEvent likeNewsArticleEvent) 
+	{
+		boolean result;
+		NewsArticleLikedEvent retValue;
+		String email=likeNewsArticleEvent.getEmailAddress();
+		Long newsArticleId=likeNewsArticleEvent.getNewsArticleId();
+		User user=userRepository.findByEmail(email);
+		if (null==user)
+		{
+			return NewsArticleLikedEvent.userNotFound(email);
+		}
+			
+		NewsArticle article=newsRepo.findOne(newsArticleId);
+		if (null==article)
+		{
+			return NewsArticleLikedEvent.articleNotFound(newsArticleId, email);
+		}
+		Like like=new Like(user,article);
+		boolean articleResult=article.addLike(like);
+		if ((!articleResult)&&(LOG.isWarnEnabled())) LOG.warn("Unable to add like to article, already exists.");
+		boolean userResult=user.addLike(like);
+		if ((!userResult)&&(LOG.isWarnEnabled())) LOG.warn("Unable to add like to user, already exists.");
+		userRepository.save(user);
+		newsRepo.save(article);
+		result=articleResult&&userResult;
+		retValue=new NewsArticleLikedEvent(newsArticleId,email,result);
+		return retValue;
 	}
 }

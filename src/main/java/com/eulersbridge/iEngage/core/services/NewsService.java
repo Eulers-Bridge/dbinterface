@@ -4,8 +4,10 @@ import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
@@ -19,6 +21,6 @@ public interface NewsService
 	public ReadNewsArticleEvent requestReadNewsArticle(RequestReadNewsArticleEvent requestReadNewsArticleEvent);
 	public NewsArticleUpdatedEvent updateNewsArticle(UpdateNewsArticleEvent updateNewsArticleEvent);
 	public NewsArticleDeletedEvent deleteNewsArticle(DeleteNewsArticleEvent deleteNewsArticleEvent);
-//	public NewsArticlesReadEvent readNewsArticles(ReadNewsArticlesEvent readNewsArticlesEvent);
+	public NewsArticleLikedEvent likeNewsArticle(LikeNewsArticleEvent likeNewsArticlesEvent);
 	public NewsArticlesReadEvent readNewsArticles(ReadNewsArticlesEvent readNewsArticlesEvent,Direction sortDirection, int i, int j);
 }
