@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import java.util.Set;
+
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
@@ -13,6 +15,7 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 
@@ -33,8 +36,8 @@ public class User
 	@Fetch private Institution institution;
 	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH)
 	private Iterable<VerificationToken> verificationToken;
-	@RelatedTo(type="LIKED_BY",direction=Direction.BOTH)
-	private Iterable<NewsArticle> likes;
+	@RelatedToVia(type="LIKES")
+	private Set<Like> likes;
 	
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
@@ -174,6 +177,85 @@ public class User
 		this.accountVerified = accountVerified;
 	}
 	
+	/**
+	 * @return the verificationToken
+	 */
+	public Iterable<VerificationToken> getVerificationToken() {
+		return verificationToken;
+	}
+
+	/**
+	 * @param verificationToken the verificationToken to set
+	 */
+	public void setVerificationToken(Iterable<VerificationToken> verificationToken) {
+		this.verificationToken = verificationToken;
+	}
+
+	/**
+	 * @return the likes
+	 */
+	public Set<Like> getLikes() {
+		return likes;
+	}
+
+	/**
+	 * @param likes the likes to set
+	 */
+	public void setLikes(Set<Like> likes) {
+		this.likes = likes;
+	}
+
+	/**
+	 * @param adds the like to set
+	 */
+	public boolean addLike(Like like) 
+	{
+		boolean result=this.likes.add(like);
+		return result;
+	}
+
+	/**
+	 * @param firstName the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * @param lastName the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	/**
+	 * @param nationality the nationality to set
+	 */
+	public void setNationality(String nationality) {
+		this.nationality = nationality;
+	}
+
+	/**
+	 * @param yearOfBirth the yearOfBirth to set
+	 */
+	public void setYearOfBirth(String yearOfBirth) {
+		this.yearOfBirth = yearOfBirth;
+	}
+
+	/**
+	 * @param personality the personality to set
+	 */
+	public void setPersonality(String personality) {
+		this.personality = personality;
+	}
+
 	public UserDetails toUserDetails() 
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");

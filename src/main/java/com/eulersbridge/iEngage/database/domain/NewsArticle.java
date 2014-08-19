@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import java.util.Calendar;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,17 +14,19 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 
 @NodeEntity
-public class NewsArticle {
+public class NewsArticle extends Likeable
+{
 	@GraphId Long nodeId;
 	private String title;
 	private String content;
 	private Iterable<String> picture;
-	@RelatedTo(type="LIKED_BY",direction=Direction.BOTH)
-	private Iterable<User> likers;
+	@RelatedToVia(type="LIKES")
+	private Set<Like> likes;
 	@Indexed @NotNull private Long date;
 	@RelatedTo(type = "CREATED_BY", direction=Direction.BOTH) @Fetch
 	private User creator;
@@ -79,10 +82,20 @@ public class NewsArticle {
 	}
 	
 	/**
-	 * @return the likers
+	 * @return the likes
 	 */
-	public Iterable<User> getLikers() {
-		return likers;
+	public Iterable<Like> getLikes() {
+		return likes;
+	}
+	
+	public void setLikes(Set<Like> likes) 
+	{
+		this.likes=likes;
+	}
+
+	public boolean addLike(Like like)
+	{
+		return this.likes.add(like);
 	}
 
 	public Long getDate()
