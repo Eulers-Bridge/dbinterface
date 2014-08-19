@@ -20,6 +20,8 @@ import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
 import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
+import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
+import com.eulersbridge.iEngage.rest.domain.stubCountryFactory;
 
 @Configuration
 public class CoreConfig 
@@ -70,6 +72,14 @@ public class CoreConfig
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createNewsService()");
 		return new NewsEventHandler(newsRepo,userRepo, instRepo,syRepo);
+	}
+	
+	@Bean
+	public CountriesFactory createCountryFactory()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("createCountryFactory()");
+		return new stubCountryFactory();
+		
 	}
 
 
