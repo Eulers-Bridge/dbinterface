@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
+import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;
+
 /**
  * @author Greg Newitt
  *
@@ -37,25 +40,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
-	    http.authorizeRequests()
+	    AppBasicAuthenticationEntryPoint entryPoint=new AppBasicAuthenticationEntryPoint();
+		AppBasicAuthenticationSuccessHandler successHandler=new AppBasicAuthenticationSuccessHandler();
+		String loginPage="/general-info";
+		http.authorizeRequests()
         	.antMatchers("/api/general-info").permitAll()
         	.antMatchers("/api/signUp").permitAll()
         	.antMatchers("/api/displayParams/**").permitAll()
-        	.antMatchers("/api/emailVerification/**").permitAll()
-        	.antMatchers("/api/countrys").permitAll()
-        	.antMatchers("/api/institutions").permitAll()
-        	.antMatchers("/api/**").permitAll()
+//        	.antMatchers("/api/emailVerification/**").permitAll()
+//        	.antMatchers("/api/countrys").permitAll()
+//        	.antMatchers("/api/institutions").permitAll()
+//        	.antMatchers("/api/**").permitAll()
         	.antMatchers("/dbInterface/api/**").permitAll()
-        	.antMatchers("/**").hasRole("USER")
+        	.antMatchers("/**").hasRole("USER").anyRequest().authenticated()
         .and()
-        	.formLogin()
+//        	.httpBasic()
+        	.httpBasic().authenticationEntryPoint(entryPoint)
+        .and()
+        	.formLogin().successHandler(successHandler)//.loginPage(loginPage)
         		.permitAll()
         .and()
         	.logout()
         		.permitAll()
         .and().csrf().disable();
 //TODO reenable CSRF security
-/*		String loginPage="/general-info";
+/*		
 		http.authorizeRequests().antMatchers("/*").authenticated().and()
 		.anonymous().
 		http.authorizeRequests().anyRequest().fullyAuthenticated().and().formLogin().loginPage(loginPage).permitAll();
