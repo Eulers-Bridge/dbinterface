@@ -135,9 +135,9 @@ public class NewsArticleTest
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#getLikers()}.
 	 */
 	@Test
-	public void testGetLikers() 
+	public void testGetLikes() 
 	{
-		assertNull("No likers at this point.",news.getLikers());
+		assertNull("No likers at this point.",news.getLikes());
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class NewsArticleTest
 		assertEquals("Creator emails don't match.",dets.getCreatorEmail(),news.getCreator().getEmail());
 		assertEquals("IDs don't match.",dets.getNewsArticleId(),news.getNodeId());
 		assertEquals("Pictures don't match.",dets.getPicture(),news.getPicture());
-		assertEquals("Likers don't match.",dets.getLikers(),news.getLikers());
+		assertEquals("Likers don't match.",dets.getLikers(),news.getLikes());
 		assertEquals("Years don't match.",dets.getStudentYear(),news.getStudentYear().getYear());
 	}
 
@@ -201,7 +201,7 @@ public class NewsArticleTest
 		assertEquals("Creator emails don't match.",news2.getCreator().getEmail(),news.getCreator().getEmail());
 		assertEquals("IDs don't match.",news2.getNodeId(),news.getNodeId());
 		assertEquals("Pictures don't match.",news2.getPicture(),news.getPicture());
-		assertEquals("Likers don't match.",news2.getLikers(),news.getLikers());
+		assertEquals("Likers don't match.",news2.getLikes(),news.getLikes());
 		assertEquals("Years don't match.",news2.getStudentYear().getYear(),news.getStudentYear().getYear());
 	}
 
