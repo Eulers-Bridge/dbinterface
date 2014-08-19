@@ -17,10 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.email.EmailVerificationTest;
 
 /**
- * @author Emma
+ * @author Greg Newitt
  *
  */
 public class StudentYearTest 
