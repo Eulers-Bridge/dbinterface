@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
@@ -30,7 +31,6 @@ import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.services.NewsService;
-import com.eulersbridge.iEngage.rest.domain.Country;
 import com.eulersbridge.iEngage.rest.domain.NewsArticle;
 
 @RestController
@@ -75,6 +75,32 @@ public class NewsController
     	if (LOG.isDebugEnabled()) LOG.debug("restNews = "+restNews);
       	return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
     }
+    
+    /**
+     * Is passed all the necessary data to read a news article from the database.
+     * The request must be a GET with the news article id presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the user object read from the database.
+     * 
+     * @param email the email address of the user object to be read.
+     * @return the user object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.PUT,value="/newsArticle/{articleId}/likedBy/{email}")
+	public @ResponseBody ResponseEntity<Boolean> likeArticle(@PathVariable Long articleId,@PathVariable String email) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
+		NewsArticleLikedEvent articleEvent=newsService.likeNewsArticle(new LikeNewsArticleEvent(articleId,email));
+  	
+		if ((!articleEvent.isEntityFound())||(!articleEvent.isUserFound()))
+		{
+			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		Boolean restNews=articleEvent.isResultSuccess();
+		return new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+	}
     
     /**
      * Is passed all the necessary data to read a news article from the database.
