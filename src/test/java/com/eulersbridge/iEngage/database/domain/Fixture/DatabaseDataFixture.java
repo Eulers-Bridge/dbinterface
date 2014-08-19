@@ -2,10 +2,12 @@ package com.eulersbridge.iEngage.database.domain.Fixture;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -33,6 +35,7 @@ public class DatabaseDataFixture
 		user.setNodeId(nodeId);
 		user.setAccountVerified(verified);
 		user.setInstitution(inst);
+		user.setLikes(new HashSet<Like>());
 		return user;
 	}
 	public static HashMap<Long,User> populateUsers()
@@ -110,6 +113,7 @@ public class DatabaseDataFixture
 		Long nodeId=id;
 		article.setNodeId(nodeId);
 		article.setStudentYear(studentYear);
+		article.setLikes(new HashSet<Like>());
 		return article;
 	}
 	public static Map<Long,NewsArticle> populateNewsArticles()
