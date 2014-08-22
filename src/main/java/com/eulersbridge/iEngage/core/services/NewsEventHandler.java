@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,13 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
@@ -103,6 +106,13 @@ public class NewsEventHandler implements NewsService
 	{
 		NewsArticleDetails nADs = updateNewsArticleEvent.getUNewsArticleDetails();
 		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with id = "+nADs.getInstitutionId());
+		StudentYear sy=instRepo.findLatestStudentYear(nADs.getInstitutionId());
+		na.setStudentYear(sy);
+		if (LOG.isDebugEnabled()) LOG.debug("inst - "+sy);
+		if (LOG.isDebugEnabled()) LOG.debug("Finding user with email = "+nADs.getCreatorEmail());
+    	User creator=userRepository.findByEmail(nADs.getCreatorEmail());
+    	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+creator);
 		NewsArticle result=newsRepo.save(na);
 		NewsArticleUpdatedEvent nACE=new NewsArticleUpdatedEvent(result.getNodeId(), result.toNewsArticleDetails());
 		return nACE;
@@ -169,30 +179,52 @@ public class NewsEventHandler implements NewsService
 	public NewsArticleLikedEvent likeNewsArticle(
 			LikeNewsArticleEvent likeNewsArticleEvent) 
 	{
-		boolean result;
+		boolean result=true;
 		NewsArticleLikedEvent retValue;
 		String email=likeNewsArticleEvent.getEmailAddress();
 		Long newsArticleId=likeNewsArticleEvent.getNewsArticleId();
-		User user=userRepository.findByEmail(email);
+/*		User user=userRepository.findByEmail(email);
 		if (null==user)
 		{
 			return NewsArticleLikedEvent.userNotFound(email);
 		}
-			
+		
 		NewsArticle article=newsRepo.findOne(newsArticleId);
 		if (null==article)
 		{
 			return NewsArticleLikedEvent.articleNotFound(newsArticleId, email);
 		}
-		Like like=new Like(user,article);
-		boolean articleResult=article.addLike(like);
-		if ((!articleResult)&&(LOG.isWarnEnabled())) LOG.warn("Unable to add like to article, already exists.");
+*/		Like like=newsRepo.likeArticle(email, newsArticleId);
+		
+/*		Like like=new Like(user,article);
+		
 		boolean userResult=user.addLike(like);
 		if ((!userResult)&&(LOG.isWarnEnabled())) LOG.warn("Unable to add like to user, already exists.");
-		userRepository.save(user);
+		User returnedUser=userRepository.save(user);
+		if ((userResult)&&(LOG.isDebugEnabled())) LOG.debug("Like id = "+like.getId());
+		Set<Like> likes=returnedUser.getLikes();
+		boolean articleResult=article.addLike(like);
+		if ((!articleResult)&&(LOG.isWarnEnabled())) LOG.warn("Unable to add like to article, already exists.");
 		newsRepo.save(article);
+		if ((userResult)&&(LOG.isDebugEnabled())) LOG.debug("Like id = "+like.getId());
 		result=articleResult&&userResult;
+		
+*/		if (like!=null) result=true; else result=false;
 		retValue=new NewsArticleLikedEvent(newsArticleId,email,result);
+		return retValue;
+	}
+	@Override
+	public NewsArticleUnlikedEvent unlikeNewsArticle(
+			UnlikeNewsArticleEvent unlikeNewsArticleEvent) 
+	{
+		boolean result=true;
+		NewsArticleUnlikedEvent retValue;
+		String email=unlikeNewsArticleEvent.getEmailAddress();
+		Long newsArticleId=unlikeNewsArticleEvent.getNewsArticleId();
+		
+		newsRepo.unlikeArticle(email, newsArticleId);
+		
+		retValue=new NewsArticleUnlikedEvent(newsArticleId,email,result);
 		return retValue;
 	}
 }
