@@ -3,6 +3,7 @@
  */
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
 
@@ -10,10 +11,9 @@ import com.eulersbridge.iEngage.database.domain.User;
  * @author Greg Newitt
  *
  */
-public class LikeNewsArticleEvent 
+public class LikeNewsArticleEvent extends LikeEvent
 {
 	Long newsArticleId;
-	String emailAddress;
 
 	public LikeNewsArticleEvent(NewsArticle newsArticle, User user) 
 	{
@@ -39,20 +39,4 @@ public class LikeNewsArticleEvent
 	public void setNewsArticleId(Long newsArticleId) {
 		this.newsArticleId = newsArticleId;
 	}
-
-	/**
-	 * @return the userId
-	 */
-	public String getEmailAddress() {
-		return emailAddress;
-	}
-
-	/**
-	 * @param userId the userId to set
-	 */
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-	
-
 }

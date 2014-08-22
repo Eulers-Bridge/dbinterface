@@ -12,7 +12,6 @@ import com.eulersbridge.iEngage.core.events.LikedEvent;
 public class NewsArticleLikedEvent extends LikedEvent
 {
 	Long articleId;
-	String userEmail;
 
 	public NewsArticleLikedEvent(Long articleId, String userId,boolean result) 
 	{
@@ -43,6 +42,4 @@ public class NewsArticleLikedEvent extends LikedEvent
 	    ev.userFound=false;
 	    return ev;
 	  }
-
-
 }

@@ -12,6 +12,8 @@ public class LikedEvent
 	  protected boolean entityFound = true;
 	  protected boolean userFound = true;
 	  protected boolean result=true;
+	  
+	  protected String userEmail;
 
 	  public boolean isEntityFound() 
 	  {

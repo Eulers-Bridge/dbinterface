@@ -9,5 +9,19 @@ package com.eulersbridge.iEngage.core.events;
  */
 public class LikeEvent 
 {
+	protected String emailAddress;
 
+	/**
+	 * @return the userId
+	 */
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
 }
