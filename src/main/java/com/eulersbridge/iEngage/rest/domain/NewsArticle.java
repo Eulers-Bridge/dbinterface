@@ -217,6 +217,14 @@ public class NewsArticle extends ResourceSupport
 		buff.append(getDate());
 		buff.append(", creator email = ");
 		buff.append(getCreatorEmail());
+		buff.append(", studentYear = ");
+		buff.append(getStudentYear());
+		buff.append(", institutionId = ");
+		buff.append(getInstitutionId());
+		buff.append(", pictures = ");
+		buff.append(getPicture());
+		buff.append(", likers = ");
+		buff.append(getLikers());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);

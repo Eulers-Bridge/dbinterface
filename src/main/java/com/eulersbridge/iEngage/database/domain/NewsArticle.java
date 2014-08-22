@@ -25,7 +25,7 @@ public class NewsArticle extends Likeable
 	private String title;
 	private String content;
 	private Iterable<String> picture;
-	@RelatedToVia(type="LIKES")
+	@RelatedToVia(direction=Direction.BOTH, type="LIKES")
 	private Set<Like> likes;
 	@Indexed @NotNull private Long date;
 	@RelatedTo(type = "CREATED_BY", direction=Direction.BOTH) @Fetch
@@ -146,6 +146,12 @@ public class NewsArticle extends Likeable
 		buff.append(getDate());
 		buff.append(", creator = ");
 		buff.append(getCreator());
+		buff.append(", studentYear = ");
+		buff.append(getStudentYear());
+		buff.append(", pictures = ");
+		buff.append(getPicture());
+		buff.append(", likers = ");
+		buff.append(getLikes());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);

@@ -126,6 +126,14 @@ public class NewsArticleDetails {
 		buff.append(getDate().toString());
 		buff.append(", creator = ");
 		buff.append(getCreatorEmail());
+		buff.append(", studentYear = ");
+		buff.append(getStudentYear());
+		buff.append(", institutionId = ");
+		buff.append(getInstitutionId());
+		buff.append(", pictures = ");
+		buff.append(getPicture());
+		buff.append(", likers = ");
+		buff.append(getLikers());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
