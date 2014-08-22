@@ -6,6 +6,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Yikai Gong
+ *
+ */
+
 public class CountryCreatedEventTest {
     CountryDetails countrydetails;
     CountryCreatedEvent countryCreatedEvent;

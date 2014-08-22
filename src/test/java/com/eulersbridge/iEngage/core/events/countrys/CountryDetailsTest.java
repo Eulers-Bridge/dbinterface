@@ -4,6 +4,11 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
+/**
+ * @author Yikai Gong
+ *
+ */
+
 public class CountryDetailsTest {
 
     CountryDetails countryDetail1;
