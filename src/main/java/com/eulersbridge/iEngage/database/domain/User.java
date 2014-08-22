@@ -36,7 +36,7 @@ public class User
 	@Fetch private Institution institution;
 	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH)
 	private Iterable<VerificationToken> verificationToken;
-	@RelatedToVia(type="LIKES")
+	@RelatedToVia(direction=Direction.BOTH, type="LIKES")
 	private Set<Like> likes;
 	
     private static Logger LOG = LoggerFactory.getLogger(User.class);
