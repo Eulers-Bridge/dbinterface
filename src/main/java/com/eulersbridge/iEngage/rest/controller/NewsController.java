@@ -24,11 +24,13 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.rest.domain.NewsArticle;
@@ -67,8 +69,10 @@ public class NewsController
     public @ResponseBody ResponseEntity<NewsArticle> alterNewsArticle(@PathVariable Long articleId,
     		@RequestBody NewsArticle newsArticle) 
     {
-    	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit newsArticle. "+newsArticle.getArticleId());
-    	NewsArticleUpdatedEvent newsEvent=newsService.updateNewsArticle(new UpdateNewsArticleEvent(articleId,newsArticle.toNewsArticleDetails()));
+    	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit newsArticle. "+articleId);
+    	UpdateNewsArticleEvent unae=new UpdateNewsArticleEvent(articleId,newsArticle.toNewsArticleDetails());
+    	if (LOG.isDebugEnabled()) LOG.debug("Update na event - "+unae.getUNewsArticleDetails());
+    	NewsArticleUpdatedEvent newsEvent=newsService.updateNewsArticle(unae);
     	if ((null!=newsEvent)&&(LOG.isDebugEnabled()))
     		LOG.debug("newsEvent - "+newsEvent);
     	NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.getNewsArticleDetails());
@@ -93,6 +97,32 @@ public class NewsController
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
 		NewsArticleLikedEvent articleEvent=newsService.likeNewsArticle(new LikeNewsArticleEvent(articleId,email));
+  	
+		if ((!articleEvent.isEntityFound())||(!articleEvent.isUserFound()))
+		{
+			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		Boolean restNews=articleEvent.isResultSuccess();
+		return new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+	}
+    
+    /**
+     * Is passed all the necessary data to read a news article from the database.
+     * The request must be a GET with the news article id presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the user object read from the database.
+     * 
+     * @param email the email address of the user object to be read.
+     * @return the user object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.PUT,value="/newsArticle/{articleId}/unlikedBy/{email}")
+	public @ResponseBody ResponseEntity<Boolean> unlikeArticle(@PathVariable Long articleId,@PathVariable String email) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike news article. "+articleId);
+		NewsArticleUnlikedEvent articleEvent=newsService.unlikeNewsArticle(new UnlikeNewsArticleEvent(articleId,email));
   	
 		if ((!articleEvent.isEntityFound())||(!articleEvent.isUserFound()))
 		{
