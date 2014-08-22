@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
 
+import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -298,5 +299,20 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 		}
 		Page<NewsArticle> pages=new PageImpl<NewsArticle>(arts,p,arts.size());
 		return pages;
+	}
+
+
+	@Override
+	public Like likeArticle(String email, Long likedId) 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void unlikeArticle(String email, Long likedId) {
+		// TODO Auto-generated method stub
+		
 	}
 }
