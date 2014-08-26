@@ -52,12 +52,12 @@ public class UserDeletedEventTest {
 
     @Test
     public void testGetEmail() throws Exception {
-        assertEquals("email does not match", userDeletedEvent.getEmail());
+        assertEquals("email does not match", email, userDeletedEvent.getEmail());
     }
 
     @Test
     public void testGetDetails() throws Exception {
-        assertEquals("userDetails does not match", userDeletedEvent.getDetails());
+        assertEquals("userDetails does not match", userDetails, userDeletedEvent.getDetails());
     }
 
     @Test
