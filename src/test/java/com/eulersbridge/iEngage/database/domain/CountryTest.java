@@ -127,7 +127,7 @@ public class CountryTest {
 		Country country2=new Country();
 		country2.setNodeId(node1);
 		country2.setCountryName(germany);
-		assertNotEquals("countries shouldn't be equal.",country,country2);
+		assertEquals("Countries with idential nodeId should be equal.",country,country2);
 		assertEquals("Country should be equal to itself.",country,country);
 	}
 

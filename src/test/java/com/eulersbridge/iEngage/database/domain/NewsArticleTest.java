@@ -212,7 +212,7 @@ public class NewsArticleTest
 	{
 		NewsArticleDetails dets = news.toNewsArticleDetails();
 		NewsArticle news2 = NewsArticle.fromNewsArticleDetails(dets);
-		assertNotEquals("different objects shouldn't match.",news,news2);
+		assertEquals("Objects with same nodeId should match.",news,news2);
 	}
 
 }

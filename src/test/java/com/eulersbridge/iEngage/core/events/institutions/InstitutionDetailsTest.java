@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.core.events.institutions;
 
-import com.eulersbridge.iEngage.database.domain.Institution;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -103,7 +102,7 @@ public class InstitutionDetailsTest {
     public void testToString() throws Exception {
         assertNotNull("toString() return null", institutionDetails.toString());
         InstitutionDetails institutionDetails1 = new InstitutionDetails(new Long(1));
-        assertNotEquals("different details equals", institutionDetails1, institutionDetails);
+        assertNotEquals("different details toString() equals", institutionDetails1.toString(), institutionDetails.toString());
 
     }
 }

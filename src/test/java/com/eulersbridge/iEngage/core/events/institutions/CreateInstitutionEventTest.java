@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.core.events.institutions;
 
-import com.eulersbridge.iEngage.database.domain.Institution;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
