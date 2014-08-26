@@ -112,6 +112,7 @@ public class NewsEventHandler implements NewsService
 		if (LOG.isDebugEnabled()) LOG.debug("inst - "+sy);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding user with email = "+nADs.getCreatorEmail());
     	User creator=userRepository.findByEmail(nADs.getCreatorEmail());
+    	na.setCreator(creator);
     	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+creator);
 		NewsArticle result=newsRepo.save(na);
 		NewsArticleUpdatedEvent nACE=new NewsArticleUpdatedEvent(result.getNodeId(), result.toNewsArticleDetails());
