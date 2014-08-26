@@ -17,7 +17,7 @@ public class GeneralInfoController {
 	    private static Logger LOG = LoggerFactory.getLogger(GeneralInfoController.class);
 @Autowired	    CountriesFactory countryFactory;
 //	    @Secured({ "ROLE_USER" })
-	    @RequestMapping("/general-info")
+	    @RequestMapping("/general-info2")
 	    public @ResponseBody Country[] generalInfo()
 	    {
 	    	if (LOG.isInfoEnabled()) LOG.info("general info called. ");

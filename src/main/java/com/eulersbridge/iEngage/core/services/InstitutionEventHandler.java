@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
@@ -30,6 +31,7 @@ import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository.GeneralInfo;
 import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
 
 public class InstitutionEventHandler implements InstitutionService {
@@ -215,6 +217,34 @@ public class InstitutionEventHandler implements InstitutionService {
 		Set<StudentYear> years=syRepository.findStudentYears(institutionId);
 		return years.iterator();
 	}
+
+	@Override
+	public Iterator<GeneralInfo> getGeneralInfo() 
+	{
+		Iterator<GeneralInfo> countryIter=null;
+		ArrayList<CountryDetails> countryList=new ArrayList<CountryDetails>();
+		countryIter=instRepository.getGeneralInfo().iterator();
+/*		while(countryIter.hasNext())
+		{
+			GeneralInfo country=countryIter.next();
+			CountryDetails cDets=new CountryDetails(country.getCountryId());
+			cDets.setCountryName(country.getCountryName());
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug("CountryId - "+country.getCountryId());
+				LOG.debug("CountryName - "+country.getCountryName());
+				Iterator<Institution> instIter=country.getInstitutions().iterator();
+				while(instIter.hasNext())
+				{
+					Institution inst=instIter.next();
+					LOG.debug("Institution - "+inst);				
+				}
+			}
+		}
+		// TODO Auto-generated method stub
+		return null;
+*/		return countryIter;
+		}
 
 	//TODO Create the associate methods for Student Year.
 	/*

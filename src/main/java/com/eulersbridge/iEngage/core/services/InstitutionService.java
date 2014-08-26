@@ -17,6 +17,7 @@ import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearReadEvent;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository.GeneralInfo;
 
 
 //All methods are guaranteed to return something, null will never be returned.
@@ -29,4 +30,5 @@ public interface InstitutionService {
 	public StudentYearCreatedEvent createStudentYear(CreateStudentYearEvent createStudentYearEvent);
 	public StudentYearReadEvent readStudentYear(ReadStudentYearEvent readStudentYearEvent);
 	public Iterator<StudentYear> getStudentYears(Long institutionId);
+	public Iterator<GeneralInfo> getGeneralInfo();
 }

@@ -3,6 +3,8 @@ package com.eulersbridge.iEngage.database.repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.annotation.QueryResult;
+import org.springframework.data.neo4j.annotation.ResultColumn;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +24,27 @@ public interface InstitutionRepository extends GraphRepository<Institution>
 
 	@Query("MATCH (i:`Institution`)-[]-(c:`Country`) where id(c)={countryId} return i")
 	Result<Institution> findByCountryId(@Param("countryId") Long countryId);
+
+	@Query("match (c:Country)-[r:HAS_INSTITUTIONS]-(i:Institution) "+
+	       "return id(c) as countryId,c.countryName as countryName"
+			+",COLLECT(i.name) as institutionNames,COLLECT(id(i)) as institutionIds"
+	       )
+	Result<GeneralInfo> getGeneralInfo();
+	
+	@QueryResult()
+	public interface GeneralInfo
+	{
+		@ResultColumn ("institutionNames")
+		Iterable<String> getInstitutionNames();
+		
+		@ResultColumn ("institutionIds")
+		Iterable<Long> getInstitutionIds();
+		
+		@ResultColumn ("countryName")
+		String getCountryName();
+		
+		@ResultColumn ("countryId")
+		Long getCountryId();
+	}
 
 }

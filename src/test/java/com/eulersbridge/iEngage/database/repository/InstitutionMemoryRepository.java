@@ -284,4 +284,11 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 		return result;
 	}
 
+
+	@Override
+	public Result<GeneralInfo> getGeneralInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -31,6 +31,7 @@ import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearReadEvent;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository.GeneralInfo;
 import com.eulersbridge.iEngage.rest.domain.StudentYear;
 import com.eulersbridge.iEngage.rest.domain.Institution;
 
@@ -44,7 +45,6 @@ public class InstitutionController
 
 	public InstitutionController() 
 	{
-		// TODO Auto-generated constructor stub
 	}
     
     /**
@@ -285,6 +285,14 @@ public class InstitutionController
     	return new ResponseEntity<Boolean>(true,HttpStatus.OK);
     }
 
+    @RequestMapping("/general-info")
+    public @ResponseBody ResponseEntity<Iterator<GeneralInfo>> generalInfo()
+    {
+    	if (LOG.isInfoEnabled()) LOG.info("general info called. ");
+    	Iterator<GeneralInfo> genInfo=instService.getGeneralInfo();
+    	return new ResponseEntity<Iterator<GeneralInfo>>(genInfo,HttpStatus.OK);
+    }
+    
 
     @RequestMapping(value="/institutions")
     public @ResponseBody ResponseEntity<Iterator<Institution>> getInstitutions() 
