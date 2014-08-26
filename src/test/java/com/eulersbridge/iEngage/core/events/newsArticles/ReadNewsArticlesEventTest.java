@@ -17,7 +17,7 @@ public class ReadNewsArticlesEventTest {
 
     @Before
     public void setUp() throws Exception {
-        readNewsArticlesEvent = new ReadNewsArticlesEvent(syId, instId);
+        readNewsArticlesEvent = new ReadNewsArticlesEvent(instId,syId);
     }
 
     @After
@@ -31,20 +31,24 @@ public class ReadNewsArticlesEventTest {
     }
 
     @Test
-    public void testGetInstId() throws Exception {
-        assertEquals("instId does not match", instId, readNewsArticlesEvent.getInstId());
+    public void testGetInstId() throws Exception 
+    {
+    	Long instId2=readNewsArticlesEvent.getInstId();
+        assertEquals("instId does not match", instId, instId2);
     }
 
     @Test
     public void testSetInstId() throws Exception {
         Long instId1 = new Long(3);
-        readNewsArticlesEvent.setInstId(instId);
+        readNewsArticlesEvent.setInstId(instId1);
         assertEquals("instId does not match", instId1, readNewsArticlesEvent.getInstId());
     }
 
     @Test
-    public void testGetSyId() throws Exception {
-        assertEquals("syId does not match", syId, readNewsArticlesEvent.getSyId());
+    public void testGetSyId() throws Exception 
+    {
+    	Long syId2=readNewsArticlesEvent.getSyId();
+        assertEquals("syId does not match", syId, syId2);
     }
 
     @Test
