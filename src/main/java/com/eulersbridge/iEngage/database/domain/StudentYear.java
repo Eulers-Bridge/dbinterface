@@ -131,8 +131,12 @@ public class StudentYear
 	@Override
 	public String toString() 
 	{
-		return "StudentYear [nodeId=" + nodeId + ", year=" + year + ", start="
-				+ start + ", end=" + end + ", institution=" + institution.getNodeId() + "]";
+		StringBuffer buff=new StringBuffer("StudentYear [nodeId=" + nodeId + ", year=" + year + ", start="+ start + ", end=" + end + ", institution=");
+		if (institution!=null)
+			buff.append(institution.getNodeId());
+		else buff.append(institution);
+		buff.append(']');
+		return buff.toString();
 	} 
 	  public boolean equals(StudentYear sy2)
 	  {
