@@ -109,5 +109,18 @@ public class StudentYearDetails
 				+ institutionId + "]";
 	}
 	
-	
+	@Override
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof StudentYearDetails)) return false;
+		StudentYearDetails dets2=(StudentYearDetails) other;
+		if (dets2.getNodeId()!=null)
+		{
+			if (dets2.getNodeId().equals(getNodeId()))
+			return true;
+		}
+		return false;
+	}
 }

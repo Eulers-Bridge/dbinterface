@@ -3,7 +3,6 @@ package com.eulersbridge.iEngage.core.events.institutions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class InstitutionDetails 
 {
 	private	Long institutionId;
@@ -49,6 +48,7 @@ public class InstitutionDetails
 		this.countryName = countryName;
 	}
 	
+	@Override
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ id = ");
@@ -66,6 +66,20 @@ public class InstitutionDetails
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
+	}
+	@Override
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof InstitutionDetails)) return false;
+		InstitutionDetails dets2=(InstitutionDetails) other;
+		if (dets2.getInstitutionId()!=null)
+		{
+			if (dets2.getInstitutionId().equals(getInstitutionId()))
+				return true;
+		}
+		return false;
 	}
 
 }

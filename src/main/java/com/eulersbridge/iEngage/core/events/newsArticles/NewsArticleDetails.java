@@ -111,6 +111,8 @@ public class NewsArticleDetails {
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
 	}
+	
+	@Override
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ id = ");
@@ -138,5 +140,20 @@ public class NewsArticleDetails {
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
+	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof NewsArticleDetails)) return false;
+		NewsArticleDetails dets2=(NewsArticleDetails) other;
+		if (dets2.getNewsArticleId()!=null)
+		{
+			if (dets2.getNewsArticleId().equals(getNewsArticleId()))
+			return true;
+		}
+		return false;
 	}
 }

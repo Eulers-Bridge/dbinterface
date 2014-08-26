@@ -129,6 +129,7 @@ public class UserDetails
 		this.accountVerified = accountVerified;
 	}
 	
+	@Override
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ email = ");
@@ -154,5 +155,20 @@ public class UserDetails
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
+	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof UserDetails)) return false;
+		UserDetails dets2=(UserDetails) other;
+		if (dets2.getEmail()!=null)
+		{
+			if (dets2.getEmail().equals(getEmail()))
+			return true;
+		}
+		return false;
 	}
 }

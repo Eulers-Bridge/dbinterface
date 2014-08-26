@@ -117,6 +117,7 @@ public class Institution
 		this.studentYears = studentYears;
 	}
 
+	@Override
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
@@ -167,9 +168,15 @@ public class Institution
 		    return inst;
 		  }
 	  
-	  public boolean equals(Institution institution2)
-	  {
-		  if ((nodeId!=null)&&(nodeId.equals(institution2.nodeId))) return true;
-		  else return false;
-	  }
+	@Override  
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof Institution)) return false;
+		Institution institution2=(Institution) other;
+
+		if ((nodeId!=null)&&(nodeId.equals(institution2.nodeId))) return true;
+		return false;
+	}
 }

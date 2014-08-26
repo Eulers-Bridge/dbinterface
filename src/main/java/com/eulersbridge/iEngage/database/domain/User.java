@@ -295,10 +295,15 @@ public class User
 		    return user;
 		  }
 	  
-	  public boolean equals(User user2)
-	  {
-		  if ((nodeId!=null)&&(nodeId.equals(user2.nodeId))) return true;
-		  else return false;
-	  }
+	@Override
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof User)) return false;
+		User user2=(User) other;
+		if ((nodeId!=null)&&(nodeId.equals(user2.nodeId))) return true;
+		return false;
+	}
 
 }

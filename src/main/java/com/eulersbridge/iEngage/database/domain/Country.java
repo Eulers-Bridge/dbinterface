@@ -44,6 +44,7 @@ public class Country
 		this.countryName = countryName;
 	}
 	
+	@Override
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
@@ -70,8 +71,8 @@ public class Country
 	    return details;
 	}
 
-	  public static Country fromCountryDetails(CountryDetails countryDetails) 
-	  {
+	public static Country fromCountryDetails(CountryDetails countryDetails) 
+	{
 		    if (LOG.isTraceEnabled()) LOG.trace("fromCountryDetails()");
 
 		    if (LOG.isTraceEnabled()) LOG.trace("countryDetails "+countryDetails);
@@ -81,13 +82,19 @@ public class Country
 		    if (LOG.isTraceEnabled()) LOG.trace("country "+country);
 
 		    return country;
-		  }
+	}
 	  
-	  public boolean equals(Country country2)
-	  {
-		  if ((nodeId!=null)&&(nodeId.equals(country2.nodeId))) return true;
-		  else return false;
-	  }
+	@Override
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof Country)) return false;
+		Country country2=(Country) other;
+
+		if ((nodeId!=null)&&(nodeId.equals(country2.nodeId))) return true;
+		return false;
+	}
 
 	public void setNodeId(Long id) 
 	{

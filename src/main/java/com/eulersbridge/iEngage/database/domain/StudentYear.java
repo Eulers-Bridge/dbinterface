@@ -137,11 +137,18 @@ public class StudentYear
 		else buff.append(institution);
 		buff.append(']');
 		return buff.toString();
-	} 
-	  public boolean equals(StudentYear sy2)
-	  {
-		  if ((nodeId!=null)&&(nodeId.equals(sy2.nodeId))) return true;
-		  else return false;
-	  }
+	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof StudentYear)) return false;
+		StudentYear sy2=(StudentYear) other;
+		
+		if ((nodeId!=null)&&(nodeId.equals(sy2.nodeId))) return true;
+		return false;
+	}
 
 }

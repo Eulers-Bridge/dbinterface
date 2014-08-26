@@ -199,11 +199,17 @@ public class NewsArticle extends Likeable
 
 		    return newsArt;
 		  }
-	  
-	  public boolean equals(NewsArticle newsArticle2)
-	  {
-		  if ((nodeId!=null)&&(nodeId.equals(newsArticle2.nodeId))) return true;
-		  else return false;
-	  }
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		if (null == other) return false;
+		if (other == this) return true;
+		if (!(other instanceof NewsArticle)) return false;
+		NewsArticle newsArticle2=(NewsArticle) other;
+
+		if ((nodeId!=null)&&(nodeId.equals(newsArticle2.nodeId))) return true;
+		return false;
+	}
 
 }
