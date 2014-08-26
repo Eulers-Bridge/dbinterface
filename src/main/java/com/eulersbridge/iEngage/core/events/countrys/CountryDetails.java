@@ -39,5 +39,4 @@ public class CountryDetails
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
 	}
-
 }
