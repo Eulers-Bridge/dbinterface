@@ -27,7 +27,7 @@ public class NewsArticleTest
 	final String content="The content.";
 	final Calendar date=Calendar.getInstance();
 	final User creator=DatabaseDataFixture.populateUserGnewitt();
-	final StudentYear year=new StudentYear();
+	final StudentYear year=DatabaseDataFixture.populateStudentYear2014();
 	final Long node1=new Long(1);
 	final Long node2=new Long(2);
 	/**
@@ -51,7 +51,6 @@ public class NewsArticleTest
 	public void setUp() throws Exception 
 	{
 		Iterable<String> picture=null;
-		year.setYear("2014");
 		news=new NewsArticle(title, content, picture, date, creator);
 		news.setNodeId(node1);
 		news.setStudentYear(year);
