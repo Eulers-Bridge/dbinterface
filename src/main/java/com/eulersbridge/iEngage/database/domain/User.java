@@ -66,6 +66,13 @@ public class User
 		return email;
 	}
 
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public String getFirstName()
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("getFirstName() = "+firstName);
