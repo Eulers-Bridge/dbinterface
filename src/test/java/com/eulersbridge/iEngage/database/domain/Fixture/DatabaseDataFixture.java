@@ -50,7 +50,9 @@ public class DatabaseDataFixture
 	public static Institution populateInstUniMelb()
 	{
 		Country country=populateCountryAust();
-		return populateInst("University of Melbourne", "Parkville", "Victoria", country);
+		Institution inst=populateInst("University of Melbourne", "Parkville", "Victoria", country);
+		inst.setNodeId((long)1);
+		return inst;
 	}
 	
 	public static Institution populateInst(String name,String campus,String state,Country country)
@@ -88,7 +90,9 @@ public class DatabaseDataFixture
 		Calendar now=Calendar.getInstance();
 		year.setStart(now.getTimeInMillis());
 		year.setEnd(now.getTimeInMillis()+200000);
-		year.setInstitution(populateInstUniMelb());
+		Institution inst=populateInstUniMelb();
+//		inst.setNodeId((long)1);
+		year.setInstitution(inst);
 		year.setNodeId(nodeId);
 		return year;
 	}
