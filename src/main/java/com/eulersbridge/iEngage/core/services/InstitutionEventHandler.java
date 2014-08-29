@@ -4,23 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.eulersbridge.iEngage.core.events.institutions.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
-import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
-import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
-import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
@@ -219,11 +209,13 @@ public class InstitutionEventHandler implements InstitutionService {
 	}
 
 	@Override
-	public Iterator<GeneralInfo> getGeneralInfo() 
+	public GeneralInfoReadEvent getGeneralInfo(ReadGeneralInfoEvent readGeneralInfoEvent)
 	{
-		Iterator<GeneralInfo> countryIter=null;
-		ArrayList<CountryDetails> countryList=new ArrayList<CountryDetails>();
-		countryIter=instRepository.getGeneralInfo().iterator();
+        GeneralInfoReadEvent generalInfoReadEvent = new GeneralInfoReadEvent(instRepository.getGeneralInfo().iterator());
+        return generalInfoReadEvent;
+//        Iterator<GeneralInfo> countryIter=null;
+//		ArrayList<CountryDetails> countryList=new ArrayList<CountryDetails>();
+//		countryIter=instRepository.getGeneralInfo().iterator();
 /*		while(countryIter.hasNext())
 		{
 			GeneralInfo country=countryIter.next();
@@ -241,10 +233,10 @@ public class InstitutionEventHandler implements InstitutionService {
 				}
 			}
 		}
-		// TODO Auto-generated method stub
-		return null;
-*/		return countryIter;
-		}
+*/		// TODO Auto-generated method stub
+//		return null;
+//		return countryIter;
+	}
 
 	//TODO Create the associate methods for Student Year.
 	/*

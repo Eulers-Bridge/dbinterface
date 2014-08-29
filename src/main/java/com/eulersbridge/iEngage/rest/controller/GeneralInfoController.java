@@ -15,7 +15,7 @@ import com.eulersbridge.iEngage.rest.domain.Country;
 public class GeneralInfoController {
 
 	    private static Logger LOG = LoggerFactory.getLogger(GeneralInfoController.class);
-@Autowired	    CountriesFactory countryFactory;
+        @Autowired	    CountriesFactory countryFactory;
 //	    @Secured({ "ROLE_USER" })
 	    @RequestMapping("/general-info2")
 	    public @ResponseBody Country[] generalInfo()
