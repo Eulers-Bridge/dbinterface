@@ -108,7 +108,7 @@ public class UserEventHandler implements UserService
 	@Transactional
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent) 
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("requestReadUser("+deleteUserEvent.getEmail()+")");
+	    if (LOG.isDebugEnabled()) LOG.debug("requestDeleteUser("+deleteUserEvent.getEmail()+")");
 	    User user=userRepository.findByEmail(deleteUserEvent.getEmail());
 	    if (user==null)
 	    {
