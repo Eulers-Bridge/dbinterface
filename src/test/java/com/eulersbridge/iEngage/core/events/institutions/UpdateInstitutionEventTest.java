@@ -17,7 +17,6 @@ public class UpdateInstitutionEventTest {
     final String state = new String("Victroia");
     final String countryName = new String("Australia");
     InstitutionDetails institutionDetails = null;
-    final Long eventId = new Long(0);
     UpdateInstitutionEvent updateInstitutionEvent = null;
 
     @Before
@@ -27,7 +26,7 @@ public class UpdateInstitutionEventTest {
         institutionDetails.setCampus(campus);
         institutionDetails.setState(state);
         institutionDetails.setCountryName(countryName);
-        updateInstitutionEvent = new UpdateInstitutionEvent(eventId, institutionDetails);
+        updateInstitutionEvent = new UpdateInstitutionEvent(institutionId, institutionDetails);
     }
 
     @After
@@ -42,7 +41,7 @@ public class UpdateInstitutionEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("eventId does not match", eventId, updateInstitutionEvent.getId());
+        assertEquals("eventId does not match", institutionId, updateInstitutionEvent.getId());
     }
 
     @Test
