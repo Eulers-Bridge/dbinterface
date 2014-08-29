@@ -11,6 +11,7 @@ public class UpdateNewsArticleEvent extends UpdateEvent
 	  {
 	    this.id = id;
 	    this.newsArticleDetails = newsArticleDetails;
+	    this.newsArticleDetails.setNewsArticleId(id);
 	  }
 
 	  public Long getNewsArticleId() 

@@ -10,6 +10,7 @@ public class UpdateCountryEvent extends UpdateEvent
 	  public UpdateCountryEvent(Long id, CountryDetails countryDetails) {
 	    this.id = id;
 	    this.countryDetails = countryDetails;
+	    this.countryDetails.setCountryId(id);
 	  }
 
 	  public Long getId() {

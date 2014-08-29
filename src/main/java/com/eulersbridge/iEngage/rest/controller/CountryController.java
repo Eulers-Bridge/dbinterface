@@ -59,7 +59,6 @@ public class CountryController
     	if (LOG.isInfoEnabled()) LOG.info("country. "+country);
     	Country restCountry=null;
     	ResponseEntity<Country> result;
-    	country.setId(countryId);
     	UpdateCountryEvent updEvt=new UpdateCountryEvent(countryId,country.toCountryDetails());
     	if (LOG.isDebugEnabled()) LOG.debug("updateEvt = "+updEvt);
     	CountryUpdatedEvent countryEvent=countryService.updateCountry(updEvt);

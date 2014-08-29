@@ -10,6 +10,7 @@ public class UpdateInstitutionEvent extends UpdateEvent
 	  public UpdateInstitutionEvent(Long id, InstitutionDetails institutionDetails) {
 	    this.id = id;
 	    this.institutionDetails = institutionDetails;
+	    this.institutionDetails.setInstitutionId(id);
 	  }
 
 	  public Long getId() {

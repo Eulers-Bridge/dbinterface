@@ -72,7 +72,6 @@ public class InstitutionController
     	if (LOG.isInfoEnabled()) LOG.info("institution. "+inst);
     	Institution restInst=null;
     	ResponseEntity<Institution> result;
-    	inst.setId(institutionId);
     	UpdateInstitutionEvent updEvt=new UpdateInstitutionEvent(institutionId,inst.toInstitutionDetails());
     	if (LOG.isDebugEnabled()) LOG.debug("updateEvt = "+updEvt);
     	InstitutionUpdatedEvent instEvent=instService.updateInstitution(updEvt);
