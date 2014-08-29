@@ -20,6 +20,7 @@ import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
  * @author Greg
@@ -305,8 +306,17 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 	@Override
 	public Like likeArticle(String email, Long likedId) 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		NewsArticle na=newsArticles.get(likedId);
+		if (null==na) return null;
+		
+		User liker=DatabaseDataFixture.populateUserGnewitt();
+		liker.setEmail(email);
+		
+		Like like=new Like(liker,na);
+		like.setId(liker.getNodeId()+na.getNodeId());
+		if (!na.addLike(like)) return null;
+		if (!liker.addLike(like)) return null;
+		return like;
 	}
 
 
