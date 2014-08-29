@@ -171,17 +171,14 @@ public class NewsController
 
 	*/
 	@RequestMapping(method=RequestMethod.DELETE,value="/newsArticle/{articleId}")
-	public @ResponseBody ResponseEntity<NewsArticle> deleteNewsArticle(@PathVariable Long articleId) 
+	public @ResponseBody ResponseEntity<Boolean> deleteNewsArticle(@PathVariable Long articleId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete news article. "+articleId);
+		
 		NewsArticleDeletedEvent newsEvent=newsService.deleteNewsArticle(new DeleteNewsArticleEvent(articleId));
   	
-		if (!newsEvent.isEntityFound())
-		{
-			return new ResponseEntity<NewsArticle>(HttpStatus.NOT_FOUND);
-		}
-		NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.getNewsArticleDetails());
-		return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
+//		NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.isDeletionCompleted());
+		return new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.OK);
 	}
     
     
