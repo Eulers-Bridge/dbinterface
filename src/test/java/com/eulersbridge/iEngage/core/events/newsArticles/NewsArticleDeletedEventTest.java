@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,17 +28,7 @@ public class NewsArticleDeletedEventTest {
 
     @Before
     public void setUp() throws Exception {
-        newsArticleDetails = new NewsArticleDetails();
-        newsArticleDetails.setInstitutionId(institutionId);
-        newsArticleDetails.setContent(content);
-        newsArticleDetails.setCreatorEmail(creatorEmail);
-        newsArticleDetails.setDate(date);
-        newsArticleDetails.setNewsArticleId(newsArticleId);
-        newsArticleDetails.setTitle(title);
-        newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setStudentYear(studentYear);
-        newsArticleDetails.setLikers(likers);
-        newsArticleDeletedEvent = new NewsArticleDeletedEvent(newsArticleId, newsArticleDetails);
+        newsArticleDeletedEvent = new NewsArticleDeletedEvent(newsArticleId);
     }
 
     @After
@@ -58,18 +47,13 @@ public class NewsArticleDeletedEventTest {
     }
 
     @Test
-    public void testGetNewsArticleDetails() throws Exception {
-        assertEquals("newsArticleDetails does not match", newsArticleDetails, newsArticleDeletedEvent.getNewsArticleDetails());
-    }
-
-    @Test
     public void testIsDeletionCompleted() throws Exception {
         assertTrue("deletionCompleted is not true", newsArticleDeletedEvent.isDeletionCompleted());
     }
 
     @Test
     public void testDeletionForbidden() throws Exception {
-        NewsArticleDeletedEvent newsArticleDeletedEvent1 = NewsArticleDeletedEvent.deletionForbidden(newsArticleId, newsArticleDetails);
+        NewsArticleDeletedEvent newsArticleDeletedEvent1 = NewsArticleDeletedEvent.deletionForbidden(newsArticleId);
         assertNotNull("newsArticleDeletedEvent is null", newsArticleDeletedEvent1);
         assertFalse("deletionCompleted is not false", newsArticleDeletedEvent1.isDeletionCompleted());
     }
