@@ -95,7 +95,8 @@ public class NewsArticle extends Likeable
 
 	public boolean addLike(Like like)
 	{
-		return this.likes.add(like);
+		boolean result=this.likes.add(like);
+		return result;
 	}
 
 	public Long getDate()
