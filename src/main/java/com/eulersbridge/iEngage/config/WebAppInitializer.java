@@ -17,12 +17,12 @@ import org.springframework.web.filter.DelegatingFilterProxy;
  * @author Greg Newitt
  *
  */
-public class WebAppInitializer implements WebApplicationInitializer 
+public class WebAppInitializer /*implements WebApplicationInitializer 
 {
 
-	/* (non-Javadoc)
+	* (non-Javadoc)
 	 * @see org.springframework.web.WebApplicationInitializer#onStartup(javax.servlet.ServletContext)
-	 */
+	 *
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException 
 	{
@@ -50,5 +50,5 @@ public class WebAppInitializer implements WebApplicationInitializer
 		servletContext.setInitParameter("defaultHtmlEscape", "true");
 		return rootContext;
 	}
-
+*/{
 }

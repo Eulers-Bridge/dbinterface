@@ -26,6 +26,7 @@ import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
@@ -123,8 +124,11 @@ public class NewsEventHandler implements NewsService
 	public NewsArticleDeletedEvent deleteNewsArticle(
 			DeleteNewsArticleEvent deleteNewsArticleEvent) 
 	{
-		newsRepo.delete(deleteNewsArticleEvent.getNewsArticleId());
-		NewsArticleDeletedEvent nade=new NewsArticleDeletedEvent(deleteNewsArticleEvent.getNewsArticleId(), null);
+		if (LOG.isDebugEnabled()) LOG.debug("Entered deleteNewsArticle newsarticleEvent = "+deleteNewsArticleEvent);
+		Long newsArticleId=deleteNewsArticleEvent.getNewsArticleId();
+	    if (LOG.isDebugEnabled()) LOG.debug("deleteNewsArticle("+newsArticleId+")");
+    	newsRepo.delete(newsArticleId);
+		NewsArticleDeletedEvent nade=new NewsArticleDeletedEvent(newsArticleId);
 		return nade;
 	}
 

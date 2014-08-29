@@ -5,29 +5,16 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 public class NewsArticleDeletedEvent extends DeletedEvent
 {
 	private Long id;
-	private NewsArticleDetails newsArticleDetails;
-	private boolean deletionCompleted;
+	private boolean deletionCompleted=true;
 
-	private NewsArticleDeletedEvent(Long id) 
+	public NewsArticleDeletedEvent(Long id) 
 	{
 		this.id = id;
 	}
 
-	public NewsArticleDeletedEvent(Long id, NewsArticleDetails newsArticleDetails) 
-	{
-	    this.id = id;
-	    this.newsArticleDetails = newsArticleDetails;
-	    this.deletionCompleted = true;
-	  }
-
 	  public Long getNewsArticleId() 
 	  {
 	    return id;
-	  }
-
-	  public NewsArticleDetails getNewsArticleDetails() 
-	  {
-	    return newsArticleDetails;
 	  }
 
 	  public boolean isDeletionCompleted() 
@@ -35,9 +22,9 @@ public class NewsArticleDeletedEvent extends DeletedEvent
 	    return deletionCompleted;
 	  }
 
-	  public static NewsArticleDeletedEvent deletionForbidden(Long id, NewsArticleDetails newsArticleDetails) 
+	  public static NewsArticleDeletedEvent deletionForbidden(Long id) 
 	  {
-		  NewsArticleDeletedEvent ev = new NewsArticleDeletedEvent(id, newsArticleDetails);
+		  NewsArticleDeletedEvent ev = new NewsArticleDeletedEvent(id);
 		  ev.entityFound=true;
 		  ev.deletionCompleted=false;
 		  return ev;
