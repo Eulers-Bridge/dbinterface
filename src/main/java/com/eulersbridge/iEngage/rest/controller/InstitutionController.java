@@ -3,6 +3,8 @@ package com.eulersbridge.iEngage.rest.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.institutions.*;
+import com.eulersbridge.iEngage.rest.domain.Country;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
-import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
-import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
@@ -285,11 +276,14 @@ public class InstitutionController
     }
 
     @RequestMapping("/general-info")
-    public @ResponseBody ResponseEntity<Iterator<GeneralInfo>> generalInfo()
+    public @ResponseBody Country[] generalInfo()
     {
     	if (LOG.isInfoEnabled()) LOG.info("general info called. ");
-    	Iterator<GeneralInfo> genInfo=instService.getGeneralInfo();
-    	return new ResponseEntity<Iterator<GeneralInfo>>(genInfo,HttpStatus.OK);
+        GeneralInfoReadEvent generalInfoReadEvent = instService.getGeneralInfo(new ReadGeneralInfoEvent());
+        Country[] countries = Country.fromGeneralInfos(generalInfoReadEvent.getGeneralInfos());
+//    	Iterator<GeneralInfo> genInfo=instService.getGeneralInfo();
+//    	return new ResponseEntity<Iterator<GeneralInfo>>(genInfo,HttpStatus.OK);
+        return countries;
     }
     
 

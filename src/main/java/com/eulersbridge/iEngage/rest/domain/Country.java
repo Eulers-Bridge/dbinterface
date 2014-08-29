@@ -2,10 +2,14 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository.GeneralInfo;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.rest.controller.CountryController;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Country extends ResourceSupport
 {
@@ -70,6 +74,27 @@ public class Country extends ResourceSupport
 
 	    return country;
 	  }
+
+    public static Country[] fromGeneralInfos(Iterator<GeneralInfo> generalInfos) {
+		ArrayList<Country> countries =new ArrayList<Country>();
+		while(generalInfos.hasNext())
+		{
+			GeneralInfo generalInfo = generalInfos.next();
+            Long countryId = generalInfo.getCountryId();
+            String countryName = generalInfo.getCountryName();
+            ArrayList<Institution> institutions = new ArrayList<>();
+			Iterator<Long> instIds = generalInfo.getInstitutionIds().iterator();
+            Iterator<String> instNames = generalInfo.getInstitutionNames().iterator();
+			while(instIds.hasNext() && instNames.hasNext())
+			{
+				Institution institution= new Institution(instIds.next());
+                institution.setName(instNames.next());
+                institutions.add(institution);
+		    }
+            countries.add(new Country(countryId, countryName, (Institution[])institutions.toArray()));
+		}
+        return (Country[])countries.toArray();
+    }
 
 	public void setId(Long countryId) 
 	{

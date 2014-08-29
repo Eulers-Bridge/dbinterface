@@ -82,21 +82,21 @@ public class Like
 		this.timeStamp = timeStamp;
 	}
 	
-	@Override
-	public boolean equals(Object other)
-	{
-		if (null == other) return false;
-		if (other == this) return true;
-		if (!(other instanceof Like)) return false;
-		Like like2=(Like) other;
-
-		if ((getId()!=null)&&(getId().equals(like2.getId()))) return true;
-		return false;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "id = "+id+" liker = "+liker+" liked = "+liked+" timeStamp = "+timeStamp;
-	}
+//	@Override
+//	public boolean equals(Object other)
+//	{
+//		if (null == other) return false;
+//		if (other == this) return true;
+//		if (!(other instanceof Like)) return false;
+//		Like like2=(Like) other;
+//
+//		if ((getId()!=null)&&(getId().equals(like2.getId()))) return true;
+//		return false;
+//	}
+//
+//	@Override
+//	public String toString()
+//	{
+//		return "id = "+id+" liker = "+liker+" liked = "+liked+" timeStamp = "+timeStamp;
+//	}
 }
