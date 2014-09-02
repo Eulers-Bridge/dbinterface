@@ -12,8 +12,8 @@ import static org.junit.Assert.*;
 
 public class UserDetailsTest {
     final String email = new String("yikaig@gmail.com");
-    final String firstName = new String("Yikai");
-    final String lastName = new String("Gong");
+    final String givenName = new String("Yikai");
+    final String familyName = new String("Gong");
     final String gender = new String("male");
     final String nationality = new String("China");
     final String yearOfBirth = new String("1989");
@@ -30,8 +30,8 @@ public class UserDetailsTest {
     @Before
     public void setUp() throws Exception {
         userDetails = new UserDetails(email);
-        userDetails.setFirstName(firstName);
-        userDetails.setLastName(lastName);
+        userDetails.setGivenName(givenName);
+        userDetails.setFamilyName(familyName);
         userDetails.setGender(gender);
         userDetails.setNationality(nationality);
         userDetails.setYearOfBirth(yearOfBirth);
@@ -54,15 +54,15 @@ public class UserDetailsTest {
     }
 
     @Test
-    public void testGetLastName() throws Exception {
-        assertEquals("lastName does not match", lastName, userDetails.getLastName());
+    public void testGetFamilyName() throws Exception {
+        assertEquals("familyName does not match", familyName, userDetails.getFamilyName());
     }
 
     @Test
-    public void testSetLastName() throws Exception {
-        String lastName1 = new String("Smith");
-        userDetails1.setLastName(lastName1);
-        assertEquals("lastName does not match", lastName1, userDetails1.getLastName());
+    public void testSetFamilyName() throws Exception {
+        String familyName1 = new String("Smith");
+        userDetails1.setFamilyName(familyName1);
+        assertEquals("familyName does not match", familyName1, userDetails1.getFamilyName());
     }
 
     @Test
@@ -150,15 +150,15 @@ public class UserDetailsTest {
     }
 
     @Test
-    public void testGetFirstName() throws Exception {
-        assertEquals("firstName does not match", firstName, userDetails.getFirstName());
+    public void testGetGivenName() throws Exception {
+        assertEquals("givenName does not match", givenName, userDetails.getGivenName());
     }
 
     @Test
-    public void testSetFirstName() throws Exception {
-        String firstName1 = new String("Joe");
-        userDetails1.setFirstName(firstName1);
-        assertEquals("firstName does not match", firstName1, userDetails1.getFirstName());
+    public void testSetGivenName() throws Exception {
+        String givenName1 = new String("Joe");
+        userDetails1.setGivenName(givenName1);
+        assertEquals("givenName does not match", givenName1, userDetails1.getGivenName());
     }
 
     @Test

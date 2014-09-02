@@ -14,8 +14,8 @@ public class UserDetails
 {
 
 	private String email;
-	private String firstName;
-	private String lastName;
+	private String givenName;
+	private String familyName;
 	private String gender;
 	private String nationality;
 	private String yearOfBirth;
@@ -35,12 +35,12 @@ public class UserDetails
 		this.email=email;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getFamilyName() {
+		return familyName;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
 	}
 
 	public String getGender() {
@@ -104,15 +104,15 @@ public class UserDetails
 	/**
 	 * @return the firstName
 	 */
-	public String getFirstName() {
-		return firstName;
+	public String getGivenName() {
+		return givenName;
 	}
 
 	/**
 	 * @param firstName the firstName to set
 	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setGivenName(String givenName) {
+		this.givenName = givenName;
 	}
 
 	/**
@@ -135,10 +135,10 @@ public class UserDetails
 		StringBuffer buff=new StringBuffer("[ email = ");
 		String retValue;
 		buff.append(getEmail());
-		buff.append(", firstName = ");
-		buff.append(getFirstName());
-		buff.append(", lastName = ");
-		buff.append(getLastName());
+		buff.append(", givenName = ");
+		buff.append(getGivenName());
+		buff.append(", familyName = ");
+		buff.append(getFamilyName());
 		buff.append(", gender = ");
 		buff.append(getGender());
 		buff.append(", nationality = ");

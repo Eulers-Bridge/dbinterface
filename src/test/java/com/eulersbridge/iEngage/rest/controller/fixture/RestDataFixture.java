@@ -41,8 +41,8 @@ public class RestDataFixture
 	{
 		User user=new User();
 		user.setEmail("gnewitt@hotmail.com");
-		user.setFirstName("Greg");
-		user.setLastName("Newitt");
+		user.setGivenName("Greg");
+		user.setFamilyName("Newitt");
 		user.setGender("Male");
 		user.setNationality("Australian");
 		user.setPersonality("None");

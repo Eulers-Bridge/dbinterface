@@ -56,8 +56,8 @@ public class UserTest {
 		User userTest=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "none", "password");
 		assertTrue("userTest not of User class",(userTest instanceof User));
 		assertEquals("Emails don't match",userTest.getEmail(),"gnewitt");
-		assertEquals("First names don't match",userTest.getFirstName(),"Greg");
-		assertEquals("Last names don't match",userTest.getLastName(),"Newitt");
+		assertEquals("First names don't match",userTest.getGivenName(),"Greg");
+		assertEquals("Last names don't match",userTest.getFamilyName(),"Newitt");
 		assertEquals("Genders don't match",userTest.getGender(),"Male");
 		assertEquals("Nationalities don't match",userTest.getNationality(),"Australian");
 		assertEquals("Birth years names don't match",userTest.getYearOfBirth(),"1971");
@@ -78,25 +78,25 @@ public class UserTest {
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getFirstName()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getGivenName()}.
 	 */
 	@Test
-	public final void testGetFirstName() {
-		userDetails.setFirstName("Something else");
-		assertNotEquals("getFirstName() returns incorrect  value",user.getFirstName(),userDetails.getFirstName());
-		userDetails.setFirstName(user.getFirstName());
-		assertEquals("getEmail() returns expected value",user.getFirstName(),userDetails.getFirstName());
+	public final void testGetGivenName() {
+		userDetails.setGivenName("Something else");
+		assertNotEquals("getGivenName() returns incorrect  value",user.getGivenName(),userDetails.getGivenName());
+		userDetails.setGivenName(user.getGivenName());
+		assertEquals("getEmail() returns expected value",user.getGivenName(),userDetails.getGivenName());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getLastName()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getFamilyName()}.
 	 */
 	@Test
-	public final void testGetLastName() {
-		userDetails.setLastName("Something else");
-		assertNotEquals("getLastName() returns incorrect  value",user.getLastName(),userDetails.getLastName());
-		userDetails.setLastName(user.getLastName());
-		assertEquals("getLastName() returns expected value",user.getLastName(),userDetails.getLastName());
+	public final void testGetFamilyName() {
+		userDetails.setFamilyName("Something else");
+		assertNotEquals("getFamilyName() returns incorrect  value",user.getFamilyName(),userDetails.getFamilyName());
+		userDetails.setFamilyName(user.getFamilyName());
+		assertEquals("getFamilyName() returns expected value",user.getFamilyName(),userDetails.getFamilyName());
 	}
 
 	/**
@@ -211,7 +211,7 @@ public class UserTest {
 	@Test
 	public final void testSetAccountVerified() {
 		user.setAccountVerified(true);
-		assertNotEquals("getFirstName() returns incorrect  value",user.isAccountVerified(),userDetails.isAccountVerified());
+		assertNotEquals("getGivenName() returns incorrect  value",user.isAccountVerified(),userDetails.isAccountVerified());
 		user.setAccountVerified(false);
 		assertEquals("getEmail() returns expected value",user.isAccountVerified(),userDetails.isAccountVerified());
 	}
@@ -223,8 +223,8 @@ public class UserTest {
 	public final void testToUserDetails() {
 		UserDetails userDetails2=user.toUserDetails();
 		assertEquals("Email must be equal",userDetails.getEmail(), userDetails2.getEmail());
-		assertEquals("FirstName must be equal",userDetails.getFirstName(), userDetails2.getFirstName());
-		assertEquals("LastName must be equal",userDetails.getLastName(), userDetails2.getLastName());
+		assertEquals("FirstName must be equal",userDetails.getGivenName(), userDetails2.getGivenName());
+		assertEquals("LastName must be equal",userDetails.getFamilyName(), userDetails2.getFamilyName());
 		assertEquals("Gender must be equal",userDetails.getGender(), userDetails2.getGender());
 		assertEquals("Personality must be equal",userDetails.getPersonality(), userDetails2.getPersonality());
 		assertEquals("Institution Ids must be equal",userDetails.getInstitutionId(), userDetails2.getInstitutionId());
@@ -239,8 +239,8 @@ public class UserTest {
 		UserDetails userDetails=RestDataFixture.customEmailUser();
 		User user=User.fromUserDetails(userDetails);
 		assertEquals("Email must be equal",userDetails.getEmail(), user.getEmail());
-		assertEquals("FirstName must be equal",userDetails.getFirstName(), user.getFirstName());
-		assertEquals("LastName must be equal",userDetails.getLastName(), user.getLastName());
+		assertEquals("FirstName must be equal",userDetails.getGivenName(), user.getGivenName());
+		assertEquals("LastName must be equal",userDetails.getFamilyName(), user.getFamilyName());
 		assertEquals("Gender must be equal",userDetails.getGender(), user.getGender());
 		assertEquals("Personality must be equal",userDetails.getPersonality(), user.getPersonality());
 		assertEquals("Institutions must be equal",userDetails.getInstitutionId(), user.getInstitution().getNodeId());

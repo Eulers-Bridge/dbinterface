@@ -15,8 +15,8 @@ import static org.junit.Assert.*;
 
 public class UserCreatedEventTest {
     final String email = new String("yikaig@gmail.com");
-    final String firstName = new String("Yikai");
-    final String lastName = new String("Gong");
+    final String givenName = new String("Yikai");
+    final String familyName = new String("Gong");
     final String gender = new String("male");
     final String nationality = new String("China");
     final String yearOfBirth = new String("1989");
@@ -31,8 +31,8 @@ public class UserCreatedEventTest {
     @Before
     public void setUp() throws Exception {
         userDetails = new UserDetails(email);
-        userDetails.setFirstName(firstName);
-        userDetails.setLastName(lastName);
+        userDetails.setGivenName(givenName);
+        userDetails.setFamilyName(familyName);
         userDetails.setGender(gender);
         userDetails.setNationality(nationality);
         userDetails.setYearOfBirth(yearOfBirth);
@@ -40,7 +40,7 @@ public class UserCreatedEventTest {
         userDetails.setPassword(password);
         userDetails.setInstitutionId(institutionId);
 
-        User user = new User(email, firstName, lastName, gender, nationality, yearOfBirth, personality, password);
+        User user = new User(email, givenName, familyName, gender, nationality, yearOfBirth, personality, password);
         VerificationToken token = new VerificationToken(VerificationToken.VerificationTokenType.emailRegistration , user, 10);
         verifyEmail = new EmailVerification(user, token);
         userCreatedEvent = new UserCreatedEvent(email, userDetails, verifyEmail);
@@ -106,7 +106,7 @@ public class UserCreatedEventTest {
 
     @Test
     public void testSetVerificationEmail() throws Exception {
-        User user1 = new User(email, firstName, lastName, gender, nationality, yearOfBirth, personality, password);
+        User user1 = new User(email, givenName, familyName, gender, nationality, yearOfBirth, personality, password);
         VerificationToken token1 = new VerificationToken(VerificationToken.VerificationTokenType.emailVerification , user1, 10);
         EmailVerification verifyEmail1 = new EmailVerification(user1, token1);
         UserCreatedEvent userCreatedEvent1 = new UserCreatedEvent(email, userDetails, verifyEmail1);

@@ -102,7 +102,7 @@ public class UserEventHandlerTest
 		UserDetails nADs;
 		String email="gnewitt2@hotmail.com";
 		nADs=new UserDetails(email);
-		nADs.setFirstName("Greg");
+		nADs.setGivenName("Greg");
 		nADs.setInstitutionId((long)1);
 		createUserEvent=new CreateUserEvent(nADs);
 		UserCreatedEvent nace = userService.signUpNewUser(createUserEvent);
@@ -144,8 +144,8 @@ public class UserEventHandlerTest
 	{
 		UserDetails nADs;
 		nADs=new UserDetails("gnewitt@hotmail.com");
-		nADs.setFirstName("Gregory");
-		nADs.setLastName("Lawson");
+		nADs.setGivenName("Gregory");
+		nADs.setFamilyName("Lawson");
 		nADs.setNationality("British");
 		nADs.setYearOfBirth("1974");
 		nADs.setPersonality("Some");
@@ -159,8 +159,8 @@ public class UserEventHandlerTest
 		assertNotNull("UserDetails returned null",nude.getUserDetails());
 		assertEquals("Email address not updated.",nude.getEmail(),nADs.getEmail());
 		assertEquals("Nationality not updated.",nude.getUserDetails().getNationality(),nADs.getNationality());
-		assertEquals("First name not updated.",nude.getUserDetails().getFirstName(),nADs.getFirstName());
-		assertEquals("Last name not updated.",nude.getUserDetails().getLastName(),nADs.getLastName());
+		assertEquals("First name not updated.",nude.getUserDetails().getGivenName(),nADs.getGivenName());
+		assertEquals("Last name not updated.",nude.getUserDetails().getFamilyName(),nADs.getFamilyName());
 		assertEquals("Year of Birth not updated.",nude.getUserDetails().getYearOfBirth(),nADs.getYearOfBirth());
 		assertEquals("Gender not updated.",nude.getUserDetails().getGender(),nADs.getGender());
 		assertEquals("Personality of Birth not updated.",nude.getUserDetails().getPersonality(),nADs.getPersonality());

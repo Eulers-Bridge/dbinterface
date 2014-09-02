@@ -12,8 +12,8 @@ import static org.junit.Assert.*;
 
 public class CreateUserEventTest {
     final String email = new String("yikaig@gmail.com");
-    final String firstName = new String("Yikai");
-    final String lastName = new String("Gong");
+    final String givenName = new String("Yikai");
+    final String familyName = new String("Gong");
     final String gender = new String("male");
     final String nationality = new String("China");
     final String yearOfBirth = new String("1989");
@@ -27,8 +27,8 @@ public class CreateUserEventTest {
     @Before
     public void setUp() throws Exception {
         userDetails = new UserDetails(email);
-        userDetails.setFirstName(firstName);
-        userDetails.setLastName(lastName);
+        userDetails.setGivenName(givenName);
+        userDetails.setFamilyName(familyName);
         userDetails.setGender(gender);
         userDetails.setNationality(nationality);
         userDetails.setYearOfBirth(yearOfBirth);
@@ -60,8 +60,8 @@ public class CreateUserEventTest {
     @Test
     public void testSetUserDetails() throws Exception {
         UserDetails userDetails1 = new UserDetails(email);
-        userDetails1.setFirstName(firstName);
-        userDetails1.setLastName(lastName);
+        userDetails1.setGivenName(givenName);
+        userDetails1.setFamilyName(familyName);
         userDetails1.setGender(gender);
         userDetails1.setNationality(nationality);
         userDetails1.setYearOfBirth(yearOfBirth);

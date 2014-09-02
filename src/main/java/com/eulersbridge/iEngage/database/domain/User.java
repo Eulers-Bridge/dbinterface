@@ -24,8 +24,8 @@ public class User
 {
 	@GraphId Long nodeId;
 	@NotNull @NotBlank @Email@Indexed(unique=true) private String email;
-	private String firstName;
-	private String lastName;
+	private String givenName;
+	private String familyName;
 	private String gender;
 	private String nationality;
 	private String yearOfBirth;
@@ -46,13 +46,13 @@ public class User
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public User(String email,String firstName,String lastName,String gender, String nationality, String yearOfBirth, String personality, String password)
+	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String personality, String password)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+firstName+','+lastName+','+gender+','+
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+givenName+','+familyName+','+gender+','+
 														  nationality+','+yearOfBirth+','+personality+')');
 		this.email=email;
-		this.firstName=firstName;
-		this.lastName=lastName;
+		this.givenName=givenName;
+		this.familyName=familyName;
 		this.gender=gender;
 		this.nationality=nationality;
 		this.yearOfBirth=yearOfBirth;
@@ -73,16 +73,16 @@ public class User
 		this.email = email;
 	}
 
-	public String getFirstName()
+	public String getGivenName()
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("getFirstName() = "+firstName);
-		return firstName;
+		if (LOG.isTraceEnabled()) LOG.trace("getGivenName() = "+givenName);
+		return givenName;
 	}
 	
-	public String getLastName()
+	public String getFamilyName()
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("getLastName() = "+lastName);
-		return lastName;
+		if (LOG.isTraceEnabled()) LOG.trace("getFamilyName() = "+familyName);
+		return familyName;
 	}
 	
 	public String getGender()
@@ -131,10 +131,10 @@ public class User
 		buff.append(getNodeId());
 		buff.append(", email = ");
 		buff.append(getEmail());
-		buff.append(", firstName = ");
-		buff.append(getFirstName());
-		buff.append(", lastName = ");
-		buff.append(getLastName());
+		buff.append(", givenName = ");
+		buff.append(getGivenName());
+		buff.append(", familyName = ");
+		buff.append(getFamilyName());
 		buff.append(", gender = ");
 		buff.append(getGender());
 		buff.append(", nationality = ");
@@ -222,17 +222,17 @@ public class User
 	}
 
 	/**
-	 * @param firstName the firstName to set
+	 * @param givenName the givenName to set
 	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setGivenName(String givenName) {
+		this.givenName = givenName;
 	}
 
 	/**
-	 * @param lastName the lastName to set
+	 * @param familyName the familyName to set
 	 */
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
 	}
 
 	/**
@@ -284,10 +284,10 @@ public class User
 		    User user = new User();
 		    if (LOG.isTraceEnabled()) LOG.trace("userDetails "+userDetails);
 		    user.email=userDetails.getEmail();
-		    user.firstName=userDetails.getFirstName();
+		    user.givenName=userDetails.getGivenName();
 		    user.gender=userDetails.getGender();
 		    userDetails.getInstitutionId();
-		    user.lastName=userDetails.getLastName();
+		    user.familyName=userDetails.getFamilyName();
 		    user.nationality=userDetails.getNationality();
 		    user.password=userDetails.getPassword();
 		    user.personality=userDetails.getPersonality();

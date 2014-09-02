@@ -12,8 +12,8 @@ import org.springframework.hateoas.ResourceSupport;
 
 public class User extends ResourceSupport
 {
-	private String firstName;
-	private String lastName;
+	private String givenName;
+	private String familyName;
 	private String gender;
 	private String nationality;
 	private String yearOfBirth;
@@ -33,20 +33,20 @@ public class User extends ResourceSupport
 	    this.email = email;
 	  }
 
-	  public String getFirstName() {
-		return firstName;
+	  public String getGivenName() {
+		return givenName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setGivenName(String givenName) {
+		this.givenName = givenName;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getFamilyName() {
+		return familyName;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
 	}
 
 	public String getGender() {
@@ -109,8 +109,8 @@ public class User extends ResourceSupport
 	  {
 		  UserDetails details = new UserDetails(email);
 
-	    details.setFirstName(getFirstName());
-	    details.setLastName(getLastName());
+	    details.setGivenName(getGivenName());
+	    details.setFamilyName(getFamilyName());
 	    details.setGender(getGender());
 	    details.setNationality(getNationality());
 	    details.setYearOfBirth(getYearOfBirth());
@@ -127,8 +127,8 @@ public class User extends ResourceSupport
 	    User user = new User();
 
 	    user.email = readUser.getEmail();
-	    user.firstName = readUser.getFirstName();
-	    user.lastName = readUser.getLastName();
+	    user.givenName = readUser.getGivenName();
+	    user.familyName = readUser.getFamilyName();
 	    user.gender = readUser.getGender();
 	    user.nationality = readUser.getNationality();
 	    user.yearOfBirth = readUser.getYearOfBirth();
@@ -161,10 +161,10 @@ public class User extends ResourceSupport
 			StringBuffer buff=new StringBuffer("[ email = ");
 			String retValue;
 			buff.append(getEmail());
-			buff.append(", firstName = ");
-			buff.append(getFirstName());
-			buff.append(", lastName = ");
-			buff.append(getLastName());
+			buff.append(", givenName = ");
+			buff.append(getGivenName());
+			buff.append(", familyName = ");
+			buff.append(getFamilyName());
 			buff.append(", gender = ");
 			buff.append(getGender());
 			buff.append(", nationality = ");
