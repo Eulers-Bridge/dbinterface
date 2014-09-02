@@ -1,7 +1,9 @@
 package com.eulersbridge.iEngage.core.services;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -32,6 +34,7 @@ public class UserEventHandler implements UserService
     private UserRepository userRepository;
     private InstitutionRepository instRepository;
     private VerificationTokenRepository tokenRepository;
+    @Autowired VelocityEngine velocityEngine;
     
     public UserEventHandler(final UserRepository userRepository, final InstitutionRepository instRepo, final VerificationTokenRepository tokenRepo) 
     {
@@ -71,7 +74,7 @@ public class UserEventHandler implements UserService
             		EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS);
             if (LOG.isDebugEnabled()) LOG.debug("Verification token = "+token.toString());
             tokenRepository.save(token);
-            EmailVerification verifyEmail=new EmailVerification(createdUser,token);
+            EmailVerification verifyEmail=new EmailVerification(velocityEngine,createdUser,token);
             result=new UserCreatedEvent(createdUser.getEmail(),createdUser.toUserDetails(),verifyEmail);
     		
     	}
