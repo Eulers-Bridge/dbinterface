@@ -5,12 +5,12 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.eulersbridge.iEngage.core.events.institutions.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
@@ -21,7 +21,6 @@ import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository.GeneralInfo;
 import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
 
 public class InstitutionEventHandler implements InstitutionService {
