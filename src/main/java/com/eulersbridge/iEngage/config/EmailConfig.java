@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.config;
 
 import java.util.Properties;
 
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.tools.view.WebappResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,8 +71,9 @@ public class EmailConfig
 	{
 		VelocityEngineFactoryBean ve=new VelocityEngineFactoryBean();
 		Properties velocityProperties=new Properties();
-		velocityProperties.setProperty("resource.loader", "class");
-		velocityProperties.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
+		velocityProperties.setProperty("webapp.resource.loader.path", "/");
+		velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
 		ve.setVelocityProperties(velocityProperties);
 		return ve;
 	}

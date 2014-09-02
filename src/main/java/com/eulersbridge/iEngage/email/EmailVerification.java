@@ -1,10 +1,8 @@
 package com.eulersbridge.iEngage.email;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -13,19 +11,12 @@ import javax.mail.internet.MimeMessage;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.VelocityException;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.ui.velocity.VelocityEngineFactory;
-import org.springframework.ui.velocity.VelocityEngineUtils;
-import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
@@ -35,8 +26,6 @@ public class EmailVerification extends Email implements Serializable
 
     private final String token;
     private final String tokenType;
-//    private final String velocityModel= "classpath:**/validateEmailBody.vm";
-    private final String velocityModel= "classpath:templates/validateEmailBody.vm";
 	@Autowired
     private VelocityEngine velocityEngine;
 
@@ -45,21 +34,24 @@ public class EmailVerification extends Email implements Serializable
     public EmailVerification(User user, VerificationToken token) 
     {
     	super(user.getEmail(),user.getGivenName() + " " + user.getFamilyName(),"greg.newitt@eulersbridge.com","Email Verification Test");
+		String resourceName=EmailConstants.EmailVerificationTemplate;
         this.token = token.getToken();
         this.tokenType = token.getTokenType();
-        VelocityEngineFactory vfact=new VelocityEngineFactory();
-		Properties velocityProperties=new Properties();
-		velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		velocityProperties.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
-        vfact.setVelocityProperties(velocityProperties);
-        
-        try {
-			this.velocityEngine = vfact.createVelocityEngine();
+
+        try 
+        {
 			this.velocityEngine.init();
+			boolean exists=this.velocityEngine.resourceExists(resourceName);
+			if ((LOG.isDebugEnabled())&&exists)
+			{
+				if (LOG.isDebugEnabled())
+					LOG.debug("Resource exists");
+				else
+					LOG.debug("validate template does not exist. resourceLoaderPath = "+this.velocityEngine.getProperty("resourceLoaderPath"));
+			}
 			Template t;
-//			 t=this.velocityEngine.getTemplate("logback.xml");
-//			 t=this.velocityEngine.getTemplate("templates/validateEmailBody.vm");
-		} catch (VelocityException | IOException e) {
+			 t=this.velocityEngine.getTemplate(resourceName);
+		} catch (VelocityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
