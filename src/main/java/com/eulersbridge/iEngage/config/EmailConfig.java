@@ -69,6 +69,7 @@ public class EmailConfig
 	@Bean
 	public VelocityEngineFactoryBean velocityEngine()
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("velocityEngine()");
 		VelocityEngineFactoryBean ve=new VelocityEngineFactoryBean();
 		Properties velocityProperties=new Properties();
 		velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
