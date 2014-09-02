@@ -91,9 +91,10 @@ public class Country extends ResourceSupport
                 institution.setName(instNames.next());
                 institutions.add(institution);
 		    }
-            countries.add(new Country(countryId, countryName, (Institution[])institutions.toArray()));
+			Institution[] insts=institutions.toArray(new Institution[0]);
+            countries.add(new Country(countryId, countryName, insts));
 		}
-        return (Country[])countries.toArray();
+        return (Country[])countries.toArray(new Country[0]);
     }
 
 	public void setId(Long countryId) 
