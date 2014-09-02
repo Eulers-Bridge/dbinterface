@@ -35,7 +35,8 @@ public class EmailVerification extends Email implements Serializable
         this.token = token.getToken();
         this.tokenType = token.getTokenType();
         if (LOG.isDebugEnabled()) LOG.debug("this.velocityEngine = "+this.velocityEngine);
-		this.velocityEngine.init();
+		if (this.velocityEngine!=null)
+			this.velocityEngine.init();
     }
 
     public String getEncodedToken() 
