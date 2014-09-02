@@ -42,7 +42,7 @@ public class UserCreatedEventTest {
 
         User user = new User(email, givenName, familyName, gender, nationality, yearOfBirth, personality, password);
         VerificationToken token = new VerificationToken(VerificationToken.VerificationTokenType.emailRegistration , user, 10);
-        verifyEmail = new EmailVerification(user, token);
+        verifyEmail = new EmailVerification(null,user, token);
         userCreatedEvent = new UserCreatedEvent(email, userDetails, verifyEmail);
     }
 
@@ -108,7 +108,7 @@ public class UserCreatedEventTest {
     public void testSetVerificationEmail() throws Exception {
         User user1 = new User(email, givenName, familyName, gender, nationality, yearOfBirth, personality, password);
         VerificationToken token1 = new VerificationToken(VerificationToken.VerificationTokenType.emailVerification , user1, 10);
-        EmailVerification verifyEmail1 = new EmailVerification(user1, token1);
+        EmailVerification verifyEmail1 = new EmailVerification(null,user1, token1);
         UserCreatedEvent userCreatedEvent1 = new UserCreatedEvent(email, userDetails, verifyEmail1);
         assertEquals("verifyEmail does not match", verifyEmail1, userCreatedEvent1.getVerificationEmail());
     }

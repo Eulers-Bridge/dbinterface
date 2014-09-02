@@ -38,7 +38,7 @@ public class EmailTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		email=new Email(toEmail,toName,fromEmail,subject);
+		email=new Email(null,toEmail,toName,fromEmail,subject);
 	}
 	
 	@Test

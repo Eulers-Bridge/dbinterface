@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +38,7 @@ public class EmailVerificationTest
 	VerificationToken token;
 	@Autowired
     private JavaMailSenderImpl sender;
+	@Autowired VelocityEngine velocityEngine;
 	
 	@Before
 	public void setUp() throws Exception 
@@ -44,7 +46,7 @@ public class EmailVerificationTest
 		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
 		User user=new User("gnewitt@bigfoot.com","Greg","Newitt","","","","","");
 		token=new VerificationToken(tokenType,user, 60);
-		email=new EmailVerification(user, token);
+		email=new EmailVerification(velocityEngine,user, token);
 		if (LOG.isDebugEnabled()) LOG.debug("verification email - "+email);
 	}
 
