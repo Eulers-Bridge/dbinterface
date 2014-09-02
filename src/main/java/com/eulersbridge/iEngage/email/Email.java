@@ -3,10 +3,10 @@ package com.eulersbridge.iEngage.email;
 import java.io.Serializable;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,12 +18,14 @@ public class Email implements Serializable
 	private final String recipientName;
 	private final String senderEmailAddress;
 	private final String subject;
+	protected final VelocityEngine velocityEngine;
     private static Logger LOG = LoggerFactory.getLogger(Email.class);
     
-    public Email(String recipientEmailAddress,String recipientName,String senderEmailAddress, String subject) 
+    public Email(VelocityEngine velocityEngine,String recipientEmailAddress,String recipientName,String senderEmailAddress, String subject) 
     {
     	if (LOG.isDebugEnabled()) LOG.debug("Constructor("+recipientEmailAddress+","+recipientName+","+senderEmailAddress+","+subject+")");
-        this.recipientEmailAddress = recipientEmailAddress;
+        this.velocityEngine=velocityEngine;
+    	this.recipientEmailAddress = recipientEmailAddress;
         this.recipientName = recipientName;
         this.senderEmailAddress = senderEmailAddress;
         this.subject = subject;

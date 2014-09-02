@@ -9,14 +9,12 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.VelocityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
@@ -26,35 +24,18 @@ public class EmailVerification extends Email implements Serializable
 
     private final String token;
     private final String tokenType;
-	@Autowired
-    private VelocityEngine velocityEngine;
-
+    private final String resourceName;
+    
     private static Logger LOG = LoggerFactory.getLogger(EmailVerification.class);
 
-    public EmailVerification(User user, VerificationToken token) 
+    public EmailVerification(VelocityEngine velocityEngine, User user, VerificationToken token) 
     {
-    	super(user.getEmail(),user.getGivenName() + " " + user.getFamilyName(),"greg.newitt@eulersbridge.com","Email Verification Test");
-		String resourceName=EmailConstants.EmailVerificationTemplate;
+    	super(velocityEngine,user.getEmail(),user.getGivenName() + " " + user.getFamilyName(),"greg.newitt@eulersbridge.com","Email Verification Test");
+		resourceName=EmailConstants.EmailVerificationTemplate;
         this.token = token.getToken();
         this.tokenType = token.getTokenType();
-
-        try 
-        {
-			this.velocityEngine.init();
-			boolean exists=this.velocityEngine.resourceExists(resourceName);
-			if ((LOG.isDebugEnabled())&&exists)
-			{
-				if (LOG.isDebugEnabled())
-					LOG.debug("Resource exists");
-				else
-					LOG.debug("validate template does not exist. resourceLoaderPath = "+this.velocityEngine.getProperty("resourceLoaderPath"));
-			}
-			Template t;
-			 t=this.velocityEngine.getTemplate(resourceName);
-		} catch (VelocityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        if (LOG.isDebugEnabled()) LOG.debug("this.velocityEngine = "+this.velocityEngine);
+		this.velocityEngine.init();
     }
 
     public String getEncodedToken() 
@@ -86,11 +67,15 @@ public class EmailVerification extends Email implements Serializable
     			message.setSubject(getSubject());
     			final Map<String, Object> hTemplateVariables = new HashMap<String,Object>();
 
-    			hTemplateVariables.put("email", this);
+//    			hTemplateVariables.put("email", this);
+    			hTemplateVariables.put("recipientName", getRecipientName());
+    			hTemplateVariables.put("emailAddress",getRecipientEmailAddress());
+    			hTemplateVariables.put("verificationToken",getToken());
+    			
     			if (LOG.isDebugEnabled()) LOG.debug("Velocity engine :"+velocityEngine);
     			if (LOG.isDebugEnabled())
-//    			body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, velocityModel,"UTF-8", hTemplateVariables);
-    			body="Dear "+getRecipientName()+", your token is "+getToken()+" your url is \nhttp://eulersbridge.com:8080/dbInterface/api/emailVerification/"+getRecipientEmailAddress()+"/"+getToken()+" Thankyou.";
+    			body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, resourceName,"UTF-8", hTemplateVariables);
+//    			body="Dear "+getRecipientName()+", your token is "+getToken()+" your url is \nhttp://eulersbridge.com:8080/dbInterface/api/emailVerification/"+getRecipientEmailAddress()+"/"+getToken()+" Thankyou.";
     			if(LOG.isDebugEnabled()) LOG.debug("body={}", body);
     			message.setText(body, true);
 
