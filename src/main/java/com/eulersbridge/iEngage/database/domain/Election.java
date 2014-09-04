@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import com.eulersbridge.iEngage.core.events.Elections.ElectionDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
@@ -89,5 +90,24 @@ public class Election
 		return retValue;
 	}	
 
+    public ElectionDetail toElectionDetail()
+    {
+        if (LOG.isTraceEnabled()) LOG.trace("toElectionDetail()");
 
+        ElectionDetail electionDetail = new ElectionDetail();
+        if (LOG.isTraceEnabled()) LOG.trace("election "+this);
+        electionDetail.setElectionId(this.getNodeId());
+        electionDetail.setStart(Long.parseLong(this.getStart()));
+        electionDetail.setEnd(Long.parseLong(this.getEnd()));
+        electionDetail.setStartVoting(Long.parseLong(this.getVotingStart()));
+        electionDetail.setEndVoting(Long.parseLong(this.getVotingEnd()));
+        if (LOG.isTraceEnabled()) LOG.trace("electionDetail; "+electionDetail);
+        return electionDetail;
+    }
+
+    public Election fromElectionDetail(){
+        //TODO
+        Election election = new Election();
+        return election;
+    }
 }
