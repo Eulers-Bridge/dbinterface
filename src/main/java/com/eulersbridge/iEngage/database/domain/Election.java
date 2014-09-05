@@ -10,12 +10,12 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 public class Election 
 {
 	@GraphId Long nodeId;
-	private String year;
-	private String start;
-	private String end;
-	private String votingStart;
-	private String votingEnd;
-	
+    private String title;
+	private Long start;
+	private Long end;
+	private Long votingStart;
+	private Long votingEnd;
+
     private static Logger LOG = LoggerFactory.getLogger(Election.class);
 
     public Election() 
@@ -23,42 +23,39 @@ public class Election
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 
-	public Election(String year, String start, String end, String votingStart,
-			String votingEnd) 
+	public Election(Long year, Long start, Long end, Long votingStart,
+                    Long votingEnd)
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+year+','+start+','+end+','+votingStart+','+votingEnd+')');
-		this.year=year;
 		this.start=start;
 		this.end=end;
 		this.votingStart=votingStart;
 		this.votingEnd=votingEnd;
 	}
 
-	public String getYear()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("getYear() = "+year);
-		return year;
-	}
-
-	public String getStart()
+	public Long getStart()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getStart() = "+start);
 		return start;
 	}
 	
-	public String getEnd()
+	public Long getEnd()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getEnd() = "+end);
 		return end;
 	}
 	
-	public String getVotingStart()
+	public Long getVotingStart()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getVotingStart() = "+votingStart);
 		return votingStart;
 	}
+
+    public String getTitle(){
+        return this.title;
+    }
 	
-	public String getVotingEnd()
+	public Long getVotingEnd()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getVotingEnd() = "+votingEnd);
 		return votingEnd;
@@ -68,14 +65,38 @@ public class Election
 	{
 		return nodeId;
 	}
+
+    public void setNodeId(Long nodeId){
+        this.nodeId = nodeId;
+    }
+
+    public void setStart(Long start){
+        this.start = start;
+    }
+
+    public void setEnd(Long end){
+        this.end = end;
+    }
+
+    public void setVotingStart(Long votingStart){
+        this.votingStart = votingStart;
+    }
+
+    public void setVotingEnd(Long votingEnd){
+        this.votingEnd = votingEnd;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
+    }
 	
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
 		String retValue;
 		buff.append(getNodeId());
-		buff.append(", year = ");
-		buff.append(getYear());
+		buff.append(", title = ");
+		buff.append(getTitle());
 		buff.append(", start = ");
 		buff.append(getStart());
 		buff.append(", end = ");
@@ -97,10 +118,11 @@ public class Election
         ElectionDetail electionDetail = new ElectionDetail();
         if (LOG.isTraceEnabled()) LOG.trace("election "+this);
         electionDetail.setElectionId(this.getNodeId());
-        electionDetail.setStart(Long.parseLong(this.getStart()));
-        electionDetail.setEnd(Long.parseLong(this.getEnd()));
-        electionDetail.setStartVoting(Long.parseLong(this.getVotingStart()));
-        electionDetail.setEndVoting(Long.parseLong(this.getVotingEnd()));
+        electionDetail.setTitle(this.getTitle());
+        electionDetail.setStart(this.getStart());
+        electionDetail.setEnd(this.getEnd());
+        electionDetail.setStartVoting(this.getVotingStart());
+        electionDetail.setEndVoting(this.getVotingEnd());
         if (LOG.isTraceEnabled()) LOG.trace("electionDetail; "+electionDetail);
         return electionDetail;
     }

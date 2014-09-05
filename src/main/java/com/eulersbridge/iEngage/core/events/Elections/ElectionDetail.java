@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class ElectionDetail {
     private Long electionId;
+    private String title;
     private Long start;
     private Long end;
     private Long startVoting;
@@ -23,6 +24,13 @@ public class ElectionDetail {
     }
     public Long getElectionId(){
         return this.electionId;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
+    }
+    public String getTitle(){
+        return this.title;
     }
 
     public void setStart(Long start){
@@ -58,6 +66,8 @@ public class ElectionDetail {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
         buff.append(getElectionId());
+        buff.append(", title = ");
+        buff.append(getTitle());
         buff.append(", start = ");
         buff.append(getStart());
         buff.append(", end = ");

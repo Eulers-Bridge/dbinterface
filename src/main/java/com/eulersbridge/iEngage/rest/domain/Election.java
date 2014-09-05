@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class Election extends ResourceSupport{
     private Long electionId;
+    private String title;
     private Long start;
     private Long end;
     private Long startVoting;
@@ -26,6 +27,7 @@ public class Election extends ResourceSupport{
         String simpleName=NewsArticle.class.getSimpleName();
         String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
         election.setElectionId(electionDetail.getElectionId());
+        election.setTitle(electionDetail.getTitle());
         election.setStart(electionDetail.getStart());
         election.setEnd(electionDetail.getEnd());
         election.setStartVoting(electionDetail.getStartVoting());
@@ -46,6 +48,13 @@ public class Election extends ResourceSupport{
      */
     public Long getElectionId(){
         return this.electionId;
+    }
+
+    /**
+     * @return the title
+     */
+    public String getTitle(){
+        return this.title;
     }
 
     /**
@@ -81,6 +90,13 @@ public class Election extends ResourceSupport{
      */
     public void setElectionId(Long electionId){
         this.electionId = electionId;
+    }
+
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(String title){
+        this.title = title;
     }
 
     /**
