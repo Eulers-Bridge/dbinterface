@@ -25,12 +25,13 @@ public class ElectionEventHandler implements ElectionService{
     public ReadElectionEvent requestReadElection(RequestReadElectionEvent requestReadElectionEvent){
         Election election = eleRepository.findOne(requestReadElectionEvent.getElectionId());
         ReadElectionEvent readElectionEvent;
-        if (election!=null)
+        if (election!=null){
             readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetail());
-        else
+        }
+        else{
             readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getElectionId());
+        }
         return readElectionEvent;
-
     }
 
 

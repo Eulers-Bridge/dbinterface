@@ -81,5 +81,4 @@ public class ElectionController {
             return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
         }
     }
-    
 }

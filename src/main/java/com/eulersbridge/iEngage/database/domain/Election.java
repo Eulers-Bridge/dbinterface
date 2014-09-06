@@ -23,7 +23,7 @@ public class Election
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 
-	public Election(Long year, Long start, Long end, Long votingStart,
+	public Election(Long year, String title, Long start, Long end, Long votingStart,
                     Long votingEnd)
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+year+','+start+','+end+','+votingStart+','+votingEnd+')');
@@ -52,6 +52,7 @@ public class Election
 	}
 
     public String getTitle(){
+        if (LOG.isDebugEnabled()) LOG.debug("getTitle() = "+title);
         return this.title;
     }
 	
