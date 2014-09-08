@@ -20,7 +20,7 @@ import com.eulersbridge.iEngage.rest.domain.Election;
 
 
 @RestController
-
+@RequestMapping("/api")
 public class ElectionController {
 
 //	@Autowired ElectionRepository repo;
@@ -67,7 +67,7 @@ public class ElectionController {
 //    	return election;
 //    }
 
-    @RequestMapping(method = RequestMethod.GET ,value = "/api/election/{electionId}")
+    @RequestMapping(method = RequestMethod.GET ,value = "/election/{electionId}")
     public @ResponseBody ResponseEntity<Election> findElection(@PathVariable Long electionId)
     {
         if (LOG.isInfoEnabled()) LOG.info(electionId+" attempting to get election. ");
