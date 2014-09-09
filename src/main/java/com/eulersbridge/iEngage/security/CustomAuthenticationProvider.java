@@ -11,8 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
-import com.eulersbridge.iEngage.core.services.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.services.UserService;
 
 /**

@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;

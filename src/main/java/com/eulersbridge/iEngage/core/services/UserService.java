@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
