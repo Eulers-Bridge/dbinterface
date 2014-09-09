@@ -32,4 +32,8 @@ public class AuthenticateUserEvent
 		return password;
 	}
 
+	public String toString()
+	{
+		return "userName - "+userName+" password - "+password;
+	}
 }
