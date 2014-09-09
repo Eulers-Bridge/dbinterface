@@ -1,9 +1,14 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -12,6 +17,7 @@ import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -222,6 +228,36 @@ public class UserEventHandler implements UserService
 	    }
 
 	    return verificationResult;
+	}
+
+	@Override
+	public UserAuthenticatedEvent authenticateUser(
+			AuthenticateUserEvent authUserEvent) 
+	{
+		String userName=authUserEvent.getUserName();
+		String password=authUserEvent.getPassword();
+		String emailAddress=userName;
+		UserAuthenticatedEvent evt;
+		User user=userRepository.findByEmail(emailAddress);
+		if (user!=null)
+		{
+			if (user.comparePassword(password))
+			{
+				SimpleGrantedAuthority auth= new SimpleGrantedAuthority("ROLE_USER");
+				List<GrantedAuthority> grantedAuths = new ArrayList<>();
+				grantedAuths.add(auth);
+				evt=new UserAuthenticatedEvent(grantedAuths);
+			}
+			else
+			{
+				evt=UserAuthenticatedEvent.badCredentials();
+			}
+		}
+		else
+		{
+			evt=UserAuthenticatedEvent.badCredentials();
+		}
+		return evt;
 	}
 
 
