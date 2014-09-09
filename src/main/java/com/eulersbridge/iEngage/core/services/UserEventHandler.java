@@ -241,20 +241,30 @@ public class UserEventHandler implements UserService
 		User user=userRepository.findByEmail(emailAddress);
 		if (user!=null)
 		{
-			if (user.comparePassword(password))
-			{
-				SimpleGrantedAuthority auth= new SimpleGrantedAuthority("ROLE_USER");
-				List<GrantedAuthority> grantedAuths = new ArrayList<>();
-				grantedAuths.add(auth);
-				evt=new UserAuthenticatedEvent(grantedAuths);
+			if (user.isAccountVerified())
+			{	
+				if (user.comparePassword(password))
+				{
+					SimpleGrantedAuthority auth= new SimpleGrantedAuthority("ROLE_USER");
+					List<GrantedAuthority> grantedAuths = new ArrayList<>();
+					grantedAuths.add(auth);
+					evt=new UserAuthenticatedEvent(grantedAuths);
+				}
+				else
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Password does not match.");
+					evt=UserAuthenticatedEvent.badCredentials();
+				}
 			}
 			else
 			{
+				if (LOG.isDebugEnabled()) LOG.debug("Account is not verified.");
 				evt=UserAuthenticatedEvent.badCredentials();
 			}
 		}
 		else
 		{
+			if (LOG.isDebugEnabled()) LOG.debug("No such account.");
 			evt=UserAuthenticatedEvent.badCredentials();
 		}
 		return evt;
