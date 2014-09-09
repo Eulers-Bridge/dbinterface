@@ -4,6 +4,8 @@
 package com.eulersbridge.iEngage.security;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +26,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider
 {
 	UserService userService;
 	
+    private static Logger LOG = LoggerFactory.getLogger(CustomAuthenticationProvider.class);
 	CustomAuthenticationProvider()
 	{
 		super();
@@ -44,9 +47,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider
 		String name=authentication.getName();
 		String password=authentication.getCredentials().toString();
 		
+		if (LOG.isDebugEnabled()) LOG.debug("username - "+name);
+		if (LOG.isTraceEnabled()) LOG.trace("password - "+password);
 		AuthenticateUserEvent authEvt=new AuthenticateUserEvent(name,password);
 		
 		UserAuthenticatedEvent evt = userService.authenticateUser(authEvt);
+		if (LOG.isDebugEnabled()) LOG.debug("auth event = "+authEvt);
 		if (evt.isAuthenticated())
 		{
 			return new UsernamePasswordAuthenticationToken(name, password, evt.getGrantedAuths());
