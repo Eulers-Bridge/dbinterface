@@ -52,7 +52,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider
 		AuthenticateUserEvent authEvt=new AuthenticateUserEvent(name,password);
 		
 		UserAuthenticatedEvent evt = userService.authenticateUser(authEvt);
-		if (LOG.isDebugEnabled()) LOG.debug("auth event = "+authEvt);
+		if (LOG.isDebugEnabled()) LOG.debug("auth event = "+authEvt+" evt - "+evt);
 		if (evt.isAuthenticated())
 		{
 			return new UsernamePasswordAuthenticationToken(name, password, evt.getGrantedAuths());
