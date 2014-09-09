@@ -31,6 +31,7 @@ import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.email.EmailConstants;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class UserEventHandler implements UserService 
 {
@@ -69,6 +70,7 @@ public class UserEventHandler implements UserService
         	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
     		userToInsert.setInstitution(inst);
     		userToInsert.setAccountVerified(false);
+    		userToInsert.setRoles(SecurityConstants.USER_ROLE);
         	if (LOG.isDebugEnabled()) LOG.debug("userToInsert :"+userToInsert);
     		User test = userRepository.save(userToInsert);
     		//TODO what happens if this fails?
@@ -245,9 +247,7 @@ public class UserEventHandler implements UserService
 			{	
 				if (user.comparePassword(password))
 				{
-					SimpleGrantedAuthority auth= new SimpleGrantedAuthority("ROLE_USER");
-					List<GrantedAuthority> grantedAuths = new ArrayList<>();
-					grantedAuths.add(auth);
+					List<GrantedAuthority> grantedAuths=authsFromString(user.getRoles());
 					evt=new UserAuthenticatedEvent(grantedAuths);
 				}
 				else
@@ -270,5 +270,18 @@ public class UserEventHandler implements UserService
 		return evt;
 	}
 
-
+	List<GrantedAuthority> authsFromString(String authString)
+	{
+		List<GrantedAuthority> grantedAuths = new ArrayList<>();
+		if (authString!=null)
+		{
+			String[] auths=authString.split(",");
+			for (int x=0;x<auths.length;x++)
+			{
+				SimpleGrantedAuthority auth=new SimpleGrantedAuthority(auths[x]);
+				grantedAuths.add(auth);
+			}
+		}
+		return grantedAuths;
+	}
 }
