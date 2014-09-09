@@ -24,7 +24,7 @@ public class DatabaseDataFixture
 	public static User populateUserGnewitt2()
 	{
 		Long nodeId=(long)2;
-		boolean verified=true;
+		boolean verified=false;
 		Institution inst=populateInstUniMelb();
 		return populateUser("greg.newitt@unimelb.edu.au", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst);
 	}
