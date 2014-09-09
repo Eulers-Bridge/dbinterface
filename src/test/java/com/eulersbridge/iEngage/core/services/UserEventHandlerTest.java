@@ -244,7 +244,7 @@ public class UserEventHandlerTest
 			LOG.debug("authority - "+authority);
 		}
 		assertEquals("A role should be USER",userRole,SecurityConstants.USER_ROLE);
-		assertEquals("A role should be ADMIN",userRole,SecurityConstants.USER_ROLE);
+		assertEquals("A role should be ADMIN",adminRole,SecurityConstants.ADMIN_ROLE);
 	}
 	
 	
