@@ -19,6 +19,7 @@ import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -167,5 +168,36 @@ public class UserEventHandlerTest
 		assertEquals("Password not updated.",nude.getUserDetails().getPassword(),nADs.getPassword());
 	}
 
-
+	@Test
+	public void shouldAuthenticateUser()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
+		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
+		assertTrue("User did not authenticate.",auth.isAuthenticated());
+	}
+	@Test
+	public void shouldNotAuthenticateUserDueToPassword()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword()+'2');
+		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
+		assertFalse("User did authenticate.",auth.isAuthenticated());
+	}
+	@Test
+	public void shouldNotAuthenticateUserDueToUserName()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail()+'3', user.getPassword());
+		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
+		assertFalse("User did authenticate.",auth.isAuthenticated());
+	}
+	@Test
+	public void shouldNotAuthenticateUserDueToUserNotVerified()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt2();
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
+		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
+		assertFalse("User did authenticate.",auth.isAuthenticated());
+	}
 }
