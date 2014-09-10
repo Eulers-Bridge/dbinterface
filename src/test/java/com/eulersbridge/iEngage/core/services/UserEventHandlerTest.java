@@ -6,19 +6,26 @@ package com.eulersbridge.iEngage.core.services;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.GrantedAuthority;
 
+import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -33,6 +40,7 @@ import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenMemoryRepository;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 /**
  * @author Greg Newitt
@@ -44,6 +52,9 @@ public class UserEventHandlerTest
 	private VerificationTokenMemoryRepository tokenRepo;
 	private UserRepository userRepo;
 	private InstitutionRepository instRepo;
+	
+	private static Logger LOG = LoggerFactory.getLogger(UserEventHandlerTest.class);
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -167,5 +178,99 @@ public class UserEventHandlerTest
 		assertEquals("Password not updated.",nude.getUserDetails().getPassword(),nADs.getPassword());
 	}
 
+	@Test
+	public void shouldAuthenticateUser()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
+		UserAuthenticatedEvent authEvt=userService.authenticateUser(evt);
+		assertTrue("User did not authenticate.",authEvt.isAuthenticated());
+		List<GrantedAuthority> auths=authEvt.getGrantedAuths();
+		Iterator<GrantedAuthority> iter=auths.iterator();
+		String userRole=null;
+		while (iter.hasNext())
+		{
+			GrantedAuthority auth=iter.next();
+			String authority=auth.getAuthority();
+			if (authority.equals(SecurityConstants.USER_ROLE))
+				userRole=SecurityConstants.USER_ROLE;
+			LOG.debug("authority - "+authority);
+		}
+	}
+	
+	@Test
+	public void shouldAuthenticateUserRole()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		userRepo.save(user);
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
+		UserAuthenticatedEvent authEvt=userService.authenticateUser(evt);
 
+		List<GrantedAuthority> auths=authEvt.getGrantedAuths();
+		Iterator<GrantedAuthority> iter=auths.iterator();
+		String userRole=null;
+		while (iter.hasNext())
+		{
+			GrantedAuthority auth=iter.next();
+			String authority=auth.getAuthority();
+			if (authority.equals(SecurityConstants.USER_ROLE))
+				userRole=SecurityConstants.USER_ROLE;
+			LOG.debug("authority - "+authority);
+		}
+		assertEquals("Role should be USER",userRole,SecurityConstants.USER_ROLE);
+	}
+	
+	@Test
+	public void shouldAuthenticateUserAndAdminRole()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt2();
+		user.setAccountVerified(true);
+		userRepo.save(user);
+		LOG.debug("Roles - "+user.getRoles());
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
+		UserAuthenticatedEvent authEvt=userService.authenticateUser(evt);
+
+		List<GrantedAuthority> auths=authEvt.getGrantedAuths();
+		Iterator<GrantedAuthority> iter=auths.iterator();
+		String userRole=null;
+		String adminRole=null;
+		while (iter.hasNext())
+		{
+			GrantedAuthority auth=iter.next();
+			String authority=auth.getAuthority();
+			if (authority.equals(SecurityConstants.USER_ROLE))
+				userRole=SecurityConstants.USER_ROLE;
+			if (authority.equals(SecurityConstants.ADMIN_ROLE))
+				adminRole=SecurityConstants.ADMIN_ROLE;
+			LOG.debug("authority - "+authority);
+		}
+		assertEquals("A role should be USER",userRole,SecurityConstants.USER_ROLE);
+		assertEquals("A role should be ADMIN",adminRole,SecurityConstants.ADMIN_ROLE);
+	}
+	
+	
+	@Test
+	public void shouldNotAuthenticateUserDueToPassword()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword()+'2');
+		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
+		assertFalse("User did authenticate.",auth.isAuthenticated());
+	}
+	@Test
+	public void shouldNotAuthenticateUserDueToUserName()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail()+'3', user.getPassword());
+		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
+		assertFalse("User did authenticate.",auth.isAuthenticated());
+	}
+	@Test
+	public void shouldNotAuthenticateUserDueToUserNotVerified()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt2();
+		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
+		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
+		assertFalse("User did authenticate.",auth.isAuthenticated());
+	}
 }

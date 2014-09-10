@@ -11,6 +11,7 @@ import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
 {
@@ -19,16 +20,18 @@ public class DatabaseDataFixture
 		Long nodeId=(long)1;
 		boolean verified=true;
 		Institution inst=populateInstUniMelb();
-		return populateUser("gnewitt@hotmail.com", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst);
+		String roles=SecurityConstants.USER_ROLE;
+		return populateUser("gnewitt@hotmail.com", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst, roles);
 	}
 	public static User populateUserGnewitt2()
 	{
 		Long nodeId=(long)2;
-		boolean verified=true;
+		boolean verified=false;
 		Institution inst=populateInstUniMelb();
-		return populateUser("greg.newitt@unimelb.edu.au", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst);
+		String roles=SecurityConstants.USER_ROLE+','+SecurityConstants.ADMIN_ROLE;
+		return populateUser("greg.newitt@unimelb.edu.au", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst, roles);
 	}
-	public static User populateUser(String email, String firstName, String lastName, String gender, String nationality, String yearOfBirth, String personality, String password, Long id, boolean verified, Institution inst)
+	public static User populateUser(String email, String firstName, String lastName, String gender, String nationality, String yearOfBirth, String personality, String password, Long id, boolean verified, Institution inst, String roles)
 	{
 		User user=new User(email, firstName, lastName, gender, nationality, yearOfBirth, personality, password);
 		Long nodeId=id;
@@ -36,6 +39,7 @@ public class DatabaseDataFixture
 		user.setAccountVerified(verified);
 		user.setInstitution(inst);
 		user.setLikes(new HashSet<Like>());
+		user.setRoles(roles);
 		return user;
 	}
 	public static HashMap<Long,User> populateUsers()

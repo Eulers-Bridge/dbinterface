@@ -31,6 +31,7 @@ public class User
 	private String yearOfBirth;
 	private String personality;
 	private String password;
+	private String roles;
 	private boolean accountVerified=false;
 	@RelatedTo(type = "USER_OF", direction=Direction.OUTGOING)
 	@Fetch private Institution institution;
@@ -168,6 +169,20 @@ public class User
 	public void setPassword(String password) 
 	{
 		this.password = password;
+	}
+
+	/**
+	 * @return the roles
+	 */
+	public String getRoles() {
+		return roles;
+	}
+
+	/**
+	 * @param roles the roles to set
+	 */
+	public void setRoles(String roles) {
+		this.roles = roles;
 	}
 
 	/**

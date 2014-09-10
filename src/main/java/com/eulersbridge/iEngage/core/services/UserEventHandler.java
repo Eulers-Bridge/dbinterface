@@ -1,17 +1,24 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -25,6 +32,7 @@ import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.email.EmailConstants;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class UserEventHandler implements UserService 
 {
@@ -63,6 +71,7 @@ public class UserEventHandler implements UserService
         	if (LOG.isDebugEnabled()) LOG.debug("Found institution = "+inst);
     		userToInsert.setInstitution(inst);
     		userToInsert.setAccountVerified(false);
+    		userToInsert.setRoles(SecurityConstants.USER_ROLE);
         	if (LOG.isDebugEnabled()) LOG.debug("userToInsert :"+userToInsert);
     		User test = userRepository.save(userToInsert);
     		//TODO what happens if this fails?
@@ -224,5 +233,56 @@ public class UserEventHandler implements UserService
 	    return verificationResult;
 	}
 
+	@Override
+	public UserAuthenticatedEvent authenticateUser(
+			AuthenticateUserEvent authUserEvent) 
+	{
+		String userName=authUserEvent.getUserName();
+		String password=authUserEvent.getPassword();
+		String emailAddress=userName;
+		UserAuthenticatedEvent evt;
+		User user=userRepository.findByEmail(emailAddress);
+		if (user!=null)
+		{
+			if (user.isAccountVerified())
+			{	
+				if (user.comparePassword(password))
+				{
+					List<GrantedAuthority> grantedAuths=authsFromString(user.getRoles());
+					evt=new UserAuthenticatedEvent(grantedAuths);
+				}
+				else
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Password does not match.");
+					evt=UserAuthenticatedEvent.badCredentials();
+				}
+			}
+			else
+			{
+				if (LOG.isDebugEnabled()) LOG.debug("Account is not verified.");
+				evt=UserAuthenticatedEvent.badCredentials();
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("No such account.");
+			evt=UserAuthenticatedEvent.badCredentials();
+		}
+		return evt;
+	}
 
+	List<GrantedAuthority> authsFromString(String authString)
+	{
+		List<GrantedAuthority> grantedAuths = new ArrayList<>();
+		if (authString!=null)
+		{
+			String[] auths=authString.split(",");
+			for (int x=0;x<auths.length;x++)
+			{
+				SimpleGrantedAuthority auth=new SimpleGrantedAuthority(auths[x]);
+				grantedAuths.add(auth);
+			}
+		}
+		return grantedAuths;
+	}
 }
