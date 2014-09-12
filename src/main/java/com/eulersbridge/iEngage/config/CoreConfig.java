@@ -1,25 +1,13 @@
 package com.eulersbridge.iEngage.config;
 
+import com.eulersbridge.iEngage.core.services.*;
+import com.eulersbridge.iEngage.database.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.eulersbridge.iEngage.core.services.CountryEventHandler;
-import com.eulersbridge.iEngage.core.services.CountryService;
-import com.eulersbridge.iEngage.core.services.InstitutionEventHandler;
-import com.eulersbridge.iEngage.core.services.InstitutionService;
-import com.eulersbridge.iEngage.core.services.NewsEventHandler;
-import com.eulersbridge.iEngage.core.services.NewsService;
-import com.eulersbridge.iEngage.core.services.UserEventHandler;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.repository.CountryRepository;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
-import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
-import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
 import com.eulersbridge.iEngage.rest.domain.stubCountryFactory;
 
@@ -38,6 +26,8 @@ public class CoreConfig
 	NewsArticleRepository newsRepo;
 	@Autowired
 	StudentYearRepository syRepo;
+    @Autowired
+    ElectionRepository eleRepo;
 	
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -81,6 +71,13 @@ public class CoreConfig
 		return new stubCountryFactory();
 		
 	}
+
+    @Bean
+    public ElectionService createElectionService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createElectionService()");
+        return new ElectionEventHandler(eleRepo);
+    }
 
 
 }

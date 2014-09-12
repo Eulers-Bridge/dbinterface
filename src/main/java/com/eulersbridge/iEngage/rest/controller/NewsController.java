@@ -155,7 +155,7 @@ public class NewsController
 			return new ResponseEntity<NewsArticle>(HttpStatus.NOT_FOUND);
 		}
 		NewsArticle restNews=NewsArticle.fromNewsArticleDetails(articleEvent.getReadNewsArticleDetails());
-		return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
+        return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
 	}
     
     /**
