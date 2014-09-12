@@ -11,4 +11,6 @@ import com.eulersbridge.iEngage.core.events.Elections.RequestReadElectionEvent;
 public interface ElectionService {
     public ReadElectionEvent requestReadElection(RequestReadElectionEvent requestReadElectionEvent);
     public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent);
+    public ReadElectionEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent);
+    public ReadElectionEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent);
 }

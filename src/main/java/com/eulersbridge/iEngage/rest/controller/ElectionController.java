@@ -81,7 +81,7 @@ public class ElectionController {
     }
 
     //Create
-    @RequestMapping(method = RequestMethod.GET.POST, value = "/election")
+    @RequestMapping(method = RequestMethod.POST, value = "/election")
     public @ResponseBody ResponseEntity<Election> createElection(@RequestBody Election election){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create election "+election);
         ElectionCreatedEvent electionCreatedEvent = electionService.createElection(new CreateElectionEvent(election.toElectionDetail()));
@@ -92,6 +92,36 @@ public class ElectionController {
             Election result = Election.fromElectionDetail(electionCreatedEvent.getElectionDetails());
             if (LOG.isDebugEnabled()) LOG.debug("election"+result.toString());
             return new ResponseEntity<Election>(result, HttpStatus.OK);
+        }
+    }
+
+    //Get Previous
+    @RequestMapping(method = RequestMethod.GET, value = "/election/{electionId}/previous")
+    public @ResponseBody ResponseEntity<Election> findPreviousElection(@PathVariable Long electionId){
+        if (LOG.isInfoEnabled()) LOG.info("attempting to get previous election");
+        RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(electionId);
+        ReadElectionEvent readElectionEvent = electionService.readPreviousElection(requestReadElectionEvent);
+        if (readElectionEvent.isEntityFound()){
+            Election election = Election.fromElectionDetail(readElectionEvent.getElectionDetails());
+            return new ResponseEntity<Election>(election, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //Get Next
+    @RequestMapping(method = RequestMethod.GET, value = "/election/{electionId}/next")
+    public @ResponseBody ResponseEntity<Election> findNextElection(@PathVariable Long electionId){
+        if (LOG.isInfoEnabled()) LOG.info("attempting to get next election");
+        RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(electionId);
+        ReadElectionEvent readElectionEvent = electionService.readNextElection(requestReadElectionEvent);
+        if (readElectionEvent.isEntityFound()){
+            Election election = Election.fromElectionDetail(readElectionEvent.getElectionDetails());
+            return new ResponseEntity<Election>(election, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
         }
     }
 }

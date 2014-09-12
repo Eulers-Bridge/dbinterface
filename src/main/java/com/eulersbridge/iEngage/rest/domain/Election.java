@@ -34,6 +34,9 @@ public class Election extends ResourceSupport{
         election.setEndVoting(electionDetails.getEndVoting());
 
         election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).withSelfRel());
+        election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).slash("previous").withRel("Previous"));
+        election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).slash("next").withRel("Next"));
+
         return election;
     }
 
