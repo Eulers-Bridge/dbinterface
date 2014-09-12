@@ -54,6 +54,6 @@ public class ViewUserIntegrationTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("setup()");
 		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(RestDataFixture.customEmailUser2(email));
-		this.mockMvc.perform(get("/api/user/{email}",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print());
+		this.mockMvc.perform(get("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print());
 	}
 }
