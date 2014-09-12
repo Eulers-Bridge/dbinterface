@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.rest.domain;
 
-import com.eulersbridge.iEngage.core.events.Elections.ElectionDetail;
+import com.eulersbridge.iEngage.core.events.Elections.ElectionDetails;
 import com.eulersbridge.iEngage.rest.controller.ElectionController;
 import org.springframework.hateoas.ResourceSupport;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -22,25 +22,31 @@ public class Election extends ResourceSupport{
 
     private static Logger LOG = LoggerFactory.getLogger(Election.class);
 
-    public static Election fromElectionDetail(ElectionDetail electionDetail){
+    public static Election fromElectionDetail(ElectionDetails electionDetails){
         Election election = new Election();
         String simpleName=NewsArticle.class.getSimpleName();
         String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
-        election.setElectionId(electionDetail.getElectionId());
-        election.setTitle(electionDetail.getTitle());
-        election.setStart(electionDetail.getStart());
-        election.setEnd(electionDetail.getEnd());
-        election.setStartVoting(electionDetail.getStartVoting());
-        election.setEndVoting(electionDetail.getEndVoting());
+        election.setElectionId(electionDetails.getElectionId());
+        election.setTitle(electionDetails.getTitle());
+        election.setStart(electionDetails.getStart());
+        election.setEnd(electionDetails.getEnd());
+        election.setStartVoting(electionDetails.getStartVoting());
+        election.setEndVoting(electionDetails.getEndVoting());
 
         election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).withSelfRel());
         return election;
     }
 
-    public static ElectionDetail toElectionDetail(Election election){
-        ElectionDetail electionDetail = new ElectionDetail();
-        //TODO
-        return electionDetail;
+    public ElectionDetails toElectionDetail(){
+        ElectionDetails electionDetails = new ElectionDetails();
+        electionDetails.setElectionId(this.getElectionId());
+        electionDetails.setTitle(this.getTitle());
+        electionDetails.setStart(this.getStart());
+        electionDetails.setEnd(this.getEnd());
+        electionDetails.setStartVoting(this.getStartVoting());
+        electionDetails.setEndVoting(this.getEndVoting());
+        if (LOG.isTraceEnabled()) LOG.trace("electionDetails "+electionDetails);
+        return electionDetails;
     }
 
     /**

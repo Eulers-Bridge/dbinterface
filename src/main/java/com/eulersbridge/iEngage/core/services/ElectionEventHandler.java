@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.Elections.ReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.Elections.RequestReadElectionEvent;
+import com.eulersbridge.iEngage.core.events.Elections.*;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import org.slf4j.Logger;
@@ -32,6 +31,15 @@ public class ElectionEventHandler implements ElectionService{
             readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getElectionId());
         }
         return readElectionEvent;
+    }
+
+    @Override
+    public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent){
+        ElectionDetails electionDetails = createElectionEvent.getElectionDetails();
+        Election election = Election.fromElectionDetails(electionDetails);
+        Election result = eleRepository.save(election);
+        ElectionCreatedEvent electionCreatedEvent = new ElectionCreatedEvent(result.getNodeId(), result.toElectionDetail());
+        return electionCreatedEvent;
     }
 
 

@@ -1,13 +1,11 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.Iterator;
-
-import com.eulersbridge.iEngage.core.events.Elections.ElectionDetail;
+import com.eulersbridge.iEngage.core.events.Elections.CreateElectionEvent;
+import com.eulersbridge.iEngage.core.events.Elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.Elections.ReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.Elections.RequestReadElectionEvent;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +30,6 @@ public class ElectionController {
 	}
 
     private static Logger LOG = LoggerFactory.getLogger(ElectionController.class);
-
 
 //    @RequestMapping(value="/api/election/{year}/{start}/{end}/{votingStart}/{votingEnd}")
 //    public @ResponseBody Election saveElection(
@@ -67,6 +64,7 @@ public class ElectionController {
 //    	return election;
 //    }
 
+    //Get
     @RequestMapping(method = RequestMethod.GET ,value = "/election/{electionId}")
     public @ResponseBody ResponseEntity<Election> findElection(@PathVariable Long electionId)
     {
@@ -74,11 +72,26 @@ public class ElectionController {
         RequestReadElectionEvent requestReadElectionEvent= new RequestReadElectionEvent(electionId);
         ReadElectionEvent readElectionEvent= electionService.requestReadElection(requestReadElectionEvent);
         if (readElectionEvent.isEntityFound()){
-            Election election = Election.fromElectionDetail(readElectionEvent.getElectionDetail());
+            Election election = Election.fromElectionDetail(readElectionEvent.getElectionDetails());
             return new ResponseEntity<Election>(election, HttpStatus.OK);
         }
         else{
             return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //Create
+    @RequestMapping(method = RequestMethod.GET.POST, value = "/election")
+    public @ResponseBody ResponseEntity<Election> createElection(@RequestBody Election election){
+        if (LOG.isInfoEnabled()) LOG.info("attempting to create election "+election);
+        ElectionCreatedEvent electionCreatedEvent = electionService.createElection(new CreateElectionEvent(election.toElectionDetail()));
+        if(electionCreatedEvent.getElectionId() == null){
+            return new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
+        }
+        else {
+            Election result = Election.fromElectionDetail(electionCreatedEvent.getElectionDetails());
+            if (LOG.isDebugEnabled()) LOG.debug("election"+result.toString());
+            return new ResponseEntity<Election>(result, HttpStatus.OK);
         }
     }
 }
