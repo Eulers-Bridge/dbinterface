@@ -14,18 +14,31 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
 
+import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VerificationToken;
+import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 
@@ -40,6 +53,9 @@ public class ViewUserIntegrationTest
 	
 	@Mock
 	UserService userService;
+	
+	@Mock
+	EmailService emailService;
 	
 	String email = "greg.newitt@unimelb.edu.au";
 	String email2 = "graeme.newitt@unimelb.edu.au";
@@ -84,6 +100,121 @@ public class ViewUserIntegrationTest
 		this.mockMvc.perform(get("/api/user/{email}/",email2).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void shouldReturnUserCorrectlyFromPut() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdate()");
+		ReadUserEvent readData=RestDataFixture.customEmailUser2(email);
+		UserDetails dets=readData.getReadUserDetails();
+		UserUpdatedEvent testData=new UserUpdatedEvent(email, dets);
+		String content="{\"givenName\":\"Greg\",\"familyName\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email\":\"greg.newitt@unimelb.edu.au\"}";
+		String returnedContent="{\"givenName\":\"Greg\",\"familyName\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email\":\"greg.newitt@unimelb.edu.au\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/greg.newitt@unimelb.edu.au\"},{\"rel\":\"User Status\",\"href\":\"http://localhost/api/user/greg.newitt@unimelb.edu.au/status\"},{\"rel\":\"User Details\",\"href\":\"http://localhost/api/user/greg.newitt@unimelb.edu.au/details\"}]}";
+		when (userService.updateUser(any(UpdateUserEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
+		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
+		.andExpect(jsonPath("$.gender",is(dets.getGender())))
+		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
+		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
+		.andExpect(jsonPath("$.personality",is(dets.getPersonality())))
+		.andExpect(jsonPath("$.password",is(dets.getPassword())))
+		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.email",is(dets.getEmail())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;
+	}
+	
+	@Test
+	public void shouldReturnInstitutionNotFoundFromPut() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdate()");
+		UserUpdatedEvent testData=UserUpdatedEvent.instituteNotFound(email);
+		String content="{\"givenName\":\"Greg\",\"familyName\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email\":\"greg.newitt@unimelb.edu.au\"}";
+		when (userService.updateUser(any(UpdateUserEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isFailedDependency())	;
+	}
+	
+	UserCreatedEvent populateUserCreatedEvent()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("populateUserCreatedEvent()");
+		ReadUserEvent readData=RestDataFixture.customEmailUser2(email);
+		UserDetails dets=readData.getReadUserDetails();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		int expirationTimeInMinutes=60;
+		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
+		VerificationToken token=new VerificationToken(tokenType, user, expirationTimeInMinutes);
+		EmailVerification verifyEmail=new EmailVerification(null, user, token);
+		UserCreatedEvent testData=new UserCreatedEvent(email, dets,verifyEmail);
+		return testData;
+	}
+	
+	@Test
+	public void shouldReturnUserCorrectlyFromPost() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreate()");
+		UserCreatedEvent testData=populateUserCreatedEvent();
+		UserDetails dets=testData.getUserDetails();
+		String content="{\"givenName\":\"Greg\",\"familyName\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email\":\"greg.newitt@unimelb.edu.au\"}";
+		String returnedContent="{\"givenName\":\"Greg\",\"familyName\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email\":\"greg.newitt@unimelb.edu.au\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/greg.newitt@unimelb.edu.au\"},{\"rel\":\"User Status\",\"href\":\"http://localhost/api/user/greg.newitt@unimelb.edu.au/status\"},{\"rel\":\"User Details\",\"href\":\"http://localhost/api/user/greg.newitt@unimelb.edu.au/details\"}]}";
+		when (userService.signUpNewUser(any(CreateUserEvent.class))).thenReturn(testData);
+		doNothing().when(emailService).sendEmail(any(EmailVerification.class));
+		this.mockMvc.perform(post("/api/signUp/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
+		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
+		.andExpect(jsonPath("$.gender",is(dets.getGender())))
+		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
+		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
+		.andExpect(jsonPath("$.personality",is(dets.getPersonality())))
+		.andExpect(jsonPath("$.password",is(dets.getPassword())))
+		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.email",is(dets.getEmail())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void shouldReturnBadRequestFromPostNoContent() throws Exception
+	{	// Empty content.
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadRequest()");
+		UserCreatedEvent testData=UserCreatedEvent.userNotUnique(email);
+		when (userService.signUpNewUser(any(CreateUserEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post("/api/signUp/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;
+	}
+	
+	@Test
+	public void shouldReturnBadRequestFromPost() throws Exception
+	{	// Empty content.
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadRequest()");
+		UserCreatedEvent testData=populateUserCreatedEvent();
+		String content="{\"givenName2\":\"Greg\",\"familyName2\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email2\":\"greg.newitt@unimelb.edu.au\"}";
+		when (userService.signUpNewUser(any(CreateUserEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post("/api/signUp/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;
+	}
+	
+	@Test
+	public void shouldReturnUserNotUniqueFromPost() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateUserNotUnique()");
+		UserCreatedEvent testData=UserCreatedEvent.userNotUnique(email);
+		String content="{\"givenName\":\"Greg\",\"familyName\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email\":\"greg.newitt@unimelb.edu.au\"}";
+		when (userService.signUpNewUser(any(CreateUserEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post("/api/signUp/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isConflict())	;
 	}
 	
 	@Test
