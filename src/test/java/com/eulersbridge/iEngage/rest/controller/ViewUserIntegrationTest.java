@@ -12,6 +12,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.fail;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -23,8 +24,11 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
 
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
@@ -96,6 +100,16 @@ public class ViewUserIntegrationTest
 				"\"},{\"rel\":\"User Status\",\"href\":\"http://localhost/api/user/"+dets.getEmail()+
 				"/status\"},{\"rel\":\"User Details\",\"href\":\"http://localhost/api/user/"+dets.getEmail()+
 				"/details\"}]}";
+	}
+	
+	@Test
+	public void shouldAddPersonalityToUserCorrectly()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
+		PersonalityDetails dets=new PersonalityDetails();
+		AddPersonalityEvent addEvt=new AddPersonalityEvent(email, dets);
+		PersonalityAddedEvent resEvt=new PersonalityAddedEvent();
+		fail("Not implemented.");
 	}
 	
 	@Test
