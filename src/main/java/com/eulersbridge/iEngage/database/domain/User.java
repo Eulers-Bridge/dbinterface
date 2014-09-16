@@ -30,6 +30,8 @@ public class User
 	private String nationality;
 	private String yearOfBirth;
 	private String personality;
+//	@RelatedTo(type = "HAS_PERSONALITY", direction=Direction.OUTGOING)
+//	private Institution personality;
 	private String password;
 	private String roles;
 	private boolean accountVerified=false;
