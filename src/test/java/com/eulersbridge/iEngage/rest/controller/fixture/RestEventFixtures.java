@@ -1,6 +1,11 @@
 package com.eulersbridge.iEngage.rest.controller.fixture;
 
 import com.eulersbridge.iEngage.core.events.users.*;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VerificationToken;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
+import com.eulersbridge.iEngage.email.EmailVerification;
 
 import static com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture.*;
 
@@ -18,4 +23,19 @@ public class RestEventFixtures
 	{
 		return new ReadUserEvent(email,customEmailUser(email));
 	}
+	
+	public static UserCreatedEvent populateUserCreatedEvent()
+	{
+		User user=DatabaseDataFixture.populateUserGnewitt2();
+		ReadUserEvent readData=RestDataFixture.customEmailUser2(user.getEmail());
+		UserDetails dets=readData.getReadUserDetails();
+		int expirationTimeInMinutes=60;
+		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
+		VerificationToken token=new VerificationToken(tokenType, user, expirationTimeInMinutes);
+		EmailVerification verifyEmail=new EmailVerification(null, user, token);
+		UserCreatedEvent testData=new UserCreatedEvent(readData.getEmail(), dets,verifyEmail);
+		return testData;
+	}
+	
+
 }
