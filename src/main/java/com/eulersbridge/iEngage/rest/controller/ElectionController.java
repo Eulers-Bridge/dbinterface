@@ -1,9 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import com.eulersbridge.iEngage.core.events.Elections.CreateElectionEvent;
-import com.eulersbridge.iEngage.core.events.Elections.ElectionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.Elections.ReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.Elections.RequestReadElectionEvent;
+import com.eulersbridge.iEngage.core.events.Elections.*;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -123,5 +120,14 @@ public class ElectionController {
         else{
             return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    //Delete
+    @RequestMapping(method = RequestMethod.DELETE, value = "/election/{electionId}")
+    public @ResponseBody ResponseEntity<Boolean> deleteElection(@PathVariable Long electionId){
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to delete election. " + electionId);
+        ElectionDeletedEvent electionDeletedEvent = electionService.deleteElection(new DeleteElectionEvent(electionId));
+        Boolean isDeletionCompleted = Boolean.valueOf(electionDeletedEvent.isDeletionCompleted());
+        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
     }
 }

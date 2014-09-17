@@ -1,9 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.Elections.CreateElectionEvent;
-import com.eulersbridge.iEngage.core.events.Elections.ElectionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.Elections.ReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.Elections.RequestReadElectionEvent;
+import com.eulersbridge.iEngage.core.events.Elections.*;
 
 /**
  * Created by darcular on 4/09/14.
@@ -13,4 +10,5 @@ public interface ElectionService {
     public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent);
     public ReadElectionEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent);
     public ReadElectionEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent);
+    public ElectionDeletedEvent deleteElection(DeleteElectionEvent deleteElectionEvent);
 }

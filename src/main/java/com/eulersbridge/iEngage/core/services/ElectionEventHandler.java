@@ -69,4 +69,22 @@ public class ElectionEventHandler implements ElectionService{
         }
         return readElectionEvent;
     }
+
+    @Override
+    public ElectionDeletedEvent deleteElection (DeleteElectionEvent deleteElectionEvent){
+        if (LOG.isDebugEnabled()) LOG.debug("Entered deleteElectionEvent= "+deleteElectionEvent);
+        Long electionId = deleteElectionEvent.getElectionId();
+        if (LOG.isDebugEnabled()) LOG.debug("deleteElection("+electionId+")");
+        Election election = eleRepository.findOne(electionId);
+        if(election == null){
+            return ElectionDeletedEvent.notFound(electionId);
+        }
+        else{
+            eleRepository.delete(electionId);
+            ElectionDeletedEvent electionDeletedEvent = new ElectionDeletedEvent(electionId);
+            return electionDeletedEvent;
+        }
+
+
+    }
 }
