@@ -14,7 +14,8 @@ import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
  * @author Greg Newitt
  *
  */
-public class PersonalityTest {
+public class PersonalityTest 
+{
 
 	private static final float delta = 0;
 	private float emotionalStability=3.4F;
@@ -88,7 +89,7 @@ public class PersonalityTest {
 	public void testGetOpeness() 
 	{
 		Personality personality=new Personality(extroversion, agreeableness, conscientiousness, emotionalStability, openess);
-		assertEquals("Extroversion does not match expected value.", personality.getOpeness(), openess, delta);
+		assertEquals("Openess does not match expected value.", personality.getOpeness(), openess, delta);
 	}
 
 	/**
