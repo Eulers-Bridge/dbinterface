@@ -122,7 +122,7 @@ public class User extends ResourceSupport
 	    return details;
 	  }
 
-	  // {!begin fromOrderDetails}
+	  // {!begin fromUserDetails}
 	  public static User fromUserDetails(UserDetails readUser) {
 	    User user = new User();
 
