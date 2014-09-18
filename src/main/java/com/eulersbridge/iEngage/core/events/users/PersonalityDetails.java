@@ -131,4 +131,68 @@ public class PersonalityDetails
 				+ ", emotionalStability=" + emotionalStability + ", openess="
 				+ openess + "]";
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (personalityId!=null)
+			return personalityId.hashCode();
+		else
+		{
+			result = prime * result + Float.floatToIntBits(agreeableness);
+			result = prime * result + Float.floatToIntBits(conscientiousness);
+			result = prime * result + Float.floatToIntBits(emotionalStability);
+			result = prime * result + Float.floatToIntBits(extroversion);
+			result = prime * result + Float.floatToIntBits(openess);
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) 
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PersonalityDetails other = (PersonalityDetails) obj;
+		if (personalityId!=null)
+		{
+			if (personalityId!=other.getPersonalityId())
+				return false;
+		}
+		else
+		{
+			if (other.getPersonalityId()!=null)
+				return false;
+			else
+			{
+				if (Float.floatToIntBits(agreeableness) != Float
+						.floatToIntBits(other.agreeableness))
+					return false;
+				if (Float.floatToIntBits(conscientiousness) != Float
+						.floatToIntBits(other.conscientiousness))
+					return false;
+				if (Float.floatToIntBits(emotionalStability) != Float
+						.floatToIntBits(other.emotionalStability))
+					return false;
+				if (Float.floatToIntBits(extroversion) != Float
+						.floatToIntBits(other.extroversion))
+					return false;
+				if (Float.floatToIntBits(openess) != Float
+						.floatToIntBits(other.openess))
+					return false;
+			}
+		}
+		return true;
+	}
 }
