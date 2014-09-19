@@ -204,13 +204,12 @@ public void verifyUser(Long userId, Long tokenId, boolean isVerified)
 }
 
 @Override
-public Personality addPersonality(Long userId, Personality personality) 
+public Personality addPersonality(Long userId, Long personalityId) 
 {
-	Personality retValue=null;
+	Personality retValue=new Personality();
 	if (findOne(userId)!=null)
 	{
-		retValue=personality;
-		retValue.setNodeId(2L);
+		retValue.setNodeId(1L);
 	}
 	return retValue;
 }
