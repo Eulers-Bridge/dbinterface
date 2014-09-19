@@ -18,9 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
@@ -257,6 +260,7 @@ public class UserEventHandlerTest
 		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
 		assertFalse("User did authenticate.",auth.isAuthenticated());
 	}
+
 	@Test
 	public void shouldNotAuthenticateUserDueToUserName()
 	{
@@ -265,6 +269,7 @@ public class UserEventHandlerTest
 		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
 		assertFalse("User did authenticate.",auth.isAuthenticated());
 	}
+
 	@Test
 	public void shouldNotAuthenticateUserDueToUserNotVerified()
 	{
@@ -272,5 +277,39 @@ public class UserEventHandlerTest
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
 		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
 		assertFalse("User did authenticate.",auth.isAuthenticated());
+	}
+
+	@Test
+	public void shouldAddPersonalityToUser() 
+	{
+		User user = DatabaseDataFixture.populateUserGnewitt();
+		PersonalityDetails details = new PersonalityDetails(null, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
+		AddPersonalityEvent addEvt = new AddPersonalityEvent(user.getEmail(),
+				details);
+		PersonalityAddedEvent evtAdd=userService.addPersonality(addEvt);
+		assertNotNull("",evtAdd.getPersonalityDetails().getPersonalityId());
+		assertEquals("",evtAdd.getPersonalityDetails().getAgreeableness(),details.getAgreeableness());
+		assertEquals("",evtAdd.getPersonalityDetails().getConscientiousness(),details.getConscientiousness());
+		assertEquals("",evtAdd.getPersonalityDetails().getEmotionalStability(),details.getEmotionalStability());
+		assertEquals("",evtAdd.getPersonalityDetails().getExtroversion(),details.getExtroversion());
+		assertEquals("",evtAdd.getPersonalityDetails().getOpeness(),details.getOpeness());
+	}
+
+	@Test
+	public void shouldNotAddPersonalityToUserNotFound() 
+	{
+		User user = DatabaseDataFixture.populateUserGnewitt2();
+		PersonalityDetails details = new PersonalityDetails(null, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
+		AddPersonalityEvent addEvt = new AddPersonalityEvent(user.getEmail(),
+				details);
+		PersonalityAddedEvent evtAdd=userService.addPersonality(addEvt);
+		assertNotNull("",evtAdd);
+		assertFalse("",evtAdd.isUserFound());
+	}
+
+	@Test
+	public void shouldNotAddPersonalityToUserAlreadyHasPersonality() 
+	{
+		// TODO
 	}
 }
