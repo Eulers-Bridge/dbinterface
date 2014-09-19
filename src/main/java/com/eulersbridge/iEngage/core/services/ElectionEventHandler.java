@@ -84,7 +84,11 @@ public class ElectionEventHandler implements ElectionService{
             ElectionDeletedEvent electionDeletedEvent = new ElectionDeletedEvent(electionId);
             return electionDeletedEvent;
         }
+    }
 
-
+    @Override
+    public ElectionUpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent) {
+        return null;
+        //TODO
     }
 }

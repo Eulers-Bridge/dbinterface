@@ -130,4 +130,7 @@ public class ElectionController {
         Boolean isDeletionCompleted = Boolean.valueOf(electionDeletedEvent.isDeletionCompleted());
         return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
     }
+
+    //Update
+
 }

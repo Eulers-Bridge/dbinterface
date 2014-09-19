@@ -11,4 +11,5 @@ public interface ElectionService {
     public ReadElectionEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent);
     public ReadElectionEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent);
     public ElectionDeletedEvent deleteElection(DeleteElectionEvent deleteElectionEvent);
+    public ElectionUpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent);
 }
