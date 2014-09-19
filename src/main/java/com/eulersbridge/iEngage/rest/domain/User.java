@@ -17,7 +17,6 @@ public class User extends ResourceSupport
 	private String gender;
 	private String nationality;
 	private String yearOfBirth;
-	private String personality;
 	private String password;
 	private boolean accountVerified=false;
 	private	Long institutionId; 
@@ -73,14 +72,6 @@ public class User extends ResourceSupport
 		this.yearOfBirth = yearOfBirth;
 	}
 
-	public String getPersonality() {
-		return personality;
-	}
-
-	public void setPersonality(String personality) {
-		this.personality = personality;
-	}
-
 	public String getPassword() {
 		return password;
 	}
@@ -114,7 +105,6 @@ public class User extends ResourceSupport
 	    details.setGender(getGender());
 	    details.setNationality(getNationality());
 	    details.setYearOfBirth(getYearOfBirth());
-	    details.setPersonality(getPersonality());
 	    details.setPassword(getPassword());
 	    details.setAccountVerified(isAccountVerified());
 	    details.setInstitutionId(getInstitutionId());
@@ -132,7 +122,6 @@ public class User extends ResourceSupport
 	    user.gender = readUser.getGender();
 	    user.nationality = readUser.getNationality();
 	    user.yearOfBirth = readUser.getYearOfBirth();
-	    user.personality = readUser.getPersonality();
 	    user.password = readUser.getPassword();
 	    user.accountVerified = readUser.isAccountVerified();
 	    user.institutionId = readUser.getInstitutionId();
@@ -177,8 +166,6 @@ public class User extends ResourceSupport
 			buff.append(getInstitutionId());
 			buff.append(", accountVerified = ");
 			buff.append(isAccountVerified());
-			buff.append(", personality = ");
-			buff.append(getPersonality());
 			buff.append(" ]");
 			retValue=buff.toString();
 			if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
