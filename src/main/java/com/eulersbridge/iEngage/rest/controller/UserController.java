@@ -37,9 +37,12 @@ import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.email.EmailConstants;
+import com.eulersbridge.iEngage.rest.domain.Personality;
 import com.eulersbridge.iEngage.rest.domain.User;
 
 @RestController
@@ -96,6 +99,53 @@ public class UserController {
     	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restUser);
       	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     	}
+    }
+    
+    /**
+     * Is passed all the necessary data to update a user.
+     * Or potentially create a new one.
+     * The request must be a PUT with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting user object. 
+     * There will also be a relationship set up with the 
+     * institution the user belongs to.
+     * 
+     * @param email the email address of the user to be updated.
+     * @param user the user object passed across as JSON.
+     * @return the user object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.PUT,value="/user/{email}/personality")
+    public @ResponseBody ResponseEntity<Personality> addUserPersonality(@PathVariable String email,
+    		@RequestBody Personality personality) 
+    {
+    	ResponseEntity<Personality> result;
+    	if (LOG.isInfoEnabled()) LOG.info("Attempting to add personality to user. ");
+    	
+    	PersonalityAddedEvent persEvent=userService.addPersonality(new AddPersonalityEvent(email,personality.toPersonalityDetails()));
+    	if (persEvent!=null)
+    	{
+    		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+persEvent);
+	    	if (persEvent.isUserFound())
+	       	{
+		    	Personality restPersonality=Personality.fromPersonalityDetails(persEvent.getPersonalityDetails());
+		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restPersonality);
+		      	result= new ResponseEntity<Personality>(restPersonality,HttpStatus.CREATED);
+	    	}
+	    	else
+	    	{
+	    		result=new ResponseEntity<Personality>(HttpStatus.FAILED_DEPENDENCY);
+	    	}
+    	}
+    	else
+    	{
+    		if (LOG.isWarnEnabled()) LOG.warn("personalityEvent null");
+    		result=new ResponseEntity<Personality>(HttpStatus.BAD_REQUEST);
+    	}
+    	return result;
     }
     
     /**
