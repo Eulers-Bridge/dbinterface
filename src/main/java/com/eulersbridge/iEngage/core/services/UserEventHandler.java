@@ -11,9 +11,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
@@ -25,6 +28,7 @@ import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
@@ -284,5 +288,38 @@ public class UserEventHandler implements UserService
 			}
 		}
 		return grantedAuths;
+	}
+
+	@Override
+	public PersonalityAddedEvent addPersonality(
+			AddPersonalityEvent addPersonalityEvent) 
+	{
+		PersonalityAddedEvent evt;
+		String emailAddress=addPersonalityEvent.getEmail();
+		
+		User user=userRepository.findByEmail(emailAddress);
+		if (user!=null)
+		{  // Valid User
+			PersonalityDetails dets=addPersonalityEvent.getDetails();	
+			Personality personality=Personality.fromPersonalityDetails(dets);
+			
+			Personality personalityAdded=userRepository.addPersonality(user.getNodeId(),personality);
+			
+			if (personalityAdded!=null)
+			{
+				evt=new PersonalityAddedEvent(personalityAdded.toPersonalityDetails());
+			}
+			else
+			{
+				evt=PersonalityAddedEvent.userNotFound();
+			}
+			
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("No such account.");
+			evt=PersonalityAddedEvent.userNotFound();
+		}
+		return evt;
 	}
 }
