@@ -45,6 +45,14 @@ public class AddPersonalityEvent
 	public void setDetails(PersonalityDetails details) {
 		this.details = details;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "AddPersonalityEvent [email=" + email + ", details=" + details
+				+ "]";
+	}
 	
 	
 }
