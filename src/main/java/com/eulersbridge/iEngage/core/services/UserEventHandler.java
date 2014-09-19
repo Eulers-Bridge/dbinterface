@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.eulersbridge.iEngage.core.events.users.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,19 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
@@ -36,6 +24,10 @@ import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class UserEventHandler implements UserService 
 {
+    @Override
+    public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent) {
+        return null;
+    }
 
     private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
 

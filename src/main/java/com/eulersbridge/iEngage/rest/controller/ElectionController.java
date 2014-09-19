@@ -62,7 +62,7 @@ public class ElectionController {
 //    }
 
     //Get
-    @RequestMapping(method = RequestMethod.GET ,value = "/election/{electionId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/election/{electionId}")
     public @ResponseBody ResponseEntity<Election> findElection(@PathVariable Long electionId)
     {
         if (LOG.isInfoEnabled()) LOG.info(electionId+" attempting to get election. ");
