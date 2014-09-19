@@ -45,7 +45,6 @@ public class RestDataFixture
 		user.setFamilyName("Newitt");
 		user.setGender("Male");
 		user.setNationality("Australian");
-		user.setPersonality("None");
 		user.setYearOfBirth("1971");
 		user.setPassword("password");
 		user.setAccountVerified(false);

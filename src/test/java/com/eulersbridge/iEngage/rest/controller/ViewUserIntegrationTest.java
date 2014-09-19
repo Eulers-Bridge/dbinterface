@@ -88,7 +88,6 @@ public class ViewUserIntegrationTest
 				"\",\"gender\":\""+dets.getGender()+
 				"\",\"nationality\":\""+dets.getNationality()+
 				"\",\"yearOfBirth\":\""+dets.getYearOfBirth()+
-				"\",\"personality\":\""+dets.getPersonality()+
 				"\",\"password\":\""+dets.getPassword()+
 				"\",\"accountVerified\":"+dets.isAccountVerified()+
 				",\"institutionId\":"+dets.getInstitutionId().intValue()+
@@ -102,7 +101,6 @@ public class ViewUserIntegrationTest
 				"\",\"gender\":\""+dets.getGender()+
 				"\",\"nationality\":\""+dets.getNationality()+
 				"\",\"yearOfBirth\":\""+dets.getYearOfBirth()+
-				"\",\"personality\":\""+dets.getPersonality()+
 				"\",\"password\":\""+dets.getPassword()+
 				"\",\"accountVerified\":"+dets.isAccountVerified()+
 				",\"institutionId\":"+dets.getInstitutionId().intValue()+
@@ -184,7 +182,6 @@ public class ViewUserIntegrationTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.personality",is(dets.getPersonality())))
 		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
@@ -220,7 +217,6 @@ public class ViewUserIntegrationTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.personality",is(dets.getPersonality())))
 		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
@@ -260,7 +256,6 @@ public class ViewUserIntegrationTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.personality",is(dets.getPersonality())))
 		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
@@ -286,7 +281,7 @@ public class ViewUserIntegrationTest
 	{	// Empty content.
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadRequest()");
 		UserCreatedEvent testData=RestEventFixtures.populateUserCreatedEvent();
-		String content="{\"givenName2\":\"Greg\",\"familyName2\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email2\":\"greg.newitt@unimelb.edu.au\"}";
+		String content="{\"givenName2\":\"Greg\",\"familyName2\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email2\":\"greg.newitt@unimelb.edu.au\"}";
 		when (userService.signUpNewUser(any(CreateUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/signUp/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -298,7 +293,7 @@ public class ViewUserIntegrationTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateUserNotUnique()");
 		UserCreatedEvent testData=UserCreatedEvent.userNotUnique(email);
-		String content="{\"givenName\":\"Greg\",\"familyName\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"personality\":\"None\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email\":\"greg.newitt@unimelb.edu.au\"}";
+		String content="{\"givenName\":\"Greg\",\"familyName\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email\":\"greg.newitt@unimelb.edu.au\"}";
 		when (userService.signUpNewUser(any(CreateUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/signUp/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -320,7 +315,6 @@ public class ViewUserIntegrationTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.personality",is(dets.getPersonality())))
 		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))

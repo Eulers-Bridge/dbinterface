@@ -13,7 +13,7 @@ import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTo
 
 public class VerificationTokenTest 
 {
-	User user=new User("info@eulersbridge.com", "Euler", "Info", "Female", "Australian", "1942", "absolutely none", "test");
+	User user=new User("info@eulersbridge.com", "Euler", "Info", "Female", "Australian", "1942", "test");
 	VerificationTokenType tokenType=VerificationTokenType.emailVerification;
 	int expirationtime=100;
 	VerificationToken token=new VerificationToken(tokenType,user, expirationtime);
