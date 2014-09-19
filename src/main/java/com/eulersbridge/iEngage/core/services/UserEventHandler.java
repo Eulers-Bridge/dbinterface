@@ -11,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
-
-<<<<<<< HEAD
-=======
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -30,7 +27,6 @@ import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
->>>>>>> master
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -45,10 +41,6 @@ import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class UserEventHandler implements UserService 
 {
-    @Override
-    public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent) {
-        return null;
-    }
 
     private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
 
