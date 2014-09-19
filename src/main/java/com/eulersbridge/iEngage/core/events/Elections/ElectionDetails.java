@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
  * @author Yikai Gong
  */
 
-public class ElectionDetail {
+public class ElectionDetails {
     private Long electionId;
     private String title;
     private Long start;
@@ -15,9 +15,9 @@ public class ElectionDetail {
     private Long startVoting;
     private Long endVoting;
 
-    private static Logger LOG = LoggerFactory.getLogger(ElectionDetail.class);
+    private static Logger LOG = LoggerFactory.getLogger(ElectionDetails.class);
 
-    public ElectionDetail(){}
+    public ElectionDetails(){}
 
     public void setElectionId(Long electionId){
         this.electionId = electionId;
@@ -86,10 +86,10 @@ public class ElectionDetail {
     public boolean equals(Object other){
         if (null == other) return false;
         if (other ==this) return true;
-        if(!(other instanceof ElectionDetail)) return false;
-        ElectionDetail electionDetail2 = (ElectionDetail) other;
-        if (electionDetail2.getElectionId() != null){
-            if(electionDetail2.getElectionId().equals(getElectionId()))
+        if(!(other instanceof ElectionDetails)) return false;
+        ElectionDetails electionDetails2 = (ElectionDetails) other;
+        if (electionDetails2.getElectionId() != null){
+            if(electionDetails2.getElectionId().equals(getElectionId()))
                 return true;
         }
         return false;

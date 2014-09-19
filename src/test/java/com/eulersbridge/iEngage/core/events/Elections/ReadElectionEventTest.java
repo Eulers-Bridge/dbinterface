@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 public class ReadElectionEventTest {
     ReadElectionEvent readElectionEvent;
-    ElectionDetail electionDetail;
+    ElectionDetails electionDetails;
     final Long electionId = new Long(0);
     final String title = "election title";
     final Long start = new Long(1);
@@ -23,14 +23,14 @@ public class ReadElectionEventTest {
 
     @Before
     public void setUp() throws Exception {
-        electionDetail = new ElectionDetail();
-        electionDetail.setElectionId(electionId);
-        electionDetail.setTitle(title);
-        electionDetail.setStart(start);
-        electionDetail.setEnd(end);
-        electionDetail.setStartVoting(startVoting);
-        electionDetail.setEndVoting(endVoting);
-        readElectionEvent = new ReadElectionEvent(electionId, electionDetail);
+        electionDetails = new ElectionDetails();
+        electionDetails.setElectionId(electionId);
+        electionDetails.setTitle(title);
+        electionDetails.setStart(start);
+        electionDetails.setEnd(end);
+        electionDetails.setStartVoting(startVoting);
+        electionDetails.setEndVoting(endVoting);
+        readElectionEvent = new ReadElectionEvent(electionId, electionDetails);
     }
 
     @After
@@ -52,10 +52,10 @@ public class ReadElectionEventTest {
 
     @Test
     public void testGetElectionDetail() throws Exception {
-        assertEquals("electionDetail does not match", electionDetail, readElectionEvent.getElectionDetail());
-        ElectionDetail electionDetail1 = new ElectionDetail();
-        electionDetail1.setElectionId(electionId);
-        assertEquals("electionDetail does not match", electionDetail1, readElectionEvent.getElectionDetail());
+        assertEquals("electionDetail does not match", electionDetails, readElectionEvent.getElectionDetails());
+        ElectionDetails electionDetails1 = new ElectionDetails();
+        electionDetails1.setElectionId(electionId);
+        assertEquals("electionDetail does not match", electionDetails1, readElectionEvent.getElectionDetails());
 
     }
 

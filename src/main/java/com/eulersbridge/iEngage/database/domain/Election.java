@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import com.eulersbridge.iEngage.core.events.Elections.ElectionDetail;
+import com.eulersbridge.iEngage.core.events.Elections.ElectionDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
@@ -112,25 +112,33 @@ public class Election
 		return retValue;
 	}	
 
-    public ElectionDetail toElectionDetail()
+    public ElectionDetails toElectionDetail()
     {
         if (LOG.isTraceEnabled()) LOG.trace("toElectionDetail()");
 
-        ElectionDetail electionDetail = new ElectionDetail();
+        ElectionDetails electionDetails = new ElectionDetails();
         if (LOG.isTraceEnabled()) LOG.trace("election "+this);
-        electionDetail.setElectionId(this.getNodeId());
-        electionDetail.setTitle(this.getTitle());
-        electionDetail.setStart(this.getStart());
-        electionDetail.setEnd(this.getEnd());
-        electionDetail.setStartVoting(this.getVotingStart());
-        electionDetail.setEndVoting(this.getVotingEnd());
-        if (LOG.isTraceEnabled()) LOG.trace("electionDetail; "+electionDetail);
-        return electionDetail;
+        electionDetails.setElectionId(this.getNodeId());
+        electionDetails.setTitle(this.getTitle());
+        electionDetails.setStart(this.getStart());
+        electionDetails.setEnd(this.getEnd());
+        electionDetails.setStartVoting(this.getVotingStart());
+        electionDetails.setEndVoting(this.getVotingEnd());
+        if (LOG.isTraceEnabled()) LOG.trace("electionDetail; "+ electionDetails);
+        return electionDetails;
     }
 
-    public Election fromElectionDetail(){
-        //TODO
+    public static Election fromElectionDetails(ElectionDetails electionDetails){
+        if (LOG.isTraceEnabled()) LOG.trace("fromElectionDetails()");
         Election election = new Election();
+        if (LOG.isTraceEnabled()) LOG.trace("electionDetails "+electionDetails);
+        election.setNodeId(electionDetails.getElectionId());
+        election.setTitle(electionDetails.getTitle());
+        election.setStart(electionDetails.getStart());
+        election.setEnd(electionDetails.getEnd());
+        election.setVotingStart(electionDetails.getStartVoting());
+        election.setVotingEnd(electionDetails.getEndVoting());
+        if (LOG.isTraceEnabled()) LOG.trace("election "+election);
         return election;
     }
 }

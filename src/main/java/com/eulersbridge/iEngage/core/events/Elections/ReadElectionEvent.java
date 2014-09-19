@@ -9,22 +9,22 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 public class ReadElectionEvent extends ReadEvent{
 
     private Long electionId;
-    private ElectionDetail electionDetail;
+    private ElectionDetails electionDetails;
 
     public ReadElectionEvent (Long electionId){
         this.electionId = electionId;
     }
-    public ReadElectionEvent (Long electionId, ElectionDetail electionDetail){
+    public ReadElectionEvent (Long electionId, ElectionDetails electionDetails){
         this.electionId = electionId;
-        this.electionDetail = electionDetail;
+        this.electionDetails = electionDetails;
     }
 
     public Long getElectionId(){
         return this.electionId;
     }
 
-    public ElectionDetail getElectionDetail(){
-        return this.electionDetail;
+    public ElectionDetails getElectionDetails(){
+        return this.electionDetails;
     }
 
     public static ReadElectionEvent notFound(Long electionId){
