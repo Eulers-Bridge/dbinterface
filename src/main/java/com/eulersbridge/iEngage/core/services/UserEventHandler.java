@@ -32,6 +32,7 @@ import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 import com.eulersbridge.iEngage.email.EmailVerification;
@@ -44,13 +45,15 @@ public class UserEventHandler implements UserService
     private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
 
     private UserRepository userRepository;
+    private PersonalityRepository personRepository;
     private InstitutionRepository instRepository;
     private VerificationTokenRepository tokenRepository;
     @Autowired VelocityEngine velocityEngine;
     
-    public UserEventHandler(final UserRepository userRepository, final InstitutionRepository instRepo, final VerificationTokenRepository tokenRepo) 
+    public UserEventHandler(final UserRepository userRepository, final PersonalityRepository personRepository, final InstitutionRepository instRepo, final VerificationTokenRepository tokenRepo) 
     {
       this.userRepository = userRepository;
+      this.personRepository = personRepository;
       this.instRepository = instRepo;
       this.tokenRepository = tokenRepo;
     }
@@ -291,23 +294,30 @@ public class UserEventHandler implements UserService
 	}
 
 	@Override
-	public PersonalityAddedEvent addPersonality(
-			AddPersonalityEvent addPersonalityEvent) 
+	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent) 
 	{
 		PersonalityAddedEvent evt;
+		
 		String emailAddress=addPersonalityEvent.getEmail();
+		if(LOG.isDebugEnabled()) LOG.debug("Email address - "+emailAddress);
 		
 		User user=userRepository.findByEmail(emailAddress);
 		if (user!=null)
 		{  // Valid User
+			if (LOG.isDebugEnabled()) LOG.debug("UserId - "+user.getNodeId());
 			PersonalityDetails dets=addPersonalityEvent.getDetails();	
 			Personality personality=Personality.fromPersonalityDetails(dets);
+			if (LOG.isDebugEnabled()) LOG.debug("Personality - "+personality);
 			
-			Personality personalityAdded=userRepository.addPersonality(user.getNodeId(),personality);
-			
+			Personality personalityAdded=personRepository.save(personality);
 			if (personalityAdded!=null)
 			{
-				evt=new PersonalityAddedEvent(personalityAdded.toPersonalityDetails());
+				Long personalityId=personalityAdded.getNodeId();
+				Personality personalityLinked=userRepository.addPersonality(user.getNodeId(), personalityId);
+				if (personalityLinked.equals(personalityAdded))
+					evt=new PersonalityAddedEvent(personalityAdded.toPersonalityDetails());
+				else
+					evt=PersonalityAddedEvent.userNotFound();
 			}
 			else
 			{
