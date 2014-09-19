@@ -88,7 +88,19 @@ public class ElectionEventHandler implements ElectionService{
 
     @Override
     public ElectionUpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent) {
-        return null;
-        //TODO
+        ElectionDetails electionDetails = updateElectionEvent.getElectionDetails();
+        Election election = Election.fromElectionDetails(electionDetails);
+        Long electionId = electionDetails.getElectionId();
+        if(LOG.isDebugEnabled()) LOG.debug("election Id is " + electionId);
+        Election electionOld = eleRepository.findOne(electionId);
+        if(electionOld ==null){
+            if(LOG.isDebugEnabled()) LOG.debug("election entity not found " + electionId);
+            return ElectionUpdatedEvent.notFound(electionId);
+        }
+        else{
+            Election result = eleRepository.save(election);
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+            return new ElectionUpdatedEvent(result.getNodeId(), result.toElectionDetail());
+        }
     }
 }
