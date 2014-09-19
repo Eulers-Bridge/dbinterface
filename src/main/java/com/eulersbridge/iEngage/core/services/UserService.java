@@ -1,8 +1,10 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
@@ -22,4 +24,5 @@ public interface UserService
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent);
 	public UserAccountVerifiedEvent validateUserAccount(VerifyUserAccountEvent verifyUserAccountEvent);
 	public UserAuthenticatedEvent authenticateUser(AuthenticateUserEvent authUserEvent);
+	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
 }
