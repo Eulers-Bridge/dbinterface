@@ -70,6 +70,17 @@ public class ViewUserIntegrationTest
 		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
 	}
 	
+	private String populatePersonalityContent(PersonalityDetails dets)
+	{
+		return "{\"personalityId\":\""+dets.getPersonalityId()+
+				"\",\"agreeableness\":\""+dets.getAgreeableness()+
+				"\",\"conscientiousness\":\""+dets.getConscientiousness()+
+				"\",\"emotionalStability\":\""+dets.getEmotionalStability()+
+				"\",\"extroversion\":\""+dets.getExtroversion()+
+				"\",\"openess\":\""+dets.getOpeness()+
+				"\"}";
+	}
+	
 	private String populateContent(UserDetails dets)
 	{
 		return "{\"givenName\":\""+dets.getGivenName()+
@@ -103,13 +114,60 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldAddPersonalityToUserCorrectly()
+	public void shouldAddPersonalityToUserCorrectly() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
-		PersonalityDetails dets=new PersonalityDetails();
-		AddPersonalityEvent addEvt=new AddPersonalityEvent(email, dets);
+		PersonalityDetails dets=new PersonalityDetails(3L,4.0F,3.0F,2.0F,4.0F,5.0F);
 		PersonalityAddedEvent resEvt=new PersonalityAddedEvent();
-		fail("Not implemented.");
+		resEvt.setPersonalityDetails(dets);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(resEvt);
+		String content=populatePersonalityContent(dets);
+		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.personalityId",is(dets.getPersonalityId().intValue())))
+		.andExpect(jsonPath("$.agreeableness",is((dets.getAgreeableness().doubleValue()))))
+		.andExpect(jsonPath("$.conscientiousness",is(dets.getConscientiousness().doubleValue())))
+		.andExpect(jsonPath("$.emotionalStability",is(dets.getEmotionalStability().doubleValue())))
+		.andExpect(jsonPath("$.extroversion",is(dets.getExtroversion().doubleValue())))
+		.andExpect(jsonPath("$.openess",is(dets.getOpeness().doubleValue())))
+		.andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void shouldReturnUserNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
+		PersonalityDetails dets=new PersonalityDetails(3L,4.0F,3.0F,2.0F,4.0F,5.0F);
+		PersonalityAddedEvent resEvt=PersonalityAddedEvent.userNotFound();
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(resEvt);
+		String content=populatePersonalityContent(dets);
+		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isFailedDependency());
+	}
+	
+	@Test
+	public void shouldReturnUserBadRequest() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
+		PersonalityDetails dets=new PersonalityDetails(3L,4.0F,3.0F,2.0F,4.0F,5.0F);
+		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(null);
+		String content=populatePersonalityContent(dets);
+		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void shouldReturnUserBadRequest2() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
+		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest());
 	}
 	
 	@Test
