@@ -10,11 +10,11 @@ package com.eulersbridge.iEngage.core.events.users;
 public class PersonalityDetails 
 {
 	private Long personalityId;
-	private float extroversion;
-	private float agreeableness;
-	private float conscientiousness;
-	private float emotionalStability;
-	private float openess;
+	private Float extroversion;
+	private Float agreeableness;
+	private Float conscientiousness;
+	private Float emotionalStability;
+	private Float openess;
 	
 	/**
 	 * 
@@ -32,9 +32,9 @@ public class PersonalityDetails
 	 * @param emotionalStability
 	 * @param openess
 	 */
-	public PersonalityDetails(Long personalityId, float extroversion,
-			float agreeableness, float conscientiousness,
-			float emotionalStability, float openess) 
+	public PersonalityDetails(Long personalityId, Float extroversion,
+			Float agreeableness, Float conscientiousness,
+			Float emotionalStability, Float openess) 
 	{
 		super();
 		this.personalityId = personalityId;
@@ -62,7 +62,7 @@ public class PersonalityDetails
 	/**
 	 * @return the extroversion
 	 */
-	public float getExtroversion() {
+	public Float getExtroversion() {
 		return extroversion;
 	}
 	/**
@@ -74,7 +74,7 @@ public class PersonalityDetails
 	/**
 	 * @return the agreeableness
 	 */
-	public float getAgreeableness() {
+	public Float getAgreeableness() {
 		return agreeableness;
 	}
 	/**
@@ -86,7 +86,7 @@ public class PersonalityDetails
 	/**
 	 * @return the conscientiousness
 	 */
-	public float getConscientiousness() {
+	public Float getConscientiousness() {
 		return conscientiousness;
 	}
 	/**
@@ -98,7 +98,7 @@ public class PersonalityDetails
 	/**
 	 * @return the emotionalStability
 	 */
-	public float getEmotionalStability() {
+	public Float getEmotionalStability() {
 		return emotionalStability;
 	}
 	/**
@@ -110,7 +110,7 @@ public class PersonalityDetails
 	/**
 	 * @return the openess
 	 */
-	public float getOpeness() {
+	public Float getOpeness() {
 		return openess;
 	}
 	/**

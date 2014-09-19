@@ -13,11 +13,11 @@ public class Personality
 {
 
 	@GraphId Long nodeId;
-	private float extroversion;
-	private float agreeableness;
-	private float conscientiousness;
-	private float emotionalStability;
-	private float openess;
+	private Float extroversion;
+	private Float agreeableness;
+	private Float conscientiousness;
+	private Float emotionalStability;
+	private Float openess;
 
     private static Logger LOG = LoggerFactory.getLogger(Personality.class);
     
@@ -28,8 +28,8 @@ public class Personality
 	 * @param emotionalStability
 	 * @param openess
 	 */
-	public Personality(float extroversion, float agreeableness,
-			float conscientiousness, float emotionalStability, float openess) 
+	public Personality(Float extroversion, Float agreeableness,
+			Float conscientiousness, Float emotionalStability, Float openess) 
 	{
 		super();
 		this.extroversion = extroversion;
@@ -42,35 +42,35 @@ public class Personality
 	/**
 	 * @return the extroversion
 	 */
-	public float getExtroversion() {
+	public Float getExtroversion() {
 		return extroversion;
 	}
 
 	/**
 	 * @return the agreeableness
 	 */
-	public float getAgreeableness() {
+	public Float getAgreeableness() {
 		return agreeableness;
 	}
 
 	/**
 	 * @return the conscientiousness
 	 */
-	public float getConscientiousness() {
+	public Float getConscientiousness() {
 		return conscientiousness;
 	}
 
 	/**
 	 * @return the emotionalStability
 	 */
-	public float getEmotionalStability() {
+	public Float getEmotionalStability() {
 		return emotionalStability;
 	}
 
 	/**
 	 * @return the openess
 	 */
-	public float getOpeness() {
+	public Float getOpeness() {
 		return openess;
 	}
 
