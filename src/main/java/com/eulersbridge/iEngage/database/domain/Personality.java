@@ -22,6 +22,13 @@ public class Personality
     private static Logger LOG = LoggerFactory.getLogger(Personality.class);
     
 	/**
+	 * 
+	 */
+	public Personality() {
+		super();
+	}
+
+	/**
 	 * @param extroversion
 	 * @param agreeableness
 	 * @param conscientiousness
@@ -122,4 +129,70 @@ public class Personality
 				+ ", emotionalStability=" + emotionalStability + ", openess="
 				+ openess + "]";
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() 
+	{
+		final int prime = 31;
+		int result = 1;
+		if (nodeId!=null)
+			return nodeId.hashCode();
+		else
+		{
+			result = prime * result + Float.floatToIntBits(agreeableness);
+			result = prime * result + Float.floatToIntBits(conscientiousness);
+			result = prime * result + Float.floatToIntBits(emotionalStability);
+			result = prime * result + Float.floatToIntBits(extroversion);
+			result = prime * result + Float.floatToIntBits(openess);
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) 
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Personality other = (Personality) obj;
+		if (nodeId!=null)
+		{
+			if (!nodeId.equals(other.getNodeId()))
+				return false;
+		}
+		else
+		{
+			if (other.getNodeId()!=null)
+				return false;
+			else
+			{
+				if (Float.floatToIntBits(agreeableness) != Float
+						.floatToIntBits(other.agreeableness))
+					return false;
+				if (Float.floatToIntBits(conscientiousness) != Float
+						.floatToIntBits(other.conscientiousness))
+					return false;
+				if (Float.floatToIntBits(emotionalStability) != Float
+						.floatToIntBits(other.emotionalStability))
+					return false;
+				if (Float.floatToIntBits(extroversion) != Float
+						.floatToIntBits(other.extroversion))
+					return false;
+				if (Float.floatToIntBits(openess) != Float
+						.floatToIntBits(other.openess))
+					return false;
+			}
+		}
+		return true;
+	}
+
 }
