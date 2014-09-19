@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.config;
 
 import com.eulersbridge.iEngage.core.services.*;
 import com.eulersbridge.iEngage.database.repository.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class CoreConfig
 	StudentYearRepository syRepo;
     @Autowired
     ElectionRepository eleRepo;
+    @Autowired
+    PersonalityRepository personRepo;
 	
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -40,7 +43,7 @@ public class CoreConfig
 	public UserService createUserService() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createUserService()");
-	    return new UserEventHandler(userRepo,instRepo,tokenRepo);
+	    return new UserEventHandler(userRepo,personRepo,instRepo,tokenRepo);
 	}
 	
 	@Bean
