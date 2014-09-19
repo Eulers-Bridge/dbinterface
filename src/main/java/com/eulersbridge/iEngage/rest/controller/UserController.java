@@ -124,8 +124,12 @@ public class UserController {
     {
     	ResponseEntity<Personality> result;
     	if (LOG.isInfoEnabled()) LOG.info("Attempting to add personality to user. ");
+    	if (LOG.isDebugEnabled()) LOG.debug("Personality - "+personality);
     	
-    	PersonalityAddedEvent persEvent=userService.addPersonality(new AddPersonalityEvent(email,personality.toPersonalityDetails()));
+    	AddPersonalityEvent addEvt=new AddPersonalityEvent(email,personality.toPersonalityDetails());
+    	if (LOG.isDebugEnabled()) LOG.debug("AddPersonalityEvent - "+addEvt);
+    	
+    	PersonalityAddedEvent persEvent=userService.addPersonality(addEvt);
     	if (persEvent!=null)
     	{
     		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+persEvent);

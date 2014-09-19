@@ -17,7 +17,6 @@ public class UserDetailsTest {
     final String gender = new String("male");
     final String nationality = new String("China");
     final String yearOfBirth = new String("1989");
-    final String personality = new String("Idealist");
     final String password = new String("password");
     final boolean accountVerified = true;
     final Long institutionId = new Long(1);
@@ -35,7 +34,6 @@ public class UserDetailsTest {
         userDetails.setGender(gender);
         userDetails.setNationality(nationality);
         userDetails.setYearOfBirth(yearOfBirth);
-        userDetails.setPersonality(personality);
         userDetails.setPassword(password);
         userDetails.setInstitutionId(institutionId);
 
@@ -99,18 +97,6 @@ public class UserDetailsTest {
         String yearOfBirth1 = new String("1990");
         userDetails1.setYearOfBirth(yearOfBirth1);
         assertEquals("yearOfBirth does not match", yearOfBirth1, userDetails1.getYearOfBirth());
-    }
-
-    @Test
-    public void testGetPersonality() throws Exception {
-        assertEquals("personality does not match", personality, userDetails.getPersonality());
-    }
-
-    @Test
-    public void testSetPersonality() throws Exception {
-        String personality1 = new String ("Thinker");
-        userDetails1.setPersonality(personality1);
-        assertEquals("personality does not match", personality1, userDetails1.getPersonality());
     }
 
     @Test

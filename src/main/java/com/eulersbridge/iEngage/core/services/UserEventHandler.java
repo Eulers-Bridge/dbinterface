@@ -12,10 +12,31 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
+<<<<<<< HEAD
+=======
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
+import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
+import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
+>>>>>>> master
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 import com.eulersbridge.iEngage.email.EmailVerification;
@@ -32,13 +53,15 @@ public class UserEventHandler implements UserService
     private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
 
     private UserRepository userRepository;
+    private PersonalityRepository personRepository;
     private InstitutionRepository instRepository;
     private VerificationTokenRepository tokenRepository;
     @Autowired VelocityEngine velocityEngine;
     
-    public UserEventHandler(final UserRepository userRepository, final InstitutionRepository instRepo, final VerificationTokenRepository tokenRepo) 
+    public UserEventHandler(final UserRepository userRepository, final PersonalityRepository personRepository, final InstitutionRepository instRepo, final VerificationTokenRepository tokenRepo) 
     {
       this.userRepository = userRepository;
+      this.personRepository = personRepository;
       this.instRepository = instRepo;
       this.tokenRepository = tokenRepo;
     }
@@ -276,5 +299,45 @@ public class UserEventHandler implements UserService
 			}
 		}
 		return grantedAuths;
+	}
+
+	@Override
+	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent) 
+	{
+		PersonalityAddedEvent evt;
+		
+		String emailAddress=addPersonalityEvent.getEmail();
+		if(LOG.isDebugEnabled()) LOG.debug("Email address - "+emailAddress);
+		
+		User user=userRepository.findByEmail(emailAddress);
+		if (user!=null)
+		{  // Valid User
+			if (LOG.isDebugEnabled()) LOG.debug("UserId - "+user.getNodeId());
+			PersonalityDetails dets=addPersonalityEvent.getDetails();	
+			Personality personality=Personality.fromPersonalityDetails(dets);
+			if (LOG.isDebugEnabled()) LOG.debug("Personality - "+personality);
+			
+			Personality personalityAdded=personRepository.save(personality);
+			if (personalityAdded!=null)
+			{
+				Long personalityId=personalityAdded.getNodeId();
+				Personality personalityLinked=userRepository.addPersonality(user.getNodeId(), personalityId);
+				if (personalityLinked.equals(personalityAdded))
+					evt=new PersonalityAddedEvent(personalityAdded.toPersonalityDetails());
+				else
+					evt=PersonalityAddedEvent.userNotFound();
+			}
+			else
+			{
+				evt=PersonalityAddedEvent.userNotFound();
+			}
+			
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("No such account.");
+			evt=PersonalityAddedEvent.userNotFound();
+		}
+		return evt;
 	}
 }

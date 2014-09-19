@@ -18,9 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
@@ -32,10 +35,13 @@ import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenMemoryRepository;
@@ -52,6 +58,7 @@ public class UserEventHandlerTest
 	private VerificationTokenMemoryRepository tokenRepo;
 	private UserRepository userRepo;
 	private InstitutionRepository instRepo;
+	private PersonalityRepository personRepo;
 	
 	private static Logger LOG = LoggerFactory.getLogger(UserEventHandlerTest.class);
 	
@@ -78,12 +85,13 @@ public class UserEventHandlerTest
 	{
 		HashMap<Long, User> users=DatabaseDataFixture.populateUsers();
 		userRepo=new UserMemoryRepository(users);
+		personRepo=new PersonalityMemoryRepository();
 		HashMap<Long, Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
 		
 		HashMap<Long,VerificationToken> tokens= new HashMap<Long,VerificationToken>();
 		tokenRepo=new VerificationTokenMemoryRepository(tokens);
-		userService=new UserEventHandler(userRepo, instRepo, tokenRepo);
+		userService=new UserEventHandler(userRepo, personRepo, instRepo, tokenRepo);
 	}
 
 	/**
@@ -99,7 +107,7 @@ public class UserEventHandlerTest
 	@Test
 	public void testUserEventHandler() 
 	{
-		UserEventHandler userService2=new UserEventHandler(userRepo, instRepo, tokenRepo);
+		UserEventHandler userService2=new UserEventHandler(userRepo, personRepo, instRepo, tokenRepo);
 		assertNotNull("newsService not being created by constructor.",userService2);
 	}
 
@@ -159,7 +167,6 @@ public class UserEventHandlerTest
 		nADs.setFamilyName("Lawson");
 		nADs.setNationality("British");
 		nADs.setYearOfBirth("1974");
-		nADs.setPersonality("Some");
 		nADs.setGender("Female");
 		nADs.setInstitutionId((long)1);
 		nADs.setPassword("123");
@@ -174,7 +181,6 @@ public class UserEventHandlerTest
 		assertEquals("Last name not updated.",nude.getUserDetails().getFamilyName(),nADs.getFamilyName());
 		assertEquals("Year of Birth not updated.",nude.getUserDetails().getYearOfBirth(),nADs.getYearOfBirth());
 		assertEquals("Gender not updated.",nude.getUserDetails().getGender(),nADs.getGender());
-		assertEquals("Personality of Birth not updated.",nude.getUserDetails().getPersonality(),nADs.getPersonality());
 		assertEquals("Password not updated.",nude.getUserDetails().getPassword(),nADs.getPassword());
 	}
 
@@ -257,6 +263,7 @@ public class UserEventHandlerTest
 		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
 		assertFalse("User did authenticate.",auth.isAuthenticated());
 	}
+
 	@Test
 	public void shouldNotAuthenticateUserDueToUserName()
 	{
@@ -265,6 +272,7 @@ public class UserEventHandlerTest
 		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
 		assertFalse("User did authenticate.",auth.isAuthenticated());
 	}
+
 	@Test
 	public void shouldNotAuthenticateUserDueToUserNotVerified()
 	{
@@ -272,5 +280,39 @@ public class UserEventHandlerTest
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
 		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
 		assertFalse("User did authenticate.",auth.isAuthenticated());
+	}
+
+	@Test
+	public void shouldAddPersonalityToUser() 
+	{
+		User user = DatabaseDataFixture.populateUserGnewitt();
+		PersonalityDetails details = new PersonalityDetails(null, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
+		AddPersonalityEvent addEvt = new AddPersonalityEvent(user.getEmail(),
+				details);
+		PersonalityAddedEvent evtAdd=userService.addPersonality(addEvt);
+		assertNotNull("",evtAdd.getPersonalityDetails().getPersonalityId());
+		assertEquals("",evtAdd.getPersonalityDetails().getAgreeableness(),details.getAgreeableness());
+		assertEquals("",evtAdd.getPersonalityDetails().getConscientiousness(),details.getConscientiousness());
+		assertEquals("",evtAdd.getPersonalityDetails().getEmotionalStability(),details.getEmotionalStability());
+		assertEquals("",evtAdd.getPersonalityDetails().getExtroversion(),details.getExtroversion());
+		assertEquals("",evtAdd.getPersonalityDetails().getOpeness(),details.getOpeness());
+	}
+
+	@Test
+	public void shouldNotAddPersonalityToUserNotFound() 
+	{
+		User user = DatabaseDataFixture.populateUserGnewitt2();
+		PersonalityDetails details = new PersonalityDetails(null, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
+		AddPersonalityEvent addEvt = new AddPersonalityEvent(user.getEmail(),
+				details);
+		PersonalityAddedEvent evtAdd=userService.addPersonality(addEvt);
+		assertNotNull("",evtAdd);
+		assertFalse("",evtAdd.isUserFound());
+	}
+
+	@Test
+	public void shouldNotAddPersonalityToUserAlreadyHasPersonality() 
+	{
+		// TODO
 	}
 }

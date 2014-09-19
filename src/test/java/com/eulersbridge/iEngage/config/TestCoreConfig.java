@@ -15,6 +15,8 @@ import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
@@ -26,6 +28,7 @@ public class TestCoreConfig
 	Map<Long, Institution> institutions= new HashMap<Long,Institution>();
 	Map<Long, VerificationToken> tokens= new HashMap<Long,VerificationToken>();
 	UserRepository userRepo=new UserMemoryRepository(users);
+	PersonalityRepository personRepo=new PersonalityMemoryRepository();
 	InstitutionRepository instRepo;
 	VerificationTokenRepository tokenRepo;
 	
@@ -40,7 +43,7 @@ public class TestCoreConfig
 	public UserService createUserService() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createService()");
-	    return new UserEventHandler(userRepo,instRepo,tokenRepo);
+	    return new UserEventHandler(userRepo,personRepo,instRepo,tokenRepo);
 	}
 
 /*	  @Bean

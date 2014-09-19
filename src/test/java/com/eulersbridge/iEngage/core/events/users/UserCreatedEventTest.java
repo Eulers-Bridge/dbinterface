@@ -20,7 +20,6 @@ public class UserCreatedEventTest {
     final String gender = new String("male");
     final String nationality = new String("China");
     final String yearOfBirth = new String("1989");
-    final String personality = new String("Idealist");
     final String password = new String("password");
     final Long institutionId = new Long(1);
     UserDetails userDetails = null;
@@ -36,11 +35,10 @@ public class UserCreatedEventTest {
         userDetails.setGender(gender);
         userDetails.setNationality(nationality);
         userDetails.setYearOfBirth(yearOfBirth);
-        userDetails.setPersonality(personality);
         userDetails.setPassword(password);
         userDetails.setInstitutionId(institutionId);
 
-        User user = new User(email, givenName, familyName, gender, nationality, yearOfBirth, personality, password);
+        User user = new User(email, givenName, familyName, gender, nationality, yearOfBirth, password);
         VerificationToken token = new VerificationToken(VerificationToken.VerificationTokenType.emailRegistration , user, 10);
         verifyEmail = new EmailVerification(null,user, token);
         userCreatedEvent = new UserCreatedEvent(email, userDetails, verifyEmail);
@@ -106,7 +104,7 @@ public class UserCreatedEventTest {
 
     @Test
     public void testSetVerificationEmail() throws Exception {
-        User user1 = new User(email, givenName, familyName, gender, nationality, yearOfBirth, personality, password);
+        User user1 = new User(email, givenName, familyName, gender, nationality, yearOfBirth, password);
         VerificationToken token1 = new VerificationToken(VerificationToken.VerificationTokenType.emailVerification , user1, 10);
         EmailVerification verifyEmail1 = new EmailVerification(null,user1, token1);
         UserCreatedEvent userCreatedEvent1 = new UserCreatedEvent(email, userDetails, verifyEmail1);

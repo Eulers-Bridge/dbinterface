@@ -21,7 +21,7 @@ public class DatabaseDataFixture
 		boolean verified=true;
 		Institution inst=populateInstUniMelb();
 		String roles=SecurityConstants.USER_ROLE;
-		return populateUser("gnewitt@hotmail.com", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst, roles);
+		return populateUser("gnewitt@hotmail.com", "Greg", "Newitt", "Male", "Australian", "1971", "password", nodeId, verified, inst, roles);
 	}
 	public static User populateUserGnewitt2()
 	{
@@ -29,11 +29,11 @@ public class DatabaseDataFixture
 		boolean verified=false;
 		Institution inst=populateInstUniMelb();
 		String roles=SecurityConstants.USER_ROLE+','+SecurityConstants.ADMIN_ROLE;
-		return populateUser("greg.newitt@unimelb.edu.au", "Greg", "Newitt", "Male", "Australian", "1971", "None", "password", nodeId, verified, inst, roles);
+		return populateUser("greg.newitt@unimelb.edu.au", "Greg", "Newitt", "Male", "Australian", "1971", "password", nodeId, verified, inst, roles);
 	}
-	public static User populateUser(String email, String firstName, String lastName, String gender, String nationality, String yearOfBirth, String personality, String password, Long id, boolean verified, Institution inst, String roles)
+	public static User populateUser(String email, String firstName, String lastName, String gender, String nationality, String yearOfBirth, String password, Long id, boolean verified, Institution inst, String roles)
 	{
-		User user=new User(email, firstName, lastName, gender, nationality, yearOfBirth, personality, password);
+		User user=new User(email, firstName, lastName, gender, nationality, yearOfBirth, password);
 		Long nodeId=id;
 		user.setNodeId(nodeId);
 		user.setAccountVerified(verified);

@@ -19,7 +19,6 @@ public class UserDetails
 	private String gender;
 	private String nationality;
 	private String yearOfBirth;
-	private String personality;
 	private String password;
 	private boolean accountVerified=false;
 	private	Long institutionId;
@@ -65,14 +64,6 @@ public class UserDetails
 
 	public void setYearOfBirth(String yearOfBirth) {
 		this.yearOfBirth = yearOfBirth;
-	}
-
-	public String getPersonality() {
-		return personality;
-	}
-
-	public void setPersonality(String personality) {
-		this.personality = personality;
 	}
 
 	public String getPassword() {
@@ -145,8 +136,6 @@ public class UserDetails
 		buff.append(getNationality());
 		buff.append(", yearOfBirth = ");
 		buff.append(getYearOfBirth());
-		buff.append(", personality = ");
-		buff.append(getPersonality());
 		buff.append(", password = ");
 		buff.append(getPassword());
 		buff.append(", accountVerified = ");

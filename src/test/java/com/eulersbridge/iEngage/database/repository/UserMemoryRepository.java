@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.repository;
 
 
+import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
@@ -200,6 +201,17 @@ public void verifyUser(Long userId, Long tokenId, boolean isVerified)
 {
 	// TODO Auto-generated method stub
 	
+}
+
+@Override
+public Personality addPersonality(Long userId, Long personalityId) 
+{
+	Personality retValue=new Personality();
+	if (findOne(userId)!=null)
+	{
+		retValue.setNodeId(1L);
+	}
+	return retValue;
 }
 
 }

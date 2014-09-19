@@ -44,7 +44,7 @@ public class EmailVerificationTest
 	public void setUp() throws Exception 
 	{
 		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
-		User user=new User("gnewitt@bigfoot.com","Greg","Newitt","","","","","");
+		User user=new User("gnewitt@bigfoot.com","Greg","Newitt","","","","");
 		token=new VerificationToken(tokenType,user, 60);
 		email=new EmailVerification(velocityEngine,user, token);
 		if (LOG.isDebugEnabled()) LOG.debug("verification email - "+email);

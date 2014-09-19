@@ -32,7 +32,6 @@ public class CreateUserEventTest {
         userDetails.setGender(gender);
         userDetails.setNationality(nationality);
         userDetails.setYearOfBirth(yearOfBirth);
-        userDetails.setPersonality(personality);
         userDetails.setPassword(password);
         userDetails.setInstitutionId(institutionId);
 
@@ -65,7 +64,6 @@ public class CreateUserEventTest {
         userDetails1.setGender(gender);
         userDetails1.setNationality(nationality);
         userDetails1.setYearOfBirth(yearOfBirth);
-        userDetails1.setPersonality(personality);
         userDetails1.setPassword(password);
         userDetails1.setInstitutionId(institutionId);
         CreateUserEvent createUserEvent1 = new CreateUserEvent(email, userDetails1);

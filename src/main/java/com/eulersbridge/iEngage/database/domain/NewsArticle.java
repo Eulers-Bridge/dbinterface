@@ -191,7 +191,7 @@ public class NewsArticle extends Likeable
 		    newsArt.content=newsArtDetails.getContent();
 		    newsArt.picture=newsArtDetails.getPicture();
 		    newsArt.date=newsArtDetails.getDate();
-		    User creator=new User(newsArtDetails.getCreatorEmail(),null,null,null, null, null, null, null);
+		    User creator=new User(newsArtDetails.getCreatorEmail(),null,null,null, null, null, null);
 		    newsArt.creator=creator;
 		    StudentYear year=new StudentYear();
 		    year.setYear(newsArtDetails.getStudentYear());

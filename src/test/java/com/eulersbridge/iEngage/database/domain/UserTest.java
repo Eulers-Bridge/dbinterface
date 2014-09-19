@@ -53,7 +53,7 @@ public class UserTest {
 	@Test
 	public final void testUserStringStringStringStringStringStringStringString() 
 	{
-		User userTest=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "none", "password");
+		User userTest=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971",  "password");
 		assertTrue("userTest not of User class",(userTest instanceof User));
 		assertEquals("Emails don't match",userTest.getEmail(),"gnewitt");
 		assertEquals("First names don't match",userTest.getGivenName(),"Greg");
@@ -61,7 +61,6 @@ public class UserTest {
 		assertEquals("Genders don't match",userTest.getGender(),"Male");
 		assertEquals("Nationalities don't match",userTest.getNationality(),"Australian");
 		assertEquals("Birth years names don't match",userTest.getYearOfBirth(),"1971");
-		assertEquals("Personalities don't match",userTest.getPersonality(),"none");
 		assertEquals("Passwords don't match",userTest.getPassword(),"password");
 	}
 
@@ -130,17 +129,6 @@ public class UserTest {
 		assertNotEquals("getYearOfBirth() returns incorrect  value",user.getYearOfBirth(),userDetails.getYearOfBirth());
 		userDetails.setYearOfBirth(user.getYearOfBirth());
 		assertEquals("getYearOfBirth() returns expected value",user.getYearOfBirth(),userDetails.getYearOfBirth());
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getPersonality()}.
-	 */
-	@Test
-	public final void testGetPersonality() {
-		userDetails.setPersonality("Something else");
-		assertNotEquals("getPersonality() returns incorrect  value",user.getPersonality(),userDetails.getPersonality());
-		userDetails.setPersonality(user.getPersonality());
-		assertEquals("getPersonality() returns expected value",user.getPersonality(),userDetails.getPersonality());
 	}
 
 	/**
@@ -226,7 +214,6 @@ public class UserTest {
 		assertEquals("FirstName must be equal",userDetails.getGivenName(), userDetails2.getGivenName());
 		assertEquals("LastName must be equal",userDetails.getFamilyName(), userDetails2.getFamilyName());
 		assertEquals("Gender must be equal",userDetails.getGender(), userDetails2.getGender());
-		assertEquals("Personality must be equal",userDetails.getPersonality(), userDetails2.getPersonality());
 		assertEquals("Institution Ids must be equal",userDetails.getInstitutionId(), userDetails2.getInstitutionId());
 	}
 
@@ -242,7 +229,6 @@ public class UserTest {
 		assertEquals("FirstName must be equal",userDetails.getGivenName(), user.getGivenName());
 		assertEquals("LastName must be equal",userDetails.getFamilyName(), user.getFamilyName());
 		assertEquals("Gender must be equal",userDetails.getGender(), user.getGender());
-		assertEquals("Personality must be equal",userDetails.getPersonality(), user.getPersonality());
 		assertEquals("Institutions must be equal",userDetails.getInstitutionId(), user.getInstitution().getNodeId());
 		
 	}
@@ -253,8 +239,8 @@ public class UserTest {
 	@Test
 	public final void testEqualsUser() 
 	{
-		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "none", "password");
-		User user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "none", "password");
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		User user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
 		assertFalse("Different objects with same details are being declared equal.",user1.equals(user2));
 	}
 
