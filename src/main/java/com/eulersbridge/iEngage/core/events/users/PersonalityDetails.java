@@ -167,7 +167,7 @@ public class PersonalityDetails
 		PersonalityDetails other = (PersonalityDetails) obj;
 		if (personalityId!=null)
 		{
-			if (personalityId!=other.getPersonalityId())
+			if (!personalityId.equals(other.getPersonalityId()))
 				return false;
 		}
 		else
