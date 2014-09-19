@@ -35,10 +35,13 @@ import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenMemoryRepository;
@@ -55,6 +58,7 @@ public class UserEventHandlerTest
 	private VerificationTokenMemoryRepository tokenRepo;
 	private UserRepository userRepo;
 	private InstitutionRepository instRepo;
+	private PersonalityRepository personRepo;
 	
 	private static Logger LOG = LoggerFactory.getLogger(UserEventHandlerTest.class);
 	
@@ -81,12 +85,13 @@ public class UserEventHandlerTest
 	{
 		HashMap<Long, User> users=DatabaseDataFixture.populateUsers();
 		userRepo=new UserMemoryRepository(users);
+		personRepo=new PersonalityMemoryRepository();
 		HashMap<Long, Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
 		
 		HashMap<Long,VerificationToken> tokens= new HashMap<Long,VerificationToken>();
 		tokenRepo=new VerificationTokenMemoryRepository(tokens);
-		userService=new UserEventHandler(userRepo, instRepo, tokenRepo);
+		userService=new UserEventHandler(userRepo, personRepo, instRepo, tokenRepo);
 	}
 
 	/**
@@ -102,7 +107,7 @@ public class UserEventHandlerTest
 	@Test
 	public void testUserEventHandler() 
 	{
-		UserEventHandler userService2=new UserEventHandler(userRepo, instRepo, tokenRepo);
+		UserEventHandler userService2=new UserEventHandler(userRepo, personRepo, instRepo, tokenRepo);
 		assertNotNull("newsService not being created by constructor.",userService2);
 	}
 
@@ -162,7 +167,6 @@ public class UserEventHandlerTest
 		nADs.setFamilyName("Lawson");
 		nADs.setNationality("British");
 		nADs.setYearOfBirth("1974");
-		nADs.setPersonality("Some");
 		nADs.setGender("Female");
 		nADs.setInstitutionId((long)1);
 		nADs.setPassword("123");
@@ -177,7 +181,6 @@ public class UserEventHandlerTest
 		assertEquals("Last name not updated.",nude.getUserDetails().getFamilyName(),nADs.getFamilyName());
 		assertEquals("Year of Birth not updated.",nude.getUserDetails().getYearOfBirth(),nADs.getYearOfBirth());
 		assertEquals("Gender not updated.",nude.getUserDetails().getGender(),nADs.getGender());
-		assertEquals("Personality of Birth not updated.",nude.getUserDetails().getPersonality(),nADs.getPersonality());
 		assertEquals("Password not updated.",nude.getUserDetails().getPassword(),nADs.getPassword());
 	}
 
