@@ -29,9 +29,8 @@ public class User
 	private String gender;
 	private String nationality;
 	private String yearOfBirth;
-	private String personality;
-//	@RelatedTo(type = "HAS_PERSONALITY", direction=Direction.OUTGOING)
-//	private Institution personality;
+	@RelatedTo(type = "HAS_PERSONALITY", direction=Direction.OUTGOING)
+	private Personality personality;
 	private String password;
 	private String roles;
 	private boolean accountVerified=false;
@@ -49,7 +48,7 @@ public class User
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String personality, String password)
+	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String password)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+givenName+','+familyName+','+gender+','+
 														  nationality+','+yearOfBirth+','+personality+')');
@@ -59,7 +58,6 @@ public class User
 		this.gender=gender;
 		this.nationality=nationality;
 		this.yearOfBirth=yearOfBirth;
-		this.personality=personality;
 		this.password=password;
 	}
 	
@@ -106,12 +104,6 @@ public class User
 		return yearOfBirth;
 	}
 	
-	public String getPersonality()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("getPersonality() = "+personality);
-		return personality;
-	}
-	
 	public boolean comparePassword(String password)
 	{
 		return password.equals(this.password);
@@ -144,8 +136,6 @@ public class User
 		buff.append(getNationality());
 		buff.append(", yearOfBirth = ");
 		buff.append(getYearOfBirth());
-		buff.append(", personality = ");
-		buff.append(getPersonality());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isTraceEnabled()) LOG.trace("toString() = "+retValue);
@@ -273,13 +263,6 @@ public class User
 		this.yearOfBirth = yearOfBirth;
 	}
 
-	/**
-	 * @param personality the personality to set
-	 */
-	public void setPersonality(String personality) {
-		this.personality = personality;
-	}
-
 	public UserDetails toUserDetails() 
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
@@ -307,7 +290,6 @@ public class User
 		    user.familyName=userDetails.getFamilyName();
 		    user.nationality=userDetails.getNationality();
 		    user.password=userDetails.getPassword();
-		    user.personality=userDetails.getPersonality();
 		    user.yearOfBirth=userDetails.getYearOfBirth();
 		    user.accountVerified=userDetails.isAccountVerified();
 		    Institution inst=new Institution();
