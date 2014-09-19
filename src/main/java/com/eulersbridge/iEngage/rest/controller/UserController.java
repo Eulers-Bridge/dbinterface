@@ -1,11 +1,23 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.ServletContext;
+
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.exception.VelocityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +37,12 @@ import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.email.EmailConstants;
+import com.eulersbridge.iEngage.rest.domain.Personality;
 import com.eulersbridge.iEngage.rest.domain.User;
 
 @RestController
@@ -35,6 +51,10 @@ public class UserController {
 
     @Autowired UserService userService;
     @Autowired EmailService emailService;
+    
+    @Autowired ServletContext servletContext;
+    @Autowired VelocityEngine velocityEngine;
+	@Autowired JavaMailSender emailSender;
     
 	public UserController() 
 	{
@@ -61,7 +81,7 @@ public class UserController {
 	*/
     
     @RequestMapping(method=RequestMethod.PUT,value="/user/{email}")
-    public @ResponseBody ResponseEntity<User> alterStudent(@PathVariable String email,
+    public @ResponseBody ResponseEntity<User> alterUser(@PathVariable String email,
     		@RequestBody User user) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit user. "+user.getEmail());
@@ -79,6 +99,53 @@ public class UserController {
     	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restUser);
       	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     	}
+    }
+    
+    /**
+     * Is passed all the necessary data to update a user.
+     * Or potentially create a new one.
+     * The request must be a PUT with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting user object. 
+     * There will also be a relationship set up with the 
+     * institution the user belongs to.
+     * 
+     * @param email the email address of the user to be updated.
+     * @param user the user object passed across as JSON.
+     * @return the user object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.PUT,value="/user/{email}/personality")
+    public @ResponseBody ResponseEntity<Personality> addUserPersonality(@PathVariable String email,
+    		@RequestBody Personality personality) 
+    {
+    	ResponseEntity<Personality> result;
+    	if (LOG.isInfoEnabled()) LOG.info("Attempting to add personality to user. ");
+    	
+    	PersonalityAddedEvent persEvent=userService.addPersonality(new AddPersonalityEvent(email,personality.toPersonalityDetails()));
+    	if (persEvent!=null)
+    	{
+    		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+persEvent);
+	    	if (persEvent.isUserFound())
+	       	{
+		    	Personality restPersonality=Personality.fromPersonalityDetails(persEvent.getPersonalityDetails());
+		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restPersonality);
+		      	result= new ResponseEntity<Personality>(restPersonality,HttpStatus.CREATED);
+	    	}
+	    	else
+	    	{
+	    		result=new ResponseEntity<Personality>(HttpStatus.FAILED_DEPENDENCY);
+	    	}
+    	}
+    	else
+    	{
+    		if (LOG.isWarnEnabled()) LOG.warn("personalityEvent null");
+    		result=new ResponseEntity<Personality>(HttpStatus.BAD_REQUEST);
+    	}
+    	return result;
     }
     
     /**
@@ -172,14 +239,14 @@ public class UserController {
 	    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
 	    	if (LOG.isDebugEnabled()) LOG.debug(userEvent.getVerificationEmail().toString());
 	    	emailService.sendEmail(userEvent.getVerificationEmail());
-	    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
+	    	return new ResponseEntity<User>(restUser,HttpStatus.CREATED);
     	}
     }
     
     /**
      * Is passed all the necessary data to verify a user account.
      * The request must be a POST with the necessary parameters in the
-     * attached data.
+     * URL.
      * <p/>
      * This method will return the user object owner of the verified account.
      * 
@@ -188,8 +255,7 @@ public class UserController {
      * @return the user object returned by the Graph Database.
      * 
 	*/
-//    @RequestMapping(method=RequestMethod.POST,value="/emailVerification/{email}/{token}")
-    @RequestMapping(value="/emailVerification/{email}/{token}")
+    @RequestMapping(method=RequestMethod.POST,value="/emailVerification/{email}/{token}")
     public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
@@ -230,6 +296,69 @@ public class UserController {
     	if (LOG.isInfoEnabled()) 
     		LOG.info("user = "+user);
     	return new ResponseEntity<Boolean>(true,HttpStatus.OK);
+    }
+    
+    @RequestMapping(value="/testResources")
+    public @ResponseBody ResponseEntity<StringWriter> testResources() 
+    {
+    	if (LOG.isInfoEnabled()) 
+    		LOG.info("testResources()");
+        if (LOG.isDebugEnabled()) LOG.debug("this.velocityEngine = "+this.velocityEngine);
+        LOG.debug("Real path = "+servletContext.getRealPath("/"));
+		LOG.debug("Real path = "+servletContext.getRealPath("/WEB-INF/"));
+		String resourceName=EmailConstants.EmailVerificationTemplate;
+		Template t;
+	    StringWriter sw = new StringWriter();
+		try {
+			String info=servletContext.getServerInfo();
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug("info - "+info);
+			}
+			velocityEngine.setApplicationAttribute("javax.servlet.ServletContext",servletContext );
+			velocityEngine.init();
+
+			VelocityContext context=new VelocityContext();
+			context.put("recipientName", "Greg Newitt");
+			context.put("emailAddress","gnewitt@hotmail.com");
+			context.put("verificationToken","blahblahblah");
+			
+			final Map<String, Object> hTemplateVariables = new HashMap<String,Object>();
+
+			hTemplateVariables.put("recipientName", "Greg Newitt");
+			hTemplateVariables.put("emailAddress","gnewitt@hotmail.com");
+			hTemplateVariables.put("verificationToken","blahblahblah");
+		
+			
+			boolean exists=velocityEngine.resourceExists(resourceName);
+	
+			if (LOG.isDebugEnabled())
+			{
+				if (exists)
+					LOG.debug("Resource name "+resourceName+" exists.");
+				else
+					LOG.warn("validate template2 does not exist. ");
+			}
+			t=velocityEngine.getTemplate(resourceName);
+    	    t.merge(context, sw);
+    	    
+			String velocityModel=resourceName;
+			String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, velocityModel,"UTF-8", hTemplateVariables);
+
+    	    LOG.debug(sw.toString());
+    	    LOG.debug(body);
+		}
+        catch (ResourceNotFoundException re)
+        {
+        	LOG.warn("Resource not found");
+        }
+        
+        catch (VelocityException e) 
+        {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return new ResponseEntity<StringWriter>(sw,HttpStatus.OK);
     }
     
 }
