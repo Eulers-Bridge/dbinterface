@@ -31,6 +31,8 @@ public class CoreConfig
     ElectionRepository eleRepo;
     @Autowired
     PersonalityRepository personRepo;
+    @Autowired
+    PollRepository pollRepository;
 	
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -82,5 +84,10 @@ public class CoreConfig
         return new ElectionEventHandler(eleRepo);
     }
 
-
+    @Bean
+    public PollService createPollService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
+        return new PollEventHandler(pollRepository);
+    }
 }
