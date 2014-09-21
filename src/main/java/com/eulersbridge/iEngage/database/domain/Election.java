@@ -27,10 +27,11 @@ public class Election
                     Long votingEnd)
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+year+','+start+','+end+','+votingStart+','+votingEnd+')');
-		this.start=start;
-		this.end=end;
-		this.votingStart=votingStart;
-		this.votingEnd=votingEnd;
+        this.title = title;
+		this.start = start;
+		this.end = end;
+		this.votingStart = votingStart;
+		this.votingEnd = votingEnd;
 	}
 
 	public Long getStart()
@@ -112,9 +113,9 @@ public class Election
 		return retValue;
 	}	
 
-    public ElectionDetails toElectionDetail()
+    public ElectionDetails toElectionDetails()
     {
-        if (LOG.isTraceEnabled()) LOG.trace("toElectionDetail()");
+        if (LOG.isTraceEnabled()) LOG.trace("toElectionDetails()");
 
         ElectionDetails electionDetails = new ElectionDetails();
         if (LOG.isTraceEnabled()) LOG.trace("election "+this);

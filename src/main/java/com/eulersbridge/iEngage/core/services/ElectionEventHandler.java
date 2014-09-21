@@ -25,7 +25,7 @@ public class ElectionEventHandler implements ElectionService{
         Election election = eleRepository.findOne(requestReadElectionEvent.getElectionId());
         ReadElectionEvent readElectionEvent;
         if (election!=null){
-            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetail());
+            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetails());
         }
         else{
             readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getElectionId());
@@ -38,7 +38,7 @@ public class ElectionEventHandler implements ElectionService{
         ElectionDetails electionDetails = createElectionEvent.getElectionDetails();
         Election election = Election.fromElectionDetails(electionDetails);
         Election result = eleRepository.save(election);
-        ElectionCreatedEvent electionCreatedEvent = new ElectionCreatedEvent(result.getNodeId(), result.toElectionDetail());
+        ElectionCreatedEvent electionCreatedEvent = new ElectionCreatedEvent(result.getNodeId(), result.toElectionDetails());
         return electionCreatedEvent;
     }
 
@@ -48,7 +48,7 @@ public class ElectionEventHandler implements ElectionService{
         if (LOG.isDebugEnabled()) LOG.debug("election = "+election);
         ReadElectionEvent readElectionEvent;
         if (election!=null){
-            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetail());
+            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetails());
         }
         else{
             readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getElectionId());
@@ -62,7 +62,7 @@ public class ElectionEventHandler implements ElectionService{
         if (LOG.isDebugEnabled()) LOG.debug("election = "+election);
         ReadElectionEvent readElectionEvent;
         if (election!=null){
-            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetail());
+            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetails());
         }
         else{
             readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getElectionId());
@@ -100,7 +100,7 @@ public class ElectionEventHandler implements ElectionService{
         else{
             Election result = eleRepository.save(election);
             if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
-            return new ElectionUpdatedEvent(result.getNodeId(), result.toElectionDetail());
+            return new ElectionUpdatedEvent(result.getNodeId(), result.toElectionDetails());
         }
     }
 }

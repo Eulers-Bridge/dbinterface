@@ -69,7 +69,7 @@ public class ElectionController {
         RequestReadElectionEvent requestReadElectionEvent= new RequestReadElectionEvent(electionId);
         ReadElectionEvent readElectionEvent= electionService.requestReadElection(requestReadElectionEvent);
         if (readElectionEvent.isEntityFound()){
-            Election election = Election.fromElectionDetail(readElectionEvent.getElectionDetails());
+            Election election = Election.fromElectionDetails(readElectionEvent.getElectionDetails());
             return new ResponseEntity<Election>(election, HttpStatus.OK);
         }
         else{
@@ -81,12 +81,12 @@ public class ElectionController {
     @RequestMapping(method = RequestMethod.POST, value = "/election")
     public @ResponseBody ResponseEntity<Election> createElection(@RequestBody Election election){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create election "+election);
-        ElectionCreatedEvent electionCreatedEvent = electionService.createElection(new CreateElectionEvent(election.toElectionDetail()));
+        ElectionCreatedEvent electionCreatedEvent = electionService.createElection(new CreateElectionEvent(election.toElectionDetails()));
         if(electionCreatedEvent.getElectionId() == null){
             return new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
         }
         else {
-            Election result = Election.fromElectionDetail(electionCreatedEvent.getElectionDetails());
+            Election result = Election.fromElectionDetails(electionCreatedEvent.getElectionDetails());
             if (LOG.isDebugEnabled()) LOG.debug("election"+result.toString());
             return new ResponseEntity<Election>(result, HttpStatus.OK);
         }
@@ -99,7 +99,7 @@ public class ElectionController {
         RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(electionId);
         ReadElectionEvent readElectionEvent = electionService.readPreviousElection(requestReadElectionEvent);
         if (readElectionEvent.isEntityFound()){
-            Election election = Election.fromElectionDetail(readElectionEvent.getElectionDetails());
+            Election election = Election.fromElectionDetails(readElectionEvent.getElectionDetails());
             return new ResponseEntity<Election>(election, HttpStatus.OK);
         }
         else{
@@ -114,7 +114,7 @@ public class ElectionController {
         RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(electionId);
         ReadElectionEvent readElectionEvent = electionService.readNextElection(requestReadElectionEvent);
         if (readElectionEvent.isEntityFound()){
-            Election election = Election.fromElectionDetail(readElectionEvent.getElectionDetails());
+            Election election = Election.fromElectionDetails(readElectionEvent.getElectionDetails());
             return new ResponseEntity<Election>(election, HttpStatus.OK);
         }
         else{
@@ -135,10 +135,10 @@ public class ElectionController {
     @RequestMapping(method = RequestMethod.PUT, value = "/election/{electionId}")
     public @ResponseBody ResponseEntity<Election> updateElection(@PathVariable Long electionId, @RequestBody Election election){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update election. " + electionId);
-        ElectionUpdatedEvent electionUpdatedEvent= electionService.updateElection(new UpdateElectionEvent(electionId, election.toElectionDetail()));
+        ElectionUpdatedEvent electionUpdatedEvent= electionService.updateElection(new UpdateElectionEvent(electionId, election.toElectionDetails()));
         if ((null!=electionUpdatedEvent)&&(LOG.isDebugEnabled())) LOG.debug("electionUpdatedEvent - "+electionUpdatedEvent);
         if(electionUpdatedEvent.isEntityFound()){
-            Election restElection = Election.fromElectionDetail(electionUpdatedEvent.getElectionDetails());
+            Election restElection = Election.fromElectionDetails(electionUpdatedEvent.getElectionDetails());
             if (LOG.isDebugEnabled()) LOG.debug("restElection = "+restElection);
             return new ResponseEntity<Election>(restElection, HttpStatus.OK);
         }

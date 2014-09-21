@@ -22,10 +22,10 @@ public class Election extends ResourceSupport{
 
     private static Logger LOG = LoggerFactory.getLogger(Election.class);
 
-    public static Election fromElectionDetail(ElectionDetails electionDetails){
+    public static Election fromElectionDetails(ElectionDetails electionDetails){
         Election election = new Election();
-        String simpleName=NewsArticle.class.getSimpleName();
-        String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
+        String simpleName=Election.class.getSimpleName();
+        String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
         election.setElectionId(electionDetails.getElectionId());
         election.setTitle(electionDetails.getTitle());
         election.setStart(electionDetails.getStart());
@@ -40,7 +40,7 @@ public class Election extends ResourceSupport{
         return election;
     }
 
-    public ElectionDetails toElectionDetail(){
+    public ElectionDetails toElectionDetails(){
         ElectionDetails electionDetails = new ElectionDetails();
         electionDetails.setElectionId(this.getElectionId());
         electionDetails.setTitle(this.getTitle());
