@@ -49,6 +49,19 @@ public class PollEventHandler implements PollService{
 
     @Override
     public PollUpdatedEvent updatePoll(UpdatePollEvent updatePollEvent) {
-        return null;
+        PollDetails pollDetails = updatePollEvent.getPollDetails();
+        Poll poll = Poll.fromPollDetails(pollDetails);
+        Long pollId = pollDetails.getPollId();
+        if(LOG.isDebugEnabled()) LOG.debug("poll Id is " + pollId);
+        Poll pollOld = pollRepository.findOne(pollId);
+        if(pollOld == null){
+            if(LOG.isDebugEnabled()) LOG.debug("poll entity not found " + pollId);
+            return PollUpdatedEvent.notFound(pollId);
+        }
+        else{
+            Poll result = pollRepository.save(poll);
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getPollId());
+            return new PollUpdatedEvent(result.getPollId(), result.toPollDetails());
+        }
     }
 }

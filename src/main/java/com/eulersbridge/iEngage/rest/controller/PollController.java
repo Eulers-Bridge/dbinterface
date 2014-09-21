@@ -1,9 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import com.eulersbridge.iEngage.core.events.polls.CreatePollEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollCreatedEvent;
-import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
-import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
+import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.core.services.PollService;
 import com.eulersbridge.iEngage.rest.domain.Poll;
 import org.slf4j.Logger;
@@ -58,6 +55,23 @@ public class PollController {
             Poll result = Poll.fromPollDetails(pollCreatedEvent.getPollDetails());
             if (LOG.isDebugEnabled()) LOG.debug("poll"+result.toString());
             return new ResponseEntity<Poll>(result, HttpStatus.OK);
+        }
+    }
+
+    //Update
+    @RequestMapping(method = RequestMethod.PUT, value = "/poll/{pollId}")
+    public @ResponseBody
+    ResponseEntity<Poll> updatePoll(@PathVariable Long pollId, @RequestBody Poll poll){
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to update poll. " + pollId);
+        PollUpdatedEvent pollUpdatedEvent = pollService.updatePoll(new UpdatePollEvent(pollId, poll.toPollDetails()));
+        if ((null != pollUpdatedEvent )&& (LOG.isDebugEnabled())) LOG.debug("pollUpdatedEvent - "+pollUpdatedEvent);
+        if(pollUpdatedEvent.isEntityFound()){
+            Poll resultPoll = Poll.fromPollDetails(pollUpdatedEvent.getPollDetails());
+            if (LOG.isDebugEnabled()) LOG.debug("resultPoll = "+resultPoll);
+            return new ResponseEntity<Poll>(resultPoll, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
         }
     }
 
