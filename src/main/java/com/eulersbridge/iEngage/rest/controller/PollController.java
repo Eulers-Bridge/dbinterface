@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.polls.CreatePollEvent;
+import com.eulersbridge.iEngage.core.events.polls.PollCreatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.services.PollService;
@@ -41,5 +43,23 @@ public class PollController {
             return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
         }
     }
+
+    //Create
+    @RequestMapping(method = RequestMethod.POST, value = "/poll")
+    public @ResponseBody
+    ResponseEntity<Poll> createPoll(@RequestBody Poll poll){
+        if (LOG.isInfoEnabled()) LOG.info("attempting to create poll "+poll);
+        CreatePollEvent createPollEvent = new CreatePollEvent(poll.toPollDetails());
+        PollCreatedEvent pollCreatedEvent = pollService.createPoll(createPollEvent);
+        if(pollCreatedEvent.getPollId() == null){
+            return new ResponseEntity<Poll>(HttpStatus.BAD_REQUEST);
+        }
+        else{
+            Poll result = Poll.fromPollDetails(pollCreatedEvent.getPollDetails());
+            if (LOG.isDebugEnabled()) LOG.debug("poll"+result.toString());
+            return new ResponseEntity<Poll>(result, HttpStatus.OK);
+        }
+    }
+
 
 }
