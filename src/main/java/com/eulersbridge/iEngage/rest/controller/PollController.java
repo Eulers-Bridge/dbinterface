@@ -75,5 +75,13 @@ public class PollController {
         }
     }
 
-
+    //Delete
+    @RequestMapping(method = RequestMethod.DELETE, value = "/poll/{pollId}")
+    public @ResponseBody
+    ResponseEntity<Boolean> deletePoll(@PathVariable Long pollId){
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to delete poll. " + pollId);
+        PollDeletedEvent pollDeletedEvent = pollService.deletePoll(new DeletePollEvent(pollId));
+        Boolean isDeletionCompleted = Boolean.valueOf(pollDeletedEvent.isDeletionCompleted());
+        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    }
 }

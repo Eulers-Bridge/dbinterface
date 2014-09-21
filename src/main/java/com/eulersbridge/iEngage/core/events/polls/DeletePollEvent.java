@@ -7,4 +7,13 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
  */
 
 public class DeletePollEvent extends DeleteEvent{
+    private final Long pollId;
+
+    public DeletePollEvent(Long pollId) {
+        this.pollId = pollId;
+    }
+
+    public Long getPollId() {
+        return pollId;
+    }
 }
