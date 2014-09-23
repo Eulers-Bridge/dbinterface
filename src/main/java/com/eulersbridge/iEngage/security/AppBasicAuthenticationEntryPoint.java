@@ -33,7 +33,7 @@ public class AppBasicAuthenticationEntryPoint extends
 	@Override
 	public void afterPropertiesSet() throws Exception
 	{
-		setRealmName("Isegoria");
+		setRealmName(SecurityConstants.REALM_NAME);
 		super.afterPropertiesSet();
 	}
 
