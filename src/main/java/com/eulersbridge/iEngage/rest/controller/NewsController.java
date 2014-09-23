@@ -181,7 +181,7 @@ public class NewsController
 		else if (newsEvent.isEntityFound())
 			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.GONE);
 		else
-			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.FAILED_DEPENDENCY);
+			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
 		return response;
 	}
     
