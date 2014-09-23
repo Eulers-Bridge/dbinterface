@@ -9,4 +9,5 @@ public class SecurityConstants
 	
 	public static final String REALM_NAME = "isegoria";
 	public static final String DIGEST_KEY = "eulersBridge";
+	public static final int NonceValiditySeconds = 60;
 }
