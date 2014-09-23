@@ -63,5 +63,6 @@ public class NewsArticleDeletedEventTest {
         NewsArticleDeletedEvent newsArticleDeletedEvent1 = NewsArticleDeletedEvent.notFound(newsArticleId);
         assertNotNull("NewsArticleDeletedEvent is null", newsArticleDeletedEvent1);
         assertFalse("entityFound is not false", newsArticleDeletedEvent1.isEntityFound());
+        assertFalse("deletion completed is true",newsArticleDeletedEvent1.isDeletionCompleted());
     }
 }
