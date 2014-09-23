@@ -28,7 +28,10 @@ public class DatabaseDataFixture
 		Long nodeId=(long)2;
 		boolean verified=false;
 		Institution inst=populateInstUniMelb();
-		String roles=SecurityConstants.USER_ROLE+','+SecurityConstants.ADMIN_ROLE;
+		String roles=SecurityConstants.USER_ROLE+','
+					+SecurityConstants.ADMIN_ROLE+','
+					+SecurityConstants.CONTENT_MANAGER_ROLE+','
+					+SecurityConstants.RETURNING_OFFICER_ROLE;
 		return populateUser("greg.newitt@unimelb.edu.au", "Greg", "Newitt", "Male", "Australian", "1971", "password", nodeId, verified, inst, roles);
 	}
 	public static User populateUser(String email, String firstName, String lastName, String gender, String nationality, String yearOfBirth, String password, Long id, boolean verified, Institution inst, String roles)

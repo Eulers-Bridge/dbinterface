@@ -227,7 +227,7 @@ public class UserEventHandlerTest
 	}
 	
 	@Test
-	public void shouldAuthenticateUserAndAdminRole()
+	public void shouldAuthenticateUserAdminContentManagerReturningOfficerRole()
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt2();
 		user.setAccountVerified(true);
@@ -240,6 +240,8 @@ public class UserEventHandlerTest
 		Iterator<GrantedAuthority> iter=auths.iterator();
 		String userRole=null;
 		String adminRole=null;
+		String retOfficerRole=null;
+		String contentMgrRole=null;
 		while (iter.hasNext())
 		{
 			GrantedAuthority auth=iter.next();
@@ -248,10 +250,16 @@ public class UserEventHandlerTest
 				userRole=SecurityConstants.USER_ROLE;
 			if (authority.equals(SecurityConstants.ADMIN_ROLE))
 				adminRole=SecurityConstants.ADMIN_ROLE;
+			if (authority.equals(SecurityConstants.CONTENT_MANAGER_ROLE))
+				contentMgrRole=SecurityConstants.CONTENT_MANAGER_ROLE;
+			if (authority.equals(SecurityConstants.RETURNING_OFFICER_ROLE))
+				retOfficerRole=SecurityConstants.RETURNING_OFFICER_ROLE;
 			LOG.debug("authority - "+authority);
 		}
 		assertEquals("A role should be USER",userRole,SecurityConstants.USER_ROLE);
 		assertEquals("A role should be ADMIN",adminRole,SecurityConstants.ADMIN_ROLE);
+		assertEquals("A role should be CONTENT_MANAGER",contentMgrRole,SecurityConstants.CONTENT_MANAGER_ROLE);
+		assertEquals("A role should be RETURNING_OFFICER",retOfficerRole,SecurityConstants.RETURNING_OFFICER_ROLE);
 	}
 	
 	
