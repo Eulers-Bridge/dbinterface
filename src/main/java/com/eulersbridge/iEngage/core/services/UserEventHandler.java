@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -38,7 +41,7 @@ import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
-public class UserEventHandler implements UserService 
+public class UserEventHandler implements UserService,UserDetailsService
 {
 
     private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
@@ -330,5 +333,23 @@ public class UserEventHandler implements UserService
 			evt=PersonalityAddedEvent.userNotFound();
 		}
 		return evt;
+	}
+
+	@Override
+	public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(
+			String username) throws UsernameNotFoundException 
+	{
+		User user=userRepository.findByEmail(username);
+		if (user!=null)
+		{
+			org.springframework.security.core.userdetails.UserDetails 
+				dets=new org.springframework.security.core.userdetails.User
+					(username, user.getPassword(), true, true, true, true, authsFromString(user.getRoles()));
+			return dets;
+		}
+		else
+		{
+			throw new UsernameNotFoundException(username+" not found.");
+		}
 	}
 }
