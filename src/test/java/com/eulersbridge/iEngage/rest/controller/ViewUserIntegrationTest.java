@@ -112,7 +112,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldAddPersonalityToUserCorrectly() throws Exception
+	public void putShouldAddPersonalityToUserCorrectly() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
 		PersonalityDetails dets=new PersonalityDetails(3L,4.0F,3.0F,2.0F,4.0F,5.0F);
@@ -133,7 +133,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserNotFound() throws Exception
+	public void putShouldReturnUserNotFound() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
 		PersonalityDetails dets=new PersonalityDetails(3L,4.0F,3.0F,2.0F,4.0F,5.0F);
@@ -147,7 +147,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserBadRequest() throws Exception
+	public void putShouldReturnUserBadRequest() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
 		PersonalityDetails dets=new PersonalityDetails(3L,4.0F,3.0F,2.0F,4.0F,5.0F);
@@ -159,7 +159,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserBadRequest2() throws Exception
+	public void putShouldReturnUserBadRequest2() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
 		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(null);
@@ -169,7 +169,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserCorrectlyFromRead() throws Exception
+	public void getShouldReturnUserCorrectlyFromRead() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		ReadUserEvent testData=RestDataFixture.customEmailUser2(email);
@@ -191,7 +191,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserNotFoundFromRead() throws Exception
+	public void getShouldReturnUserNotFoundFromRead() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(ReadUserEvent.notFound(email2));
@@ -201,7 +201,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserCorrectlyFromPut() throws Exception
+	public void putShouldReturnUserCorrectly() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdate()");
 		ReadUserEvent readData=RestDataFixture.customEmailUser2(email);
@@ -227,7 +227,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnInstitutionNotFoundFromPut() throws Exception
+	public void putShouldReturnInstitutionNotFound() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdate()");
 		UserDetails dets=RestDataFixture.customEmailUser(email);
@@ -240,7 +240,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserCorrectlyFromPost() throws Exception
+	public void postShouldReturnUserCorrectly() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreate()");
 		UserCreatedEvent testData=RestEventFixtures.populateUserCreatedEvent();
@@ -266,7 +266,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnBadRequestFromPostNoContent() throws Exception
+	public void postShouldReturnBadRequestNoContent() throws Exception
 	{	// Empty content.
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadRequest()");
 		UserCreatedEvent testData=UserCreatedEvent.userNotUnique(email);
@@ -277,7 +277,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnBadRequestFromPost() throws Exception
+	public void postShouldReturnBadRequest() throws Exception
 	{	// Empty content.
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadRequest()");
 		UserCreatedEvent testData=RestEventFixtures.populateUserCreatedEvent();
@@ -289,7 +289,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserNotUniqueFromPost() throws Exception
+	public void postShouldReturnUserNotUnique() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateUserNotUnique()");
 		UserCreatedEvent testData=UserCreatedEvent.userNotUnique(email);
@@ -301,7 +301,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserCorrectlyFromDelete() throws Exception
+	public void deleteShouldReturnUserCorrectly() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDelete()");
 		ReadUserEvent readData=RestDataFixture.customEmailUser2(email);
@@ -324,7 +324,7 @@ public class ViewUserIntegrationTest
 	}
 	
 	@Test
-	public void shouldReturnUserNotFoundFromDelete() throws Exception
+	public void deleteShouldReturnUserNotFound() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDelete()");
 		when (userService.deleteUser(any(DeleteUserEvent.class))).thenReturn(UserDeletedEvent.notFound(email2));
