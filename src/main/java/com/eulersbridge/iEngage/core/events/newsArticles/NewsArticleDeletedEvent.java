@@ -34,6 +34,7 @@ public class NewsArticleDeletedEvent extends DeletedEvent
 	  {
 		  NewsArticleDeletedEvent ev = new NewsArticleDeletedEvent(id);
 		  ev.entityFound=false;
+		  ev.deletionCompleted=false;
 		  return ev;
 	  }
 }
