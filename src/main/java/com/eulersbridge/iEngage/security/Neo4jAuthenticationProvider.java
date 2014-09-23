@@ -22,16 +22,16 @@ import com.eulersbridge.iEngage.core.services.UserService;
  *
  */
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider 
+public class Neo4jAuthenticationProvider implements AuthenticationProvider 
 {
 	UserService userService;
 	
-    private static Logger LOG = LoggerFactory.getLogger(CustomAuthenticationProvider.class);
-	CustomAuthenticationProvider()
+    private static Logger LOG = LoggerFactory.getLogger(Neo4jAuthenticationProvider.class);
+	Neo4jAuthenticationProvider()
 	{
 		super();
 	}
-	public CustomAuthenticationProvider(UserService userService)
+	public Neo4jAuthenticationProvider(UserService userService)
 	{
 		super();
 		this.userService=userService;
