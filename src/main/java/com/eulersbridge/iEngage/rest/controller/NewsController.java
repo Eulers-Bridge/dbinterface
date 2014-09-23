@@ -182,7 +182,6 @@ public class NewsController
 			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.GONE);
 		else
 			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.FAILED_DEPENDENCY);
-//		NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.isDeletionCompleted());
 		return response;
 	}
     
