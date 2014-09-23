@@ -15,13 +15,21 @@
   </encoder>
 </appender>
 
+<appender name="FILE2" class="ch.qos.logback.core.FileAppender">
+  <file>BigTrace.log</file>
+  <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+    <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+  </encoder>
+</appender>
+
   <logger name="com.eulersbridge.iEngage" level="DEBUG">
 	<appender-ref ref="FILE" />
   </logger>
    
  
-  <root level="warn">
+  <root level="WARN">
     <appender-ref ref="STDOUT" />
+	<!-- appender-ref ref="FILE2" /-->
   </root>
 </configuration>
 
