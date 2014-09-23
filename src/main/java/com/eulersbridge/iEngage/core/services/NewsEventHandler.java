@@ -2,7 +2,6 @@ package com.eulersbridge.iEngage.core.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,6 @@ import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
@@ -125,10 +123,18 @@ public class NewsEventHandler implements NewsService
 			DeleteNewsArticleEvent deleteNewsArticleEvent) 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Entered deleteNewsArticle newsarticleEvent = "+deleteNewsArticleEvent);
+		NewsArticleDeletedEvent nade;
 		Long newsArticleId=deleteNewsArticleEvent.getNewsArticleId();
 	    if (LOG.isDebugEnabled()) LOG.debug("deleteNewsArticle("+newsArticleId+")");
-    	newsRepo.delete(newsArticleId);
-		NewsArticleDeletedEvent nade=new NewsArticleDeletedEvent(newsArticleId);
+	    if (newsRepo.exists(newsArticleId))
+	    {
+	    	newsRepo.delete(newsArticleId);
+			nade=new NewsArticleDeletedEvent(newsArticleId);
+	    }
+	    else
+	    {
+			nade=NewsArticleDeletedEvent.notFound(newsArticleId);
+	    }
 		return nade;
 	}
 
