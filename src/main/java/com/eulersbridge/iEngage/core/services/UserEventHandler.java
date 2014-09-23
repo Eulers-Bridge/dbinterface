@@ -3,7 +3,6 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.eulersbridge.iEngage.core.events.users.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
