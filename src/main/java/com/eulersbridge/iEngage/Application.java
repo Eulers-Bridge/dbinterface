@@ -18,7 +18,6 @@ import org.springframework.core.env.PropertyResolver;
 import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.support.MappingInfrastructureFactoryBean;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 
 import com.eulersbridge.iEngage.core.domain.Login;
@@ -28,7 +27,6 @@ import com.eulersbridge.iEngage.core.domain.Login;
 @ComponentScan
 @EnableNeo4jRepositories(basePackages={"com.eulersbridge.iEngage.database.repository"})
 @EnableAutoConfiguration
-@EnableGlobalMethodSecurity
 public class Application extends Neo4jConfiguration
 {
 	@Resource
