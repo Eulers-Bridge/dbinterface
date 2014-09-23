@@ -174,11 +174,16 @@ public class NewsController
 	public @ResponseBody ResponseEntity<Boolean> deleteNewsArticle(@PathVariable Long articleId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete news article. "+articleId);
-		
+		ResponseEntity<Boolean> response;
 		NewsArticleDeletedEvent newsEvent=newsService.deleteNewsArticle(new DeleteNewsArticleEvent(articleId));
-  	
+		if (newsEvent.isDeletionCompleted())
+			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.OK);
+		else if (newsEvent.isEntityFound())
+			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.GONE);
+		else
+			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.FAILED_DEPENDENCY);
 //		NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.isDeletionCompleted());
-		return new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.OK);
+		return response;
 	}
     
     
