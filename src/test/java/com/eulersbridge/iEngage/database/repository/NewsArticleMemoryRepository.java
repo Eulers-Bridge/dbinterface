@@ -135,9 +135,11 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 	 * @see org.springframework.data.repository.CrudRepository#exists(java.io.Serializable)
 	 */
 	@Override
-	public boolean exists(Long arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean exists(Long arg0) 
+	{
+		if (newsArticles.containsKey(arg0))
+			return true;
+		else return false;
 	}
 
 	/* (non-Javadoc)
