@@ -182,6 +182,16 @@ public class NewsEventHandlerTest
 		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
 		assertFalse("Entity was not deleted.",rane.isEntityFound());
 	}
+	
+	@Test
+	public void testDeleteNonExistentArticle()
+	{
+		Long articleId=(long) 27;
+		DeleteNewsArticleEvent deleteNewsArticleEvent=new DeleteNewsArticleEvent(articleId);
+		NewsArticleDeletedEvent nUDe = newsService.deleteNewsArticle(deleteNewsArticleEvent);
+		assertNotNull("Null event returned",nUDe);
+		assertFalse("",nUDe.isEntityFound());
+	}
 
 	@Test
 	public void testShouldReadNewsArticles()
