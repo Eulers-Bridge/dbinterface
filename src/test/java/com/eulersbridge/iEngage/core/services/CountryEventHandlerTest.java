@@ -84,6 +84,16 @@ public class CountryEventHandlerTest
 	}
 
 	@Test
+	public void testReadNonExistentCountryShouldReturnNotFound() 
+	{
+		ReadCountryEvent rnae=new ReadCountryEvent(new Long(19));
+		assertEquals("19 == 19",rnae.getId(),new Long(19));
+		CountryReadEvent rane=countryService.readCountry(rnae);
+		assertNotNull("Not yet implemented",rane);
+		assertFalse("Entity should not be found.",rane.isEntityFound());
+	}
+
+	@Test
 	public void testUpdateCountry() {
 		CountryDetails cDs;
 		cDs=new CountryDetails(new Long(1));
@@ -99,6 +109,16 @@ public class CountryEventHandlerTest
 		DeleteCountryEvent deleteCountryEvent=new DeleteCountryEvent(new Long(1));
 		CountryDeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
 		if (null==nUDe)	fail("Not yet implemented");
+	}
+
+	@Test
+	public void testDeleteNonExistentCountryShouldReturnNotFound() 
+	{
+		DeleteCountryEvent deleteCountryEvent=new DeleteCountryEvent(new Long(19));
+		CountryDeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
+		assertNotNull("Not yet implemented",nUDe);
+		assertFalse("Entity can't be found...",nUDe.isEntityFound());
+		assertFalse("Deletion has not completed!",nUDe.isDeletionCompleted());
 	}
 
 	@Test

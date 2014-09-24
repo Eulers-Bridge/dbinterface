@@ -125,6 +125,15 @@ public class InstitutionEventHandlerTest
 			fail("Not yet implemented");
 	}
 
+	@Test
+	public void testRequestReadNonExistentInstitutionShouldReturnNotFound() {
+		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(new Long(19));
+		assertEquals("19 == 19",rnae.getId(),new Long(19));
+		ReadInstitutionEvent rane=instService.requestReadInstitution(rnae);
+		assertNotNull("Not yet implemented",rane);
+		assertFalse("Non-existent entity should not be found.",rane.isEntityFound());
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.InstitutionEventHandler#updateInstitution(com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent)}.
 	 */
@@ -152,6 +161,19 @@ public class InstitutionEventHandlerTest
 		DeleteInstitutionEvent deleteInstitutionEvent=new DeleteInstitutionEvent(new Long(1));
 		InstitutionDeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
 		assertNotNull("Institution Deleted Event returned null.",nUDe);
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.InstitutionEventHandler#deleteInstitution(com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent)}.
+	 */
+	@Test
+	public void testDeleteNonExistentInstitutionShouldReturnNotFound() 
+	{
+		DeleteInstitutionEvent deleteInstitutionEvent=new DeleteInstitutionEvent(new Long(19));
+		InstitutionDeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
+		assertNotNull("Institution Deleted Event returned null.",nUDe);
+		assertFalse("Entity allegedly found!",nUDe.isEntityFound());
+		assertFalse("No entity, so deletetion could not have been completed.",nUDe.isDeletionCompleted());
 	}
 
 	/**
