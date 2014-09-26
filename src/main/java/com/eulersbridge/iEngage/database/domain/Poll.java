@@ -13,8 +13,8 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 @NodeEntity
 public class Poll {
     @GraphId private Long pollId;
-    private String title;
-    private Long electionStart;
+    private String question;
+    private String answers;
     private Long start;
     private Long duration;
 
@@ -26,8 +26,8 @@ public class Poll {
         if (LOG.isTraceEnabled()) LOG.trace("toPollDetails()");
         PollDetails pollDetails = new PollDetails();
         pollDetails.setPollId(this.getPollId());
-        pollDetails.setTitle(this.getTitle());
-        pollDetails.setElectionStart(this.getElectionStart());
+        pollDetails.setQuestion(this.getQuestion());
+        pollDetails.setAnswers(this.getAnswers());
         pollDetails.setStart(this.getStart());
         pollDetails.setDuration(this.getDuration());
         if (LOG.isTraceEnabled()) LOG.trace("pollDetails; "+ pollDetails);
@@ -38,8 +38,8 @@ public class Poll {
         if (LOG.isTraceEnabled()) LOG.trace("fromPollDetails()");
         Poll poll = new Poll();
         poll.setPollId(pollDetails.getPollId());
-        poll.setTitle(pollDetails.getTitle());
-        poll.setElectionStart(pollDetails.getElectionStart());
+        poll.setQuestion(pollDetails.getQuestion());
+        poll.setAnswers(pollDetails.getAnswers());
         poll.setStart(pollDetails.getStart());
         poll.setDuration(pollDetails.getDuration());
         if (LOG.isTraceEnabled()) LOG.trace("poll "+poll);
@@ -54,20 +54,20 @@ public class Poll {
         this.pollId = pollId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
-    public Long getElectionStart() {
-        return electionStart;
+    public String getAnswers() {
+        return answers;
     }
 
-    public void setElectionStart(Long electionStart) {
-        this.electionStart = electionStart;
+    public void setAnswers(String answers) {
+        this.answers = answers;
     }
 
     public Long getStart() {
@@ -91,10 +91,10 @@ public class Poll {
         StringBuffer buff=new StringBuffer("[ nodeId = ");
         String retValue;
         buff.append(getPollId());
-        buff.append(", title = ");
-        buff.append(getTitle());
-        buff.append(", electionStart = ");
-        buff.append(getElectionStart());
+        buff.append(", question = ");
+        buff.append(getQuestion());
+        buff.append(", answers = ");
+        buff.append(getAnswers());
         buff.append(", start = ");
         buff.append(getStart());
         buff.append(" , duration = ");

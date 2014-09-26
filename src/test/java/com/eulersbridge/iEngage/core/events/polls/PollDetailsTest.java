@@ -12,8 +12,8 @@ import static org.junit.Assert.*;
 
 public class PollDetailsTest {
     final Long pollId = new Long(0);
-    final String title = "a title";
-    final Long electionStart = new Long(4);
+    final String question = "Who was the best Prime Minister?";
+    final String answers = "John Howard, Gough Whitlam, John Curtin, Robert Menzies, Paul Keating, Bob Hawke";
     final Long start = new Long(1);
     final Long duration = new Long(2);
     PollDetails pollDetails;
@@ -23,8 +23,8 @@ public class PollDetailsTest {
         pollDetails = new PollDetails();
         assertNotNull("pollDetails is null", pollDetails);
         pollDetails.setPollId(pollId);
-        pollDetails.setTitle(title);
-        pollDetails.setElectionStart(electionStart);
+        pollDetails.setQuestion(question);
+        pollDetails.setAnswers(answers);
         pollDetails.setStart(start);
         pollDetails.setDuration(duration);
     }
@@ -48,26 +48,28 @@ public class PollDetailsTest {
 
     @Test
     public void testGetTitle() throws Exception {
-        assertEquals("title does not match", title, pollDetails.getTitle());
+        assertEquals("title does not match", question, pollDetails.getQuestion());
     }
 
     @Test
     public void testSetTitle() throws Exception {
         PollDetails pollDetails1 = new PollDetails();
-        pollDetails1.setTitle("new title");
-        assertEquals("title does not match", "new title", pollDetails1.getTitle());
+        String newQuestion="Who was the worst Prime Minister?";
+        pollDetails1.setQuestion(newQuestion);
+        assertEquals("title does not match", newQuestion, pollDetails1.getQuestion());
     }
 
     @Test
-    public void testGetElectionStart() throws Exception {
-        assertEquals("ElectionStart does not match", start, pollDetails.getElectionStart());
+    public void testGetAnswers() throws Exception {
+        assertEquals("ElectionStart does not match", answers, pollDetails.getAnswers());
     }
 
     @Test
-    public void testSetElectionStart() throws Exception {
+    public void testSetAnswers() throws Exception {
         PollDetails pollDetails1 = new PollDetails();
-        pollDetails1.setElectionStart(new Long(10));
-        assertEquals("ElectionStart does not match", start, pollDetails1.getElectionStart());
+        String newAnswers="Harold Holt, Billy Hughes, Robert Menzies, McEwen";
+        pollDetails1.setAnswers(newAnswers);
+        assertEquals("Answers do not match", newAnswers, pollDetails1.getAnswers());
     }
 
     @Test

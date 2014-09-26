@@ -12,8 +12,8 @@ import static org.junit.Assert.*;
 
 public class ReadPollEventTest {
     final Long pollId = new Long(0);
-    final String title = "a title";
-    final Long electionStart = new Long(4);
+    final String question = "a question";
+    final String answers = "some answers";
     final Long start = new Long(1);
     final Long duration = new Long(2);
     PollDetails pollDetails;
@@ -24,8 +24,8 @@ public class ReadPollEventTest {
     public void setUp() throws Exception {
         pollDetails = new PollDetails();
         pollDetails.setPollId(pollId);
-        pollDetails.setTitle(title);
-        pollDetails.setElectionStart(electionStart);
+        pollDetails.setQuestion(question);
+        pollDetails.setAnswers(answers);
         pollDetails.setStart(start);
         pollDetails.setDuration(duration);
 

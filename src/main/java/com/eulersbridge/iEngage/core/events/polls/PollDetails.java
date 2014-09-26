@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 public class PollDetails {
     private Long pollId;
-    private String title;
-    private Long electionStart;
+    private String question;
+    private String answers;
     private Long start;
     private Long duration;
 
@@ -26,20 +26,20 @@ public class PollDetails {
         this.pollId = pollId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
-    public Long getElectionStart() {
-        return electionStart;
+    public String getAnswers() {
+        return answers;
     }
 
-    public void setElectionStart(Long electionStart) {
-        this.electionStart = electionStart;
+    public void setAnswers(String answers) {
+        this.answers = answers;
     }
 
     public Long getStart() {
@@ -63,10 +63,10 @@ public class PollDetails {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
         buff.append(getPollId());
-        buff.append(", title = ");
-        buff.append(getTitle());
-        buff.append(", electionStart = ");
-        buff.append(getElectionStart());
+        buff.append(", question = ");
+        buff.append(getQuestion());
+        buff.append(", answers = ");
+        buff.append(getAnswers());
         buff.append(", start = ");
         buff.append(getStart());
         buff.append(", duration = ");

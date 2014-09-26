@@ -14,8 +14,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 public class Poll extends ResourceSupport{
     private Long pollId;
-    private String title;
-    private Long electionStart;
+    private String question;
+    private String answers;
     private Long start;
     private Long duration;
 
@@ -27,8 +27,8 @@ public class Poll extends ResourceSupport{
         String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 
         poll.setPollId(pollDetails.getPollId());
-        poll.setTitle(pollDetails.getTitle());
-        poll.setElectionStart(pollDetails.getElectionStart());
+        poll.setQuestion(pollDetails.getQuestion());
+        poll.setAnswers(pollDetails.getAnswers());
         poll.setStart(pollDetails.getStart());
         poll.setDuration(pollDetails.getDuration());
 
@@ -43,8 +43,8 @@ public class Poll extends ResourceSupport{
         PollDetails pollDetails = new PollDetails();
 //        BeanUtils.copyProperties(pollDetails, this);
         pollDetails.setPollId(this.getPollId());
-        pollDetails.setTitle(this.getTitle());
-        pollDetails.setElectionStart(this.getElectionStart());
+        pollDetails.setQuestion(this.getQuestion());
+        pollDetails.setAnswers(this.getAnswers());
         pollDetails.setStart(this.getStart());
         pollDetails.setDuration(this.getDuration());
         if (LOG.isTraceEnabled()) LOG.trace("pollDetails "+pollDetails);
@@ -59,20 +59,20 @@ public class Poll extends ResourceSupport{
         this.pollId = pollId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
-    public Long getElectionStart() {
-        return electionStart;
+    public String getAnswers() {
+        return answers;
     }
 
-    public void setElectionStart(Long electionStart) {
-        this.electionStart = electionStart;
+    public void setAnswers(String answers) {
+        this.answers = answers;
     }
 
     public Long getStart() {
