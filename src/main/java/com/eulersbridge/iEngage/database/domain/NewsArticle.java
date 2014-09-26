@@ -25,12 +25,12 @@ public class NewsArticle extends Likeable
 	private String title;
 	private String content;
 	private Iterable<String> picture;
-	@RelatedToVia(direction=Direction.BOTH, type="LIKES")
+	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
 	private Set<Like> likes;
 	@Indexed @NotNull private Long date;
-	@RelatedTo(type = "CREATED_BY", direction=Direction.BOTH) @Fetch
+	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction=Direction.BOTH) @Fetch
 	private User creator;
-	@RelatedTo(type = "HAS_NEWS", direction=Direction.BOTH) @Fetch
+	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH) @Fetch
 	private StudentYear studentYear;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);

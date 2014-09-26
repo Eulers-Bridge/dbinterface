@@ -29,16 +29,16 @@ public class User
 	private String gender;
 	private String nationality;
 	private String yearOfBirth;
-	@RelatedTo(type = "HAS_PERSONALITY", direction=Direction.OUTGOING)
+	@RelatedTo(type = DatabaseDomainConstants.HAS_PERSONALITY_LABEL, direction=Direction.OUTGOING)
 	private Personality personality;
 	private String password;
 	private String roles;
 	private boolean accountVerified=false;
-	@RelatedTo(type = "USER_OF", direction=Direction.OUTGOING)
+	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
 	@Fetch private Institution institution;
-	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH)
+	@RelatedTo(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction=Direction.BOTH)
 	private Iterable<VerificationToken> verificationToken;
-	@RelatedToVia(direction=Direction.BOTH, type="LIKES")
+	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
 	private Set<Like> likes;
 	
     private static Logger LOG = LoggerFactory.getLogger(User.class);

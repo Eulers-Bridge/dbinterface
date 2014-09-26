@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
 
-@RelationshipEntity(type="LIKES")
+@RelationshipEntity(type=DatabaseDomainConstants.LIKES_LABEL)
 public class Like 
 {
 	@GraphId private Long id;

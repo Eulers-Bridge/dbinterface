@@ -18,9 +18,9 @@ public class StudentYear
 	String year;
 	Long start;
 	Long end;
-	@RelatedTo(type = "HAS_STUDENT_YEAR", direction=Direction.BOTH) @Fetch
+	@RelatedTo(type = DatabaseDomainConstants.HAS_STUDENT_YEAR_LABEL, direction=Direction.BOTH) @Fetch
 	private	Institution  institution;
-	@RelatedTo(type = "HAS_NEWS", direction=Direction.BOTH)
+	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH)
 	private	Set<NewsArticle>  news;
 	
 	public static StudentYear fromDetails(StudentYearDetails newYear) 

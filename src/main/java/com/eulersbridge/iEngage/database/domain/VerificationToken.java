@@ -23,7 +23,7 @@ public class VerificationToken {
     private Long expiryDate;
     private String tokenType;
     private boolean verified=false;
-	@RelatedTo(type = "verifiedBy", direction=Direction.BOTH) @Fetch
+	@RelatedTo(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction=Direction.BOTH) @Fetch
 	private User user;
 
     private static Logger LOG = LoggerFactory.getLogger(VerificationToken.class);

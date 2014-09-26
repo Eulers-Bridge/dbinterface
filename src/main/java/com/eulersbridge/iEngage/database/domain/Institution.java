@@ -20,11 +20,11 @@ public class Institution
 	String name;
 	String campus;
 	String state;
-	@RelatedTo(type = "HAS_INSTITUTIONS", direction=Direction.BOTH) @Fetch
+	@RelatedTo(type = DatabaseDomainConstants.INSTITUTIONS_LABEL, direction=Direction.BOTH) @Fetch
 	private	Country  country; 
-	@RelatedTo(type = "STUDENT_OF", direction=Direction.OUTGOING)
+	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
 	Iterable<User> students;
-	@RelatedTo(type="HAS_STUDENT_YEAR", direction=Direction.OUTGOING)
+	@RelatedTo(type=DatabaseDomainConstants.HAS_STUDENT_YEAR_LABEL, direction=Direction.OUTGOING)
 	private Iterable<StudentYear> studentYears;
 	
     private static Logger LOG = LoggerFactory.getLogger(Institution.class);

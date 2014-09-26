@@ -20,7 +20,7 @@ public class Country
 {
 	@GraphId Long nodeId;
 	@NotNull @NotBlank @Email@Indexed(unique=true) private String countryName;
-	@RelatedTo(type = "HAS_INSTITUTIONS", direction=Direction.BOTH)
+	@RelatedTo(type = DatabaseDomainConstants.INSTITUTIONS_LABEL, direction=Direction.BOTH)
 	private
 	Iterable<Institution>  institutions; 
 
