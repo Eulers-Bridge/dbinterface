@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.core.events.countrys;
 
-import com.eulersbridge.iEngage.database.domain.Country;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

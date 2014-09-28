@@ -73,11 +73,15 @@ public class NewsController
     	UpdateNewsArticleEvent unae=new UpdateNewsArticleEvent(articleId,newsArticle.toNewsArticleDetails());
     	if (LOG.isDebugEnabled()) LOG.debug("Update na event - "+unae.getUNewsArticleDetails());
     	NewsArticleUpdatedEvent newsEvent=newsService.updateNewsArticle(unae);
-    	if ((null!=newsEvent)&&(LOG.isDebugEnabled()))
-    		LOG.debug("newsEvent - "+newsEvent);
-    	NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.getNewsArticleDetails());
-    	if (LOG.isDebugEnabled()) LOG.debug("restNews = "+restNews);
-      	return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
+    	if (null!=newsEvent)
+    	{	
+    		if (LOG.isDebugEnabled()) LOG.debug("newsEvent - "+newsEvent);
+			NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.getNewsArticleDetails());
+			if (LOG.isDebugEnabled()) LOG.debug("restNews = "+restNews);
+		  	return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
+    	}
+    	else
+    		return new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
     }
     
     /**

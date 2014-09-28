@@ -133,17 +133,26 @@ public class ElectionController {
 
     //Update
     @RequestMapping(method = RequestMethod.PUT, value = "/election/{electionId}")
-    public @ResponseBody ResponseEntity<Election> updateElection(@PathVariable Long electionId, @RequestBody Election election){
+    public @ResponseBody ResponseEntity<Election> updateElection(@PathVariable Long electionId, @RequestBody Election election)
+    {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update election. " + electionId);
         ElectionUpdatedEvent electionUpdatedEvent= electionService.updateElection(new UpdateElectionEvent(electionId, election.toElectionDetails()));
-        if ((null!=electionUpdatedEvent)&&(LOG.isDebugEnabled())) LOG.debug("electionUpdatedEvent - "+electionUpdatedEvent);
-        if(electionUpdatedEvent.isEntityFound()){
-            Election restElection = Election.fromElectionDetails(electionUpdatedEvent.getElectionDetails());
-            if (LOG.isDebugEnabled()) LOG.debug("restElection = "+restElection);
-            return new ResponseEntity<Election>(restElection, HttpStatus.OK);
+        if ((null!=electionUpdatedEvent))
+        {
+        	if (LOG.isDebugEnabled()) LOG.debug("electionUpdatedEvent - "+electionUpdatedEvent);
+        	if(electionUpdatedEvent.isEntityFound())
+        	{
+        		Election restElection = Election.fromElectionDetails(electionUpdatedEvent.getElectionDetails());
+        		if (LOG.isDebugEnabled()) LOG.debug("restElection = "+restElection);
+        		return new ResponseEntity<Election>(restElection, HttpStatus.OK);
+        	}
+            else
+            {
+                return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+            }
         }
         else{
-            return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
         }
     }
 }

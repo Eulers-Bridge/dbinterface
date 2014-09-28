@@ -116,7 +116,32 @@ public class VoteReminder {
 				+ ", election=" + election + ", date=" + date +
 				", location=" + location + ", timestamp=" + timestamp
 				+ "]";
-	}	
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (getNodeId()!=null)
+		{
+			result=getNodeId().hashCode();
+		}
+		else
+		{
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result
+				+ ((election == null) ? 0 : election.hashCode());
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
+		result = prime * result
+				+ ((timestamp == null) ? 0 : timestamp.hashCode());
+		result = prime * result + ((voter == null) ? 0 : voter.hashCode());
+		}
+		return result;
+	}
 
 	@Override
 	public boolean equals(Object other)
@@ -144,5 +169,4 @@ public class VoteReminder {
 		}
 		return false;
 	}
-
 }
