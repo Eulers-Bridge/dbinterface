@@ -64,14 +64,22 @@ public class EventController {
     ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody Event event){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update event. " + eventId);
         EventUpdatedEvent eventUpdatedEvent = eventService.updateEvent(new UpdateEventEvent(eventId, event.toEventDetails()));
-        if ((null != eventUpdatedEvent )&& (LOG.isDebugEnabled())) LOG.debug("eventUpdatedEvent - "+eventUpdatedEvent);
-        if(eventUpdatedEvent.isEntityFound()){
-            Event resultEvent = Event.fromEventDetails(eventUpdatedEvent.getEventDetails());
-            if (LOG.isDebugEnabled()) LOG.debug("resultEvent = "+resultEvent);
-            return new ResponseEntity<Event>(resultEvent, HttpStatus.OK);
+        if ((null != eventUpdatedEvent))
+        {
+            if (LOG.isDebugEnabled()) LOG.debug("eventUpdatedEvent - "+eventUpdatedEvent);
+            if(eventUpdatedEvent.isEntityFound())
+            {
+                Event resultEvent = Event.fromEventDetails(eventUpdatedEvent.getEventDetails());
+                if (LOG.isDebugEnabled()) LOG.debug("resultEvent = "+resultEvent);
+                return new ResponseEntity<Event>(resultEvent, HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+            }
         }
         else{
-            return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<Event>(HttpStatus.BAD_REQUEST);
         }
     }
 
