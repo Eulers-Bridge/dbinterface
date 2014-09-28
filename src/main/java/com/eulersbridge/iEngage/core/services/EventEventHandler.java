@@ -1,7 +1,9 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.core.events.polls.PollDeletedEvent;
 import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +63,17 @@ public class EventEventHandler implements EventService{
 
     @Override
     public EventDeletedEvent deleteEvent(DeleteEventEvent deleteEventEvent) {
-        return null;
+        if (LOG.isDebugEnabled()) LOG.debug("Entered deleteEventEvent= "+deleteEventEvent);
+        Long eventId = deleteEventEvent.getEventId();
+        if (LOG.isDebugEnabled()) LOG.debug("deleteEvent("+eventId+")");
+        Event event = eventRepository.findOne(eventId);
+        if(event == null){
+            return EventDeletedEvent.notFound(eventId);
+        }
+        else{
+            eventRepository.delete(eventId);
+            EventDeletedEvent eventDeletedEvent = new EventDeletedEvent(eventId);
+            return eventDeletedEvent;
+        }
     }
 }

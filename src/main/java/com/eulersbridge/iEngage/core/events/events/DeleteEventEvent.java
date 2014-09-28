@@ -7,4 +7,13 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
  */
 
 public class DeleteEventEvent extends DeleteEvent{
+    private final Long eventId;
+
+    public DeleteEventEvent(Long eventId) {
+        this.eventId = eventId;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
 }

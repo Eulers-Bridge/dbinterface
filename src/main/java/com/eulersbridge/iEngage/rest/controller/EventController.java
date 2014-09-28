@@ -76,6 +76,12 @@ public class EventController {
     }
 
     //Delete
-
-
+    @RequestMapping(method = RequestMethod.DELETE, value = "/event/{eventId}")
+    public @ResponseBody
+    ResponseEntity<Boolean> deleteEvent(@PathVariable Long eventId){
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to delete event. " + eventId);
+        EventDeletedEvent eventDeletedEvent = eventService.deleteEvent(new DeleteEventEvent(eventId));
+        Boolean isDeletionCompleted = Boolean.valueOf(eventDeletedEvent.isDeletionCompleted());
+        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    }
 }
