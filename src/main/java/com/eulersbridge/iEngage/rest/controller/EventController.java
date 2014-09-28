@@ -1,9 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
-import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
-import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
-import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
+import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.core.services.EventService;
 import com.eulersbridge.iEngage.rest.domain.Event;
 import org.slf4j.Logger;
@@ -62,6 +59,21 @@ public class EventController {
     }
 
     //Update
+    @RequestMapping(method = RequestMethod.PUT, value = "/event/{eventId}")
+    public @ResponseBody
+    ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody Event event){
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to update event. " + eventId);
+        EventUpdatedEvent eventUpdatedEvent = eventService.updateEvent(new UpdateEventEvent(eventId, event.toEventDetails()));
+        if ((null != eventUpdatedEvent )&& (LOG.isDebugEnabled())) LOG.debug("eventUpdatedEvent - "+eventUpdatedEvent);
+        if(eventUpdatedEvent.isEntityFound()){
+            Event resultEvent = Event.fromEventDetails(eventUpdatedEvent.getEventDetails());
+            if (LOG.isDebugEnabled()) LOG.debug("resultEvent = "+resultEvent);
+            return new ResponseEntity<Event>(resultEvent, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     //Delete
 

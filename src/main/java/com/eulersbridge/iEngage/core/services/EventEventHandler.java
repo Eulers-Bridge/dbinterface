@@ -43,7 +43,20 @@ public class EventEventHandler implements EventService{
 
     @Override
     public EventUpdatedEvent updateEvent(UpdateEventEvent updateEventEvent) {
-        return null;
+        EventDetails eventDetails = updateEventEvent.getEventDetails();
+        Event event = Event.fromEventDetails(eventDetails);
+        Long eventId = eventDetails.getEventId();
+        if(LOG.isDebugEnabled()) LOG.debug("event Id is " + eventId);
+        Event eventOld = eventRepository.findOne(eventId);
+        if(eventOld == null){
+            if(LOG.isDebugEnabled()) LOG.debug("event entity not found " + eventId);
+            return EventUpdatedEvent.notFound(eventId);
+        }
+        else{
+            Event result = eventRepository.save(event);
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getEventId());
+            return new EventUpdatedEvent(result.getEventId(), result.toEventDetails());
+        }
     }
 
     @Override
