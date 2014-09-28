@@ -268,7 +268,7 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 		while (iter.hasNext())
 		{
 			NewsArticle na=iter.next();
-			if (na.getStudentYear().getNodeId()==syId)
+			if (na.getStudentYear().getNodeId().equals(syId))
 			{
 				arts.add(na);
 			}
@@ -295,7 +295,7 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 		while (iter.hasNext())
 		{
 			NewsArticle na=iter.next();
-			if (na.getStudentYear().getNodeId()==syId)
+			if (na.getStudentYear().getNodeId().equals(syId))
 			{
 				arts.add(na);
 			}

@@ -276,7 +276,7 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 		while(iter.hasNext())
 		{
 			Institution inst=iter.next();
-			if (countryId==inst.getCountry().getNodeId())
+			if (countryId.equals(inst.getCountry().getNodeId()))
 				insts.add(inst);
 		}
 		ResultImpl<Institution> result=new ResultImpl<Institution>();
