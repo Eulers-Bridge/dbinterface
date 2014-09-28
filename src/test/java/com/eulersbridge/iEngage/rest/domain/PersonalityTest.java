@@ -5,8 +5,13 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.junit.Assert.*;
 
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
 
@@ -23,12 +28,20 @@ public class PersonalityTest
 	private float openess=4.1F;
 	private float conscientiousness=3.8F;
 	private float extroversion=2.5F;
+	
+	@Mock
+	private ServletRequestAttributes attrs;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() throws Exception 
+	{
+		MockitoAnnotations.initMocks(this);
+		MockHttpServletRequest request=new MockHttpServletRequest();
+		
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 	}
 
 	/**
@@ -141,13 +154,13 @@ public class PersonalityTest
 	{
 		Long nodeId=2L;
 		PersonalityDetails dets=new PersonalityDetails(nodeId, extroversion, agreeableness, conscientiousness, emotionalStability, openess);
-/*		Personality personality=Personality.fromPersonalityDetails(dets);
+		Personality personality=Personality.fromPersonalityDetails(dets);
 		assertEquals("",personality.getPersonalityId(),dets.getPersonalityId());
 		assertEquals("",personality.getExtroversion(),dets.getExtroversion(),0);
 		assertEquals("",personality.getAgreeableness(),dets.getAgreeableness(),0);
 		assertEquals("",personality.getConscientiousness(),dets.getConscientiousness(),0);
 		assertEquals("",personality.getEmotionalStability(),dets.getEmotionalStability(),0);
 		assertEquals("",personality.getOpeness(),dets.getOpeness(),0);
-*/	}
+	}
 
 }
