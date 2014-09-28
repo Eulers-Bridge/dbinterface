@@ -1,7 +1,6 @@
-package com.eulersbridge.iEngage.core.events.Elections;
+package com.eulersbridge.iEngage.core.events.elections;
 
 import com.eulersbridge.iEngage.core.events.DeleteEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 
 /**
  * @author Yikai Gong

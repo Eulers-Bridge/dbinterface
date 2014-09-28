@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import com.eulersbridge.iEngage.core.events.Elections.ElectionDetails;
+import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;

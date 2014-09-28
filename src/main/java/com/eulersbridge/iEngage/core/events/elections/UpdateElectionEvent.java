@@ -1,4 +1,4 @@
-package com.eulersbridge.iEngage.core.events.Elections;
+package com.eulersbridge.iEngage.core.events.elections;
 
 /**
  * @author Yikai Gong

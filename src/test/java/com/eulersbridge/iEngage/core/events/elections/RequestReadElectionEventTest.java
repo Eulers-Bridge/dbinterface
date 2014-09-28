@@ -1,4 +1,4 @@
-package com.eulersbridge.iEngage.core.events.Elections;
+package com.eulersbridge.iEngage.core.events.elections;
 
 import org.junit.After;
 import org.junit.Before;

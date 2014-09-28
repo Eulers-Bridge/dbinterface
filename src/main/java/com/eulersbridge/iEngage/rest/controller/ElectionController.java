@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import com.eulersbridge.iEngage.core.events.Elections.*;
+import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

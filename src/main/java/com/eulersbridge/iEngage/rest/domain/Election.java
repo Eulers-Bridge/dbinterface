@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.rest.domain;
 
-import com.eulersbridge.iEngage.core.events.Elections.ElectionDetails;
+import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.rest.controller.ElectionController;
 import org.springframework.hateoas.ResourceSupport;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
