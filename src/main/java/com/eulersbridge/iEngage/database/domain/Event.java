@@ -49,6 +49,7 @@ public class Event {
     {
         StringBuffer buff=new StringBuffer("[ nodeId = ");
         String retValue;
+        buff.append(getEventId());
         //TODO add other properties
         buff.append(" ]");
         retValue=buff.toString();

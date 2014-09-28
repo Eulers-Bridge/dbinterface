@@ -28,6 +28,7 @@ public class EventDetails {
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
         return retValue;
     }
+
     @Override
     public boolean equals(Object other){
         if (null == other) return false;
