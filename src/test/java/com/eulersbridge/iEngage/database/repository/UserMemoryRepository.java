@@ -188,7 +188,7 @@ public User findByEmail(String email)
 	while (iter.hasNext())
 	{
 		User user=iter.next();
-		if (user.getEmail()==email)
+		if (user.getEmail().equals(email))
 		{
 			return user;
 		}
