@@ -85,20 +85,26 @@ public class UserController {
     		@RequestBody User user) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit user. "+user.getEmail());
+    	ResponseEntity<User> result;
     	
     	UserUpdatedEvent userEvent=userService.updateUser(new UpdateUserEvent(email,user.toUserDetails()));
-    	if ((null!=userEvent)&&(LOG.isDebugEnabled()))
-    		LOG.debug("userEvent - "+userEvent);
-    	if (!userEvent.isInstituteFound())
+    	if (null!=userEvent)
     	{
-    		return new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
+   			if(LOG.isDebugEnabled()) LOG.debug("userEvent - "+userEvent);
+	    	if (!userEvent.isInstituteFound())
+	    	{
+	    		result=new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
+	    	}
+	    	else
+	    	{
+		    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
+		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restUser);
+		    	result=new ResponseEntity<User>(restUser,HttpStatus.OK);
+	    	}
     	}
     	else
-    	{
-    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
-    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restUser);
-      	return new ResponseEntity<User>(restUser,HttpStatus.OK);
-    	}
+          	result=new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+    	return result;
     }
     
     /**
@@ -277,11 +283,11 @@ public class UserController {
     		else
     		{ 
     			User resultUser = User.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
-    			if(verfError == UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists.toString())
-    			return new ResponseEntity<User>(resultUser,HttpStatus.BAD_REQUEST);
-    		else if(verfError == UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed.toString()
-    				|| verfError == UserAccountVerifiedEvent.VerificationErrorType.tokenExpired.toString()
-    				|| verfError == UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch.toString())
+    			if(verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists.toString()))
+    				return new ResponseEntity<User>(resultUser,HttpStatus.BAD_REQUEST);
+    		else if(verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed.toString())
+    				|| verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired.toString())
+    				|| verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch.toString()))
     			return new ResponseEntity<User>(resultUser,HttpStatus.FAILED_DEPENDENCY);
     		else
     			return new ResponseEntity<User>(resultUser,HttpStatus.BAD_REQUEST);

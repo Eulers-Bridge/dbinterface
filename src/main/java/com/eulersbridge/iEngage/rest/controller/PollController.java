@@ -64,15 +64,22 @@ public class PollController {
     ResponseEntity<Poll> updatePoll(@PathVariable Long pollId, @RequestBody Poll poll){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update poll. " + pollId);
         PollUpdatedEvent pollUpdatedEvent = pollService.updatePoll(new UpdatePollEvent(pollId, poll.toPollDetails()));
-        if ((null != pollUpdatedEvent )&& (LOG.isDebugEnabled())) LOG.debug("pollUpdatedEvent - "+pollUpdatedEvent);
-        if(pollUpdatedEvent.isEntityFound()){
-            Poll resultPoll = Poll.fromPollDetails(pollUpdatedEvent.getPollDetails());
-            if (LOG.isDebugEnabled()) LOG.debug("resultPoll = "+resultPoll);
-            return new ResponseEntity<Poll>(resultPoll, HttpStatus.OK);
+        if (null != pollUpdatedEvent )
+        {
+       		if (LOG.isDebugEnabled()) LOG.debug("pollUpdatedEvent - "+pollUpdatedEvent);
+        	if(pollUpdatedEvent.isEntityFound())
+        	{
+	            Poll resultPoll = Poll.fromPollDetails(pollUpdatedEvent.getPollDetails());
+	            if (LOG.isDebugEnabled()) LOG.debug("resultPoll = "+resultPoll);
+	            return new ResponseEntity<Poll>(resultPoll, HttpStatus.OK);
+        	}
+        	else
+        	{
+        		return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
+        	}
         }
-        else{
-            return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
-        }
+        else
+    		return new ResponseEntity<Poll>(HttpStatus.BAD_REQUEST);
     }
 
     //Delete
