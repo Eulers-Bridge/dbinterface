@@ -51,7 +51,7 @@ public class User
 	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String password)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+givenName+','+familyName+','+gender+','+
-														  nationality+','+yearOfBirth+','+personality+')');
+														  nationality+','+yearOfBirth+')');
 		this.email=email;
 		this.givenName=givenName;
 		this.familyName=familyName;
