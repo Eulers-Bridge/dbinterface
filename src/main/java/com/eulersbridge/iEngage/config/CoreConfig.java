@@ -35,7 +35,9 @@ public class CoreConfig
     PollRepository pollRepository;
     @Autowired
     EventRepository eventRepository;
-	
+    @Autowired
+    ForumQuestionRepository forumQuestionRepository;
+
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
 	public CoreConfig()
@@ -92,6 +94,7 @@ public class CoreConfig
         if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
         return new PollEventHandler(pollRepository);
     }
+
     @Bean
     public EventService createEventService()
     {
@@ -99,4 +102,10 @@ public class CoreConfig
         return new EventEventHandler(eventRepository);
     }
 
+    @Bean
+    public ForumQuestionService createForumQuestionService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createForumQuestionService()");
+        return new ForumQuestionEventHandler(forumQuestionRepository);
+    }
 }
