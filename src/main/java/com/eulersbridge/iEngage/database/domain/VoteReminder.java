@@ -15,8 +15,7 @@ public class VoteReminder {
 	@GraphId private Long nodeId;
 	@StartNode private User voter;
 	@EndNode private Election election;
-	private String date;
-	private String time;
+	private Long date;
 	private String location;
 	private Long timestamp;
 	
@@ -27,11 +26,10 @@ public class VoteReminder {
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 
-	public VoteReminder(String date,String time,String location)
+	public VoteReminder(Long date,String location)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+date+','+time+','+location+')');
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+date+','+location+')');
 		this.date=date;
-		this.time=time;
 		this.location=location;
 		timestamp=Calendar.getInstance().getTimeInMillis();
 	}
@@ -41,30 +39,17 @@ public class VoteReminder {
 		return nodeId;
 	}
 	
-	public String getDate()
+	public Long getDate()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getYear() = "+date);
+		if (LOG.isDebugEnabled()) LOG.debug("getDate() = "+date);
 		return date;
 	}
 
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(String date) {
+	public void setDate(Long date) {
 		this.date = date;
-	}
-
-	public String getTime()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("getStart() = "+time);
-		return time;
-	}
-	
-	/**
-	 * @param time the time to set
-	 */
-	public void setTime(String time) {
-		this.time = time;
 	}
 
 	public String getLocation()
@@ -128,8 +113,8 @@ public class VoteReminder {
 	@Override
 	public String toString() {
 		return "VoteReminder [nodeId=" + nodeId + ", voter=" + voter
-				+ ", election=" + election + ", date=" + date + ", time="
-				+ time + ", location=" + location + ", timestamp=" + timestamp
+				+ ", election=" + election + ", date=" + date +
+				", location=" + location + ", timestamp=" + timestamp
 				+ "]";
 	}	
 
@@ -150,7 +135,6 @@ public class VoteReminder {
 			if (null==answer2.getNodeId())
 			{
 				if ((this.getDate().equals(answer2.getDate()))&&
-					(this.getTime().equals(answer2.getTime()))&&
 					(this.getTimestamp().equals(answer2.getTimestamp()))&&
 					(this.getVoter().equals(answer2.getVoter()))&&
 					(this.getElection().equals(answer2.getElection()))&&
