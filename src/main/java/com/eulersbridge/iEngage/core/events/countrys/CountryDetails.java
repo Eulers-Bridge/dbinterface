@@ -40,7 +40,27 @@ public class CountryDetails
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
 	}
-	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (null==getCountryId())
+		{
+			result = prime * result
+					+ ((countryName == null) ? 0 : countryName.hashCode());
+		}
+		else
+		{
+			result=prime * result + countryId.hashCode();
+		}
+		return result;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object other)
 	{
@@ -52,6 +72,11 @@ public class CountryDetails
 		{
 			if (dets2.getCountryId().equals(getCountryId()))
 				return true;
+		}
+		else
+		{
+			if ((null==getCountryId())&&(getCountryName().equals(dets2.getCountryName())))
+					return true;
 		}
 		return false;
 	}
