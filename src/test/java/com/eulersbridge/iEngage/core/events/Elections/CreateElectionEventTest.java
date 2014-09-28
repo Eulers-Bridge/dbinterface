@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.core.events.Elections;
 
-import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
