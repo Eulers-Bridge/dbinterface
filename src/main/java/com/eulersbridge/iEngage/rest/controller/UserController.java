@@ -272,7 +272,7 @@ public class UserController {
     	{
     		String verfError = userAccountVerifiedEvent.getVerificationError();
     		
-    		if(verfError == UserAccountVerifiedEvent.VerificationErrorType.userNotFound.toString())
+    		if(verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.userNotFound.toString()))
     			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
     		else
     		{ 
