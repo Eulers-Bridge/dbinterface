@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
+import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
+import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.services.EventService;
 import com.eulersbridge.iEngage.rest.domain.Event;
 import org.slf4j.Logger;
@@ -29,7 +31,7 @@ public class EventController {
     //Create
     @RequestMapping(method = RequestMethod.POST, value = "/event")
     public @ResponseBody
-    ResponseEntity<Event> createPoll(@RequestBody Event event){
+    ResponseEntity<Event> createEvent(@RequestBody Event event){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create event "+event);
         CreateEventEvent createEventEvent = new CreateEventEvent(event.toEventDetails());
         EventCreatedEvent eventCreatedEvent = eventService.createEvent(createEventEvent);
@@ -43,7 +45,21 @@ public class EventController {
         }
     }
 
-    //Read
+    //Get
+    @RequestMapping(method = RequestMethod.GET, value = "/event/{eventId}")
+    public @ResponseBody
+    ResponseEntity<Event> findEvent(@PathVariable Long eventId){
+        if (LOG.isInfoEnabled()) LOG.info(eventId+" attempting to get event. ");
+        RequestReadEventEvent requestReadEventEvent = new RequestReadEventEvent(eventId);
+        ReadEventEvent readEventEvent = eventService.requestReadEvent(requestReadEventEvent);
+        if(readEventEvent.isEntityFound()){
+            Event event = Event.fromEventDetails(readEventEvent.getEventDetails());
+            return new ResponseEntity<Event>(event, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     //Update
 

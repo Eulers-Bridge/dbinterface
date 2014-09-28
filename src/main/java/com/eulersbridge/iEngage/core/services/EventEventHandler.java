@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,24 @@ public class EventEventHandler implements EventService{
 
     @Override
     public EventCreatedEvent createEvent(CreateEventEvent createEventEvent) {
-        return null;
+        EventDetails eventDetails = createEventEvent.getEventDetails();
+        Event event = Event.fromEventDetails(eventDetails);
+        Event result = eventRepository.save(event);
+        EventCreatedEvent eventCreatedEvent = new EventCreatedEvent(result.getEventId(), result.toEventDetails());
+        return eventCreatedEvent;
     }
 
     @Override
     public ReadEventEvent requestReadEvent(RequestReadEventEvent requestReadEventEvent) {
-        return null;
+        Event event = eventRepository.findOne(requestReadEventEvent.getEventId());
+        ReadEventEvent readEventEvent;
+        if(event != null){
+            readEventEvent = new ReadEventEvent(requestReadEventEvent.getEventId(), event.toEventDetails());
+        }
+        else{
+            readEventEvent = ReadEventEvent.notFound(requestReadEventEvent.getEventId());
+        }
+        return readEventEvent;
     }
 
     @Override
