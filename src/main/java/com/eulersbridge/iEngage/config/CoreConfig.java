@@ -33,6 +33,8 @@ public class CoreConfig
     PersonalityRepository personRepo;
     @Autowired
     PollRepository pollRepository;
+    @Autowired
+    EventRepository eventRepository;
 	
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -90,4 +92,11 @@ public class CoreConfig
         if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
         return new PollEventHandler(pollRepository);
     }
+    @Bean
+    public EventService createEventService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createEventService()");
+        return new EventEventHandler(eventRepository);
+    }
+
 }

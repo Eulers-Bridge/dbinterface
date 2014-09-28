@@ -4,11 +4,13 @@ import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.NodeEntity;
 
 /**
  * @author Yikai Gong
  */
 
+@NodeEntity
 public class ForumQuestion {
     @GraphId private Long forumQuestionId;
     //TODO Add other properties

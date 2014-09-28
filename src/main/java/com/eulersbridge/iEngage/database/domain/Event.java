@@ -12,8 +12,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 
 @NodeEntity
 public class Event {
-    @GraphId
-    private Long eventId;
+    @GraphId private Long eventId;
     //TODO Add properties
 
     private static Logger LOG = LoggerFactory.getLogger(Event.class);
