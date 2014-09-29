@@ -30,7 +30,15 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
 
     @Override
     public ReadForumQuestionEvent requestReadForumQuestion(RequestReadForumQuestionEvent requestReadForumQuestionEvent) {
-        return null;
+        ForumQuestion forumQuestion = forumQuestionRepository.findOne(requestReadForumQuestionEvent.getForumQuestionId());
+        ReadForumQuestionEvent readForumQuestionEvent;
+        if(forumQuestion != null){
+            readForumQuestionEvent = new ReadForumQuestionEvent(requestReadForumQuestionEvent.getForumQuestionId(), forumQuestion.toForumQuestionDetails());
+        }
+        else{
+            readForumQuestionEvent = ReadForumQuestionEvent.notFound(requestReadForumQuestionEvent.getForumQuestionId());
+        }
+        return readForumQuestionEvent;
     }
 
     @Override

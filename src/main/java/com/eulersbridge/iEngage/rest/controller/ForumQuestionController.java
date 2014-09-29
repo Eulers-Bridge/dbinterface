@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.forumQuestions.CreateForumQuestionEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionCreatedEvent;
+import com.eulersbridge.iEngage.core.events.forumQuestions.ReadForumQuestionEvent;
+import com.eulersbridge.iEngage.core.events.forumQuestions.RequestReadForumQuestionEvent;
 import com.eulersbridge.iEngage.core.services.ForumQuestionService;
 import com.eulersbridge.iEngage.rest.domain.ForumQuestion;
 import org.slf4j.Logger;
@@ -44,6 +46,20 @@ public class ForumQuestionController {
     }
 
     //Get
+    @RequestMapping(method = RequestMethod.GET, value = "/forum/{forumQuestionId}")
+    public @ResponseBody
+    ResponseEntity<ForumQuestion> findEvent(@PathVariable Long forumQuestionId){
+        if (LOG.isInfoEnabled()) LOG.info(forumQuestionId+" attempting to get forumQuestion. ");
+        RequestReadForumQuestionEvent requestReadForumQuestionEvent = new RequestReadForumQuestionEvent(forumQuestionId);
+        ReadForumQuestionEvent readForumQuestionEvent = forumQuestionService.requestReadForumQuestion(requestReadForumQuestionEvent);
+        if(readForumQuestionEvent.isEntityFound()){
+            ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails(readForumQuestionEvent.getForumQuestionDetails());
+            return new ResponseEntity<ForumQuestion>(forumQuestion, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<ForumQuestion>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     //Update
 
