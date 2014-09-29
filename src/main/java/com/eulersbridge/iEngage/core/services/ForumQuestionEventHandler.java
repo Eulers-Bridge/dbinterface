@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
+import com.eulersbridge.iEngage.database.domain.ForumQuestion;
 import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,11 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
 
     @Override
     public ForumQuestionCreatedEvent createForumQuestion(CreateForumQuestionEvent createForumQuestionEvent) {
-        return null;
+        ForumQuestionDetails forumQuestionDetails = createForumQuestionEvent.getForumQuestionDetails();
+        ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails(forumQuestionDetails);
+        ForumQuestion result = forumQuestionRepository.save(forumQuestion);
+        ForumQuestionCreatedEvent forumQuestionCreatedEvent = new ForumQuestionCreatedEvent(result.getForumQuestionId(), result.toForumQuestionDetails());
+        return forumQuestionCreatedEvent;
     }
 
     @Override
