@@ -7,4 +7,13 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
  */
 
 public class DeleteForumQuestionEvent extends DeleteEvent {
+    private final Long forumQuestionId;
+
+    public DeleteForumQuestionEvent(Long forumQuestionId) {
+        this.forumQuestionId = forumQuestionId;
+    }
+
+    public Long getForumQuestionId() {
+        return forumQuestionId;
+    }
 }

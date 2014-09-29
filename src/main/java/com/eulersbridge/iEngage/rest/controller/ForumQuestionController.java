@@ -84,5 +84,12 @@ public class ForumQuestionController {
     }
 
     //Delete
-
+    @RequestMapping(method = RequestMethod.DELETE, value = "/forum/{forumQuestionId}")
+    public @ResponseBody
+    ResponseEntity<Boolean> deleteForumQuestion(@PathVariable Long forumQuestionId){
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to delete forumQuestion. " + forumQuestionId);
+        ForumQuestionDeletedEvent forumQuestionDeletedEvent = forumQuestionService.deleteForumQuestion(new DeleteForumQuestionEvent(forumQuestionId));
+        Boolean isDeletionCompleted = Boolean.valueOf(forumQuestionDeletedEvent.isDeletionCompleted());
+        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    }
 }

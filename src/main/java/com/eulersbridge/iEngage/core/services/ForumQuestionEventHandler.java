@@ -61,6 +61,17 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
 
     @Override
     public ForumQuestionDeletedEvent deleteForumQuestion(DeleteForumQuestionEvent deleteForumQuestionEvent) {
-        return null;
+        if (LOG.isDebugEnabled()) LOG.debug("Entered deleteForumQuestionEvent= "+deleteForumQuestionEvent);
+        Long forumQuestionId = deleteForumQuestionEvent.getForumQuestionId();
+        if (LOG.isDebugEnabled()) LOG.debug("deleteForumQuestion("+forumQuestionId+")");
+        ForumQuestion forumQuestion = forumQuestionRepository.findOne(forumQuestionId);
+        if(forumQuestion == null){
+            return ForumQuestionDeletedEvent.notFound(forumQuestionId);
+        }
+        else{
+            forumQuestionRepository.delete(forumQuestionId);
+            ForumQuestionDeletedEvent forumQuestionDeletedEvent = new ForumQuestionDeletedEvent(forumQuestionId);
+            return forumQuestionDeletedEvent;
+        }
     }
 }
