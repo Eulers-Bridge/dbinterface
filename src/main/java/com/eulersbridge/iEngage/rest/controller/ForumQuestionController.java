@@ -1,9 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import com.eulersbridge.iEngage.core.events.forumQuestions.CreateForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ReadForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.RequestReadForumQuestionEvent;
+import com.eulersbridge.iEngage.core.events.forumQuestions.*;
 import com.eulersbridge.iEngage.core.services.ForumQuestionService;
 import com.eulersbridge.iEngage.rest.domain.ForumQuestion;
 import org.slf4j.Logger;
@@ -48,7 +45,7 @@ public class ForumQuestionController {
     //Get
     @RequestMapping(method = RequestMethod.GET, value = "/forum/{forumQuestionId}")
     public @ResponseBody
-    ResponseEntity<ForumQuestion> findEvent(@PathVariable Long forumQuestionId){
+    ResponseEntity<ForumQuestion> findForumQuestion(@PathVariable Long forumQuestionId){
         if (LOG.isInfoEnabled()) LOG.info(forumQuestionId+" attempting to get forumQuestion. ");
         RequestReadForumQuestionEvent requestReadForumQuestionEvent = new RequestReadForumQuestionEvent(forumQuestionId);
         ReadForumQuestionEvent readForumQuestionEvent = forumQuestionService.requestReadForumQuestion(requestReadForumQuestionEvent);
@@ -62,6 +59,29 @@ public class ForumQuestionController {
     }
 
     //Update
+    @RequestMapping(method = RequestMethod.PUT, value = "/forum/{forumQuestionId}")
+    public @ResponseBody
+    ResponseEntity<ForumQuestion> updateForumQuestion(@PathVariable Long forumQuestionId, @RequestBody ForumQuestion forumQuestion){
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to update forumQuestion. " + forumQuestionId);
+        ForumQuestionUpdatedEvent forumQuestionUpdatedEvent = forumQuestionService.updateForumQuestion(new UpdateForumQuestionEvent(forumQuestionId, forumQuestion.toForumQuestionDetails()));
+        if ((null != forumQuestionUpdatedEvent))
+        {
+            if (LOG.isDebugEnabled()) LOG.debug("forumQuestionUpdatedEvent - "+forumQuestionUpdatedEvent);
+            if(forumQuestionUpdatedEvent.isEntityFound())
+            {
+                ForumQuestion result = ForumQuestion.fromForumQuestionDetails(forumQuestionUpdatedEvent.getForumQuestionDetails());
+                if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
+                return new ResponseEntity<ForumQuestion>(result, HttpStatus.OK);
+            }
+            else
+            {
+                return new ResponseEntity<ForumQuestion>(HttpStatus.NOT_FOUND);
+            }
+        }
+        else{
+            return new ResponseEntity<ForumQuestion>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     //Delete
 

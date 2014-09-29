@@ -43,7 +43,20 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
 
     @Override
     public ForumQuestionUpdatedEvent updateForumQuestion(UpdateForumQuestionEvent updateForumQuestionEvent) {
-        return null;
+        ForumQuestionDetails forumQuestionDetails = updateForumQuestionEvent.getForumQuestionDetails();
+        ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails(forumQuestionDetails);
+        Long forumQuestionId = forumQuestionDetails.getForumQuestionId();
+        if(LOG.isDebugEnabled()) LOG.debug("forumQuestionId is " + forumQuestionId);
+        ForumQuestion forumQuestionOld = forumQuestionRepository.findOne(forumQuestionId);
+        if(forumQuestionOld == null){
+            if(LOG.isDebugEnabled()) LOG.debug("forumQuestion entity not found " + forumQuestionId);
+            return ForumQuestionUpdatedEvent.notFound(forumQuestionId);
+        }
+        else{
+            ForumQuestion result = forumQuestionRepository.save(forumQuestion);
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getForumQuestionId());
+            return new ForumQuestionUpdatedEvent(result.getForumQuestionId(), result.toForumQuestionDetails());
+        }
     }
 
     @Override
