@@ -202,6 +202,7 @@ public class NewsArticle extends ResourceSupport
 	
 	public static Iterator<NewsArticle> toArticlesIterator(Iterator<NewsArticleDetails> iter)
 	{
+		if (null==iter) return null;
 		ArrayList <NewsArticle> articles=new ArrayList<NewsArticle>();
 		while(iter.hasNext())
 		{
