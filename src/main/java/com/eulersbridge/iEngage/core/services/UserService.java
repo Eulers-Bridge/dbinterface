@@ -4,6 +4,7 @@ import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
+import com.eulersbridge.iEngage.core.events.users.LogInUserEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
@@ -11,6 +12,7 @@ import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserLogInEvent;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
@@ -25,4 +27,5 @@ public interface UserService
 	public UserAccountVerifiedEvent validateUserAccount(VerifyUserAccountEvent verifyUserAccountEvent);
 	public UserAuthenticatedEvent authenticateUser(AuthenticateUserEvent authUserEvent);
 	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
+	public UserLogInEvent login(LogInUserEvent evt);
 }
