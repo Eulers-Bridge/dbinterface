@@ -3,7 +3,7 @@ package com.eulersbridge.iEngage.rest.controller;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +18,7 @@ import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.SignUp;
 
 @RestController
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class LoginController {
 
     private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
@@ -39,7 +40,7 @@ public class LoginController {
     }
 */    
     @Secured({ "ROLE_USER" })
-    @RequestMapping(value="/api/login",method=RequestMethod.GET)
+    @RequestMapping(value=ControllerConstants.LOGIN_LABEL,method=RequestMethod.GET)
   	public @ResponseBody Response login( @RequestParam(value="username", required=true) String username,
             @RequestParam(value="password", required=true) String password) 
     {
@@ -49,10 +50,10 @@ public class LoginController {
 		return response;
     }
     
-    @RequestMapping(value="/api/logout/{username}")
-    public @ResponseBody Response logout(
-            @PathVariable String username) 
+    @RequestMapping(value=ControllerConstants.LOGOUT_LABEL)
+    public @ResponseBody Response logout() 
     {
+    	String username=SecurityContextHolder.getContext().getAuthentication().getName();
     	if (LOG.isInfoEnabled()) LOG.info(username+" attempting to logout. ");
     	Logout logout=new Logout(counter.incrementAndGet(),username);
     	Response response=logout.process();

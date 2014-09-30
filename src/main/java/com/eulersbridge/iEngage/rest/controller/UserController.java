@@ -46,7 +46,7 @@ import com.eulersbridge.iEngage.rest.domain.Personality;
 import com.eulersbridge.iEngage.rest.domain.User;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class UserController {
 
     @Autowired UserService userService;
@@ -80,7 +80,7 @@ public class UserController {
 
 	*/
     
-    @RequestMapping(method=RequestMethod.PUT,value="/user/{email}")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{email}")
     public @ResponseBody ResponseEntity<User> alterUser(@PathVariable String email,
     		@RequestBody User user) 
     {
@@ -124,7 +124,7 @@ public class UserController {
 
 	*/
     
-    @RequestMapping(method=RequestMethod.PUT,value="/user/{email}/personality")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{email}/personality")
     public @ResponseBody ResponseEntity<Personality> addUserPersonality(@PathVariable String email,
     		@RequestBody Personality personality) 
     {
@@ -170,7 +170,7 @@ public class UserController {
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value="/user/{email}")
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}")
 	public @ResponseBody ResponseEntity<User> findUser(@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. "+email);
@@ -196,7 +196,7 @@ public class UserController {
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.DELETE,value="/user/{email}")
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.USER_LABEL+"/{email}")
 	public @ResponseBody ResponseEntity<User> deleteUser(@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete user. "+email);
@@ -226,7 +226,7 @@ public class UserController {
 
 	*/
     
-    @RequestMapping(method=RequestMethod.POST,value="/signUp")
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.SIGNUP_LABEL)
     public @ResponseBody ResponseEntity<User> saveNewUser(@RequestBody User user) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save user "+user);
@@ -265,7 +265,7 @@ public class UserController {
      * @return the user object returned by the Graph Database.
      * 
 	*/
-    @RequestMapping(method=RequestMethod.POST,value="/emailVerification/{email}/{token}")
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.EMAIL_VERIFICATION_LABEL+"/{email}/{token}")
     public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);

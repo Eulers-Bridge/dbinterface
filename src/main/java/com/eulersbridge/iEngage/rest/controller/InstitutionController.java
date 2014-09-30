@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.institutions.*;
 import com.eulersbridge.iEngage.rest.domain.Country;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,11 @@ import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearReadEvent;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository.GeneralInfo;
 import com.eulersbridge.iEngage.rest.domain.StudentYear;
 import com.eulersbridge.iEngage.rest.domain.Institution;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class InstitutionController 
 {
 @Autowired InstitutionService instService;
@@ -55,7 +55,7 @@ public class InstitutionController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.PUT,value="/institution/{institutionId}")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.INSTITUTION_LABEL+"/{institutionId}")
     public @ResponseBody ResponseEntity<Institution> alterInstitution(@PathVariable Long institutionId,
     		@RequestBody Institution inst) 
     {
@@ -102,7 +102,7 @@ public class InstitutionController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value="/institution/{institutionId}")
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.INSTITUTION_LABEL+"/{institutionId}")
 	public @ResponseBody ResponseEntity<Institution> findInstitution(@PathVariable Long institutionId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve institution. "+institutionId);
@@ -134,7 +134,7 @@ public class InstitutionController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.DELETE,value="/institution/{institutionId}")
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.INSTITUTION_LABEL+"/{institutionId}")
 	public @ResponseBody ResponseEntity<Institution> deleteInstitution(@PathVariable Long institutionId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete institution. "+institutionId);
@@ -170,7 +170,7 @@ public class InstitutionController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.POST,value="/institution")
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.INSTITUTION_LABEL)
     public @ResponseBody ResponseEntity<Institution> createInstitution(@RequestBody Institution inst) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save institution "+inst);
@@ -209,7 +209,7 @@ public class InstitutionController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.POST,value="/institution/studentyear")
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.INSTITUTION_LABEL+"/studentyear")
     public @ResponseBody ResponseEntity<StudentYear> createStudentYear(@RequestBody StudentYear sy) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save studentYear "+sy);
@@ -287,7 +287,7 @@ public class InstitutionController
     }
     
 
-    @RequestMapping(value="/institutions")
+    @RequestMapping(value=ControllerConstants.INSTITUTIONS_LABEL)
     public @ResponseBody ResponseEntity<Iterator<Institution>> getInstitutions() 
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions. ");
@@ -296,7 +296,7 @@ public class InstitutionController
 		return readInstitutions(rie);
     }
     
-    @RequestMapping(value="/institutions/{countryId}")
+    @RequestMapping(value=ControllerConstants.INSTITUTIONS_LABEL+"/{countryId}")
     public @ResponseBody ResponseEntity<Iterator<Institution>> getInstitutions(@PathVariable Long countryId) 
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions from country "+countryId+". ");

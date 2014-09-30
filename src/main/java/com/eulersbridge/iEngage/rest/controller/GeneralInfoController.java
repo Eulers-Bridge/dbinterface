@@ -11,7 +11,7 @@ import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
 import com.eulersbridge.iEngage.rest.domain.Country;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class GeneralInfoController {
 
 	    private static Logger LOG = LoggerFactory.getLogger(GeneralInfoController.class);

@@ -2,12 +2,14 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.Elections.*;
 import com.eulersbridge.iEngage.core.services.ElectionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.eulersbridge.iEngage.rest.domain.Election;
 
 //import com.eulersbridge.iEngage.database.domain.Election;
@@ -15,7 +17,7 @@ import com.eulersbridge.iEngage.rest.domain.Election;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class ElectionController {
 
 //	@Autowired ElectionRepository repo;
@@ -62,7 +64,7 @@ public class ElectionController {
 //    }
 
     //Get
-    @RequestMapping(method = RequestMethod.GET, value = "/election/{electionId}")
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL+"/{electionId}")
     public @ResponseBody ResponseEntity<Election> findElection(@PathVariable Long electionId)
     {
         if (LOG.isInfoEnabled()) LOG.info(electionId+" attempting to get election. ");
@@ -78,7 +80,7 @@ public class ElectionController {
     }
 
     //Create
-    @RequestMapping(method = RequestMethod.POST, value = "/election")
+    @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.ELECTION_LABEL)
     public @ResponseBody ResponseEntity<Election> createElection(@RequestBody Election election){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create election "+election);
         ElectionCreatedEvent electionCreatedEvent = electionService.createElection(new CreateElectionEvent(election.toElectionDetails()));
@@ -93,7 +95,7 @@ public class ElectionController {
     }
 
     //Get Previous
-    @RequestMapping(method = RequestMethod.GET, value = "/election/{electionId}/previous")
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL+"/{electionId}/previous")
     public @ResponseBody ResponseEntity<Election> findPreviousElection(@PathVariable Long electionId){
         if (LOG.isInfoEnabled()) LOG.info("attempting to get previous election");
         RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(electionId);
@@ -108,7 +110,7 @@ public class ElectionController {
     }
 
     //Get Next
-    @RequestMapping(method = RequestMethod.GET, value = "/election/{electionId}/next")
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL+"/{electionId}/next")
     public @ResponseBody ResponseEntity<Election> findNextElection(@PathVariable Long electionId){
         if (LOG.isInfoEnabled()) LOG.info("attempting to get next election");
         RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(electionId);
@@ -123,7 +125,7 @@ public class ElectionController {
     }
 
     //Delete
-    @RequestMapping(method = RequestMethod.DELETE, value = "/election/{electionId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.ELECTION_LABEL+"/{electionId}")
     public @ResponseBody ResponseEntity<Boolean> deleteElection(@PathVariable Long electionId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete election. " + electionId);
         ElectionDeletedEvent electionDeletedEvent = electionService.deleteElection(new DeleteElectionEvent(electionId));
@@ -132,7 +134,7 @@ public class ElectionController {
     }
 
     //Update
-    @RequestMapping(method = RequestMethod.PUT, value = "/election/{electionId}")
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.ELECTION_LABEL+"/{electionId}")
     public @ResponseBody ResponseEntity<Election> updateElection(@PathVariable Long electionId, @RequestBody Election election)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update election. " + electionId);

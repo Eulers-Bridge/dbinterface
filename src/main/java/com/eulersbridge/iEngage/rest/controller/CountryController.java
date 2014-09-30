@@ -30,7 +30,7 @@ import com.eulersbridge.iEngage.core.services.CountryService;
 import com.eulersbridge.iEngage.rest.domain.Country;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class CountryController 
 {
 	@Autowired CountryService countryService;
@@ -51,7 +51,7 @@ public class CountryController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.PUT,value="/country/{countryId}")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.COUNTRY_LABEL+"/{countryId}")
     public @ResponseBody ResponseEntity<Country> alterCountry(@PathVariable Long countryId,
     		@RequestBody Country country) 
     {
@@ -91,7 +91,7 @@ public class CountryController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value="/country/{countryId}")
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.COUNTRY_LABEL+"/{countryId}")
 	public @ResponseBody ResponseEntity<Country> findCountry(@PathVariable Long countryId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve institution. "+countryId);
@@ -123,7 +123,7 @@ public class CountryController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.DELETE,value="/country/{countryId}")
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.COUNTRY_LABEL+"/{countryId}")
 	public @ResponseBody ResponseEntity<Country> deleteCountry(@PathVariable Long countryId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete institution. "+countryId);
@@ -157,7 +157,7 @@ public class CountryController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.POST,value="/country")
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.COUNTRY_LABEL)
     public @ResponseBody ResponseEntity<Country> createCountry(@RequestBody Country country) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save institution "+country);
@@ -186,7 +186,7 @@ public class CountryController
     }
 
 
-    @RequestMapping(value="/countrys")
+    @RequestMapping(value=ControllerConstants.COUNTRYS_LABEL)
     public @ResponseBody ResponseEntity<Iterator<Country>> getCountrys() 
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve countrys. ");
