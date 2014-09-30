@@ -17,7 +17,6 @@ public class VoteRecord
 	@EndNode private Election election;
 	private Long date;
 	private String location;
-	private Long timestamp;
 	
     private static Logger LOG = LoggerFactory.getLogger(VoteRecord.class);
 
@@ -26,12 +25,11 @@ public class VoteRecord
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 
-	public VoteRecord(Long date,String location)
+	public VoteRecord(String location)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+date+','+location+')');
-		this.date=date;
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+location+')');
 		this.location=location;
-		timestamp=Calendar.getInstance().getTimeInMillis();
+		date=Calendar.getInstance().getTimeInMillis();
 	}
 	
 	public Long getNodeId()
@@ -93,20 +91,6 @@ public class VoteRecord
 		this.election = election;
 	}
 
-	/**
-	 * @return the timestamp
-	 */
-	public Long getTimestamp() {
-		return timestamp;
-	}
-
-	/**
-	 * @param timestamp the timestamp to set
-	 */
-	public void setTimestamp(Long timestamp) {
-		this.timestamp = timestamp;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -114,7 +98,7 @@ public class VoteRecord
 	public String toString() {
 		return "VoteReminder [nodeId=" + nodeId + ", voter=" + voter
 				+ ", election=" + election + ", date=" + date
-				+  ", location=" + location + ", timestamp=" + timestamp
+				+  ", location=" + location 
 				+ "]";
 	}
 
@@ -132,8 +116,6 @@ public class VoteRecord
 				+ ((election == null) ? 0 : election.hashCode());
 		result = prime * result
 				+ ((location == null) ? 0 : location.hashCode());
-		result = prime * result
-				+ ((timestamp == null) ? 0 : timestamp.hashCode());
 		result = prime * result + ((voter == null) ? 0 : voter.hashCode());
 		}
 		else
@@ -163,7 +145,6 @@ public class VoteRecord
 			if (null==answer2.getNodeId())
 			{
 				if ((this.getDate().equals(answer2.getDate()))&&
-					(this.getTimestamp().equals(answer2.getTimestamp()))&&
 					(this.getVoter().equals(answer2.getVoter()))&&
 					(this.getElection().equals(answer2.getElection()))&&
 					(this.getLocation().equals(answer2.getLocation())))
