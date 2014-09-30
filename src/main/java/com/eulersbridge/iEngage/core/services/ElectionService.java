@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.Elections.*;
+import com.eulersbridge.iEngage.core.events.elections.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**

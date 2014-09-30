@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.Elections.*;
+import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import org.slf4j.Logger;
