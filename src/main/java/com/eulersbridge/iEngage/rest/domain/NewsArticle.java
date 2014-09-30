@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -196,6 +198,18 @@ public class NewsArticle extends ResourceSupport
 	 */
 	public void setStudentYear(String studentYear) {
 		this.studentYear = studentYear;
+	}
+	
+	public static Iterator<NewsArticle> toArticlesIterator(Iterator<NewsArticleDetails> iter)
+	{
+		ArrayList <NewsArticle> articles=new ArrayList<NewsArticle>();
+		while(iter.hasNext())
+		{
+			NewsArticleDetails dets=iter.next();
+			NewsArticle thisArticle=NewsArticle.fromNewsArticleDetails(dets);
+			articles.add(thisArticle);		
+		}
+		return articles.iterator();
 	}
 
 	public String toString()
