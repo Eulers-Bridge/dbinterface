@@ -191,17 +191,6 @@ public class UserEventHandlerTest
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
 		UserAuthenticatedEvent authEvt=userService.authenticateUser(evt);
 		assertTrue("User did not authenticate.",authEvt.isAuthenticated());
-		List<GrantedAuthority> auths=authEvt.getGrantedAuths();
-		Iterator<GrantedAuthority> iter=auths.iterator();
-		String userRole=null;
-		while (iter.hasNext())
-		{
-			GrantedAuthority auth=iter.next();
-			String authority=auth.getAuthority();
-			if (authority.equals(SecurityConstants.USER_ROLE))
-				userRole=SecurityConstants.USER_ROLE;
-			LOG.debug("authority - "+authority);
-		}
 	}
 	
 	@Test
