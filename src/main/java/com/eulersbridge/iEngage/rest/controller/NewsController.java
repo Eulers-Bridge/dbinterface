@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.slf4j.Logger;
@@ -9,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,6 @@ import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
@@ -36,7 +36,7 @@ import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.rest.domain.NewsArticle;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class NewsController 
 {
     @Autowired NewsService newsService;
@@ -65,7 +65,7 @@ public class NewsController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.PUT,value="/newsArticle/{articleId}")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}")
     public @ResponseBody ResponseEntity<NewsArticle> alterNewsArticle(@PathVariable Long articleId,
     		@RequestBody NewsArticle newsArticle) 
     {
@@ -96,7 +96,7 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.PUT,value="/newsArticle/{articleId}/likedBy/{email}")
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}/likedBy/{email}")
 	public @ResponseBody ResponseEntity<Boolean> likeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
@@ -122,7 +122,7 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.PUT,value="/newsArticle/{articleId}/unlikedBy/{email}")
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}/unlikedBy/{email}")
 	public @ResponseBody ResponseEntity<Boolean> unlikeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike news article. "+articleId);
@@ -148,10 +148,11 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value="/newsArticle/{articleId}")
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}")
 	public @ResponseBody ResponseEntity<NewsArticle> findArticle(@PathVariable Long articleId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news article. "+articleId);
+		
 		ReadNewsArticleEvent articleEvent=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
   	
 		if (!articleEvent.isEntityFound())
@@ -174,7 +175,7 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.DELETE,value="/newsArticle/{articleId}")
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}")
 	public @ResponseBody ResponseEntity<Boolean> deleteNewsArticle(@PathVariable Long articleId) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete news article. "+articleId);
@@ -205,7 +206,7 @@ public class NewsController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.POST,value="/newsArticle")
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.NEWS_ARTICLE_LABEL)
     public @ResponseBody ResponseEntity<NewsArticle> createNewsArticle(@RequestBody NewsArticle newsArticle) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to create news article "+newsArticle);
@@ -235,7 +236,7 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value="/newsArticles/{studentYearId}")
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{studentYearId}")
 	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable Long studentYearId,
 			@RequestParam(value="direction",required=false,defaultValue="DESC") String direction,
 			@RequestParam(value="page",required=false,defaultValue="0") String page,
@@ -255,16 +256,9 @@ public class NewsController
 			return new ResponseEntity<Iterator<NewsArticle>>(HttpStatus.NOT_FOUND);
 		}
 		
-		Iterator <NewsArticleDetails> iter=articleEvent.getArticles().iterator();
-		ArrayList <NewsArticle> articles=new ArrayList<NewsArticle>();
-		while(iter.hasNext())
-		{
-			NewsArticleDetails dets=iter.next();
-			NewsArticle thisArticle=NewsArticle.fromNewsArticleDetails(dets);
-			articles.add(thisArticle);		
-		}
+		Iterator<NewsArticle> articles = NewsArticle.toArticlesIterator(articleEvent.getArticles().iterator());
 
-		return new ResponseEntity<Iterator<NewsArticle>>(articles.iterator(),HttpStatus.OK);
+		return new ResponseEntity<Iterator<NewsArticle>>(articles,HttpStatus.OK);
 	}
     
 }
