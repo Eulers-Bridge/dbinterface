@@ -342,9 +342,12 @@ public class UserEventHandler implements UserService,UserDetailsService
 		User user=userRepository.findByEmail(username);
 		if (user!=null)
 		{
-			org.springframework.security.core.userdetails.UserDetails 
-				dets=new org.springframework.security.core.userdetails.User
-					(username, user.getPassword(), true, true, true, true, authsFromString(user.getRoles()));
+			boolean notLocked=true;
+			boolean enabled=true;
+			boolean acctNotExpired=true;
+			boolean credsNotExpired=true;
+			org.springframework.security.core.userdetails.UserDetails dets=new org.springframework.security.core.userdetails.User
+					(username, user.getPassword(), enabled, acctNotExpired, credsNotExpired, notLocked, authsFromString(user.getRoles()));
 			return dets;
 		}
 		else
