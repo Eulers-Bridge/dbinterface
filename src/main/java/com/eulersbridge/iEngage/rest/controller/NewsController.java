@@ -236,9 +236,9 @@ public class NewsController
 	*/
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{studentYearId}")
 	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable Long studentYearId,
-			@RequestParam(value="direction",required=false,defaultValue="DESC") String direction,
-			@RequestParam(value="page",required=false,defaultValue="0") String page,
-			@RequestParam(value="pageSize",required=false,defaultValue="10") String pageSize) 
+			@RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize) 
 	{
 		int pageNumber=0;
 		int pageLength=10;
