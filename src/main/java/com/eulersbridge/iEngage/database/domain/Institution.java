@@ -30,12 +30,12 @@ public class Institution
     private static Logger LOG = LoggerFactory.getLogger(Institution.class);
 	public Institution()
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
 	
 	public Institution(String name,String campus,String state,Country country)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+name+','+campus+','+state+','+country+')');
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+name+','+campus+','+state+','+country+')');
 		this.name=name;
 		this.campus=campus;
 		this.state=state;
