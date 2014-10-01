@@ -14,7 +14,7 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 /**
- * @author Emma
+ * @author Greg Newitt
  *
  */
 public class LoginDetailsTest 
