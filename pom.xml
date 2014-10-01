@@ -128,8 +128,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-		      <plugin>
+				<configuration>
+					<!-- to allow remote debugging of app jvmArguments>
+						-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8888
+					</jvmArguments-->
+					<!-- jvmArguments>
+						-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8888
+					</jvmArguments-->
+				</configuration>
+			</plugin>
+		    <plugin>
 		        <artifactId>maven-war-plugin</artifactId>
 		        <version>2.3</version>
 		        <executions>
