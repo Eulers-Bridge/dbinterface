@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
@@ -208,6 +209,9 @@ public class NewsArticle extends ResourceSupport
 		{
 			NewsArticleDetails dets=iter.next();
 			NewsArticle thisArticle=NewsArticle.fromNewsArticleDetails(dets);
+			Link self = thisArticle.getLink("self");
+			thisArticle.removeLinks();
+			thisArticle.add(self);
 			articles.add(thisArticle);		
 		}
 		return articles.iterator();
