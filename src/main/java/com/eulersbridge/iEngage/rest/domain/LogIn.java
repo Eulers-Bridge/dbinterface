@@ -74,15 +74,15 @@ public class LogIn extends ResourceSupport
 		login.add(linkTo(UserController.class).slash(name).withSelfRel());
 		// {!end selfRel}
 		// {!begin institution}
-		login.add(linkTo(InstitutionController.class).slash(ControllerConstants.INSTITUTION_LABEL).slash(login.getUser().getInstitutionId()).withRel("related"));
+		login.add(linkTo(InstitutionController.class).slash(ControllerConstants.INSTITUTION_LABEL).slash(login.getUser().getInstitutionId()).withRel(RestDomainConstants.RELATED_LABEL));
 		// {!end institution}
 		
 		// {!begin articles}
-		login.add(linkTo(NewsController.class).slash(ControllerConstants.NEWS_ARTICLES_LABEL).withRel("related"));
+		login.add(linkTo(NewsController.class).slash(ControllerConstants.NEWS_ARTICLES_LABEL).withRel(RestDomainConstants.RELATED_LABEL));
 		// {!end articles}
 		
 		// {!begin elections}
-		login.add(linkTo(ElectionController.class).slash(name).slash(ControllerConstants.ELECTION_LABEL).withRel("related"));
+		login.add(linkTo(ElectionController.class).slash(name).slash(ControllerConstants.ELECTION_LABEL).withRel(RestDomainConstants.RELATED_LABEL));
 		// {!end elections}
 
 		

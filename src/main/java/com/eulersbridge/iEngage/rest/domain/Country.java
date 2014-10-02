@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.domain;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository.GeneralInfo;
+
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
@@ -71,6 +72,9 @@ public class Country extends ResourceSupport
 	    // {!begin selfRel}
 	    country.add(linkTo(CountryController.class).slash(name).slash(country.countryId).withSelfRel());
 	    // {!end selfRel}
+	    // {!begin readAll}
+	    country.add(linkTo(CountryController.class).slash(name+'s').withRel(RestDomainConstants.READALL_LABEL));
+	    // {!end readAll}
 
 	    return country;
 	  }

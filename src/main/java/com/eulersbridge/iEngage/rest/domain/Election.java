@@ -2,8 +2,11 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.rest.controller.ElectionController;
+
 import org.springframework.hateoas.ResourceSupport;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +36,18 @@ public class Election extends ResourceSupport{
         election.setStartVoting(electionDetails.getStartVoting());
         election.setEndVoting(electionDetails.getEndVoting());
 
+	    // {!begin selfRel}
         election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).withSelfRel());
-        election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).slash("previous").withRel("Previous"));
-        election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).slash("next").withRel("Next"));
+	    // {!end selfRel}
+	    // {!begin previous}
+        election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).slash(RestDomainConstants.PREVIOUS).withRel(RestDomainConstants.PREVIOUS_LABEL));
+	    // {!end previous}
+	    // {!begin next}
+        election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).slash(RestDomainConstants.NEXT).withRel(RestDomainConstants.NEXT_LABEL));
+	    // {!end next}
+	    // {!begin readAll}
+	    election.add(linkTo(ElectionController.class).slash(name+'s').withRel(RestDomainConstants.READALL_LABEL));
+	    // {!end readAll}
 
         return election;
     }
