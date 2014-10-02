@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class ForumQuestionController {
     @Autowired
     ForumQuestionService forumQuestionService;
@@ -26,7 +26,7 @@ public class ForumQuestionController {
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestionController.class);
 
     //Create
-    @RequestMapping(method = RequestMethod.POST, value = "/forum")
+    @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.FORUM_QUESTION_LABEL)
     public @ResponseBody
     ResponseEntity<ForumQuestion> createForumQuestion(@RequestBody ForumQuestion forumQuestion){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create forumQuestion "+forumQuestion);
@@ -43,7 +43,7 @@ public class ForumQuestionController {
     }
 
     //Get
-    @RequestMapping(method = RequestMethod.GET, value = "/forum/{forumQuestionId}")
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}")
     public @ResponseBody
     ResponseEntity<ForumQuestion> findForumQuestion(@PathVariable Long forumQuestionId){
         if (LOG.isInfoEnabled()) LOG.info(forumQuestionId+" attempting to get forumQuestion. ");
@@ -59,7 +59,7 @@ public class ForumQuestionController {
     }
 
     //Update
-    @RequestMapping(method = RequestMethod.PUT, value = "/forum/{forumQuestionId}")
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}")
     public @ResponseBody
     ResponseEntity<ForumQuestion> updateForumQuestion(@PathVariable Long forumQuestionId, @RequestBody ForumQuestion forumQuestion){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update forumQuestion. " + forumQuestionId);
@@ -84,7 +84,7 @@ public class ForumQuestionController {
     }
 
     //Delete
-    @RequestMapping(method = RequestMethod.DELETE, value = "/forum/{forumQuestionId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}")
     public @ResponseBody
     ResponseEntity<Boolean> deleteForumQuestion(@PathVariable Long forumQuestionId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete forumQuestion. " + forumQuestionId);

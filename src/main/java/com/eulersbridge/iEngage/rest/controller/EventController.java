@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(ControllerConstants.API_PREFIX)
 public class EventController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class EventController {
     private static Logger LOG = LoggerFactory.getLogger(EventController.class);
 
     //Create
-    @RequestMapping(method = RequestMethod.POST, value = "/event")
+    @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.EVENT_LABEL)
     public @ResponseBody
     ResponseEntity<Event> createEvent(@RequestBody Event event){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create event "+event);
@@ -43,7 +43,7 @@ public class EventController {
     }
 
     //Get
-    @RequestMapping(method = RequestMethod.GET, value = "/event/{eventId}")
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.EVENT_LABEL+"/{eventId}")
     public @ResponseBody
     ResponseEntity<Event> findEvent(@PathVariable Long eventId){
         if (LOG.isInfoEnabled()) LOG.info(eventId+" attempting to get event. ");
@@ -59,7 +59,7 @@ public class EventController {
     }
 
     //Update
-    @RequestMapping(method = RequestMethod.PUT, value = "/event/{eventId}")
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.EVENT_LABEL+"/{eventId}")
     public @ResponseBody
     ResponseEntity<Event> updateEvent(@PathVariable Long eventId, @RequestBody Event event){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update event. " + eventId);
@@ -84,7 +84,7 @@ public class EventController {
     }
 
     //Delete
-    @RequestMapping(method = RequestMethod.DELETE, value = "/event/{eventId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.EVENT_LABEL+"/{eventId}")
     public @ResponseBody
     ResponseEntity<Boolean> deleteEvent(@PathVariable Long eventId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete event. " + eventId);
