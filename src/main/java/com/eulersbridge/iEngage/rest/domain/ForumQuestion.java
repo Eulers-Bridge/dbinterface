@@ -16,7 +16,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 public class ForumQuestion extends ResourceSupport {
     private Long forumQuestionId;
-    //TODO Add other properties
+    private String question;
 
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestion.class);
 
@@ -28,7 +28,7 @@ public class ForumQuestion extends ResourceSupport {
         String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 
         forumQuestion.setForumQuestionId(forumQuestionDetails.getForumQuestionId());
-        //TODO Add other properties
+        forumQuestion.setQuestion(forumQuestionDetails.getQuestion());
 
 	    // {!begin selfRel}
         forumQuestion.add(linkTo(ForumQuestionController.class).slash(name).slash(forumQuestion.forumQuestionId).withSelfRel());
@@ -57,7 +57,7 @@ public class ForumQuestion extends ResourceSupport {
     public ForumQuestionDetails toForumQuestionDetails(){
         ForumQuestionDetails forumQuestionDetails = new ForumQuestionDetails();
         forumQuestionDetails.setForumQuestionId(this.getForumQuestionId());
-        //TODO Add other properties
+        forumQuestionDetails.setQuestion(getQuestion());
 
         return forumQuestionDetails;
     }
@@ -68,5 +68,13 @@ public class ForumQuestion extends ResourceSupport {
 
     public void setForumQuestionId(Long forumQuestionId) {
         this.forumQuestionId = forumQuestionId;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
     }
 }

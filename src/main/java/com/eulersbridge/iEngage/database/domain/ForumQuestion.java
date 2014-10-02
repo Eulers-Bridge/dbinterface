@@ -13,7 +13,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 @NodeEntity
 public class ForumQuestion {
     @GraphId private Long forumQuestionId;
-    //TODO Add other properties
+    private String question;
 
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestion.class);
 
@@ -26,7 +26,7 @@ public class ForumQuestion {
         ForumQuestion forumQuestion = new ForumQuestion();
         if (LOG.isTraceEnabled()) LOG.trace("forumQuestionDetails "+forumQuestionDetails);
         forumQuestion.setForumQuestionId(forumQuestionDetails.getForumQuestionId());
-        //TODO add other properties
+        forumQuestion.setQuestion(forumQuestionDetails.getQuestion());
 
         if (LOG.isTraceEnabled()) LOG.trace("forumQuestion "+forumQuestion);
         return forumQuestion;
@@ -37,7 +37,7 @@ public class ForumQuestion {
         ForumQuestionDetails forumQuestionDetails = new ForumQuestionDetails();
         if (LOG.isTraceEnabled()) LOG.trace("forumQuestion "+this);
         forumQuestionDetails.setForumQuestionId(this.getForumQuestionId());
-        //TODO add other properties
+        forumQuestionDetails.setQuestion(getQuestion());
 
         if (LOG.isTraceEnabled()) LOG.trace("forumQuestionDetails; "+ forumQuestionDetails);
         return forumQuestionDetails;
@@ -49,7 +49,8 @@ public class ForumQuestion {
         StringBuffer buff=new StringBuffer("[ nodeId = ");
         String retValue;
         buff.append(getForumQuestionId());
-        //TODO add other properties
+        buff.append(", question = ");
+        buff.append(getQuestion());
         buff.append(" ]");
         retValue=buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -62,5 +63,13 @@ public class ForumQuestion {
 
     public void setForumQuestionId(Long forumQuestionId) {
         this.forumQuestionId = forumQuestionId;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
     }
 }

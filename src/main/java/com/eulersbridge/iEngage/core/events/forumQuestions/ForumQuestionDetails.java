@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class ForumQuestionDetails {
     private Long forumQuestionId;
-    //TODO Add other properties
+    private String question;
 
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestionDetails.class);
 
@@ -18,8 +18,8 @@ public class ForumQuestionDetails {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
         buff.append(getForumQuestionId());
-        //TODO Add other properties
-
+        buff.append(", question = ");
+        buff.append(getQuestion());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -45,5 +45,13 @@ public class ForumQuestionDetails {
 
     public void setForumQuestionId(Long forumQuestionId) {
         this.forumQuestionId = forumQuestionId;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
     }
 }
