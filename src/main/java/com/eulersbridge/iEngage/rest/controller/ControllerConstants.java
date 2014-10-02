@@ -23,5 +23,7 @@ public class ControllerConstants
 	public static final String POLL_LABEL = "/poll";
 	public static final String SIGNUP_LABEL = "/signUp";
 	public static final String USER_LABEL = "/user";
+    public static final String EVENT_LABEL = "/event";
+    public static final String FORUM_QUESTION_LABEL = "/forum";
 
 }
