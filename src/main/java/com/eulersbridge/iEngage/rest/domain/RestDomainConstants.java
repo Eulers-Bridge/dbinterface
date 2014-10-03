@@ -10,8 +10,10 @@ package com.eulersbridge.iEngage.rest.domain;
 public class RestDomainConstants 
 {
 	// URL text
+	public static final String GENERAL_INFO = "general-info";
 	public static final String LIKEDBY = "likedBy";
 	public static final String LIKES = "likes";
+	public static final String LOGIN = "login";
 	public static final String NEXT = "next";
 	public static final String PREVIOUS = "previous";
 	public static final String UNLIKEDBY = "unlikedBy";
