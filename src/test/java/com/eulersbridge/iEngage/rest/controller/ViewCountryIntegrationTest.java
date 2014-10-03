@@ -70,8 +70,8 @@ public class ViewCountryIntegrationTest
 		CountryDetails dets=new CountryDetails(id);
 		dets.setCountryName("Australia");
 		CountryUpdatedEvent testData=new CountryUpdatedEvent(id, dets);
-		String content="{\"countryName\":\"Australia\",\"universities\":null,\"countryId\":"+id.intValue()+"}";
-		String returnedContent="{\"countryId\":"+id.intValue()+",\"countryName\":\"Australia\",\"universities\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
+		String content="{\"countryName\":\"Australia\",\"institutions\":null,\"countryId\":"+id.intValue()+"}";
+		String returnedContent="{\"countryId\":"+id.intValue()+",\"countryName\":\"Australia\",\"institutions\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
 							   "\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/countrys\"}]}";
 		when (countryService.updateCountry(any(UpdateCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
@@ -91,7 +91,7 @@ public class ViewCountryIntegrationTest
 		Long id=1L;
 		CountryDetails countryDetails=new CountryDetails(id);
 		countryDetails.setCountryName("Australia");
-		String returnedContent="{\"countryId\":"+id.intValue()+",\"countryName\":\"Australia\",\"universities\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
+		String returnedContent="{\"countryId\":"+id.intValue()+",\"countryName\":\"Australia\",\"institutions\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
 								"\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/countrys\"}]}";
 		CountryReadEvent testData=new CountryReadEvent(id, countryDetails);
 		when (countryService.readCountry(any(ReadCountryEvent.class))).thenReturn(testData);
@@ -125,7 +125,7 @@ public class ViewCountryIntegrationTest
 		Long id=1L;
 		CountryDetails countryDetails=new CountryDetails(id);
 		countryDetails.setCountryName("Australia");
-		String returnedContent="{\"countryId\":"+id.intValue()+",\"countryName\":\"Australia\",\"universities\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
+		String returnedContent="{\"countryId\":"+id.intValue()+",\"countryName\":\"Australia\",\"institutions\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
 							   "\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/countrys\"}]}";
 		CountryDeletedEvent testData=new CountryDeletedEvent(id, countryDetails);
 		when (countryService.deleteCountry(any(DeleteCountryEvent.class))).thenReturn(testData);
@@ -160,8 +160,8 @@ public class ViewCountryIntegrationTest
 		CountryDetails dets=new CountryDetails(id);
 		dets.setCountryName("Australia");
 		CountryCreatedEvent testData=new CountryCreatedEvent(id, dets);
-		String content="{\"countryName\":\"Australia\",\"universities\":null}";
-		String returnedContent="{\"countryId\":"+id.intValue()+",\"countryName\":\"Australia\",\"universities\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
+		String content="{\"countryName\":\"Australia\",\"institutions\":null}";
+		String returnedContent="{\"countryId\":"+id.intValue()+",\"countryName\":\"Australia\",\"institutions\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
 								"\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/countrys\"}]}";
 		when (countryService.createCountry(any(CreateCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/country/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
@@ -186,7 +186,7 @@ public class ViewCountryIntegrationTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingReadAll()");
 		Long id=1L;
 		String countryName="Australia";
-		String returnedContent="[{\"countryId\":"+id.intValue()+",\"countryName\":\""+countryName+"\",\"universities\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
+		String returnedContent="[{\"countryId\":"+id.intValue()+",\"countryName\":\""+countryName+"\",\"institutions\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
 								"\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/countrys\"}]}]";
 		ArrayList<CountryDetails> countrys=new ArrayList<CountryDetails>();
 		Institution institution=new Institution(id, "University of Melbourne");
