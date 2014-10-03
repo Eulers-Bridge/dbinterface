@@ -54,7 +54,7 @@ public class VerificationTokenMemoryRepository implements
 	 * @see org.springframework.data.neo4j.repository.CRUDRepository#getStoredJavaType(java.lang.Object)
 	 */
 	@Override
-	public Class getStoredJavaType(Object arg0) {
+	public Class<?> getStoredJavaType(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}

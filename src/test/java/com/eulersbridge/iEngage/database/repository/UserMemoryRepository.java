@@ -73,7 +73,7 @@ public Result<User> findAll(Sort arg0) {
 }
 
 @Override
-public Class getStoredJavaType(Object arg0) {
+public Class<?> getStoredJavaType(Object arg0) {
 	// TODO Auto-generated method stub
 	return null;
 }
