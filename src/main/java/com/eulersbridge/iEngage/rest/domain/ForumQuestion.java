@@ -20,7 +20,10 @@ public class ForumQuestion extends ResourceSupport {
 
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestion.class);
 
-    public ForumQuestion(){}
+    public ForumQuestion()
+    {
+    	if (LOG.isDebugEnabled()) LOG.debug("constructor()");
+    }
 
     public static ForumQuestion fromForumQuestionDetails(ForumQuestionDetails forumQuestionDetails){
         ForumQuestion forumQuestion = new ForumQuestion();

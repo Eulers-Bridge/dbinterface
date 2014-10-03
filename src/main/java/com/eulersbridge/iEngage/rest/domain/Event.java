@@ -28,7 +28,10 @@ public class Event extends ResourceSupport{
 
     private static Logger LOG = LoggerFactory.getLogger(Event.class);
 
-    public Event(){}
+    public Event()
+    {
+    	if (LOG.isDebugEnabled()) LOG.debug("constructor()");
+    }
 
     public static Event fromEventDetails(EventDetails eventDetails){
         Event event = new Event();
