@@ -54,7 +54,7 @@ public class StudentYearMemoryRepository implements StudentYearRepository
 	 * @see org.springframework.data.neo4j.repository.CRUDRepository#getStoredJavaType(java.lang.Object)
 	 */
 	@Override
-	public Class getStoredJavaType(Object arg0) {
+	public Class<?> getStoredJavaType(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -92,7 +92,7 @@ public class StudentYearMemoryRepository implements StudentYearRepository
 	@Override
 	public void delete(Long id) {
 	    Map<Long, StudentYear> modifiableYears = new HashMap<Long, StudentYear>(years);
-		StudentYear na=modifiableYears.remove(id);
+		modifiableYears.remove(id);
 	    this.years = Collections.unmodifiableMap(modifiableYears);
 	}
 
