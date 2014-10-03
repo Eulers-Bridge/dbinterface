@@ -1,21 +1,28 @@
-package com.eulersbridge.iEngage.core.events.institutions;
-
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository.GeneralInfo;
-
-import java.util.Iterator;
+package com.eulersbridge.iEngage.core.events.generalInfo;
 
 /**
  * @author Yikai Gong
  */
 
-public class GeneralInfoReadEvent {
-    Iterator<GeneralInfo> generalInfos;
+public class GeneralInfoReadEvent 
+{
+	GeneralInfoDetails dets;
 
-    public GeneralInfoReadEvent(Iterator<GeneralInfo> generalInfos){
-        this.generalInfos = generalInfos;
+    public GeneralInfoReadEvent(GeneralInfoDetails dets){
+        this.dets = dets;
     }
 
-    public Iterator<GeneralInfo> getGeneralInfos(){
-        return this.generalInfos;
-    }
+	/**
+	 * @return the dets
+	 */
+	public GeneralInfoDetails getDets() {
+		return dets;
+	}
+
+	/**
+	 * @param dets the dets to set
+	 */
+	public void setDets(GeneralInfoDetails dets) {
+		this.dets = dets;
+	}
 }
