@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 
+import com.eulersbridge.iEngage.database.domain.GeneralInfo;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -286,7 +287,8 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 
 
 	@Override
-	public Result<GeneralInfo> getGeneralInfo() {
+	public Result<GeneralInfo> getGeneralInfo() 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
