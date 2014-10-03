@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.core.events.events;
 
 import com.eulersbridge.iEngage.core.events.CreateEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

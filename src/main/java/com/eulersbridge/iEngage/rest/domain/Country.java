@@ -2,15 +2,10 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-import com.eulersbridge.iEngage.database.domain.GeneralInfo;
-
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.rest.controller.CountryController;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Country extends ResourceSupport
 {
