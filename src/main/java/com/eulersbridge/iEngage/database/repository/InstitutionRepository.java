@@ -9,6 +9,7 @@ import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
+import com.eulersbridge.iEngage.database.domain.GeneralInfo;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 
@@ -31,20 +32,5 @@ public interface InstitutionRepository extends GraphRepository<Institution>
 	       )
 	Result<GeneralInfo> getGeneralInfo();
 	
-	@QueryResult()
-	public interface GeneralInfo
-	{
-		@ResultColumn ("institutionNames")
-		Iterable<String> getInstitutionNames();
-		
-		@ResultColumn ("institutionIds")
-		Iterable<Long> getInstitutionIds();
-		
-		@ResultColumn ("countryName")
-		String getCountryName();
-		
-		@ResultColumn ("countryId")
-		Long getCountryId();
-	}
 
 }
