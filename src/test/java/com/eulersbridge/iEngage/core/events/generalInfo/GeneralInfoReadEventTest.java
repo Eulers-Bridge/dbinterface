@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.core.events.generalInfo;
 
+import java.util.ArrayList;
+
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 
 import org.junit.After;
@@ -16,9 +18,12 @@ public class GeneralInfoReadEventTest
 {
 
     GeneralInfoReadEvent generalInfoReadEvent = null;
-	private GeneralInfoDetails dets = null;
+	private GeneralInfoDetails dets;
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception 
+    {
+    	ArrayList<GiCountry> countries=new ArrayList<GiCountry>();
+    	dets = new GeneralInfoDetails(countries.iterator());
         generalInfoReadEvent = new GeneralInfoReadEvent(dets);
     }
 

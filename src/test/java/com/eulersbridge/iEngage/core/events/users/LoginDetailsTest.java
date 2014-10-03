@@ -5,6 +5,7 @@ package com.eulersbridge.iEngage.core.events.users;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.junit.Before;
@@ -29,7 +30,8 @@ public class LoginDetailsTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		articles=null;
+		ArrayList<NewsArticleDetails> nads=new ArrayList<NewsArticleDetails>();
+		articles=nads.iterator();
 		user=RestDataFixture.customEmailUser();
 		dets = new LoginDetails(articles,user);
 	}
