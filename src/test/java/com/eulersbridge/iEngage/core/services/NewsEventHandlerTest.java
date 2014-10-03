@@ -314,7 +314,6 @@ public class NewsEventHandlerTest
 	public void testShouldReturnUserNotFound()
 	{
 		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
-		User user=DatabaseDataFixture.populateUserGnewitt();
 		LikeNewsArticleEvent likeNewsArticlesEvent=new LikeNewsArticleEvent(newsArticle.getNodeId(),"test@hotmail.com");
 		NewsArticleLikedEvent res = newsService.likeNewsArticle(likeNewsArticlesEvent);
 		assertNotNull(res);
