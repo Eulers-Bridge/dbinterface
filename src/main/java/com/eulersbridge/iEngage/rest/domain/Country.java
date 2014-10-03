@@ -11,13 +11,13 @@ public class Country extends ResourceSupport
 {
 	Long countryId;
 	String countryName;
-	Institution universities[];
+	Institution institutions[];
 	
-	public Country(Long id,String name,Institution unis[])
+	public Country(Long id,String name,Institution insts[])
 	{
 		countryId=id;
 		countryName=name;
-		universities=unis;
+		institutions=insts;
 	}
 	
 	public Country() 
@@ -35,9 +35,9 @@ public class Country extends ResourceSupport
 		return countryName;
 	}
 	
-	public Institution[] getUniversities()
+	public Institution[] getInstitutions()
 	{
-		return universities;
+		return institutions;
 	}
 	
 	public CountryDetails toCountryDetails() 

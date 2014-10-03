@@ -83,10 +83,10 @@ public class TestCountry {
 	@Test
 	public final void testShouldGetUniversityObjects() 
 	{
-		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
+		Institution institutions[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
-		Country testObj=new Country(new Long(61), name, unis);
-		if (!testObj.getUniversities()[0].equals(unis[0]))
+		Country testObj=new Country(new Long(61), name, institutions);
+		if (!testObj.getInstitutions()[0].equals(institutions[0]))
 			fail("Name returned does not match name object created with.");
 	}
 
