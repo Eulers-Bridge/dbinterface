@@ -26,6 +26,7 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationE
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
 import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;
 import com.eulersbridge.iEngage.security.Neo4jAuthenticationProvider;
@@ -66,17 +67,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	{
 	    AppBasicAuthenticationEntryPoint entryPoint=new AppBasicAuthenticationEntryPoint();
 		AppBasicAuthenticationSuccessHandler successHandler=new AppBasicAuthenticationSuccessHandler();
-		String loginPage="/general-info";
+		String loginPage=ControllerConstants.LOGIN_LABEL;
 		http.authorizeRequests()
         	.antMatchers("/**").permitAll()
-        	.antMatchers("/api/general-info").permitAll()
-        	.antMatchers("/api/signUp").permitAll()
-        	.antMatchers("/api/displayParams/**").permitAll()
-//        	.antMatchers("/api/emailVerification/**").permitAll()
-//        	.antMatchers("/api/countrys").permitAll()
-//        	.antMatchers("/api/institutions").permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+"/general-info").permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+"/displayParams/**").permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+"emailVerification/**").permitAll()
 //        	.antMatchers("/api/**").permitAll()
-        	.antMatchers("/dbInterface/api/**").permitAll()
+        	.antMatchers("/dbInterface"+ControllerConstants.API_PREFIX+"**").permitAll()
         	.antMatchers("/**").hasRole("USER").anyRequest().authenticated()
         .and()
         	.exceptionHandling().authenticationEntryPoint(digestEntryPoint())
