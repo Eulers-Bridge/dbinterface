@@ -18,7 +18,7 @@ import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
@@ -256,7 +256,7 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 
 
 	@Override
-	public Page<NewsArticle> findByStudentYear(Pageable p, StudentYear sy) 
+	public Page<NewsArticle> findByStudentYear(Pageable p, NewsFeed sy) 
 	{
 		Long syId=null;
 		ArrayList<NewsArticle> arts=new ArrayList<NewsArticle>();
@@ -268,7 +268,7 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 		while (iter.hasNext())
 		{
 			NewsArticle na=iter.next();
-			if (na.getStudentYear().getNodeId().equals(syId))
+			if (na.getNewsFeed().getNodeId().equals(syId))
 			{
 				arts.add(na);
 			}
@@ -295,7 +295,7 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 		while (iter.hasNext())
 		{
 			NewsArticle na=iter.next();
-			if (na.getStudentYear().getNodeId().equals(syId))
+			if (na.getNewsFeed().getNodeId().equals(syId))
 			{
 				arts.add(na);
 			}
