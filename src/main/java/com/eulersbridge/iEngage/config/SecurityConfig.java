@@ -60,7 +60,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	{
 	    AppBasicAuthenticationEntryPoint entryPoint=new AppBasicAuthenticationEntryPoint();
 		AppBasicAuthenticationSuccessHandler successHandler=new AppBasicAuthenticationSuccessHandler();
-		String loginPage=ControllerConstants.LOGIN_LABEL;
 		http.authorizeRequests()
         	.antMatchers(ControllerConstants.API_PREFIX+"/general-info").permitAll()
         	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
