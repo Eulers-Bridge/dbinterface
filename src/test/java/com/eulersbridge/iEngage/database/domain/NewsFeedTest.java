@@ -15,18 +15,18 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
  * @author Greg Newitt
  *
  */
-public class StudentYearTest 
+public class NewsFeedTest 
 {
-	StudentYear sy;
+	NewsFeed nf;
 	
-    private static Logger LOG = LoggerFactory.getLogger(StudentYearTest.class);
+    private static Logger LOG = LoggerFactory.getLogger(NewsFeedTest.class);
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -47,7 +47,7 @@ public class StudentYearTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		sy=DatabaseDataFixture.populateStudentYear2014();
+		nf=DatabaseDataFixture.populateNewsFeed2();
 	}
 
 	/**
@@ -58,131 +58,59 @@ public class StudentYearTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#toDetails()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#toDetails()}.
 	 */
 	@Test
 	public void testToDetails() 
 	{
-		StudentYearDetails dets = sy.toDetails();
-		if (LOG.isDebugEnabled()) LOG.debug("dets node id "+dets.getNodeId()+" sy inst id "+sy.getNodeId());
-		assertEquals("NodeIds don't match",dets.getNodeId(),sy.getNodeId());
-		assertEquals("Years don't match",dets.getYear(),sy.getYear());
-		assertEquals("starts don't match",dets.getStart(),sy.getStart());
-		assertEquals("ends don't match",dets.getEnd(),sy.getEnd());
-		if (LOG.isDebugEnabled()) LOG.debug("dets inst id "+dets.getInstitutionId()+" sy inst id "+sy.getInstitution().getNodeId());
-		assertEquals("InstitutionIds don't match",dets.getInstitutionId(),sy.getInstitution().getNodeId());
+		NewsFeedDetails dets = nf.toDetails();
+		if (LOG.isDebugEnabled()) LOG.debug("dets node id "+dets.getNodeId()+" nf inst id "+nf.getNodeId());
+		assertEquals("NodeIds don't match",dets.getNodeId(),nf.getNodeId());
+		if (LOG.isDebugEnabled()) LOG.debug("dets inst id "+dets.getInstitutionId()+" nf inst id "+nf.getInstitution().getNodeId());
+		assertEquals("InstitutionIds don't match",dets.getInstitutionId(),nf.getInstitution().getNodeId());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#fromDetails(com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#fromDetails(com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails)}.
 	 */
 	@Test
 	public void testFromDetails() 
 	{
-		StudentYearDetails dets = sy.toDetails();
-		StudentYear sy2=StudentYear.fromDetails(dets);
-		assertEquals("NodeIds don't match",dets.getNodeId(),sy2.getNodeId());
-		assertEquals("Years don't match",dets.getYear(),sy2.getYear());
-		assertEquals("starts don't match",dets.getStart(),sy2.getStart());
-		assertEquals("ends don't match",dets.getEnd(),sy2.getEnd());
-		if (LOG.isDebugEnabled()) LOG.debug("dets inst id "+dets.getInstitutionId()+" sy inst id "+sy.getInstitution().getNodeId());
-		assertEquals("InstitutionIds don't match",dets.getInstitutionId(),sy2.getInstitution().getNodeId());
+		NewsFeedDetails dets = nf.toDetails();
+		NewsFeed nf2=NewsFeed.fromDetails(dets);
+		assertEquals("NodeIds don't match",dets.getNodeId(),nf2.getNodeId());
+		if (LOG.isDebugEnabled()) LOG.debug("dets inst id "+dets.getInstitutionId()+" nf inst id "+nf.getInstitution().getNodeId());
+		assertEquals("InstitutionIds don't match",dets.getInstitutionId(),nf2.getInstitution().getNodeId());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#getNodeId()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#getNodeId()}.
 	 */
 	@Test
 	public void testGetNodeId() 
 	{
-		assertEquals("",sy.getNodeId(),new Long(1));
+		assertEquals("",nf.getNodeId(),new Long(1));
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#setNodeId(java.lang.Long)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#setNodeId(java.lang.Long)}.
 	 */
 	@Test
 	public void testSetNodeId() 
 	{
-		sy.setNodeId(new Long(3));
-		assertEquals("",sy.getNodeId(),new Long(3));
-		sy.setNodeId(new Long(1));
-		assertEquals("",sy.getNodeId(),new Long(1));
+		nf.setNodeId(new Long(3));
+		assertEquals("",nf.getNodeId(),new Long(3));
+		nf.setNodeId(new Long(1));
+		assertEquals("",nf.getNodeId(),new Long(1));
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#getYear()}.
-	 */
-	@Test
-	public void testGetYear() 
-	{
-		assertEquals("",sy.getYear(),"2014");
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#setYear(java.lang.String)}.
-	 */
-	@Test
-	public void testSetYear() 
-	{
-		sy.setYear("2013");
-		assertEquals("",sy.getYear(),"2013");
-		sy.setYear("2014");
-		assertEquals("",sy.getYear(),"2014");
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#getStart()}.
-	 */
-	@Test
-	public void testGetStart() 
-	{
-		Long start=sy.getStart();
-		assertEquals("",sy.getStart(),start);
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#setStart(java.lang.Long)}.
-	 */
-	@Test
-	public void testSetStart() {
-		Long start=sy.getStart();
-		sy.setStart(new Long(12347));
-		assertEquals("",sy.getStart(),new Long(12347));
-		sy.setStart(new Long(12345));
-		assertEquals("",sy.getStart(),new Long(12345));
-		sy.setStart(start);
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#getEnd()}.
-	 */
-	@Test
-	public void testGetEnd() {
-		Long end=sy.getEnd();
-		assertEquals("",sy.getEnd(),end);
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#setEnd(java.lang.Long)}.
-	 */
-	@Test
-	public void testSetEnd() {
-		Long end=sy.getEnd();
-		sy.setEnd(new Long(12347));
-		assertEquals("",sy.getEnd(),new Long(12347));
-		sy.setEnd(new Long(12345));
-		assertEquals("",sy.getEnd(),new Long(12345));
-		sy.setEnd(end);
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#getInstitution()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#getInstitution()}.
 	 */
 	@Test
 	public void testGetInstitution() 
 	{
-		Institution inst=sy.getInstitution(),ddfinst=DatabaseDataFixture.populateStudentYear2014().getInstitution();
+		Institution inst=nf.getInstitution(),ddfinst=DatabaseDataFixture.populateNewsFeed2().getInstitution();
 		assertEquals(inst.getName(),ddfinst.getName());
 		assertEquals(inst.getCampus(),ddfinst.getCampus());
 		assertEquals(inst.getState(),ddfinst.getState());
@@ -190,53 +118,53 @@ public class StudentYearTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#setInstitution(com.eulersbridge.iEngage.database.domain.Institution)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#setInstitution(com.eulersbridge.iEngage.database.domain.Institution)}.
 	 */
 	@Test
 	public void testSetInstitution() 
 	{
-		Institution inst=sy.getInstitution();
+		Institution inst=nf.getInstitution();
 		String name="UCLA",campus="LA",state="California";
 		Institution inst2=DatabaseDataFixture.populateInst(name,campus,state , DatabaseDataFixture.populateCountryAust());
-		sy.setInstitution(inst2);
+		nf.setInstitution(inst2);
 		assertEquals("",inst2.getName(),name);
 		assertEquals("",inst2.getCampus(),campus);
 		assertEquals("",inst2.getState(),state);
 		assertEquals("",inst2.getCountry().getCountryName(),"Australia");
-		sy.setInstitution(inst);
+		nf.setInstitution(inst);
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#getNews()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#getNews()}.
 	 */
 	@Test
 	public void testGetNews() 
 	{
 		Set<NewsArticle> news;
-		news=sy.getNews();
+		news=nf.getNews();
 		assertNull(news);
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#setNews(java.util.Set)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#setNews(java.util.Set)}.
 	 */
 	@Test
 	public void testSetNews() 
 	{
-		Set<NewsArticle> news=sy.getNews();
-		sy.setNews(null);
-		assertNull(sy.getNews());
-		sy.setNews(news);
-		assertEquals(sy.getNews(),news);
+		Set<NewsArticle> news=nf.getNews();
+		nf.setNews(null);
+		assertNull(nf.getNews());
+		nf.setNews(news);
+		assertEquals(nf.getNews(),news);
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.StudentYear#toString()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#toString()}.
 	 */
 	@Test
 	public void testToString() 
 	{
-		assertNotNull(sy.toString());
+		assertNotNull(nf.toString());
 	}
 
 }

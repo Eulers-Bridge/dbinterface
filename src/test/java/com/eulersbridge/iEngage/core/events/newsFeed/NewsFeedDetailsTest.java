@@ -1,8 +1,10 @@
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 
 import static org.junit.Assert.*;
 
@@ -10,20 +12,17 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class StudentYearDetailsTest {
+public class NewsFeedDetailsTest {
     final Long nodeId = new Long(1);
-    final String year = new String("2014");
-    final Long start = new Long(2012);
-    final Long end = new Long(2015);
     final Long institutionId = new Long(1);
-    StudentYearDetails studentYearDetails = null;
-    StudentYearDetails studentYearDetails1 = null;
+    NewsFeedDetails newsFeedDetails = null;
+    NewsFeedDetails newsFeedDetails1 = null;
 
     @Before
     public void setUp() throws Exception {
-        studentYearDetails = new StudentYearDetails(year, start, end, institutionId);
-        studentYearDetails.setNodeId(nodeId);
-        studentYearDetails1 = new StudentYearDetails();
+        newsFeedDetails = new NewsFeedDetails(institutionId);
+        newsFeedDetails.setNodeId(nodeId);
+        newsFeedDetails1 = new NewsFeedDetails();
     }
 
     @After
@@ -33,31 +32,31 @@ public class StudentYearDetailsTest {
 
     @Test
     public void testStudentYearDetails() throws Exception {
-        assertNotNull("studentYearDetails is null", studentYearDetails);
-        assertNotNull("studentYearDetails is null", studentYearDetails1);
+        assertNotNull("newsFeedDetails is null", newsFeedDetails);
+        assertNotNull("newsFeedDetails is null", newsFeedDetails1);
     }
 
     @Test
     public void testGetNodeId() throws Exception {
-        assertEquals("nodeId does not match", nodeId, studentYearDetails.getNodeId());
+        assertEquals("nodeId does not match", nodeId, newsFeedDetails.getNodeId());
     }
 
     @Test
     public void testSetNodeId() throws Exception {
         Long nodeId1 = new Long(3);
-        studentYearDetails1.setNodeId(nodeId1);
-        assertEquals("nodeId does not match", nodeId1, studentYearDetails1.getNodeId());
+        newsFeedDetails1.setNodeId(nodeId1);
+        assertEquals("nodeId does not match", nodeId1, newsFeedDetails1.getNodeId());
     }
 
     @Test
-    public void testGetYear() throws Exception {
-        assertEquals("year does not match", year, studentYearDetails.getYear());
+    public void testGetInstitutionId() throws Exception {
+        assertEquals("institutionId does not match", nodeId, newsFeedDetails.getInstitutionId());
     }
 
     @Test
-    public void testSetYear() throws Exception {
-        String year1 = new String("2013");
-        studentYearDetails1.setYear(year1);
-        assertEquals("year does not match", year1, studentYearDetails1.getYear());
+    public void testSetInstitutionId() throws Exception {
+        Long nodeId1 = new Long(3);
+        newsFeedDetails1.setInstitutionId(nodeId1);
+        assertEquals("institutionId does not match", nodeId1, newsFeedDetails1.getInstitutionId());
     }
 }

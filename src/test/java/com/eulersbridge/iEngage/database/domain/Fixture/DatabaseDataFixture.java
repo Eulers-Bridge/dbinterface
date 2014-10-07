@@ -9,7 +9,7 @@ import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
@@ -80,25 +80,20 @@ public class DatabaseDataFixture
 		country.setNodeId(nodeId);
 		return country;
 	}
-	public static StudentYear populateStudentYear2013()
+	public static NewsFeed populateNewsFeed1()
 	{
-		return populateStudentYear((long)2, "2013");
+		return populateStudentYear((long)2);
 	}
 	
-	public static StudentYear populateStudentYear2014()
+	public static NewsFeed populateNewsFeed2()
 	{
-		return populateStudentYear((long)1,"2014");
+		return populateStudentYear((long)1);
 	}
 	
-	public static StudentYear populateStudentYear(Long nodeId,String theYear)
+	public static NewsFeed populateStudentYear(Long nodeId)
 	{
-		StudentYear year=new StudentYear();
-		year.setYear(theYear);
-		Calendar now=Calendar.getInstance();
-		year.setStart(now.getTimeInMillis());
-		year.setEnd(now.getTimeInMillis()+200000);
+		NewsFeed year=new NewsFeed();
 		Institution inst=populateInstUniMelb();
-//		inst.setNodeId((long)1);
 		year.setInstitution(inst);
 		year.setNodeId(nodeId);
 		return year;
@@ -107,23 +102,23 @@ public class DatabaseDataFixture
 	public static NewsArticle populateNewsArticle1()
 	{
 		Long nodeId=(long)1;
-		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", null, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateStudentYear2014());
-		initialArticle.setStudentYear(DatabaseDataFixture.populateStudentYear2014());
+		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", null, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateNewsFeed2());
+		initialArticle.setNewsFeed(DatabaseDataFixture.populateNewsFeed2());
 		return initialArticle;
 	}
 	public static NewsArticle populateNewsArticle2()
 	{
 		Long nodeId=(long)2;
-		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", null, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateStudentYear2014());
-		initialArticle.setStudentYear(DatabaseDataFixture.populateStudentYear2014());
+		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", null, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateNewsFeed2());
+		initialArticle.setNewsFeed(DatabaseDataFixture.populateNewsFeed2());
 		return initialArticle;
 	}
-	public static NewsArticle populateNewsArticle(String title, String content, Iterable<String> picture, User creator, Calendar date, Long id, StudentYear studentYear)
+	public static NewsArticle populateNewsArticle(String title, String content, Iterable<String> picture, User creator, Calendar date, Long id, NewsFeed studentYear)
 	{
 		NewsArticle article=new NewsArticle(title, content, picture, date, creator);
 		Long nodeId=id;
 		article.setNodeId(nodeId);
-		article.setStudentYear(studentYear);
+		article.setNewsFeed(studentYear);
 		article.setLikes(new HashSet<Like>());
 		return article;
 	}
@@ -155,11 +150,11 @@ public class DatabaseDataFixture
 		return institutions;
 	}
 	
-	public static HashMap<Long,StudentYear> populateStudentYears()
+	public static HashMap<Long,NewsFeed> populateStudentYears()
 	{
-		HashMap<Long, StudentYear> years=new HashMap<Long, StudentYear>();
-		years.put(new Long(1), populateStudentYear2014());
-		years.put(new Long(2), populateStudentYear2013());
+		HashMap<Long, NewsFeed> years=new HashMap<Long, NewsFeed>();
+		years.put(new Long(1), populateNewsFeed2());
+		years.put(new Long(2), populateNewsFeed1());
 		return years;
 	}
 

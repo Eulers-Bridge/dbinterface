@@ -24,14 +24,14 @@ import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
-import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
-import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
+import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedCreatedEvent;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 import com.eulersbridge.iEngage.database.domain.Country;
-import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.repository.CountryMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
-import com.eulersbridge.iEngage.database.repository.StudentYearMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.NewsFeedMemoryRepository;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
@@ -44,7 +44,7 @@ public class InstitutionEventHandlerTest
 	InstitutionService instService;
 	InstitutionMemoryRepository testInstRepo;
 	CountryMemoryRepository testCountryRepo;
-	StudentYearMemoryRepository testSYRepo;
+	NewsFeedMemoryRepository testSYRepo;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -72,8 +72,8 @@ public class InstitutionEventHandlerTest
 		HashMap<Long, Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		testInstRepo=new InstitutionMemoryRepository(institutions);
 		
-		HashMap<Long, StudentYear> years=DatabaseDataFixture.populateStudentYears();
-		testSYRepo=new StudentYearMemoryRepository(years);
+		HashMap<Long, NewsFeed> years=DatabaseDataFixture.populateStudentYears();
+		testSYRepo=new NewsFeedMemoryRepository(years);
 
 		instService=new InstitutionEventHandler(testInstRepo, testCountryRepo, testSYRepo);
 	}
@@ -193,11 +193,9 @@ public class InstitutionEventHandlerTest
 	@Test
 	public void testCreateStudentYear()
 	{
-		long start=44*365*24*60*60*1000;
-		long end=45*365*24*60*60*1000;
-		StudentYearDetails studentYearDetails=new StudentYearDetails("2014", start, end, (long)1);
-		CreateStudentYearEvent csye=new CreateStudentYearEvent(studentYearDetails);
-		StudentYearCreatedEvent syce=instService.createStudentYear(csye);
+		NewsFeedDetails newsFeedDetails=new NewsFeedDetails((long)1);
+		CreateNewsFeedEvent csye=new CreateNewsFeedEvent(newsFeedDetails);
+		NewsFeedCreatedEvent syce=instService.createNewsFeed(csye);
 		assertNotNull("Student year created event was null.",syce);
 	}
 

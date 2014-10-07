@@ -33,13 +33,13 @@ import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleE
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
-import com.eulersbridge.iEngage.database.repository.StudentYearMemoryRepository;
-import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
+import com.eulersbridge.iEngage.database.repository.NewsFeedMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.NewsFeedRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 
 /**
@@ -52,7 +52,7 @@ public class NewsEventHandlerTest
 	UserMemoryRepository userRepo;
 	NewsEventHandler newsService;
 	InstitutionMemoryRepository instRepo;
-	StudentYearRepository syRepo;
+	NewsFeedRepository syRepo;
 	
 	int page=0;
 	int size=10;
@@ -82,8 +82,8 @@ public class NewsEventHandlerTest
 		userRepo=new UserMemoryRepository(users);
 		Map<Long,Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
-		Map<Long, StudentYear> years=DatabaseDataFixture.populateStudentYears();
-		syRepo=new StudentYearMemoryRepository(years);
+		Map<Long, NewsFeed> years=DatabaseDataFixture.populateStudentYears();
+		syRepo=new NewsFeedMemoryRepository(years);
 		testRepo=new NewsArticleMemoryRepository(newsArticles);
 		newsService=new NewsEventHandler(testRepo,userRepo,instRepo,syRepo);
 	}
@@ -217,7 +217,7 @@ public class NewsEventHandlerTest
 	public void testShouldReadNewsArticlesWithSYID1Only()
 	{
 		Iterable<String> picture=null;
-		NewsArticle na=DatabaseDataFixture.populateNewsArticle("Different year test", "Testing to see if a different year will be picked up.", picture, DatabaseDataFixture.populateUserGnewitt2(), Calendar.getInstance(), null, DatabaseDataFixture.populateStudentYear2013());
+		NewsArticle na=DatabaseDataFixture.populateNewsArticle("Different year test", "Testing to see if a different year will be picked up.", picture, DatabaseDataFixture.populateUserGnewitt2(), Calendar.getInstance(), null, DatabaseDataFixture.populateNewsFeed1());
 		testRepo.save(na);
 		Long syId=(long)1;
 		Long instId=(long)1;
@@ -264,7 +264,7 @@ public class NewsEventHandlerTest
 	public void testShouldReadNewsArticlesWithSYID2Only()
 	{
 		Iterable<String> picture=null;
-		NewsArticle na=DatabaseDataFixture.populateNewsArticle("Different year test", "Testing to see if a different year will be picked up.", picture, DatabaseDataFixture.populateUserGnewitt2(), Calendar.getInstance(), null, DatabaseDataFixture.populateStudentYear2013());
+		NewsArticle na=DatabaseDataFixture.populateNewsArticle("Different year test", "Testing to see if a different year will be picked up.", picture, DatabaseDataFixture.populateUserGnewitt2(), Calendar.getInstance(), null, DatabaseDataFixture.populateNewsFeed1());
 		testRepo.save(na);
 		Long syId=(long)2;
 		Long instId=(long)1;

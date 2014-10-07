@@ -27,7 +27,7 @@ public class NewsArticleTest
 	final String content="The content.";
 	final Calendar date=Calendar.getInstance();
 	final User creator=DatabaseDataFixture.populateUserGnewitt();
-	final StudentYear year=DatabaseDataFixture.populateStudentYear2014();
+	final NewsFeed year=DatabaseDataFixture.populateNewsFeed2();
 	final Long node1=new Long(1);
 	final Long node2=new Long(2);
 	/**
@@ -53,7 +53,7 @@ public class NewsArticleTest
 		Iterable<String> picture=null;
 		news=new NewsArticle(title, content, picture, date, creator);
 		news.setNodeId(node1);
-		news.setStudentYear(year);
+		news.setNewsFeed(year);
 	}
 
 	/**
@@ -183,7 +183,6 @@ public class NewsArticleTest
 		assertEquals("IDs don't match.",dets.getNewsArticleId(),news.getNodeId());
 		assertEquals("Pictures don't match.",dets.getPicture(),news.getPicture());
 		assertEquals("Likers don't match.",dets.getLikers(),news.getLikes());
-		assertEquals("Years don't match.",dets.getStudentYear(),news.getStudentYear().getYear());
 	}
 
 	/**
@@ -201,7 +200,6 @@ public class NewsArticleTest
 		assertEquals("IDs don't match.",news2.getNodeId(),news.getNodeId());
 		assertEquals("Pictures don't match.",news2.getPicture(),news.getPicture());
 		assertEquals("Likers don't match.",news2.getLikes(),news.getLikes());
-		assertEquals("Years don't match.",news2.getStudentYear().getYear(),news.getStudentYear().getYear());
 	}
 
 	/**

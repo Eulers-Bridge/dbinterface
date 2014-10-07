@@ -1,8 +1,11 @@
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 
 import static org.junit.Assert.*;
 
@@ -10,19 +13,16 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class CreateStudentYearEventTest {
+public class CreateNewsFeedEventTest {
     final Long nodeId = new Long(1);
-    final String year = new String("2014");
-    final Long start = new Long(2012);
-    final Long end = new Long(2015);
     final Long institutionId = new Long(1);
-    StudentYearDetails studentYearDetails = null;
-    CreateStudentYearEvent createStudentYearEvent = null;
+    NewsFeedDetails newsFeedDetails = null;
+    CreateNewsFeedEvent createNewsFeedEvent = null;
 
     @Before
     public void setUp() throws Exception {
-        studentYearDetails = new StudentYearDetails(year, start, end, institutionId);
-        createStudentYearEvent = new CreateStudentYearEvent(nodeId, studentYearDetails);
+        newsFeedDetails = new NewsFeedDetails(institutionId);
+        createNewsFeedEvent = new CreateNewsFeedEvent(nodeId, newsFeedDetails);
     }
 
     @After
@@ -31,25 +31,22 @@ public class CreateStudentYearEventTest {
     }
 
     @Test
-    public void testCreateStudentYearEvent() throws Exception {
-        assertNotNull("createStudentYearEvent is null", createStudentYearEvent);
-        CreateStudentYearEvent createStudentYearEvent1 = new CreateStudentYearEvent(studentYearDetails);
-        assertNotNull("CreateStudentYearEvent is null", createStudentYearEvent1);
+    public void testCreateNewsFeedEvent() throws Exception {
+        assertNotNull("createNewsFeedEvent is null", createNewsFeedEvent);
+        CreateNewsFeedEvent createStudentYearEvent1 = new CreateNewsFeedEvent(newsFeedDetails);
+        assertNotNull("createNewsFeedEvent is null", createStudentYearEvent1);
     }
 
     @Test
     public void testGetStudentYearDetails() throws Exception {
-        assertEquals("StudentYearDetails does not match", studentYearDetails, createStudentYearEvent.getStudentYearDetails());
+        assertEquals("NewsFeedDetails does not match", newsFeedDetails, createNewsFeedEvent.getNewsFeedDetails());
     }
 
     @Test
-    public void testSetStudentYearDetails() throws Exception {
-        String year1 = new String("2013");
-        Long start1 = new Long(2010);
-        Long end1 = new Long(2013);
+    public void testSetNewsFeedDetails() throws Exception {
         Long institutionId1 = new Long(1);
-        StudentYearDetails studentYearDetails1 = new StudentYearDetails(year1,start1, end1, institutionId1);
-        createStudentYearEvent.setStudentYearDetails(studentYearDetails1);
-        assertEquals("StudentYearDetails does not match", studentYearDetails1, createStudentYearEvent.getStudentYearDetails());
+        NewsFeedDetails studentYearDetails1 = new NewsFeedDetails(institutionId1);
+        createNewsFeedEvent.setNewsFeedDetails(studentYearDetails1);
+        assertEquals("StudentYearDetails does not match", studentYearDetails1, createNewsFeedEvent.getNewsFeedDetails());
     }
 }

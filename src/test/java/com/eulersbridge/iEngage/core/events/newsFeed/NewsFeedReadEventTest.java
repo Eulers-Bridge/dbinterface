@@ -1,8 +1,11 @@
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedReadEvent;
 
 import static org.junit.Assert.*;
 
@@ -10,21 +13,18 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class StudentYearReadEventTest {
+public class NewsFeedReadEventTest {
     final Long nodeId = new Long(1);
-    final String year = new String("2014");
-    final Long start = new Long(2012);
-    final Long end = new Long(2015);
     final Long institutionId = new Long(1);
-    StudentYearDetails studentYearDetails = null;
-    StudentYearReadEvent studentYearReadEvent = null;
+    NewsFeedDetails newsFeedDetails = null;
+    NewsFeedReadEvent newsFeedReadEvent = null;
     final Long id = new Long(1);
 
     @Before
     public void setUp() throws Exception {
-        studentYearDetails = new StudentYearDetails(year, start, end, institutionId);
-        studentYearDetails.setNodeId(nodeId);
-        studentYearReadEvent = new StudentYearReadEvent(id,studentYearDetails);
+        newsFeedDetails = new NewsFeedDetails(institutionId);
+        newsFeedDetails.setNodeId(nodeId);
+        newsFeedReadEvent = new NewsFeedReadEvent(id,newsFeedDetails);
     }
 
     @After
@@ -34,23 +34,23 @@ public class StudentYearReadEventTest {
 
     @Test
     public void testStudentYearReadEvent() throws Exception {
-        assertNotNull("studentYearReadEvent is null", studentYearReadEvent);
+        assertNotNull("newsFeedReadEvent is null", newsFeedReadEvent);
     }
 
     @Test
     public void testGetNewsArticleId() throws Exception {
-        assertEquals("id does not match", id, studentYearReadEvent.getNewsArticleId());
+        assertEquals("id does not match", id, newsFeedReadEvent.getNewsArticleId());
     }
 
     @Test
-    public void testGetReadStudentYearDetails() throws Exception {
-        assertEquals("studentYearDetails does not match", studentYearDetails, studentYearReadEvent.getReadStudentYearDetails());
+    public void testGetReadNewsFeedDetails() throws Exception {
+        assertEquals("newsFeedDetails does not match", newsFeedDetails, newsFeedReadEvent.getReadNewsFeedDetails());
     }
 
     @Test
     public void testNotFound() throws Exception {
-        StudentYearReadEvent studentYearReadEvent1 = StudentYearReadEvent.notFound(id);
-        assertNotNull("testNotFound() returns null", studentYearReadEvent1);
-        assertFalse("entityFound is not false", studentYearReadEvent1.isEntityFound());
+        NewsFeedReadEvent newsFeedReadEvent1 = NewsFeedReadEvent.notFound(id);
+        assertNotNull("testNotFound() returns null", newsFeedReadEvent1);
+        assertFalse("entityFound is not false", newsFeedReadEvent1.isEntityFound());
     }
 }

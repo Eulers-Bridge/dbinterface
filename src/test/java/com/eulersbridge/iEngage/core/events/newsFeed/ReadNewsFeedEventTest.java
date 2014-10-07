@@ -1,8 +1,10 @@
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.eulersbridge.iEngage.core.events.newsFeed.ReadNewsFeedEvent;
 
 import static org.junit.Assert.*;
 
@@ -10,12 +12,12 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class ReadStudentYearEventTest {
+public class ReadNewsFeedEventTest {
     final Long nodeId = new Long(1);
-    ReadStudentYearEvent readStudentYearEvent = null;
+    ReadNewsFeedEvent readNewsFeedEvent = null;
     @Before
     public void setUp() throws Exception {
-        readStudentYearEvent = new ReadStudentYearEvent(nodeId);
+        readNewsFeedEvent = new ReadNewsFeedEvent(nodeId);
     }
 
     @After
@@ -24,12 +26,12 @@ public class ReadStudentYearEventTest {
     }
 
     @Test
-    public void testReadStudentYearEvent() throws Exception {
-        assertNotNull("readStudentYearEvent is null", readStudentYearEvent);
+    public void testReadNewsFeedEvent() throws Exception {
+        assertNotNull("readNewsFeedEvent is null", readNewsFeedEvent);
     }
 
     @Test
-    public void testGetStudentYearId() throws Exception {
-        assertEquals("StudentYearId does not match", nodeId, readStudentYearEvent.getStudentYearId());
+    public void testGetNewsFeedId() throws Exception {
+        assertEquals("NewsFeedId does not match", nodeId, readNewsFeedEvent.getNewsFeedId());
     }
 }
