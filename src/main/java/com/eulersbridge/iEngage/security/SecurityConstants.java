@@ -11,4 +11,5 @@ public class SecurityConstants
 	public static final String DIGEST_KEY = "eulersBridge";
 	public static final int NonceValiditySeconds = 60;
 	public static final String HEADER_SECURITY_TOKEN = "X-Security-Token";
+	public static final String TOKEN_KEY = "some token goes here";
 }
