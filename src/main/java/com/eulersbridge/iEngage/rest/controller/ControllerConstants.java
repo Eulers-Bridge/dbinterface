@@ -12,6 +12,7 @@ public class ControllerConstants
 	public static final String API_PREFIX="/api";
 	public static final String COUNTRY_LABEL = "/country";
 	public static final String COUNTRYS_LABEL = "/countrys";
+	public static final String DBINTERFACE_PREFIX = "/dbInterface";
 	public static final String ELECTION_LABEL = "/election";
 	public static final String EMAIL_VERIFICATION_LABEL = "/emailVerification";
     public static final String EVENT_LABEL = "/event";
