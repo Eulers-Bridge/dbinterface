@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 
@@ -9,20 +9,20 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
  * @author Greg Newitt
  *
  */
-public class StudentYearReadEvent extends ReadEvent 
+public class NewsFeedReadEvent extends ReadEvent 
 {
 	private Long id;
-	private StudentYearDetails readStudentYearDetails;
+	private NewsFeedDetails readNewsFeedDetails;
 	
-	public StudentYearReadEvent(Long id) 
+	public NewsFeedReadEvent(Long id) 
 	{
 		this.id = id;
 	}
 
-	  public StudentYearReadEvent(Long id, StudentYearDetails readStudentYearDetails) 
+	  public NewsFeedReadEvent(Long id, NewsFeedDetails readNewsFeedDetails) 
 	  {
 		  this.id = id;
-		  this.readStudentYearDetails = readStudentYearDetails;
+		  this.readNewsFeedDetails = readNewsFeedDetails;
 	  }
 
 	  public Long getNewsArticleId() 
@@ -30,14 +30,14 @@ public class StudentYearReadEvent extends ReadEvent
 		  return this.id;
 	  }
 
-	  public StudentYearDetails getReadStudentYearDetails() 
+	  public NewsFeedDetails getReadNewsFeedDetails() 
 	  {
-		  return readStudentYearDetails;
+		  return readNewsFeedDetails;
 	  }
 
-	  public static StudentYearReadEvent notFound(Long id) 
+	  public static NewsFeedReadEvent notFound(Long id) 
 	  {
-		  StudentYearReadEvent ev = new StudentYearReadEvent(id);
+		  NewsFeedReadEvent ev = new NewsFeedReadEvent(id);
 		  ev.entityFound=false;
 		  return ev;
 	  }

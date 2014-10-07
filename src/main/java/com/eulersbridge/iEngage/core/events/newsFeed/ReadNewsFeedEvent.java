@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 
@@ -9,16 +9,16 @@ import com.eulersbridge.iEngage.core.events.RequestReadEvent;
  * @author Greg Newitt
  *
  */
-public class ReadStudentYearEvent extends RequestReadEvent 
+public class ReadNewsFeedEvent extends RequestReadEvent 
 {
 	private Long id;
 
-	public ReadStudentYearEvent(Long id) 
+	public ReadNewsFeedEvent(Long id) 
 	{
 	    this.id = id;
 	}
 
-	public Long getStudentYearId() 
+	public Long getNewsFeedId() 
 	{
 	    return id;
 	}

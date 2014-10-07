@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,32 +12,32 @@ import com.eulersbridge.iEngage.core.events.CreateEvent;
  * @author Greg Newitt
  *
  */
-public class CreateStudentYearEvent extends CreateEvent 
+public class CreateNewsFeedEvent extends CreateEvent 
 {
-	StudentYearDetails studentYearDetails;
-	Long studentYearId;
+	NewsFeedDetails newsFeedDetails;
+	Long newsFeedId;
 	
-    private static Logger LOG = LoggerFactory.getLogger(CreateStudentYearEvent.class);
+    private static Logger LOG = LoggerFactory.getLogger(CreateNewsFeedEvent.class);
     
-    public CreateStudentYearEvent(Long id, StudentYearDetails studentYearDetails) 
+    public CreateNewsFeedEvent(Long id, NewsFeedDetails newsFeedDetails) 
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("CreateStudentYearEvent("+id+","+studentYearDetails+") = ");
-		studentYearDetails.setNodeId(id);
-		this.studentYearDetails=studentYearDetails;
+		if (LOG.isDebugEnabled()) LOG.debug("CreateStudentYearEvent("+id+","+newsFeedDetails+") = ");
+		newsFeedDetails.setNodeId(id);
+		this.newsFeedDetails=newsFeedDetails;
 	}
 
-	public CreateStudentYearEvent(StudentYearDetails studentYearDetails) 
+	public CreateNewsFeedEvent(NewsFeedDetails newsFeedDetails) 
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("CreateStudentYearEvent("+studentYearDetails+") = ");
-		this.studentYearDetails=studentYearDetails;
+		if (LOG.isDebugEnabled()) LOG.debug("CreateNewsFeedEvent("+newsFeedDetails+") = ");
+		this.newsFeedDetails=newsFeedDetails;
 	}
 
-	public StudentYearDetails getStudentYearDetails() {
-		return this.studentYearDetails;
+	public NewsFeedDetails getNewsFeedDetails() {
+		return this.newsFeedDetails;
 	}
 
-	public void setStudentYearDetails(StudentYearDetails studentYearDetails) {
-		this.studentYearDetails = studentYearDetails;
+	public void setNewsFeedDetails(NewsFeedDetails studentYearDetails) {
+		this.newsFeedDetails = studentYearDetails;
 	}
 
 }

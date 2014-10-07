@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 
@@ -9,35 +9,35 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
  * @author Greg Newitt
  *
  */
-public class StudentYearCreatedEvent extends CreatedEvent 
+public class NewsFeedCreatedEvent extends CreatedEvent 
 {
-	private StudentYearDetails studentYearDetails;
+	private NewsFeedDetails newsFeedDetails;
 	private Long id;
 	private boolean institutionFound=true;
 	
-	public StudentYearCreatedEvent(Long id, StudentYearDetails studentYearDetails) 
+	public NewsFeedCreatedEvent(Long id, NewsFeedDetails newsFeedDetails) 
 	{
-		this.studentYearDetails=studentYearDetails;
+		this.newsFeedDetails=newsFeedDetails;
 		this.id=id;
 	}
 
-	public StudentYearCreatedEvent(Long id) 
+	public NewsFeedCreatedEvent(Long id) 
 	{
 		this.id=id;
 	}
 
 	/**
-	 * @return the studentYearDetails
+	 * @return the newsFeedDetails
 	 */
-	public StudentYearDetails getStudentYearDetails() {
-		return studentYearDetails;
+	public NewsFeedDetails getNewsFeedDetails() {
+		return newsFeedDetails;
 	}
 
 	/**
-	 * @param studentYearDetails the studentYearDetails to set
+	 * @param newsFeedDetails the newsFeedDetails to set
 	 */
-	public void setStudentYearDetails(StudentYearDetails studentYearDetails) {
-		this.studentYearDetails = studentYearDetails;
+	public void setNewsFeedDetails(NewsFeedDetails newsFeedDetails) {
+		this.newsFeedDetails = newsFeedDetails;
 	}
 
 	/**
@@ -68,9 +68,9 @@ public class StudentYearCreatedEvent extends CreatedEvent
 		this.institutionFound = institutionFound;
 	}
 
-	public static StudentYearCreatedEvent institutionNotFound(Long nodeId) 
+	public static NewsFeedCreatedEvent institutionNotFound(Long nodeId) 
 	{
-		StudentYearCreatedEvent ev = new StudentYearCreatedEvent(nodeId);
+		NewsFeedCreatedEvent ev = new NewsFeedCreatedEvent(nodeId);
 	    ev.setInstitutionFound(false);
 	    return ev;
 	}

@@ -1,30 +1,24 @@
 /**
  * 
  */
-package com.eulersbridge.iEngage.core.events.studentYear;
+package com.eulersbridge.iEngage.core.events.newsFeed;
 
 /**
  * @author Greg Newitt
  *
  */
-public class StudentYearDetails 
+public class NewsFeedDetails 
 {
 	Long nodeId;
-	String year;
-	Long start;
-	Long end;
 	Long institutionId;
 
-	public StudentYearDetails()
+	public NewsFeedDetails()
 	{
 		
 	}
 	
-	public StudentYearDetails(String year, Long start, Long end, Long institutionId)
+	public NewsFeedDetails(Long institutionId)
 	{
-		this.year=year;
-		this.start=start;
-		this.end=end;
 		this.institutionId=institutionId;
 	}
 
@@ -40,48 +34,6 @@ public class StudentYearDetails
 	 */
 	public void setNodeId(Long nodeId) {
 		this.nodeId = nodeId;
-	}
-
-	/**
-	 * @return the year
-	 */
-	public String getYear() {
-		return year;
-	}
-
-	/**
-	 * @param year the year to set
-	 */
-	public void setYear(String year) {
-		this.year = year;
-	}
-
-	/**
-	 * @return the start
-	 */
-	public Long getStart() {
-		return start;
-	}
-
-	/**
-	 * @param start the start to set
-	 */
-	public void setStart(Long start) {
-		this.start = start;
-	}
-
-	/**
-	 * @return the end
-	 */
-	public Long getEnd() {
-		return end;
-	}
-
-	/**
-	 * @param end the end to set
-	 */
-	public void setEnd(Long end) {
-		this.end = end;
 	}
 
 	/**
@@ -104,8 +56,7 @@ public class StudentYearDetails
 	@Override
 	public String toString() 
 	{
-		return "StudentYearDetails [nodeId=" + nodeId + ", year=" + year
-				+ ", start=" + start + ", end=" + end + ", institutionId="
+		return "StudentYearDetails [nodeId=" + nodeId + ", institutionId="
 				+ institutionId + "]";
 	}
 	
@@ -114,8 +65,8 @@ public class StudentYearDetails
 	{
 		if (null == other) return false;
 		if (other == this) return true;
-		if (!(other instanceof StudentYearDetails)) return false;
-		StudentYearDetails dets2=(StudentYearDetails) other;
+		if (!(other instanceof NewsFeedDetails)) return false;
+		NewsFeedDetails dets2=(NewsFeedDetails) other;
 		if (dets2.getNodeId()!=null)
 		{
 			if (dets2.getNodeId().equals(getNodeId()))
