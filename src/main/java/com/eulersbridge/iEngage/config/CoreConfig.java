@@ -26,7 +26,7 @@ public class CoreConfig
 	@Autowired
 	NewsArticleRepository newsRepo;
 	@Autowired
-	StudentYearRepository syRepo;
+	NewsFeedRepository syRepo;
     @Autowired
     ElectionRepository eleRepo;
     @Autowired

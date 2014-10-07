@@ -8,39 +8,33 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
-import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 
 @NodeEntity
-public class StudentYear 
+public class NewsFeed 
 {
 	@GraphId 
 	Long nodeId;
-	String year;
-	Long start;
-	Long end;
-	@RelatedTo(type = DatabaseDomainConstants.HAS_STUDENT_YEAR_LABEL, direction=Direction.BOTH) @Fetch
+	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_FEED_LABEL, direction=Direction.BOTH) @Fetch
 	private	Institution  institution;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH)
 	private	Set<NewsArticle>  news;
 	
-	public static StudentYear fromDetails(StudentYearDetails newYear) 
+	public static NewsFeed fromDetails(NewsFeedDetails newYear) 
 	{
-		StudentYear sy=new StudentYear();
-		sy.setYear(newYear.getYear());
-		sy.setStart(newYear.getStart());
-		sy.setEnd(newYear.getEnd());
+		NewsFeed nf=new NewsFeed();
 		Institution inst=new Institution();
 		inst.setNodeId(newYear.getInstitutionId());
-		sy.setInstitution(inst);
-		sy.setNodeId(newYear.getNodeId());
-		return sy;
+		nf.setInstitution(inst);
+		nf.setNodeId(newYear.getNodeId());
+		return nf;
 	}
 	
-	public StudentYearDetails toDetails()
+	public NewsFeedDetails toDetails()
 	{
-		StudentYearDetails syd=new StudentYearDetails(getYear(), getStart(), getEnd(), getInstitution().getNodeId());
-		syd.setNodeId(getNodeId());
-		return syd;
+		NewsFeedDetails sfd=new NewsFeedDetails(getInstitution().getNodeId());
+		sfd.setNodeId(getNodeId());
+		return sfd;
 	}
 
 	/**
@@ -55,48 +49,6 @@ public class StudentYear
 	 */
 	public void setNodeId(Long nodeId) {
 		this.nodeId = nodeId;
-	}
-
-	/**
-	 * @return the year
-	 */
-	public String getYear() {
-		return year;
-	}
-
-	/**
-	 * @param year the year to set
-	 */
-	public void setYear(String year) {
-		this.year = year;
-	}
-
-	/**
-	 * @return the start
-	 */
-	public Long getStart() {
-		return start;
-	}
-
-	/**
-	 * @param start the start to set
-	 */
-	public void setStart(Long start) {
-		this.start = start;
-	}
-
-	/**
-	 * @return the end
-	 */
-	public Long getEnd() {
-		return end;
-	}
-
-	/**
-	 * @param end the end to set
-	 */
-	public void setEnd(Long end) {
-		this.end = end;
 	}
 
 	/**
@@ -131,7 +83,7 @@ public class StudentYear
 	@Override
 	public String toString() 
 	{
-		StringBuffer buff=new StringBuffer("StudentYear [nodeId=" + nodeId + ", year=" + year + ", start="+ start + ", end=" + end + ", institution=");
+		StringBuffer buff=new StringBuffer("StudentYear [nodeId=" + nodeId + ", institution=");
 		if (institution!=null)
 			buff.append(institution.getNodeId());
 		else buff.append(institution);
@@ -144,8 +96,8 @@ public class StudentYear
 	{
 		if (null == other) return false;
 		if (other == this) return true;
-		if (!(other instanceof StudentYear)) return false;
-		StudentYear sy2=(StudentYear) other;
+		if (!(other instanceof NewsFeed)) return false;
+		NewsFeed sy2=(NewsFeed) other;
 		
 		if ((nodeId!=null)&&(nodeId.equals(sy2.nodeId))) return true;
 		return false;

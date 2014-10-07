@@ -4,66 +4,24 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import org.springframework.hateoas.ResourceSupport;
 
-import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 import com.eulersbridge.iEngage.rest.controller.InstitutionController;
 
-public class StudentYear extends ResourceSupport
+public class NewsFeed extends ResourceSupport
 {
 	Long nodeId;
-	String year;
-	Long start;
-	Long end;
 	Long institutionId;
 	
-	public StudentYear()
+	public NewsFeed()
 	{
 		
 	}
 	
-	public StudentYear(String year,Long start, Long end, Long institutionId)
+	public NewsFeed(Long institutionId)
 	{
-		this.year=year;
-		this.start=start;
-		this.end=end;
 		this.institutionId=institutionId;
 	}
 	
-	/**
-	 * @return the year
-	 */
-	public String getYear() {
-		return year;
-	}
-	/**
-	 * @param year the year to set
-	 */
-	public void setYear(String year) {
-		this.year = year;
-	}
-	/**
-	 * @return the start
-	 */
-	public Long getStart() {
-		return start;
-	}
-	/**
-	 * @param start the start to set
-	 */
-	public void setStart(Long start) {
-		this.start = start;
-	}
-	/**
-	 * @return the end
-	 */
-	public Long getEnd() {
-		return end;
-	}
-	/**
-	 * @param end the end to set
-	 */
-	public void setEnd(Long end) {
-		this.end = end;
-	}
 	/**
 	 * @return the institutionId
 	 */
@@ -77,24 +35,21 @@ public class StudentYear extends ResourceSupport
 		this.institutionId = institutionId;
 	}
 	
-	public StudentYearDetails toStudentYearDetails() 
+	public NewsFeedDetails toNewsFeedDetails() 
 	  {
-		StudentYearDetails details = new StudentYearDetails(year,start,end,institutionId);
+		NewsFeedDetails details = new NewsFeedDetails(institutionId);
 		details.setNodeId(nodeId);
 
 	    return details;
 	  }
 
 	  // {!begin fromOrderDetails}
-	  public static StudentYear fromStudentYearDetails(StudentYearDetails readStudentYear) 
+	  public static NewsFeed fromNewsFeedDetails(NewsFeedDetails readNewsFeed) 
 	  {
-		  StudentYear studentYear = new StudentYear();
+		  NewsFeed newsFeed = new NewsFeed();
 
-		  studentYear.nodeId = readStudentYear.getNodeId();
-		  studentYear.year = readStudentYear.getYear();
-		  studentYear.start = readStudentYear.getStart();
-		  studentYear.end = readStudentYear.getEnd();
-		  studentYear.institutionId = readStudentYear.getInstitutionId();
+		  newsFeed.nodeId = readNewsFeed.getNodeId();
+		  newsFeed.institutionId = readNewsFeed.getInstitutionId();
 	    
 		  String simpleName=Institution.class.getSimpleName();
 		  String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
@@ -104,10 +59,10 @@ public class StudentYear extends ResourceSupport
 	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
 	    //We have explicitly avoided that.
 	    // {!begin selfRel}
-		  studentYear.add(linkTo(InstitutionController.class).slash(name).slash(studentYear.nodeId).withSelfRel());
+		  newsFeed.add(linkTo(InstitutionController.class).slash(name).slash(newsFeed.nodeId).withSelfRel());
 	    // {!end selfRel}
 
-	    return studentYear;
+	    return newsFeed;
 	  }
 
 

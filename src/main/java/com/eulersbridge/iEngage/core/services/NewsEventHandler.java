@@ -27,11 +27,11 @@ import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
-import com.eulersbridge.iEngage.database.repository.StudentYearRepository;
+import com.eulersbridge.iEngage.database.repository.NewsFeedRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 public class NewsEventHandler implements NewsService 
@@ -41,9 +41,9 @@ public class NewsEventHandler implements NewsService
     private UserRepository userRepository;
 	private NewsArticleRepository newsRepo;
 	private InstitutionRepository instRepo;
-    private StudentYearRepository syRepository;
+    private NewsFeedRepository syRepository;
 
-	public NewsEventHandler(NewsArticleRepository newsRepo,UserRepository userRepository, InstitutionRepository instRepo, StudentYearRepository syRepo) 
+	public NewsEventHandler(NewsArticleRepository newsRepo,UserRepository userRepository, InstitutionRepository instRepo, NewsFeedRepository syRepo) 
 	{
 		this.newsRepo=newsRepo;
 		this.userRepository=userRepository;
@@ -59,7 +59,7 @@ public class NewsEventHandler implements NewsService
 		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
 		
 		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with id = "+nADs.getInstitutionId());
-		StudentYear sy=instRepo.findLatestStudentYear(nADs.getInstitutionId());
+		NewsFeed sy=instRepo.findLatestStudentYear(nADs.getInstitutionId());
 		if (LOG.isDebugEnabled()) LOG.debug("inst - "+sy);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding user with email = "+nADs.getCreatorEmail());
     	User creator=userRepository.findByEmail(nADs.getCreatorEmail());
@@ -68,7 +68,7 @@ public class NewsEventHandler implements NewsService
     	if ((creator!=null)&&(sy!=null))
     	{
     		na.setCreator(creator);
-    		na.setStudentYear(sy);
+    		na.setNewsFeed(sy);
 			NewsArticle result=newsRepo.save(na);
 			nACE=new NewsArticleCreatedEvent(result.getNodeId(), result.toNewsArticleDetails());
     	}
@@ -106,8 +106,8 @@ public class NewsEventHandler implements NewsService
 		NewsArticleDetails nADs = updateNewsArticleEvent.getUNewsArticleDetails();
 		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with id = "+nADs.getInstitutionId());
-		StudentYear sy=instRepo.findLatestStudentYear(nADs.getInstitutionId());
-		na.setStudentYear(sy);
+		NewsFeed sy=instRepo.findLatestStudentYear(nADs.getInstitutionId());
+		na.setNewsFeed(sy);
 		if (LOG.isDebugEnabled()) LOG.debug("inst - "+sy);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding user with email = "+nADs.getCreatorEmail());
     	User creator=userRepository.findByEmail(nADs.getCreatorEmail());
@@ -144,7 +144,7 @@ public class NewsEventHandler implements NewsService
 	{
 		Long institutionId=readNewsArticlesEvent.getInstId();
 		Long syId=readNewsArticlesEvent.getSyId();
-		StudentYear sy;
+		NewsFeed sy;
 		Page <NewsArticle>articles=null;
 		ArrayList<NewsArticleDetails> dets=new ArrayList<NewsArticleDetails>();
 		NewsArticlesReadEvent nare=null;

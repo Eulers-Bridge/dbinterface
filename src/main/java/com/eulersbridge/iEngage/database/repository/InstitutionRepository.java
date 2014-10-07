@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.eulersbridge.iEngage.database.domain.GeneralInfo;
 import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.StudentYear;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 
 public interface InstitutionRepository extends GraphRepository<Institution> 
 {
@@ -21,7 +21,7 @@ public interface InstitutionRepository extends GraphRepository<Institution>
 " WITH DISTINCT n MATCH q-[:HAS_STUDENT_YEAR]-m WITH q, max(m.year) as max "+
 " MATCH q-[:HAS_STUDENT_YEAR]-m WHERE m.year = max "  // find the max m for each q
 +" WITH q, m MATCH m-[:HAS_STUDENT_YEAR]-x RETURN m")
-	StudentYear findLatestStudentYear(@Param("instId") Long institutionId);
+	NewsFeed findLatestStudentYear(@Param("instId") Long institutionId);
 
 	@Query("MATCH (i:`Institution`)-[]-(c:`Country`) where id(c)={countryId} return i")
 	Result<Institution> findByCountryId(@Param("countryId") Long countryId);

@@ -12,6 +12,11 @@ public class DatabaseDomainConstants
 	public static final String HAS_PERSONALITY_LABEL = "HAS_PERSONALITY";
 	public static final String USERS_LABEL = "USER_OF";
 	public static final String VERIFIED_BY_LABEL = "verifiedBy";
-	public static final String HAS_STUDENT_YEAR_LABEL = "HAS_STUDENT_YEAR";
+//	public static final String HAS_STUDENT_YEAR_LABEL = "HAS_STUDENT_YEAR";
+	public static final String HAS_NEWS_FEED_LABEL = "HAS_NEWS_FEED";
+	
+	
+	
+	public static final String NEWS_FEED = "NewsFeed";
 
 }

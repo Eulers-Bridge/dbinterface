@@ -6,6 +6,10 @@ import java.util.Iterator;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
 import com.eulersbridge.iEngage.core.events.institutions.*;
+import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
+import com.eulersbridge.iEngage.core.events.newsFeed.ReadNewsFeedEvent;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedCreatedEvent;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedReadEvent;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eulersbridge.iEngage.core.events.studentYear.CreateStudentYearEvent;
-import com.eulersbridge.iEngage.core.events.studentYear.ReadStudentYearEvent;
-import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
-import com.eulersbridge.iEngage.core.events.studentYear.StudentYearReadEvent;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.rest.domain.GeneralInfo;
-import com.eulersbridge.iEngage.rest.domain.StudentYear;
+import com.eulersbridge.iEngage.rest.domain.NewsFeed;
 import com.eulersbridge.iEngage.rest.domain.Institution;
 
 @RestController
@@ -211,26 +211,26 @@ public class InstitutionController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.INSTITUTION_LABEL+"/studentyear")
-    public @ResponseBody ResponseEntity<StudentYear> createStudentYear(@RequestBody StudentYear sy) 
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.INSTITUTION_LABEL+"/newsFeed")
+    public @ResponseBody ResponseEntity<NewsFeed> createNewsFeed(@RequestBody NewsFeed sy) 
     {
-    	if (LOG.isInfoEnabled()) LOG.info("attempting to save studentYear "+sy);
-    	StudentYear restYear=null;
-    	ResponseEntity<StudentYear> result;
-    	StudentYearCreatedEvent syEvent=instService.createStudentYear(new CreateStudentYearEvent(sy.toStudentYearDetails()));
+    	if (LOG.isInfoEnabled()) LOG.info("attempting to save newsFeed "+sy);
+    	NewsFeed restNewsFeed=null;
+    	ResponseEntity<NewsFeed> result;
+    	NewsFeedCreatedEvent nfEvent=instService.createNewsFeed(new CreateNewsFeedEvent(sy.toNewsFeedDetails()));
 
-    	if (syEvent.getId()==null)
+    	if (nfEvent.getId()==null)
     	{
-    		result=new ResponseEntity<StudentYear>(HttpStatus.BAD_REQUEST);
+    		result=new ResponseEntity<NewsFeed>(HttpStatus.BAD_REQUEST);
     	}
-    	else if (!syEvent.isInstitutionFound())
+    	else if (!nfEvent.isInstitutionFound())
     	{
-    		result=new ResponseEntity<StudentYear>(HttpStatus.FAILED_DEPENDENCY);
+    		result=new ResponseEntity<NewsFeed>(HttpStatus.FAILED_DEPENDENCY);
     	}
     	else
     	{
-    		restYear=StudentYear.fromStudentYearDetails(syEvent.getStudentYearDetails());
-    		result=new ResponseEntity<StudentYear>(restYear,HttpStatus.OK);
+    		restNewsFeed=NewsFeed.fromNewsFeedDetails(nfEvent.getNewsFeedDetails());
+    		result=new ResponseEntity<NewsFeed>(restNewsFeed,HttpStatus.OK);
     	}
 		return result;
     }
@@ -249,22 +249,22 @@ public class InstitutionController
 
 	*/
    //TODO 
-    @RequestMapping(method=RequestMethod.GET,value="/institution/{institutionId}/studentyear/{syId}")
-    public @ResponseBody ResponseEntity<StudentYear> readStudentYear(@PathVariable Long institutionId,@PathVariable Long syId) 
+    @RequestMapping(method=RequestMethod.GET,value="/institution/{institutionId}/studentyear/{nfId}")
+    public @ResponseBody ResponseEntity<NewsFeed> readNewsFeed(@PathVariable Long institutionId,@PathVariable Long nfId) 
     {
-		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve student year"+syId+" for . "+institutionId);
-    	StudentYear restSY=null;
-    	ResponseEntity<StudentYear> result;
-		StudentYearReadEvent syEvent=instService.readStudentYear(new ReadStudentYearEvent(syId));
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news feed"+nfId+" for . "+institutionId);
+    	NewsFeed restNF=null;
+    	ResponseEntity<NewsFeed> result;
+		NewsFeedReadEvent nfEvent=instService.readNewsFeed(new ReadNewsFeedEvent(nfId));
   	
-		if (!syEvent.isEntityFound())
+		if (!nfEvent.isEntityFound())
 		{
-			result=new ResponseEntity<StudentYear>(HttpStatus.NOT_FOUND);
+			result=new ResponseEntity<NewsFeed>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			restSY=StudentYear.fromStudentYearDetails(syEvent.getReadStudentYearDetails());
-			result=new ResponseEntity<StudentYear>(restSY,HttpStatus.OK);
+			restNF=NewsFeed.fromNewsFeedDetails(nfEvent.getReadNewsFeedDetails());
+			result=new ResponseEntity<NewsFeed>(restNF,HttpStatus.OK);
 		}
 		return result;
     }

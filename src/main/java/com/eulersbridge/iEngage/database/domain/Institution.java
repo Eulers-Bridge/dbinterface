@@ -24,8 +24,8 @@ public class Institution
 	private	Country  country; 
 	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
 	Iterable<User> students;
-	@RelatedTo(type=DatabaseDomainConstants.HAS_STUDENT_YEAR_LABEL, direction=Direction.OUTGOING)
-	private Iterable<StudentYear> studentYears;
+	@RelatedTo(type=DatabaseDomainConstants.HAS_NEWS_FEED_LABEL, direction=Direction.OUTGOING)
+	private NewsFeed newsFeed;
 	
     private static Logger LOG = LoggerFactory.getLogger(Institution.class);
 	public Institution()
@@ -106,15 +106,15 @@ public class Institution
 	/**
 	 * @return the studentYears
 	 */
-	public Iterable<StudentYear> getStudentYears() {
-		return studentYears;
+	public NewsFeed getNewsFeed() {
+		return newsFeed;
 	}
 
 	/**
 	 * @param studentYears the studentYears to set
 	 */
-	public void setStudentYears(Iterable<StudentYear> studentYears) {
-		this.studentYears = studentYears;
+	public void setNewsFeed(NewsFeed newsFeed) {
+		this.newsFeed = newsFeed;
 	}
 
 	@Override
@@ -131,6 +131,8 @@ public class Institution
 		buff.append(getState());
 		buff.append(", country = ");
 		buff.append(getCountry());
+		buff.append(", newsFeed = ");
+		buff.append(getNewsFeed());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);

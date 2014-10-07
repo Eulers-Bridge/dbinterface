@@ -24,7 +24,6 @@ public class NewsArticle extends ResourceSupport
 	private Set<String> likers;
 	private Long date;
 	private String creatorEmail;
-	private String studentYear;
 
     private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 
@@ -42,7 +41,6 @@ public class NewsArticle extends ResourceSupport
 	    news.picture = readNews.getPicture();
 	    news.title = readNews.getTitle();
 	    news.institutionId = readNews.getInstitutionId();
-	    news.studentYear = readNews.getStudentYear();
 	    
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
@@ -201,20 +199,6 @@ public class NewsArticle extends ResourceSupport
 		this.institutionId = institutionId;
 	}
 
-	/**
-	 * @return the studentYear
-	 */
-	public String getStudentYear() {
-		return studentYear;
-	}
-
-	/**
-	 * @param studentYear the studentYear to set
-	 */
-	public void setStudentYear(String studentYear) {
-		this.studentYear = studentYear;
-	}
-	
 	public static Iterator<NewsArticle> toArticlesIterator(Iterator<NewsArticleDetails> iter)
 	{
 		if (null==iter) return null;
@@ -250,8 +234,6 @@ public class NewsArticle extends ResourceSupport
 		buff.append(getDate());
 		buff.append(", creator email = ");
 		buff.append(getCreatorEmail());
-		buff.append(", studentYear = ");
-		buff.append(getStudentYear());
 		buff.append(", institutionId = ");
 		buff.append(getInstitutionId());
 		buff.append(", pictures = ");

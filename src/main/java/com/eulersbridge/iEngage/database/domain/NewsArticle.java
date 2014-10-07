@@ -31,7 +31,7 @@ public class NewsArticle extends Likeable
 	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction=Direction.BOTH) @Fetch
 	private User creator;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH) @Fetch
-	private StudentYear studentYear;
+	private NewsFeed newsFeed;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 	
@@ -119,17 +119,17 @@ public class NewsArticle extends Likeable
 	/**
 	 * @return the studentYear
 	 */
-	public StudentYear getStudentYear() 
+	public NewsFeed getNewsFeed() 
 	{
-		return studentYear;
+		return newsFeed;
 	}
 
 	/**
-	 * @param studentYear the studentYear to set
+	 * @param newsFeed the studentYear to set
 	 */
-	public void setStudentYear(StudentYear studentYear) 
+	public void setNewsFeed(NewsFeed newsFeed) 
 	{
-		this.studentYear = studentYear;
+		this.newsFeed = newsFeed;
 	}
 
 	public String toString()
@@ -148,7 +148,7 @@ public class NewsArticle extends Likeable
 		buff.append(", creator = ");
 		buff.append(getCreator());
 		buff.append(", studentYear = ");
-		buff.append(getStudentYear());
+		buff.append(getNewsFeed());
 		buff.append(", pictures = ");
 		buff.append(getPicture());
 		buff.append(", likers = ");
@@ -169,11 +169,10 @@ public class NewsArticle extends Likeable
 
 	    BeanUtils.copyProperties(this, details);
 	    if (getCreator()!=null) details.setCreatorEmail(getCreator().getEmail());
-	    if (getStudentYear()!=null)
+	    if (getNewsFeed()!=null)
 	    {
-	    	details.setStudentYear(getStudentYear().getYear());
-	    	if (getStudentYear().getInstitution()!=null)
-	    		details.setInstitutionId(getStudentYear().getInstitution().getNodeId());
+	    	if (getNewsFeed().getInstitution()!=null)
+	    		details.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
 	    }
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
 
@@ -193,9 +192,8 @@ public class NewsArticle extends Likeable
 		    newsArt.date=newsArtDetails.getDate();
 		    User creator=new User(newsArtDetails.getCreatorEmail(),null,null,null, null, null, null);
 		    newsArt.creator=creator;
-		    StudentYear year=new StudentYear();
-		    year.setYear(newsArtDetails.getStudentYear());
-			newsArt.studentYear=year;
+		    NewsFeed year=new NewsFeed();
+			newsArt.newsFeed=year;
 		    if (LOG.isTraceEnabled()) LOG.trace("newsArt "+newsArt);
 
 		    return newsArt;
