@@ -26,6 +26,7 @@ public class ControllerConstants
 	public static final String POLL_LABEL = "/poll";
 	public static final String SIGNUP_LABEL = "/signUp";
 	public static final String USER_LABEL = "/user";
+    public static final String POSITION_LABEL = "/position";
 
 	public static final String PAGE_NUMBER = "0";
 	public static final String PAGE_LENGTH = "10";
