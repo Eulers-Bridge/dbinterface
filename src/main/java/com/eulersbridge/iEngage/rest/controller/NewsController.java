@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -238,9 +236,9 @@ public class NewsController
 	*/
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{studentYearId}")
 	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable Long studentYearId,
-			@RequestParam(value="direction",required=false,defaultValue="DESC") String direction,
-			@RequestParam(value="page",required=false,defaultValue="0") String page,
-			@RequestParam(value="pageSize",required=false,defaultValue="10") String pageSize) 
+			@RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize) 
 	{
 		int pageNumber=0;
 		int pageLength=10;

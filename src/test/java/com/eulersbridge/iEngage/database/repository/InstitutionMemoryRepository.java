@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 
+import com.eulersbridge.iEngage.database.domain.GeneralInfo;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -62,7 +63,7 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 	 * @see org.springframework.data.neo4j.repository.CRUDRepository#getStoredJavaType(java.lang.Object)
 	 */
 	@Override
-	public Class getStoredJavaType(Object arg0) {
+	public Class<?> getStoredJavaType(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -101,7 +102,7 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 	public void delete(Long id) 
 	{
 	    Map<Long, Institution> modifiableInsts = new HashMap<Long, Institution>(institutions);
-		Institution na=modifiableInsts.remove(id);
+		modifiableInsts.remove(id);
 	    this.institutions = Collections.unmodifiableMap(modifiableInsts);
 	}
 
@@ -286,7 +287,8 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 
 
 	@Override
-	public Result<GeneralInfo> getGeneralInfo() {
+	public Result<GeneralInfo> getGeneralInfo() 
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}

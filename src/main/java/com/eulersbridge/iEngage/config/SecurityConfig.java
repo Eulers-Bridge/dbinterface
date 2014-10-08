@@ -3,15 +3,11 @@
  */
 package com.eulersbridge.iEngage.config;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,16 +15,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
 import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;
-import com.eulersbridge.iEngage.security.Neo4jAuthenticationProvider;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 /**
@@ -66,25 +60,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	{
 	    AppBasicAuthenticationEntryPoint entryPoint=new AppBasicAuthenticationEntryPoint();
 		AppBasicAuthenticationSuccessHandler successHandler=new AppBasicAuthenticationSuccessHandler();
-		String loginPage="/general-info";
 		http.authorizeRequests()
-        	.antMatchers("/**").permitAll()
-        	.antMatchers("/api/general-info").permitAll()
-        	.antMatchers("/api/signUp").permitAll()
-        	.antMatchers("/api/displayParams/**").permitAll()
-//        	.antMatchers("/api/emailVerification/**").permitAll()
-//        	.antMatchers("/api/countrys").permitAll()
-//        	.antMatchers("/api/institutions").permitAll()
-//        	.antMatchers("/api/**").permitAll()
-        	.antMatchers("/dbInterface/api/**").permitAll()
-        	.antMatchers("/**").hasRole("USER").anyRequest().authenticated()
+        	.antMatchers(ControllerConstants.API_PREFIX+"/general-info").permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+"/displayParams/**").permitAll()
+        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+"/general-info").permitAll()
+        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
+        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+"emailVerification/**").permitAll()
+        	.antMatchers("/**").hasRole("USER").anyRequest().fullyAuthenticated()
         .and()
         	.exceptionHandling().authenticationEntryPoint(digestEntryPoint())
         .and()
         	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         	.addFilterAfter(digestFilter(), BasicAuthenticationFilter.class)
-        .httpBasic().authenticationEntryPoint(entryPoint)
+        	.httpBasic().authenticationEntryPoint(entryPoint)
         .and()
         	.formLogin().successHandler(successHandler)//.loginPage(loginPage)
         		.permitAll()

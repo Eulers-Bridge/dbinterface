@@ -1,9 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.events.*;
-import com.eulersbridge.iEngage.core.events.polls.PollDeletedEvent;
 import com.eulersbridge.iEngage.database.domain.Event;
-import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

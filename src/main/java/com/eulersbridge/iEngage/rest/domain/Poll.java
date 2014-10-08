@@ -2,10 +2,11 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.rest.controller.PollController;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.ResourceSupport;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
@@ -32,9 +33,27 @@ public class Poll extends ResourceSupport{
         poll.setStart(pollDetails.getStart());
         poll.setDuration(pollDetails.getDuration());
 
+	    // {!begin selfRel}
         poll.add(linkTo(PollController.class).slash(name).slash(poll.getPollId()).withSelfRel());
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash("previous").withRel("Previous"));
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash("next").withRel("Next"));
+	    // {!end selfRel}
+	    // {!begin previous}
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.PREVIOUS).withRel(RestDomainConstants.PREVIOUS_LABEL));
+	    // {!end previous}
+	    // {!begin next}
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.NEXT).withRel(RestDomainConstants.NEXT_LABEL));
+	    // {!end next}
+	    // {!begin likedBy}
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.LIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.LIKEDBY_LABEL));
+	    // {!end likedBy}
+	    // {!begin unlikedBy}
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.UNLIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.UNLIKEDBY_LABEL));
+	    // {!end unlikedBy}
+	    // {!begin likes}
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.LIKES).withRel(RestDomainConstants.LIKES_LABEL));
+	    // {!end likes}
+	    // {!begin readAll}
+        poll.add(linkTo(PollController.class).slash(name+'s').withRel(RestDomainConstants.READALL_LABEL));
+	    // {!end readAll}
 
         return poll;
     }

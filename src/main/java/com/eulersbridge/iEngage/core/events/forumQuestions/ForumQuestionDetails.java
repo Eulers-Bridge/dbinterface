@@ -26,19 +26,6 @@ public class ForumQuestionDetails {
         return retValue;
     }
 
-    @Override
-    public boolean equals(Object other){
-        if (null == other) return false;
-        if (other ==this) return true;
-        if(!(other instanceof ForumQuestionDetails)) return false;
-        ForumQuestionDetails forumQuestionDetails = (ForumQuestionDetails) other;
-        if (forumQuestionDetails.getForumQuestionId() != null){
-            if(forumQuestionDetails.getForumQuestionId().equals(getForumQuestionId()))
-                return true;
-        }
-        return false;
-    }
-
     public Long getForumQuestionId() {
         return forumQuestionId;
     }
@@ -54,4 +41,53 @@ public class ForumQuestionDetails {
     public void setQuestion(String question) {
         this.question = question;
     }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (forumQuestionId!=null)
+		{
+			result = prime * result	+ forumQuestionId.hashCode();
+		}
+		else
+		{
+			result = prime * result	+ ((question == null) ? 0 : question.hashCode());
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ForumQuestionDetails other = (ForumQuestionDetails) obj;
+		if (forumQuestionId != null) 
+		{
+			if (forumQuestionId.equals(other.forumQuestionId))
+				return true;
+			else return false;
+		}
+		else
+		{
+			if (other.forumQuestionId != null)
+				return false;
+			if (question == null) {
+				if (other.question != null)
+					return false;
+			} else if (!question.equals(other.question))
+				return false;
+		}
+		return true;
+	}
 }

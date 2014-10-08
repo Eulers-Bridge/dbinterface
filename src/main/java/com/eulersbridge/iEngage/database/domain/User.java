@@ -45,7 +45,7 @@ public class User
     
 	public User()
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
 	
 	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String password)

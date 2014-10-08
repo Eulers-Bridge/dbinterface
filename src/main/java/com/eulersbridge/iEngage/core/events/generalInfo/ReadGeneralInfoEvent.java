@@ -1,4 +1,4 @@
-package com.eulersbridge.iEngage.core.events.institutions;
+package com.eulersbridge.iEngage.core.events.generalInfo;
 
 /**
  * @author Yikai Gong

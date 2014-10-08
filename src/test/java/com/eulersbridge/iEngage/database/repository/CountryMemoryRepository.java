@@ -56,7 +56,7 @@ public class CountryMemoryRepository implements CountryRepository {
 	 * @see org.springframework.data.neo4j.repository.CRUDRepository#getStoredJavaType(java.lang.Object)
 	 */
 	@Override
-	public Class getStoredJavaType(Object arg0) {
+	public Class<?> getStoredJavaType(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -95,7 +95,7 @@ public class CountryMemoryRepository implements CountryRepository {
 	public void delete(Long id) 
 	{
 	    Map<Long, Country> modifiableNews = new HashMap<Long, Country>(countrys);
-		Country na=modifiableNews.remove(id);
+		modifiableNews.remove(id);
 	    this.countrys = Collections.unmodifiableMap(modifiableNews);
 	}
 

@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.events.events;
 
-import com.eulersbridge.iEngage.database.domain.Event;
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,20 +57,110 @@ public class EventDetails {
         return retValue;
     }
 
-    @Override
-    public boolean equals(Object other){
-        if (null == other) return false;
-        if (other ==this) return true;
-        if(!(other instanceof EventDetails)) return false;
-        EventDetails eventDetails = (EventDetails) other;
-        if (eventDetails.getEventId() != null){
-            if(eventDetails.getEventId().equals(getEventId()))
-                return true;
-        }
-        return false;
-    }
+    /* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() 
+	{
+		final int prime = 31;
+		int result = 1;
+		if (eventId != null)
+		{	
+			result = prime * result + eventId.hashCode();
+		}
+		else
+		{
+			result = prime * result + ((created == null) ? 0 : created.hashCode());
+			result = prime * result + ((date == null) ? 0 : date.hashCode());
+			result = prime * result
+					+ ((description == null) ? 0 : description.hashCode());
+			result = prime * result
+					+ ((location == null) ? 0 : location.hashCode());
+			result = prime * result
+					+ ((modified == null) ? 0 : modified.hashCode());
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result
+					+ ((organizer == null) ? 0 : organizer.hashCode());
+			result = prime * result
+					+ ((organizerEmail == null) ? 0 : organizerEmail.hashCode());
+			result = prime * result + Arrays.hashCode(picture);
+			result = prime * result + Arrays.hashCode(volunteerPositions);
+		}
+		return result;
+	}
 
-    public Long getEventId() {
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EventDetails other = (EventDetails) obj;
+		
+		if (eventId != null)
+		{	
+			if (eventId.equals(other.eventId))
+				return true;
+			else return false;
+		}
+		else
+		{
+			if (other.eventId!=null) return false;
+			if (created == null) {
+				if (other.created != null)
+					return false;
+			} else if (!created.equals(other.created))
+				return false;
+			if (date == null) {
+				if (other.date != null)
+					return false;
+			} else if (!date.equals(other.date))
+				return false;
+			if (description == null) {
+				if (other.description != null)
+					return false;
+			} else if (!description.equals(other.description))
+				return false;
+			if (location == null) {
+				if (other.location != null)
+					return false;
+			} else if (!location.equals(other.location))
+				return false;
+			if (modified == null) {
+				if (other.modified != null)
+					return false;
+			} else if (!modified.equals(other.modified))
+				return false;
+			if (name == null) {
+				if (other.name != null)
+					return false;
+			} else if (!name.equals(other.name))
+				return false;
+			if (organizer == null) {
+				if (other.organizer != null)
+					return false;
+			} else if (!organizer.equals(other.organizer))
+				return false;
+			if (organizerEmail == null) {
+				if (other.organizerEmail != null)
+					return false;
+			} else if (!organizerEmail.equals(other.organizerEmail))
+				return false;
+			if (!Arrays.equals(picture, other.picture))
+				return false;
+			if (!Arrays.equals(volunteerPositions, other.volunteerPositions))
+				return false;
+		}
+		return true;
+	}
+
+	public Long getEventId() {
         return eventId;
     }
 

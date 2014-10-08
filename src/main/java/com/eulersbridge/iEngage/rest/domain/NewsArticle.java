@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
@@ -51,10 +52,24 @@ public class NewsArticle extends ResourceSupport
 	    // {!begin selfRel}
 	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).withSelfRel());
 	    // {!end selfRel}
-	    // {!begin status}
-	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash("previous").withRel("Previous"));
-	    // {!end status}
-	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash("next").withRel("Next"));
+	    // {!begin previous}
+	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash(RestDomainConstants.PREVIOUS).withRel(RestDomainConstants.PREVIOUS_LABEL));
+	    // {!end previous}
+	    // {!begin next}
+	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash(RestDomainConstants.NEXT).withRel(RestDomainConstants.NEXT_LABEL));
+	    // {!end next}
+	    // {!begin likedBy}
+	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash(RestDomainConstants.LIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.LIKEDBY_LABEL));
+	    // {!end likedBy}
+	    // {!begin unlikedBy}
+	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash(RestDomainConstants.UNLIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.UNLIKEDBY_LABEL));
+	    // {!end unlikedBy}
+	    // {!begin likes}
+	    news.add(linkTo(NewsController.class).slash(name).slash(news.articleId).slash(RestDomainConstants.LIKES).withRel(RestDomainConstants.LIKES_LABEL));
+	    // {!end likes}
+	    // {!begin readAll}
+	    news.add(linkTo(NewsController.class).slash(name+'s').withRel(RestDomainConstants.READALL_LABEL));
+	    // {!end readAll}
 
 	    return news;
 	}
@@ -202,11 +217,15 @@ public class NewsArticle extends ResourceSupport
 	
 	public static Iterator<NewsArticle> toArticlesIterator(Iterator<NewsArticleDetails> iter)
 	{
+		if (null==iter) return null;
 		ArrayList <NewsArticle> articles=new ArrayList<NewsArticle>();
 		while(iter.hasNext())
 		{
 			NewsArticleDetails dets=iter.next();
 			NewsArticle thisArticle=NewsArticle.fromNewsArticleDetails(dets);
+			Link self = thisArticle.getLink("self");
+			thisArticle.removeLinks();
+			thisArticle.add(self);
 			articles.add(thisArticle);		
 		}
 		return articles.iterator();

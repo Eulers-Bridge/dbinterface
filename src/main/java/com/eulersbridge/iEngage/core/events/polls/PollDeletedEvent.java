@@ -6,7 +6,8 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
  * @author Yikai Gong
  */
 
-public class PollDeletedEvent extends DeletedEvent{
+public class PollDeletedEvent extends DeletedEvent
+{
     private Long pollid;
     private boolean deletionCompleted = true;
 
@@ -31,4 +32,18 @@ public class PollDeletedEvent extends DeletedEvent{
     public boolean isDeletionCompleted(){
         return this.deletionCompleted;
     }
+
+	/**
+	 * @return the pollid
+	 */
+	public Long getPollid() {
+		return pollid;
+	}
+
+	/**
+	 * @param pollid the pollid to set
+	 */
+	public void setPollid(Long pollid) {
+		this.pollid = pollid;
+	}
 }

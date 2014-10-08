@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
+import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
+import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
+import com.eulersbridge.iEngage.core.events.generalInfo.GiCountry;
+import com.eulersbridge.iEngage.core.events.generalInfo.GiInstitution;
 import com.eulersbridge.iEngage.core.events.institutions.*;
 
 import org.slf4j.Logger;
@@ -17,6 +22,7 @@ import com.eulersbridge.iEngage.core.events.studentYear.StudentYearCreatedEvent;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearDetails;
 import com.eulersbridge.iEngage.core.events.studentYear.StudentYearReadEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
+import com.eulersbridge.iEngage.database.domain.GeneralInfo;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.StudentYear;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
@@ -210,31 +216,39 @@ public class InstitutionEventHandler implements InstitutionService {
 	@Override
 	public GeneralInfoReadEvent getGeneralInfo(ReadGeneralInfoEvent readGeneralInfoEvent)
 	{
-        GeneralInfoReadEvent generalInfoReadEvent = new GeneralInfoReadEvent(instRepository.getGeneralInfo().iterator());
-        return generalInfoReadEvent;
-//        Iterator<GeneralInfo> countryIter=null;
-//		ArrayList<CountryDetails> countryList=new ArrayList<CountryDetails>();
-//		countryIter=instRepository.getGeneralInfo().iterator();
-/*		while(countryIter.hasNext())
+        Iterator<GeneralInfo> countryIter=instRepository.getGeneralInfo().iterator();
+        
+        ArrayList <GiCountry> countries= new ArrayList<GiCountry>();
+        while(countryIter.hasNext())
 		{
 			GeneralInfo country=countryIter.next();
-			CountryDetails cDets=new CountryDetails(country.getCountryId());
-			cDets.setCountryName(country.getCountryName());
+			
+			Long countryId=country.getCountryId();
+			String countryName=country.getCountryName();
 			if (LOG.isDebugEnabled())
 			{
-				LOG.debug("CountryId - "+country.getCountryId());
-				LOG.debug("CountryName - "+country.getCountryName());
-				Iterator<Institution> instIter=country.getInstitutions().iterator();
-				while(instIter.hasNext())
-				{
-					Institution inst=instIter.next();
-					LOG.debug("Institution - "+inst);				
-				}
+				LOG.debug("CountryId - "+countryId);
+				LOG.debug("CountryName - "+countryName);
 			}
+			
+			Iterator<Long> instIdIter=country.getInstitutionIds().iterator();
+			Iterator<String> instNameIter=country.getInstitutionNames().iterator();
+			ArrayList<GiInstitution> insts=new ArrayList<GiInstitution>();
+			while(instIdIter.hasNext()&&(instNameIter.hasNext()))
+			{
+				Long instId=instIdIter.next();
+				String instName=instNameIter.next();
+				GiInstitution giDets=new GiInstitution(instId,instName);
+				insts.add(giDets);
+			}
+			GiCountry giCountry=new GiCountry(countryId,countryName,insts.iterator());
+			countries.add(giCountry);
 		}
-*/		// TODO Auto-generated method stub
-//		return null;
-//		return countryIter;
+       
+        GeneralInfoDetails dets=new GeneralInfoDetails(countries.iterator());
+        
+        GeneralInfoReadEvent generalInfoReadEvent = new GeneralInfoReadEvent(dets);
+        return generalInfoReadEvent;
 	}
 
 	//TODO Create the associate methods for Student Year.
