@@ -69,7 +69,7 @@ public class LoginController
 		pageLength=Integer.parseInt(ControllerConstants.PAGE_LENGTH);
 
 		Long institutionId=userDetails.getInstitutionId();
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(institutionId,null);
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(institutionId);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institutionId. "+institutionId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(rnae,sortDirection, pageNumber,pageLength);
