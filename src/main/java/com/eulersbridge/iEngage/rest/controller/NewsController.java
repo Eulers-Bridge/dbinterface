@@ -234,8 +234,8 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{studentYearId}")
-	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable Long studentYearId,
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{institutionId}")
+	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable(value="") Long institutionId,
 			@RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
 			@RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize) 
@@ -244,10 +244,12 @@ public class NewsController
 		int pageLength=10;
 		pageNumber=Integer.parseInt(page);
 		pageLength=Integer.parseInt(pageSize);
-		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from student year. "+studentYearId);
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institution "+institutionId+'.');
+		
+//		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from student year. "+newsFeedId);
 		Direction sortDirection=Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
-		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(studentYearId),sortDirection, pageNumber,pageLength);
+		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(institutionId),sortDirection, pageNumber,pageLength);
   	
 		if (!articleEvent.isEntityFound())
 		{
