@@ -140,43 +140,30 @@ public class NewsEventHandler implements NewsService
 			ReadNewsArticlesEvent readNewsArticlesEvent, Direction sortDirection,int pageNumber, int pageSize) 
 	{
 		Long institutionId=readNewsArticlesEvent.getInstId();
-//		Long nfId=instRepo.findreadNewsArticlesEvent.getSyId();
-		NewsFeed nf;
 		Page <NewsArticle>articles=null;
 		ArrayList<NewsArticleDetails> dets=new ArrayList<NewsArticleDetails>();
 		NewsArticlesReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
-		nf=instRepo.findNewsFeed(institutionId);
-		Long nfId=nf.getNodeId();
-		if (nfId!=null)
+		Pageable pageable=new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
+		articles=newsRepo.findByInstitutionId(institutionId, pageable);
+		if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+articles.getTotalElements()+" total pages ="+articles.getTotalPages());
+		if (articles!=null)
 		{
-			if (LOG.isDebugEnabled()) LOG.debug("News Feed Id "+nfId);
-			Pageable pageable=new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
-			articles=newsRepo.findByInstitutionId(institutionId, pageable);
-			if (LOG.isDebugEnabled())
-					LOG.debug("Total elements = "+articles.getTotalElements()+" total pages ="+articles.getTotalPages());
-			if (articles!=null)
+			Iterator<NewsArticle> iter=articles.iterator();
+			while (iter.hasNext())
 			{
-				Iterator<NewsArticle> iter=articles.iterator();
-				while (iter.hasNext())
-				{
-					NewsArticle na=iter.next();
-					if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getTitle());
-					NewsArticleDetails det=na.toNewsArticleDetails();
-					dets.add(det);
-				}
-				nare=new NewsArticlesReadEvent(institutionId,dets);
+				NewsArticle na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getTitle());
+				NewsArticleDetails det=na.toNewsArticleDetails();
+				dets.add(det);
 			}
-			else
-			{
-				if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByStudentYear");
-			}
+			nare=new NewsArticlesReadEvent(institutionId,dets);
 		}
 		else
 		{
-			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findNewsFeed");
-			nare=NewsArticlesReadEvent.newsFeedNotFound();
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
 		}
 		return nare;
 	}
