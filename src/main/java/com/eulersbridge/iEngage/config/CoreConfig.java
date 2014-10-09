@@ -37,6 +37,8 @@ public class CoreConfig
     EventRepository eventRepository;
     @Autowired
     ForumQuestionRepository forumQuestionRepository;
+    @Autowired
+    PositionRepository positionRepository;
 
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -107,5 +109,12 @@ public class CoreConfig
     {
         if (LOG.isDebugEnabled()) LOG.debug("createForumQuestionService()");
         return new ForumQuestionEventHandler(forumQuestionRepository);
+    }
+
+    @Bean
+    public PositionService createPositionService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createPositionService()");
+        return new PositionEventHandler(positionRepository);
     }
 }
