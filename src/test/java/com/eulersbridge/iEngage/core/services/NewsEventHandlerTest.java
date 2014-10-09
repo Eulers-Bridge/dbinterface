@@ -190,9 +190,8 @@ public class NewsEventHandlerTest
 	@Test
 	public void testShouldReadNewsArticles()
 	{
-		Long syId=(long)1;
 		Long instId=(long)1;
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
@@ -213,10 +212,9 @@ public class NewsEventHandlerTest
 		Iterable<String> picture=null;
 		NewsArticle na=DatabaseDataFixture.populateNewsArticle("Different year test", "Testing to see if a different year will be picked up.", picture, DatabaseDataFixture.populateUserGnewitt2(), Calendar.getInstance(), null, DatabaseDataFixture.populateNewsFeed1());
 		testRepo.save(na);
-		Long syId=(long)1;
 		Long instId=(long)1;
 		
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
@@ -234,12 +232,11 @@ public class NewsEventHandlerTest
 	@Test
 	public void testShouldReadNewsArticlesWithSYID2OnlyNone()
 	{
-		Long syId=(long)2;
 		Long instId=(long)1;
 		int page=0;
 		int size=10;
 
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
@@ -260,10 +257,9 @@ public class NewsEventHandlerTest
 		Iterable<String> picture=null;
 		NewsArticle na=DatabaseDataFixture.populateNewsArticle("Different year test", "Testing to see if a different year will be picked up.", picture, DatabaseDataFixture.populateUserGnewitt2(), Calendar.getInstance(), null, DatabaseDataFixture.populateNewsFeed1());
 		testRepo.save(na);
-		Long syId=(long)2;
 		Long instId=(long)1;
 
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId, syId);
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
