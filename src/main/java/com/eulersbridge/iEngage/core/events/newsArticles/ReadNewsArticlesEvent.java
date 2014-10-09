@@ -12,26 +12,25 @@ import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 public class ReadNewsArticlesEvent extends RequestReadEvent 
 {
 	Long instId;
-	Long syId;
+	Long nfId;
 	
 	private ReadNewsArticlesEvent()
 	{
 		super();
 	}
 	
-	public ReadNewsArticlesEvent(Long syId)
+	public ReadNewsArticlesEvent(Long institutionId)
 	{
 		this();
-		this.syId=syId;
-		// TODO throw exception if instId null.
+		this.instId=institutionId;
 	}
 
-	public ReadNewsArticlesEvent(Long instId,Long syId)
+/*	public ReadNewsArticlesEvent(Long instId,Long nfId)
 	{
-		this(syId);
+		this(nfId);
 		this.instId=instId;
 	}
-
+*/
 	/**
 	 * @return the instId
 	 */
@@ -45,15 +44,15 @@ public class ReadNewsArticlesEvent extends RequestReadEvent
 		this.instId = instId;
 	}
 	/**
-	 * @return the syId
+	 * @return the nfId
 	 */
-	public Long getSyId() {
-		return syId;
+	public Long getNfId() {
+		return nfId;
 	}
 	/**
 	 * @param syId the syId to set
 	 */
-	public void setSyId(Long syId) {
-		this.syId = syId;
+	public void setNfId(Long nfId) {
+		this.nfId = nfId;
 	}
 }
