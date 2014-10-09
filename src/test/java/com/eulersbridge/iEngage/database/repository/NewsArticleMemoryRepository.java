@@ -256,54 +256,10 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 
 
 	@Override
-	public Page<NewsArticle> findByStudentYear(Pageable p, NewsFeed sy) 
-	{
-		Long syId=null;
-		ArrayList<NewsArticle> arts=new ArrayList<NewsArticle>();
-		if (sy!=null)
-			syId=sy.getNodeId();
-		if (null==syId)
-			return null;
-		Iterator<NewsArticle> iter=newsArticles.values().iterator();
-		while (iter.hasNext())
-		{
-			NewsArticle na=iter.next();
-			if (na.getNewsFeed().getNodeId().equals(syId))
-			{
-				arts.add(na);
-			}
-		}
-		Page<NewsArticle> pages=new PageImpl<NewsArticle>(arts,p,arts.size());
-		return pages;
-	}
-
-
-	@Override
 	public Iterable<NewsArticle> findByCreator(User creator) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-	@Override
-	public Page<NewsArticle> findByStudentYearId(Long syId, Pageable p) 
-	{
-		ArrayList<NewsArticle> arts=new ArrayList<NewsArticle>();
-		if (null==syId)
-			return null;
-		Iterator<NewsArticle> iter=newsArticles.values().iterator();
-		while (iter.hasNext())
-		{
-			NewsArticle na=iter.next();
-			if (na.getNewsFeed().getNodeId().equals(syId))
-			{
-				arts.add(na);
-			}
-		}
-		Page<NewsArticle> pages=new PageImpl<NewsArticle>(arts,p,arts.size());
-		return pages;
-	}
-
 
 	@Override
 	public Like likeArticle(String email, Long likedId) 
@@ -326,5 +282,12 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 	public void unlikeArticle(String email, Long likedId) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public Page<NewsArticle> findByInstitutionId(Long instId, Pageable p) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
