@@ -12,12 +12,13 @@ import static org.junit.Assert.*;
 
 public class ReadNewsArticlesEventTest {
     final Long instId = new Long(1);
-    final Long syId = new Long(2);
+    final Long nfId = new Long(2);
     ReadNewsArticlesEvent readNewsArticlesEvent = null;
 
     @Before
     public void setUp() throws Exception {
-        readNewsArticlesEvent = new ReadNewsArticlesEvent(instId,syId);
+        readNewsArticlesEvent = new ReadNewsArticlesEvent(instId);
+        readNewsArticlesEvent.setNfId(nfId);
     }
 
     @After
@@ -47,14 +48,14 @@ public class ReadNewsArticlesEventTest {
     @Test
     public void testGetSyId() throws Exception 
     {
-    	Long syId2=readNewsArticlesEvent.getSyId();
-        assertEquals("syId does not match", syId, syId2);
+    	Long nfId2=readNewsArticlesEvent.getNfId();
+        assertEquals("nfId does not match", nfId, nfId2);
     }
 
     @Test
-    public void testSetSyId() throws Exception {
-        Long syId1 = new Long(4);
-        readNewsArticlesEvent.setSyId(syId1);
-        assertEquals("syId does not match", syId1, readNewsArticlesEvent.getSyId());
+    public void testSetNfId() throws Exception {
+        Long nfId1 = new Long(4);
+        readNewsArticlesEvent.setNfId(nfId1);
+        assertEquals("nfId does not match", nfId1, readNewsArticlesEvent.getNfId());
     }
 }
