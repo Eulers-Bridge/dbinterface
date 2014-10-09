@@ -18,5 +18,6 @@ public class DatabaseDomainConstants
 	
 	
 	public static final String NEWS_FEED = "NewsFeed";
+	public static final String INSTITUTION = "Institution";
 
 }

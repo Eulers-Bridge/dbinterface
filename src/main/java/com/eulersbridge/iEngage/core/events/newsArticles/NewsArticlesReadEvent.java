@@ -12,8 +12,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 public class NewsArticlesReadEvent extends ReadEvent 
 {
 	private Long instId;
-	private Long syId;
-	private boolean studentYearFound=true;
+	private boolean newsFeedFound=true;
 	private boolean institutionFound=true;
 	private boolean articlesFound=true;
 	
@@ -24,10 +23,9 @@ public class NewsArticlesReadEvent extends ReadEvent
 		super();
 	}
 	
-	public NewsArticlesReadEvent(Long instId,Long syId,Iterable<NewsArticleDetails>articles)
+	public NewsArticlesReadEvent(Long instId,Iterable<NewsArticleDetails>articles)
 	{
 		this.instId=instId;
-		this.syId=syId;
 		this.articles=articles;
 	}
 	
@@ -46,20 +44,6 @@ public class NewsArticlesReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @return the syId
-	 */
-	public Long getSyId() {
-		return syId;
-	}
-
-	/**
-	 * @param syId the syId to set
-	 */
-	public void setSyId(Long syId) {
-		this.syId = syId;
-	}
-
-	/**
 	 * @return the articles
 	 */
 	public Iterable<NewsArticleDetails> getArticles() {
@@ -74,17 +58,17 @@ public class NewsArticlesReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @return the studentYearFound
+	 * @return the newsFeedFound
 	 */
-	public boolean isStudentYearFound() {
-		return studentYearFound;
+	public boolean isNewsFeedFound() {
+		return newsFeedFound;
 	}
 
 	/**
-	 * @param studentYearFound the studentYearFound to set
+	 * @param newsFeedFound the studentYearFound to set
 	 */
-	public void setStudentYearFound(boolean studentYearFound) {
-		this.studentYearFound = studentYearFound;
+	public void setNewsFeedFound(boolean newsFeedFound) {
+		this.newsFeedFound = newsFeedFound;
 	}
 
 	/**
@@ -115,10 +99,10 @@ public class NewsArticlesReadEvent extends ReadEvent
 		this.articlesFound = articlesFound;
 	}
 
-	public static NewsArticlesReadEvent studentYearNotFound() 
+	public static NewsArticlesReadEvent newsFeedNotFound() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		NewsArticlesReadEvent nare=new NewsArticlesReadEvent();
+		nare.setNewsFeedFound(false);
+		return nare;
 	}
-
 }

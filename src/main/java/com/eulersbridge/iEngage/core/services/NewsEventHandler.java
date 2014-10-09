@@ -31,7 +31,6 @@ import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
-import com.eulersbridge.iEngage.database.repository.NewsFeedRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 public class NewsEventHandler implements NewsService 
@@ -41,14 +40,12 @@ public class NewsEventHandler implements NewsService
     private UserRepository userRepository;
 	private NewsArticleRepository newsRepo;
 	private InstitutionRepository instRepo;
-    private NewsFeedRepository syRepository;
 
-	public NewsEventHandler(NewsArticleRepository newsRepo,UserRepository userRepository, InstitutionRepository instRepo, NewsFeedRepository syRepo) 
+	public NewsEventHandler(NewsArticleRepository newsRepo,UserRepository userRepository, InstitutionRepository instRepo) 
 	{
 		this.newsRepo=newsRepo;
 		this.userRepository=userRepository;
 		this.instRepo=instRepo;
-		this.syRepository=syRepo;
 	}
 
 	@Override
@@ -59,16 +56,16 @@ public class NewsEventHandler implements NewsService
 		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
 		
 		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with id = "+nADs.getInstitutionId());
-		NewsFeed sy=instRepo.findLatestStudentYear(nADs.getInstitutionId());
-		if (LOG.isDebugEnabled()) LOG.debug("inst - "+sy);
+		NewsFeed nf=instRepo.findNewsFeed(nADs.getInstitutionId());
+		if (LOG.isDebugEnabled()) LOG.debug("news feed - "+nf);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding user with email = "+nADs.getCreatorEmail());
     	User creator=userRepository.findByEmail(nADs.getCreatorEmail());
     	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+creator);
     	NewsArticleCreatedEvent nACE;
-    	if ((creator!=null)&&(sy!=null))
+    	if ((creator!=null)&&(nf!=null))
     	{
     		na.setCreator(creator);
-    		na.setNewsFeed(sy);
+    		na.setNewsFeed(nf);
 			NewsArticle result=newsRepo.save(na);
 			nACE=new NewsArticleCreatedEvent(result.getNodeId(), result.toNewsArticleDetails());
     	}
@@ -106,9 +103,9 @@ public class NewsEventHandler implements NewsService
 		NewsArticleDetails nADs = updateNewsArticleEvent.getUNewsArticleDetails();
 		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with id = "+nADs.getInstitutionId());
-		NewsFeed sy=instRepo.findLatestStudentYear(nADs.getInstitutionId());
-		na.setNewsFeed(sy);
-		if (LOG.isDebugEnabled()) LOG.debug("inst - "+sy);
+		NewsFeed nf=instRepo.findNewsFeed(nADs.getInstitutionId());
+		na.setNewsFeed(nf);
+		if (LOG.isDebugEnabled()) LOG.debug("news feed - "+nf);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding user with email = "+nADs.getCreatorEmail());
     	User creator=userRepository.findByEmail(nADs.getCreatorEmail());
     	na.setCreator(creator);
@@ -143,22 +140,20 @@ public class NewsEventHandler implements NewsService
 			ReadNewsArticlesEvent readNewsArticlesEvent, Direction sortDirection,int pageNumber, int pageSize) 
 	{
 		Long institutionId=readNewsArticlesEvent.getInstId();
-		Long syId=readNewsArticlesEvent.getSyId();
-		NewsFeed sy;
+//		Long nfId=instRepo.findreadNewsArticlesEvent.getSyId();
+		NewsFeed nf;
 		Page <NewsArticle>articles=null;
 		ArrayList<NewsArticleDetails> dets=new ArrayList<NewsArticleDetails>();
 		NewsArticlesReadEvent nare=null;
-		if (null==syId)
+
+		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
+		nf=instRepo.findNewsFeed(institutionId);
+		Long nfId=nf.getNodeId();
+		if (nfId!=null)
 		{
-			if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
-			sy=instRepo.findLatestStudentYear(institutionId);
-			syId=sy.getNodeId();
-		}
-		if (syId!=null)
-		{
-			if (LOG.isDebugEnabled()) LOG.debug("Student Year Id "+syId);
+			if (LOG.isDebugEnabled()) LOG.debug("News Feed Id "+nfId);
 			Pageable pageable=new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
-			articles=newsRepo.findByStudentYearId(syId,pageable);
+			articles=newsRepo.findByInstitutionId(institutionId, pageable);
 			if (LOG.isDebugEnabled())
 					LOG.debug("Total elements = "+articles.getTotalElements()+" total pages ="+articles.getTotalPages());
 			if (articles!=null)
@@ -171,7 +166,7 @@ public class NewsEventHandler implements NewsService
 					NewsArticleDetails det=na.toNewsArticleDetails();
 					dets.add(det);
 				}
-				nare=new NewsArticlesReadEvent(institutionId,syId,dets);
+				nare=new NewsArticlesReadEvent(institutionId,dets);
 			}
 			else
 			{
@@ -180,8 +175,8 @@ public class NewsEventHandler implements NewsService
 		}
 		else
 		{
-			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findStudentYear");
-			nare=NewsArticlesReadEvent.studentYearNotFound();
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findNewsFeed");
+			nare=NewsArticlesReadEvent.newsFeedNotFound();
 		}
 		return nare;
 	}

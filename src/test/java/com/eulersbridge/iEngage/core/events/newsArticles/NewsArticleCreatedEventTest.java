@@ -36,7 +36,6 @@ public class NewsArticleCreatedEventTest {
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
         newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setStudentYear(studentYear);
         newsArticleDetails.setLikers(likers);
         newsArticleCreatedEvent = new NewsArticleCreatedEvent(newsArticleId, newsArticleDetails);
 

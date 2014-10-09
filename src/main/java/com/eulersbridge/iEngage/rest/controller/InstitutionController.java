@@ -211,8 +211,8 @@ public class InstitutionController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.INSTITUTION_LABEL+"/newsFeed")
-    public @ResponseBody ResponseEntity<NewsFeed> createNewsFeed(@RequestBody NewsFeed sy) 
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.INSTITUTION_LABEL+"/{institutionId}"+ControllerConstants.NEWSFEED_LABEL)
+    public @ResponseBody ResponseEntity<NewsFeed> createNewsFeed(@PathVariable Long institutionId, @RequestBody NewsFeed sy) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save newsFeed "+sy);
     	NewsFeed restNewsFeed=null;
@@ -249,13 +249,13 @@ public class InstitutionController
 
 	*/
    //TODO 
-    @RequestMapping(method=RequestMethod.GET,value="/institution/{institutionId}/studentyear/{nfId}")
-    public @ResponseBody ResponseEntity<NewsFeed> readNewsFeed(@PathVariable Long institutionId,@PathVariable Long nfId) 
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.INSTITUTION_LABEL+"/{institutionId}"+ControllerConstants.NEWSFEED_LABEL)
+    public @ResponseBody ResponseEntity<NewsFeed> readNewsFeed(@PathVariable Long institutionId) 
     {
-		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news feed"+nfId+" for . "+institutionId);
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news feed for inst "+institutionId+".");
     	NewsFeed restNF=null;
     	ResponseEntity<NewsFeed> result;
-		NewsFeedReadEvent nfEvent=instService.readNewsFeed(new ReadNewsFeedEvent(nfId));
+		NewsFeedReadEvent nfEvent=instService.readNewsFeed(new ReadNewsFeedEvent(institutionId));
   	
 		if (!nfEvent.isEntityFound())
 		{

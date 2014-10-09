@@ -33,13 +33,10 @@ import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleE
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
-import com.eulersbridge.iEngage.database.repository.NewsFeedMemoryRepository;
-import com.eulersbridge.iEngage.database.repository.NewsFeedRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 
 /**
@@ -52,7 +49,6 @@ public class NewsEventHandlerTest
 	UserMemoryRepository userRepo;
 	NewsEventHandler newsService;
 	InstitutionMemoryRepository instRepo;
-	NewsFeedRepository syRepo;
 	
 	int page=0;
 	int size=10;
@@ -82,10 +78,8 @@ public class NewsEventHandlerTest
 		userRepo=new UserMemoryRepository(users);
 		Map<Long,Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
-		Map<Long, NewsFeed> years=DatabaseDataFixture.populateStudentYears();
-		syRepo=new NewsFeedMemoryRepository(years);
 		testRepo=new NewsArticleMemoryRepository(newsArticles);
-		newsService=new NewsEventHandler(testRepo,userRepo,instRepo,syRepo);
+		newsService=new NewsEventHandler(testRepo,userRepo,instRepo);
 	}
 
 	/**
@@ -101,7 +95,7 @@ public class NewsEventHandlerTest
 	@Test
 	public void testNewsEventHandler() 
 	{
-		NewsService newsService=new NewsEventHandler(testRepo,userRepo,instRepo,syRepo);
+		NewsService newsService=new NewsEventHandler(testRepo,userRepo,instRepo);
 		assertNotNull("newsService not being created by constructor.",newsService);
 	}
 

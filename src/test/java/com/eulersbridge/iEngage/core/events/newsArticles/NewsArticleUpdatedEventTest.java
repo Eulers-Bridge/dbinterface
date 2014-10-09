@@ -21,7 +21,6 @@ public class NewsArticleUpdatedEventTest {
     final Set<String> likers = new HashSet<>();
     final Long date = new Long(0);
     final String creatorEmail = new String("yikaig@gmail.com");
-    final String studentYear = new String("2014");
     final Long institutionId = new Long(1);
     NewsArticleDetails newsArticleDetails = null;
     NewsArticleUpdatedEvent newsArticleUpdatedEvent = null;
@@ -36,7 +35,6 @@ public class NewsArticleUpdatedEventTest {
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
         newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setStudentYear(studentYear);
         newsArticleDetails.setLikers(likers);
         newsArticleUpdatedEvent = new NewsArticleUpdatedEvent(newsArticleId, newsArticleDetails);
     }

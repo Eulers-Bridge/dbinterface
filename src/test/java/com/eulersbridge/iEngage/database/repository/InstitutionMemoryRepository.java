@@ -263,7 +263,7 @@ public class InstitutionMemoryRepository implements InstitutionRepository
 	}
 
 	@Override
-	public NewsFeed findLatestStudentYear(Long institutionId) 
+	public NewsFeed findNewsFeed(Long institutionId) 
 	{
 		return DatabaseDataFixture.populateNewsFeed2();
 	}

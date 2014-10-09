@@ -3,7 +3,6 @@ package com.eulersbridge.iEngage.core.events.newsArticles;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.neo4j.cypher.internal.compiler.v2_0.ast.Create;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +21,6 @@ public class CreateNewsArticleEventTest {
     final Set<String> likers = new HashSet<>();
     final Long date = new Long(0);
     final String creatorEmail = new String("yikaig@gmail.com");
-    final String studentYear = new String("2014");
     final Long institutionId = new Long(1);
     NewsArticleDetails newsArticleDetails = null;
     CreateNewsArticleEvent createNewsArticleEvent = null;
@@ -37,7 +35,6 @@ public class CreateNewsArticleEventTest {
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
         newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setStudentYear(studentYear);
         newsArticleDetails.setLikers(likers);
 
         createNewsArticleEvent = new CreateNewsArticleEvent(newsArticleId, newsArticleDetails);
@@ -70,7 +67,6 @@ public class CreateNewsArticleEventTest {
         newsArticleDetails1.setNewsArticleId(newsArticleId);
         newsArticleDetails1.setTitle(title);
         newsArticleDetails1.setPicture(picture);
-        newsArticleDetails1.setStudentYear(studentYear);
         newsArticleDetails1.setLikers(likers);
         CreateNewsArticleEvent createNewsArticleEvent1 = new CreateNewsArticleEvent(newsArticleDetails1);
         assertEquals("NewsArticleDetails does not match", newsArticleDetails1, createNewsArticleEvent1.getNewsArticleDetails());

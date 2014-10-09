@@ -35,6 +35,20 @@ public class NewsFeed extends ResourceSupport
 		this.institutionId = institutionId;
 	}
 	
+	/**
+	 * @return the nodeId
+	 */
+	public Long getNodeId() {
+		return nodeId;
+	}
+
+	/**
+	 * @param nodeId the nodeId to set
+	 */
+	public void setNodeId(Long nodeId) {
+		this.nodeId = nodeId;
+	}
+
 	public NewsFeedDetails toNewsFeedDetails() 
 	  {
 		NewsFeedDetails details = new NewsFeedDetails(institutionId);

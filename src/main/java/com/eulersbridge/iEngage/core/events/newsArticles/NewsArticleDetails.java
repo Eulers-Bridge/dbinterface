@@ -15,7 +15,6 @@ public class NewsArticleDetails {
 	private Set<String> likers;
 	private Long date;
 	private String creatorEmail;
-	private String studentYear;
 	private Long institutionId;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticleDetails.class);
@@ -88,18 +87,6 @@ public class NewsArticleDetails {
 		this.likers = likers;
 	}
 	/**
-	 * @return the studentYear
-	 */
-	public String getStudentYear() {
-		return studentYear;
-	}
-	/**
-	 * @param studentYear the studentYear to set
-	 */
-	public void setStudentYear(String studentYear) {
-		this.studentYear = studentYear;
-	}
-	/**
 	 * @return the institutionId
 	 */
 	public Long getInstitutionId() {
@@ -128,8 +115,6 @@ public class NewsArticleDetails {
 		buff.append(getDate().toString());
 		buff.append(", creator = ");
 		buff.append(getCreatorEmail());
-		buff.append(", studentYear = ");
-		buff.append(getStudentYear());
 		buff.append(", institutionId = ");
 		buff.append(getInstitutionId());
 		buff.append(", pictures = ");

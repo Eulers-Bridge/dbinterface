@@ -20,20 +20,29 @@ public class NewsFeed
 	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH)
 	private	Set<NewsArticle>  news;
 	
-	public static NewsFeed fromDetails(NewsFeedDetails newYear) 
+	public NewsFeed()
+	{
+		
+	}
+	
+	public static NewsFeed fromDetails(NewsFeedDetails newsFeedDets) 
 	{
 		NewsFeed nf=new NewsFeed();
 		Institution inst=new Institution();
-		inst.setNodeId(newYear.getInstitutionId());
+		inst.setNodeId(newsFeedDets.getInstitutionId());
 		nf.setInstitution(inst);
-		nf.setNodeId(newYear.getNodeId());
+		nf.setNodeId(newsFeedDets.getNodeId());
 		return nf;
 	}
 	
 	public NewsFeedDetails toDetails()
 	{
-		NewsFeedDetails sfd=new NewsFeedDetails(getInstitution().getNodeId());
+		NewsFeedDetails sfd=new NewsFeedDetails();
+		if (getInstitution()!=null)
 		sfd.setNodeId(getNodeId());
+		{
+			sfd.setInstitutionId(getInstitution().getNodeId());
+		}
 		return sfd;
 	}
 
@@ -83,7 +92,7 @@ public class NewsFeed
 	@Override
 	public String toString() 
 	{
-		StringBuffer buff=new StringBuffer("StudentYear [nodeId=" + nodeId + ", institution=");
+		StringBuffer buff=new StringBuffer("NewsFeed [nodeId=" + nodeId + ", institution=");
 		if (institution!=null)
 			buff.append(institution.getNodeId());
 		else buff.append(institution);
@@ -97,9 +106,9 @@ public class NewsFeed
 		if (null == other) return false;
 		if (other == this) return true;
 		if (!(other instanceof NewsFeed)) return false;
-		NewsFeed sy2=(NewsFeed) other;
+		NewsFeed nf2=(NewsFeed) other;
 		
-		if ((nodeId!=null)&&(nodeId.equals(sy2.nodeId))) return true;
+		if ((nodeId!=null)&&(nodeId.equals(nf2.nodeId))) return true;
 		return false;
 	}
 

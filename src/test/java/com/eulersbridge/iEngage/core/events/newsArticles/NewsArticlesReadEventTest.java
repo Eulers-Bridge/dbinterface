@@ -39,11 +39,10 @@ public class NewsArticlesReadEventTest {
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
         newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setStudentYear(studentYear);
         newsArticleDetails.setLikers(likers);
         articles = new ArrayList<>();
         articles.add(newsArticleDetails);
-        newsArticlesReadEvent = new NewsArticlesReadEvent(institutionId, syId, articles);
+        newsArticlesReadEvent = new NewsArticlesReadEvent(institutionId, articles);
     }
 
     @After
@@ -68,15 +67,4 @@ public class NewsArticlesReadEventTest {
         assertEquals("InstId does not match", instId1, newsArticlesReadEvent.getInstId());
     }
 
-    @Test
-    public void testGetSyId() throws Exception {
-        assertEquals("syId does not match", syId, newsArticlesReadEvent.getSyId());
-    }
-
-    @Test
-    public void testSetSyId() throws Exception {
-        Long syId1 = new Long(2);
-        newsArticlesReadEvent.setSyId(syId1);
-        assertEquals("syId does not match", syId1, newsArticlesReadEvent.getSyId());
-    }
 }

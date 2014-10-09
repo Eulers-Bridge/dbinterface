@@ -22,7 +22,6 @@ public class NewsArticleDetailsTest {
     final Set<String> likers = new HashSet<>();
     final Long date = new Long(0);
     final String creatorEmail = new String("yikaig@gmail.com");
-    final String studentYear = new String("2014");
     final Long institutionId = new Long(1);
     NewsArticleDetails newsArticleDetails = null;
 
@@ -36,7 +35,6 @@ public class NewsArticleDetailsTest {
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
         newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setStudentYear(studentYear);
         newsArticleDetails.setLikers(likers);
     }
 
@@ -143,17 +141,6 @@ public class NewsArticleDetailsTest {
     }
 
     @Test
-    public void testGetStudentYear() throws Exception {
-        assertEquals("student year does not match", studentYear, newsArticleDetails.getStudentYear());
-    }
-
-    @Test
-    public void testSetStudentYear() throws Exception {
-        newsArticleDetails.setStudentYear(new String("2013"));
-        assertEquals("student year does not match", "2013", newsArticleDetails.getStudentYear());
-    }
-
-    @Test
     public void testGetInstitutionId() throws Exception {
         assertEquals("institutionId does not match", institutionId, newsArticleDetails.getInstitutionId());
     }
@@ -174,7 +161,6 @@ public class NewsArticleDetailsTest {
         newsArticleDetails1.setNewsArticleId(newsArticleId);
         newsArticleDetails1.setTitle(title);
         newsArticleDetails1.setPicture(picture);
-        newsArticleDetails1.setStudentYear(studentYear);
         newsArticleDetails1.setLikers(likers);
         assertNotNull("toString() return null", newsArticleDetails.toString());
         assertEquals("toString() does not match", newsArticleDetails.toString(), newsArticleDetails1.toString());

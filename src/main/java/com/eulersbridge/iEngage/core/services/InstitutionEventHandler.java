@@ -65,7 +65,17 @@ public class InstitutionEventHandler implements InstitutionService {
 	    	createdInst = instRepository.save(instToInsert);
 			//TODO what happens if this fails?
 			if (LOG.isDebugEnabled()) LOG.debug("created inst = "+createdInst);
-	        result=new InstitutionCreatedEvent(createdInst.getNodeId(),createdInst.toInstDetails());
+			if (createdInst!=null)
+			{
+				NewsFeedDetails newFeed=new NewsFeedDetails(createdInst.getNodeId());
+				NewsFeedCreatedEvent resFeed=createFeed(newFeed,createdInst);
+				if (LOG.isDebugEnabled()) LOG.debug("result of feed creation -"+resFeed);
+				result=new InstitutionCreatedEvent(createdInst.getNodeId(),createdInst.toInstDetails());
+			}
+			else
+			{
+				result=InstitutionCreatedEvent.countryNotFound(0l);
+			}
     	}
     	else
     	{
@@ -108,11 +118,11 @@ public class InstitutionEventHandler implements InstitutionService {
     	Country country=countryRepository.findByCountryName(updInst.getCountryName());
     	if (country!=null)
     	{
-    	instToUpdate.setCountry(country);
-    	if (LOG.isDebugEnabled()) LOG.debug("instToUpdate :"+instToUpdate);
-    	
-    	
-		result = instRepository.save(instToUpdate);
+	    	instToUpdate.setCountry(country);
+	    	if (LOG.isDebugEnabled()) LOG.debug("instToUpdate :"+instToUpdate);
+	    	
+	    	
+			result = instRepository.save(instToUpdate);
     	}
     	else
     	{
@@ -164,39 +174,49 @@ public class InstitutionEventHandler implements InstitutionService {
 	public NewsFeedCreatedEvent createNewsFeed(
 			CreateNewsFeedEvent createNewsFeedEvent) 
 	{
-		NewsFeedDetails newYear=createNewsFeedEvent.getNewsFeedDetails();
-		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with institutionId = "+newYear.getInstitutionId());
-    	Institution inst=instRepository.findOne(newYear.getInstitutionId());
+		NewsFeedDetails newFeed=createNewsFeedEvent.getNewsFeedDetails();
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with institutionId = "+newFeed.getInstitutionId());
+    	Institution inst=instRepository.findOne(newFeed.getInstitutionId());
     	if (LOG.isDebugEnabled()) LOG.debug("inst - "+inst);
-    	NewsFeed yearToInsert=NewsFeed.fromDetails(newYear);
-    	NewsFeedCreatedEvent result;	
-    	NewsFeed createdYear=null;
     	
-    	if (inst!=null)
-    	{
-    		yearToInsert.setInstitution(inst);
-	    	if (LOG.isDebugEnabled()) LOG.debug("yearToInsert :"+yearToInsert);
-	    	createdYear = newsFeedRepository.save(yearToInsert);
-			//TODO what happens if this fails?
-			if (LOG.isDebugEnabled()) LOG.debug("created year = "+createdYear);
-	        result=new NewsFeedCreatedEvent(createdYear.getNodeId(),createdYear.toDetails());
-    	}
-    	else
-    	{
-    		result=NewsFeedCreatedEvent.institutionNotFound(null);
-    	}
+    	
+    	NewsFeedCreatedEvent result=createFeed(newFeed,inst);
+    	
     	return result;
+	}
+
+	private NewsFeedCreatedEvent createFeed(NewsFeedDetails newFeed,Institution inst)
+	{
+	NewsFeed yearToInsert=NewsFeed.fromDetails(newFeed);
+	NewsFeedCreatedEvent result;	
+	NewsFeed createdYear=null;
+	
+	if (inst!=null)
+	{
+		yearToInsert.setInstitution(inst);
+    	if (LOG.isDebugEnabled()) LOG.debug("yearToInsert :"+yearToInsert);
+    	createdYear = newsFeedRepository.save(yearToInsert);
+		//TODO what happens if this fails?
+		if (LOG.isDebugEnabled()) LOG.debug("created year = "+createdYear);
+        result=new NewsFeedCreatedEvent(createdYear.getNodeId(),createdYear.toDetails());
+	}
+	else
+	{
+		result=NewsFeedCreatedEvent.institutionNotFound(null);
+	}
+	return result;
 	}
 
 	@Override
 	public NewsFeedReadEvent readNewsFeed(
 			ReadNewsFeedEvent readNewsFeedEvent) 
 	{
-		NewsFeed sy=newsFeedRepository.findOne(readNewsFeedEvent.getNewsFeedId());
+//		NewsFeed sy=newsFeedRepository.findOne(readNewsFeedEvent.getNewsFeedId());
+		NewsFeed newsFeed=newsFeedRepository.findNewsFeed(readNewsFeedEvent.getNewsFeedId());
 		NewsFeedReadEvent result;
-		if (sy!=null)
+		if (newsFeed!=null)
 		{
-			result=new NewsFeedReadEvent(readNewsFeedEvent.getNewsFeedId(),sy.toDetails());
+			result=new NewsFeedReadEvent(readNewsFeedEvent.getNewsFeedId(),newsFeed.toDetails());
 		}
 		else
 		{
