@@ -5,11 +5,16 @@ package com.eulersbridge.iEngage.database.domain;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 /**
@@ -86,6 +91,14 @@ public class UserTest {
 		userDetails.setGivenName(user.getGivenName());
 		assertEquals("getEmail() returns expected value",user.getGivenName(),userDetails.getGivenName());
 	}
+	
+	@Test
+	public final void testSetGivenName()
+	{
+		String givenName="GenerousGeorge";
+		user.setGivenName(givenName);
+		assertEquals("SetGivenName not working.",user.getGivenName(),givenName);
+	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getFamilyName()}.
@@ -96,6 +109,14 @@ public class UserTest {
 		assertNotEquals("getFamilyName() returns incorrect  value",user.getFamilyName(),userDetails.getFamilyName());
 		userDetails.setFamilyName(user.getFamilyName());
 		assertEquals("getFamilyName() returns expected value",user.getFamilyName(),userDetails.getFamilyName());
+	}
+
+	@Test
+	public final void testSetFamilyName()
+	{
+		String familyName="GenerousGeorge";
+		user.setFamilyName(familyName);
+		assertEquals("SetFamilyName not working.",user.getFamilyName(),familyName);
 	}
 
 	/**
@@ -109,6 +130,17 @@ public class UserTest {
 		assertEquals("getGender() returns expected value",user.getGender(),userDetails.getGender());
 	}
 
+	@Test
+	public final void testSetGender()
+	{
+		String gender="Female";
+		user.setGender(gender);
+		assertEquals("SetGivenName not working.",user.getGender(),gender);
+		gender="Male";
+		user.setGender(gender);
+		assertEquals("SetGivenName not working.",user.getGender(),gender);
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getNationality()}.
 	 */
@@ -118,6 +150,17 @@ public class UserTest {
 		assertNotEquals("getNationality() returns incorrect  value",user.getNationality(),userDetails.getNationality());
 		userDetails.setNationality(user.getNationality());
 		assertEquals("getNationality() returns expected value",user.getNationality(),userDetails.getNationality());
+	}
+
+	@Test
+	public final void testSetNationality()
+	{
+		String nationality="Australian";
+		user.setNationality(nationality);
+		assertEquals("setNationality not working.",user.getNationality(),nationality);
+		nationality="British";
+		user.setNationality(nationality);
+		assertEquals("setNationality not working.",user.getNationality(),nationality);
 	}
 
 	/**
@@ -131,6 +174,35 @@ public class UserTest {
 		assertEquals("getYearOfBirth() returns expected value",user.getYearOfBirth(),userDetails.getYearOfBirth());
 	}
 
+	@Test
+	public final void testSetYearOfBirth()
+	{
+		String yearOfBirth="1970";
+		user.setYearOfBirth(yearOfBirth);
+		assertEquals("setYearOfBirth not working.",user.getYearOfBirth(),yearOfBirth);
+		yearOfBirth="1971";
+		user.setYearOfBirth(yearOfBirth);
+		assertEquals("setYearOfBirth not working.",user.getYearOfBirth(),yearOfBirth);
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getYearOfBirth()}.
+	 */
+	@Test
+	public final void testGetVerificationToken() 
+	{
+		Iterable<VerificationToken> token=user.getVerificationToken();
+		assertNull("token not null",token);
+	}
+
+	@Test
+	public final void testSetVerificationToken()
+	{
+		ArrayList<VerificationToken> tokens=(new ArrayList<VerificationToken>());
+		user.setVerificationToken(tokens);
+		assertEquals("setVerificationToken not working.",user.getVerificationToken(),tokens);
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#comparePassword(java.lang.String)}.
 	 */
@@ -142,27 +214,55 @@ public class UserTest {
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getLikes()}.
+	 */
+	@Test
+	public final void testGetLikes() 
+	{
+		assertNull("GetNodeId not working",user.getLikes());
+		Set<Like> likes=new HashSet<Like>();
+		user.setLikes(likes);
+		assertEquals("GetNodeId and equals not working.",user.getLikes(),likes);
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getNodeId()}.
 	 */
 	@Test
-	public final void testGetNodeId() {
-//		fail("Not yet implemented"); // TODO
+	public final void testGetNodeId() 
+	{
+		Long nodeId=948l;
+		user.setNodeId(nodeId);
+		assertEquals("GetNodeId not working",user.getNodeId(),nodeId);
+		assertTrue("GetNodeId and equals not working.",user.getNodeId().equals(nodeId));
 	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getInstitution()}.
 	 */
 	@Test
-	public final void testGetInstitution() {
-//		fail("Not yet implemented"); // TODO
+	public final void testGetInstitution() 
+	{
+		assertEquals("GetInstitution not working",user.getInstitution().getNodeId(),userDetails.getInstitutionId());
+		assertNull(user.getInstitution().getCampus());
+		assertNull(user.getInstitution().getCountry());
+		assertNull(user.getInstitution().getName());
 	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#setInstitution(com.eulersbridge.iEngage.database.domain.Institution)}.
 	 */
 	@Test
-	public final void testSetInstitution() {
-//		fail("Not yet implemented"); // TODO
+	public final void testSetInstitution() 
+	{
+		Institution inst=DatabaseDataFixture.populateInstUniMelb();
+		user=new User();
+		user.setInstitution(inst);
+		assertEquals("Institution does not match.",user.getInstitution(),inst);
+		assertEquals("Campus does not match.",user.getInstitution().getCampus(),inst.getCampus());
+		assertEquals("Name does not match.",user.getInstitution().getName(),inst.getName());
+		assertEquals("State does not match.",user.getInstitution().getState(),inst.getState());
+		assertEquals("Country does not match.",user.getInstitution().getCountry(),inst.getCountry());
 	}
 
 	/**
@@ -180,8 +280,12 @@ public class UserTest {
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#setPassword(java.lang.String)}.
 	 */
 	@Test
-	public final void testSetPassword() {
-		// Tested in above method.
+	public final void testSetPassword() 
+	{
+		String password="newPassword";
+		assertNotEquals("getPassword() returns non expected value",user.getPassword(),password);
+		user.setPassword(password);
+		assertEquals("getPassword() returns expected value",user.getPassword(),password);
 	}
 
 	/**
@@ -252,11 +356,11 @@ public class UserTest {
 	}
 	
 	@Test
-	public final void testDifferentObjectsEqual()
+	public final void testDifferentObjectsInEqual()
 	{
 		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
 		Object user2=new String("gnewitt Greg Newitt Male Australian 1971 password");
-		assertFalse("Different objects are being declared unequal.",user1.equals(user2));
+		assertFalse("Different objects are being declared equal.",user1.equals(user2));
 	}
 
 	@Test
@@ -271,20 +375,64 @@ public class UserTest {
 	public final void testDifferentObjectsUnEqual()
 	{
 		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1972", "password");
-		Object user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		User user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
 		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", null);
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
 		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password1");
-		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", null, "password");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
 		user1=new User("gnewitt","Greg","Newitt","Male", "British", "1971", "password");
-		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
 		user1=new User("gnewitt","Greg","Newitt","Female", "Australian", "1971", "password");
-		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
 		user1=new User("gnewitt","Greg","Lawson","Male", "Australian", "1971", "password");
-		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
 		user1=new User("gnewitt","Gregory","Newitt","Male", "Australian", "1971", "password");
-		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
 		user1=new User("gnewitt2","Greg","Newitt","Male", "Australian", "1971", "password");
-		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Newitt","Male", null, "1971", "password");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Newitt",null, "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg",null,"Male", "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt",null,"Newitt","Male", "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User(null,"Greg","Newitt","Male", "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		user1.setNodeId(1l);
+		assertFalse("Different objects with different ids declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different ids declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1.setGivenName("Gregory");
+		user2.setNodeId(1l);
+		assertTrue("objects with same ids being declared unequal.",user1.equals(user2));
+		assertEquals("",user1.hashCode(),user2.hashCode());
 	}
 
 }

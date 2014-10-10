@@ -85,6 +85,20 @@ public class ViewCountryIntegrationTest
 	}
 
 	@Test
+	public void testAlterCountryNullEventReturned() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingAlterCountry()");
+		Long id=1L;
+		CountryDetails dets=new CountryDetails(id);
+		dets.setCountryName("Australia");
+		String content="{\"countryName\":\"Australia\",\"institutions\":null,\"countryId\":"+id.intValue()+"}";
+		when (countryService.updateCountry(any(UpdateCountryEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isFailedDependency())	;		
+	}
+
+	@Test
 	public void testFindCountry() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
@@ -175,9 +189,39 @@ public class ViewCountryIntegrationTest
 	}
 
 	@Test
-	public void testDisplayDetails() 
+	public void testCreateCountryBadRequestNullId() throws Exception 
 	{
-//TODO Probably not necessary		fail("Not yet implemented");
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateCountry()");
+		Long id=null;
+		CountryDetails dets=new CountryDetails(id);
+		dets.setCountryName("Australia");
+		CountryCreatedEvent testData=new CountryCreatedEvent(id, dets);
+		String content="{\"countryName\":\"Australia\",\"institutions\":null}";
+		when (countryService.createCountry(any(CreateCountryEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post("/api/country/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testCreateCountryBadRequestNullEvent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateCountry()");
+		String content="{\"countryName\":\"Australia\",\"institutions\":null}";
+		when (countryService.createCountry(any(CreateCountryEvent.class))).thenReturn(null);
+		this.mockMvc.perform(post("/api/country/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testDisplayDetails() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingTestDisplayDetails()");
+		String content="{\"countryName\":\"Australia\",\"institutions\":null}";
+		this.mockMvc.perform(post("/api/displayCountryParams/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isOk())	;		
 	}
 
 	@Test
