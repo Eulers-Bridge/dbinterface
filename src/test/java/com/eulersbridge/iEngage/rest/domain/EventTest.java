@@ -1,9 +1,14 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import static org.junit.Assert.*;
 
@@ -28,8 +33,14 @@ public class EventTest {
     private Event event;
 
     @Before
-    public void setUp() throws Exception {
-        event = new Event();
+    public void setUp() throws Exception 
+    {
+		MockitoAnnotations.initMocks(this);
+		MockHttpServletRequest request=new MockHttpServletRequest();
+		
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+    
+		event = new Event();
         assertNotNull("constructor returns null", event);
         eventDetails = new EventDetails();
         eventDetails.setEventId(eventId);
