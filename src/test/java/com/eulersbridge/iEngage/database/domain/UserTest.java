@@ -237,11 +237,54 @@ public class UserTest {
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#equals(com.eulersbridge.iEngage.database.domain.User)}.
 	 */
 	@Test
-	public final void testEqualsUser() 
+	public final void testUser1EqualsUser1() 
+	{
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		assertTrue("Different objects with same details are being declared unequal.",user1.equals(user1));
+	}
+	
+	@Test
+	public final void testUser1EqualsUser2() 
 	{
 		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
 		User user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
-		assertFalse("Different objects with same details are being declared equal.",user1.equals(user2));
+		assertTrue("Different objects with same details are being declared unequal.",user1.equals(user2));
+	}
+	
+	@Test
+	public final void testDifferentObjectsEqual()
+	{
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		Object user2=new String("gnewitt Greg Newitt Male Australian 1971 password");
+		assertFalse("Different objects are being declared unequal.",user1.equals(user2));
+	}
+
+	@Test
+	public final void testNullObjectUnequal()
+	{
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		User user2=null;
+		assertFalse("Null object being declared equal.",user1.equals(user2));
+	}
+
+	@Test
+	public final void testDifferentObjectsUnEqual()
+	{
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1972", "password");
+		Object user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password1");
+		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		user1=new User("gnewitt","Greg","Newitt","Male", "British", "1971", "password");
+		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		user1=new User("gnewitt","Greg","Newitt","Female", "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		user1=new User("gnewitt","Greg","Lawson","Male", "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		user1=new User("gnewitt","Gregory","Newitt","Male", "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
+		user1=new User("gnewitt2","Greg","Newitt","Male", "Australian", "1971", "password");
+		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
 	}
 
 }
