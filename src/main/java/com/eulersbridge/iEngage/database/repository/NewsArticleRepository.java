@@ -1,7 +1,5 @@
 package com.eulersbridge.iEngage.database.repository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
@@ -15,9 +13,6 @@ import com.eulersbridge.iEngage.database.domain.User;
 
 public interface NewsArticleRepository extends GraphRepository<NewsArticle> 
 {
-	static Logger LOG = LoggerFactory.getLogger(NewsArticleRepository.class);
-	   
-//	Page<NewsArticle> findByStudentYear(Pageable p,NewsFeed sy);
 	Iterable<NewsArticle> findByCreator(User creator);
 
 	@Query("Match (n:`"+DatabaseDomainConstants.INSTITUTION+"`)-[r:"+DatabaseDomainConstants.HAS_NEWS_FEED_LABEL+
