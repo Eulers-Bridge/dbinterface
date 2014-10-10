@@ -103,35 +103,79 @@ public class AnsweredPollQuestion
 		this.answer = answer;
 	}
 	
-		@Override
-		public boolean equals(Object other)
-		{
-			if (null == other) return false;
-			if (other == this) return true;
-			if (!(other instanceof AnsweredPollQuestion)) return false;
-			AnsweredPollQuestion answer2=(AnsweredPollQuestion) other;
+	@Override
+	public String toString()
+	{
+		return "id = "+id+" answerer = "+answerer+" poll = "+poll+" timeStamp = "+timeStamp+" answer = "+answer;
+	}
 
-			if (getId()!=null)
-			{
-					if (getId().equals(answer2.getId())) return true;
-			}
-			else
-			{
-				if (null==answer2.getId())
-				{
-					if  (this.getPoll().equals(answer2.getPoll())&&
-						(this.getAnswerer().equals(answer2.getAnswerer()))&&
-						(this.getTimeStamp().equals(answer2.getTimeStamp())&&
-						(this.getAnswer().equals(answer2.getAnswer()))))
-						return true;
-				}
-			}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (id!=null)
+		{
+			result = prime * result + id.hashCode();
+		}
+		else
+		{
+			result = prime * result + ((answer == null) ? 0 : answer.hashCode());
+			result = prime * result
+					+ ((answerer == null) ? 0 : answerer.hashCode());
+			result = prime * result + ((poll == null) ? 0 : poll.hashCode());
+			result = prime * result
+					+ ((timeStamp == null) ? 0 : timeStamp.hashCode());
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-
-		@Override
-		public String toString()
+		if (getClass() != obj.getClass())
+			return false;
+		AnsweredPollQuestion other = (AnsweredPollQuestion) obj;
+		if (id != null) 
 		{
-			return "id = "+id+" answerer = "+answerer+" poll = "+poll+" timeStamp = "+timeStamp+" answer = "+answer;
+			if (id.equals(other.id))
+				return true;
+			else return false;
+		} 
+		else
+		{
+			if (other.id != null)
+				return false;
+			if (answer == null) {
+				if (other.answer != null)
+					return false;
+			} else if (!answer.equals(other.answer))
+				return false;
+			if (answerer == null) {
+				if (other.answerer != null)
+					return false;
+			} else if (!answerer.equals(other.answerer))
+				return false;
+			if (poll == null) {
+				if (other.poll != null)
+					return false;
+			} else if (!poll.equals(other.poll))
+				return false;
+			if (timeStamp == null) {
+				if (other.timeStamp != null)
+					return false;
+			} else if (!timeStamp.equals(other.timeStamp))
+				return false;
 		}
+		return true;
+	}
+	
 }

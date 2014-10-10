@@ -59,19 +59,54 @@ public class NewsFeedDetails
 		return "StudentYearDetails [nodeId=" + nodeId + ", institutionId="
 				+ institutionId + "]";
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
-	public boolean equals(Object other)
-	{
-		if (null == other) return false;
-		if (other == this) return true;
-		if (!(other instanceof NewsFeedDetails)) return false;
-		NewsFeedDetails dets2=(NewsFeedDetails) other;
-		if (dets2.getNodeId()!=null)
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (null==nodeId)
 		{
-			if (dets2.getNodeId().equals(getNodeId()))
-			return true;
+			result = prime * result + nodeId.hashCode();
 		}
-		return false;
+		else
+		{
+			result = prime * result
+					+ ((institutionId == null) ? 0 : institutionId.hashCode());
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NewsFeedDetails other = (NewsFeedDetails) obj;
+		if (nodeId != null) 
+		{
+			if (nodeId.equals(other.nodeId))
+				return true;
+			else return false;
+		} 
+		else
+		{
+			if (other.nodeId != null)
+				return false;
+			if (institutionId == null) {
+				if (other.institutionId != null)
+					return false;
+			} else if (!institutionId.equals(other.institutionId))
+				return false;
+		}
+		return true;
 	}
 }

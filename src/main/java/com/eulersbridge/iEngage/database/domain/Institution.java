@@ -169,16 +169,87 @@ public class Institution
 
 		    return inst;
 		  }
-	  
-	@Override  
-	public boolean equals(Object other)
-	{
-		if (null == other) return false;
-		if (other == this) return true;
-		if (!(other instanceof Institution)) return false;
-		Institution institution2=(Institution) other;
 
-		if ((nodeId!=null)&&(nodeId.equals(institution2.nodeId))) return true;
-		return false;
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (nodeId!=null)
+		{
+			result = prime * result + nodeId.hashCode();
+		}
+		else
+		{
+			result = prime * result + ((campus == null) ? 0 : campus.hashCode());
+			result = prime * result + ((country == null) ? 0 : country.hashCode());
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result
+					+ ((newsFeed == null) ? 0 : newsFeed.hashCode());
+			result = prime * result + ((state == null) ? 0 : state.hashCode());
+			result = prime * result
+					+ ((students == null) ? 0 : students.hashCode());
+		}
+		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Institution other = (Institution) obj;
+		if (nodeId != null) 
+		{
+			if (nodeId.equals(other.nodeId))
+				return true;
+			else return false;
+		}
+		else 
+		{
+			if (other.nodeId != null)
+				return false;
+
+			if (campus == null) {
+				if (other.campus != null)
+					return false;
+			} else if (!campus.equals(other.campus))
+				return false;
+			if (country == null) {
+				if (other.country != null)
+					return false;
+			} else if (!country.equals(other.country))
+				return false;
+			if (name == null) {
+				if (other.name != null)
+					return false;
+			} else if (!name.equals(other.name))
+				return false;
+			if (newsFeed == null) {
+				if (other.newsFeed != null)
+					return false;
+			} else if (!newsFeed.equals(other.newsFeed))
+				return false;
+			if (state == null) {
+				if (other.state != null)
+					return false;
+			} else if (!state.equals(other.state))
+				return false;
+			if (students == null) {
+				if (other.students != null)
+					return false;
+			} else if (!students.equals(other.students))
+				return false;
+		}
+		return true;
+	}
+	  
 }

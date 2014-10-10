@@ -84,20 +84,66 @@ public class Country
 		    return country;
 	}
 	  
-	@Override
-	public boolean equals(Object other)
-	{
-		if (null == other) return false;
-		if (other == this) return true;
-		if (!(other instanceof Country)) return false;
-		Country country2=(Country) other;
-
-		if ((nodeId!=null)&&(nodeId.equals(country2.nodeId))) return true;
-		return false;
-	}
-
 	public void setNodeId(Long id) 
 	{
 		this.nodeId=id;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() 
+	{
+		final int prime = 31;
+		int result = 1;
+		if (nodeId!=null)
+		{
+			result = prime * result + nodeId.hashCode();
+		}
+		else
+		{
+			result = prime * result
+					+ ((countryName == null) ? 0 : countryName.hashCode());
+			result = prime * result
+					+ ((institutions == null) ? 0 : institutions.hashCode());
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Country other = (Country) obj;
+		if (nodeId != null) 
+		{
+			if (nodeId.equals(other.nodeId))
+				return true;
+			else return false;
+		} 
+		else
+		{
+			if (other.nodeId != null)
+				return false;
+			if (countryName == null) {
+				if (other.countryName != null)
+					return false;
+			} else if (!countryName.equals(other.countryName))
+				return false;
+			if (institutions == null) {
+				if (other.institutions != null)
+					return false;
+			} else if (!institutions.equals(other.institutions))
+				return false;
+		}
+		return true;
 	}
 }

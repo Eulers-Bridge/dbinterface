@@ -77,16 +77,74 @@ public class PollDetails {
         return retValue;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (null == obj) return false;
-        if (obj ==this) return true;
-        if(!(obj instanceof PollDetails)) return false;
-        PollDetails pollDetails = (PollDetails) obj;
-        if (pollDetails.getPollId() != null){
-            if(pollDetails.getPollId().equals(getPollId()))
-                return true;
-        }
-        return false;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() 
+	{
+		final int prime = 31;
+		int result = 1;
+		if (pollId!=null)
+		{
+			result = prime * result + pollId.hashCode();
+		}
+		else
+		{
+			result = prime * result + ((answers == null) ? 0 : answers.hashCode());
+			result = prime * result
+					+ ((duration == null) ? 0 : duration.hashCode());
+			result = prime * result
+					+ ((question == null) ? 0 : question.hashCode());
+			result = prime * result + ((start == null) ? 0 : start.hashCode());
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PollDetails other = (PollDetails) obj;
+		if (pollId != null) 
+		{
+			if (pollId.equals(other.pollId))
+				return true;
+			else return false;
+		} 
+		else
+		{
+			if (other.pollId != null)
+				return false;
+			if (answers == null) {
+				if (other.answers != null)
+					return false;
+			} else if (!answers.equals(other.answers))
+				return false;
+			if (duration == null) {
+				if (other.duration != null)
+					return false;
+			} else if (!duration.equals(other.duration))
+				return false;
+			if (question == null) {
+				if (other.question != null)
+					return false;
+			} else if (!question.equals(other.question))
+				return false;
+			if (start == null) {
+				if (other.start != null)
+					return false;
+			} else if (!start.equals(other.start))
+				return false;
+		}
+		return true;
+	}
+
 }

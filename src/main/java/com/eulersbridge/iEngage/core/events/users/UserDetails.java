@@ -145,19 +145,87 @@ public class UserDetails
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
-	public boolean equals(Object other)
-	{
-		if (null == other) return false;
-		if (other == this) return true;
-		if (!(other instanceof UserDetails)) return false;
-		UserDetails dets2=(UserDetails) other;
-		if (dets2.getEmail()!=null)
-		{
-			if (dets2.getEmail().equals(getEmail()))
-			return true;
-		}
-		return false;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (accountVerified ? 1231 : 1237);
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result
+				+ ((familyName == null) ? 0 : familyName.hashCode());
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result
+				+ ((givenName == null) ? 0 : givenName.hashCode());
+		result = prime * result
+				+ ((institutionId == null) ? 0 : institutionId.hashCode());
+		result = prime * result
+				+ ((nationality == null) ? 0 : nationality.hashCode());
+		result = prime * result
+				+ ((password == null) ? 0 : password.hashCode());
+		result = prime * result
+				+ ((yearOfBirth == null) ? 0 : yearOfBirth.hashCode());
+		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserDetails other = (UserDetails) obj;
+		if (accountVerified != other.accountVerified)
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (familyName == null) {
+			if (other.familyName != null)
+				return false;
+		} else if (!familyName.equals(other.familyName))
+			return false;
+		if (gender == null) {
+			if (other.gender != null)
+				return false;
+		} else if (!gender.equals(other.gender))
+			return false;
+		if (givenName == null) {
+			if (other.givenName != null)
+				return false;
+		} else if (!givenName.equals(other.givenName))
+			return false;
+		if (institutionId == null) {
+			if (other.institutionId != null)
+				return false;
+		} else if (!institutionId.equals(other.institutionId))
+			return false;
+		if (nationality == null) {
+			if (other.nationality != null)
+				return false;
+		} else if (!nationality.equals(other.nationality))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (yearOfBirth == null) {
+			if (other.yearOfBirth != null)
+				return false;
+		} else if (!yearOfBirth.equals(other.yearOfBirth))
+			return false;
+		return true;
+	}
+	
 }

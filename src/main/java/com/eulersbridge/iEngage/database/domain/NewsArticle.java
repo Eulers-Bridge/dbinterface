@@ -198,17 +198,91 @@ public class NewsArticle extends Likeable
 
 		    return newsArt;
 		  }
-	
-	@Override
-	public boolean equals(Object other)
-	{
-		if (null == other) return false;
-		if (other == this) return true;
-		if (!(other instanceof NewsArticle)) return false;
-		NewsArticle newsArticle2=(NewsArticle) other;
 
-		if ((nodeId!=null)&&(nodeId.equals(newsArticle2.nodeId))) return true;
-		return false;
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (nodeId!=null)
+		{
+			result = prime * result + nodeId.hashCode();
+		}
+		else
+		{
+			result = prime * result + ((content == null) ? 0 : content.hashCode());
+			result = prime * result + ((creator == null) ? 0 : creator.hashCode());
+			result = prime * result + ((date == null) ? 0 : date.hashCode());
+			result = prime * result + ((likes == null) ? 0 : likes.hashCode());
+			result = prime * result
+					+ ((newsFeed == null) ? 0 : newsFeed.hashCode());
+			result = prime * result + ((picture == null) ? 0 : picture.hashCode());
+			result = prime * result + ((title == null) ? 0 : title.hashCode());
+		}
+		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NewsArticle other = (NewsArticle) obj;
+		if (nodeId != null) 
+		{
+			if (nodeId.equals(other.nodeId))
+				return true;
+			else return false;
+		}
+		else
+		{
+			if (other.nodeId != null)
+				return false;
+			if (content == null) {
+				if (other.content != null)
+					return false;
+			} else if (!content.equals(other.content))
+				return false;
+			if (creator == null) {
+				if (other.creator != null)
+					return false;
+			} else if (!creator.equals(other.creator))
+				return false;
+			if (date == null) {
+				if (other.date != null)
+					return false;
+			} else if (!date.equals(other.date))
+				return false;
+			if (likes == null) {
+				if (other.likes != null)
+					return false;
+			} else if (!likes.equals(other.likes))
+				return false;
+			if (newsFeed == null) {
+				if (other.newsFeed != null)
+					return false;
+			} else if (!newsFeed.equals(other.newsFeed))
+				return false;
+			if (picture == null) {
+				if (other.picture != null)
+					return false;
+			} else if (!picture.equals(other.picture))
+				return false;
+			if (title == null) {
+				if (other.title != null)
+					return false;
+			} else if (!title.equals(other.title))
+				return false;
+		}
+		return true;
+	}
+	
 }

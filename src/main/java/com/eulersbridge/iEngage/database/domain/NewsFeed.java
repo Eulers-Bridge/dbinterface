@@ -99,17 +99,62 @@ public class NewsFeed
 		buff.append(']');
 		return buff.toString();
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
-	public boolean equals(Object other)
+	public int hashCode() 
 	{
-		if (null == other) return false;
-		if (other == this) return true;
-		if (!(other instanceof NewsFeed)) return false;
-		NewsFeed nf2=(NewsFeed) other;
-		
-		if ((nodeId!=null)&&(nodeId.equals(nf2.nodeId))) return true;
-		return false;
+		final int prime = 31;
+		int result = 1;
+		if (nodeId!=null)
+		{
+			result = prime * result + nodeId.hashCode();
+		}
+		else
+		{
+			result = prime * result
+					+ ((institution == null) ? 0 : institution.hashCode());
+			result = prime * result + ((news == null) ? 0 : news.hashCode());
+		}
+		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NewsFeed other = (NewsFeed) obj;
+		if (nodeId != null) 
+		{
+			 if (nodeId.equals(other.nodeId))
+					return true;
+			 else return false;
+		}
+		else
+		{
+			if (other.nodeId != null)
+				return false;
+			if (institution == null) {
+				if (other.institution != null)
+					return false;
+			} else if (!institution.equals(other.institution))
+				return false;
+			if (news == null) {
+				if (other.news != null)
+					return false;
+			} else if (!news.equals(other.news))
+				return false;
+		}
+		return true;
+	}
+	
 }
