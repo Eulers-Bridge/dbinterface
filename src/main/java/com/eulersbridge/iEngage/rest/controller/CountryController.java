@@ -165,7 +165,7 @@ public class CountryController
     	ResponseEntity<Country> result;
     	CountryCreatedEvent countryEvent=countryService.createCountry(new CreateCountryEvent(country.toCountryDetails()));
 
-    	if (countryEvent.getId()==null)
+    	if ((countryEvent==null)||(countryEvent.getId()==null))
     	{
     		result=new ResponseEntity<Country>(HttpStatus.BAD_REQUEST);
     	}
@@ -178,10 +178,10 @@ public class CountryController
     }
     
     @RequestMapping(value="/displayCountryParams")
-    public @ResponseBody ResponseEntity<Boolean> displayDetails(@RequestBody Country inst) 
+    public @ResponseBody ResponseEntity<Boolean> displayDetails(@RequestBody Country country) 
     {
     	if (LOG.isInfoEnabled()) 
-    		LOG.info("inst = "+inst);
+    		LOG.info("country = "+country);
     	return new ResponseEntity<Boolean>(true,HttpStatus.OK);
     }
 
