@@ -18,7 +18,6 @@ import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
@@ -286,8 +285,21 @@ public class NewsArticleMemoryRepository implements NewsArticleRepository
 
 
 	@Override
-	public Page<NewsArticle> findByInstitutionId(Long instId, Pageable p) {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<NewsArticle> findByInstitutionId(Long instId, Pageable p) 
+	{
+		ArrayList<NewsArticle> arts=new ArrayList<NewsArticle>();
+		if (null==instId)
+			return null;
+		Iterator<NewsArticle> iter=newsArticles.values().iterator();
+		while (iter.hasNext())
+		{
+			NewsArticle na=iter.next();
+			if (na.getNewsFeed().getInstitution().getNodeId().equals(instId))
+			{
+				arts.add(na);
+			}
+		}
+		Page<NewsArticle> pages=new PageImpl<NewsArticle>(arts,p,arts.size());
+		return pages;
 	}
 }
