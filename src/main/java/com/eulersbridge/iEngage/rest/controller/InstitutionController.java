@@ -191,7 +191,7 @@ public class InstitutionController
     	else
     	{
     		restInst=Institution.fromInstDetails(instEvent.getInstitutionDetails());
-    		result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
+    		result=new ResponseEntity<Institution>(restInst,HttpStatus.CREATED);
     	}
 		return result;
     }
@@ -230,25 +230,24 @@ public class InstitutionController
     	else
     	{
     		restNewsFeed=NewsFeed.fromNewsFeedDetails(nfEvent.getNewsFeedDetails());
-    		result=new ResponseEntity<NewsFeed>(restNewsFeed,HttpStatus.OK);
+    		result=new ResponseEntity<NewsFeed>(restNewsFeed,HttpStatus.CREATED);
     	}
 		return result;
     }
     
     /**
-     * Is passed all the necessary data to read a student year.
+     * Is passed all the necessary data to read a news feed.
      * The request must be a GET with the necessary parameters in the
      * attached data.
      * <p/>
      * This method will return the resulting student year object.
      * 
      * @param institutionid the institution id object passed across as JSON.
-     * @param syid the institution id object passed across as JSON.
+     * @param instid the institution id object passed across as JSON.
      * @return the institution object returned by the Graph Database.
      * 
 
 	*/
-   //TODO 
     @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.INSTITUTION_LABEL+"/{institutionId}"+ControllerConstants.NEWSFEED_LABEL)
     public @ResponseBody ResponseEntity<NewsFeed> readNewsFeed(@PathVariable Long institutionId) 
     {
