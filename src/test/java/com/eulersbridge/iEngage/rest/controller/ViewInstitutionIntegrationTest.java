@@ -1,6 +1,8 @@
 
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -23,13 +25,20 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
+import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
+import com.eulersbridge.iEngage.core.events.generalInfo.GiCountry;
+import com.eulersbridge.iEngage.core.events.generalInfo.GiInstitution;
+import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
+import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
@@ -64,6 +73,61 @@ public class ViewInstitutionIntegrationTest
 	}
 	
 	@Test
+	public void getShouldReturnGeneralInfoCorrectly() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingGeneralInfo()");
+		ArrayList<GiInstitution> insts=new ArrayList<GiInstitution>();
+		GiInstitution inst=new GiInstitution(1l, "University of Melbourne");
+		insts.add(inst);
+		inst=new GiInstitution(2l, "Curtin University");
+		insts.add(inst);
+		inst=new GiInstitution(3l, "Monash University");
+		insts.add(inst);
+		ArrayList<GiCountry> countries=new ArrayList<GiCountry>();
+		GiCountry country=new GiCountry(1l, "Australia", insts.iterator());
+		countries.add(country);
+		GeneralInfoDetails info=new GeneralInfoDetails(countries.iterator());
+		GeneralInfoReadEvent testData=new GeneralInfoReadEvent(info);
+//		String returnedContent="[{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
+		when (instService.getGeneralInfo(any(ReadGeneralInfoEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get("/api/general-info/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.countrys[0].countryName",is(countries.get(0).getCountryName())))
+		.andExpect(jsonPath("$.countrys[0].countryId",is(countries.get(0).getCountryId().intValue())))
+		.andExpect(jsonPath("$.countrys[0].institutions[0].institutionId",is(insts.get(0).getInstId().intValue())))
+		.andExpect(jsonPath("$.countrys[0].institutions[0].institutionName",is(insts.get(0).getInstName())))
+		.andExpect(jsonPath("$.countrys[0].institutions[1].institutionId",is(insts.get(1).getInstId().intValue())))
+		.andExpect(jsonPath("$.countrys[0].institutions[1].institutionName",is(insts.get(1).getInstName())))
+		.andExpect(jsonPath("$.countrys[0].institutions[2].institutionId",is(insts.get(2).getInstId().intValue())))
+		.andExpect(jsonPath("$.countrys[0].institutions[2].institutionName",is(insts.get(2).getInstName())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+//		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;
+	}
+	
+	@Test
+	public void getShouldReturnInstitutionsCorrectly() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
+		ArrayList <InstitutionDetails> insts=new ArrayList<InstitutionDetails>();
+		InstitutionDetails inst=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
+		insts.add(inst);
+		InstitutionsReadEvent testData=new InstitutionsReadEvent(insts);
+		String returnedContent="[{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
+		when (instService.readInstitutions(any(ReadInstitutionsEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get("/api/institutions/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.[0].name",is(insts.get(0).getName())))
+		.andExpect(jsonPath("$.[0].state",is(insts.get(0).getState())))
+		.andExpect(jsonPath("$.[0].campus",is(insts.get(0).getCampus())))
+		.andExpect(jsonPath("$.[0].country",is(insts.get(0).getCountryName())))
+		.andExpect(jsonPath("$.[0].institutionId",is(insts.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.[0].links[0].rel",is("self")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;
+	}
+	
+	@Test
 	public void getShouldReturnUserNotFound() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
@@ -76,13 +140,48 @@ public class ViewInstitutionIntegrationTest
 	}
 	
 	@Test
+	public void getShouldReturnInstitutionsCorrectlyCountrySet() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
+		Long countryId=1l;
+		ArrayList <InstitutionDetails> insts=new ArrayList<InstitutionDetails>();
+		InstitutionDetails inst=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
+		insts.add(inst);
+		InstitutionsReadEvent testData=new InstitutionsReadEvent(insts);
+		String returnedContent="[{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
+		when (instService.readInstitutions(any(ReadInstitutionsEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get("/api/institutions/{countryId}",countryId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.[0].name",is(insts.get(0).getName())))
+		.andExpect(jsonPath("$.[0].state",is(insts.get(0).getState())))
+		.andExpect(jsonPath("$.[0].campus",is(insts.get(0).getCampus())))
+		.andExpect(jsonPath("$.[0].country",is(insts.get(0).getCountryName())))
+		.andExpect(jsonPath("$.[0].institutionId",is(insts.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.[0].links[0].rel",is("self")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;
+	}
+	
+	@Test
+	public void getShouldReturnTrue() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDisplayInstParams()");
+		Long id=1l;
+		String content="{\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\"}";
+		String returnedContent="true";
+		this.mockMvc.perform(post("/api/displayInstParams/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;
+	}
+	
+	@Test
 	public void getShouldReturnInstitutionCorrectly() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		Long id=1l;
 		InstitutionDetails dets=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
 		ReadInstitutionEvent testData=new ReadInstitutionEvent(id, dets);
-//		String content=populateContent(dets);
 		String returnedContent="{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.requestReadInstitution(any(RequestReadInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
