@@ -25,6 +25,7 @@ import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
@@ -159,11 +160,28 @@ public class NewsEventHandler implements NewsService
 				NewsArticleDetails det=na.toNewsArticleDetails();
 				dets.add(det);
 			}
-			nare=new NewsArticlesReadEvent(institutionId,dets);
+			if (0==dets.size())
+			{
+				// Need to check if we actually found instId.
+				Institution inst=instRepo.findOne(institutionId);
+				if (null==inst)
+				{
+					nare=NewsArticlesReadEvent.institutionNotFound();
+				}
+				else
+				{	
+					nare=new NewsArticlesReadEvent(institutionId,dets);
+				}
+			}
+			else
+			{	
+				nare=new NewsArticlesReadEvent(institutionId,dets);
+			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
+			nare=NewsArticlesReadEvent.institutionNotFound();
 		}
 		return nare;
 	}

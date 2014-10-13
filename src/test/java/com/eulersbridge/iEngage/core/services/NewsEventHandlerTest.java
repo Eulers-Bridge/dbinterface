@@ -194,6 +194,8 @@ public class NewsEventHandlerTest
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
+		assertTrue(nare.isNewsFeedFound());
+		assertTrue(nare.isInstitutionFound());
 		Iterable <NewsArticleDetails> artDets=nare.getArticles();
 		Iterator <NewsArticleDetails> iter=artDets.iterator();
 		int count=0;
@@ -203,6 +205,39 @@ public class NewsEventHandlerTest
 			iter.next();
 		}
 		assertEquals(count,2);
+	}
+		
+	@Test
+	public void testShouldReadNewsArticlesNonExistentInstId()
+	{
+		Long instId=(long)28;
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
+		Direction sortDirection=Direction.DESC;
+		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
+		assertNotNull(nare);
+		assertFalse(nare.isNewsFeedFound());
+		assertFalse(nare.isInstitutionFound());
+	}
+		
+	@Test
+	public void testShouldReadNewsArticlesNoArticles()
+	{
+		Long instId=(long)2;
+		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
+		Direction sortDirection=Direction.DESC;
+		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
+		assertNotNull(nare);
+		assertTrue(nare.isNewsFeedFound());
+		assertTrue(nare.isInstitutionFound());
+		Iterable <NewsArticleDetails> artDets=nare.getArticles();
+		Iterator <NewsArticleDetails> iter=artDets.iterator();
+		int count=0;
+		while(iter.hasNext())
+		{
+			count++;
+			iter.next();
+		}
+		assertEquals(count,0);
 	}
 		
 	@Test

@@ -105,4 +105,12 @@ public class NewsArticlesReadEvent extends ReadEvent
 		nare.setNewsFeedFound(false);
 		return nare;
 	}
+
+	public static NewsArticlesReadEvent institutionNotFound() 
+	{
+		NewsArticlesReadEvent nare=new NewsArticlesReadEvent();
+		nare.setInstitutionFound(false);
+		nare.setNewsFeedFound(false);
+		return nare;
+	}
 }
