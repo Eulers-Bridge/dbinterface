@@ -62,6 +62,14 @@ public class DatabaseDataFixture
 		return inst;
 	}
 	
+	public static Institution populateInstMonashUni()
+	{
+		Country country=populateCountryAust();
+		Institution inst=populateInst("Monash University", "Clayton", "Victoria", country);
+		inst.setNodeId((long)2);
+		return inst;
+	}
+	
 	public static Institution populateInst(String name,String campus,String state,Country country)
 	{
 		Institution inst=new Institution(name, campus, state, country);
@@ -144,9 +152,9 @@ public class DatabaseDataFixture
 	{
 		HashMap<Long, Institution> institutions=new HashMap<Long, Institution>();
 		Institution initialInst=populateInstUniMelb();
-		Long nodeId=new Long(1);
-		initialInst.setNodeId(nodeId);
-		institutions.put(nodeId, initialInst);
+		institutions.put(initialInst.getNodeId(), initialInst);
+		initialInst=populateInstMonashUni();
+		institutions.put(initialInst.getNodeId(), initialInst);
 		return institutions;
 	}
 	
