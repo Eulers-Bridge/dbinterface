@@ -3,6 +3,8 @@
  */
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
+import java.util.Collection;
+
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 
 /**
@@ -16,14 +18,14 @@ public class NewsArticlesReadEvent extends ReadEvent
 	private boolean institutionFound=true;
 	private boolean articlesFound=true;
 	
-	private Iterable<NewsArticleDetails> articles;
+	private Collection<NewsArticleDetails> articles;
 
 	public NewsArticlesReadEvent()
 	{
 		super();
 	}
 	
-	public NewsArticlesReadEvent(Long instId,Iterable<NewsArticleDetails>articles)
+	public NewsArticlesReadEvent(Long instId,Collection<NewsArticleDetails>articles)
 	{
 		this.instId=instId;
 		this.articles=articles;
@@ -46,14 +48,14 @@ public class NewsArticlesReadEvent extends ReadEvent
 	/**
 	 * @return the articles
 	 */
-	public Iterable<NewsArticleDetails> getArticles() {
+	public Collection<NewsArticleDetails> getArticles() {
 		return articles;
 	}
 
 	/**
 	 * @param articles the articles to set
 	 */
-	public void setArticles(Iterable<NewsArticleDetails> articles) {
+	public void setArticles(Collection<NewsArticleDetails> articles) {
 		this.articles = articles;
 	}
 
@@ -103,6 +105,8 @@ public class NewsArticlesReadEvent extends ReadEvent
 	{
 		NewsArticlesReadEvent nare=new NewsArticlesReadEvent();
 		nare.setNewsFeedFound(false);
+		nare.setArticlesFound(false);
+		nare.entityFound=false;
 		return nare;
 	}
 
@@ -111,6 +115,8 @@ public class NewsArticlesReadEvent extends ReadEvent
 		NewsArticlesReadEvent nare=new NewsArticlesReadEvent();
 		nare.setInstitutionFound(false);
 		nare.setNewsFeedFound(false);
+		nare.setArticlesFound(false);
+		nare.entityFound=false;
 		return nare;
 	}
 }
