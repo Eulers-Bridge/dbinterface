@@ -386,6 +386,19 @@ public class ViewNewsIntegrationTest {
 	}
 
 	@Test
+	public final void testCreateNewsArticleNullIdReturned() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
+		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
+		NewsArticleCreatedEvent testData=new NewsArticleCreatedEvent(null, dets);
+		String content="{\"institutionId\":56,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likers\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewittt@hotmail.com\"}";
+		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
 	public final void testFindArticles() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticles()");
