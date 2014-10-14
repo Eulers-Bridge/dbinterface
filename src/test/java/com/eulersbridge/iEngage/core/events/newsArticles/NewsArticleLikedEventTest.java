@@ -40,7 +40,7 @@ public class NewsArticleLikedEventTest {
 
     @Test
     public void testUserNotFound() throws Exception {
-        NewsArticleLikedEvent newsArticleLikedEvent1 = NewsArticleLikedEvent.userNotFound(userEmail);
+        NewsArticleLikedEvent newsArticleLikedEvent1 = NewsArticleLikedEvent.userNotFound(articleId, userEmail);
         assertNotNull("newsArticleLikedEvent is null", newsArticleLikedEvent1);
         assertFalse("userFound is not false", newsArticleLikedEvent1.isUserFound());
         assertFalse("result is not false", newsArticleLikedEvent1.isResultSuccess());

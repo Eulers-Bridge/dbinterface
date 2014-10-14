@@ -45,7 +45,7 @@ public class NewsArticleUnlikedEventTest {
 
     @Test
     public void testUserNotFound() throws Exception {
-        NewsArticleUnlikedEvent newsArticleUnlikedEvent1 = NewsArticleUnlikedEvent.userNotFound(userEmail);
+        NewsArticleUnlikedEvent newsArticleUnlikedEvent1 = NewsArticleUnlikedEvent.userNotFound(articleId, userEmail);
         assertNotNull("userNotFound() returns null", newsArticleUnlikedEvent1);
         assertFalse("userFound is not false", newsArticleUnlikedEvent1.isUserFound());
         assertFalse("result is not false", newsArticleUnlikedEvent1.isResultSuccess());

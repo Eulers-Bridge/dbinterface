@@ -34,13 +34,15 @@ public class NewsArticleUnlikedEvent extends LikedEvent
 	{
 		NewsArticleUnlikedEvent ev = new NewsArticleUnlikedEvent(articleId, userId);
 	    ev.entityFound=false;
+	    ev.result=false;
 	    return ev;
 	}
 
-	public static NewsArticleUnlikedEvent userNotFound(String userId) 
+	public static NewsArticleUnlikedEvent userNotFound(Long articleId, String userId) 
 	{
-		NewsArticleUnlikedEvent ev = new NewsArticleUnlikedEvent(userId);
+		NewsArticleUnlikedEvent ev = new NewsArticleUnlikedEvent(articleId, userId);
 	    ev.userFound=false;
+	    ev.result=false;
 	    return ev;
 	}
 

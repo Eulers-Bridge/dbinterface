@@ -31,15 +31,17 @@ public class NewsArticleLikedEvent extends LikedEvent
 	}
 
 	public static NewsArticleLikedEvent articleNotFound(Long articleId, String userId) {
-		  NewsArticleLikedEvent ev = new NewsArticleLikedEvent(articleId, userId);
+		NewsArticleLikedEvent ev = new NewsArticleLikedEvent(articleId, userId);
 	    ev.entityFound=false;
+	    ev.result=false;
 	    return ev;
 	  }
 
-	  public static NewsArticleLikedEvent userNotFound(String userId) 
+	  public static NewsArticleLikedEvent userNotFound(Long articleId, String userId) 
 	  {
-		  NewsArticleLikedEvent ev = new NewsArticleLikedEvent(userId);
+		  NewsArticleLikedEvent ev = new NewsArticleLikedEvent(articleId,userId);
 	    ev.userFound=false;
+	    ev.result=false;
 	    return ev;
 	  }
 }
