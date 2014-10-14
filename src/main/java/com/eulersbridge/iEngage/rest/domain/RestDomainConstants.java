@@ -22,7 +22,7 @@ public class RestDomainConstants
 	public static final String LIKEDBY_LABEL = "Liked By";
 	public static final String LIKES_LABEL = "Likes";
 	public static final String NEXT_LABEL = "Next";
-	public static final String PREVIOUS_LABEL = "Next";
+	public static final String PREVIOUS_LABEL = "Previous";
 	public static final String UNLIKEDBY_LABEL = "UnLiked By";
 	public static final String READALL_LABEL = "Read all";
 	public static final String RELATED_LABEL = "Related";
