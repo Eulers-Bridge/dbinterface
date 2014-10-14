@@ -99,13 +99,23 @@ public class NewsController
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
 		NewsArticleLikedEvent articleEvent=newsService.likeNewsArticle(new LikeNewsArticleEvent(articleId,email));
-  	
-		if ((!articleEvent.isEntityFound())||(!articleEvent.isUserFound()))
+		
+		ResponseEntity<Boolean> response;
+		
+		if (!articleEvent.isEntityFound())
 		{
-			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
 		}
-		Boolean restNews=articleEvent.isResultSuccess();
-		return new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+		else if (!articleEvent.isUserFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Boolean restNews=articleEvent.isResultSuccess();
+			response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+		}
+		return response;
 	}
     
     /**
@@ -126,12 +136,22 @@ public class NewsController
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike news article. "+articleId);
 		NewsArticleUnlikedEvent articleEvent=newsService.unlikeNewsArticle(new UnlikeNewsArticleEvent(articleId,email));
   	
-		if ((!articleEvent.isEntityFound())||(!articleEvent.isUserFound()))
+		ResponseEntity<Boolean> response;
+		
+		if (!articleEvent.isEntityFound())
 		{
-			return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
 		}
-		Boolean restNews=articleEvent.isResultSuccess();
-		return new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+		else if (!articleEvent.isUserFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Boolean restNews=articleEvent.isResultSuccess();
+			response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+		}
+		return response;
 	}
     
     /**
