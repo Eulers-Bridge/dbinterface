@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -19,10 +21,14 @@ import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 public interface UserService 
 {
 	public UserCreatedEvent signUpNewUser(CreateUserEvent createUserEvent);
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public ReadUserEvent requestReadUser(RequestReadUserEvent requestReadUserEvent);
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public UserUpdatedEvent updateUser(UpdateUserEvent updateUserEvent);
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent);
 	public UserAccountVerifiedEvent validateUserAccount(VerifyUserAccountEvent verifyUserAccountEvent);
 	public UserAuthenticatedEvent authenticateUser(AuthenticateUserEvent authUserEvent);
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
 }
