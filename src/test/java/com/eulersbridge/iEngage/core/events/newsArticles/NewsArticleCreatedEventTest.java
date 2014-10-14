@@ -102,14 +102,14 @@ public class NewsArticleCreatedEventTest {
 
     @Test
     public void testCreatorNotFound() throws Exception {
-        NewsArticleCreatedEvent newsArticleCreatedEvent1 = NewsArticleCreatedEvent.creatorNotFound(newsArticleId);
+        NewsArticleCreatedEvent newsArticleCreatedEvent1 = NewsArticleCreatedEvent.creatorNotFound();
         assertNotNull("creatorNotFound() returns null", newsArticleCreatedEvent1);
         assertFalse("isCreatorFound is not false", newsArticleCreatedEvent1.isCreatorFound());
     }
 
     @Test
     public void testInstitutionNotFound() throws Exception {
-        NewsArticleCreatedEvent newsArticleCreatedEvent1 = NewsArticleCreatedEvent.institutionNotFound(institutionId);
+        NewsArticleCreatedEvent newsArticleCreatedEvent1 = NewsArticleCreatedEvent.institutionNotFound();
         assertNotNull("institutionNotFound() returns null", newsArticleCreatedEvent1);
         assertFalse("institutionFound is not false", newsArticleCreatedEvent1.isInstitutionFound());
     }
