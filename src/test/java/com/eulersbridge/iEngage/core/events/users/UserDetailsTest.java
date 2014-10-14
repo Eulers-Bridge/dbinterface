@@ -162,4 +162,76 @@ public class UserDetailsTest {
     public void testToString() throws Exception {
         assertNotNull("toString() returns null", userDetails.toString());
     }
+    
+    @Test
+    public void testEqualsAndHashcode() throws Exception
+    {
+    	assertEquals("",userDetails,userDetails);
+    	assertNotEquals("",userDetails,null);
+    	String string1="";
+    	assertNotEquals("",userDetails,string1);
+    	assertNotEquals("",userDetails,userDetails1);
+    	userDetails1.setEmail(email);
+    	assertNotEquals("",userDetails,userDetails1);
+    	assertNotEquals("",userDetails.hashCode(),userDetails1.hashCode());
+    	userDetails1.setEmail(null);
+    	assertNotEquals("",userDetails,userDetails1);
+    	assertNotEquals("",userDetails.hashCode(),userDetails1.hashCode());
+    	UserDetails userDetails2=new UserDetails();
+    	assertEquals("",userDetails2,userDetails1);
+    	assertEquals("",userDetails2.hashCode(),userDetails1.hashCode());
+    	userDetails2=new UserDetails(null);
+        userDetails2.setGivenName(givenName);
+        userDetails2.setFamilyName(familyName);
+        userDetails2.setGender(gender);
+        userDetails2.setNationality(nationality);
+        userDetails2.setYearOfBirth(yearOfBirth);
+        userDetails2.setPassword(password);
+        userDetails2.setInstitutionId(institutionId);
+        assertNotEquals("",userDetails2,userDetails);
+        assertNotEquals("",userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setEmail(email);
+        userDetails2.setAccountVerified(true);
+        assertNotEquals(userDetails2, userDetails1);
+        assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setAccountVerified(false);
+        assertEquals(userDetails2, userDetails);
+        userDetails2.setFamilyName(null);
+        assertNotEquals(userDetails2, userDetails);
+        assertNotEquals(userDetails, userDetails2);
+        assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setFamilyName(userDetails.getFamilyName());
+        userDetails2.setGivenName(null);
+        assertNotEquals(userDetails2, userDetails);
+        assertNotEquals(userDetails, userDetails2);
+        assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setGivenName(userDetails.getGivenName());
+        userDetails2.setGender(null);
+        assertNotEquals(userDetails2, userDetails);
+        assertNotEquals(userDetails, userDetails2);
+        assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setGender(userDetails.getGender());
+        userDetails2.setNationality(null);
+        assertNotEquals(userDetails2, userDetails);
+        assertNotEquals(userDetails, userDetails2);
+        assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setNationality(userDetails.getNationality());
+        userDetails2.setPassword(null);
+        assertNotEquals(userDetails2, userDetails);
+        assertNotEquals(userDetails, userDetails2);
+        assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setPassword(userDetails.getPassword());
+        userDetails2.setInstitutionId(null);
+        assertNotEquals(userDetails2, userDetails);
+        assertNotEquals(userDetails, userDetails2);
+        assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setInstitutionId(userDetails.getInstitutionId());
+        userDetails2.setYearOfBirth(null);
+        assertNotEquals(userDetails2, userDetails);
+        assertNotEquals(userDetails, userDetails2);
+        assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
+        userDetails2.setYearOfBirth(userDetails.getYearOfBirth());
+        assertEquals(userDetails2, userDetails);
+    	
+    }
 }
