@@ -20,6 +20,10 @@ public class NewsArticleCreatedEvent extends CreatedEvent
 		this.id=id;
 	}
 
+	public NewsArticleCreatedEvent() 
+	{
+	}
+
 	public Long getNewsArticleId() 
 	{
 		return id;
@@ -67,15 +71,15 @@ public class NewsArticleCreatedEvent extends CreatedEvent
 		this.institutionFound = institutionFound;
 	}
 
-	public static NewsArticleCreatedEvent creatorNotFound(Long nodeId) 
+	public static NewsArticleCreatedEvent creatorNotFound() 
 	{
-		NewsArticleCreatedEvent ev = new NewsArticleCreatedEvent(nodeId);
+		NewsArticleCreatedEvent ev = new NewsArticleCreatedEvent();
 	    ev.setCreatorFound(false);
 	    return ev;
 	}
 
-	public static NewsArticleCreatedEvent institutionNotFound(Long nodeId) {
-		NewsArticleCreatedEvent ev = new NewsArticleCreatedEvent(nodeId);
+	public static NewsArticleCreatedEvent institutionNotFound() {
+		NewsArticleCreatedEvent ev = new NewsArticleCreatedEvent();
 	    ev.setInstitutionFound(false);
 	    return ev;
 	}
