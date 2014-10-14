@@ -19,8 +19,10 @@ import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.support.MappingInfrastructureFactoryBean;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
+import org.springframework.security.access.PermissionEvaluator;
 
 import com.eulersbridge.iEngage.core.domain.Login;
+import com.eulersbridge.iEngage.security.UserPermissionEvaluator;
 
 @PropertySource("classpath:application.properties")
 @Configuration
@@ -62,16 +64,23 @@ public class Application extends Neo4jConfiguration
 	 	return new SpringRestGraphDatabase(url);
     }
 
-@Override
-    public MappingInfrastructureFactoryBean mappingInfrastructure() throws Exception {
-        MappingInfrastructureFactoryBean mapping = super.mappingInfrastructure();
-        mapping.afterPropertiesSet();
-        return mapping;
-    }
-@Bean
-public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() 
-{
-   return new PropertySourcesPlaceholderConfigurer();
-}
-
+	@Override
+	    public MappingInfrastructureFactoryBean mappingInfrastructure() throws Exception {
+	        MappingInfrastructureFactoryBean mapping = super.mappingInfrastructure();
+	        mapping.afterPropertiesSet();
+	        return mapping;
+	    }
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() 
+	{
+	   return new PropertySourcesPlaceholderConfigurer();
+	}
+	
+	@Bean
+	public PermissionEvaluator permissionEvaluator()
+	{
+		UserPermissionEvaluator bean= new UserPermissionEvaluator();
+		return bean;
+		
+	}
 }
