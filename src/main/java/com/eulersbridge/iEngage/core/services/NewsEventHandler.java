@@ -74,11 +74,11 @@ public class NewsEventHandler implements NewsService
     	{
     		if (null==creator)
     		{
-    			nACE=NewsArticleCreatedEvent.creatorNotFound(na.getNodeId());
+    			nACE=NewsArticleCreatedEvent.creatorNotFound();
     		}
     		else
     		{
-    			nACE=NewsArticleCreatedEvent.institutionNotFound(na.getNodeId());
+    			nACE=NewsArticleCreatedEvent.institutionNotFound();
     		}
     	}
 		return nACE;

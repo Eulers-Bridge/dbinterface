@@ -209,17 +209,26 @@ public class NewsController
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to create news article "+newsArticle);
     	NewsArticleCreatedEvent newsEvent=newsService.createNewsArticle(new CreateNewsArticleEvent(newsArticle.toNewsArticleDetails()));
-
-    	if (newsEvent.getNewsArticleId()==null)
+    	ResponseEntity<NewsArticle> resp;
+    	if (!newsEvent.isCreatorFound())
     	{
-    		return new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
+    		resp = new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
+    	}
+    	else if(!newsEvent.isInstitutionFound())
+    	{
+    		resp = new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
+    	}
+    	else if (newsEvent.getNewsArticleId()==null)
+    	{
+    		resp = new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
     	}
     	else
     	{
     		NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.getNewsArticleDetails());
 	    	if (LOG.isDebugEnabled()) LOG.debug("News event"+newsEvent.toString());
-	    	return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
+	    	resp = new ResponseEntity<NewsArticle>(restNews,HttpStatus.CREATED);
     	}
+    	return resp;
     }
 
     /**
