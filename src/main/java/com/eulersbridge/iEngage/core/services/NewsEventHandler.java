@@ -164,8 +164,10 @@ public class NewsEventHandler implements NewsService
 			{
 				// Need to check if we actually found instId.
 				Institution inst=instRepo.findOne(institutionId);
-				if (null==inst)
+				if ( (null==inst) ||
+					 ((null==inst.getName()) || ((null==inst.getCampus()) && (null==inst.getState()) && (null==inst.getCountry()))))
 				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(InstitutionId)");
 					nare=NewsArticlesReadEvent.institutionNotFound();
 				}
 				else
