@@ -67,7 +67,7 @@ public class NewsFeedDetails
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		if (null==nodeId)
+		if (null!=nodeId)
 		{
 			result = prime * result + nodeId.hashCode();
 		}
