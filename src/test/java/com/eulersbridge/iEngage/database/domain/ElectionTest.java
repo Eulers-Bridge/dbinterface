@@ -264,14 +264,94 @@ public class ElectionTest {
 		Election electionTest=DatabaseDataFixture.populateElection1();
 		assertEquals(electionTest.hashCode(),electionTest.hashCode());
 		assertEquals(electionTest.hashCode(),election.hashCode());
+		electionTest.setNodeId(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		election.setNodeId(null);
+		electionTest.setStart(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setStart(election.getStart());
+		electionTest.setEnd(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setEnd(election.getEnd());
+		electionTest.setVotingStart(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setVotingStart(election.getVotingStart());
+		electionTest.setVotingEnd(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setVotingEnd(election.getVotingEnd());
+		electionTest.setInstitution(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setInstitution(election.getInstitution());
+		electionTest.setTitle(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setTitle(election.getTitle());
 	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Election#equals(java.lang.Object)}.
 	 */
 	@Test
-	public final void testEqualsObject() {
-		fail("Not yet implemented"); // TODO
+	public final void testEqualsObject() 
+	{
+		Election electionTest=null;
+		assertNotEquals(electionTest,election);
+		assertNotEquals(election,electionTest);
+		String notElection="";
+		assertNotEquals(election,notElection);
+		electionTest=DatabaseDataFixture.populateElection1();
+		assertEquals(electionTest,electionTest);
+		assertEquals(electionTest,election);
+		electionTest.setNodeId(54l);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		election.setNodeId(null);
+		electionTest.setNodeId(null);
+		assertEquals(election, electionTest);
+		assertEquals(electionTest, election);
+		electionTest.setTitle("Something else");
+		assertNotEquals(election, electionTest);
+		electionTest.setTitle(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setTitle(election.getTitle());
+		electionTest.setStart(54l);
+		assertNotEquals(election, electionTest);
+		electionTest.setStart(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setStart(election.getStart());
+		electionTest.setEnd(54l);
+		assertNotEquals(election, electionTest);
+		electionTest.setEnd(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setEnd(election.getEnd());
+		electionTest.setVotingStart(54l);
+		assertNotEquals(election, electionTest);
+		electionTest.setVotingStart(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setVotingStart(election.getVotingStart());
+		electionTest.setVotingEnd(54l);
+		assertNotEquals(election, electionTest);
+		electionTest.setVotingEnd(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setVotingEnd(election.getVotingEnd());
+		electionTest.setInstitution(new Institution());
+		assertNotEquals(election, electionTest);
+		electionTest.setInstitution(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setInstitution(election.getInstitution());
+
 	}
 
 }
