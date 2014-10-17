@@ -227,7 +227,15 @@ public class ElectionTest {
 	@Test
 	public final void testToElectionDetails() 
 	{
-		fail("Not yet implemented"); // TODO
+		ElectionDetails dets=election.toElectionDetails();
+		assertEquals("electionDetails not of ElectionDetails class",dets.getClass(),ElectionDetails.class);
+		assertEquals("",election.getNodeId(),dets.getElectionId());
+		assertEquals("",election.getTitle(),dets.getTitle());
+		assertEquals("",election.getStart(),dets.getStart());
+		assertEquals("",election.getEnd(),dets.getEnd());
+		assertEquals("",election.getVotingStart(),dets.getStartVoting());
+		assertEquals("",election.getVotingEnd(),dets.getEndVoting());
+		assertEquals("",election.getInstitution().getNodeId(),dets.getInstitutionId());
 	}
 
 	/**
@@ -236,7 +244,15 @@ public class ElectionTest {
 	@Test
 	public final void testFromElectionDetails() 
 	{
-		fail("Not yet implemented"); // TODO
+		Election electionTest=Election.fromElectionDetails(elecDets);
+		assertEquals("electionTest not of Election class",electionTest.getClass(),Election.class);
+		assertEquals("",elecDets.getElectionId(),electionTest.getNodeId());
+		assertEquals("",elecDets.getTitle(),electionTest.getTitle());
+		assertEquals("",elecDets.getStart(),electionTest.getStart());
+		assertEquals("",elecDets.getEnd(),electionTest.getEnd());
+		assertEquals("",elecDets.getStartVoting(),electionTest.getVotingStart());
+		assertEquals("",elecDets.getEndVoting(),electionTest.getVotingEnd());
+		assertEquals("",elecDets.getInstitutionId(),electionTest.getInstitution().getNodeId());
 	}
 
 	/**
@@ -245,7 +261,9 @@ public class ElectionTest {
 	@Test
 	public final void testHashCode() 
 	{
-		fail("Not yet implemented"); // TODO
+		Election electionTest=DatabaseDataFixture.populateElection1();
+		assertEquals(electionTest.hashCode(),electionTest.hashCode());
+		assertEquals(electionTest.hashCode(),election.hashCode());
 	}
 
 	/**
