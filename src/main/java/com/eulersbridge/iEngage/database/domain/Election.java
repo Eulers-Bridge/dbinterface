@@ -28,15 +28,17 @@ public class Election
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 
-	public Election(Long year, String title, Long start, Long end, Long votingStart,
-                    Long votingEnd)
+	public Election(Long nodeId, String title, Long start, Long end, Long votingStart,
+                    Long votingEnd, Institution inst)
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+year+','+start+','+end+','+votingStart+','+votingEnd+')');
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+nodeId+','+start+','+end+','+votingStart+','+votingEnd+')');
+		this.nodeId = nodeId;
         this.title = title;
 		this.start = start;
 		this.end = end;
 		this.votingStart = votingStart;
 		this.votingEnd = votingEnd;
+		this.institution = inst;
 	}
 
 	public Long getStart()
