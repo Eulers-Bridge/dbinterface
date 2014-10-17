@@ -15,17 +15,20 @@ import org.slf4j.LoggerFactory;
  * @author Yikai Gong
  */
 
-public class Election extends ResourceSupport{
+public class Election extends ResourceSupport
+{
     private Long electionId;
     private String title;
     private Long start;
     private Long end;
     private Long startVoting;
     private Long endVoting;
+    private Long institutionId;
 
     private static Logger LOG = LoggerFactory.getLogger(Election.class);
 
-    public static Election fromElectionDetails(ElectionDetails electionDetails){
+    public static Election fromElectionDetails(ElectionDetails electionDetails)
+    {
         Election election = new Election();
         String simpleName=Election.class.getSimpleName();
         String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
@@ -35,6 +38,7 @@ public class Election extends ResourceSupport{
         election.setEnd(electionDetails.getEnd());
         election.setStartVoting(electionDetails.getStartVoting());
         election.setEndVoting(electionDetails.getEndVoting());
+        election.setInstitutionId(electionDetails.getInstitutionId());
 
 	    // {!begin selfRel}
         election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).withSelfRel());
@@ -60,6 +64,7 @@ public class Election extends ResourceSupport{
         electionDetails.setEnd(this.getEnd());
         electionDetails.setStartVoting(this.getStartVoting());
         electionDetails.setEndVoting(this.getEndVoting());
+        electionDetails.setInstitutionId(this.institutionId);
         if (LOG.isTraceEnabled()) LOG.trace("electionDetails "+electionDetails);
         return electionDetails;
     }
@@ -147,4 +152,18 @@ public class Election extends ResourceSupport{
     public void setEndVoting(Long endVoting){
         this.endVoting = endVoting;
     }
+
+	/**
+	 * @return the institutionId
+	 */
+	public Long getInstitutionId() {
+		return institutionId;
+	}
+
+	/**
+	 * @param institutionId the institutionId to set
+	 */
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
+	}
 }

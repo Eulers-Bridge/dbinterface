@@ -18,6 +18,7 @@ public class ElectionDetailsTest {
     final Long end = new Long(4);
     final Long startVoting = new Long(2);
     final Long endVoting = new Long(3);
+    final Long institutionId =new Long(1);
 
     @Before
     public void setUp() throws Exception {
@@ -28,6 +29,7 @@ public class ElectionDetailsTest {
         electionDetails.setEnd(end);
         electionDetails.setStartVoting(startVoting);
         electionDetails.setEndVoting(endVoting);
+        electionDetails.setInstitutionId(institutionId);
     }
 
     @After
@@ -38,6 +40,13 @@ public class ElectionDetailsTest {
     @Test
     public void testElectionDetail() throws Exception{
         assertNotNull("electionDetail is null", electionDetails);
+    }
+
+    @Test
+    public void testElectionDetailParams() throws Exception
+    {
+    	ElectionDetails electionDetails2=new ElectionDetails(electionId, title, start, end, startVoting, endVoting, institutionId);
+        assertNotNull("electionDetail is null", electionDetails2);
     }
 
     @Test
@@ -110,6 +119,18 @@ public class ElectionDetailsTest {
     @Test
     public void testGetEndVoting() throws Exception {
         assertEquals("endVoting does not match", endVoting, electionDetails.getEndVoting());
+    }
+
+    @Test
+    public void testSetInstituionId() throws Exception {
+        ElectionDetails electionDetails1 = new ElectionDetails();
+        electionDetails1.setInstitutionId(institutionId);
+        assertEquals("instId does not match", institutionId, electionDetails1.getInstitutionId());
+    }
+
+    @Test
+    public void testGetInstitutionId() throws Exception {
+        assertEquals("institutionId does not match", institutionId, electionDetails.getInstitutionId());
     }
 
     @Test
