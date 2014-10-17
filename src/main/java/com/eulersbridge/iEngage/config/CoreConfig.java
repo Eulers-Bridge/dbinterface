@@ -87,7 +87,7 @@ public class CoreConfig
     public ElectionService createElectionService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createElectionService()");
-        return new ElectionEventHandler(eleRepo);
+        return new ElectionEventHandler(eleRepo,instRepo);
     }
 
     @Bean
