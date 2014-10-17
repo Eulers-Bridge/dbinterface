@@ -83,14 +83,22 @@ public class ElectionController {
     public @ResponseBody ResponseEntity<Election> createElection(@RequestBody Election election){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create election "+election);
         ElectionCreatedEvent electionCreatedEvent = electionService.createElection(new CreateElectionEvent(election.toElectionDetails()));
-        if(electionCreatedEvent.getElectionId() == null){
-            return new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
+        ResponseEntity<Election> response;
+        if (!electionCreatedEvent.isInstitutionFound())
+        {
+            response=new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
         }
-        else {
+        else if((null==electionCreatedEvent)||(null==electionCreatedEvent.getElectionId()))
+        {
+            response=new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
+        }
+        else
+        {
             Election result = Election.fromElectionDetails(electionCreatedEvent.getElectionDetails());
             if (LOG.isDebugEnabled()) LOG.debug("election"+result.toString());
-            return new ResponseEntity<Election>(result, HttpStatus.OK);
+            response=new ResponseEntity<Election>(result, HttpStatus.CREATED);
         }
+        return response;
     }
 
     //Get Previous
