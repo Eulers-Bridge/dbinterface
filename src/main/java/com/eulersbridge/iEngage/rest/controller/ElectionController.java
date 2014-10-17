@@ -29,39 +29,6 @@ public class ElectionController {
 
     private static Logger LOG = LoggerFactory.getLogger(ElectionController.class);
 
-//    @RequestMapping(value="/api/election/{year}/{start}/{end}/{votingStart}/{votingEnd}")
-//    public @ResponseBody Election saveElection(
-//            @PathVariable String year, @PathVariable String start, @PathVariable String end,@PathVariable String votingStart,@PathVariable String votingEnd)
-//    {
-//    	if (LOG.isInfoEnabled()) LOG.info(year+" attempting to save election. ");
-//    	Election election=new Election(year,start,end,votingStart,votingEnd);
-//		Election test = repo.save(election);
-//		if (LOG.isDebugEnabled()) LOG.debug("test = "+test);
-//		if (LOG.isDebugEnabled()) LOG.debug("Count = "+repo.count());
-//		Election result = repo.findOne(test.getNodeId());
-//    	return result;
-//    }
-//
-//    @RequestMapping(value="/api/election/{year}")
-//    public @ResponseBody Election findElection(
-//            @PathVariable String year)
-//    {
-//    	if (LOG.isInfoEnabled()) LOG.info(year+" attempting to retrieve election. ");
-//		Result <Election> elections = repo.findAll();
-//		Iterator<Election> iter=elections.iterator();
-//		Election election=null;
-//		while (iter.hasNext())
-//		{
-//			Election res=iter.next();
-//			if (res.getYear().equals(year))
-//				election=res;
-//			if (LOG.isDebugEnabled()) LOG.debug("res = "+res);
-//		}
-//		if (LOG.isDebugEnabled()) LOG.debug("election = "+election);
-//		if (LOG.isDebugEnabled()) LOG.debug("Count = "+repo.count());
-//    	return election;
-//    }
-
     //Get
     @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL+"/{electionId}")
     public @ResponseBody ResponseEntity<Election> findElection(@PathVariable Long electionId)
