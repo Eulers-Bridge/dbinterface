@@ -264,11 +264,10 @@ public class ViewNewsIntegrationTest {
 	public final void testDeleteNewsArticle() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteArticle()");
-		Long newsArticleId=1l;
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
-		NewsArticleDeletedEvent testData=new NewsArticleDeletedEvent(newsArticleId);
+		NewsArticleDeletedEvent testData=new NewsArticleDeletedEvent(dets.getNewsArticleId());
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",dets.getNewsArticleId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(content().string("true"))
 //TODO This should not be returning boolean.
@@ -293,11 +292,10 @@ public class ViewNewsIntegrationTest {
 	public final void testDeleteNewsArticleForbidden() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteArticle()");
-		Long newsArticleId=1l;
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
-		NewsArticleDeletedEvent testData=NewsArticleDeletedEvent.deletionForbidden(newsArticleId);
+		NewsArticleDeletedEvent testData=NewsArticleDeletedEvent.deletionForbidden(dets.getNewsArticleId());
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",dets.getNewsArticleId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(content().string("false"))
 //TODO This should not be returning boolean.
