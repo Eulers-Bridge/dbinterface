@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +27,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
+import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
@@ -118,10 +121,83 @@ public class ElectionControllerTest {
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#createElection(com.eulersbridge.iEngage.rest.domain.Election)}.
+	 * @throws Exception 
 	 */
 	@Test
-	public final void testCreateElection() {
-		fail("Not yet implemented"); // TODO
+	public final void testCreateElection() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateElection()");
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ElectionCreatedEvent testData=new ElectionCreatedEvent(dets.getElectionId(), dets);
+		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		String returnedContent="{\"electionId\":"+dets.getElectionId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"start\":"+dets.getStart().intValue()+",\"end\":"+dets.getEnd().intValue()+
+								",\"startVoting\":"+dets.getStartVoting().intValue()+",\"endVoting\":"+dets.getEndVoting()+",\"institutionId\":"+dets.getInstitutionId()+
+								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/2\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/2/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/2/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
+		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.title",is(dets.getTitle())))
+		.andExpect(jsonPath("$.start",is(dets.getStart().intValue())))
+		.andExpect(jsonPath("$.end",is(dets.getEnd().intValue())))
+		.andExpect(jsonPath("$.startVoting",is(dets.getStartVoting().intValue())))
+		.andExpect(jsonPath("$.endVoting",is(dets.getEndVoting().intValue())))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isCreated())	;		
+	}
+
+	@Test
+	public final void testCreateElectionInvalidContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
+		ElectionCreatedEvent testData=null;
+		String content="{\"electionId1\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateElectionNoContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
+		ElectionCreatedEvent testData=null;
+		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateElectionNotFound() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateElection()");
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ElectionCreatedEvent testData=ElectionCreatedEvent.institutionNotFound(dets.getInstitutionId());
+		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
+
+	@Test
+	public final void testCreateElectionNullIdReturned() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ElectionCreatedEvent testData=new ElectionCreatedEvent(null, dets);
+		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
 	}
 
 	/**
