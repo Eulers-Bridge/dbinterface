@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,8 +33,10 @@ import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
+import com.eulersbridge.iEngage.core.events.elections.ElectionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
+import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -202,18 +205,80 @@ public class ElectionControllerTest {
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#findPreviousElection(java.lang.Long)}.
+	 * @throws Exception 
 	 */
 	@Test
-	public final void testFindPreviousElection() {
-		fail("Not yet implemented"); // TODO
+	public final void testFindPreviousElection() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPreviousElection()");
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ReadElectionEvent testData=new ReadElectionEvent(dets.getElectionId(), dets);
+		when (electionService.readPreviousElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"/{electionId}"+ControllerConstants.PREVIOUS_LABEL,dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.title",is(dets.getTitle())))
+		.andExpect(jsonPath("$.start",is(dets.getStart().intValue())))
+		.andExpect(jsonPath("$.end",is(dets.getEnd().intValue())))
+		.andExpect(jsonPath("$.startVoting",is(dets.getStartVoting().intValue())))
+		.andExpect(jsonPath("$.endVoting",is(dets.getEndVoting().intValue())))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindPreviousElectionNotFound() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPreviousElection()");
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ReadElectionEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
+		when (electionService.readPreviousElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"/{electionId}"+ControllerConstants.PREVIOUS_LABEL,dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
 	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#findNextElection(java.lang.Long)}.
+	 * @throws Exception 
 	 */
 	@Test
-	public final void testFindNextElection() {
-		fail("Not yet implemented"); // TODO
+	public final void testFindNextElection() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindNextElection()");
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ReadElectionEvent testData=new ReadElectionEvent(dets.getElectionId(), dets);
+		when (electionService.readNextElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"/{electionId}"+ControllerConstants.NEXT_LABEL,dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.title",is(dets.getTitle())))
+		.andExpect(jsonPath("$.start",is(dets.getStart().intValue())))
+		.andExpect(jsonPath("$.end",is(dets.getEnd().intValue())))
+		.andExpect(jsonPath("$.startVoting",is(dets.getStartVoting().intValue())))
+		.andExpect(jsonPath("$.endVoting",is(dets.getEndVoting().intValue())))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindNextElectionNotFound() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindNextElection()");
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ReadElectionEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
+		when (electionService.readNextElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"/{electionId}"+ControllerConstants.NEXT_LABEL,dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
 	}
 
 	/**
@@ -259,11 +324,72 @@ public class ElectionControllerTest {
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#updateElection(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Election)}.
+	 * @throws Exception 
 	 */
 	@Test
-	public final void testUpdateElection() 
+	public final void testUpdateElection() throws Exception 
 	{
-		fail("Not yet implemented"); // TODO
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateElection()");
+		Long id=1L;
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		dets.setTitle("Test Election2");
+		ElectionUpdatedEvent testData=new ElectionUpdatedEvent(id, dets);
+		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		String returnedContent="{\"electionId\":"+dets.getElectionId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"start\":"+dets.getStart().intValue()+",\"end\":"+dets.getEnd().intValue()+
+								",\"startVoting\":"+dets.getStartVoting().intValue()+",\"endVoting\":"+dets.getEndVoting()+",\"institutionId\":"+dets.getInstitutionId()+
+								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/2\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/2/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/2/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
+		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.title",is(dets.getTitle())))
+		.andExpect(jsonPath("$.start",is(dets.getStart().intValue())))
+		.andExpect(jsonPath("$.end",is(dets.getEnd().intValue())))
+		.andExpect(jsonPath("$.startVoting",is(dets.getStartVoting().intValue())))
+		.andExpect(jsonPath("$.endVoting",is(dets.getEndVoting().intValue())))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;		
 	}
+	
+	@Test
+	public void testUpdateElectionNullEventReturned() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateElection()");
+		Long id=1L;
+		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateElectionBadContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateElection()");
+		Long id=1L;
+		String content="{\"electionId1\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateElectionEmptyContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateElection()");
+		Long id=1L;
+		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
 
 }
