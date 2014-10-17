@@ -20,12 +20,11 @@ import com.eulersbridge.iEngage.rest.domain.Election;
 @RequestMapping(ControllerConstants.API_PREFIX)
 public class ElectionController {
 
-//	@Autowired ElectionRepository repo;
     @Autowired
     ElectionService electionService;
 
 	public ElectionController() {
-		// TODO Auto-generated constructor stub
+		if (LOG.isDebugEnabled()) LOG.debug("ElectionController()");
 	}
 
     private static Logger LOG = LoggerFactory.getLogger(ElectionController.class);
@@ -128,9 +127,15 @@ public class ElectionController {
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.ELECTION_LABEL+"/{electionId}")
     public @ResponseBody ResponseEntity<Boolean> deleteElection(@PathVariable Long electionId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete election. " + electionId);
-        ElectionDeletedEvent electionDeletedEvent = electionService.deleteElection(new DeleteElectionEvent(electionId));
-        Boolean isDeletionCompleted = Boolean.valueOf(electionDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+		ResponseEntity<Boolean> response;
+        ElectionDeletedEvent elecEvent = electionService.deleteElection(new DeleteElectionEvent(electionId));
+		if (elecEvent.isDeletionCompleted())
+			response=new ResponseEntity<Boolean>(elecEvent.isDeletionCompleted(),HttpStatus.OK);
+		else if (elecEvent.isEntityFound())
+			response=new ResponseEntity<Boolean>(elecEvent.isDeletionCompleted(),HttpStatus.GONE);
+		else
+			response=new ResponseEntity<Boolean>(elecEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
+		return response;
     }
 
     //Update
