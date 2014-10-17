@@ -13,12 +13,6 @@ public class CreateElectionEvent extends CreateEvent{
 
     private static Logger LOG = LoggerFactory.getLogger(CreateElectionEvent.class);
 
-    public CreateElectionEvent(Long id, ElectionDetails electionDetails){
-        if (LOG.isDebugEnabled()) LOG.debug("CreateElection("+id+","+electionDetails+") = ");
-        electionDetails.setElectionId(id);
-        this.electionDetails = electionDetails;
-    }
-
     public CreateElectionEvent(ElectionDetails electionDetails){
         if (LOG.isDebugEnabled()) LOG.debug("CreateElection("+electionDetails+") = ");
         this.electionDetails = electionDetails;

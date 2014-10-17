@@ -28,7 +28,7 @@ public class CreateElectionEventTest {
         electionDetails.setEnd(end);
         electionDetails.setStartVoting(startVoting);
         electionDetails.setEndVoting(endVoting);
-        createElectionEvent = new CreateElectionEvent(electionId, electionDetails);
+        createElectionEvent = new CreateElectionEvent(electionDetails);
     }
 
     @After
