@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import com.eulersbridge.iEngage.database.domain.Country;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
@@ -164,6 +165,32 @@ public class DatabaseDataFixture
 		years.put(new Long(1), populateNewsFeed2());
 		years.put(new Long(2), populateNewsFeed1());
 		return years;
+	}
+
+	public static Election populateElection1()
+	{
+		Long nodeId=(long)2;
+		Institution inst=populateInstUniMelb();
+		return populateElection(nodeId, "This election", 123456l, 123756l, 123656l, 123706l, inst);
+	}
+	public static Election populateElection(Long id, String title, Long starts, Long ends, Long voteStarts, Long voteEnds, Institution inst)
+	{
+		Election election=new Election();
+		election.setNodeId(id);
+		election.setTitle(title);
+		election.setInstitution(inst);
+		election.setStart(starts);
+		election.setEnd(ends);
+		election.setVotingStart(voteStarts);
+		election.setVotingEnd(voteEnds);
+		return election;
+	}
+	public static HashMap<Long,Election> populateElections()
+	{
+		HashMap<Long, Election> elections=new HashMap<Long, Election>();
+		Election initialElection=populateElection1();
+		elections.put(new Long(1), initialElection);
+		return elections;
 	}
 
 }
