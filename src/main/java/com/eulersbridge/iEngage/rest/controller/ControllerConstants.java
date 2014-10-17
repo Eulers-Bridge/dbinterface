@@ -32,5 +32,8 @@ public class ControllerConstants
 	public static final String PAGE_LENGTH = "10";
 	public static final String DIRECTION = "DESC";
 	public static final String NEWSFEED_LABEL = "/newsFeed";
+	
+	public static final String PREVIOUS_LABEL = "/previous";
+	public static final String NEXT_LABEL = "/next";
 
 }
