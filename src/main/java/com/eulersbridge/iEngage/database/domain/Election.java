@@ -180,7 +180,7 @@ public class Election
 		int result = 1;
 		if (this.nodeId!=null)
 		{
-			result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
+			result = prime * result + nodeId.hashCode();
 		}
 		else
 		{
