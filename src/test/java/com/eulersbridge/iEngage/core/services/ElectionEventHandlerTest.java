@@ -7,35 +7,26 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import javassist.tools.framedump;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
+import com.eulersbridge.iEngage.core.events.elections.ElectionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
+import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
 import com.eulersbridge.iEngage.database.domain.Election;
-import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-import com.eulersbridge.iEngage.email.EmailVerification;
-import com.eulersbridge.iEngage.rest.controller.ViewUserIntegrationTest;
 
 /**
  * @author Greg Newitt
@@ -66,7 +57,7 @@ public class ElectionEventHandlerTest
 	@Test
 	public final void testElectionEventHandler() 
 	{
-		fail("Not yet implemented"); // TODO
+		assertNotNull("Not yet implemented",service);
 	}
 
 	/**
@@ -125,7 +116,30 @@ public class ElectionEventHandlerTest
 	@Test
 	public final void testReadPreviousElection() 
 	{
-		fail("Not yet implemented"); // TODO
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingPreviousElection()");
+		Election testData=DatabaseDataFixture.populateElection1();
+		when(electionRepository.findPreviousElection(any(Long.class))).thenReturn(testData);
+		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
+		ReadElectionEvent evtData = service.readPreviousElection(requestReadElectionEvent);
+		ElectionDetails returnedDets = evtData.getElectionDetails();
+		assertEquals(returnedDets,testData.toElectionDetails());
+		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
+		assertTrue(evtData.isEntityFound());
+	}
+
+	@Test
+	public final void testReadPreviousElectionNotFound() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingPreviousElection()");
+		Election testData=null;
+		Long nodeId=1l;
+		when(electionRepository.findPreviousElection(any(Long.class))).thenReturn(testData);
+		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(nodeId);
+		ReadElectionEvent evtData = service.readPreviousElection(requestReadElectionEvent);
+		ElectionDetails returnedDets = evtData.getElectionDetails();
+		assertNull(returnedDets);
+		assertEquals(nodeId,evtData.getElectionId());
+		assertFalse(evtData.isEntityFound());
 	}
 
 	/**
@@ -134,7 +148,30 @@ public class ElectionEventHandlerTest
 	@Test
 	public final void testReadNextElection() 
 	{
-		fail("Not yet implemented"); // TODO
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingNextElection()");
+		Election testData=DatabaseDataFixture.populateElection1();
+		when(electionRepository.findNextElection(any(Long.class))).thenReturn(testData);
+		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
+		ReadElectionEvent evtData = service.readNextElection(requestReadElectionEvent);
+		ElectionDetails returnedDets = evtData.getElectionDetails();
+		assertEquals(returnedDets,testData.toElectionDetails());
+		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
+		assertTrue(evtData.isEntityFound());
+	}
+
+	@Test
+	public final void testReadNextElectionNotFound() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingNextElection()");
+		Election testData=null;
+		Long nodeId=1l;
+		when(electionRepository.findNextElection(any(Long.class))).thenReturn(testData);
+		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(nodeId);
+		ReadElectionEvent evtData = service.readNextElection(requestReadElectionEvent);
+		ElectionDetails returnedDets = evtData.getElectionDetails();
+		assertNull(returnedDets);
+		assertEquals(nodeId,evtData.getElectionId());
+		assertFalse(evtData.isEntityFound());
 	}
 
 	/**
@@ -177,7 +214,37 @@ public class ElectionEventHandlerTest
 	@Test
 	public final void testUpdateElection() 
 	{
-		fail("Not yet implemented"); // TODO
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingElection()");
+		Election testData=DatabaseDataFixture.populateElection1();
+		when(electionRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(electionRepository.save(any(Election.class))).thenReturn(testData);
+		ElectionDetails dets=testData.toElectionDetails();
+		UpdateElectionEvent createElectionEvent=new UpdateElectionEvent(dets.getElectionId(), dets);
+		ElectionUpdatedEvent evtData = service.updateElection(createElectionEvent);
+		ElectionDetails returnedDets = evtData.getElectionDetails();
+		assertEquals(returnedDets,testData.toElectionDetails());
+		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
+		assertTrue(evtData.isEntityFound());
+		assertNotNull(evtData.getElectionId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#updateElection(com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent)}.
+	 */
+	@Test
+	public final void testUpdateElectionNotFound() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingElection()");
+		Election testData=DatabaseDataFixture.populateElection1();
+		when(electionRepository.findOne(any(Long.class))).thenReturn(null);
+		when(electionRepository.save(any(Election.class))).thenReturn(testData);
+		ElectionDetails dets=testData.toElectionDetails();
+		UpdateElectionEvent createElectionEvent=new UpdateElectionEvent(dets.getElectionId(), dets);
+		ElectionUpdatedEvent evtData = service.updateElection(createElectionEvent);
+		assertNull(evtData.getElectionDetails());
+		assertEquals(evtData.getElectionId(),testData.getNodeId());
+		assertFalse(evtData.isEntityFound());
+		assertNotNull(evtData.getElectionId());
 	}
 
 }
