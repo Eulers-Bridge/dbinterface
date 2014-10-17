@@ -312,6 +312,8 @@ public class ElectionTest {
 		assertNotEquals(election, electionTest);
 		assertNotEquals(electionTest, election);
 		election.setNodeId(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
 		electionTest.setNodeId(null);
 		assertEquals(election, electionTest);
 		assertEquals(electionTest, election);
