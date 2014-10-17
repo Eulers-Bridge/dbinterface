@@ -2,7 +2,10 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.database.domain.Election;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +19,12 @@ public class ElectionEventHandler implements ElectionService
     private static Logger LOG = LoggerFactory.getLogger(ElectionEventHandler.class);
 
     private ElectionRepository eleRepository;
+	private InstitutionRepository instRepository;
 
-    public ElectionEventHandler(ElectionRepository electionRepository){
+    public ElectionEventHandler(ElectionRepository electionRepository,InstitutionRepository instRepo)
+    {
         this.eleRepository = electionRepository;
+        this.instRepository = instRepo;
     }
 
     @Override
@@ -40,8 +46,20 @@ public class ElectionEventHandler implements ElectionService
     {
         ElectionDetails electionDetails = createElectionEvent.getElectionDetails();
         Election election = Election.fromElectionDetails(electionDetails);
-        Election result = eleRepository.save(election);
-        ElectionCreatedEvent electionCreatedEvent = new ElectionCreatedEvent(result.getNodeId(), result.toElectionDetails());
+        
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with instId = "+electionDetails.getInstitutionId());
+    	Institution inst=instRepository.findOne(electionDetails.getInstitutionId());
+    	ElectionCreatedEvent electionCreatedEvent;
+    	if (inst!=null)
+    	{
+    		election.setInstitution(inst);
+    		Election result = eleRepository.save(election);
+        	electionCreatedEvent = new ElectionCreatedEvent(result.getNodeId(), result.toElectionDetails());
+    	}
+    	else
+    	{
+    		electionCreatedEvent=ElectionCreatedEvent.institutionNotFound(electionDetails.getInstitutionId());
+    	}
         return electionCreatedEvent;
     }
 

@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 public class ElectionCreatedEvent extends CreatedEvent{
     private ElectionDetails electionDetails;
     private Long id;
+    private boolean institutionFound=true;
 
     public ElectionCreatedEvent (Long id, ElectionDetails electionDetails){
         this.electionDetails = electionDetails;
@@ -34,4 +35,18 @@ public class ElectionCreatedEvent extends CreatedEvent{
     public ElectionDetails getElectionDetails(){
         return this.electionDetails;
     }
+
+	/**
+	 * @return the institutionFound
+	 */
+	public boolean isInstitutionFound() {
+		return institutionFound;
+	}
+
+	public static ElectionCreatedEvent institutionNotFound(Long institutionId) 
+	{
+		ElectionCreatedEvent evt=new ElectionCreatedEvent(institutionId);
+		evt.institutionFound=false;
+		return evt;
+	}
 }

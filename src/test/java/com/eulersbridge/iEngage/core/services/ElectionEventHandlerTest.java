@@ -25,8 +25,10 @@ import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
 import com.eulersbridge.iEngage.database.domain.Election;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
 /**
  * @author Greg Newitt
@@ -38,6 +40,8 @@ public class ElectionEventHandlerTest
 
     @Mock
 	ElectionRepository electionRepository;
+    @Mock
+	InstitutionRepository institutionRepository;
 
     ElectionEventHandler service;
 	/**
@@ -48,7 +52,7 @@ public class ElectionEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new ElectionEventHandler(electionRepository);
+		service=new ElectionEventHandler(electionRepository,institutionRepository);
 	}
 
 	/**
@@ -100,6 +104,8 @@ public class ElectionEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CreatingElection()");
 		Election testData=DatabaseDataFixture.populateElection1();
+		Institution testInst=DatabaseDataFixture.populateInstUniMelb();
+		when(institutionRepository.findOne(any(Long.class))).thenReturn(testInst);
 		when(electionRepository.save(any(Election.class))).thenReturn(testData);
 		ElectionDetails dets=testData.toElectionDetails();
 		CreateElectionEvent createElectionEvent=new CreateElectionEvent(dets);
@@ -108,6 +114,25 @@ public class ElectionEventHandlerTest
 		assertEquals(returnedDets,testData.toElectionDetails());
 		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
 		assertNotNull(evtData.getElectionId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#createElection(com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent)}.
+	 */
+	@Test
+	public final void testCreateElectionInstNotFound() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CreatingElection()");
+		Election testData=DatabaseDataFixture.populateElection1();
+		Institution testInst=null;
+		when(institutionRepository.findOne(any(Long.class))).thenReturn(testInst);
+		when(electionRepository.save(any(Election.class))).thenReturn(testData);
+		ElectionDetails dets=testData.toElectionDetails();
+		CreateElectionEvent createElectionEvent=new CreateElectionEvent(dets);
+		ElectionCreatedEvent evtData = service.createElection(createElectionEvent);
+		assertFalse(evtData.isInstitutionFound());
+		assertEquals(evtData.getElectionId(),testData.getInstitution().getNodeId());
+		assertNull(evtData.getElectionDetails());
 	}
 
 	/**

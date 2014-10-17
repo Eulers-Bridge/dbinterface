@@ -73,4 +73,14 @@ public class ElectionCreatedEventTest {
     public void testGetElectionDetails() throws Exception {
         assertEquals("electionDetail does not match", electionDetails, electionCreatedEvent.getElectionDetails());
     }
+    
+    @Test
+    public void testInsitutionNotFound() throws Exception
+    {
+    	Long id=5l;
+		ElectionCreatedEvent evt=ElectionCreatedEvent.institutionNotFound(id);
+    	assertEquals(id, evt.getElectionId());
+    	assertNull(evt.getElectionDetails());
+    	assertFalse(evt.isInstitutionFound());
+    }
 }
