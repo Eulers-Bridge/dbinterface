@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+
 import static org.junit.Assert.*;
 
 /**
@@ -12,24 +14,24 @@ import static org.junit.Assert.*;
 
 public class ElectionDetailsTest {
     ElectionDetails electionDetails;
-    final Long electionId = new Long(0);
-    final String title = "election title";
-    final Long start = new Long(1);
-    final Long end = new Long(4);
-    final Long startVoting = new Long(2);
-    final Long endVoting = new Long(3);
-    final Long institutionId =new Long(1);
+    Long electionId;
+    String title;
+    Long start;
+    Long end;
+    Long startVoting;
+    Long endVoting;
+    Long institutionId;
 
     @Before
     public void setUp() throws Exception {
-        electionDetails = new ElectionDetails();
-        electionDetails.setElectionId(electionId);
-        electionDetails.setTitle(title);
-        electionDetails.setStart(start);
-        electionDetails.setEnd(end);
-        electionDetails.setStartVoting(startVoting);
-        electionDetails.setEndVoting(endVoting);
-        electionDetails.setInstitutionId(institutionId);
+        electionDetails = DatabaseDataFixture.populateElection1().toElectionDetails();
+        electionId = electionDetails.getElectionId();
+        title = electionDetails.getTitle();
+        start = electionDetails.getStart();
+        end = electionDetails.getEnd();
+        startVoting = electionDetails.getStartVoting();
+        endVoting = electionDetails.getEndVoting();
+        institutionId = electionDetails.getInstitutionId();
     }
 
     @After
@@ -151,5 +153,102 @@ public class ElectionDetailsTest {
         ElectionDetails electionDetails1 = new ElectionDetails();
         electionDetails1.setElectionId(electionId);
         assertEquals("electionDetail does not match", electionDetails1, electionDetails);
+        
+        
+		ElectionDetails electionTest=null;
+		assertNotEquals(electionTest,electionDetails);
+		assertNotEquals(electionDetails,electionTest);
+		String notElection="";
+		assertNotEquals(electionDetails,notElection);
+		electionTest=DatabaseDataFixture.populateElection1().toElectionDetails();
+		assertEquals(electionTest,electionTest);
+		assertEquals(electionTest,electionDetails);
+		electionTest.setElectionId(54l);
+		assertNotEquals(electionDetails, electionTest);
+		assertNotEquals(electionTest, electionDetails);
+		electionDetails.setElectionId(null);
+		electionTest.setElectionId(null);
+		assertEquals(electionDetails, electionTest);
+		assertEquals(electionTest, electionDetails);
+		electionTest.setTitle("Something else");
+		assertNotEquals(electionDetails, electionTest);
+		electionTest.setTitle(null);
+		assertNotEquals(electionDetails, electionTest);
+		assertNotEquals(electionTest, electionDetails);
+		electionTest.setTitle(electionDetails.getTitle());
+		electionTest.setStart(54l);
+		ElectionDetails election=electionDetails;
+		assertNotEquals(election, electionTest);
+		electionTest.setStart(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setStart(election.getStart());
+		electionTest.setEnd(54l);
+		assertNotEquals(election, electionTest);
+		electionTest.setEnd(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setEnd(election.getEnd());
+		electionTest.setStartVoting(54l);
+		assertNotEquals(election, electionTest);
+		electionTest.setStartVoting(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setStartVoting(election.getStartVoting());
+		electionTest.setEndVoting(54l);
+		assertNotEquals(election, electionTest);
+		electionTest.setEndVoting(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setEndVoting(election.getEndVoting());
+		electionTest.setInstitutionId(22l);
+		assertNotEquals(election, electionTest);
+		electionTest.setInstitutionId(null);
+		assertNotEquals(election, electionTest);
+		assertNotEquals(electionTest, election);
+		electionTest.setInstitutionId(election.getInstitutionId());
+
     }
+    
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Election#hashCode()}.
+	 */
+	@Test
+	public final void testHashCode() 
+	{
+		ElectionDetails electionTest=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ElectionDetails election=electionDetails;
+		assertEquals(electionTest.hashCode(),electionTest.hashCode());
+		assertEquals(electionTest.hashCode(),election.hashCode());
+		electionTest.setElectionId(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setElectionId(null);
+		electionTest.setStart(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setStart(election.getStart());
+		electionTest.setEnd(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setEnd(election.getEnd());
+		electionTest.setStartVoting(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setStartVoting(election.getStartVoting());
+		electionTest.setEndVoting(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setEndVoting(election.getEndVoting());
+		electionTest.setInstitutionId(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setInstitutionId(election.getInstitutionId());
+		electionTest.setTitle(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setTitle(election.getTitle());
+	}
+
+
 }
