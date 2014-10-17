@@ -14,12 +14,38 @@ public class ElectionDetails {
     private Long end;
     private Long startVoting;
     private Long endVoting;
+    private Long InstitutionId;
 
     private static Logger LOG = LoggerFactory.getLogger(ElectionDetails.class);
 
-    public ElectionDetails(){}
+    public ElectionDetails()
+    {
+		super();
+    }
 
-    public void setElectionId(Long electionId){
+    /**
+	 * @param electionId
+	 * @param title
+	 * @param start
+	 * @param end
+	 * @param startVoting
+	 * @param endVoting
+	 * @param institutionId
+	 */
+	public ElectionDetails(Long electionId, String title, Long start, Long end,
+			Long startVoting, Long endVoting, Long institutionId) 
+	{
+		super();
+		this.electionId = electionId;
+		this.title = title;
+		this.start = start;
+		this.end = end;
+		this.startVoting = startVoting;
+		this.endVoting = endVoting;
+		InstitutionId = institutionId;
+	}
+
+	public void setElectionId(Long electionId){
         this.electionId = electionId;
     }
     public Long getElectionId(){
@@ -81,6 +107,20 @@ public class ElectionDetails {
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
         return retValue;
     }
+
+	/**
+	 * @return the institutionId
+	 */
+	public Long getInstitutionId() {
+		return InstitutionId;
+	}
+
+	/**
+	 * @param institutionId the institutionId to set
+	 */
+	public void setInstitutionId(Long institutionId) {
+		InstitutionId = institutionId;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
