@@ -391,5 +391,16 @@ public class ElectionControllerTest {
 		.andExpect(status().isBadRequest())	;		
 	}
 
+	@Test
+	public void testUpdateElectionNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateElection()");
+		Long id=1L;
+		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(ElectionUpdatedEvent.notFound(id));
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
 
 }
