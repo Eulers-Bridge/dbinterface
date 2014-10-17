@@ -14,7 +14,7 @@ public class ElectionDetails {
     private Long end;
     private Long startVoting;
     private Long endVoting;
-    private Long InstitutionId;
+    private Long institutionId;
 
     private static Logger LOG = LoggerFactory.getLogger(ElectionDetails.class);
 
@@ -42,7 +42,7 @@ public class ElectionDetails {
 		this.end = end;
 		this.startVoting = startVoting;
 		this.endVoting = endVoting;
-		InstitutionId = institutionId;
+		this.institutionId = institutionId;
 	}
 
 	public void setElectionId(Long electionId){
@@ -112,14 +112,14 @@ public class ElectionDetails {
 	 * @return the institutionId
 	 */
 	public Long getInstitutionId() {
-		return InstitutionId;
+		return institutionId;
 	}
 
 	/**
 	 * @param institutionId the institutionId to set
 	 */
 	public void setInstitutionId(Long institutionId) {
-		InstitutionId = institutionId;
+		this.institutionId = institutionId;
 	}
 
 	/* (non-Javadoc)
@@ -191,6 +191,11 @@ public class ElectionDetails {
 				if (other.title != null)
 					return false;
 			} else if (!title.equals(other.title))
+				return false;
+			if (institutionId == null) {
+				if (other.institutionId != null)
+					return false;
+			} else if (!institutionId.equals(other.institutionId))
 				return false;
 		}
 		return true;
