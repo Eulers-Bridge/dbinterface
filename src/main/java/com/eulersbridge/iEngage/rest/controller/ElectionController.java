@@ -51,13 +51,13 @@ public class ElectionController {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create election "+election);
         ElectionCreatedEvent electionCreatedEvent = electionService.createElection(new CreateElectionEvent(election.toElectionDetails()));
         ResponseEntity<Election> response;
-        if (!electionCreatedEvent.isInstitutionFound())
-        {
-            response=new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
-        }
-        else if((null==electionCreatedEvent)||(null==electionCreatedEvent.getElectionId()))
+        if((null==electionCreatedEvent)||(null==electionCreatedEvent.getElectionId()))
         {
             response=new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
+        }
+        else if (!(electionCreatedEvent.isInstitutionFound()))
+        {
+            response=new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
         }
         else
         {
