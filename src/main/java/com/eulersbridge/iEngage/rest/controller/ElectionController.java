@@ -1,9 +1,12 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +45,44 @@ public class ElectionController
         }
     }
 
+    /**
+     * Is passed all the necessary data to read elections from the database.
+     * The request must be a GET with the institutionId presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the elections read from the database.
+     * 
+     * @param institutionId the instituitonId of the election objects to be read.
+     * @return the elections.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.ELECTIONS_LABEL+"/{institutionId}")
+	public @ResponseBody ResponseEntity<Iterator<Election>> findElections(@PathVariable(value="") Long institutionId,
+			@RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize) 
+	{
+		int pageNumber=0;
+		int pageLength=10;
+		pageNumber=Integer.parseInt(page);
+		pageLength=Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve elections from institution "+institutionId+'.');
+		
+		Direction sortDirection=Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
+		ElectionsReadEvent articleEvent=electionService.readElections(new ReadElectionsEvent(institutionId),sortDirection, pageNumber,pageLength);
+  	
+		if (!articleEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<Election>>(HttpStatus.NOT_FOUND);
+		}
+		
+		Iterator<Election> elections = Election.toElectionsIterator(articleEvent.getElections().iterator());
+
+		return new ResponseEntity<Iterator<Election>>(elections,HttpStatus.OK);
+	}
+    
     //Create
     @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.ELECTION_LABEL)
     public @ResponseBody ResponseEntity<Election> createElection(@RequestBody Election election)

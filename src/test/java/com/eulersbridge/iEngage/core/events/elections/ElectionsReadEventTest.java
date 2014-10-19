@@ -106,4 +106,16 @@ public class ElectionsReadEventTest
 		assertTrue(electionsReadEvent.isEntityFound());
 	}
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.elections.ElectionsReadEvent#isInstitutionFound()}.
+	 */
+	@Test
+	public final void testIsInstitutionFound() 
+	{
+		assertTrue(electionsReadEvent.isInstitutionFound());
+		ElectionsReadEvent evt=ElectionsReadEvent.institutionNotFound();
+		assertFalse(evt.isInstitutionFound());
+		assertFalse(evt.isEntityFound());
+	}
+
 }

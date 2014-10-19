@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.elections.*;
+
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -25,4 +27,8 @@ public interface ElectionService {
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public ElectionUpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public ElectionsReadEvent readElections(ReadElectionsEvent readElectionsEvent,
+				Direction sortDirection,int pageNumber, int pageLength);
 }

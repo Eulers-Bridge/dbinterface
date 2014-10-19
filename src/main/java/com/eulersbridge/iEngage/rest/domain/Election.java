@@ -1,8 +1,12 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.rest.controller.ElectionController;
 
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -165,5 +169,21 @@ public class Election extends ResourceSupport
 	 */
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
+	}
+
+	public static Iterator<Election> toElectionsIterator(Iterator<ElectionDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <Election> elections=new ArrayList<Election>();
+		while(iter.hasNext())
+		{
+			ElectionDetails dets=iter.next();
+			Election thisElection=Election.fromElectionDetails(dets);
+			Link self = thisElection.getLink("self");
+			thisElection.removeLinks();
+			thisElection.add(self);
+			elections.add(thisElection);		
+		}
+		return elections.iterator();
 	}
 }

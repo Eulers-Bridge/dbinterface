@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Institution;
@@ -8,6 +11,10 @@ import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * @author Yikai Gong
@@ -132,4 +139,55 @@ public class ElectionEventHandler implements ElectionService
             return new ElectionUpdatedEvent(result.getNodeId(), result.toElectionDetails());
         }
     }
+
+	@Override
+	public ElectionsReadEvent readElections(ReadElectionsEvent readElectionsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	{
+		Long institutionId=readElectionsEvent.getInstitutionId();
+		Page <Election>elections=null;
+		ArrayList<ElectionDetails> dets=new ArrayList<ElectionDetails>();
+		ElectionsReadEvent nare=null;
+
+		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.start");
+		elections=eleRepository.findByInstitutionId(institutionId, pageable);
+		if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+elections.getTotalElements()+" total pages ="+elections.getTotalPages());
+		if (elections!=null)
+		{
+			Iterator<Election> iter=elections.iterator();
+			while (iter.hasNext())
+			{
+				Election na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getTitle());
+				ElectionDetails det=na.toElectionDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found instId.
+				Institution inst=instRepository.findOne(institutionId);
+				if ( (null==inst) ||
+					 ((null==inst.getName()) || ((null==inst.getCampus()) && (null==inst.getState()) && (null==inst.getCountry()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(InstitutionId)");
+					nare=ElectionsReadEvent.institutionNotFound();
+				}
+				else
+				{	
+					nare=new ElectionsReadEvent(institutionId,dets);
+				}
+			}
+			else
+			{	
+				nare=new ElectionsReadEvent(institutionId,dets);
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
+			nare=ElectionsReadEvent.institutionNotFound();
+		}
+		return nare;
+	}
 }

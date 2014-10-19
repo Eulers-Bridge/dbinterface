@@ -14,6 +14,7 @@ public class ElectionsReadEvent extends ReadEvent
 {
 	Iterable<ElectionDetails> elections;
 	Long institutionId=null;
+	private boolean institutionFound=true;
 	
 	public ElectionsReadEvent(Long institutionId, Iterable<ElectionDetails> elections)
 	{
@@ -26,6 +27,11 @@ public class ElectionsReadEvent extends ReadEvent
 		this.elections=elections;
 	}
 
+	public ElectionsReadEvent()
+	{
+		super();
+	}
+	
 	/**
 	 * @return the elections
 	 */
@@ -56,4 +62,18 @@ public class ElectionsReadEvent extends ReadEvent
 		this.institutionId = institutionId;
 	}
 
+	/**
+	 * @return the institutionFound
+	 */
+	public boolean isInstitutionFound() {
+		return institutionFound;
+	}
+
+	public static ElectionsReadEvent institutionNotFound() 
+	{
+		ElectionsReadEvent nare=new ElectionsReadEvent();
+		nare.institutionFound=false;
+		nare.entityFound=false;
+		return nare;
+	}
 }
