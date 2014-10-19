@@ -17,6 +17,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,12 +41,19 @@ import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.core.events.elections.ElectionUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.elections.ElectionsReadEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
+import com.eulersbridge.iEngage.core.events.elections.ReadElectionsEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.domain.Election;
 
 /**
  * @author Greg Newitt
@@ -135,7 +149,7 @@ public class ElectionControllerTest {
 		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
 		String returnedContent="{\"electionId\":"+dets.getElectionId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"start\":"+dets.getStart().intValue()+",\"end\":"+dets.getEnd().intValue()+
 								",\"startVoting\":"+dets.getStartVoting().intValue()+",\"endVoting\":"+dets.getEndVoting()+",\"institutionId\":"+dets.getInstitutionId()+
-								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/2\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/2/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/2/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
+								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
 		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -337,7 +351,7 @@ public class ElectionControllerTest {
 		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
 		String returnedContent="{\"electionId\":"+dets.getElectionId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"start\":"+dets.getStart().intValue()+",\"end\":"+dets.getEnd().intValue()+
 								",\"startVoting\":"+dets.getStartVoting().intValue()+",\"endVoting\":"+dets.getEndVoting()+",\"institutionId\":"+dets.getInstitutionId()+
-								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/2\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/2/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/2/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
+								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
 		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -402,5 +416,67 @@ public class ElectionControllerTest {
 		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
+
+	@Test
+	public final void testElections() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindElections()");
+		Long instId=1l;
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Election> dets=DatabaseDataFixture.populateElections();
+		Iterable<com.eulersbridge.iEngage.database.domain.Election> elections=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Election> iter=elections.iterator();
+		ArrayList<ElectionDetails> eleDets=new ArrayList<ElectionDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Election article=iter.next();
+			eleDets.add(article.toElectionDetails());
+		}
+		ElectionsReadEvent testData=new ElectionsReadEvent(instId,eleDets);
+		when (electionService.readElections(any(ReadElectionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$[0].title",is(eleDets.get(0).getTitle())))
+		.andExpect(jsonPath("$[0].start",is(eleDets.get(0).getStart().intValue())))
+		.andExpect(jsonPath("$[0].end",is(eleDets.get(0).getEnd().intValue())))
+		.andExpect(jsonPath("$[0].startVoting",is(eleDets.get(0).getStartVoting().intValue())))
+		.andExpect(jsonPath("$[0].endVoting",is(eleDets.get(0).getEndVoting().intValue())))
+		.andExpect(jsonPath("$[0].electionId",is(eleDets.get(0).getElectionId().intValue())))
+		.andExpect(jsonPath("$[0].institutionId",is(eleDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$[1].title",is(eleDets.get(1).getTitle())))
+		.andExpect(jsonPath("$[1].start",is(eleDets.get(1).getStart().intValue())))
+		.andExpect(jsonPath("$[1].end",is(eleDets.get(1).getEnd().intValue())))
+		.andExpect(jsonPath("$[1].startVoting",is(eleDets.get(1).getStartVoting().intValue())))
+		.andExpect(jsonPath("$[1].endVoting",is(eleDets.get(1).getEndVoting().intValue())))
+		.andExpect(jsonPath("$[1].electionId",is(eleDets.get(1).getElectionId().intValue())))
+		.andExpect(jsonPath("$[1].institutionId",is(eleDets.get(1).getInstitutionId().intValue())))
+//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindElectionsZeroArticles() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindElections()");
+		Long instId=11l;
+		ArrayList<ElectionDetails> eleDets=new ArrayList<ElectionDetails>(); 
+		ElectionsReadEvent testData=new ElectionsReadEvent(instId,eleDets);
+		when (electionService.readElections(any(ReadElectionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindElectionsNoInst() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindElections()");
+		Long instId=11l;
+		ElectionsReadEvent testData=ElectionsReadEvent.institutionNotFound();
+		when (electionService.readElections(any(ReadElectionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+
 
 }
