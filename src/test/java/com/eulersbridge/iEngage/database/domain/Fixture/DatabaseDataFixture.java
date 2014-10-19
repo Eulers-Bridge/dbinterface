@@ -169,9 +169,15 @@ public class DatabaseDataFixture
 
 	public static Election populateElection1()
 	{
-		Long nodeId=(long)2;
+		Long nodeId=(long)1;
 		Institution inst=populateInstUniMelb();
 		return populateElection(nodeId, "This election", 123456l, 123756l, 123656l, 123706l, inst);
+	}
+	public static Election populateElection2()
+	{
+		Long nodeId=(long)2;
+		Institution inst=populateInstUniMelb();
+		return populateElection(nodeId, "That election", 123555l, 123777l, 123555l, 123666l, inst);
 	}
 	public static Election populateElection(Long id, String title, Long starts, Long ends, Long voteStarts, Long voteEnds, Institution inst)
 	{
@@ -188,8 +194,8 @@ public class DatabaseDataFixture
 	public static HashMap<Long,Election> populateElections()
 	{
 		HashMap<Long, Election> elections=new HashMap<Long, Election>();
-		Election initialElection=populateElection1();
-		elections.put(new Long(1), initialElection);
+		elections.put(new Long(1), populateElection1());
+		elections.put(2l, populateElection2());
 		return elections;
 	}
 
