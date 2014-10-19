@@ -12,13 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.rest.domain.Election;
 
-//import com.eulersbridge.iEngage.database.domain.Election;
-//import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-
-
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
-public class ElectionController {
+public class ElectionController
+{
 
     @Autowired
     ElectionService electionService;
@@ -47,7 +44,8 @@ public class ElectionController {
 
     //Create
     @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.ELECTION_LABEL)
-    public @ResponseBody ResponseEntity<Election> createElection(@RequestBody Election election){
+    public @ResponseBody ResponseEntity<Election> createElection(@RequestBody Election election)
+    {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create election "+election);
         ElectionCreatedEvent electionCreatedEvent = electionService.createElection(new CreateElectionEvent(election.toElectionDetails()));
         ResponseEntity<Election> response;
