@@ -275,7 +275,6 @@ public class NewsController
 		pageLength=Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institution "+institutionId+'.');
 		
-//		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from student year. "+newsFeedId);
 		Direction sortDirection=Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
 		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(institutionId),sortDirection, pageNumber,pageLength);
