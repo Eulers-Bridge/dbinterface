@@ -42,9 +42,9 @@ import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestEventFixtures;
 
 
-public class ViewUserIntegrationTest 
+public class UserControllerTest 
 {
-    private static Logger LOG = LoggerFactory.getLogger(ViewUserIntegrationTest.class);
+    private static Logger LOG = LoggerFactory.getLogger(UserControllerTest.class);
 
     MockMvc mockMvc;
 	
