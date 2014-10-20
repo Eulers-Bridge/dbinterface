@@ -37,6 +37,14 @@ public class VoteRecord
 		return nodeId;
 	}
 	
+	/**
+	 * @param nodeId the nodeId to set
+	 */
+	public void setNodeId(Long nodeId)
+	{
+		this.nodeId = nodeId;
+	}
+
 	public Long getDate()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getYear() = "+date);
@@ -129,29 +137,46 @@ public class VoteRecord
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object other)
-	{
-		if (null == other) return false;
-		if (other == this) return true;
-		if (!(other instanceof VoteRecord)) return false;
-		VoteRecord answer2=(VoteRecord) other;
-
-		if (getNodeId()!=null)
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		VoteRecord other = (VoteRecord) obj;
+		if (nodeId != null)
 		{
-				if (getNodeId().equals(answer2.getNodeId())) return true;
+			if (nodeId.equals(other.nodeId))
+				return true;
+			else return false;
 		}
 		else
 		{
-			if (null==answer2.getNodeId())
-			{
-				if ((this.getDate().equals(answer2.getDate()))&&
-					(this.getVoter().equals(answer2.getVoter()))&&
-					(this.getElection().equals(answer2.getElection()))&&
-					(this.getLocation().equals(answer2.getLocation())))
-					return true;
-			}
+			if (other.nodeId != null)
+				return false;
+			if (date == null) {
+				if (other.date != null)
+					return false;
+			} else if (!date.equals(other.date))
+				return false;
+			if (election == null) {
+				if (other.election != null)
+					return false;
+			} else if (!election.equals(other.election))
+				return false;
+			if (location == null) {
+				if (other.location != null)
+					return false;
+			} else if (!location.equals(other.location))
+				return false;
+			if (voter == null) {
+				if (other.voter != null)
+					return false;
+			} else if (!voter.equals(other.voter))
+				return false;
 		}
-		return false;
+		return true;
 	}
 
 }
