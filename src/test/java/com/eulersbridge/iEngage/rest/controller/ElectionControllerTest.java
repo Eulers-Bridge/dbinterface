@@ -18,10 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,14 +44,9 @@ import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionsEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.domain.Election;
 
 /**
  * @author Greg Newitt
