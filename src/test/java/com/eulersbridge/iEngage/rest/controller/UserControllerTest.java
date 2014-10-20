@@ -35,8 +35,15 @@ import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
+import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestEventFixtures;
@@ -80,6 +87,37 @@ public class UserControllerTest
 				"\"}";
 	}
 	
+	private String populateVoteReminderContent(VoteReminderDetails dets)
+	{
+		return "{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getUserId()+
+				"\",\"electionId\":"+dets.getElectionId().intValue()+",\"date\":"+dets.getDate().intValue()+
+				",\"location\":\""+dets.getLocation()+"\",\"timestamp\":"+dets.getTimestamp().intValue()+
+				"}";
+	}
+	
+	private String populateVoteReminderReturnedContent(VoteReminderDetails dets)
+	{
+		return "{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getUserId()+
+				"\",\"electionId\":"+dets.getElectionId().intValue()+",\"date\":"+dets.getDate().intValue()+
+				",\"location\":\""+dets.getLocation()+"\",\"timestamp\":"+dets.getTimestamp().intValue()+
+				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/"+dets.getUserId()+"/voteReminder\"}]}";
+	}
+	
+	private String populateVoteRecordContent(VoteRecordDetails dets)
+	{
+		return "{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getVoterId()+
+				"\",\"electionId\":"+dets.getElectionId().intValue()+",\"date\":"+dets.getDate().intValue()+
+				",\"location\":\""+dets.getLocation()+"\"}";
+	}
+	
+	private String populateVoteRecordReturnedContent(VoteRecordDetails dets)
+	{
+		return "{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getVoterId()+
+				"\",\"electionId\":"+dets.getElectionId().intValue()+",\"date\":"+dets.getDate().intValue()+
+				",\"location\":\""+dets.getLocation()+"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/"+
+				dets.getVoterId()+"/voteRecord\"}]}";
+	}
+
 	private String populateContent(UserDetails dets)
 	{
 		return "{\"givenName\":\""+dets.getGivenName()+
@@ -163,6 +201,127 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
 		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(null);
 		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void putShouldAddVoteReminderToUserCorrectly() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
+		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
+		VoteReminderAddedEvent resEvt=new VoteReminderAddedEvent();
+		resEvt.setVoteReminderDetails(dets);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(resEvt);
+		String content=populateVoteReminderContent(dets);
+		String returnedContent=populateVoteReminderReturnedContent(dets);
+		this.mockMvc.perform(put("/api/user/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
+		.andExpect(jsonPath("$.timestamp",is(dets.getTimestamp().intValue())))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.location",is(dets.getLocation())))
+		.andExpect(jsonPath("$.userEmail",is(dets.getUserId())))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void putVoteReminderShouldReturnUserNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
+		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
+		VoteReminderAddedEvent resEvt=VoteReminderAddedEvent.userNotFound();
+		resEvt.setVoteReminderDetails(dets);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(resEvt);
+		String content=populateVoteReminderContent(dets);
+		this.mockMvc.perform(put("/api/user/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isFailedDependency());
+	}
+	
+	@Test
+	public void putVoteReminderShouldReturnBadRequest() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
+		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
+		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(null);
+		String content=populateVoteReminderContent(dets);
+		this.mockMvc.perform(put("/api/user/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void putVoteReminderShouldReturnUserBadRequest2() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
+		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put("/api/user/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void putShouldAddVoteRecordToUserCorrectly() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingVoteRecord()");	
+		VoteRecordDetails dets=DatabaseDataFixture.populateVoteRecord1().toVoteRecordDetails();
+		VoteRecordAddedEvent resEvt=new VoteRecordAddedEvent();
+		resEvt.setVoteRecordDetails(dets);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(resEvt);
+		String content=populateVoteRecordContent(dets);
+		String returnedContent=populateVoteRecordReturnedContent(dets);
+		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.location",is(dets.getLocation())))
+		.andExpect(jsonPath("$.userEmail",is(dets.getVoterId())))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void putVoteRecordShouldReturnUserNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingVoteRecord()");	
+		VoteRecordDetails dets=DatabaseDataFixture.populateVoteRecord1().toVoteRecordDetails();
+		VoteRecordAddedEvent resEvt=VoteRecordAddedEvent.userNotFound();
+		resEvt.setVoteRecordDetails(dets);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(resEvt);
+		String content="{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getVoterId()+
+						"\",\"electionId\":"+dets.getElectionId().intValue()+",\"date\":"+dets.getDate().intValue()+
+						",\"location\":\""+dets.getLocation()+"\"}";
+		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isFailedDependency());
+	}
+	
+	@Test
+	public void putVoteRecordShouldReturnBadRequest() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingVoteRecord()");	
+		VoteRecordDetails dets=DatabaseDataFixture.populateVoteRecord1().toVoteRecordDetails();
+		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(null);
+		String content=populateVoteRecordContent(dets);
+		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void putVoteRecordShouldReturnUserBadRequest2() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingVoteRecord()");	
+		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isBadRequest());
 	}

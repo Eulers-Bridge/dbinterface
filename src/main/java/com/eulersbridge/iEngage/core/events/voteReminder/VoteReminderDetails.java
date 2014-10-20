@@ -10,7 +10,7 @@ package com.eulersbridge.iEngage.core.events.voteReminder;
 public class VoteReminderDetails 
 {
 	private Long nodeId;
-	private Long userId;
+	private String userEmail;
 	private Long electionId;
 	private Long date;
 	private String location;
@@ -26,17 +26,17 @@ public class VoteReminderDetails
 	
 	/**
 	 * @param nodeId
-	 * @param userId
+	 * @param userEmail
 	 * @param electionId
 	 * @param date
 	 * @param location
 	 * @param timestamp
 	 */
-	public VoteReminderDetails(Long nodeId, Long userId, Long electionId,
+	public VoteReminderDetails(Long nodeId, String userEmail, Long electionId,
 			Long date, String location, Long timestamp) {
 		super();
 		this.nodeId = nodeId;
-		this.userId = userId;
+		this.userEmail = userEmail;
 		this.electionId = electionId;
 		this.date = date;
 		this.location = location;
@@ -60,15 +60,15 @@ public class VoteReminderDetails
 	/**
 	 * @return the userId
 	 */
-	public Long getUserId() {
-		return userId;
+	public String getUserId() {
+		return userEmail;
 	}
 
 	/**
 	 * @param userId the userId to set
 	 */
-	public void setUserId(Long userId) {
-		this.userId = userId;
+	public void setUserId(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class VoteReminderDetails
 	@Override
 	public String toString() 
 	{
-		return "VoteReminderDetails [nodeId=" + nodeId + ", userId=" + userId
+		return "VoteReminderDetails [nodeId=" + nodeId + ", userId=" + userEmail
 				+ ", electionId=" + electionId + ", date=" + date
 				+ ", location=" + location + ", timestamp=" + timestamp + "]";
 	}
@@ -159,7 +159,7 @@ public class VoteReminderDetails
 					+ ((location == null) ? 0 : location.hashCode());
 			result = prime * result
 					+ ((timestamp == null) ? 0 : timestamp.hashCode());
-			result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+			result = prime * result + ((userEmail == null) ? 0 : userEmail.hashCode());
 		}
 		return result;
 	}
@@ -206,10 +206,10 @@ public class VoteReminderDetails
 					return false;
 			} else if (!timestamp.equals(other.timestamp))
 				return false;
-			if (userId == null) {
-				if (other.userId != null)
+			if (userEmail == null) {
+				if (other.userEmail != null)
 					return false;
-			} else if (!userId.equals(other.userId))
+			} else if (!userEmail.equals(other.userEmail))
 				return false;
 		}
 		return true;

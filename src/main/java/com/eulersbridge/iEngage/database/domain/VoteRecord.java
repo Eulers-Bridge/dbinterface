@@ -4,10 +4,13 @@ import java.util.Calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
+
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
 
 @RelationshipEntity(type=DatabaseDomainConstants.VRECORD_LABEL)
 public class VoteRecord 
@@ -30,6 +33,22 @@ public class VoteRecord
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+location+')');
 		this.location=location;
 		date=Calendar.getInstance().getTimeInMillis();
+	}
+
+	public VoteRecordDetails toVoteRecordDetails()
+	{
+	    if (LOG.isTraceEnabled()) LOG.trace("toVoteRecordDetails()");
+	    
+	    VoteRecordDetails details = new VoteRecordDetails();
+	    details.setNodeId(getNodeId());
+	    if (LOG.isTraceEnabled()) LOG.trace("voteRecord "+this);
+
+	    BeanUtils.copyProperties(this, details);
+	    details.setElectionId(this.getElection().getNodeId());
+	    details.setVoterId(this.getVoter().getEmail());
+	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
+
+	    return details;
 	}
 	
 	public Long getNodeId()
@@ -178,5 +197,4 @@ public class VoteRecord
 		}
 		return true;
 	}
-
 }

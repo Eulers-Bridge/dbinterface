@@ -4,10 +4,13 @@ import java.util.Calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
+
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 
 @RelationshipEntity(type=DatabaseDomainConstants.VREMINDER_LABEL)
 public class VoteReminder {
@@ -32,6 +35,22 @@ public class VoteReminder {
 		this.date=date;
 		this.location=location;
 		timestamp=Calendar.getInstance().getTimeInMillis();
+	}
+	
+	public VoteReminderDetails toVoteReminderDetails()
+	{
+	    if (LOG.isTraceEnabled()) LOG.trace("toVoteReminderDetails()");
+	    
+	    VoteReminderDetails details = new VoteReminderDetails();
+	    details.setNodeId(getNodeId());
+	    if (LOG.isTraceEnabled()) LOG.trace("voteRecord "+this);
+
+	    BeanUtils.copyProperties(this, details);
+	    details.setElectionId(this.getElection().getNodeId());
+	    details.setUserId(this.getVoter().getEmail());
+	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
+
+	    return details;
 	}
 	
 	public Long getNodeId()
@@ -198,5 +217,24 @@ public class VoteReminder {
 				return false;
 		}
 		return true;
+	}
+
+	public static VoteReminder fromVoteReminderDetails(VoteReminderDetails dets)
+	{
+        if (LOG.isTraceEnabled()) LOG.trace("fromVoteReminderDetails()");
+        VoteReminder voteReminder = new VoteReminder();
+        if (LOG.isTraceEnabled()) LOG.trace("dets "+dets);
+        voteReminder.setNodeId(dets.getElectionId());
+        voteReminder.setLocation(dets.getLocation());
+        voteReminder.setDate(dets.getDate());
+        voteReminder.setTimestamp(dets.getTimestamp());
+        Election election=new Election();
+        election.setNodeId(dets.getNodeId());
+        voteReminder.setElection(election);
+        User user=new User();
+        user.setEmail(dets.getUserId());
+        voteReminder.setVoter(user);
+        if (LOG.isTraceEnabled()) LOG.trace("voteReminder "+voteReminder);
+        return voteReminder;
 	}
 }

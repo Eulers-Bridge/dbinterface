@@ -3,6 +3,8 @@ package com.eulersbridge.iEngage.database.repository;
 
 import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VoteRecord;
+import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 import java.util.*;
@@ -212,6 +214,19 @@ public Personality addPersonality(Long userId, Long personalityId)
 		retValue.setNodeId(1L);
 	}
 	return retValue;
+}
+
+@Override
+public VoteReminder addVoteReminder(Long userId, Long electionId, Long date,
+		String location) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public VoteRecord addVoteRecord(Long userId, Long electionId, String location) {
+	// TODO Auto-generated method stub
+	return null;
 }
 
 }

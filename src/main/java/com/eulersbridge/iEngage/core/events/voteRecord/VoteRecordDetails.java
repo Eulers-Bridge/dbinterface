@@ -10,7 +10,7 @@ package com.eulersbridge.iEngage.core.events.voteRecord;
 public class VoteRecordDetails 
 {
 	private Long nodeId;
-	private Long voterId;
+	private String voterEmail;
 	private Long electionId;
 	private Long date;
 	private String location;
@@ -25,16 +25,16 @@ public class VoteRecordDetails
 	
 	/**
 	 * @param nodeId
-	 * @param voterId
+	 * @param voterEmail
 	 * @param electionId
 	 * @param date
 	 * @param location
 	 */
-	public VoteRecordDetails(Long nodeId, Long voterId, Long electionId,
+	public VoteRecordDetails(Long nodeId, String voterEmail, Long electionId,
 			Long date, String location) {
 		super();
 		this.nodeId = nodeId;
-		this.voterId = voterId;
+		this.voterEmail = voterEmail;
 		this.electionId = electionId;
 		this.date = date;
 		this.location = location;
@@ -57,15 +57,15 @@ public class VoteRecordDetails
 	/**
 	 * @return the voterId
 	 */
-	public Long getVoterId() {
-		return voterId;
+	public String getVoterId() {
+		return voterEmail;
 	}
 
 	/**
 	 * @param voterId the voterId to set
 	 */
-	public void setVoterId(Long voterId) {
-		this.voterId = voterId;
+	public void setVoterId(String voterId) {
+		this.voterEmail = voterId;
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class VoteRecordDetails
 	 */
 	@Override
 	public String toString() {
-		return "VoteRecordDetails [nodeId=" + nodeId + ", voterId=" + voterId
+		return "VoteRecordDetails [nodeId=" + nodeId + ", voterId=" + voterEmail
 				+ ", electionId=" + electionId + ", date=" + date
 				+ ", location=" + location + "]";
 	}
@@ -138,7 +138,7 @@ public class VoteRecordDetails
 					+ ((electionId == null) ? 0 : electionId.hashCode());
 			result = prime * result
 					+ ((location == null) ? 0 : location.hashCode());
-			result = prime * result + ((voterId == null) ? 0 : voterId.hashCode());
+			result = prime * result + ((voterEmail == null) ? 0 : voterEmail.hashCode());
 		}
 		return result;
 	}
@@ -180,10 +180,10 @@ public class VoteRecordDetails
 					return false;
 			} else if (!location.equals(other.location))
 				return false;
-			if (voterId == null) {
-				if (other.voterId != null)
+			if (voterEmail == null) {
+				if (other.voterEmail != null)
 					return false;
-			} else if (!voterId.equals(other.voterId))
+			} else if (!voterEmail.equals(other.voterEmail))
 				return false;
 		}
 		return true;

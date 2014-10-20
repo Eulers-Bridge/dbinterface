@@ -29,10 +29,16 @@ import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
+import com.eulersbridge.iEngage.database.domain.VoteRecord;
+import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
@@ -354,5 +360,76 @@ public class UserEventHandler implements UserService,UserDetailsService
 		{
 			throw new UsernameNotFoundException(username+" not found.");
 		}
+	}
+
+	@Override
+	public VoteReminderAddedEvent addVoteReminder(AddVoteReminderEvent addVoteReminderEvent)
+	{
+		VoteReminderAddedEvent evt;
+		
+		String emailAddress=addVoteReminderEvent.getVoteReminderDetails().getUserId();
+		if(LOG.isDebugEnabled()) LOG.debug("Email address - "+emailAddress);
+		
+		User user=userRepository.findByEmail(emailAddress);
+		if (user!=null)
+		{  // Valid User
+			if (LOG.isDebugEnabled()) LOG.debug("UserId - "+user.getNodeId());
+			Long electionId=addVoteReminderEvent.getVoteReminderDetails().getElectionId();
+			Long date=addVoteReminderEvent.getVoteReminderDetails().getDate();
+			String location=addVoteReminderEvent.getVoteReminderDetails().getLocation();
+			if (LOG.isDebugEnabled()) LOG.debug("Election id - "+electionId+" Location - "+location+" Date - "+date);
+			
+			VoteReminder voteReminderAdded=userRepository.addVoteReminder(user.getNodeId(),electionId,date,location);
+			if (voteReminderAdded!=null)
+			{
+				evt=new VoteReminderAddedEvent();
+				evt.setVoteReminderDetails(voteReminderAdded.toVoteReminderDetails());
+			}
+			else
+			{
+				evt=VoteReminderAddedEvent.electionNotFound();
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("No such account.");
+			evt=VoteReminderAddedEvent.userNotFound();
+		}
+		return evt;
+	}
+
+	@Override
+	public VoteRecordAddedEvent addVoteRecord(AddVoteRecordEvent addVoteRecordEvent)
+	{
+		VoteRecordAddedEvent evt;
+		
+		String emailAddress=addVoteRecordEvent.getVoteRecordDetails().getVoterId();
+		if(LOG.isDebugEnabled()) LOG.debug("Email address - "+emailAddress);
+		
+		User user=userRepository.findByEmail(emailAddress);
+		if (user!=null)
+		{  // Valid User
+			if (LOG.isDebugEnabled()) LOG.debug("UserId - "+user.getNodeId());
+			Long electionId=addVoteRecordEvent.getVoteRecordDetails().getElectionId();
+			String location=addVoteRecordEvent.getVoteRecordDetails().getLocation();
+			if (LOG.isDebugEnabled()) LOG.debug("Election id - "+electionId+" Location - "+location);
+			
+			VoteRecord voteRecordAdded=userRepository.addVoteRecord(user.getNodeId(),electionId,location);
+			if (voteRecordAdded!=null)
+			{
+				evt=new VoteRecordAddedEvent();
+				evt.setVoteRecordDetails(voteRecordAdded.toVoteRecordDetails());
+			}
+			else
+			{
+				evt=VoteRecordAddedEvent.electionNotFound();
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("No such account.");
+			evt=VoteRecordAddedEvent.userNotFound();
+		}
+		return evt;
 	}
 }

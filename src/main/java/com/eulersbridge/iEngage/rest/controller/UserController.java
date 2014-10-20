@@ -39,11 +39,17 @@ import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.rest.domain.Personality;
 import com.eulersbridge.iEngage.rest.domain.User;
+import com.eulersbridge.iEngage.rest.domain.VoteRecord;
+import com.eulersbridge.iEngage.rest.domain.VoteReminder;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
@@ -154,6 +160,102 @@ public class UserController {
     	{
     		if (LOG.isWarnEnabled()) LOG.warn("personalityEvent null");
     		result=new ResponseEntity<Personality>(HttpStatus.BAD_REQUEST);
+    	}
+    	return result;
+    }
+    
+    /**
+     * Is passed all the necessary data to create a vote reminder.
+     * The request must be a PUT with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting vote reminder object. 
+     * 
+     * @param email the email address of the user to be updated.
+     * @param user the user object passed across as JSON.
+     * @return the user object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{email}/voteReminder")
+    public @ResponseBody ResponseEntity<VoteReminder> addVoteReminder(@PathVariable String email,
+    		@RequestBody VoteReminder voteReminder) 
+    {
+    	ResponseEntity<VoteReminder> result;
+    	if (LOG.isInfoEnabled()) LOG.info("Attempting to add vote reminder to user. ");
+    	if (LOG.isDebugEnabled()) LOG.debug("VoteReminder - "+voteReminder);
+    	
+    	AddVoteReminderEvent addEvt=new AddVoteReminderEvent(voteReminder.toVoteReminderDetails());
+    	if (LOG.isDebugEnabled()) LOG.debug("AddPersonalityEvent - "+addEvt);
+    	
+    	VoteReminderAddedEvent vrEvent=userService.addVoteReminder(addEvt);
+    	if (vrEvent!=null)
+    	{
+    		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+vrEvent);
+	    	if (vrEvent.isUserFound())
+	       	{
+	    		VoteReminder restVoteReminder=VoteReminder.fromVoteReminderDetails(vrEvent.getVoteReminderDetails());
+		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restVoteReminder);
+		      	result= new ResponseEntity<VoteReminder>(restVoteReminder,HttpStatus.CREATED);
+	    	}
+	    	else
+	    	{
+	    		result=new ResponseEntity<VoteReminder>(HttpStatus.FAILED_DEPENDENCY);
+	    	}
+    	}
+    	else
+    	{
+    		if (LOG.isWarnEnabled()) LOG.warn("voteReminderEvent null");
+    		result=new ResponseEntity<VoteReminder>(HttpStatus.BAD_REQUEST);
+    	}
+    	return result;
+    }
+    
+    /**
+     * Is passed all the necessary data to create a vote record.
+     * The request must be a PUT with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting vote record object. 
+     * 
+     * @param email the email address of the user to be updated.
+     * @param user the user object passed across as JSON.
+     * @return the user object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{email}/voteRecord")
+    public @ResponseBody ResponseEntity<VoteRecord> addVoteRecord(@PathVariable String email,
+    		@RequestBody VoteRecord voteRecord) 
+    {
+    	ResponseEntity<VoteRecord> result;
+    	if (LOG.isInfoEnabled()) LOG.info("Attempting to add vote record to user. ");
+    	if (LOG.isDebugEnabled()) LOG.debug("VoteReminder - "+voteRecord);
+    	
+    	AddVoteRecordEvent addEvt=new AddVoteRecordEvent(voteRecord.toVoteRecordDetails());
+    	if (LOG.isDebugEnabled()) LOG.debug("AddVoteRecordEvent - "+addEvt);
+    	
+    	VoteRecordAddedEvent vrEvent=userService.addVoteRecord(addEvt);
+    	if (vrEvent!=null)
+    	{
+    		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+vrEvent);
+	    	if (vrEvent.isUserFound())
+	       	{
+	    		VoteRecord restVoteRecord=VoteRecord.fromVoteRecordDetails(vrEvent.getVoteRecordDetails());
+		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restVoteRecord);
+		      	result= new ResponseEntity<VoteRecord>(restVoteRecord,HttpStatus.CREATED);
+	    	}
+	    	else
+	    	{
+	    		result=new ResponseEntity<VoteRecord>(HttpStatus.FAILED_DEPENDENCY);
+	    	}
+    	}
+    	else
+    	{
+    		if (LOG.isWarnEnabled()) LOG.warn("voteRecordEvent null");
+    		result=new ResponseEntity<VoteRecord>(HttpStatus.BAD_REQUEST);
     	}
     	return result;
     }
