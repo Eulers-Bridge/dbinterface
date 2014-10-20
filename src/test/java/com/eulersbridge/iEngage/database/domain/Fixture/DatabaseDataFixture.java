@@ -12,6 +12,8 @@ import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VoteRecord;
+import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
@@ -199,4 +201,68 @@ public class DatabaseDataFixture
 		return elections;
 	}
 
+	public static VoteReminder populateVoteReminder1()
+	{
+		Long nodeId=(long)1;
+		Election elec=populateElection1();
+		User voter=populateUserGnewitt();
+		return populateVoteReminder(nodeId, 123456l, elec, "Union House", 123706l, voter);
+	}
+	public static VoteReminder populateVoteReminder2()
+	{
+		Long nodeId=(long)2;
+		Election elec=populateElection2();
+		User voter=populateUserGnewitt2();
+		return populateVoteReminder(nodeId, 123556l, elec, "Union House", 121706l, voter);
+	}
+	public static VoteReminder populateVoteReminder(Long id, Long date, Election election, String location, Long timestamp, User voter)
+	{
+		VoteReminder voteReminder=new VoteReminder();
+		voteReminder.setNodeId(id);
+		voteReminder.setDate(date);
+		voteReminder.setElection(election);
+		voteReminder.setLocation(location);
+		voteReminder.setTimestamp(timestamp);
+		voteReminder.setVoter(voter);
+		return voteReminder;
+	}
+	public static HashMap<Long,VoteReminder> populateVoteReminders()
+	{
+		HashMap<Long, VoteReminder> voteReminders=new HashMap<Long, VoteReminder>();
+		voteReminders.put(new Long(1), populateVoteReminder1());
+		voteReminders.put(2l, populateVoteReminder2());
+		return voteReminders;
+	}
+
+	public static VoteRecord populateVoteRecord1()
+	{
+		Long nodeId=(long)1;
+		Election elec=populateElection1();
+		User voter=populateUserGnewitt();
+		return populateVoteRecord(nodeId, 123458l, elec, "Union House", voter);
+	}
+	public static VoteRecord populateVoteRecord2()
+	{
+		Long nodeId=(long)2;
+		Election elec=populateElection2();
+		User voter=populateUserGnewitt2();
+		return populateVoteRecord(nodeId, 123559l, elec, "Union House", voter);
+	}
+	public static VoteRecord populateVoteRecord(Long id, Long date, Election election, String location, User voter)
+	{
+		VoteRecord voteRecord=new VoteRecord();
+		voteRecord.setNodeId(id);
+		voteRecord.setDate(date);
+		voteRecord.setElection(election);
+		voteRecord.setLocation(location);
+		voteRecord.setVoter(voter);
+		return voteRecord;
+	}
+	public static HashMap<Long,VoteRecord> populateVoteRecords()
+	{
+		HashMap<Long, VoteRecord> voteRecords=new HashMap<Long, VoteRecord>();
+		voteRecords.put(new Long(1), populateVoteRecord1());
+		voteRecords.put(2l, populateVoteRecord2());
+		return voteRecords;
+	}
 }
