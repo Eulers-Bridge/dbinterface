@@ -94,7 +94,7 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}/likedBy/{email}")
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}/likedBy/{email}/")
 	public @ResponseBody ResponseEntity<Boolean> likeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
@@ -130,7 +130,7 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}/unlikedBy/{email}")
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}/unlikedBy/{email}/")
 	public @ResponseBody ResponseEntity<Boolean> unlikeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike news article. "+articleId);
