@@ -52,8 +52,8 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
  * @author Greg Newitt
  *
  */
-public class ElectionControllerTest {
-
+public class ElectionControllerTest
+{
     private static Logger LOG = LoggerFactory.getLogger(ElectionControllerTest.class);
     
     private String urlPrefix=ControllerConstants.API_PREFIX+ControllerConstants.ELECTION_LABEL;
