@@ -19,7 +19,7 @@ public class NewsArticleDetailsTest {
     final String title = new String("title");
     final String content = new String("content");
     final Set<String> picture = new HashSet<>();
-    final Set<String> likers = new HashSet<>();
+    final Integer likes = 25;
     final Long date = new Long(0);
     final String creatorEmail = new String("yikaig@gmail.com");
     final Long institutionId = new Long(1);
@@ -35,7 +35,7 @@ public class NewsArticleDetailsTest {
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
         newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setLikers(likers);
+        newsArticleDetails.setLikes(likes);
     }
 
     @After
@@ -129,15 +129,14 @@ public class NewsArticleDetailsTest {
 
     @Test
     public void testGetLikers() throws Exception {
-        assertEquals("likers does not match", likers, newsArticleDetails.getLikers());
+        assertEquals("likers does not match", likes, newsArticleDetails.getLikes());
     }
 
     @Test
     public void testSetLikers() throws Exception {
-        Set<String> likers1 = new HashSet<>();
-        likers1.add("yikai gong");
-        newsArticleDetails.setLikers(likers1);
-        assertEquals("likers does not match", likers1, newsArticleDetails.getLikers());
+        Integer likes1 = 9;
+        newsArticleDetails.setLikes(likes1);
+        assertEquals("likers does not match", likes1, newsArticleDetails.getLikes());
     }
 
     @Test
@@ -161,7 +160,7 @@ public class NewsArticleDetailsTest {
         newsArticleDetails1.setNewsArticleId(newsArticleId);
         newsArticleDetails1.setTitle(title);
         newsArticleDetails1.setPicture(picture);
-        newsArticleDetails1.setLikers(likers);
+        newsArticleDetails1.setLikes(likes);
         assertNotNull("toString() return null", newsArticleDetails.toString());
         assertEquals("toString() does not match", newsArticleDetails.toString(), newsArticleDetails1.toString());
     }

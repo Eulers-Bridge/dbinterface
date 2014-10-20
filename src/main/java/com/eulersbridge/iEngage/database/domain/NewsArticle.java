@@ -84,7 +84,7 @@ public class NewsArticle extends Likeable
 	/**
 	 * @return the likes
 	 */
-	public Iterable<Like> getLikes() {
+	public Set<Like> getLikes() {
 		return likes;
 	}
 	
@@ -174,6 +174,9 @@ public class NewsArticle extends Likeable
 	    	if (getNewsFeed().getInstitution()!=null)
 	    		details.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
 	    }
+	    if (likes==null)
+	       	details.setLikes(0);
+	    else details.setLikes(likes.size());
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
 
 	    return details;

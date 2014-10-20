@@ -6,6 +6,8 @@ package com.eulersbridge.iEngage.database.domain;
 import static org.junit.Assert.*;
 
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -54,6 +56,8 @@ public class NewsArticleTest
 		news=new NewsArticle(title, content, picture, date, creator);
 		news.setNodeId(node1);
 		news.setNewsFeed(year);
+		Set<Like> likes1=new HashSet<Like>();
+		news.setLikes(likes1);
 	}
 
 	/**
@@ -136,7 +140,7 @@ public class NewsArticleTest
 	@Test
 	public void testGetLikes() 
 	{
-		assertNull("No likers at this point.",news.getLikes());
+		assertEquals("No likers at this point.",0,news.getLikes().size());
 	}
 
 	/**
@@ -182,7 +186,7 @@ public class NewsArticleTest
 		assertEquals("Creator emails don't match.",dets.getCreatorEmail(),news.getCreator().getEmail());
 		assertEquals("IDs don't match.",dets.getNewsArticleId(),news.getNodeId());
 		assertEquals("Pictures don't match.",dets.getPicture(),news.getPicture());
-		assertEquals("Likers don't match.",dets.getLikers(),news.getLikes());
+		assertEquals("Likes don't match.",dets.getLikes().intValue(),news.getLikes().size());
 	}
 
 	/**
@@ -199,7 +203,7 @@ public class NewsArticleTest
 		assertEquals("Creator emails don't match.",news2.getCreator().getEmail(),news.getCreator().getEmail());
 		assertEquals("IDs don't match.",news2.getNodeId(),news.getNodeId());
 		assertEquals("Pictures don't match.",news2.getPicture(),news.getPicture());
-		assertEquals("Likers don't match.",news2.getLikes(),news.getLikes());
+		assertNull("Likers don't match.",news2.getLikes());
 	}
 
 	/**

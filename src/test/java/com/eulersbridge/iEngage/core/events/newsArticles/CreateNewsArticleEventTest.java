@@ -18,7 +18,7 @@ public class CreateNewsArticleEventTest {
     final String title = new String("title");
     final String content = new String("content");
     final Set<String> picture = new HashSet<>();
-    final Set<String> likers = new HashSet<>();
+    final Integer likes = 15;
     final Long date = new Long(0);
     final String creatorEmail = new String("yikaig@gmail.com");
     final Long institutionId = new Long(1);
@@ -35,7 +35,7 @@ public class CreateNewsArticleEventTest {
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
         newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setLikers(likers);
+        newsArticleDetails.setLikes(likes);
 
         createNewsArticleEvent = new CreateNewsArticleEvent(newsArticleId, newsArticleDetails);
     }
@@ -67,7 +67,7 @@ public class CreateNewsArticleEventTest {
         newsArticleDetails1.setNewsArticleId(newsArticleId);
         newsArticleDetails1.setTitle(title);
         newsArticleDetails1.setPicture(picture);
-        newsArticleDetails1.setLikers(likers);
+        newsArticleDetails1.setLikes(likes);
         CreateNewsArticleEvent createNewsArticleEvent1 = new CreateNewsArticleEvent(newsArticleDetails1);
         assertEquals("NewsArticleDetails does not match", newsArticleDetails1, createNewsArticleEvent1.getNewsArticleDetails());
         assertEquals("NewsArticleDetails does not match", createNewsArticleEvent.getNewsArticleDetails(), createNewsArticleEvent1.getNewsArticleDetails());

@@ -21,7 +21,7 @@ public class NewsArticle extends ResourceSupport
 	private String title;
 	private String content;
 	private Set<String> picture;
-	private Set<String> likers;
+	private Integer likes;
 	private Long date;
 	private String creatorEmail;
 
@@ -37,7 +37,7 @@ public class NewsArticle extends ResourceSupport
 	    news.content = readNews.getContent();
 	    news.creatorEmail = readNews.getCreatorEmail();
 	    news.date = readNews.getDate();
-	    news.likers = readNews.getLikers();
+	    news.likes = readNews.getLikes();
 	    news.picture = readNews.getPicture();
 	    news.title = readNews.getTitle();
 	    news.institutionId = readNews.getInstitutionId();
@@ -80,7 +80,7 @@ public class NewsArticle extends ResourceSupport
 	    details.setTitle(getTitle());
 	    details.setContent(getContent());
 	    details.setPicture(getPicture());
-	    details.setLikers(getLikers());
+	    details.setLikes(getLikes());
 	    details.setDate(getDate());
 	    details.setCreatorEmail(creatorEmail);
 	    details.setInstitutionId(getInstitutionId());
@@ -147,15 +147,15 @@ public class NewsArticle extends ResourceSupport
 	/**
 	 * @return the likers
 	 */
-	public Set<String> getLikers() {
-		return likers;
+	public Integer getLikes() {
+		return likes;
 	}
 
 	/**
 	 * @param likers the likers to set
 	 */
-	public void setLikers(Set<String> likers) {
-		this.likers = likers;
+	public void setLikes(Integer likes) {
+		this.likes = likes;
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class NewsArticle extends ResourceSupport
 		buff.append(", picture = ");
 		buff.append(getPicture());
 		buff.append(", likers = ");
-		buff.append(getLikers());
+		buff.append(getLikes());
 		buff.append(", date = ");
 		buff.append(getDate());
 		buff.append(", creator email = ");
@@ -238,8 +238,8 @@ public class NewsArticle extends ResourceSupport
 		buff.append(getInstitutionId());
 		buff.append(", pictures = ");
 		buff.append(getPicture());
-		buff.append(", likers = ");
-		buff.append(getLikers());
+		buff.append(", likes = ");
+		buff.append(getLikes());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);

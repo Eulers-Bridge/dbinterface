@@ -12,7 +12,7 @@ public class NewsArticleDetails {
 	private String title;
 	private String content;
 	private Set<String> picture;
-	private Set<String> likers;
+	private Integer likes;
 	private Long date;
 	private String creatorEmail;
 	private Long institutionId;
@@ -77,14 +77,15 @@ public class NewsArticleDetails {
 	/**
 	 * @return the likers
 	 */
-	public Set<String> getLikers() {
-		return likers;
+	public Integer getLikes()
+	{
+		return likes;
 	}
 	/**
-	 * @param likers the likers to set
+	 * @param i the likers to set
 	 */
-	public void setLikers(Set<String> likers) {
-		this.likers = likers;
+	public void setLikes(Integer i) {
+		this.likes = i;
 	}
 	/**
 	 * @return the institutionId
@@ -120,7 +121,7 @@ public class NewsArticleDetails {
 		buff.append(", pictures = ");
 		buff.append(getPicture());
 		buff.append(", likers = ");
-		buff.append(getLikers());
+		buff.append(getLikes());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -145,7 +146,7 @@ public class NewsArticleDetails {
 			result = prime * result + ((date == null) ? 0 : date.hashCode());
 			result = prime * result
 					+ ((institutionId == null) ? 0 : institutionId.hashCode());
-			result = prime * result + ((likers == null) ? 0 : likers.hashCode());
+			result = prime * result + ((likes == null) ? 0 : likes.hashCode());
 			result = prime * result + ((picture == null) ? 0 : picture.hashCode());
 			result = prime * result + ((title == null) ? 0 : title.hashCode());
 		}
@@ -194,10 +195,10 @@ public class NewsArticleDetails {
 					return false;
 			} else if (!institutionId.equals(other.institutionId))
 				return false;
-			if (likers == null) {
-				if (other.likers != null)
+			if (likes == null) {
+				if (other.likes != null)
 					return false;
-			} else if (!likers.equals(other.likers))
+			} else if (!likes.equals(other.likes))
 				return false;
 			if (picture == null) {
 				if (other.picture != null)

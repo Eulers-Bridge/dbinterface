@@ -18,7 +18,7 @@ public class NewsArticleCreatedEventTest {
     final String title = new String("title");
     final String content = new String("content");
     final Set<String> picture = new HashSet<>();
-    final Set<String> likers = new HashSet<>();
+    final Integer likes = 15;
     final Long date = new Long(0);
     final String creatorEmail = new String("yikaig@gmail.com");
     final String studentYear = new String("2014");
@@ -36,7 +36,7 @@ public class NewsArticleCreatedEventTest {
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
         newsArticleDetails.setPicture(picture);
-        newsArticleDetails.setLikers(likers);
+        newsArticleDetails.setLikes(likes);
         newsArticleCreatedEvent = new NewsArticleCreatedEvent(newsArticleId, newsArticleDetails);
 
     }
