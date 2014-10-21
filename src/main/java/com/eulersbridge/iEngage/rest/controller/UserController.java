@@ -32,6 +32,7 @@ import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent.VerificationErrorType;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
@@ -378,9 +379,9 @@ public class UserController {
 
     	if (!userAccountVerifiedEvent.isAccountVerified())
     	{
-    		String verfError = userAccountVerifiedEvent.getVerificationError();
+    		VerificationErrorType verfError = userAccountVerifiedEvent.getVerificationError();
     		
-    		if(verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.userNotFound.toString()))
+    		if(verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.userNotFound))
     			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
     		else
     		{ 
