@@ -18,7 +18,7 @@ public class VerificationTokenTest
 	User user=new User("info@eulersbridge.com", "Euler", "Info", "Female", "Australian", "1942", "test");
 	int expirationtime=100;
 	VerificationToken token;
-	VerificationToken oldToken=new VerificationToken(VerificationTokenType.emailVerification,user, 0);
+	VerificationToken oldToken=new VerificationToken(VerificationTokenType.emailVerification,user, -10);
 
     private static Logger LOG = LoggerFactory.getLogger(VerificationTokenTest.class);
 
