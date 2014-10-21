@@ -277,25 +277,6 @@ public class UserEventHandlerTest
 	}
 
 	@Test
-	public void testValidateUserAccountTokenExpired()
-	{
-		VerifyUserAccountEvent verifyUserAccountEvent;
-		User userData=DatabaseDataFixture.populateUserGnewitt();
-		userData.setAccountVerified(false);
-		String token="testToken";
-		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
-		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailVerification, userData, 0);
-		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
-		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
-
-		UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
-		assertNotNull(nace);
-		assertEquals(nace.getEmail(),userData.getEmail());
-		assertEquals(nace.getUserDetails(),userData.toUserDetails());
-		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired,nace.getVerificationError());
-	}
-
-	@Test
 	public void testValidateUserAccountTokenTypeWrong()
 	{
 		VerifyUserAccountEvent verifyUserAccountEvent;
@@ -312,6 +293,25 @@ public class UserEventHandlerTest
 		assertEquals(nace.getEmail(),userData.getEmail());
 		assertEquals(nace.getUserDetails(),userData.toUserDetails());
 		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch,nace.getVerificationError());
+	}
+
+	@Test
+	public void testValidateUserAccountTokenExpired()
+	{
+		VerifyUserAccountEvent verifyUserAccountEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		userData.setAccountVerified(false);
+		String token="testToken";
+		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
+		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailVerification, userData, 0);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
+
+		UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getEmail(),userData.getEmail());
+		assertEquals(nace.getUserDetails(),userData.toUserDetails());
+		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired,nace.getVerificationError());
 	}
 
 	/**
