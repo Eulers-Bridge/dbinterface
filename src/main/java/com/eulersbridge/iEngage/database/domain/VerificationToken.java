@@ -31,7 +31,7 @@ public class VerificationToken {
     public VerificationToken() {
     	
     	this.token = UUID.randomUUID().toString();
-		this.expiryDate = calculateExpiryDate(EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS).getTimeInMillis();
+		this.expiryDate = calculateExpiryDate(EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS);
         if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+verified+')');
     }
 
@@ -41,7 +41,7 @@ public class VerificationToken {
     	if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expirationTimeInMinutes+','+tokenType+')');
 		this.tokenType = tokenType.name();
 		this.user=user;
-        this.expiryDate = calculateExpiryDate(expirationTimeInMinutes).getTimeInMillis();
+        this.expiryDate = calculateExpiryDate(expirationTimeInMinutes);
         if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+tokenType+','+verified+')');
     }
 
@@ -84,13 +84,17 @@ public class VerificationToken {
 		return user;
 	}
 
-	private Calendar calculateExpiryDate(int expiryTimeInMinutes) {
-        Calendar expiryDate = Calendar.getInstance();
-        expiryDate.set(Calendar.HOUR, 0);
+	private Long calculateExpiryDate(int expiryTimeInMinutes)
+	{
+        Long now = Calendar.getInstance().getTimeInMillis();
+        Long expiryDate = now + (expiryTimeInMinutes*60*1000);
+        if (LOG.isDebugEnabled()) LOG.debug("now - "+expiryDate);
+/*        expiryDate.set(Calendar.HOUR, 0);
         expiryDate.set(Calendar.MINUTE, 0);;
         expiryDate.set(Calendar.SECOND, 0);
         expiryDate.set(Calendar.MILLISECOND, 0);
         expiryDate.add(Calendar.MINUTE, expiryTimeInMinutes);
+*/        if (LOG.isDebugEnabled()) LOG.debug("expiry Date - "+expiryDate);
         return expiryDate;
     }
     
