@@ -39,10 +39,18 @@ import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
+import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
+import com.eulersbridge.iEngage.database.domain.VoteRecord;
+import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.PersonalityMemoryRepository;
@@ -514,4 +522,106 @@ public class UserEventHandlerTest
 	{
 		// TODO
 	}
+	
+	@Test
+	public void shouldAddVoteReminderToUser() 
+	{
+		AddVoteReminderEvent addVoteReminderEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
+		VoteReminderDetails vrd=vr.toVoteReminderDetails();
+		addVoteReminderEvent=new AddVoteReminderEvent(vrd);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
+
+		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getVoteReminderDetails(),vrd);
+		assertTrue(nace.isElectionFound());
+		assertTrue(nace.isUserFound());
+	}
+	
+	@Test
+	public void shouldAddVoteReminderToUserUserNotFound() 
+	{
+		AddVoteReminderEvent addVoteReminderEvent;
+		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
+		VoteReminderDetails vrd=vr.toVoteReminderDetails();
+		addVoteReminderEvent=new AddVoteReminderEvent(vrd);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(null);
+		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
+
+		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		assertNotNull(nace);
+		assertTrue(nace.isElectionFound());
+		assertFalse(nace.isUserFound());
+	}
+
+	@Test
+	public void shouldAddVoteReminderToUserElectionNotFound() 
+	{
+		AddVoteReminderEvent addVoteReminderEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
+		VoteReminderDetails vrd=vr.toVoteReminderDetails();
+		addVoteReminderEvent=new AddVoteReminderEvent(vrd);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(null);
+
+		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		assertNotNull(nace);
+		assertFalse(nace.isElectionFound());
+		assertTrue(nace.isUserFound());
+	}
+	@Test
+	public void shouldAddVoteRecordToUser() 
+	{
+		AddVoteRecordEvent addVoteRecordEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		VoteRecord vr=DatabaseDataFixture.populateVoteRecord1();
+		VoteRecordDetails vrd=vr.toVoteRecordDetails();
+		addVoteRecordEvent=new AddVoteRecordEvent(vrd);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(uRepo.addVoteRecord(any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
+
+		VoteRecordAddedEvent nace = userServiceMocked.addVoteRecord(addVoteRecordEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getVoteRecordDetails(),vrd);
+		assertTrue(nace.isElectionFound());
+		assertTrue(nace.isUserFound());
+	}
+	
+	@Test
+	public void shouldAddVoteRecordToUserUserNotFound() 
+	{
+		AddVoteRecordEvent addVoteRecordEvent;
+		VoteRecord vr=DatabaseDataFixture.populateVoteRecord1();
+		VoteRecordDetails vrd=vr.toVoteRecordDetails();
+		addVoteRecordEvent=new AddVoteRecordEvent(vrd);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(null);
+		when(uRepo.addVoteRecord(any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
+
+		VoteRecordAddedEvent nace = userServiceMocked.addVoteRecord(addVoteRecordEvent);
+		assertNotNull(nace);
+		assertTrue(nace.isElectionFound());
+		assertFalse(nace.isUserFound());
+	}
+
+	@Test
+	public void shouldAddVoteRecordToUserElectionNotFound() 
+	{
+		AddVoteRecordEvent addVoteRecordEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		VoteRecord vr=DatabaseDataFixture.populateVoteRecord1();
+		VoteRecordDetails vrd=vr.toVoteRecordDetails();
+		addVoteRecordEvent=new AddVoteRecordEvent(vrd);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(uRepo.addVoteRecord(any(Long.class), any(Long.class), any(String.class))).thenReturn(null);
+
+		VoteRecordAddedEvent nace = userServiceMocked.addVoteRecord(addVoteRecordEvent);
+		assertNotNull(nace);
+		assertFalse(nace.isElectionFound());
+		assertTrue(nace.isUserFound());
+	}
+	
 }
