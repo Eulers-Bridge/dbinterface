@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.database.domain;
 
 import static org.junit.Assert.*;
 
+import java.util.Calendar;
+
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.After;
 import org.junit.Before;
@@ -14,17 +16,17 @@ import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTo
 public class VerificationTokenTest 
 {
 	User user=new User("info@eulersbridge.com", "Euler", "Info", "Female", "Australian", "1942", "test");
-	VerificationTokenType tokenType=VerificationTokenType.emailVerification;
 	int expirationtime=100;
-	VerificationToken token=new VerificationToken(tokenType,user, expirationtime);
+	VerificationToken token;
+	VerificationToken oldToken=new VerificationToken(VerificationTokenType.emailVerification,user, 0);
 
     private static Logger LOG = LoggerFactory.getLogger(VerificationTokenTest.class);
 
+    
 	@Before
 	public void setUp() throws Exception 
 	{
-//		token=new VerificationToken(tokenType,user, expirationtime);
-
+		token=new VerificationToken(VerificationTokenType.emailVerification,user, expirationtime);
 	}
 
 	@After
@@ -41,15 +43,15 @@ public class VerificationTokenTest
 	@Test
 	public void testVerificationTokenVerificationTokenTypeUserInt() 
 	{
-		VerificationToken token=new VerificationToken(tokenType,user, expirationtime);
+		VerificationToken token=new VerificationToken(VerificationTokenType.emailVerification,user, expirationtime);
 		assertNotNull("Token constructed is null",token);
 	}
 
 	@Test
 	public void testGetTokenType() 
 	{
-		String gotTokenType=token.getTokenType();
-		assertEquals("",gotTokenType,this.tokenType.name());
+		VerificationTokenType gotTokenType=VerificationTokenType.emailVerification;
+		assertEquals("",gotTokenType,VerificationTokenType.emailVerification);
 	}
 
 	@Test
@@ -84,8 +86,12 @@ public class VerificationTokenTest
 	@Test
 	public void testGetExpiryDate() 
 	{
-		Long expDate=token.getExpiryDate();
-		if (LOG.isDebugEnabled()) LOG.debug("expiry Date - "+expDate);
+		if (LOG.isDebugEnabled()) LOG.debug("expiry Date - "+token.getExpiryDate());
+		Long now=Calendar.getInstance().getTimeInMillis();
+		assertTrue(token.getExpiryDate()>now);
+		Long future=now+10000;
+		assertTrue(token.getExpiryDate()>future);
+		assertFalse(oldToken.getExpiryDate()>future);
 	}
 
 	@Test
@@ -105,6 +111,8 @@ public class VerificationTokenTest
 	public void testHasExpired() 
 	{
 		boolean expired=token.hasExpired();
+		assertFalse(token.hasExpired());
+		assertTrue(oldToken.hasExpired());
 		if (LOG.isDebugEnabled()) LOG.debug("expired = "+expired);
 	}
 
