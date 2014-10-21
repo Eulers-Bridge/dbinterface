@@ -77,7 +77,7 @@ public class UserAccountVerifiedEventTest {
     public void testGetVerificationError() throws Exception {
         UserAccountVerifiedEvent userAccountVerifiedEvent1 = new UserAccountVerifiedEvent(email, userDetails);
         userAccountVerifiedEvent1.setVerificationError(verificationErrorType);
-        assertEquals("VerificationError does not match", verificationErrorType.toString(), userAccountVerifiedEvent1.getVerificationError());
+        assertEquals("VerificationError does not match", verificationErrorType, userAccountVerifiedEvent1.getVerificationError());
     }
 
     @Test
