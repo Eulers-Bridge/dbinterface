@@ -4,6 +4,9 @@
 package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +17,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,6 +42,7 @@ import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
+import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.PersonalityMemoryRepository;
@@ -59,6 +65,17 @@ public class UserEventHandlerTest
 	private InstitutionRepository instRepo;
 	private PersonalityRepository personRepo;
 	
+    @Mock
+    VerificationTokenMemoryRepository tRepo;
+    @Mock
+	InstitutionRepository iRepo;
+    @Mock
+    UserRepository uRepo;
+    @Mock
+    PersonalityRepository pRepo;
+
+    UserEventHandler userServiceMocked;
+
 	private static Logger LOG = LoggerFactory.getLogger(UserEventHandlerTest.class);
 	
 	/**
@@ -91,6 +108,9 @@ public class UserEventHandlerTest
 		HashMap<Long,VerificationToken> tokens= new HashMap<Long,VerificationToken>();
 		tokenRepo=new VerificationTokenMemoryRepository(tokens);
 		userService=new UserEventHandler(userRepo, personRepo, instRepo, tokenRepo);
+		MockitoAnnotations.initMocks(this);
+
+		userServiceMocked=new UserEventHandler(uRepo,pRepo,iRepo,tRepo);
 	}
 
 	/**
@@ -131,16 +151,184 @@ public class UserEventHandlerTest
 		assertNotNull("account verified event returned.",test);
 	}
 
+	@Test
+	public void testSignUpNewUserNullInstReturned() 
+	{
+		CreateUserEvent createUserEvent;
+		UserDetails nADs;
+		String email="gnewitt2@hotmail.com";
+		nADs=new UserDetails(email);
+		nADs.setGivenName("Greg");
+		nADs.setInstitutionId((long)1);
+		createUserEvent=new CreateUserEvent(nADs);
+		Institution instData=null;
+		User userData=null;
+		when(iRepo.findOne(any(Long.class))).thenReturn(instData);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+
+		UserCreatedEvent nace = userServiceMocked.signUpNewUser(createUserEvent);
+		assertNotNull(nace);
+		assertFalse(nace.isInstituteFound());
+	}
+	@Test
+	public void testSignUpNewUserExistingUserReturned() 
+	{
+		CreateUserEvent createUserEvent;
+		UserDetails nADs;
+		String email="gnewitt2@hotmail.com";
+		nADs=new UserDetails(email);
+		nADs.setGivenName("Greg");
+		nADs.setInstitutionId((long)1);
+		createUserEvent=new CreateUserEvent(nADs);
+		Institution instData=DatabaseDataFixture.populateInstUniMelb();
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		when(iRepo.findOne(any(Long.class))).thenReturn(instData);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+
+		UserCreatedEvent nace = userServiceMocked.signUpNewUser(createUserEvent);
+		assertNotNull(nace);
+		assertTrue(nace.isInstituteFound());
+		assertFalse(nace.isUserUnique());
+	}
+	
+	@Test
+	public void testValidateUserAccountNullToken()
+	{
+		VerifyUserAccountEvent verifyUserAccountEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		String token="testToken";
+		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
+		VerificationToken tokData=null;
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
+
+		UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getEmail(),userData.getEmail());
+		assertEquals(nace.getUserDetails(),userData.toUserDetails());
+		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists,nace.getVerificationError());
+	}
+
+	@Test
+	public void testValidateUserAccountDifferentUserToken()
+	{
+		VerifyUserAccountEvent verifyUserAccountEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		User userData2=DatabaseDataFixture.populateUserGnewitt2();
+		String token="testToken";
+		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
+		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailVerification, userData2, 60);
+		tokData.setVerified(true);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
+
+		UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getEmail(),userData.getEmail());
+		assertEquals(nace.getUserDetails(),userData.toUserDetails());
+		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenUserMismatch,nace.getVerificationError());
+	}
+
+	@Test
+	public void testValidateUserAccountUserAlreadyVerified()
+	{
+		VerifyUserAccountEvent verifyUserAccountEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		userData.setAccountVerified(true);
+		String token="testToken";
+		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
+		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailVerification, userData, 60);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
+
+		UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getEmail(),userData.getEmail());
+		assertEquals(nace.getUserDetails(),userData.toUserDetails());
+		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed,nace.getVerificationError());
+	}
+
+	@Test
+	public void testValidateUserAccountTokenAlreadyUsed()
+	{
+		VerifyUserAccountEvent verifyUserAccountEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		String token="testToken";
+		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
+		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailVerification, userData, 60);
+		tokData.setVerified(true);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
+
+		UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getEmail(),userData.getEmail());
+		assertEquals(nace.getUserDetails(),userData.toUserDetails());
+		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed,nace.getVerificationError());
+	}
+
+	@Test
+	public void testValidateUserAccountTokenExpired()
+	{
+		VerifyUserAccountEvent verifyUserAccountEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		userData.setAccountVerified(false);
+		String token="testToken";
+		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
+		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailVerification, userData, 0);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
+
+		UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getEmail(),userData.getEmail());
+		assertEquals(nace.getUserDetails(),userData.toUserDetails());
+		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired,nace.getVerificationError());
+	}
+
+	@Test
+	public void testValidateUserAccountTokenTypeWrong()
+	{
+		VerifyUserAccountEvent verifyUserAccountEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		userData.setAccountVerified(false);
+		String token="testToken";
+		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
+		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailRegistration, userData, 60);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
+
+		UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getEmail(),userData.getEmail());
+		assertEquals(nace.getUserDetails(),userData.toUserDetails());
+		assertEquals(UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch,nace.getVerificationError());
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#requestReadUser(com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent)}.
 	 */
 	@Test
-	public void testRequestReadUser() {
+	public void testRequestReadUserNullUser() {
 		RequestReadUserEvent rnae=new RequestReadUserEvent("gnewitt2@hotmail.com");
 		assertEquals("1 == 1",rnae.getEmail(),"gnewitt2@hotmail.com");
 		ReadUserEvent rane=userService.requestReadUser(rnae);
 		if (null==rane)
 			fail("Not yet implemented");
+	}
+
+	@Test
+	public void testRequestReadUser() 
+	{
+		
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		RequestReadUserEvent rnae=new RequestReadUserEvent(userData.getEmail());
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		ReadUserEvent rane=userServiceMocked.requestReadUser(rnae);
+
+		assertNotNull(rane);
+		assertEquals(rane.getEmail(),userData.getEmail());
+		assertEquals(rane.getReadUserDetails(),userData.toUserDetails());
 	}
 
 	/**
@@ -152,6 +340,21 @@ public class UserEventHandlerTest
 		DeleteUserEvent deleteUserEvent=new DeleteUserEvent("gnewitt@hotmail.com");
 		UserDeletedEvent nUDe = userService.deleteUser(deleteUserEvent);
 		if (null==nUDe)	fail("Not yet implemented");
+	}
+
+	@Test
+	public void testDeleteUserNotFound() 
+	{
+		
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		DeleteUserEvent deleteUserEvent=new DeleteUserEvent(userData.getEmail());
+		when(uRepo.findByEmail(any(String.class))).thenReturn(null);
+		UserDeletedEvent nUDe = userServiceMocked.deleteUser(deleteUserEvent);
+
+		assertNotNull(nUDe);
+		assertFalse(nUDe.isEntityFound());
+		assertFalse(nUDe.isDeletionCompleted());
+		assertEquals(nUDe.getEmail(),userData.getEmail());
 	}
 
 	/**
