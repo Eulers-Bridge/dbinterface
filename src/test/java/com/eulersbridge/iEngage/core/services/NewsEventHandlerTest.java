@@ -114,7 +114,6 @@ public class NewsEventHandlerTest
 		nADs.setInstitutionId((long)1);
 		createNewsArticleEvent=new CreateNewsArticleEvent(nADs);
 		NewsArticleCreatedEvent nace = newsService.createNewsArticle(createNewsArticleEvent);
-//		nace.
 		assertNotNull("News article created event null.",nace);
 		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(nace.getNewsArticleId()));
 		NewsArticleDetails nADs2=rane.getReadNewsArticleDetails();
@@ -123,7 +122,7 @@ public class NewsEventHandlerTest
 		assertEquals("Dates don't match",nADs.getDate(),nADs2.getDate());
 		assertEquals("News Article Ids not equal",nace.getNewsArticleId(),nADs2.getNewsArticleId());
 		assertEquals("Titles not the same.",nADs.getTitle(),nADs2.getTitle());
-		assertEquals("Pictures not the same.",nADs.getPicture(),nADs2.getPicture());
+		assertEquals("Pictures not the same.",0,nADs2.getPicture().size());
 	}
 
 	/**

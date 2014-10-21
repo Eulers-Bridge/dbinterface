@@ -185,7 +185,7 @@ public class NewsArticleTest
 		assertEquals("Dates don't match.",dets.getDate(),news.getDate());
 		assertEquals("Creator emails don't match.",dets.getCreatorEmail(),news.getCreator().getEmail());
 		assertEquals("IDs don't match.",dets.getNewsArticleId(),news.getNodeId());
-		assertEquals("Pictures don't match.",dets.getPicture(),news.getPicture());
+		assertEquals("Pictures don't match.",dets.getPicture().size(),0);
 		assertEquals("Likes don't match.",dets.getLikes().intValue(),news.getLikes().size());
 	}
 
@@ -202,7 +202,7 @@ public class NewsArticleTest
 		assertEquals("Dates don't match.",news2.getDate(),news.getDate());
 		assertEquals("Creator emails don't match.",news2.getCreator().getEmail(),news.getCreator().getEmail());
 		assertEquals("IDs don't match.",news2.getNodeId(),news.getNodeId());
-		assertEquals("Pictures don't match.",news2.getPicture(),news.getPicture());
+		assertEquals("Pictures don't match.",news2.getPicture(),dets.getPicture());
 		assertNull("Likers don't match.",news2.getLikes());
 	}
 
