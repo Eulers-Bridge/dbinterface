@@ -5,7 +5,7 @@ public class UserAccountVerifiedEvent {
 	private String email;
 	private UserDetails userDetails;
 	private boolean accountVerified = false;
-	private String verificationErrorType; 
+	private VerificationErrorType verificationErrorType; 
 	
 	public UserAccountVerifiedEvent(String email)
 	{
@@ -40,7 +40,7 @@ public class UserAccountVerifiedEvent {
 		return accountVerified;
 	}
 	
-	public String getVerificationError()
+	public VerificationErrorType getVerificationError()
 	{
 		return verificationErrorType;
 	}
@@ -48,7 +48,7 @@ public class UserAccountVerifiedEvent {
 	public void setVerificationError(VerificationErrorType verificationErrorType)
 	{
 		this.accountVerified = false;
-		this.verificationErrorType = verificationErrorType.toString();
+		this.verificationErrorType = verificationErrorType;
 	}
 	
 	public enum VerificationErrorType 
