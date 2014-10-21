@@ -194,7 +194,7 @@ public class UserEventHandler implements UserService,UserDetailsService
 		User user=null,resultUser=null;
 		VerificationToken token=null, resultToken=null;
 		UserAccountVerifiedEvent verificationResult = null;
-    	if (LOG.isDebugEnabled()) LOG.debug("Verification Details :"+ emailToVerify + " " + token);
+    	if (LOG.isDebugEnabled()) LOG.debug("Verification Details :"+ emailToVerify + " " + tokenString);
 	    user=userRepository.findByEmail(emailToVerify);
 	    token=tokenRepository.findByToken(tokenString);
 	    if (null==user)
