@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -177,6 +179,15 @@ public class NewsArticle extends Likeable
 	    if (likes==null)
 	       	details.setLikes(0);
 	    else details.setLikes(likes.size());
+	    HashSet<String> pictures=new HashSet<String>();
+	    Iterator<String> iter=getPicture().iterator();
+	    while(iter.hasNext())
+	    {
+	    	String url=iter.next();
+	    	pictures.add(url);
+	    }
+	    details.setPicture(pictures);	
+	    	
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
 
 	    return details;

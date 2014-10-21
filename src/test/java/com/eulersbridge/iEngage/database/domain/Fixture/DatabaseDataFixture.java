@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.database.domain.Fixture;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -113,7 +114,10 @@ public class DatabaseDataFixture
 	public static NewsArticle populateNewsArticle1()
 	{
 		Long nodeId=(long)1;
-		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", null, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateNewsFeed2());
+		ArrayList<String> pictures=new ArrayList<String>();
+		pictures.add("http://localhost:8080/testPictures/picture2.jpg");
+		pictures.add("http://localhost:8080/testPictures/picture.jpg");
+		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", pictures, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateNewsFeed2());
 		initialArticle.setNewsFeed(DatabaseDataFixture.populateNewsFeed2());
 		return initialArticle;
 	}
