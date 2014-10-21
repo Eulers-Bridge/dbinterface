@@ -180,11 +180,14 @@ public class NewsArticle extends Likeable
 	       	details.setLikes(0);
 	    else details.setLikes(likes.size());
 	    HashSet<String> pictures=new HashSet<String>();
-	    Iterator<String> iter=getPicture().iterator();
-	    while(iter.hasNext())
+	    if (getPicture()!=null)
 	    {
-	    	String url=iter.next();
-	    	pictures.add(url);
+		    Iterator<String> iter=getPicture().iterator();
+		    while(iter.hasNext())
+		    {
+		    	String url=iter.next();
+		    	pictures.add(url);
+		    }
 	    }
 	    details.setPicture(pictures);	
 	    	
