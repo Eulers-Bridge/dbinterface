@@ -118,17 +118,19 @@ public class UserEventHandler implements UserService,UserDetailsService
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("requestReadUser("+requestReadUserEvent.getEmail()+")");
 	    User user = userRepository.findByEmail(requestReadUserEvent.getEmail());
-
+	    ReadUserEvent response;
 	    if (user == null) 
 	    {
-	      return ReadUserEvent.notFound(requestReadUserEvent.getEmail());
+	      response=ReadUserEvent.notFound(requestReadUserEvent.getEmail());
 	    }
-
+	    else
+	    {
 //	    template.fetch(user.getInstitution());
-
-	    UserDetails result=user.toUserDetails();
-	    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
-	    return new ReadUserEvent(requestReadUserEvent.getEmail(), result);
+		    UserDetails result=user.toUserDetails();
+		    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
+		    response=new ReadUserEvent(requestReadUserEvent.getEmail(), result);
+	    }
+	    return response;
 	}
 
 	@Override
