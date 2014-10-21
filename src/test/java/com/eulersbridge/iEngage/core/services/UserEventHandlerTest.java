@@ -22,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
@@ -624,4 +625,36 @@ public class UserEventHandlerTest
 		assertTrue(nace.isUserFound());
 	}
 	
+	@Test
+	public void shouldLoadUserByUsername() 
+	{
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+
+		org.springframework.security.core.userdetails.UserDetails  nace = userServiceMocked.loadUserByUsername(userData.getEmail());
+		assertNotNull(nace);
+		assertTrue(nace.isAccountNonExpired());
+		assertTrue(nace.isAccountNonLocked());
+		assertTrue(nace.isCredentialsNonExpired());
+		assertTrue(nace.isEnabled());
+		assertEquals(userData.getEmail(),nace.getUsername());
+		assertEquals(userData.getPassword(),nace.getPassword());
+	}
+	
+	@Test
+	public void shouldLoadUserByUsernameUserNotFound() 
+	{
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		when(uRepo.findByEmail(any(String.class))).thenReturn(null);
+		boolean exceptionThrown=false;
+		try
+		{
+			userServiceMocked.loadUserByUsername(userData.getEmail());
+		}
+		catch (UsernameNotFoundException e)
+		{
+			exceptionThrown=true;
+		}
+		assertTrue(exceptionThrown);
+	}
 }
