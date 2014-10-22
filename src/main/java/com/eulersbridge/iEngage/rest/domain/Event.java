@@ -30,7 +30,7 @@ public class Event extends ResourceSupport{
 
     public Event()
     {
-    	if (LOG.isDebugEnabled()) LOG.debug("constructor()");
+    	if (LOG.isTraceEnabled()) LOG.trace("constructor()");
     }
 
     public static Event fromEventDetails(EventDetails eventDetails){
