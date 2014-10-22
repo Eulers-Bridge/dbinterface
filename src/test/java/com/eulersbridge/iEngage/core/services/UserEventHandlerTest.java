@@ -303,7 +303,7 @@ public class UserEventHandlerTest
 		userData.setAccountVerified(false);
 		String token="testToken";
 		verifyUserAccountEvent=new VerifyUserAccountEvent(userData.getEmail(), token);
-		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailVerification, userData, 0);
+		VerificationToken tokData=new VerificationToken(VerificationTokenType.emailVerification, userData, -10);
 		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
 		when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
 
