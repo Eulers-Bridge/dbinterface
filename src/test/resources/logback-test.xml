@@ -15,10 +15,10 @@
   </encoder>
 </appender>
 
-  <logger name="com.eulersbridge.iEngage" level="TRACE"/>
+  <logger name="com.eulersbridge.iEngage" level="INFO"/>
    
  
-  <root level="debug">
+  <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>
