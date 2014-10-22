@@ -1,9 +1,11 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import java.nio.ByteBuffer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +16,11 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import com.eulersbridge.iEngage.email.EmailConstants;
 
-
 @NodeEntity
 public class VerificationToken {
     
     @GraphId Long nodeId; 
-    private String token;
+    private UUID token;
     private Long expiryDate;
     private String tokenType;
     private boolean verified=false;
@@ -30,14 +31,14 @@ public class VerificationToken {
 
     public VerificationToken() {
     	
-    	this.token = UUID.randomUUID().toString();
+    	this.token = UUID.randomUUID();
 		this.expiryDate = calculateExpiryDate(EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS);
         if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expiryDate.toString()+','+verified+')');
     }
 
     public VerificationToken(VerificationTokenType tokenType, User user, int expirationTimeInMinutes) {
     	
-    	this.token = UUID.randomUUID().toString();
+    	this.token = UUID.randomUUID();
     	if (LOG.isTraceEnabled()) LOG.trace("Constructor("+token+','+expirationTimeInMinutes+','+tokenType+')');
 		this.tokenType = tokenType.name();
 		this.user=user;
@@ -73,7 +74,17 @@ public class VerificationToken {
         return expiryDate;
     }
 
-    public String getToken() {
+    public String getTokenString()
+    {
+        return token.toString();
+    }
+
+    public String getEncodedTokenString()
+    {
+        return convertVTokentoEncoded64URLString(this);
+    }
+
+    public UUID getToken() {
         return token;
     }
 
@@ -114,5 +125,48 @@ public class VerificationToken {
     	res.append(tokenType);
     	return res.toString();
     	
+    }
+    
+    public static String convertVTokentoEncoded64URLString(VerificationToken token)
+    {
+    	
+    	byte[] encodeTokenBytes = Base64.encodeBase64(token.toByteArray());
+        String encoded=new String(encodeTokenBytes);
+        return encoded;
+    }
+    
+    public static UUID convertEncoded64URLStringtoUUID(String encodedToken)
+    {
+		UUID thing = VerificationToken.convertByteArrayToUUID(Base64.decodeBase64(encodedToken));
+        return thing;
+    }
+    
+    public byte[] toByteArray()
+    {
+		ByteBuffer bb=ByteBuffer.wrap(new byte[16]);
+		bb.putLong(token.getMostSignificantBits());
+		bb.putLong(token.getLeastSignificantBits());
+		byte[] tokenByteArray = bb.array();
+		return tokenByteArray;
+    }
+    
+    public static byte[] convertUUIDtoByteArray(UUID token)
+    {
+		if (LOG.isDebugEnabled()) LOG.debug("token = "+token);
+		ByteBuffer bb=ByteBuffer.wrap(new byte[16]);
+		bb.putLong(token.getMostSignificantBits());
+		bb.putLong(token.getLeastSignificantBits());
+		byte[] tokenByteArray = bb.array();
+		return tokenByteArray;
+    }
+    
+    public static UUID convertByteArrayToUUID(byte[] byteArray)
+    {
+		UUID token;
+		ByteBuffer bb=ByteBuffer.wrap(byteArray);
+		long firstLong=bb.getLong();
+		long secondLong=bb.getLong();
+		token = new UUID(firstLong,secondLong);
+		return token;
     }
 }
