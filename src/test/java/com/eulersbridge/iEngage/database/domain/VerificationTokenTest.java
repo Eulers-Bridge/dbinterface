@@ -99,10 +99,14 @@ public class VerificationTokenTest
 	{
 		String vt=token.getToken();
 		if (LOG.isDebugEnabled()) LOG.debug("token = "+vt);
-		
-        String encoded=new String(Base64.encodeBase64(token.getToken().getBytes()));
+		assertNotNull(vt);
+		byte[] vtBytes = vt.getBytes();
+		if (LOG.isDebugEnabled()) LOG.debug("vtBytes - "+vtBytes);
+        String encoded=new String(Base64.encodeBase64String(vtBytes));
         if (LOG.isDebugEnabled()) LOG.debug("encoded token = "+encoded);
         byte[] decodedBytes=Base64.decodeBase64(encoded);
+		if (LOG.isDebugEnabled()) LOG.debug("decodedBytes - "+decodedBytes);
+//		assertEquals(vtBytes,decodedBytes);
         String decoded=decodedBytes.toString();
         if (LOG.isDebugEnabled()) LOG.debug("decoded token = "+decoded);
 	}
