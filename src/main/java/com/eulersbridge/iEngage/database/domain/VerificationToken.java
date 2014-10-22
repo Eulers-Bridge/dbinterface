@@ -89,12 +89,7 @@ public class VerificationToken {
         Long now = Calendar.getInstance().getTimeInMillis();
         Long expiryDate = now + (expiryTimeInMinutes*60*1000);
         if (LOG.isDebugEnabled()) LOG.debug("now - "+expiryDate);
-/*        expiryDate.set(Calendar.HOUR, 0);
-        expiryDate.set(Calendar.MINUTE, 0);;
-        expiryDate.set(Calendar.SECOND, 0);
-        expiryDate.set(Calendar.MILLISECOND, 0);
-        expiryDate.add(Calendar.MINUTE, expiryTimeInMinutes);
-*/        if (LOG.isDebugEnabled()) LOG.debug("expiry Date - "+expiryDate);
+        if (LOG.isDebugEnabled()) LOG.debug("expiry Date - "+expiryDate);
         return expiryDate;
     }
     
