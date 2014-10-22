@@ -2,7 +2,9 @@ package com.eulersbridge.iEngage.database.domain;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.UUID;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.After;
@@ -97,18 +99,53 @@ public class VerificationTokenTest
 	@Test
 	public void testGetToken() 
 	{
-		String vt=token.getToken();
-		if (LOG.isDebugEnabled()) LOG.debug("token = "+vt);
-		assertNotNull(vt);
-		byte[] vtBytes = vt.getBytes();
-		if (LOG.isDebugEnabled()) LOG.debug("vtBytes - "+vtBytes);
-        String encoded=new String(Base64.encodeBase64String(vtBytes));
+		Base64 encoder=new Base64(true);
+		if (LOG.isDebugEnabled()) LOG.debug("token = "+token.getToken());
+		assertNotNull(token.getToken());
+		byte[] vtBytes = VerificationToken.convertUUIDtoByteArray(token.getToken());
+		
+		if (LOG.isDebugEnabled()) LOG.debug("vtBytes - "+Arrays.toString(vtBytes));
+		byte[] byteArray=Base64.encodeBase64(vtBytes);
+        String encoded=Arrays.toString(byteArray);
+        if (LOG.isDebugEnabled()) LOG.debug("encoded byte array = "+encoded);
+        encoded=new String(byteArray);
+        assertEquals(encoded,VerificationToken.convertVTokentoEncoded64URLString(token));
         if (LOG.isDebugEnabled()) LOG.debug("encoded token = "+encoded);
         byte[] decodedBytes=Base64.decodeBase64(encoded);
-		if (LOG.isDebugEnabled()) LOG.debug("decodedBytes - "+decodedBytes);
-//		assertEquals(vtBytes,decodedBytes);
-        String decoded=decodedBytes.toString();
-        if (LOG.isDebugEnabled()) LOG.debug("decoded token = "+decoded);
+		if (LOG.isDebugEnabled()) LOG.debug("decodedBytes - "+Arrays.toString(decodedBytes));
+        decodedBytes=Base64.decodeBase64(byteArray);
+		if (LOG.isDebugEnabled()) LOG.debug("decodedBytes - "+Arrays.toString(decodedBytes));
+		UUID thing = VerificationToken.convertByteArrayToUUID(decodedBytes);
+		
+		assertEquals(thing,token.getToken());
+		assertEquals(thing,VerificationToken.convertEncoded64URLStringtoUUID(encoded));
+		if (LOG.isDebugEnabled()) LOG.debug("token = "+thing);
+
+        encoded=encoder.encodeAsString(VerificationToken.convertUUIDtoByteArray(token.getToken()));
+        if (LOG.isDebugEnabled()) LOG.debug("encoded token = "+encoded);
+        decodedBytes=encoder.decode(encoded);
+		if (LOG.isDebugEnabled()) LOG.debug("decodedBytes - "+Arrays.toString(decodedBytes));
+		thing = VerificationToken.convertByteArrayToUUID(decodedBytes);
+		if (LOG.isDebugEnabled()) LOG.debug("token = "+thing);
+		assertEquals(thing,token.getToken());
+	}
+
+	@Test
+	public void testGetTokenString() 
+	{
+		String vt=token.getTokenString();
+		assertEquals(vt,token.getToken().toString());
+	}
+
+	@Test
+	public void testGetEncodedTokenString() 
+	{
+		String vt=token.getEncodedTokenString();
+        if (LOG.isDebugEnabled()) LOG.debug("encoded token = "+vt);
+        String encoded=VerificationToken.convertVTokentoEncoded64URLString(token);
+        if (LOG.isDebugEnabled()) LOG.debug("encoded token = "+encoded);
+
+		assertEquals(encoded,vt);
 	}
 
 	@Test

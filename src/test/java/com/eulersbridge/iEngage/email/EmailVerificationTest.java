@@ -58,7 +58,7 @@ public class EmailVerificationTest
 	public void testGetToken() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("recipient - "+email.getToken()+" "+token.getToken());
-		assertEquals("",email.getToken(),token.getToken());
+		assertEquals("",email.getToken(),token);
 	}
 
 	@Test

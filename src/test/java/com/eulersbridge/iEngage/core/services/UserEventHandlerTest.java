@@ -155,7 +155,7 @@ public class UserEventHandlerTest
 		UserCreatedEvent nace = userService.signUpNewUser(createUserEvent);
 		if (null==nace) fail("Not yet implemented");
 		VerificationToken token=tokenRepo.findToken();
-		VerifyUserAccountEvent verifyUserAccountEvent=new VerifyUserAccountEvent("gnewitt@hotmail.com", token.getToken());
+		VerifyUserAccountEvent verifyUserAccountEvent=new VerifyUserAccountEvent("gnewitt@hotmail.com", token.getEncodedTokenString());
 		UserAccountVerifiedEvent test = userService.validateUserAccount(verifyUserAccountEvent);
 		assertNotNull("account verified event returned.",test);
 	}

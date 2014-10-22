@@ -8,7 +8,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,11 @@ import com.eulersbridge.iEngage.database.domain.VerificationToken;
 public class EmailVerification extends Email implements Serializable 
 {
 
-    private final String token;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final VerificationToken token;
     private final String tokenType;
     private final String resourceName;
     
@@ -32,7 +35,7 @@ public class EmailVerification extends Email implements Serializable
     {
     	super(velocityEngine,user.getEmail(),user.getGivenName() + " " + user.getFamilyName(),"greg.newitt@eulersbridge.com","Email Verification Test");
 		resourceName=EmailConstants.EmailVerificationTemplate;
-        this.token = token.getToken();
+        this.token = token;
         this.tokenType = token.getTokenType();
         if (LOG.isDebugEnabled()) LOG.debug("this.velocityEngine = "+this.velocityEngine);
 		if (this.velocityEngine!=null)
@@ -41,10 +44,10 @@ public class EmailVerification extends Email implements Serializable
 
     public String getEncodedToken() 
     {
-        return new String(Base64.encodeBase64(token.getBytes()));
+        return token.getEncodedTokenString();
     }
 
-    public String getToken() {
+    public VerificationToken getToken() {
         return token;
     }
 
