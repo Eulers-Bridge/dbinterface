@@ -36,11 +36,15 @@ import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -324,6 +328,51 @@ public class UserControllerTest
 		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void getShouldReadVoteRecordCorrectly() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("readingVoteRecord()");	
+		VoteRecordDetails dets=DatabaseDataFixture.populateVoteRecord1().toVoteRecordDetails();
+		Long id=1l;
+		VoteRecordReadEvent resEvt=new VoteRecordReadEvent(id, dets);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.readVoteRecord(any(ReadVoteRecordEvent.class))).thenReturn(resEvt);
+		String content=populateVoteRecordContent(dets);
+		String returnedContent=populateVoteRecordReturnedContent(dets);
+		this.mockMvc.perform(get("/api/user/voteRecord/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.location",is(dets.getLocation())))
+		.andExpect(jsonPath("$.userEmail",is(dets.getVoterId())))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void getShouldReadVoteReminderCorrectly() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("readingVoteReminder()");	
+		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
+		Long id=1l;
+		VoteReminderReadEvent resEvt=new VoteReminderReadEvent(id, dets);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.readVoteReminder(any(ReadVoteReminderEvent.class))).thenReturn(resEvt);
+		String content=populateVoteReminderContent(dets);
+		String returnedContent=populateVoteReminderReturnedContent(dets);
+		this.mockMvc.perform(get("/api/user/voteReminder/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
+		.andExpect(jsonPath("$.timestamp",is(dets.getTimestamp().intValue())))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.location",is(dets.getLocation())))
+		.andExpect(jsonPath("$.userEmail",is(dets.getUserId())))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk());
 	}
 	
 	@Test

@@ -34,9 +34,19 @@ import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDeletedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -441,5 +451,58 @@ public class UserEventHandler implements UserService,UserDetailsService
 			evt=VoteRecordAddedEvent.userNotFound();
 		}
 		return evt;
+	}
+
+	@Override
+	public VoteRecordReadEvent readVoteRecord(ReadVoteRecordEvent readVoteRecordEvent)
+	{
+	    if (LOG.isDebugEnabled()) LOG.debug("readVoteRecord("+readVoteRecordEvent.getVoteRecordId()+")");
+	    VoteRecord vr = userRepository.readVoteRecord(readVoteRecordEvent.getVoteRecordId());
+	    VoteRecordReadEvent response;
+	    if (vr == null) 
+	    {
+	      response=VoteRecordReadEvent.notFound(readVoteRecordEvent.getVoteRecordId());
+	    }
+	    else
+	    {
+		    VoteRecordDetails result=vr.toVoteRecordDetails();
+		    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
+		    response=new VoteRecordReadEvent(readVoteRecordEvent.getVoteRecordId(), result);
+	    }
+	    return response;
+	}
+
+	@Override
+	public VoteReminderReadEvent readVoteReminder(ReadVoteReminderEvent readVoteReminderEvent) {
+	    if (LOG.isDebugEnabled()) LOG.debug("readVoteRecord("+readVoteReminderEvent.getVoteReminderId()+")");
+	    VoteReminder vr = userRepository.readVoteReminder(readVoteReminderEvent.getVoteReminderId());
+	    VoteReminderReadEvent response;
+	    if (vr == null) 
+	    {
+	      response=VoteReminderReadEvent.notFound(readVoteReminderEvent.getVoteReminderId());
+	    }
+	    else
+	    {
+		    VoteReminderDetails result=vr.toVoteReminderDetails();
+		    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
+		    response=new VoteReminderReadEvent(readVoteReminderEvent.getVoteReminderId(), result);
+	    }
+	    return response;
+	}
+
+	@Override
+	public VoteRecordDeletedEvent deleteVoteRecord(
+			DeleteVoteRecordEvent deleteVoteRecordEvent)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public VoteReminderDeletedEvent deleteVoteReminder(
+			DeleteVoteReminderEvent deleteVoteReminderEvent)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

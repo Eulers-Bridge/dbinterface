@@ -41,9 +41,13 @@ import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.email.EmailConstants;
@@ -260,6 +264,58 @@ public class UserController {
     	}
     	return result;
     }
+    
+    /**
+     * Is passed all the necessary data to read a vote record from the database.
+     * The request must be a GET with the vote record id presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the voteRecord object read from the database.
+     * 
+     * @param email the vote record id of the vote record object to be read.
+     * @return the vote record object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/voteReminder/{id}")
+	public @ResponseBody ResponseEntity<VoteReminder> findVoteReminder(@PathVariable Long id) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve voteReminder. "+id);
+		VoteReminderReadEvent evt=userService.readVoteReminder(new ReadVoteReminderEvent(id));
+  	
+		if (!evt.isEntityFound())
+		{
+			return new ResponseEntity<VoteReminder>(HttpStatus.NOT_FOUND);
+		}
+		VoteReminder restVoteReminder=VoteReminder.fromVoteReminderDetails(evt.getVoteReminderDetails());
+		return new ResponseEntity<VoteReminder>(restVoteReminder,HttpStatus.OK);
+	}
+    
+    /**
+     * Is passed all the necessary data to read a vote record from the database.
+     * The request must be a GET with the vote record id presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the voteRecord object read from the database.
+     * 
+     * @param email the vote record id of the vote record object to be read.
+     * @return the vote record object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/voteRecord/{id}")
+	public @ResponseBody ResponseEntity<VoteRecord> findVoteRecord(@PathVariable Long id) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve voteRecord. "+id);
+		VoteRecordReadEvent evt=userService.readVoteRecord(new ReadVoteRecordEvent(id));
+  	
+		if (!evt.isEntityFound())
+		{
+			return new ResponseEntity<VoteRecord>(HttpStatus.NOT_FOUND);
+		}
+		VoteRecord restVoteRecord=VoteRecord.fromVoteRecordDetails(evt.getVoteRecordDetails());
+		return new ResponseEntity<VoteRecord>(restVoteRecord,HttpStatus.OK);
+	}
     
     /**
      * Is passed all the necessary data to read a user from the database.
