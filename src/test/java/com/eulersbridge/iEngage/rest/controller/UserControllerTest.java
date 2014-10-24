@@ -36,13 +36,17 @@ import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
@@ -373,6 +377,44 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.userEmail",is(dets.getUserId())))
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void deleteShouldDeleteVoteRecordCorrectly() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("deletingVoteRecord()");	
+		Long id=1l;
+		VoteRecordDeletedEvent resEvt=new VoteRecordDeletedEvent(id);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.deleteVoteRecord(any(DeleteVoteRecordEvent.class))).thenReturn(resEvt);
+		this.mockMvc.perform(delete("/api/user/voteRecord/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(id.intValue())))
+/*		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.location",is(dets.getLocation())))
+		.andExpect(jsonPath("$.userEmail",is(dets.getVoterId())))
+*/		.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void deleteShouldDeleteVoteReminderCorrectly() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("deletingVoteReminder()");	
+		Long id=1l;
+		VoteReminderDeletedEvent resEvt=new VoteReminderDeletedEvent(id);
+		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
+		when(userService.deleteVoteReminder(any(DeleteVoteReminderEvent.class))).thenReturn(resEvt);
+		this.mockMvc.perform(delete("/api/user/voteReminder/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(id.intValue())))
+/*		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
+		.andExpect(jsonPath("$.timestamp",is(dets.getTimestamp().intValue())))
+		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
+		.andExpect(jsonPath("$.location",is(dets.getLocation())))
+		.andExpect(jsonPath("$.userEmail",is(dets.getUserId())))
+		.andExpect(content().string(returnedContent))
+*/		.andExpect(status().isOk());
 	}
 	
 	@Test

@@ -41,12 +41,16 @@ import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
@@ -266,14 +270,14 @@ public class UserController {
     }
     
     /**
-     * Is passed all the necessary data to read a vote record from the database.
+     * Is passed all the necessary data to read a vote reminder from the database.
      * The request must be a GET with the vote record id presented
      * as the final portion of the URL.
      * <p/>
-     * This method will return the voteRecord object read from the database.
+     * This method will return the voteReminder object read from the database.
      * 
-     * @param email the vote record id of the vote record object to be read.
-     * @return the vote record object.
+     * @param email the vote reminder id of the vote reminder object to be read.
+     * @return the vote reminder object.
      * 
 
 	*/
@@ -314,6 +318,60 @@ public class UserController {
 			return new ResponseEntity<VoteRecord>(HttpStatus.NOT_FOUND);
 		}
 		VoteRecord restVoteRecord=VoteRecord.fromVoteRecordDetails(evt.getVoteRecordDetails());
+		return new ResponseEntity<VoteRecord>(restVoteRecord,HttpStatus.OK);
+	}
+    
+    /**
+     * Is passed all the necessary data to read a vote reminder from the database.
+     * The request must be a GET with the vote record id presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the voteReminder object read from the database.
+     * 
+     * @param email the vote reminder id of the vote reminder object to be read.
+     * @return the vote reminder object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.USER_LABEL+"/voteReminder/{id}")
+	public @ResponseBody ResponseEntity<VoteReminder> deleteVoteReminder(@PathVariable Long id) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete voteReminder. "+id);
+		VoteReminderDeletedEvent evt=userService.deleteVoteReminder(new DeleteVoteReminderEvent(id));
+  	
+		if (!evt.isEntityFound())
+		{
+			return new ResponseEntity<VoteReminder>(HttpStatus.NOT_FOUND);
+		}
+		VoteReminder restVoteReminder=new VoteReminder();
+		restVoteReminder.setNodeId(evt.getVoteReminderId());
+		return new ResponseEntity<VoteReminder>(restVoteReminder,HttpStatus.OK);
+	}
+    
+    /**
+     * Is passed all the necessary data to read a vote record from the database.
+     * The request must be a GET with the vote record id presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the voteRecord object read from the database.
+     * 
+     * @param email the vote record id of the vote record object to be read.
+     * @return the vote record object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.USER_LABEL+"/voteRecord/{id}")
+	public @ResponseBody ResponseEntity<VoteRecord> deleteVoteRecord(@PathVariable Long id) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete voteRecord. "+id);
+		VoteRecordDeletedEvent evt=userService.deleteVoteRecord(new DeleteVoteRecordEvent(id));
+  	
+		if (!evt.isEntityFound())
+		{
+			return new ResponseEntity<VoteRecord>(HttpStatus.NOT_FOUND);
+		}
+		VoteRecord restVoteRecord=new VoteRecord();
+		restVoteRecord.setNodeId(evt.getVoteRecordId());
 		return new ResponseEntity<VoteRecord>(restVoteRecord,HttpStatus.OK);
 	}
     
