@@ -12,4 +12,10 @@ public class SecurityConstants
 	public static final int NonceValiditySeconds = 60;
 	public static final String HEADER_SECURITY_TOKEN = "X-Security-Token";
 	public static final String TOKEN_KEY = "some token goes here";
+	
+	public static final String BadPassword = "Password does not match.";
+	public static final String NotVerified = "Account not verified.";
+	public static final String UserNotFound = "User not found.";
+	
+	
 }

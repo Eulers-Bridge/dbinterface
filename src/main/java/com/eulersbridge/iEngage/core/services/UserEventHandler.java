@@ -7,11 +7,15 @@ import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
@@ -252,7 +256,7 @@ public class UserEventHandler implements UserService,UserDetailsService
 
 	@Override
 	public UserAuthenticatedEvent authenticateUser(
-			AuthenticateUserEvent authUserEvent) 
+			AuthenticateUserEvent authUserEvent) throws AuthenticationException
 	{
 		String userName=authUserEvent.getUserName();
 		String password=authUserEvent.getPassword();
@@ -272,18 +276,22 @@ public class UserEventHandler implements UserService,UserDetailsService
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Password does not match.");
 					evt=UserAuthenticatedEvent.badCredentials();
+					throw new BadCredentialsException(SecurityConstants.BadPassword);
 				}
 			}
 			else
 			{
 				if (LOG.isDebugEnabled()) LOG.debug("Account is not verified.");
 				evt=UserAuthenticatedEvent.badCredentials();
+				AccountStatusException e=new DisabledException(SecurityConstants.NotVerified);
+				throw e;
 			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("No such account.");
 			evt=UserAuthenticatedEvent.badCredentials();
+			throw new UsernameNotFoundException(SecurityConstants.UserNotFound);
 		}
 		return evt;
 	}
@@ -351,7 +359,7 @@ public class UserEventHandler implements UserService,UserDetailsService
 		if (user!=null)
 		{
 			boolean notLocked=true;
-			boolean enabled=true;
+			boolean enabled=user.isAccountVerified();
 			boolean acctNotExpired=true;
 			boolean credsNotExpired=true;
 			org.springframework.security.core.userdetails.UserDetails dets=new org.springframework.security.core.userdetails.User
