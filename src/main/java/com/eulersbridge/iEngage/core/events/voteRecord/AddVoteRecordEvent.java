@@ -19,9 +19,6 @@ public class AddVoteRecordEvent
 		super();
 	}
 	/**
-	 * @param email
-	 * @param electionId
-	 * @param date
 	 * @param voteRecordDetails
 	 */
 	public AddVoteRecordEvent(VoteRecordDetails voteRecordDetails)
