@@ -745,6 +745,21 @@ public class UserEventHandlerTest
 	}
 	
 	@Test
+	public void shouldDeleteVoteRecordNotFound() 
+	{
+		DeleteVoteRecordEvent deleteVoteRecordEvent;
+		Long id=1l;
+		deleteVoteRecordEvent=new DeleteVoteRecordEvent(id);
+		when(uRepo.deleteVoteRecord(any(Long.class))).thenReturn(null);
+
+		VoteRecordDeletedEvent nace = userServiceMocked.deleteVoteRecord(deleteVoteRecordEvent);
+		assertNotNull(nace);
+		assertFalse(nace.isEntityFound());
+		assertFalse(nace.isDeletionCompleted());
+		assertEquals(nace.getVoteRecordId(),id);
+	}
+	
+	@Test
 	public void shouldDeleteVoteReminder() 
 	{
 		DeleteVoteReminderEvent deleteVoteReminderEvent;
@@ -757,6 +772,22 @@ public class UserEventHandlerTest
 		assertNotNull(nace);
 		assertTrue(nace.isEntityFound());
 		assertTrue(nace.isDeletionCompleted());
+		assertEquals(nace.getVoteReminderId(),id);
+	}
+	
+	@Test
+	public void shouldDeleteVoteReminderNotFound() 
+	{
+		DeleteVoteReminderEvent deleteVoteReminderEvent;
+		Long id=1l;
+		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
+		deleteVoteReminderEvent=new DeleteVoteReminderEvent(id);
+		when(uRepo.deleteVoteReminder(any(Long.class))).thenReturn(null);
+
+		VoteReminderDeletedEvent nace = userServiceMocked.deleteVoteReminder(deleteVoteReminderEvent);
+		assertNotNull(nace);
+		assertFalse(nace.isEntityFound());
+		assertFalse(nace.isDeletionCompleted());
 		assertEquals(nace.getVoteReminderId(),id);
 	}
 	
