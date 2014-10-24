@@ -32,6 +32,17 @@ public interface UserRepository extends GraphRepository<User>
 	@Query("Match (a:`User`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.VRECORD_LABEL+
 			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='VoteRecord',r.location={location} return r")
 	VoteRecord addVoteRecord(@Param("userId")Long userId,@Param("electionId")Long electionId, @Param("location")String location);
+	
+	@Query("Match (u:`User`)-[r:"+DatabaseDomainConstants.VRECORD_LABEL+"]-(e:`Election`) where id(r)={id} return r")
+	VoteRecord readVoteRecord(@Param("id")Long id);
 
+	@Query("Match (u:`User`)-[r:"+DatabaseDomainConstants.VREMINDER_LABEL+"]-(e:`Election`) where id(r)={id} return r")
+	VoteReminder readVoteReminder(@Param("id")Long id);
+
+	@Query("Match (u:`User`)-[r:"+DatabaseDomainConstants.VRECORD_LABEL+"]-(e:`Election`) where id(r)={id} delete r return r")
+	VoteRecord deleteVoteRecord(@Param("id")Long id);
+
+	@Query("Match (u:`User`)-[r:"+DatabaseDomainConstants.VREMINDER_LABEL+"]-(e:`Election`) where id(r)={id} delete r return r")
+	VoteReminder deleteVoteReminder(@Param("id")Long id);
 
 }
