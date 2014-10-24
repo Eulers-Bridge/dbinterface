@@ -229,4 +229,28 @@ public VoteRecord addVoteRecord(Long userId, Long electionId, String location) {
 	return null;
 }
 
+@Override
+public VoteRecord readVoteRecord(Long id) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public VoteReminder readVoteReminder(Long id) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public VoteRecord deleteVoteRecord(Long id) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public VoteReminder deleteVoteReminder(Long id) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 }
