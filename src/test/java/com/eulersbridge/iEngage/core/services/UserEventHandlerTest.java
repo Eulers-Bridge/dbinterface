@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -41,11 +42,17 @@ import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
@@ -468,8 +475,18 @@ public class UserEventHandlerTest
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword()+'2');
-		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
-		assertFalse("User did authenticate.",auth.isAuthenticated());
+		boolean exception=false;
+		try
+		{
+			userService.authenticateUser(evt);
+		}
+		catch (BadCredentialsException e)
+		{
+			assertNotNull(e);
+			exception=true;
+			
+		}
+		assertTrue("Exception not thrown.",exception);
 	}
 
 	@Test
@@ -477,8 +494,18 @@ public class UserEventHandlerTest
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail()+'3', user.getPassword());
-		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
-		assertFalse("User did authenticate.",auth.isAuthenticated());
+		boolean exception=false;
+		try
+		{
+			userService.authenticateUser(evt);
+		}
+		catch (UsernameNotFoundException e)
+		{
+			assertNotNull(e);
+			exception=true;
+			
+		}
+		assertTrue("Exception not thrown.",exception);
 	}
 
 	@Test
@@ -486,8 +513,18 @@ public class UserEventHandlerTest
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt2();
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
-		UserAuthenticatedEvent auth=userService.authenticateUser(evt);
-		assertFalse("User did authenticate.",auth.isAuthenticated());
+		boolean exception=false;
+		try
+		{
+			userService.authenticateUser(evt);
+		}
+		catch (UsernameNotFoundException e)
+		{
+			assertNotNull(e);
+			exception=true;
+			
+		}
+		assertTrue("Exception not thrown.",exception);
 	}
 
 	@Test
@@ -623,6 +660,86 @@ public class UserEventHandlerTest
 		assertNotNull(nace);
 		assertFalse(nace.isElectionFound());
 		assertTrue(nace.isUserFound());
+	}
+	
+	@Test
+	public void shouldReadVoteReminder() 
+	{
+		ReadVoteReminderEvent readVoteReminderEvent;
+		Long id=1l;
+		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
+		VoteReminderDetails vrd=vr.toVoteReminderDetails();
+		readVoteReminderEvent=new ReadVoteReminderEvent(id);
+		when(uRepo.readVoteReminder(any(Long.class))).thenReturn(vr);
+
+		VoteReminderReadEvent nace = userServiceMocked.readVoteReminder(readVoteReminderEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getVoteReminderDetails(),vrd);
+		assertTrue(nace.isEntityFound());
+		assertEquals(nace.getVoteReminderId(),id);
+	}
+	
+	@Test
+	public void shouldReadVoteReminderNotFound() 
+	{
+		ReadVoteReminderEvent readVoteReminderEvent;
+		Long id=1l;
+		readVoteReminderEvent=new ReadVoteReminderEvent(id);
+		when(uRepo.readVoteReminder(any(Long.class))).thenReturn(null);
+
+		VoteReminderReadEvent nace = userServiceMocked.readVoteReminder(readVoteReminderEvent);
+		assertNotNull(nace);
+		assertNull(nace.getVoteReminderDetails());
+		assertFalse(nace.isEntityFound());
+		assertEquals(nace.getVoteReminderId(),id);
+	}
+	
+	@Test
+	public void shouldReadVoteRecord() 
+	{
+		ReadVoteRecordEvent readVoteRecordEvent;
+		Long id=1l;
+		VoteRecord vr=DatabaseDataFixture.populateVoteRecord1();
+		VoteRecordDetails vrd=vr.toVoteRecordDetails();
+		readVoteRecordEvent=new ReadVoteRecordEvent(id);
+		when(uRepo.readVoteRecord(any(Long.class))).thenReturn(vr);
+
+		VoteRecordReadEvent nace = userServiceMocked.readVoteRecord(readVoteRecordEvent);
+		assertNotNull(nace);
+		assertEquals(nace.getVoteRecordDetails(),vrd);
+		assertTrue(nace.isEntityFound());
+		assertEquals(nace.getVoteRecordId(),id);
+	}
+	
+	@Test
+	public void shouldReadVoteRecordNotFound() 
+	{
+		ReadVoteRecordEvent readVoteRecordEvent;
+		Long id=1l;
+		readVoteRecordEvent=new ReadVoteRecordEvent(id);
+		when(uRepo.readVoteReminder(any(Long.class))).thenReturn(null);
+
+		VoteRecordReadEvent nace = userServiceMocked.readVoteRecord(readVoteRecordEvent);
+		assertNotNull(nace);
+		assertNull(nace.getVoteRecordDetails());
+		assertFalse(nace.isEntityFound());
+		assertEquals(nace.getVoteRecordId(),id);
+	}
+	
+	@Test
+	public void shouldDeleteVoteRecord() 
+	{
+		DeleteVoteRecordEvent deleteVoteRecordEvent;
+		Long id=1l;
+		VoteRecord vr=DatabaseDataFixture.populateVoteRecord1();
+		deleteVoteRecordEvent=new DeleteVoteRecordEvent(id);
+		when(uRepo.deleteVoteRecord(any(Long.class))).thenReturn(vr);
+
+		VoteRecordDeletedEvent nace = userServiceMocked.deleteVoteRecord(deleteVoteRecordEvent);
+		assertNotNull(nace);
+		assertTrue(nace.isEntityFound());
+		assertTrue(nace.isDeletionCompleted());
+		assertEquals(nace.getVoteRecordId(),id);
 	}
 	
 	@Test
