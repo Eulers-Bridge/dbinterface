@@ -69,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 		http.authorizeRequests()
         	.antMatchers(ControllerConstants.API_PREFIX+"/general-info").permitAll()
         	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+"emailVerification/**").permitAll()
         	.antMatchers(ControllerConstants.API_PREFIX+"/displayParams/**").permitAll()
         	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+"/general-info").permitAll()
         	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
