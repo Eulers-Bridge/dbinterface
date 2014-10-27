@@ -74,7 +74,7 @@ public class EmailVerification extends Email implements Serializable
 //    			hTemplateVariables.put("email", this);
     			hTemplateVariables.put("recipientName", getRecipientName());
     			hTemplateVariables.put("emailAddress",getRecipientEmailAddress());
-    			hTemplateVariables.put("verificationToken",getToken());
+    			hTemplateVariables.put("verificationToken",getEncodedToken());
     			
     			if (LOG.isDebugEnabled()) LOG.debug("Velocity engine :"+velocityEngine);
     			if (LOG.isDebugEnabled())
