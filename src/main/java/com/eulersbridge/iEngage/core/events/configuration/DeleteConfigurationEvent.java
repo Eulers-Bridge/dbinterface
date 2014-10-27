@@ -7,4 +7,13 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
  */
 
 public class DeleteConfigurationEvent extends DeleteEvent {
+    private final Long configId;
+
+    public DeleteConfigurationEvent(Long configId) {
+        this.configId = configId;
+    }
+
+    public Long getConfigId() {
+        return configId;
+    }
 }

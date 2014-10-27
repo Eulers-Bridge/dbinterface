@@ -7,4 +7,13 @@ import com.eulersbridge.iEngage.core.events.RequestReadEvent;
  */
 
 public class RequestReadConfigurationEvent extends RequestReadEvent {
+    private Long configId;
+
+    public RequestReadConfigurationEvent(Long configId) {
+        this.configId = configId;
+    }
+
+    public Long getConfigId() {
+        return configId;
+    }
 }
