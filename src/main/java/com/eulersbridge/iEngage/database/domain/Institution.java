@@ -21,7 +21,7 @@ public class Institution
 	String campus;
 	String state;
 	@RelatedTo(type = DatabaseDomainConstants.INSTITUTIONS_LABEL, direction=Direction.BOTH) @Fetch
-	private	Country  country; 
+	private	Country  country;
 	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
 	Iterable<User> students;
 	@RelatedTo(type=DatabaseDomainConstants.HAS_NEWS_FEED_LABEL, direction=Direction.OUTGOING)

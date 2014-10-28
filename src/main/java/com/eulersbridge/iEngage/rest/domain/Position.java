@@ -16,6 +16,7 @@ public class Position extends ResourceSupport {
     private Long positionId;
     private String name;
     private String description;
+    private Long electionId;
 
     private static Logger LOG = LoggerFactory.getLogger(Position.class);
 
@@ -31,6 +32,7 @@ public class Position extends ResourceSupport {
         position.setPositionId(positionDetails.getPositionId());
         position.setName(positionDetails.getName());
         position.setDescription(positionDetails.getDescription());
+        position.setElectionId(positionDetails.getElectionId());
 
         // {!begin selfRel}
         position.add(linkTo(PositionController.class).slash(name).slash(position.positionId).withSelfRel());
@@ -53,6 +55,7 @@ public class Position extends ResourceSupport {
         positionDetails.setPositionId(getPositionId());
         positionDetails.setName(getName());
         positionDetails.setDescription(getDescription());
+        positionDetails.setElectionId(getElectionId());
 
         return positionDetails;
     }
@@ -79,5 +82,13 @@ public class Position extends ResourceSupport {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getElectionId() {
+        return electionId;
+    }
+
+    public void setElectionId(Long electionId) {
+        electionId = electionId;
     }
 }

@@ -11,6 +11,7 @@ public class PositionDetails {
     private Long positionId;
     private String name;
     private String description;
+    private Long electionId;
 
     private static Logger LOG = LoggerFactory.getLogger(PositionDetails.class);
 
@@ -23,6 +24,8 @@ public class PositionDetails {
         buff.append(getName());
         buff.append(", description = ");
         buff.append(getDescription());
+        buff.append(", electionId = ");
+        buff.append(getElectionId());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -41,6 +44,7 @@ public class PositionDetails {
         {
             result = prime * result	+ ((name == null) ? 0 : name.hashCode());
             result = prime * result	+ ((description == null) ? 0 : description.hashCode());
+            result = prime * result + ((electionId == null) ? 0 : electionId.hashCode());
         }
         return result;
     }
@@ -74,6 +78,11 @@ public class PositionDetails {
                     return false;
             } else if (!description.equals(other.description))
                 return false;
+            if (electionId == null) {
+                if (other.electionId != null)
+                    return false;
+            } else if (!electionId.equals(other.electionId))
+                return false;
         }
         return true;
     }
@@ -100,5 +109,13 @@ public class PositionDetails {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getElectionId() {
+        return electionId;
+    }
+
+    public void setElectionId(Long electionId) {
+        electionId = electionId;
     }
 }

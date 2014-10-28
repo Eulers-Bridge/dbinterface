@@ -14,6 +14,7 @@ public class DatabaseDomainConstants
 	public static final String VERIFIED_BY_LABEL = "verifiedBy";
 	public static final String HAS_NEWS_FEED_LABEL = "HAS_NEWS_FEED";
 	public static final String HAS_ELECTION_LABEL = "HAS_ELECTION";
+    public static final String HAS_POSITION_LABEL = "HAS_POSITION";
 	
 	
 	
