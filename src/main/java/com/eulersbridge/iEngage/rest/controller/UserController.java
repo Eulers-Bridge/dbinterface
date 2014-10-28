@@ -54,6 +54,7 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEven
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.rest.domain.Personality;
 import com.eulersbridge.iEngage.rest.domain.User;
@@ -486,10 +487,10 @@ public class UserController {
     public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
-    	byte[] decodedTokenBytes=Base64.decodeBase64(token);
-    	UUID decodedToken=UUID.nameUUIDFromBytes(decodedTokenBytes);
+    	
+    	UUID decodedToken=VerificationToken.convertEncoded64URLStringtoUUID(token);
     	if (LOG.isDebugEnabled()) LOG.debug("Decoded token - "+decodedToken);
-    	UserAccountVerifiedEvent userAccountVerifiedEvent=userService.validateUserAccount(new VerifyUserAccountEvent(email,token));
+    	UserAccountVerifiedEvent userAccountVerifiedEvent=userService.validateUserAccount(new VerifyUserAccountEvent(email,decodedToken.toString()));
 
     	if (!userAccountVerifiedEvent.isAccountVerified())
     	{
