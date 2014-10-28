@@ -4,9 +4,27 @@
 
         <div>
         	Please verify your email address $emailAddress by clicking in the following link
-        	<a href="http://eulersbridge.com:8080/dbInterface/api/emailVerification/$emailAddress/$verificationToken">VERIFY</a>
-        	<br/>
+        	<a href="http://eulersbridge.com:8080/dbInterface/api/emailVerification/$emailAddress/$verificationToken">Verify $recipientName</a>
+         	<br/>
         	or by pasting the url in your browser address bar
         </div>
+        
+        <div>
+        	Or alternatively verify your email address using the button below:
+        	<form action="http://eulersbridge.com:8080/dbInterface/api/emailVerification/$emailAddress/$verificationToken" method="post">
+        	<input type="hidden" name="emailAddress" value="$emailAddress" />
+        	<input type="hidden" name="verificationToken" value="$verificationToken" />
+        	<input type="submit" value="Verify $recipientName" />
+        	</form>
+        </div>
+        <!-- div>
+        	Or alternatively verify your email address using the button below:
+        	<form enctype="application/json" action="http://192.168.0.6:8080/api/emailVerification" method="post">
+        	<input type="hidden" name="emailAddress" value="$emailAddress" />
+        	<input type="hidden" name="verificationToken" value="$verificationToken" />
+        	<input type="submit" value="Verify local host $recipientName" />
+        	</form>
+        </div -->
+        
     </body>
 </html>

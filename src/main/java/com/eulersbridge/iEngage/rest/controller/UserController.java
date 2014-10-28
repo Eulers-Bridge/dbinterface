@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -472,6 +471,24 @@ public class UserController {
     
     /**
      * Is passed all the necessary data to verify a user account.
+     * The request must be a GET with the necessary parameters in the
+     * URL.
+     * <p/>
+     * This method will return the user object owner of the verified account.
+     * 
+     * @param email the email address of the user account to be verified.
+     * @param token the token string to be used to verify the user account.
+     * @return the user object returned by the Graph Database.
+     * 
+	*/
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.EMAIL_VERIFICATION_LABEL+"/{email}/{token}")
+    public @ResponseBody ResponseEntity<User> verifyUserAccount1(@PathVariable String email, @PathVariable String token) 
+    {
+    	return verifyUserAccount(email,token);
+    }
+    
+    /**
+     * Is passed all the necessary data to verify a user account.
      * The request must be a POST with the necessary parameters in the
      * URL.
      * <p/>
@@ -482,14 +499,19 @@ public class UserController {
      * @return the user object returned by the Graph Database.
      * 
 	*/
-    @RequestMapping(value=ControllerConstants.EMAIL_VERIFICATION_LABEL+"/{email}/{token}")
-    public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.EMAIL_VERIFICATION_LABEL+"/{email}/{token}")
+    public @ResponseBody ResponseEntity<User> verifyUserAccount2(@PathVariable String email, @PathVariable String token) 
+    {
+	    return verifyUserAccount(email, token);
+    }
+    
+    public @ResponseBody ResponseEntity<User> verifyUserAccount(String email, String token) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
-    	byte[] decodedTokenBytes=Base64.decodeBase64(token);
-    	UUID decodedToken=UUID.nameUUIDFromBytes(decodedTokenBytes);
+    	
+    	UUID decodedToken=com.eulersbridge.iEngage.database.domain.VerificationToken.convertEncoded64URLStringtoUUID(token);
     	if (LOG.isDebugEnabled()) LOG.debug("Decoded token - "+decodedToken);
-    	UserAccountVerifiedEvent userAccountVerifiedEvent=userService.validateUserAccount(new VerifyUserAccountEvent(email,token));
+    	UserAccountVerifiedEvent userAccountVerifiedEvent=userService.validateUserAccount(new VerifyUserAccountEvent(email,decodedToken.toString()));
 
     	if (!userAccountVerifiedEvent.isAccountVerified())
     	{
@@ -516,6 +538,8 @@ public class UserController {
 	    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     	}
     }
+    
+    
     
     @RequestMapping(value="/displayParams")
     public @ResponseBody ResponseEntity<Boolean> displayDetails(@RequestBody User user) 
