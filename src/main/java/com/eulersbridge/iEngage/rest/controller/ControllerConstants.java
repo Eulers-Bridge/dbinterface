@@ -37,5 +37,7 @@ public class ControllerConstants
 	
 	public static final String PREVIOUS_LABEL = "/previous";
 	public static final String NEXT_LABEL = "/next";
+	public static final String GENERALINFO_LABEL = "/general-info";
+	public static final String EMAILVERIFY_LABEL = "/emailVerification";
 
 }
