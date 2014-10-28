@@ -501,13 +501,9 @@ public class UserController {
      * @return the user object returned by the Graph Database.
      * 
 	*/
-    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.EMAIL_VERIFICATION_LABEL)
-    public @ResponseBody ResponseEntity<User> verifyUserAccount2(@RequestBody VerificationToken body) 
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.EMAIL_VERIFICATION_LABEL+"/{email}/{token}")
+    public @ResponseBody ResponseEntity<User> verifyUserAccount2(@PathVariable String email, @PathVariable String token) 
     {
-    	String email=body.getEmailAddress();
-    	String token=body.getVerificationToken();
-    	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
-
 	    return verifyUserAccount(email, token);
     }
     
