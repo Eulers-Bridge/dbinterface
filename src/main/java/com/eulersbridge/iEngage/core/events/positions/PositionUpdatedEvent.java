@@ -32,4 +32,6 @@ public class PositionUpdatedEvent extends UpdatedEvent{
         positionUpdatedEvent.entityFound = false;
         return positionUpdatedEvent;
     }
+
+
 }
