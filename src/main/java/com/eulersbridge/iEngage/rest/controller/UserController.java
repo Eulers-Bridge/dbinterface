@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
