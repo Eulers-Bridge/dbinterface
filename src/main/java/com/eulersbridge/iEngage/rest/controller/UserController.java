@@ -57,7 +57,6 @@ import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.rest.domain.Personality;
 import com.eulersbridge.iEngage.rest.domain.User;
-import com.eulersbridge.iEngage.rest.domain.VerificationToken;
 import com.eulersbridge.iEngage.rest.domain.VoteRecord;
 import com.eulersbridge.iEngage.rest.domain.VoteReminder;
 
