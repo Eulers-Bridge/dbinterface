@@ -54,10 +54,10 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEven
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.rest.domain.Personality;
 import com.eulersbridge.iEngage.rest.domain.User;
+import com.eulersbridge.iEngage.rest.domain.VerificationToken;
 import com.eulersbridge.iEngage.rest.domain.VoteRecord;
 import com.eulersbridge.iEngage.rest.domain.VoteReminder;
 
@@ -473,6 +473,24 @@ public class UserController {
     
     /**
      * Is passed all the necessary data to verify a user account.
+     * The request must be a GET with the necessary parameters in the
+     * URL.
+     * <p/>
+     * This method will return the user object owner of the verified account.
+     * 
+     * @param email the email address of the user account to be verified.
+     * @param token the token string to be used to verify the user account.
+     * @return the user object returned by the Graph Database.
+     * 
+	*/
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.EMAIL_VERIFICATION_LABEL+"/{email}/{token}")
+    public @ResponseBody ResponseEntity<User> verifyUserAccount1(@PathVariable String email, @PathVariable String token) 
+    {
+    	return verifyUserAccount(email,token);
+    }
+    
+    /**
+     * Is passed all the necessary data to verify a user account.
      * The request must be a POST with the necessary parameters in the
      * URL.
      * <p/>
@@ -483,12 +501,21 @@ public class UserController {
      * @return the user object returned by the Graph Database.
      * 
 	*/
-    @RequestMapping(value=ControllerConstants.EMAIL_VERIFICATION_LABEL+"/{email}/{token}")
-    public @ResponseBody ResponseEntity<User> verifyUserAccount(@PathVariable String email, @PathVariable String token) 
+    @RequestMapping(method=RequestMethod.POST,value=ControllerConstants.EMAIL_VERIFICATION_LABEL)
+    public @ResponseBody ResponseEntity<User> verifyUserAccount2(@RequestBody VerificationToken body) 
+    {
+    	String email=body.getEmailAddress();
+    	String token=body.getVerificationToken();
+    	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
+
+	    return verifyUserAccount(email, token);
+    }
+    
+    public @ResponseBody ResponseEntity<User> verifyUserAccount(String email, String token) 
     {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to verify email by token "+email+" " +token);
     	
-    	UUID decodedToken=VerificationToken.convertEncoded64URLStringtoUUID(token);
+    	UUID decodedToken=com.eulersbridge.iEngage.database.domain.VerificationToken.convertEncoded64URLStringtoUUID(token);
     	if (LOG.isDebugEnabled()) LOG.debug("Decoded token - "+decodedToken);
     	UserAccountVerifiedEvent userAccountVerifiedEvent=userService.validateUserAccount(new VerifyUserAccountEvent(email,decodedToken.toString()));
 
@@ -517,6 +544,8 @@ public class UserController {
 	    	return new ResponseEntity<User>(restUser,HttpStatus.OK);
     	}
     }
+    
+    
     
     @RequestMapping(value="/displayParams")
     public @ResponseBody ResponseEntity<Boolean> displayDetails(@RequestBody User user) 
