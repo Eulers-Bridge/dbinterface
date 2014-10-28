@@ -119,7 +119,7 @@ public class VerificationToken {
     {
     	StringBuffer res=new StringBuffer("Token = ");
     	res.append(token);
-    	res.append(" expriyDate = ");
+    	res.append(" expiryDate = ");
     	res.append(expiryDate);
     	res.append("token type = ");
     	res.append(tokenType);
@@ -130,7 +130,7 @@ public class VerificationToken {
     public static String convertVTokentoEncoded64URLString(VerificationToken token)
     {
     	
-    	byte[] encodeTokenBytes = Base64.encodeBase64(token.toByteArray());
+    	byte[] encodeTokenBytes = Base64.encodeBase64URLSafe(token.toByteArray());
         String encoded=new String(encodeTokenBytes);
         return encoded;
     }

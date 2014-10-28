@@ -105,7 +105,7 @@ public class VerificationTokenTest
 		byte[] vtBytes = VerificationToken.convertUUIDtoByteArray(token.getToken());
 		
 		if (LOG.isDebugEnabled()) LOG.debug("vtBytes - "+Arrays.toString(vtBytes));
-		byte[] byteArray=Base64.encodeBase64(vtBytes);
+		byte[] byteArray=Base64.encodeBase64URLSafe(vtBytes);
         String encoded=Arrays.toString(byteArray);
         if (LOG.isDebugEnabled()) LOG.debug("encoded byte array = "+encoded);
         encoded=new String(byteArray);
