@@ -3,28 +3,16 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.newsArticles.*;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
@@ -240,4 +228,55 @@ public class NewsEventHandler implements NewsService
 		retValue=new NewsArticleUnlikedEvent(newsArticleId,email,result);
 		return retValue;
 	}
+
+    @Override
+    public NewsArticleLikesEvent likesNewsArticle(LikesNewsArticleEvent likesNewsArticleEvent, Direction sortDirection, int pageNumber, int pageSize)
+    {
+        Long articleId = likesNewsArticleEvent.getNewsArticleId();
+        ArrayList<UserDetails> userDetailses = new ArrayList<UserDetails>();
+        NewsArticleLikesEvent newsArticleLikesEvent = new NewsArticleLikesEvent();
+
+        if (LOG.isDebugEnabled()) LOG.debug("articleId "+articleId);
+        Pageable pageable = new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
+        Page<User> users = userRepository.findByArticleId(articleId, pageable);
+        if (LOG.isDebugEnabled())
+            LOG.debug("Total elements = "+users.getTotalElements()+" total pages ="+users.getTotalPages());
+
+        if (users != null)
+        {
+            Iterator<User> iter = users.iterator();
+            while (iter.hasNext())
+            {
+                User user =iter.next();
+                if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+user.getEmail());
+                UserDetails userDetails = user.toUserDetails();
+                userDetailses.add(userDetails);
+            }
+            if (0==userDetailses.size())
+            {
+                // Need to check if we actually found article.
+                NewsArticle newsArticle=newsRepo.findOne(articleId);
+                if ( (null==newsArticle) ||
+                        ((null==newsArticle.getTitle()) || ((null==newsArticle.getContent()) && (null==newsArticle.getCreator()) && (null==newsArticle.getNewsFeed()))))
+                {
+                    if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by newsRepo.findOne(articleId)");
+                    newsArticleLikesEvent = NewsArticleLikesEvent.articleNotFound(articleId);
+                }
+                else
+                {
+                    newsArticleLikesEvent = new NewsArticleLikesEvent(articleId, userDetailses);
+                }
+            }
+            else
+            {
+                newsArticleLikesEvent=new NewsArticleLikesEvent(articleId,userDetailses);
+            }
+        }
+        else
+        {
+            if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByArticleId");
+            newsArticleLikesEvent=NewsArticleLikesEvent.articleNotFound(articleId);
+        }
+        return newsArticleLikesEvent;
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.neo4j.conversion.Result;
+import org.springframework.data.repository.query.Param;
 
 public class UserMemoryRepository implements UserRepository {
 
@@ -252,5 +253,10 @@ public VoteReminder deleteVoteReminder(Long id) {
 	// TODO Auto-generated method stub
 	return null;
 }
+
+    @Override
+    public Page<User> findByArticleId(@Param("articleId") Long id, Pageable p) {
+        return null;
+    }
 
 }
