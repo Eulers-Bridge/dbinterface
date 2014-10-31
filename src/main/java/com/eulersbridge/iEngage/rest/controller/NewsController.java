@@ -32,6 +32,7 @@ import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.rest.domain.NewsArticle;
+import com.eulersbridge.iEngage.rest.domain.NewsArticles;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
@@ -264,7 +265,7 @@ public class NewsController
 
 	*/
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{institutionId}")
-	public @ResponseBody ResponseEntity<Iterator<NewsArticle>> findArticles(@PathVariable(value="") Long institutionId,
+	public @ResponseBody ResponseEntity<NewsArticles> findArticles(@PathVariable(value="") Long institutionId,
 			@RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
 			@RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize) 
@@ -274,6 +275,8 @@ public class NewsController
 		pageNumber=Integer.parseInt(page);
 		pageLength=Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institution "+institutionId+'.');
+				
+		ResponseEntity<NewsArticles> response;
 		
 		Direction sortDirection=Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
@@ -281,12 +284,17 @@ public class NewsController
   	
 		if (!articleEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<NewsArticle>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<NewsArticles>(HttpStatus.NOT_FOUND);
 		}
 		
-		Iterator<NewsArticle> articles = NewsArticle.toArticlesIterator(articleEvent.getArticles().iterator());
+		else
+		{
+			Iterator<NewsArticle> articles = NewsArticle.toArticlesIterator(articleEvent.getArticles().iterator());
+			NewsArticles newsArticles = NewsArticles.fromArticlesIterator(articles, articleEvent.getTotalArticles(), articleEvent.getTotalPages());
+			response = new ResponseEntity<NewsArticles>(newsArticles,HttpStatus.OK);
+		}
 
-		return new ResponseEntity<Iterator<NewsArticle>>(articles,HttpStatus.OK);
+		return response;
 	}
     
 }
