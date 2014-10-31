@@ -148,10 +148,10 @@ public class NewsEventHandler implements NewsService
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
 		Pageable pageable=new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
 		articles=newsRepo.findByInstitutionId(institutionId, pageable);
-		if (LOG.isDebugEnabled())
-				LOG.debug("Total elements = "+articles.getTotalElements()+" total pages ="+articles.getTotalPages());
 		if (articles!=null)
 		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+articles.getTotalElements()+" total pages ="+articles.getTotalPages());
 			Iterator<NewsArticle> iter=articles.iterator();
 			while (iter.hasNext())
 			{
@@ -172,12 +172,12 @@ public class NewsEventHandler implements NewsService
 				}
 				else
 				{	
-					nare=new NewsArticlesReadEvent(institutionId,dets);
+					nare=new NewsArticlesReadEvent(institutionId,dets,articles.getTotalElements(),articles.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new NewsArticlesReadEvent(institutionId,dets);
+				nare=new NewsArticlesReadEvent(institutionId,dets,articles.getTotalElements(),articles.getTotalPages());
 			}
 		}
 		else
