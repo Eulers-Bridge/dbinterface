@@ -1,22 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 
 public interface NewsService 
 {
@@ -33,5 +19,7 @@ public interface NewsService
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public NewsArticleLikedEvent likeNewsArticle(LikeNewsArticleEvent likeNewsArticlesEvent);
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public NewsArticleUnlikedEvent unlikeNewsArticle(UnlikeNewsArticleEvent unlikeNewsArticleEvent); 
+	public NewsArticleUnlikedEvent unlikeNewsArticle(UnlikeNewsArticleEvent unlikeNewsArticleEvent);
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public NewsArticleLikesEvent likesNewsArticle(LikesNewsArticleEvent likesNewsArticleEvent, Direction sortDirection, int pageNumber, int pageSize);
 }

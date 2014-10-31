@@ -2,6 +2,10 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.newsArticles.*;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.domain.LikeInfo;
+import com.eulersbridge.iEngage.rest.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.rest.domain.NewsArticle;
 import com.eulersbridge.iEngage.rest.domain.NewsArticles;
@@ -296,5 +286,29 @@ public class NewsController
 
 		return response;
 	}
-    
+
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{articleId}" + ControllerConstants.LIKES_LABEL)
+    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
+            @PathVariable Long articleId,
+            @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+            @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+            @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
+    {
+        int pageNumber = 0;
+        int pageLength = 10;
+        pageNumber = Integer.parseInt(page);
+        pageLength = Integer.parseInt(pageSize);
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users from article "+articleId+'.');
+        Direction sortDirection = Direction.DESC;
+        if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+        NewsArticleLikesEvent newsArticleLikesEvent = newsService.likesNewsArticle(new LikesNewsArticleEvent(articleId), sortDirection, pageNumber, pageLength);
+        if (!newsArticleLikesEvent.isArticlesFound())
+        {
+            return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
+        }
+        Iterator<LikeInfo> likes = User.toLikesIterator(newsArticleLikesEvent.getUserDetails().iterator());
+        return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+    }
+
+
 }

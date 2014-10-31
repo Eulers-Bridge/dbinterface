@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.ResourceSupport;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 
 public class User extends ResourceSupport
 {
@@ -171,4 +174,17 @@ public class User extends ResourceSupport
 			if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 			return retValue;
 		}
+
+    public static Iterator<LikeInfo> toLikesIterator(Iterator<UserDetails> iter)
+    {
+        if (null==iter) return null;
+        ArrayList<LikeInfo> likes = new ArrayList<LikeInfo>();
+        while(iter.hasNext())
+        {
+            UserDetails userDetails = iter.next();
+            LikeInfo likeInfo = LikeInfo.fromUserDetails(userDetails);
+            likes.add(likeInfo);
+        }
+        return likes.iterator();
+    }
 }

@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.database.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
@@ -44,5 +46,8 @@ public interface UserRepository extends GraphRepository<User>
 
 	@Query("Match (u:`User`)-[r:"+DatabaseDomainConstants.VREMINDER_LABEL+"]-(e:`Election`) where id(r)={id} delete r return r")
 	VoteReminder deleteVoteReminder(@Param("id")Long id);
+
+    @Query("Match (u:'User')-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a:'NewsArticle') WHERE id(a)={articleId} RETURN u")
+    Page<User> findByArticleId (@Param("articleId")Long id, Pageable p);
 
 }
