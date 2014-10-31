@@ -56,15 +56,73 @@ public class NewsArticlesReadEventTest {
     }
 
     @Test
+    public void testNewsArticlesReadEventConstructor3() throws Exception
+    {
+    	newsArticlesReadEvent=new NewsArticlesReadEvent(institutionId, articles, articles.size(), 1);
+        assertNotNull("newsArticlesReadEvent is null", newsArticlesReadEvent);
+    }
+    
+    @Test
+    public void testSetArticles() throws Exception
+    {
+    	ArrayList <NewsArticleDetails> arts = new ArrayList<NewsArticleDetails>();
+    	newsArticlesReadEvent.setArticles(arts);
+    	assertEquals(arts,newsArticlesReadEvent.getArticles());
+    }
+
+    @Test
+    public void testSetTotalArticles() throws Exception
+    {
+    	Long totalArticles=15l;
+    	newsArticlesReadEvent.setTotalArticles(totalArticles);
+    	assertEquals(totalArticles,newsArticlesReadEvent.getTotalArticles());
+    }
+
+    @Test
+    public void testSetTotalPages() throws Exception
+    {
+    	Integer totalPages=2;
+    	newsArticlesReadEvent.setTotalPages(totalPages);
+    	assertEquals(totalPages,newsArticlesReadEvent.getTotalPages());
+    }
+
+    @Test
+    public void testIsArticlesFound() throws Exception
+    {
+    	assertTrue(newsArticlesReadEvent.isArticlesFound());
+    }
+
+    @Test
     public void testGetInstId() throws Exception {
         assertEquals("InstId does not match", institutionId, newsArticlesReadEvent.getInstId());
     }
 
     @Test
-    public void testSetInstId() throws Exception {
+    public void testSetInstId() throws Exception
+    {
         Long instId1 = new Long(2);
         newsArticlesReadEvent.setInstId(instId1);
         assertEquals("InstId does not match", instId1, newsArticlesReadEvent.getInstId());
     }
+    
+    @Test
+	public void testNewsFeedNotFound() 
+	{
+		NewsArticlesReadEvent nare= NewsArticlesReadEvent.newsFeedNotFound();
+		assertFalse(nare.isNewsFeedFound());
+		assertFalse(nare.isArticlesFound());
+		assertFalse(nare.isEntityFound());
+	}
+
+    @Test
+	public void testInstitutionNotFound() 
+	{
+		NewsArticlesReadEvent nare= NewsArticlesReadEvent.institutionNotFound();
+		assertFalse(nare.isInstitutionFound());
+		assertFalse(nare.isNewsFeedFound());
+		assertFalse(nare.isArticlesFound());
+		assertFalse(nare.isEntityFound());
+	}
+
 
 }

@@ -3,6 +3,7 @@
  */
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -17,6 +18,8 @@ public class NewsArticlesReadEvent extends ReadEvent
 	private boolean newsFeedFound=true;
 	private boolean institutionFound=true;
 	private boolean articlesFound=true;
+	private Long totalArticles;
+	private Integer totalPages;
 	
 	private Collection<NewsArticleDetails> articles;
 
@@ -31,6 +34,15 @@ public class NewsArticlesReadEvent extends ReadEvent
 		this.articles=articles;
 	}
 	
+	public NewsArticlesReadEvent(Long institutionId,
+			ArrayList<NewsArticleDetails> dets, long totalElements,
+			int totalPages) 
+	{
+		this(institutionId,dets);
+		this.totalArticles=totalElements;
+		this.totalPages=totalPages;
+	}
+
 	/**
 	 * @return the instId
 	 */
@@ -43,6 +55,34 @@ public class NewsArticlesReadEvent extends ReadEvent
 	 */
 	public void setInstId(Long instId) {
 		this.instId = instId;
+	}
+
+	/**
+	 * @return the totalArticles
+	 */
+	public Long getTotalArticles() {
+		return totalArticles;
+	}
+
+	/**
+	 * @param totalArticles the totalArticles to set
+	 */
+	public void setTotalArticles(Long totalArticles) {
+		this.totalArticles = totalArticles;
+	}
+
+	/**
+	 * @return the totalPages
+	 */
+	public Integer getTotalPages() {
+		return totalPages;
+	}
+
+	/**
+	 * @param totalPages the totalPages to set
+	 */
+	public void setTotalPages(Integer totalPages) {
+		this.totalPages = totalPages;
 	}
 
 	/**
