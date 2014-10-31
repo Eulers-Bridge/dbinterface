@@ -411,22 +411,24 @@ public class ViewNewsIntegrationTest {
 			NewsArticle article=iter.next();
 			artDets.add(article.toNewsArticleDetails());
 		}
-		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets);
+		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets,15l,2);
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].title",is(artDets.get(0).getTitle())))
-		.andExpect(jsonPath("$[0].date",is(artDets.get(0).getDate())))
-		.andExpect(jsonPath("$[0].creatorEmail",is(artDets.get(0).getCreatorEmail())))
-		.andExpect(jsonPath("$[0].content",is(artDets.get(0).getContent())))
-		.andExpect(jsonPath("$[0].articleId",is(artDets.get(0).getNewsArticleId().intValue())))
-		.andExpect(jsonPath("$[0].institutionId",is(artDets.get(0).getInstitutionId().intValue())))
-		.andExpect(jsonPath("$[1].title",is(artDets.get(1).getTitle())))
-		.andExpect(jsonPath("$[1].date",is(artDets.get(1).getDate())))
-		.andExpect(jsonPath("$[1].creatorEmail",is(artDets.get(1).getCreatorEmail())))
-		.andExpect(jsonPath("$[1].content",is(artDets.get(1).getContent())))
-		.andExpect(jsonPath("$[1].articleId",is(artDets.get(1).getNewsArticleId().intValue())))
-		.andExpect(jsonPath("$[1].institutionId",is(artDets.get(1).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$totalArticles",is(15)))
+		.andExpect(jsonPath("$totalPages",is(2)))
+		.andExpect(jsonPath("$articles[0].title",is(artDets.get(0).getTitle())))
+		.andExpect(jsonPath("$articles[0].date",is(artDets.get(0).getDate())))
+		.andExpect(jsonPath("$articles[0].creatorEmail",is(artDets.get(0).getCreatorEmail())))
+		.andExpect(jsonPath("$articles[0].content",is(artDets.get(0).getContent())))
+		.andExpect(jsonPath("$articles[0].articleId",is(artDets.get(0).getNewsArticleId().intValue())))
+		.andExpect(jsonPath("$articles[0].institutionId",is(artDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$articles[1].title",is(artDets.get(1).getTitle())))
+		.andExpect(jsonPath("$articles[1].date",is(artDets.get(1).getDate())))
+		.andExpect(jsonPath("$articles[1].creatorEmail",is(artDets.get(1).getCreatorEmail())))
+		.andExpect(jsonPath("$articles[1].content",is(artDets.get(1).getContent())))
+		.andExpect(jsonPath("$articles[1].articleId",is(artDets.get(1).getNewsArticleId().intValue())))
+		.andExpect(jsonPath("$articles[1].institutionId",is(artDets.get(1).getInstitutionId().intValue())))
 //TODO
 /*		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
 		.andExpect(jsonPath("$.likers",is(dets.getLikers())))
