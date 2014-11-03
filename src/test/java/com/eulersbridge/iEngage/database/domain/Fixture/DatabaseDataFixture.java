@@ -15,6 +15,7 @@ import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
+import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
@@ -203,6 +204,40 @@ public class DatabaseDataFixture
 		elections.put(new Long(1), populateElection1());
 		elections.put(2l, populateElection2());
 		return elections;
+	}
+
+	public static Event populateEvent1() {
+		Long nodeId=(long)2;
+		Institution inst=populateInstUniMelb();
+		return populateEvent(nodeId, "That event", "That event where that thing happened.", "Union Building", "gnewitt@hotmail.com", 123666l, 123666l, 124666l, 124766l, inst);
+	}
+	public static Event populateEvent2()
+	{
+		Long nodeId=(long)2;
+		Institution inst=populateInstUniMelb();
+		return populateEvent(nodeId, "That other event", "That other event where that other thing happened.", "Clyde Hotel", "gnewitt@hotmail.com", 123766l, 123766l, 124766l, 124866l, inst);
+	}
+	public static Event populateEvent(Long id, String name, String description, String location, String organizerEmail, Long created, Long modified, Long starts, Long ends, Institution inst)
+	{
+		Event event=new Event();
+		event.setEventId(id);
+		event.setName(name);
+		event.setStarts(starts);
+		event.setEnds(ends);
+		event.setDescription(description);
+		event.setLocation(location);
+		event.setOrganizerEmail(organizerEmail);
+		event.setCreated(created);
+		event.setModified(modified);
+		event.setInstitution(inst);
+		return event;
+	}
+	public static HashMap<Long,Event> populateEvents()
+	{
+		HashMap<Long, Event> events=new HashMap<Long, Event>();
+		events.put(new Long(1), populateEvent1());
+		events.put(2l, populateEvent2());
+		return events;
 	}
 
 	public static VoteReminder populateVoteReminder1()
