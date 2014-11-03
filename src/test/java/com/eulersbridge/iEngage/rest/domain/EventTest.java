@@ -20,7 +20,8 @@ public class EventTest {
     private Long eventId = new Long(0);
     private String name = "new event";
     private String location = "campus";
-    private Long date = new Long(1000000);
+    private Long starts = 1000000l;
+    private Long ends = 1000200l;
     private String description = "An event";
     private String picture[] = new String[]{"./path"};
     private String volunteerPositions[] = new String[]{"positon"};
@@ -28,6 +29,7 @@ public class EventTest {
     private String organizer = "Unimelb";
     private String organizerEmail = "test@test.com";
     private Long modified = new Long(1);
+    private Long institutionId = 15l;
 
     private EventDetails eventDetails;
     private Event event;
@@ -46,7 +48,8 @@ public class EventTest {
         eventDetails.setEventId(eventId);
         eventDetails.setName(name);
         eventDetails.setLocation(location);
-        eventDetails.setDate(date);
+        eventDetails.setStarts(starts);
+        eventDetails.setEnds(ends);
         eventDetails.setDescription(description);
         eventDetails.setPicture(picture);
         eventDetails.setVolunteerPositions(volunteerPositions);
@@ -54,6 +57,7 @@ public class EventTest {
         eventDetails.setOrganizer(organizer);
         eventDetails.setOrganizerEmail(organizerEmail);
         eventDetails.setModified(modified);
+        eventDetails.setInstitutionId(institutionId);
     }
 
     @After
@@ -97,12 +101,20 @@ public class EventTest {
     }
 
     @Test
-    public void testGetDate() throws Exception {
-        event.setDate(date);
-        Long date1 = event.getDate();
-        assertEquals("date does not match", date1, date);
+    public void testGetStarts() throws Exception
+    {
+        event.setStarts(starts);
+        Long date1 = event.getStarts();
+        assertEquals("date does not match", date1, starts);
     }
 
+    @Test
+    public void testGetEnds() throws Exception
+    {
+        event.setEnds(ends);
+        Long date1 = event.getEnds();
+        assertEquals("date does not match", date1, ends);
+    }
 
     @Test
     public void testGetDescription() throws Exception {
@@ -147,9 +159,18 @@ public class EventTest {
     }
 
     @Test
-    public void testGetModified() throws Exception {
+    public void testGetModified() throws Exception 
+    {
         event.setModified(modified);
         Long modi = event.getModified();
         assertEquals("modified does not match", modi, modified);
+    }
+    
+    @Test
+    public void testGetInstitutionId() throws Exception 
+    {
+        event.setInstitutionId(institutionId);
+        Long inst = event.getInstitutionId();
+        assertEquals("modified does not match", inst, institutionId);
     }
 }

@@ -14,7 +14,8 @@ public class EventDetailsTest {
     private Long eventId = new Long(0);
     private String name = "new event";
     private String location = "campus";
-    private Long date = new Long(1000000);
+    private Long date = 1000000l;
+	private Long ends =1000000l;
     private String description = "An event";
     private String picture[] = new String[]{"./path"};
     private String volunteerPositions[] = new String[]{"positon"};
@@ -22,6 +23,7 @@ public class EventDetailsTest {
     private String organizer = "Unimelb";
     private String organizerEmail = "test@test.com";
     private Long modified = new Long(1);
+	private Long institutionId=26l;;
 
     private EventDetails eventDetails;
 
@@ -31,7 +33,8 @@ public class EventDetailsTest {
         eventDetails.setEventId(eventId);
         eventDetails.setName(name);
         eventDetails.setLocation(location);
-        eventDetails.setDate(date);
+        eventDetails.setStarts(date);
+        eventDetails.setEnds(ends);
         eventDetails.setDescription(description);
         eventDetails.setPicture(picture);
         eventDetails.setVolunteerPositions(volunteerPositions);
@@ -39,6 +42,7 @@ public class EventDetailsTest {
         eventDetails.setOrganizer(organizer);
         eventDetails.setOrganizerEmail(organizerEmail);
         eventDetails.setModified(modified);
+        eventDetails.setInstitutionId(institutionId);
         assertNotNull("eventDetails is null", eventDetails);
     }
 
@@ -102,15 +106,27 @@ public class EventDetailsTest {
     }
 
     @Test
-    public void testGetDate() throws Exception {
-        assertEquals("date does not match", date, eventDetails.getDate());
+    public void testGetStarts() throws Exception {
+        assertEquals("date does not match", date, eventDetails.getStarts());
     }
 
     @Test
-    public void testSetDate() throws Exception {
+    public void testSetStarts() throws Exception {
         Long da = new Long(2);
-        eventDetails.setDate(da);
-        assertEquals("date does not match", da, eventDetails.getDate());
+        eventDetails.setStarts(da);
+        assertEquals("date does not match", da, eventDetails.getStarts());
+    }
+
+    @Test
+    public void testGetEnds() throws Exception {
+        assertEquals("date does not match", ends, eventDetails.getEnds());
+    }
+
+    @Test
+    public void testSetEnds() throws Exception {
+        Long da = new Long(2);
+        eventDetails.setEnds(da);
+        assertEquals("date does not match", da, eventDetails.getEnds());
     }
 
     @Test
@@ -191,4 +207,17 @@ public class EventDetailsTest {
         eventDetails.setModified(modified);
         assertEquals("modified does not match", modified, eventDetails.getModified());
     }
+    @Test
+    public void testGetInstitutionId() throws Exception 
+    {
+        assertEquals("institutionId does not match", institutionId, eventDetails.getInstitutionId());
+    }
+
+    @Test
+    public void testSetInstitutionId() throws Exception {
+        Long id = 3l;
+        eventDetails.setInstitutionId(id);
+        assertEquals("InstitutionId does not match", id, eventDetails.getInstitutionId());
+    }
+
 }

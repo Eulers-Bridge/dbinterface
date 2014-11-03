@@ -17,13 +17,15 @@ public class Event extends ResourceSupport{
     private Long eventId;
     private String name;
     private String location;
-    private Long date;
+    private Long starts;
+    private Long ends;
     private String description;
     private String picture[];
     private String volunteerPositions[];
     private Long created;
     private String organizer;
     private String organizerEmail;
+    private Long institutionId;
     private Long modified;
 
     private static Logger LOG = LoggerFactory.getLogger(Event.class);
@@ -41,7 +43,8 @@ public class Event extends ResourceSupport{
         event.setEventId(eventDetails.getEventId());
         event.setName(eventDetails.getName());
         event.setLocation(eventDetails.getLocation());
-        event.setDate(eventDetails.getDate());
+        event.setStarts(eventDetails.getStarts());
+        event.setEnds(eventDetails.getEnds());
         event.setDescription(eventDetails.getDescription());
         event.setPicture(eventDetails.getPicture());
         event.setVolunteerPositions(eventDetails.getVolunteerPositions());
@@ -49,6 +52,7 @@ public class Event extends ResourceSupport{
         event.setOrganizer(eventDetails.getOrganizer());
         event.setOrganizerEmail(eventDetails.getOrganizerEmail());
         event.setModified(eventDetails.getModified());
+        event.setInstitutionId(eventDetails.getInstitutionId());
 
 	    // {!begin selfRel}
         event.add(linkTo(EventController.class).slash(name).slash(event.eventId).withSelfRel());
@@ -80,7 +84,8 @@ public class Event extends ResourceSupport{
         eventDetails.setEventId(this.getEventId());
         eventDetails.setName(getName());
         eventDetails.setLocation(getLocation());
-        eventDetails.setDate(getDate());
+        eventDetails.setStarts(getStarts());
+        eventDetails.setEnds(getEnds());
         eventDetails.setDescription(getDescription());
         eventDetails.setPicture(getPicture());
         eventDetails.setVolunteerPositions(getVolunteerPositions());
@@ -88,6 +93,7 @@ public class Event extends ResourceSupport{
         eventDetails.setOrganizer(getOrganizer());
         eventDetails.setOrganizerEmail(getOrganizerEmail());
         eventDetails.setModified(getModified());
+        eventDetails.setInstitutionId(getInstitutionId());
 
         return eventDetails;
     }
@@ -116,12 +122,12 @@ public class Event extends ResourceSupport{
         this.location = location;
     }
 
-    public Long getDate() {
-        return date;
+    public Long getStarts() {
+        return starts;
     }
 
-    public void setDate(Long date) {
-        this.date = date;
+    public void setStarts(Long starts) {
+        this.starts = starts;
     }
 
     public String getDescription() {
@@ -179,4 +185,32 @@ public class Event extends ResourceSupport{
     public void setModified(Long modified) {
         this.modified = modified;
     }
+
+	/**
+	 * @return the ends
+	 */
+	public Long getEnds() {
+		return ends;
+	}
+
+	/**
+	 * @param ends the ends to set
+	 */
+	public void setEnds(Long ends) {
+		this.ends = ends;
+	}
+
+	/**
+	 * @return the institutionId
+	 */
+	public Long getInstitutionId() {
+		return institutionId;
+	}
+
+	/**
+	 * @param institutionId the institutionId to set
+	 */
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
+	}
 }

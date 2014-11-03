@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
  * @author Yikai Gong
  */
 
-public class EventDetails {
+public class EventDetails
+{
     private Long eventId;
     private String name;
     private String location;
-    private Long date;
+    private Long starts;
+    private Long ends;
     private String description;
     private String picture[];
     private String volunteerPositions[];
@@ -21,6 +23,7 @@ public class EventDetails {
     private String organizer;
     private String organizerEmail;
     private Long modified;
+    private Long institutionId;
 
     private static Logger LOG = LoggerFactory.getLogger(EventDetails.class);
 
@@ -35,8 +38,10 @@ public class EventDetails {
         buff.append(getName());
         buff.append(", location = ");
         buff.append(getLocation());
-        buff.append(", date = ");
-        buff.append(getDate());
+        buff.append(", starts = ");
+        buff.append(getStarts());
+        buff.append(", ends = ");
+        buff.append(getEnds());
         buff.append(", description = ");
         buff.append(getDescription());
         buff.append(", picture = ");
@@ -51,6 +56,8 @@ public class EventDetails {
         buff.append(getOrganizerEmail());
         buff.append(", modified = ");
         buff.append(getModified());
+        buff.append(", institutionId = ");
+        buff.append(getInstitutionId());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -72,7 +79,9 @@ public class EventDetails {
 		else
 		{
 			result = prime * result + ((created == null) ? 0 : created.hashCode());
-			result = prime * result + ((date == null) ? 0 : date.hashCode());
+			result = prime * result + ((starts == null) ? 0 : starts.hashCode());
+			result = prime * result + ((ends == null) ? 0 : ends.hashCode());
+			result = prime * result + ((institutionId == null) ? 0 : institutionId.hashCode());
 			result = prime * result
 					+ ((description == null) ? 0 : description.hashCode());
 			result = prime * result
@@ -117,10 +126,20 @@ public class EventDetails {
 					return false;
 			} else if (!created.equals(other.created))
 				return false;
-			if (date == null) {
-				if (other.date != null)
+			if (starts == null) {
+				if (other.starts != null)
 					return false;
-			} else if (!date.equals(other.date))
+			} else if (!starts.equals(other.starts))
+				return false;
+			if (ends == null) {
+				if (other.ends != null)
+					return false;
+			} else if (!ends.equals(other.ends))
+				return false;
+			if (institutionId == null) {
+				if (other.institutionId != null)
+					return false;
+			} else if (!institutionId.equals(other.institutionId))
 				return false;
 			if (description == null) {
 				if (other.description != null)
@@ -184,15 +203,28 @@ public class EventDetails {
         this.location = location;
     }
 
-    public Long getDate() {
-        return date;
+    public Long getStarts() {
+        return starts;
     }
 
-    public void setDate(Long date) {
-        this.date = date;
+    public void setStarts(Long starts) {
+        this.starts = starts;
     }
 
-    public String getDescription() {
+	public Long getEnds()
+	{
+		return ends;
+	}
+    /**
+	 * @param ends the ends to set
+	 */
+	public void setEnds(Long ends)
+	{
+		this.ends = ends;
+	}
+
+	public String getDescription()
+	{
         return description;
     }
 
@@ -247,4 +279,19 @@ public class EventDetails {
     public void setModified(Long modified) {
         this.modified = modified;
     }
+
+	/**
+	 * @return the institutionId
+	 */
+	public Long getInstitutionId() {
+		return institutionId;
+	}
+
+	/**
+	 * @param institutionId the institutionId to set
+	 */
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
+	}
+
 }
