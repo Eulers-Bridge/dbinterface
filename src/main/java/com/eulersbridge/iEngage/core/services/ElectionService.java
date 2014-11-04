@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface ElectionService {
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ReadElectionEvent requestReadElection(RequestReadElectionEvent requestReadElectionEvent);
+    public ReadElectionEvent readElection(RequestReadElectionEvent requestReadElectionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent);

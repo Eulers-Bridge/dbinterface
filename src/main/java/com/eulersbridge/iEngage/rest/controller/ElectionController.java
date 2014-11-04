@@ -35,7 +35,7 @@ public class ElectionController
     {
         if (LOG.isInfoEnabled()) LOG.info(electionId+" attempting to get election. ");
         RequestReadElectionEvent requestReadElectionEvent= new RequestReadElectionEvent(electionId);
-        ReadElectionEvent readElectionEvent= electionService.requestReadElection(requestReadElectionEvent);
+        ReadElectionEvent readElectionEvent= electionService.readElection(requestReadElectionEvent);
         if (readElectionEvent.isEntityFound()){
             Election election = Election.fromElectionDetails(readElectionEvent.getElectionDetails());
             return new ResponseEntity<Election>(election, HttpStatus.OK);

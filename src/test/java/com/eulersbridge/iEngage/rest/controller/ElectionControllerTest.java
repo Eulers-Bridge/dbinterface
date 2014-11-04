@@ -100,7 +100,7 @@ public class ElectionControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
 		ReadElectionEvent testData=new ReadElectionEvent(dets.getElectionId(), dets);
-		when (electionService.requestReadElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
+		when (electionService.readElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{electionId}/",dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.title",is(dets.getTitle())))
@@ -123,7 +123,7 @@ public class ElectionControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
 		ReadElectionEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
-		when (electionService.requestReadElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
+		when (electionService.readElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{electionId}/",dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;

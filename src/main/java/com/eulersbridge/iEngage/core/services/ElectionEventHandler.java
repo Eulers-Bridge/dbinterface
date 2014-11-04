@@ -35,7 +35,7 @@ public class ElectionEventHandler implements ElectionService
     }
 
     @Override
-    public ReadElectionEvent requestReadElection(RequestReadElectionEvent requestReadElectionEvent)
+    public ReadElectionEvent readElection(RequestReadElectionEvent requestReadElectionEvent)
     {
         Election election = eleRepository.findOne(requestReadElectionEvent.getElectionId());
         ReadElectionEvent readElectionEvent;
