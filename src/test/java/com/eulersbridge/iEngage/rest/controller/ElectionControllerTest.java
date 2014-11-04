@@ -165,7 +165,8 @@ public class ElectionControllerTest
 	public final void testCreateElectionInvalidContent() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
-		ElectionCreatedEvent testData=null;
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ElectionCreatedEvent testData=new ElectionCreatedEvent(dets.getElectionId(), dets);
 		String content="{\"electionId1\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
 		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
@@ -177,7 +178,8 @@ public class ElectionControllerTest
 	public final void testCreateElectionNoContent() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
-		ElectionCreatedEvent testData=null;
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ElectionCreatedEvent testData=new ElectionCreatedEvent(dets.getElectionId(), dets);
 		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -380,8 +382,10 @@ public class ElectionControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateElection()");
 		Long id=1L;
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ElectionUpdatedEvent testData=new ElectionUpdatedEvent(id, dets);
 		String content="{\"electionId1\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
-		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(null);
+		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
@@ -392,7 +396,9 @@ public class ElectionControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateElection()");
 		Long id=1L;
-		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(null);
+		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
+		ElectionUpdatedEvent testData=new ElectionUpdatedEvent(id, dets);
+		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
