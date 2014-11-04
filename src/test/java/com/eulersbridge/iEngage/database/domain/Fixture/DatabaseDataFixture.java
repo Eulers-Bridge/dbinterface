@@ -209,15 +209,15 @@ public class DatabaseDataFixture
 	public static Event populateEvent1() {
 		Long nodeId=(long)2;
 		Institution inst=populateInstUniMelb();
-		return populateEvent(nodeId, "That event", "That event where that thing happened.", "Union Building", "gnewitt@hotmail.com", 123666l, 123666l, 124666l, 124766l, inst);
+		return populateEvent(nodeId, "That event", "That event where that thing happened.", "Union Building", "Greg Newitt", "gnewitt@hotmail.com", 123666l, 123666l, 124666l, 124766l, inst);
 	}
 	public static Event populateEvent2()
 	{
 		Long nodeId=(long)2;
 		Institution inst=populateInstUniMelb();
-		return populateEvent(nodeId, "That other event", "That other event where that other thing happened.", "Clyde Hotel", "gnewitt@hotmail.com", 123766l, 123766l, 124766l, 124866l, inst);
+		return populateEvent(nodeId, "That other event", "That other event where that other thing happened.", "Clyde Hotel", "Greg Newitt", "gnewitt@hotmail.com", 123766l, 123766l, 124766l, 124866l, inst);
 	}
-	public static Event populateEvent(Long id, String name, String description, String location, String organizerEmail, Long created, Long modified, Long starts, Long ends, Institution inst)
+	public static Event populateEvent(Long id, String name, String description, String location,String organizer, String organizerEmail, Long created, Long modified, Long starts, Long ends, Institution inst)
 	{
 		Event event=new Event();
 		event.setEventId(id);
@@ -226,6 +226,7 @@ public class DatabaseDataFixture
 		event.setEnds(ends);
 		event.setDescription(description);
 		event.setLocation(location);
+		event.setOrganizer(organizer);
 		event.setOrganizerEmail(organizerEmail);
 		event.setCreated(created);
 		event.setModified(modified);
