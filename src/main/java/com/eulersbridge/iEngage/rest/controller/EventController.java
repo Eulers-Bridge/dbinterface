@@ -1,8 +1,12 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
+import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.core.services.EventService;
+import com.eulersbridge.iEngage.rest.domain.Election;
 import com.eulersbridge.iEngage.rest.domain.Event;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +36,22 @@ public class EventController {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create event "+event);
         CreateEventEvent createEventEvent = new CreateEventEvent(event.toEventDetails());
         EventCreatedEvent eventCreatedEvent = eventService.createEvent(createEventEvent);
-        if(eventCreatedEvent.getEventId() == null){
-            return new ResponseEntity<Event>(HttpStatus.BAD_REQUEST);
+        ResponseEntity<Event> response;
+        if((null==eventCreatedEvent)||(eventCreatedEvent.getEventId() == null))
+        {
+            response = new ResponseEntity<Event>(HttpStatus.BAD_REQUEST);
         }
-        else{
+        else if (!(eventCreatedEvent.isInstitutionFound()))
+        {
+            response=new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
             Event result = Event.fromEventDetails(eventCreatedEvent.getEventDetails());
             if (LOG.isDebugEnabled()) LOG.debug("event"+result.toString());
-            return new ResponseEntity<Event>(result, HttpStatus.OK);
+            response = new ResponseEntity<Event>(result, HttpStatus.CREATED);
         }
+        return response;
     }
 
     //Get
@@ -88,8 +100,14 @@ public class EventController {
     public @ResponseBody
     ResponseEntity<Boolean> deleteEvent(@PathVariable Long eventId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete event. " + eventId);
+    	ResponseEntity<Boolean> response;
         EventDeletedEvent eventDeletedEvent = eventService.deleteEvent(new DeleteEventEvent(eventId));
-        Boolean isDeletionCompleted = Boolean.valueOf(eventDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    	if (eventDeletedEvent.isDeletionCompleted())
+    		response=new ResponseEntity<Boolean>(eventDeletedEvent.isDeletionCompleted(),HttpStatus.OK);
+    	else if (eventDeletedEvent.isEntityFound())
+    		response=new ResponseEntity<Boolean>(eventDeletedEvent.isDeletionCompleted(),HttpStatus.GONE);
+    	else
+    		response=new ResponseEntity<Boolean>(eventDeletedEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
+    	return response;
     }
 }
