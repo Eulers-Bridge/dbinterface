@@ -3,7 +3,6 @@ package com.eulersbridge.iEngage.rest.controller;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
-import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
 import org.slf4j.Logger;
