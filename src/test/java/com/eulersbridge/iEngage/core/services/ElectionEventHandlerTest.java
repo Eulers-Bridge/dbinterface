@@ -74,7 +74,7 @@ public class ElectionEventHandlerTest
 		Election testData=DatabaseDataFixture.populateElection1();
 		when(electionRepository.findOne(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
-		ReadElectionEvent evtData = service.requestReadElection(requestReadElectionEvent);
+		ReadElectionEvent evtData = service.readElection(requestReadElectionEvent);
 		ElectionDetails returnedDets = evtData.getElectionDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
 		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
@@ -89,7 +89,7 @@ public class ElectionEventHandlerTest
 		Long nodeId=1l;
 		when(electionRepository.findOne(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(nodeId);
-		ReadElectionEvent evtData = service.requestReadElection(requestReadElectionEvent);
+		ReadElectionEvent evtData = service.readElection(requestReadElectionEvent);
 		ElectionDetails returnedDets = evtData.getElectionDetails();
 		assertNull(returnedDets);
 		assertEquals(nodeId,evtData.getElectionId());
