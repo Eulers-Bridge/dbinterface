@@ -221,7 +221,7 @@ public class EventControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElection()");
 		EventDetails dets=DatabaseDataFixture.populateEvent1().toEventDetails();
 		ReadEventEvent testData=new ReadEventEvent(dets.getEventId(),dets);
-		when (eventService.requestReadEvent(any(RequestReadEventEvent.class))).thenReturn(testData);
+		when (eventService.readEvent(any(RequestReadEventEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{eventId}/",dets.getEventId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.eventId",is(dets.getEventId().intValue())))
@@ -253,7 +253,7 @@ public class EventControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElection()");
 		EventDetails dets=DatabaseDataFixture.populateEvent1().toEventDetails();
 		ReadEventEvent testData=ReadEventEvent.notFound(dets.getEventId());
-		when (eventService.requestReadEvent(any(RequestReadEventEvent.class))).thenReturn(testData);
+		when (eventService.readEvent(any(RequestReadEventEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{electionId}/",dets.getEventId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;
