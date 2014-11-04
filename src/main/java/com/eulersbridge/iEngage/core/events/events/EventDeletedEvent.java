@@ -31,4 +31,21 @@ public class EventDeletedEvent extends DeletedEvent{
     public boolean isDeletionCompleted(){
         return this.deletionCompleted;
     }
+
+	/**
+	 * @return the eventId
+	 */
+	public Long getEventId()
+	{
+		return eventId;
+	}
+
+	/**
+	 * @param eventId the eventId to set
+	 */
+	public void setEventId(Long eventId)
+	{
+		this.eventId = eventId;
+	}
+
 }

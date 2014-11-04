@@ -13,7 +13,7 @@ public interface EventService {
     public EventCreatedEvent createEvent(CreateEventEvent createEventEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ReadEventEvent requestReadEvent(RequestReadEventEvent requestReadEventEvent);
+    public ReadEventEvent readEvent(RequestReadEventEvent requestReadEventEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public EventUpdatedEvent updateEvent(UpdateEventEvent updateEventEvent);

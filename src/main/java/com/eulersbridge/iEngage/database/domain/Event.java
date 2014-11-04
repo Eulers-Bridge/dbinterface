@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import java.util.Arrays;
+
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
 
 import org.neo4j.graphdb.Direction;
@@ -47,6 +49,7 @@ public class Event
         event.setName(eventDetails.getName());
         event.setLocation(eventDetails.getLocation());
         event.setStarts(eventDetails.getStarts());
+        event.setEnds(eventDetails.getEnds());
         event.setDescription(eventDetails.getDescription());
         event.setPicture(eventDetails.getPicture());
         event.setVolunteerPositions(eventDetails.getVolunteerPositions());
@@ -54,6 +57,9 @@ public class Event
         event.setOrganizer(eventDetails.getOrganizer());
         event.setOrganizerEmail(eventDetails.getOrganizerEmail());
         event.setModified(eventDetails.getModified());
+        Institution inst=new Institution();
+        inst.setNodeId(eventDetails.getInstitutionId());
+        event.setInstitution(inst);
 
         if (LOG.isTraceEnabled()) LOG.trace("event "+event);
         return event;
@@ -230,6 +236,121 @@ public class Event
 	 */
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if (this.eventId!=null)
+		{
+			result = prime * result + eventId.hashCode();
+		}
+		else
+		{
+			result = prime * result + ((created == null) ? 0 : created.hashCode());
+			result = prime * result
+					+ ((description == null) ? 0 : description.hashCode());
+			result = prime * result + ((ends == null) ? 0 : ends.hashCode());
+			result = prime * result
+					+ ((institution == null) ? 0 : institution.hashCode());
+			result = prime * result
+					+ ((location == null) ? 0 : location.hashCode());
+			result = prime * result
+					+ ((modified == null) ? 0 : modified.hashCode());
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result
+					+ ((organizer == null) ? 0 : organizer.hashCode());
+			result = prime * result
+					+ ((organizerEmail == null) ? 0 : organizerEmail.hashCode());
+			result = prime * result + Arrays.hashCode(picture);
+			result = prime * result + ((starts == null) ? 0 : starts.hashCode());
+			result = prime * result + Arrays.hashCode(volunteerPositions);
+		}
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Event other = (Event) obj;
+		if (eventId != null)
+		{
+			if (eventId.equals(other.eventId))
+				return true;
+			else return false;
+		}
+		else
+		{
+			if (other.eventId != null)
+				return false;
+			if (created == null) {
+				if (other.created != null)
+					return false;
+			} else if (!created.equals(other.created))
+				return false;
+			if (description == null) {
+				if (other.description != null)
+					return false;
+			} else if (!description.equals(other.description))
+				return false;
+			if (ends == null) {
+				if (other.ends != null)
+					return false;
+			} else if (!ends.equals(other.ends))
+				return false;
+			if (institution == null) {
+				if (other.institution != null)
+					return false;
+			} else if (!institution.equals(other.institution))
+				return false;
+			if (location == null) {
+				if (other.location != null)
+					return false;
+			} else if (!location.equals(other.location))
+				return false;
+			if (modified == null) {
+				if (other.modified != null)
+					return false;
+			} else if (!modified.equals(other.modified))
+				return false;
+			if (name == null) {
+				if (other.name != null)
+					return false;
+			} else if (!name.equals(other.name))
+				return false;
+			if (organizer == null) {
+				if (other.organizer != null)
+					return false;
+			} else if (!organizer.equals(other.organizer))
+				return false;
+			if (organizerEmail == null) {
+				if (other.organizerEmail != null)
+					return false;
+			} else if (!organizerEmail.equals(other.organizerEmail))
+				return false;
+			if (!Arrays.equals(picture, other.picture))
+				return false;
+			if (starts == null) {
+				if (other.starts != null)
+					return false;
+			} else if (!starts.equals(other.starts))
+				return false;
+			if (!Arrays.equals(volunteerPositions, other.volunteerPositions))
+				return false;
+		}
+		return true;
 	}
 
 }

@@ -1,8 +1,13 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.elections.ElectionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,28 +19,53 @@ public class EventEventHandler implements EventService{
     private static Logger LOG = LoggerFactory.getLogger(EventEventHandler.class);
 
     private EventRepository eventRepository;
+    private InstitutionRepository institutionRepository;
 
-    public EventEventHandler(EventRepository eventRepository){
+    public EventEventHandler(EventRepository eventRepository)
+    {
         this.eventRepository = eventRepository;
     }
 
-    @Override
+    public EventEventHandler(EventRepository eventRepository,
+			InstitutionRepository institutionRepository)
+    {
+        this.eventRepository = eventRepository;
+        this.institutionRepository = institutionRepository;
+	}
+
+	@Override
     public EventCreatedEvent createEvent(CreateEventEvent createEventEvent) {
         EventDetails eventDetails = createEventEvent.getEventDetails();
         Event event = Event.fromEventDetails(eventDetails);
-        Event result = eventRepository.save(event);
-        EventCreatedEvent eventCreatedEvent = new EventCreatedEvent(result.getEventId(), result.toEventDetails());
+        Long instId=eventDetails.getInstitutionId();
+
+        if (LOG.isDebugEnabled()) LOG.debug("Finding institution with instId = "+instId);
+    	Institution inst=institutionRepository.findOne(instId);
+
+    	EventCreatedEvent eventCreatedEvent;
+    	if (inst!=null)
+    	{
+    		event.setInstitution(inst);
+    		Event result = eventRepository.save(event);
+    		eventCreatedEvent = new EventCreatedEvent(result.getEventId(), result.toEventDetails());
+    	}
+    	else
+    	{
+    		eventCreatedEvent=EventCreatedEvent.institutionNotFound(eventDetails.getInstitutionId());
+    	}
         return eventCreatedEvent;
     }
 
     @Override
-    public ReadEventEvent requestReadEvent(RequestReadEventEvent requestReadEventEvent) {
+    public ReadEventEvent readEvent(RequestReadEventEvent requestReadEventEvent) {
         Event event = eventRepository.findOne(requestReadEventEvent.getEventId());
         ReadEventEvent readEventEvent;
-        if(event != null){
+        if(event != null)
+        {
             readEventEvent = new ReadEventEvent(requestReadEventEvent.getEventId(), event.toEventDetails());
         }
-        else{
+        else
+        {
             readEventEvent = ReadEventEvent.notFound(requestReadEventEvent.getEventId());
         }
         return readEventEvent;

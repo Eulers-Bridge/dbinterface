@@ -1,10 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.core.services.EventService;
-import com.eulersbridge.iEngage.rest.domain.Election;
 import com.eulersbridge.iEngage.rest.domain.Event;
 
 import org.slf4j.Logger;
@@ -60,7 +57,7 @@ public class EventController {
     ResponseEntity<Event> findEvent(@PathVariable Long eventId){
         if (LOG.isInfoEnabled()) LOG.info(eventId+" attempting to get event. ");
         RequestReadEventEvent requestReadEventEvent = new RequestReadEventEvent(eventId);
-        ReadEventEvent readEventEvent = eventService.requestReadEvent(requestReadEventEvent);
+        ReadEventEvent readEventEvent = eventService.readEvent(requestReadEventEvent);
         if(readEventEvent.isEntityFound()){
             Event event = Event.fromEventDetails(readEventEvent.getEventDetails());
             return new ResponseEntity<Event>(event, HttpStatus.OK);
