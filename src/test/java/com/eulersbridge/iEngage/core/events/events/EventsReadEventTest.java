@@ -101,17 +101,17 @@ public class EventsReadEventTest
 	}
 
 	@Test
-	public final void testGetTotalArticles()
+	public final void testGetTotalEvents()
 	{
-		assertEquals(totalElements,evtTest.getTotalArticles());
+		assertEquals(totalElements,evtTest.getTotalEvents());
 	}
 
 	@Test
-	public final void testSetTotalArticles()
+	public final void testSetTotalEvents()
 	{
 		Long tot=453l;
-		evtTest.setTotalArticles(tot);
-		assertEquals(tot,evtTest.getTotalArticles());
+		evtTest.setTotalEvents(tot);
+		assertEquals(tot,evtTest.getTotalEvents());
 	}
 
 	@Test
@@ -131,16 +131,16 @@ public class EventsReadEventTest
 	@Test
 	public final void testGetArticles()
 	{
-		assertEquals(dets,evtTest.getArticles());
+		assertEquals(dets,evtTest.getEvents());
 	}
 
 	@Test
 	public final void testSetArticles()
 	{
 		ArrayList<EventDetails> tdets=new ArrayList<EventDetails>();
-		assertNotEquals(tdets,evtTest.getArticles());
-		evtTest.setArticles(tdets);
-		assertEquals(tdets,evtTest.getArticles());
+		assertNotEquals(tdets,evtTest.getEvents());
+		evtTest.setEvents(tdets);
+		assertEquals(tdets,evtTest.getEvents());
 	}
 
 	@Test

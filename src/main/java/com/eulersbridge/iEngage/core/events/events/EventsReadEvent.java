@@ -18,10 +18,10 @@ public class EventsReadEvent extends ReadEvent
 	private boolean newsFeedFound=true;
 	private boolean institutionFound=true;
 	private boolean eventsFound=true;
-	private Long totalArticles;
+	private Long totalEvents;
 	private Integer totalPages;
 	
-	private Collection<EventDetails> articles;
+	private Collection<EventDetails> events;
 
 	public EventsReadEvent()
 	{
@@ -31,7 +31,7 @@ public class EventsReadEvent extends ReadEvent
 	public EventsReadEvent(Long instId,Collection<EventDetails>articles)
 	{
 		this.instId=instId;
-		this.articles=articles;
+		this.events=articles;
 	}
 	
 	public EventsReadEvent(Long institutionId,
@@ -39,7 +39,7 @@ public class EventsReadEvent extends ReadEvent
 			int totalPages) 
 	{
 		this(institutionId,dets);
-		this.totalArticles=totalElements;
+		this.totalEvents=totalElements;
 		this.totalPages=totalPages;
 	}
 
@@ -100,17 +100,17 @@ public class EventsReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @return the totalArticles
+	 * @return the totalEvents
 	 */
-	public Long getTotalArticles() {
-		return totalArticles;
+	public Long getTotalEvents() {
+		return totalEvents;
 	}
 
 	/**
-	 * @param totalArticles the totalArticles to set
+	 * @param totalEvents the totalEvents to set
 	 */
-	public void setTotalArticles(Long totalArticles) {
-		this.totalArticles = totalArticles;
+	public void setTotalEvents(Long totalEvents) {
+		this.totalEvents = totalEvents;
 	}
 
 	/**
@@ -128,17 +128,17 @@ public class EventsReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @return the articles
+	 * @return the events
 	 */
-	public Collection<EventDetails> getArticles() {
-		return articles;
+	public Collection<EventDetails> getEvents() {
+		return events;
 	}
 
 	/**
-	 * @param articles the articles to set
+	 * @param events the events to set
 	 */
-	public void setArticles(Collection<EventDetails> articles) {
-		this.articles = articles;
+	public void setEvents(Collection<EventDetails> articles) {
+		this.events = articles;
 	}
 
 	public static EventsReadEvent newsFeedNotFound() 

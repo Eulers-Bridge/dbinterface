@@ -4,13 +4,9 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.services.EventService;
 import com.eulersbridge.iEngage.rest.domain.Event;
 import com.eulersbridge.iEngage.rest.domain.Events;
-import com.eulersbridge.iEngage.rest.domain.NewsArticle;
-import com.eulersbridge.iEngage.rest.domain.NewsArticles;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,17 +100,17 @@ public class EventController {
 		
 		Direction sortDirection=Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
-		EventsReadEvent articleEvent=eventService.readEvents(new ReadAllEvent(institutionId),sortDirection, pageNumber,pageLength);
+		EventsReadEvent evtEvent=eventService.readEvents(new ReadAllEvent(institutionId),sortDirection, pageNumber,pageLength);
   	
-		if (!articleEvent.isEntityFound())
+		if (!evtEvent.isEntityFound())
 		{
 			response = new ResponseEntity<Events>(HttpStatus.NOT_FOUND);
 		}
 		
 		else
 		{
-			Iterator<Event> articles = Event.toEventsIterator(articleEvent.getArticles().iterator());
-			Events events = Events.fromEventsIterator(articles, articleEvent.getTotalArticles(), articleEvent.getTotalPages());
+			Iterator<Event> evts = Event.toEventsIterator(evtEvent.getEvents().iterator());
+			Events events = Events.fromEventsIterator(evts, evtEvent.getTotalEvents(), evtEvent.getTotalPages());
 			response = new ResponseEntity<Events>(events,HttpStatus.OK);
 		}
 
