@@ -22,7 +22,7 @@ import org.springframework.data.neo4j.annotation.RelatedToVia;
  */
 
 @NodeEntity
-public class Event
+public class Event extends Likeable
 {
     @GraphId private Long eventId;
     private String name;
