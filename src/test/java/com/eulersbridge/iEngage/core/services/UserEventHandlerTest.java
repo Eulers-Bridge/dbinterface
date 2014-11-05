@@ -5,7 +5,6 @@ package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -22,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -515,12 +515,15 @@ public class UserEventHandlerTest
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt2();
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
+		
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+
 		boolean exception=false;
 		try
 		{
-			userService.authenticateUser(evt);
+			userServiceMocked.authenticateUser(evt);
 		}
-		catch (UsernameNotFoundException e)
+		catch (DisabledException e)
 		{
 			assertNotNull(e);
 			exception=true;
@@ -780,7 +783,6 @@ public class UserEventHandlerTest
 	{
 		DeleteVoteReminderEvent deleteVoteReminderEvent;
 		Long id=1l;
-		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
 		deleteVoteReminderEvent=new DeleteVoteReminderEvent(id);
 		when(uRepo.deleteVoteReminder(any(Long.class))).thenReturn(null);
 
