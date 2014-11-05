@@ -17,6 +17,7 @@ public class ControllerConstants
 	public static final String ELECTIONS_LABEL = "/elections";
 	public static final String EMAIL_VERIFICATION_LABEL = "/emailVerification";
     public static final String EVENT_LABEL = "/event";
+	public static final String EVENTS_LABEL = "/events";
     public static final String FORUM_QUESTION_LABEL = "/forum";
 	public static final String INSTITUTION_LABEL = "/institution";
 	public static final String INSTITUTIONS_LABEL = "/institutions";
