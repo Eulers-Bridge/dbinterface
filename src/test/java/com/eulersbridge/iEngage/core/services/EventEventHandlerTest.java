@@ -26,6 +26,7 @@ import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
@@ -74,7 +75,9 @@ public class EventEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("CreatingEvent()");
 		Event testData=DatabaseDataFixture.populateEvent1();
 		Institution testInst=DatabaseDataFixture.populateInstUniMelb();
+		NewsFeed testNf=DatabaseDataFixture.populateNewsFeed1();
 		when(institutionRepository.findOne(any(Long.class))).thenReturn(testInst);
+		when(institutionRepository.findNewsFeed(any(Long.class))).thenReturn(testNf);
 		when(eventRepository.save(any(Event.class))).thenReturn(testData);
 		EventDetails dets=testData.toEventDetails();
 		CreateEventEvent createEventEvent=new CreateEventEvent(dets);
@@ -97,7 +100,7 @@ public class EventEventHandlerTest
 		CreateEventEvent createEventEvent=new CreateEventEvent(dets);
 		EventCreatedEvent evtData = service.createEvent(createEventEvent);
 		assertFalse(evtData.isInstitutionFound());
-		assertEquals(evtData.getEventId(),testData.getInstitution().getNodeId());
+		assertEquals(evtData.getEventId(),testData.getNewsFeed().getInstitution().getNodeId());
 		assertNull(evtData.getEventDetails());
 	}
 

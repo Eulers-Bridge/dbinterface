@@ -95,15 +95,15 @@ public class DatabaseDataFixture
 	}
 	public static NewsFeed populateNewsFeed1()
 	{
-		return populateStudentYear((long)2);
+		return populateNewsFeed((long)2);
 	}
 	
 	public static NewsFeed populateNewsFeed2()
 	{
-		return populateStudentYear((long)1);
+		return populateNewsFeed((long)1);
 	}
 	
-	public static NewsFeed populateStudentYear(Long nodeId)
+	public static NewsFeed populateNewsFeed(Long nodeId)
 	{
 		NewsFeed year=new NewsFeed();
 		Institution inst=populateInstUniMelb();
@@ -208,16 +208,14 @@ public class DatabaseDataFixture
 
 	public static Event populateEvent1() {
 		Long nodeId=(long)2;
-		Institution inst=populateInstUniMelb();
-		return populateEvent(nodeId, "That event", "That event where that thing happened.", "Union Building", "Greg Newitt", "gnewitt@hotmail.com", 123666l, 123666l, 124666l, 124766l, inst);
+		return populateEvent(nodeId, "That event", "That event where that thing happened.", "Union Building", "Greg Newitt", "gnewitt@hotmail.com", 123666l, 123666l, 124666l, 124766l, populateNewsFeed2());
 	}
 	public static Event populateEvent2()
 	{
 		Long nodeId=(long)2;
-		Institution inst=populateInstUniMelb();
-		return populateEvent(nodeId, "That other event", "That other event where that other thing happened.", "Clyde Hotel", "Greg Newitt", "gnewitt@hotmail.com", 123766l, 123766l, 124766l, 124866l, inst);
+		return populateEvent(nodeId, "That other event", "That other event where that other thing happened.", "Clyde Hotel", "Greg Newitt", "gnewitt@hotmail.com", 123766l, 123766l, 124766l, 124866l, populateNewsFeed2());
 	}
-	public static Event populateEvent(Long id, String name, String description, String location,String organizer, String organizerEmail, Long created, Long modified, Long starts, Long ends, Institution inst)
+	public static Event populateEvent(Long id, String name, String description, String location,String organizer, String organizerEmail, Long created, Long modified, Long starts, Long ends, NewsFeed newsFeed)
 	{
 		Event event=new Event();
 		event.setEventId(id);
@@ -230,7 +228,7 @@ public class DatabaseDataFixture
 		event.setOrganizerEmail(organizerEmail);
 		event.setCreated(created);
 		event.setModified(modified);
-		event.setInstitution(inst);
+		event.setNewsFeed(newsFeed);
 		return event;
 	}
 	public static HashMap<Long,Event> populateEvents()
