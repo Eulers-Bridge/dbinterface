@@ -103,7 +103,7 @@ public class CoreConfig
     public EventService createEventService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createEventService()");
-        return new EventEventHandler(eventRepository);
+        return new EventEventHandler(eventRepository,instRepo);
     }
 
     @Bean
