@@ -7,15 +7,10 @@ import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
-import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
-import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
@@ -35,11 +30,6 @@ public class EventEventHandler implements EventService{
 
     private EventRepository eventRepository;
     private InstitutionRepository institutionRepository;
-
-    public EventEventHandler(EventRepository eventRepository)
-    {
-        this.eventRepository = eventRepository;
-    }
 
     public EventEventHandler(EventRepository eventRepository,
 			InstitutionRepository institutionRepository)
@@ -161,12 +151,12 @@ public class EventEventHandler implements EventService{
 				}
 				else
 				{	
-					nare=new EventsReadEvent(institutionId,dets);
+					nare=new EventsReadEvent(institutionId,dets,events.getTotalElements(),events.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new EventsReadEvent(institutionId,dets);
+				nare=new EventsReadEvent(institutionId,dets,events.getTotalElements(),events.getTotalPages());
 			}
 		}
 		else
