@@ -3,7 +3,10 @@ package com.eulersbridge.iEngage.rest.controller;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
+import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
 
@@ -30,6 +33,8 @@ import com.eulersbridge.iEngage.rest.domain.NewsArticles;
 public class NewsController 
 {
     @Autowired NewsService newsService;
+    @Autowired
+    LikesService likesService;
 
 	public NewsController() 
 	{
@@ -302,14 +307,23 @@ public class NewsController
         if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users from article "+articleId+'.');
         Direction sortDirection = Direction.DESC;
         if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-        NewsArticleLikesEvent newsArticleLikesEvent = newsService.likesNewsArticle(new LikesNewsArticleEvent(articleId), sortDirection, pageNumber, pageLength);
-        if (!newsArticleLikesEvent.isArticlesFound())
-        {
-            return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
+
+//        NewsArticleLikesEvent newsArticleLikesEvent = newsService.likesNewsArticle(new LikesNewsArticleEvent(articleId), sortDirection, pageNumber, pageLength);
+//        if (!newsArticleLikesEvent.isArticlesFound())
+//        {
+//            return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
+//        }
+
+        LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(articleId), sortDirection, pageNumber, pageLength);
+        Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
+        if (likes.hasNext() == false){
+            ReadNewsArticleEvent articleEvent=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
+            if (!articleEvent.isEntityFound())
+                return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
+            else
+                return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
         }
-        Iterator<LikeInfo> likes = User.toLikesIterator(newsArticleLikesEvent.getUserDetails().iterator());
-        return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+        else
+            return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
     }
-
-
 }

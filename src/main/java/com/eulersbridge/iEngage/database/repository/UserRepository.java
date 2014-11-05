@@ -50,4 +50,6 @@ public interface UserRepository extends GraphRepository<User>
     @Query("Match (u:'User')-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a:'NewsArticle') WHERE id(a)={articleId} RETURN u")
     Page<User> findByArticleId (@Param("articleId")Long id, Pageable p);
 
+    @Query("Match (u:'User')-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a) WHERE id(a)={objId} RETURN u")
+    Page<User> findByLikeableObjId (@Param("objId")Long id, Pageable p);
 }

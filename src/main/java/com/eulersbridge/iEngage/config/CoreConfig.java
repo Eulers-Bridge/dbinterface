@@ -126,4 +126,11 @@ public class CoreConfig
         if (LOG.isDebugEnabled()) LOG.debug("createConfigurationService()");
         return new ConfigurationEventHandler(configurationRepository);
     }
+
+    @Bean
+    public LikesService createLikesService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createLikesService()");
+        return new LikesEventHandler(userRepo);
+    }
 }
