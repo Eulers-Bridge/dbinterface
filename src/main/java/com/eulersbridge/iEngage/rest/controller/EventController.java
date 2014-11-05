@@ -1,12 +1,21 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.Iterator;
+
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.services.EventService;
 import com.eulersbridge.iEngage.rest.domain.Event;
+import com.eulersbridge.iEngage.rest.domain.Events;
+import com.eulersbridge.iEngage.rest.domain.NewsArticle;
+import com.eulersbridge.iEngage.rest.domain.NewsArticles;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +75,51 @@ public class EventController {
             return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
         }
     }
+
+    /**
+     * Is passed all the necessary data to read news articles from the database.
+     * The request must be a GET with the institutionId/student year presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the news articles read from the database.
+     * 
+     * @param email the email address of the user object to be read.
+     * @return the user object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.EVENTS_LABEL+"/{institutionId}")
+	public @ResponseBody ResponseEntity<Events> findEvents(@PathVariable(value="") Long institutionId,
+			@RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize) 
+	{
+		int pageNumber=0;
+		int pageLength=10;
+		pageNumber=Integer.parseInt(page);
+		pageLength=Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve events from institution "+institutionId+'.');
+				
+		ResponseEntity<Events> response;
+		
+		Direction sortDirection=Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
+		EventsReadEvent articleEvent=eventService.readEvents(new ReadAllEvent(institutionId),sortDirection, pageNumber,pageLength);
+  	
+		if (!articleEvent.isEntityFound())
+		{
+			response = new ResponseEntity<Events>(HttpStatus.NOT_FOUND);
+		}
+		
+		else
+		{
+			Iterator<Event> articles = Event.toEventsIterator(articleEvent.getArticles().iterator());
+			Events events = Events.fromEventsIterator(articles, articleEvent.getTotalArticles(), articleEvent.getTotalPages());
+			response = new ResponseEntity<Events>(events,HttpStatus.OK);
+		}
+
+		return response;
+	}
 
     //Update
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.EVENT_LABEL+"/{eventId}")
