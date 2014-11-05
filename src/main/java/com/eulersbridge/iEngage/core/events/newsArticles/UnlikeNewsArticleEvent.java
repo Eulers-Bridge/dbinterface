@@ -22,8 +22,8 @@ public class UnlikeNewsArticleEvent extends LikeEvent
 	
 	public UnlikeNewsArticleEvent(Long newsArticleId, String emailAddress) 
 	{
+		super(newsArticleId,emailAddress);
 		this.newsArticleId=newsArticleId;
-		this.emailAddress=emailAddress;
 	}
 
 	/**
