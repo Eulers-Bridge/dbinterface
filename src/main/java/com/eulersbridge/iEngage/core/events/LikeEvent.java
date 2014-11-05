@@ -9,12 +9,14 @@ package com.eulersbridge.iEngage.core.events;
  */
 public class LikeEvent 
 {
+	protected Long nodeId;
 	protected String emailAddress;
 
 	/**
 	 * @return the userId
 	 */
-	public String getEmailAddress() {
+	public String getEmailAddress()
+	{
 		return emailAddress;
 	}
 
@@ -23,5 +25,19 @@ public class LikeEvent
 	 */
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+	/**
+	 * @return the nodeId
+	 */
+	public Long getNodeId() {
+		return nodeId;
+	}
+
+	/**
+	 * @param nodeId the nodeId to set
+	 */
+	public void setNodeId(Long nodeId) {
+		this.nodeId = nodeId;
 	}
 }
