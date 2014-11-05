@@ -1,15 +1,21 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import java.util.Arrays;
+import java.util.Set;
+
+import javax.validation.constraints.NotNull;
 
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
 
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 /**
  * @author Yikai Gong
@@ -21,17 +27,21 @@ public class Event
     @GraphId private Long eventId;
     private String name;
     private String location;
-    private Long starts;
+    @Indexed @NotNull private Long starts;
     private Long ends;
     private String description;
     private String picture[];
     private String volunteerPositions[];
     private Long created;
     private String organizer;
+//	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction=Direction.BOTH) @Fetch
+//	private User creator;
     private String organizerEmail;
     private Long modified;
-	@RelatedTo(type = DatabaseDomainConstants.HAS_EVENT_LABEL, direction=Direction.OUTGOING)
-	private Institution institution;
+	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
+	private Set<Like> likes;
+	@RelatedTo(type = DatabaseDomainConstants.HAS_EVENT_LABEL, direction=Direction.BOTH) @Fetch
+	private NewsFeed newsFeed;
 
     private static Logger LOG = LoggerFactory.getLogger(Event.class);
 
@@ -59,7 +69,9 @@ public class Event
         event.setModified(eventDetails.getModified());
         Institution inst=new Institution();
         inst.setNodeId(eventDetails.getInstitutionId());
-        event.setInstitution(inst);
+	    NewsFeed nf=new NewsFeed();
+	    nf.setInstitution(inst);
+		event.setNewsFeed(nf);
 
         if (LOG.isTraceEnabled()) LOG.trace("event "+event);
         return event;
@@ -75,7 +87,11 @@ public class Event
         eventDetails.setLocation(getLocation());
         eventDetails.setStarts(getStarts());
         eventDetails.setEnds(getEnds());
-        eventDetails.setInstitutionId(getInstitution().getNodeId());
+	    if (getNewsFeed()!=null)
+	    {
+	    	if (getNewsFeed().getInstitution()!=null)
+	    		eventDetails.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
+	    }
         eventDetails.setDescription(getDescription());
         eventDetails.setPicture(getPicture());
         eventDetails.setVolunteerPositions(getVolunteerPositions());
@@ -227,15 +243,16 @@ public class Event
 	/**
 	 * @return the institution
 	 */
-	public Institution getInstitution() {
-		return institution;
+	public NewsFeed getNewsFeed()
+	{
+		return newsFeed;
 	}
 
 	/**
 	 * @param institution the institution to set
 	 */
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
+	public void setNewsFeed(NewsFeed newsFeed) {
+		this.newsFeed = newsFeed;
 	}
 
 	/* (non-Javadoc)
@@ -256,7 +273,7 @@ public class Event
 					+ ((description == null) ? 0 : description.hashCode());
 			result = prime * result + ((ends == null) ? 0 : ends.hashCode());
 			result = prime * result
-					+ ((institution == null) ? 0 : institution.hashCode());
+					+ ((newsFeed == null) ? 0 : newsFeed.hashCode());
 			result = prime * result
 					+ ((location == null) ? 0 : location.hashCode());
 			result = prime * result
@@ -310,10 +327,10 @@ public class Event
 					return false;
 			} else if (!ends.equals(other.ends))
 				return false;
-			if (institution == null) {
-				if (other.institution != null)
+			if (newsFeed == null) {
+				if (other.newsFeed != null)
 					return false;
-			} else if (!institution.equals(other.institution))
+			} else if (!newsFeed.equals(other.newsFeed))
 				return false;
 			if (location == null) {
 				if (other.location != null)
