@@ -12,6 +12,7 @@ import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
+import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
@@ -148,6 +149,26 @@ public class DatabaseDataFixture
 		return newsArticles;
 	}
 
+	public static Photo populatePhoto1()
+	{
+		Long nodeId=(long)1;
+		Photo photo=populatePhoto("http://localhost:8080/photos/photo1.jpg","Test Photo", "Contents of the Test Photo", Calendar.getInstance().getTimeInMillis(), nodeId);
+		return photo;
+	}
+	public static Photo populatePhoto2()
+	{
+		Long nodeId=(long)2;
+		Photo photo=populatePhoto("http://localhost:8080/photos/photo2.jpg","Test Photo2", "Contents of the Test Photo2", Calendar.getInstance().getTimeInMillis(), nodeId);
+		return photo;
+	}
+	public static Photo populatePhoto(String url, String title, String content, Long date,Long id)
+	{
+		Photo photo=new Photo(url, title, content, date);
+		Long nodeId=id;
+		photo.setNodeId(nodeId);
+		return photo;
+	}
+	
 	public static HashMap<Long,Country> populateCountries()
 	{
 		HashMap<Long, Country> countrys=new HashMap<Long, Country>();
