@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.core.services.EventService;
@@ -157,4 +159,78 @@ public class EventController {
     		response=new ResponseEntity<Boolean>(eventDeletedEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
     	return response;
     }
+    
+    /**
+     * Is passed all the necessary data to unlike an event from the database.
+     * The request must be a PUT with the event id presented along with the userid
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the a boolean result.
+     * 
+     * @param email the eventId eventId of the event object to be unliked.
+     * @param email the email address of the user unliking the event.
+     * @return the success or failure.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.EVENT_LABEL+"/{eventId}/unlikedBy/{email}/")
+	public @ResponseBody ResponseEntity<Boolean> unlikeEvent(@PathVariable Long eventId,@PathVariable String email) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike news article. "+eventId);
+		LikedEvent event=eventService.unlikeEvent(new LikeEvent(eventId,email));
+  	
+		ResponseEntity<Boolean> response;
+		
+		if (!event.isEntityFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+		}
+		else if (!event.isUserFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Boolean restEvent=event.isResultSuccess();
+			response = new ResponseEntity<Boolean>(restEvent,HttpStatus.OK);
+		}
+		return response;
+	}
+    
+    /**
+     * Is passed all the necessary data to like an event from the database.
+     * The request must be a PUT with the event id presented along with the userid
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the a boolean result.
+     * 
+     * @param email the eventId eventId of the event object to be liked.
+     * @param email the email address of the user liking the event.
+     * @return the success or failure.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.EVENT_LABEL+"/{eventId}/likedBy/{email}/")
+	public @ResponseBody ResponseEntity<Boolean> likeEvent(@PathVariable Long eventId,@PathVariable String email) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+eventId);
+		LikedEvent event=eventService.likeEvent(new LikeEvent(eventId,email));
+		
+		ResponseEntity<Boolean> response;
+		
+		if (!event.isEntityFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+		}
+		else if (!event.isUserFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Boolean restEvent=event.isResultSuccess();
+			response = new ResponseEntity<Boolean>(restEvent,HttpStatus.OK);
+		}
+		return response;
+	}
 }
