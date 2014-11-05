@@ -15,21 +15,19 @@ public class NewsArticleUnlikedEvent extends LikedEvent
 
 	public NewsArticleUnlikedEvent(Long articleId, String userId,boolean result) 
 	{
-		this.articleId=articleId;
-		this.userEmail=userId;
-		this.result=result;
+		super(articleId,userId,result);
 	}
 
 	public NewsArticleUnlikedEvent(Long articleId, String userId) 
 	{
-		this(articleId,userId,false);
+		super(articleId,userId);
 	}
 
 	public NewsArticleUnlikedEvent(String userId) 
 	{
-		this(null,userId,false);
+		super(userId);
 	}
-
+//TODO delete entire class.
 	public static NewsArticleUnlikedEvent articleNotFound(Long articleId, String userId) 
 	{
 		NewsArticleUnlikedEvent ev = new NewsArticleUnlikedEvent(articleId, userId);

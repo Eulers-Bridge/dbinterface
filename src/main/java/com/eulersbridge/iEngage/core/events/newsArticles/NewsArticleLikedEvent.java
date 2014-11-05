@@ -15,21 +15,19 @@ public class NewsArticleLikedEvent extends LikedEvent
 
 	public NewsArticleLikedEvent(Long articleId, String userId,boolean result) 
 	{
-		this.articleId=articleId;
-		this.userEmail=userId;
-		this.result=result;
+		super(articleId,userId,result);
 	}
 
 	public NewsArticleLikedEvent(Long articleId, String userId) 
 	{
-		this(articleId,userId,false);
+		super(articleId,userId);
 	}
 
 	public NewsArticleLikedEvent(String userId) 
 	{
-		this(null,userId,false);
+		super(userId);
 	}
-
+//TODO remove, in fact delete entire class.
 	public static NewsArticleLikedEvent articleNotFound(Long articleId, String userId) {
 		NewsArticleLikedEvent ev = new NewsArticleLikedEvent(articleId, userId);
 	    ev.entityFound=false;
