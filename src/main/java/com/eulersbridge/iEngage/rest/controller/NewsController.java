@@ -2,9 +2,11 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +90,7 @@ public class NewsController
 	public @ResponseBody ResponseEntity<Boolean> likeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
-		NewsArticleLikedEvent articleEvent=newsService.likeNewsArticle(new LikeNewsArticleEvent(articleId,email));
+		NewsArticleLikedEvent articleEvent=newsService.likeNewsArticle(new LikeEvent(articleId,email));
 		
 		ResponseEntity<Boolean> response;
 		
@@ -124,7 +126,7 @@ public class NewsController
 	public @ResponseBody ResponseEntity<Boolean> unlikeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike news article. "+articleId);
-		NewsArticleUnlikedEvent articleEvent=newsService.unlikeNewsArticle(new UnlikeNewsArticleEvent(articleId,email));
+		NewsArticleUnlikedEvent articleEvent=newsService.unlikeNewsArticle(new LikeEvent(articleId,email));
   	
 		ResponseEntity<Boolean> response;
 		

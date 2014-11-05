@@ -3,8 +3,10 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -177,12 +179,12 @@ public class NewsEventHandler implements NewsService
 
 	@Override
 	public NewsArticleLikedEvent likeNewsArticle(
-			LikeNewsArticleEvent likeNewsArticleEvent) 
+			LikeEvent likeNewsArticleEvent) 
 	{
 		boolean result=true;
 		NewsArticleLikedEvent retValue;
 		String email=likeNewsArticleEvent.getEmailAddress();
-		Long newsArticleId=likeNewsArticleEvent.getNewsArticleId();
+		Long newsArticleId=likeNewsArticleEvent.getNodeId();
 /*		User user=userRepository.findByEmail(email);
 		if (null==user)
 		{
@@ -215,12 +217,12 @@ public class NewsEventHandler implements NewsService
 	}
 	@Override
 	public NewsArticleUnlikedEvent unlikeNewsArticle(
-			UnlikeNewsArticleEvent unlikeNewsArticleEvent) 
+			LikeEvent unlikeNewsArticleEvent) 
 	{
 		boolean result=true;
 		NewsArticleUnlikedEvent retValue;
 		String email=unlikeNewsArticleEvent.getEmailAddress();
-		Long newsArticleId=unlikeNewsArticleEvent.getNewsArticleId();
+		Long newsArticleId=unlikeNewsArticleEvent.getNodeId();
 		
 		newsRepo.unlikeArticle(email, newsArticleId);
 		

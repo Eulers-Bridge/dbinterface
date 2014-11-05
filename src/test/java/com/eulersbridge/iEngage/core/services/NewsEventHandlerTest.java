@@ -4,6 +4,8 @@
 package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -15,11 +17,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
@@ -35,8 +39,11 @@ import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
 import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 /**
  * @author Greg Newitt
@@ -49,6 +56,15 @@ public class NewsEventHandlerTest
 	NewsEventHandler newsService;
 	InstitutionMemoryRepository instRepo;
 	
+    @Mock
+    NewsArticleRepository newsRepos;
+    @Mock
+	InstitutionRepository institutionRepos;
+    @Mock
+	UserRepository userRepos;
+
+    NewsEventHandler mockedNewsService;
+    
 	int page=0;
 	int size=10;
 	/**
@@ -72,6 +88,10 @@ public class NewsEventHandlerTest
 	@Before
 	public void setUp() throws Exception 
 	{
+		MockitoAnnotations.initMocks(this);
+
+		mockedNewsService=new NewsEventHandler(newsRepos,userRepos,institutionRepos);
+		
 		Map<Long, NewsArticle> newsArticles=DatabaseDataFixture.populateNewsArticles();
 		Map<Long, User> users=DatabaseDataFixture.populateUsers();
 		userRepo=new UserMemoryRepository(users);
@@ -244,7 +264,7 @@ public class NewsEventHandlerTest
 	{
 		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
 		User user=DatabaseDataFixture.populateUserGnewitt();
-		LikeNewsArticleEvent likeNewsArticlesEvent=new LikeNewsArticleEvent(newsArticle,user);
+		LikeEvent likeNewsArticlesEvent=new LikeEvent(newsArticle.getNodeId(),user);
 		NewsArticleLikedEvent res = newsService.likeNewsArticle(likeNewsArticlesEvent);
 		assertNotNull(res);
 	}
@@ -254,22 +274,23 @@ public class NewsEventHandlerTest
 	{
 		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
 		User user=DatabaseDataFixture.populateUserGnewitt();
-		LikeNewsArticleEvent likeNewsArticlesEvent=new LikeNewsArticleEvent(newsArticle,user);
-		NewsArticleLikedEvent res = newsService.likeNewsArticle(likeNewsArticlesEvent);
+		LikeEvent likeNewsArticlesEvent=new LikeEvent(newsArticle.getNodeId(),user);
+		when(newsRepos.likeArticle(any(String.class),any(Long.class))).thenReturn(null);
+		
+		NewsArticleLikedEvent res = mockedNewsService.likeNewsArticle(likeNewsArticlesEvent);
 		assertNotNull(res);
-		assertEquals(true, res.isResultSuccess());
-		res = newsService.likeNewsArticle(likeNewsArticlesEvent);
-//		assertEquals(false,res.isResultSuccess());
+		assertEquals(false,res.isResultSuccess());
 	}
 	
 	@Test
 	public void testShouldReturnUserNotFound()
 	{
 		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
-		LikeNewsArticleEvent likeNewsArticlesEvent=new LikeNewsArticleEvent(newsArticle.getNodeId(),"test@hotmail.com");
-		NewsArticleLikedEvent res = newsService.likeNewsArticle(likeNewsArticlesEvent);
+		LikeEvent likeNewsArticlesEvent=new LikeEvent(newsArticle.getNodeId(),"test@hotmail.com");
+		when(newsRepos.likeArticle(any(String.class),any(Long.class))).thenReturn(null);
+		NewsArticleLikedEvent res = mockedNewsService.likeNewsArticle(likeNewsArticlesEvent);
 		assertNotNull(res);
-//		assertEquals(false, res.isResultSuccess());
+		assertEquals(false, res.isResultSuccess());
 	}
 	
 }

@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
+
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -17,9 +19,9 @@ public interface NewsService
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public NewsArticlesReadEvent readNewsArticles(ReadNewsArticlesEvent readNewsArticlesEvent,Direction sortDirection, int i, int j);
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public NewsArticleLikedEvent likeNewsArticle(LikeNewsArticleEvent likeNewsArticlesEvent);
+	public NewsArticleLikedEvent likeNewsArticle(LikeEvent likeNewsArticlesEvent);
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public NewsArticleUnlikedEvent unlikeNewsArticle(UnlikeNewsArticleEvent unlikeNewsArticleEvent);
+	public NewsArticleUnlikedEvent unlikeNewsArticle(LikeEvent unlikeNewsArticleEvent);
     @PreAuthorize("hasRole('ROLE_USER')")
     public NewsArticleLikesEvent likesNewsArticle(LikesNewsArticleEvent likesNewsArticleEvent, Direction sortDirection, int pageNumber, int pageSize);
 }

@@ -30,9 +30,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
@@ -147,7 +147,7 @@ public class ViewNewsIntegrationTest {
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
 		NewsArticleLikedEvent testData=new NewsArticleLikedEvent(id, email,true);
-		when (newsService.likeNewsArticle(any(LikeNewsArticleEvent.class))).thenReturn(testData);
+		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(content().string("true"))
@@ -161,7 +161,7 @@ public class ViewNewsIntegrationTest {
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
 		NewsArticleLikedEvent testData=NewsArticleLikedEvent.articleNotFound(id, email);
-		when (newsService.likeNewsArticle(any(LikeNewsArticleEvent.class))).thenReturn(testData);
+		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isGone())	;		
@@ -174,7 +174,7 @@ public class ViewNewsIntegrationTest {
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
 		NewsArticleLikedEvent testData=NewsArticleLikedEvent.userNotFound(id, email);
-		when (newsService.likeNewsArticle(any(LikeNewsArticleEvent.class))).thenReturn(testData);
+		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;		
