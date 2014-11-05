@@ -209,8 +209,8 @@ public class NewsArticle extends Likeable
 		    newsArt.date=newsArtDetails.getDate();
 		    User creator=new User(newsArtDetails.getCreatorEmail(),null,null,null, null, null, null);
 		    newsArt.creator=creator;
-		    NewsFeed year=new NewsFeed();
-			newsArt.newsFeed=year;
+		    NewsFeed nf=new NewsFeed();
+			newsArt.newsFeed=nf;
 		    if (LOG.isTraceEnabled()) LOG.trace("newsArt "+newsArt);
 
 		    return newsArt;
