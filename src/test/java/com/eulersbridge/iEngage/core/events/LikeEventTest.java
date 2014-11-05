@@ -12,12 +12,13 @@ import static org.junit.Assert.*;
 
 public class LikeEventTest {
     final String emailAddress = new String("yikaig@gmail.com");
+    Long nodeId=23l;
     LikeEvent likeEvent = null;
 
     @Before
-    public void setUp() throws Exception {
-        likeEvent = new LikeEvent();
-        likeEvent.setEmailAddress(emailAddress);
+    public void setUp() throws Exception
+    {
+        likeEvent = new LikeEvent(nodeId, emailAddress);
     }
 
     @After
@@ -40,5 +41,18 @@ public class LikeEventTest {
         String emailAddress1 = new String("test@gmail.com");
         likeEvent.setEmailAddress(emailAddress1);
         assertEquals("emailAddress does not match", emailAddress1, likeEvent.getEmailAddress());
+    }
+    @Test
+    public void testGetNodeId() throws Exception
+    {
+        assertEquals("emailAddress does not match", nodeId, likeEvent.getNodeId());
+    }
+
+    @Test
+    public void testSetNodeId() throws Exception {
+        Long nodeId1 = 45l;
+        assertNotEquals("emailAddress does not match", nodeId1, likeEvent.getNodeId());
+        likeEvent.setNodeId(nodeId1);
+        assertEquals("emailAddress does not match", nodeId1, likeEvent.getNodeId());
     }
 }
