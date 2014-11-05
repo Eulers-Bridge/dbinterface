@@ -1,10 +1,14 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
 import com.eulersbridge.iEngage.rest.controller.EventController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -210,7 +214,24 @@ public class Event extends ResourceSupport{
 	/**
 	 * @param institutionId the institutionId to set
 	 */
-	public void setInstitutionId(Long institutionId) {
+	public void setInstitutionId(Long institutionId)
+	{
 		this.institutionId = institutionId;
+	}
+
+	public static Iterator<Event> toEventsIterator(Iterator<EventDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <Event> events=new ArrayList<Event>();
+		while(iter.hasNext())
+		{
+			EventDetails dets=iter.next();
+			Event thisEvent=Event.fromEventDetails(dets);
+			Link self = thisEvent.getLink("self");
+			thisEvent.removeLinks();
+			thisEvent.add(self);
+			events.add(thisEvent);		
+		}
+		return events.iterator();
 	}
 }
