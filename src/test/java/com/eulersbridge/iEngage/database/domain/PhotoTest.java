@@ -198,13 +198,46 @@ public class PhotoTest
 		fail("Not yet implemented"); // TODO
 	}
 
+	private void checkHashCode(Photo test1,Photo test2)
+	{
+		assertNotEquals(test1.hashCode(), test2.hashCode());
+		assertNotEquals(test2.hashCode(), test1.hashCode());
+	}
+	
+	private void checkNotEquals(Photo test1,Photo test2)
+	{
+		assertNotEquals(test1, test2);
+		assertNotEquals(test2, test1);
+	}
+	
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#hashCode()}.
 	 */
 	@Test
 	public final void testHashCode()
 	{
-		fail("Not yet implemented"); // TODO
+		Photo photoTest=DatabaseDataFixture.populatePhoto1();
+		assertEquals(photoTest.hashCode(),photoTest.hashCode());
+		assertEquals(photoTest.hashCode(),testPhoto.hashCode());
+		photoTest.setNodeId(null);
+		checkHashCode(testPhoto,photoTest);
+		testPhoto.setNodeId(null);
+		
+		photoTest.setDate(null);
+		checkHashCode(testPhoto,photoTest);
+		photoTest.setDate(testPhoto.getDate());
+		
+		photoTest.setDescription(null);
+		checkHashCode(testPhoto,photoTest);
+		photoTest.setDescription(testPhoto.getDescription());
+		
+		photoTest.setTitle(null);
+		checkHashCode(testPhoto,photoTest);
+		photoTest.setTitle(testPhoto.getTitle());
+		
+		photoTest.setURL(null);;
+		checkHashCode(testPhoto,photoTest);
+		photoTest.setURL(testPhoto.getUrl());
 	}
 
 	/**
@@ -213,7 +246,46 @@ public class PhotoTest
 	@Test
 	public final void testEquals()
 	{
-		fail("Not yet implemented"); // TODO
+		Photo photoTest=null;
+		assertNotEquals(photoTest,testPhoto);
+		assertNotEquals(testPhoto,photoTest);
+		String notElection="";
+		assertNotEquals(testPhoto,notElection);
+		photoTest=DatabaseDataFixture.populatePhoto1();
+		assertEquals(photoTest,photoTest);
+		assertEquals(photoTest,testPhoto);
+		
+		photoTest.setNodeId(54l);
+		checkNotEquals(testPhoto,photoTest);
+		testPhoto.setNodeId(null);
+		checkNotEquals(testPhoto,photoTest);
+		photoTest.setNodeId(null);
+		assertEquals(testPhoto, photoTest);
+		assertEquals(photoTest, testPhoto);
+		
+		photoTest.setDate(4321l);
+		assertNotEquals(testPhoto, photoTest);
+		photoTest.setDate(null);
+		checkNotEquals(testPhoto, photoTest);
+		photoTest.setDate(testPhoto.getDate());
+		
+		photoTest.setDescription("Some description");
+		assertNotEquals(testPhoto, photoTest);
+		photoTest.setDescription(null);
+		checkNotEquals(photoTest, testPhoto);
+		photoTest.setDescription(testPhoto.getDescription());
+		
+		photoTest.setTitle("title");
+		assertNotEquals(testPhoto, photoTest);
+		photoTest.setTitle(null);
+		checkNotEquals(testPhoto, photoTest);
+		photoTest.setTitle(testPhoto.getTitle());
+		
+		photoTest.setURL("url");
+		assertNotEquals(testPhoto, photoTest);
+		photoTest.setURL(null);
+		checkNotEquals(testPhoto, photoTest);
+		photoTest.setURL(testPhoto.getUrl());
 	}
 
 }
