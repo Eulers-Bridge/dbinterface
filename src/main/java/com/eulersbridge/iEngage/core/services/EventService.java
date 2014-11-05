@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
 
 import org.springframework.data.domain.Sort.Direction;
@@ -24,5 +27,11 @@ public interface EventService {
     public EventDeletedEvent deleteEvent(DeleteEventEvent deleteEventEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public EventsReadEvent readEvents(ReadEventsEvent readEventsEvent, Direction sortDirection, int pageNumber, int pageLength);
+	public EventsReadEvent readEvents(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
+
+	@PreAuthorize("hasRole('ROLE_USER')")
+	public LikedEvent likeEvent(LikeEvent likeEvent);
+	
+	@PreAuthorize("hasRole('ROLE_USER')")
+	public LikedEvent unlikeEvent(LikeEvent unlikeEvent);
 }

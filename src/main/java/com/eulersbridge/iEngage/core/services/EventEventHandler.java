@@ -3,9 +3,19 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.core.events.newsArticles.LikeNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Like;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
@@ -46,17 +56,19 @@ public class EventEventHandler implements EventService{
 
         if (LOG.isDebugEnabled()) LOG.debug("Finding institution with instId = "+instId);
     	Institution inst=institutionRepository.findOne(instId);
+		NewsFeed nf=institutionRepository.findNewsFeed(instId);
+		if (LOG.isDebugEnabled()) LOG.debug("news feed - "+nf);
 
     	EventCreatedEvent eventCreatedEvent;
-    	if (inst!=null)
+    	if ((inst!=null)&&(nf!=null))
     	{
-    		event.setInstitution(inst);
+    		event.setNewsFeed(nf);
     		Event result = eventRepository.save(event);
     		eventCreatedEvent = new EventCreatedEvent(result.getEventId(), result.toEventDetails());
     	}
     	else
     	{
-    		eventCreatedEvent=EventCreatedEvent.institutionNotFound(eventDetails.getInstitutionId());
+       		eventCreatedEvent=EventCreatedEvent.institutionNotFound(eventDetails.getInstitutionId());
     	}
         return eventCreatedEvent;
     }
@@ -81,7 +93,11 @@ public class EventEventHandler implements EventService{
         EventDetails eventDetails = updateEventEvent.getEventDetails();
         Event event = Event.fromEventDetails(eventDetails);
         Long eventId = eventDetails.getEventId();
-        if(LOG.isDebugEnabled()) LOG.debug("event Id is " + eventId);
+		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with id = "+eventDetails.getInstitutionId());
+		NewsFeed nf=institutionRepository.findNewsFeed(eventDetails.getInstitutionId());
+		event.setNewsFeed(nf);
+		if (LOG.isDebugEnabled()) LOG.debug("news feed - "+nf+",event Id is " + eventId);
+
         Event eventOld = eventRepository.findOne(eventId);
         if(eventOld == null){
             if(LOG.isDebugEnabled()) LOG.debug("event entity not found " + eventId);
@@ -111,9 +127,9 @@ public class EventEventHandler implements EventService{
     }
     
 	@Override
-	public EventsReadEvent readEvents(ReadEventsEvent readEventsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public EventsReadEvent readEvents(ReadAllEvent readAllEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
-		Long institutionId=readEventsEvent.getInstId();
+		Long institutionId=readAllEvent.getInstId();
 		Page <Event>events=null;
 		ArrayList<EventDetails> dets=new ArrayList<EventDetails>();
 		EventsReadEvent nare=null;
@@ -160,5 +176,35 @@ public class EventEventHandler implements EventService{
 		}
 		return nare;
 	}
+	
+	@Override
+	public LikedEvent likeEvent(
+			LikeEvent likeEvent) 
+	{
+		boolean result=true;
+		LikedEvent retValue;
+		String email=likeEvent.getEmailAddress();
+		Long eventId=likeEvent.getNodeId();
+		Like like=eventRepository.likeEvent(email, eventId);
+		
+		if (like!=null) result=true; else result=false;
+		retValue=new LikedEvent(eventId,email,result);
+		return retValue;
+	}
+	@Override
+	public LikedEvent unlikeEvent(
+			LikeEvent unlikeEventEvent) 
+	{
+		boolean result=true;
+		LikedEvent retValue;
+		String email=unlikeEventEvent.getEmailAddress();
+		Long eventId=unlikeEventEvent.getNodeId();
+		
+		eventRepository.unlikeEvent(email, eventId);
+		
+		retValue=new LikedEvent(eventId,email,result);
+		return retValue;
+	}
+
 
 }
