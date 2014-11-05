@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -186,7 +187,12 @@ public class PhotoTest
 	@Test
 	public final void testToPhotoDetails()
 	{
-		fail("Not yet implemented"); // TODO
+		PhotoDetails dets=testPhoto.toPhotoDetails();
+		assertEquals(dets.getDate(),testPhoto.getDate());
+		assertEquals(dets.getDescription(),testPhoto.getDescription());
+		assertEquals(dets.getNodeId(),testPhoto.getNodeId());
+		assertEquals(dets.getTitle(),testPhoto.getTitle());
+		assertEquals(dets.getUrl(),testPhoto.getUrl());
 	}
 
 	/**
@@ -195,7 +201,13 @@ public class PhotoTest
 	@Test
 	public final void testFromPhotoDetails()
 	{
-		fail("Not yet implemented"); // TODO
+		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
+		testPhoto2=Photo.fromPhotoDetails(dets);
+		assertEquals(dets.getDate(),testPhoto2.getDate());
+		assertEquals(dets.getDescription(),testPhoto2.getDescription());
+		assertEquals(dets.getNodeId(),testPhoto2.getNodeId());
+		assertEquals(dets.getTitle(),testPhoto2.getTitle());
+		assertEquals(dets.getUrl(),testPhoto2.getUrl());
 	}
 
 	private void checkHashCode(Photo test1,Photo test2)
