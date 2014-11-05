@@ -1,25 +1,23 @@
 /**
  * 
  */
-package com.eulersbridge.iEngage.core.events.events;
+package com.eulersbridge.iEngage.core.events;
 
-import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class ReadEventsEvent extends RequestReadEvent
+public class ReadAllEvent
 {
 	Long instId;
-	Long nfId;
 	
-	private ReadEventsEvent()
+	private ReadAllEvent()
 	{
 		super();
 	}
 	
-	public ReadEventsEvent(Long institutionId)
+	public ReadAllEvent(Long institutionId)
 	{
 		this();
 		this.instId=institutionId;
