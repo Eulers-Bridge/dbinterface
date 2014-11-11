@@ -19,7 +19,6 @@ public class CreatePhotoEventTest
 {
 	Photo photo;
     PhotoDetails photoDetails;
-    Long nodeId;
     CreatePhotoEvent createPhotoEvent;
 
 	/**

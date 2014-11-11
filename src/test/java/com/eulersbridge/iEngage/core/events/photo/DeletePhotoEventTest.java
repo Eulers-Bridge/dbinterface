@@ -17,7 +17,6 @@ public class DeletePhotoEventTest
     Long nodeId;
     DeletePhotoEvent deletePhotoEvent;
 
-
 	/**
 	 * @throws java.lang.Exception
 	 */
