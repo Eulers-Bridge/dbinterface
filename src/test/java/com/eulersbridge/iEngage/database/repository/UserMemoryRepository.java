@@ -259,4 +259,9 @@ public VoteReminder deleteVoteReminder(Long id) {
         return null;
     }
 
+    @Override
+    public Page<User> findByLikeableObjId(@Param("objId") Long id, Pageable p) {
+        return null;
+    }
+
 }
