@@ -293,7 +293,7 @@ public class NewsController
 		return response;
 	}
 
-    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{articleId}" + ControllerConstants.LIKES_LABEL)
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}" + ControllerConstants.LIKES_LABEL)
     public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
             @PathVariable Long articleId,
             @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,

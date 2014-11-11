@@ -610,32 +610,32 @@ public class UserController {
     	return new ResponseEntity<StringWriter>(sw,HttpStatus.OK);
     }
 
-    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{userId}" + ControllerConstants.LIKES_LABEL)
-    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
-            @PathVariable Long userId,
-            @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
-            @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
-            @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
-    {
-        int pageNumber = 0;
-        int pageLength = 10;
-        pageNumber = Integer.parseInt(page);
-        pageLength = Integer.parseInt(pageSize);
-        if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users via user "+userId+'.');
-        Direction sortDirection = Direction.DESC;
-        if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-
-        LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(userId), sortDirection, pageNumber, pageLength);
-        Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
-        if (likes.hasNext() == false){
-            ReadUserEvent readUserEvent=userService.requestReadUser(new RequestReadUserEvent(userId));
-            if (!readUserEvent.isEntityFound())
-                return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
-            else
-                return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
-        }
-        else
-            return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
-    }
+//    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}" + ControllerConstants.LIKES_LABEL)
+//    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
+//            @PathVariable String email,
+//            @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+//            @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+//            @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
+//    {
+//        int pageNumber = 0;
+//        int pageLength = 10;
+//        pageNumber = Integer.parseInt(page);
+//        pageLength = Integer.parseInt(pageSize);
+//        if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users via user "+email+'.');
+//        Direction sortDirection = Direction.DESC;
+//        if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+//
+//        LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(email), sortDirection, pageNumber, pageLength);
+//        Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
+//        if (likes.hasNext() == false){
+//            ReadUserEvent readUserEvent=userService.requestReadUser(new RequestReadUserEvent(email));
+//            if (!readUserEvent.isEntityFound())
+//                return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
+//            else
+//                return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+//        }
+//        else
+//            return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+//    }
 }
 

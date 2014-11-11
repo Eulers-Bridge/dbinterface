@@ -92,4 +92,6 @@ public class PollController {
         Boolean isDeletionCompleted = Boolean.valueOf(pollDeletedEvent.isDeletionCompleted());
         return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
     }
+
+
 }
