@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.core.services.PollService;
 import com.eulersbridge.iEngage.rest.domain.Poll;
@@ -93,5 +95,50 @@ public class PollController {
         return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
     }
 
+    //like
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{pollId}/likedBy/{email}/")
+    public @ResponseBody ResponseEntity<Boolean> likePoll(@PathVariable Long pollId,@PathVariable String email)
+    {
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like poll. "+pollId);
+        LikedEvent likedPollEvent = pollService.likePoll(new LikeEvent(pollId, email));
+        ResponseEntity<Boolean> response;
+        if (!likedPollEvent.isEntityFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+        }
+        else if (!likedPollEvent.isUserFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            Boolean restNews=likedPollEvent.isResultSuccess();
+            response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+        }
+        return response;
+    }
+
+    //unlike
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{pollId}/unlikedBy/{email}/")
+    public @ResponseBody ResponseEntity<Boolean> unlikePoll(@PathVariable Long pollId,@PathVariable String email)
+    {
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike poll. "+pollId);
+        LikedEvent unlikedPollEvent =pollService.unlikePoll(new LikeEvent(pollId,email));
+        ResponseEntity<Boolean> response;
+        if (!unlikedPollEvent.isEntityFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+        }
+        else if (!unlikedPollEvent.isUserFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            Boolean restNews = unlikedPollEvent.isResultSuccess();
+            response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+        }
+        return response;
+    }
 
 }

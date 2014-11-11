@@ -22,6 +22,4 @@ public interface NewsService
 	public NewsArticleLikedEvent likeNewsArticle(LikeEvent likeNewsArticlesEvent);
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public NewsArticleUnlikedEvent unlikeNewsArticle(LikeEvent unlikeNewsArticleEvent);
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public NewsArticleLikesEvent likesNewsArticle(LikesNewsArticleEvent likesNewsArticleEvent, Direction sortDirection, int pageNumber, int pageSize);
 }

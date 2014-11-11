@@ -59,7 +59,7 @@ public class LikesEventHandler implements LikesService {
         }
         else
         {
-            if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByArticleId");
+            if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByLikeableObjId");
             likeableObjectLikesEvent = LikeableObjectLikesEvent.objectNotFound(objId);
         }
         return likeableObjectLikesEvent;
