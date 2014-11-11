@@ -47,8 +47,7 @@ public class TestCountry {
 		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(new Long(61), name, unis);
-		if (testObj.getClass()!=Country.class)
-			fail("Country constructor does not return a class of type Country."); 
+		assertEquals("Country constructor does not return a class of type Country.",Country.class,testObj.getClass()); 
 	}
 
 	/**
@@ -58,10 +57,10 @@ public class TestCountry {
 	public final void testShouldGetCountryId() 
 	{
 		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
+		Long countryId=new Long(61);
 		String name="Australia";
-		Country testObj=new Country(new Long(61), name, unis);
-		if (testObj.getCountryId()!=61)
-			fail("Id returned does not match id object created with.");
+		Country testObj=new Country(countryId, name, unis);
+		assertEquals("Id returned does not match id object created with.",countryId,testObj.getCountryId());
 	}
 
 	/**
@@ -73,8 +72,7 @@ public class TestCountry {
 		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(new Long(61), name, unis);
-		if (!testObj.getCountryName().equals(name))
-			fail("Name returned does not match name object created with.");
+		assertEquals("Name returned does not match name object created with.",name,testObj.getCountryName());
 	}
 
 	/**
@@ -86,8 +84,7 @@ public class TestCountry {
 		Institution institutions[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(new Long(61), name, institutions);
-		if (!testObj.getInstitutions()[0].equals(institutions[0]))
-			fail("Name returned does not match name object created with.");
+		assertEquals("Name returned does not match name object created with.",institutions[0],testObj.getInstitutions()[0]);
 	}
 
 

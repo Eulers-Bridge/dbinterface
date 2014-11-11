@@ -53,8 +53,7 @@ public class TestInstitution
 	public final void testShouldCreateUniversityObject() 
 	{
 		Institution testObj=new Institution(new Long(1), "University of Melbourne");
-		if (testObj.getClass()!=Institution.class)
-		fail("University constructor does not return a class of type university."); 
+		assertEquals("University constructor does not return a class of type university.",Institution.class,testObj.getClass()); 
 	}
 
 	/**
@@ -63,9 +62,9 @@ public class TestInstitution
 	@Test
 	public final void testShouldGetUniversityId() 
 	{
-		Institution testObj=new Institution(new Long(1), "University of Melbourne");
-		if (testObj.getInstitutionId().compareTo(new Long(1))!=0)
-			fail("Id returned does not match id object created with.");
+		Long instId=new Long(1);
+		Institution testObj=new Institution(instId, "University of Melbourne");
+		assertEquals("Id returned does not match id object created with.",instId,testObj.getInstitutionId());
 	}
 
 	/**
@@ -76,8 +75,7 @@ public class TestInstitution
 	{
 		String name="University of Melbourne";
 		Institution testObj=new Institution(new Long(1), name);
-		if (!testObj.getName().equals(name))
-			fail("Name returned does not match name object created with.");
+		assertEquals("Name returned does not match name object created with.",name,testObj.getName());
 	}
 
 }
