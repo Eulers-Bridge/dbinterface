@@ -171,13 +171,6 @@ public class PollController {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users from poll "+pollId+'.');
         Direction sortDirection = Direction.DESC;
         if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-
-//        NewsArticleLikesEvent newsArticleLikesEvent = newsService.likesNewsArticle(new LikesNewsArticleEvent(articleId), sortDirection, pageNumber, pageLength);
-//        if (!newsArticleLikesEvent.isArticlesFound())
-//        {
-//            return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
-//        }
-
         LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(pollId), sortDirection, pageNumber, pageLength);
         Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
         if (likes.hasNext() == false){

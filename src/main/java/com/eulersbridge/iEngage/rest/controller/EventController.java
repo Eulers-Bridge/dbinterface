@@ -5,11 +5,17 @@ import java.util.Iterator;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.services.EventService;
+import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.Event;
 import com.eulersbridge.iEngage.rest.domain.Events;
 
+import com.eulersbridge.iEngage.rest.domain.LikeInfo;
+import com.eulersbridge.iEngage.rest.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +34,9 @@ public class EventController {
 
     @Autowired
     EventService eventService;
+
+    @Autowired
+    LikesService likesService;
 
     public EventController(){}
 
@@ -233,4 +242,32 @@ public class EventController {
 		}
 		return response;
 	}
+
+    //likes
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{eventId}" + ControllerConstants.LIKES_LABEL)
+    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
+            @PathVariable Long eventId,
+            @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+            @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+            @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
+    {
+        int pageNumber = 0;
+        int pageLength = 10;
+        pageNumber = Integer.parseInt(page);
+        pageLength = Integer.parseInt(pageSize);
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users from event "+eventId+'.');
+        Direction sortDirection = Direction.DESC;
+        if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+        LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(eventId), sortDirection, pageNumber, pageLength);
+        Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
+        if (likes.hasNext() == false){
+            ReadEvent readPollEvent=eventService.readEvent(new RequestReadEventEvent(eventId));
+            if (!readPollEvent.isEntityFound())
+                return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
+            else
+                return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+    }
 }
