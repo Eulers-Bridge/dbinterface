@@ -202,7 +202,7 @@ public class ElectionControllerTest
 	@Test
 	public final void testCreateElectionNullIdReturned() throws Exception 
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
 		ElectionCreatedEvent testData=new ElectionCreatedEvent(null, dets);
 		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
