@@ -14,6 +14,7 @@ public class PhotoDetails
 	String title;
 	String description;
 	Long date;
+	Long ownerId;
 	
 	/**
 	 * @param nodeId
@@ -21,15 +22,18 @@ public class PhotoDetails
 	 * @param title
 	 * @param description
 	 * @param date
+	 * @param ownerId
 	 */
 	public PhotoDetails(Long nodeId, String url, String title,
-			String description, Long date) {
+			String description, Long date, Long ownerId)
+	{
 		super();
 		this.nodeId = nodeId;
 		this.url = url;
 		this.title = title;
 		this.description = description;
 		this.date = date;
+		this.ownerId = ownerId;
 	}
 
 	public PhotoDetails() {
@@ -48,6 +52,22 @@ public class PhotoDetails
 	 */
 	public void setNodeId(Long nodeId) {
 		this.nodeId = nodeId;
+	}
+
+	/**
+	 * @return the ownerId
+	 */
+	public Long getOwnerId()
+	{
+		return ownerId;
+	}
+
+	/**
+	 * @param ownerId the ownerId to set
+	 */
+	public void setOwnerId(Long ownerId)
+	{
+		this.ownerId = ownerId;
 	}
 
 	/**
