@@ -140,6 +140,7 @@ public class PhotoDetails
 		}
 		else
 		{
+			result = prime * result + ((ownerId == null) ? 0 : ownerId.hashCode());
 			result = prime * result + ((date == null) ? 0 : date.hashCode());
 			result = prime * result
 					+ ((description == null) ? 0 : description.hashCode());
@@ -175,6 +176,11 @@ public class PhotoDetails
 				if (other.date != null)
 					return false;
 			} else if (!date.equals(other.date))
+				return false;
+			if (ownerId == null) {
+				if (other.ownerId != null)
+					return false;
+			} else if (!ownerId.equals(other.ownerId))
 				return false;
 			if (description == null) {
 				if (other.description != null)
