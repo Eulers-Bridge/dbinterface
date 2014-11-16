@@ -3,10 +3,12 @@
  */
 package com.eulersbridge.iEngage.database.domain;
 
+import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
@@ -22,6 +24,8 @@ public class Photo
 	String title;
 	String description;
 	Long date;
+	@RelatedTo(type = DatabaseDomainConstants.HAS_OWNER_LABEL, direction=Direction.OUTGOING)
+	private Owner owner;
 
     private static Logger LOG = LoggerFactory.getLogger(Photo.class);
 
@@ -59,17 +63,34 @@ public class Photo
 	}
 
 	/**
+	 * @return the owner
+	 */
+	public Owner getOwner()
+	{
+		return owner;
+	}
+
+	/**
+	 * @param owner the owner to set
+	 */
+	public void setOwner(Owner owner)
+	{
+		this.owner = owner;
+	}
+
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+
+	/**
 	 * @return the uRL
 	 */
 	public String getUrl() {
 		return url;
-	}
-
-	/**
-	 * @param uRL the uRL to set
-	 */
-	public void setURL(String url) {
-		this.url = url;
 	}
 
 	/**
@@ -127,7 +148,7 @@ public class Photo
     {
         if (LOG.isTraceEnabled()) LOG.trace("toPhotoDetails()");
 
-        PhotoDetails photoDetails = new PhotoDetails(nodeId,url,title,description,date);
+        PhotoDetails photoDetails = new PhotoDetails(getNodeId(),getUrl(),getTitle(),getDescription(),getDate(),getOwner().getNodeId());
         if (LOG.isTraceEnabled()) LOG.trace("photoDetails; "+ photoDetails);
         return photoDetails;
     }
@@ -137,6 +158,11 @@ public class Photo
         Photo photo = new Photo(photoDetails.getUrl(),photoDetails.getTitle(),photoDetails.getDescription(),photoDetails.getDate());
         if (photoDetails.getNodeId()!=null)
         	photo.setNodeId(photoDetails.getNodeId());
+        if (photoDetails.getOwnerId()!=null)
+        {
+        	Owner owner=new Owner(photoDetails.getOwnerId());
+        	photo.setOwner(owner);
+        }
         if (LOG.isTraceEnabled()) LOG.trace("photoDetails "+photoDetails);
 
         if (LOG.isTraceEnabled()) LOG.trace("photo "+photo);
