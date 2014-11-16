@@ -20,4 +20,5 @@ public class DatabaseDomainConstants
 	
 	public static final String NEWS_FEED = "NewsFeed";
 	public static final String INSTITUTION = "Institution";
+	public static final String HAS_OWNER_LABEL = "HAS_OWNER";
 }
