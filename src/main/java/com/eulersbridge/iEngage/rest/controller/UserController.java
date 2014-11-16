@@ -2,11 +2,16 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.rest.domain.*;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -17,14 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.ui.velocity.VelocityEngineUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Sort.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
@@ -54,10 +55,6 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.email.EmailConstants;
-import com.eulersbridge.iEngage.rest.domain.Personality;
-import com.eulersbridge.iEngage.rest.domain.User;
-import com.eulersbridge.iEngage.rest.domain.VoteRecord;
-import com.eulersbridge.iEngage.rest.domain.VoteReminder;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
@@ -65,7 +62,8 @@ public class UserController {
 
     @Autowired UserService userService;
     @Autowired EmailService emailService;
-    
+    @Autowired
+    LikesService likesService;
     @Autowired ServletContext servletContext;
     @Autowired VelocityEngine velocityEngine;
 	@Autowired JavaMailSender emailSender;
@@ -611,6 +609,33 @@ public class UserController {
 		}
     	return new ResponseEntity<StringWriter>(sw,HttpStatus.OK);
     }
-    
+
+//    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}" + ControllerConstants.LIKES_LABEL)
+//    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
+//            @PathVariable String email,
+//            @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+//            @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+//            @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
+//    {
+//        int pageNumber = 0;
+//        int pageLength = 10;
+//        pageNumber = Integer.parseInt(page);
+//        pageLength = Integer.parseInt(pageSize);
+//        if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users via user "+email+'.');
+//        Direction sortDirection = Direction.DESC;
+//        if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+//
+//        LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(email), sortDirection, pageNumber, pageLength);
+//        Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
+//        if (likes.hasNext() == false){
+//            ReadUserEvent readUserEvent=userService.requestReadUser(new RequestReadUserEvent(email));
+//            if (!readUserEvent.isEntityFound())
+//                return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
+//            else
+//                return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+//        }
+//        else
+//            return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+//    }
 }
 

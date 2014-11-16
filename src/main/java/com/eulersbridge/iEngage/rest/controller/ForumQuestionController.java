@@ -1,14 +1,25 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.services.ForumQuestionService;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.ForumQuestion;
+import com.eulersbridge.iEngage.rest.domain.LikeInfo;
+import com.eulersbridge.iEngage.rest.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Iterator;
 
 /**
  * @author Yikai Gong
@@ -19,6 +30,10 @@ import org.springframework.web.bind.annotation.*;
 public class ForumQuestionController {
     @Autowired
     ForumQuestionService forumQuestionService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    LikesService likesService;
 
     public ForumQuestionController() {
     }
@@ -91,5 +106,79 @@ public class ForumQuestionController {
         ForumQuestionDeletedEvent forumQuestionDeletedEvent = forumQuestionService.deleteForumQuestion(new DeleteForumQuestionEvent(forumQuestionId));
         Boolean isDeletionCompleted = Boolean.valueOf(forumQuestionDeletedEvent.isDeletionCompleted());
         return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    }
+
+    //like
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{forumQuestionId}/likedBy/{email}/")
+    public @ResponseBody ResponseEntity<Boolean> like(@PathVariable Long forumQuestionId,@PathVariable String email)
+    {
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like forumQuestion. "+forumQuestionId);
+        LikedEvent likedEvent = userService.like(new LikeEvent(forumQuestionId, email));
+        ResponseEntity<Boolean> response;
+        if (!likedEvent.isEntityFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+        }
+        else if (!likedEvent.isUserFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            Boolean restNews=likedEvent.isResultSuccess();
+            response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+        }
+        return response;
+    }
+
+    //unlike
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{forumQuestionId}/unlikedBy/{email}/")
+    public @ResponseBody ResponseEntity<Boolean> unlike(@PathVariable Long forumQuestionId,@PathVariable String email)
+    {
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike forumQuestion. "+forumQuestionId);
+        LikedEvent unlikedEvent = userService.unlike(new LikeEvent(forumQuestionId, email));
+        ResponseEntity<Boolean> response;
+        if (!unlikedEvent.isEntityFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+        }
+        else if (!unlikedEvent.isUserFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            Boolean restNews = unlikedEvent.isResultSuccess();
+            response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+        }
+        return response;
+    }
+
+    //likes
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{forumQuestionId}" + ControllerConstants.LIKES_LABEL)
+    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
+            @PathVariable Long forumQuestionId,
+            @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+            @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+            @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
+    {
+        int pageNumber = 0;
+        int pageLength = 10;
+        pageNumber = Integer.parseInt(page);
+        pageLength = Integer.parseInt(pageSize);
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users from forumQuestion "+forumQuestionId+'.');
+        Direction sortDirection = Direction.DESC;
+        if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+        LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(forumQuestionId), sortDirection, pageNumber, pageLength);
+        Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
+        if (likes.hasNext() == false){
+            ReadForumQuestionEvent readPollEvent=forumQuestionService.requestReadForumQuestion(new RequestReadForumQuestionEvent(forumQuestionId));
+            if (!readPollEvent.isEntityFound())
+                return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
+            else
+                return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
     }
 }

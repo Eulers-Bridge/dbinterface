@@ -1,6 +1,9 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
+import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
 import org.slf4j.Logger;
@@ -75,4 +78,5 @@ public class PollEventHandler implements PollService{
             return new PollUpdatedEvent(result.getPollId(), result.toPollDetails());
         }
     }
+
 }

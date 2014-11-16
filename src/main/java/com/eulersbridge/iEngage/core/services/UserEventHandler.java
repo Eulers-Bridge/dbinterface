@@ -3,6 +3,9 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.database.domain.*;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +50,6 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Personality;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.VerificationToken;
-import com.eulersbridge.iEngage.database.domain.VoteRecord;
-import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
@@ -531,4 +528,27 @@ public class UserEventHandler implements UserService,UserDetailsService
 	    }
 	    return response;
 	}
+
+    @Override
+    public LikedEvent like(LikeEvent likeEvent) {
+        boolean result=true;
+        LikedEvent retValue;
+        String email = likeEvent.getEmailAddress();
+        Long pollId = likeEvent.getNodeId();
+        Like like = userRepository.like(email, pollId);
+        if (like!=null) result=true; else result=false;
+        retValue = new LikedEvent(pollId, email, result);
+        return retValue;
+    }
+
+    @Override
+    public LikedEvent unlike(LikeEvent unlikeEvent) {
+        boolean result=true;
+        LikedEvent retValue;
+        String email=unlikeEvent.getEmailAddress();
+        Long pollId=unlikeEvent.getNodeId();
+        userRepository.unlike(email, pollId);
+        retValue=new LikedEvent(pollId,email,result);
+        return retValue;
+    }
 }

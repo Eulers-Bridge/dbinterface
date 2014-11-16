@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 
@@ -56,4 +58,9 @@ public interface UserService
 	public VoteRecordDeletedEvent deleteVoteRecord(DeleteVoteRecordEvent deleteVoteRecordEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public VoteReminderDeletedEvent deleteVoteReminder(DeleteVoteReminderEvent deleteVoteReminderEvent);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public LikedEvent like(LikeEvent likeEvent);
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public LikedEvent unlike(LikeEvent likeEvent);
 }

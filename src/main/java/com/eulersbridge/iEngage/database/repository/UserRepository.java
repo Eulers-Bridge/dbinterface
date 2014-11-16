@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.database.repository;
 
+import com.eulersbridge.iEngage.database.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -7,12 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
-
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
-import com.eulersbridge.iEngage.database.domain.Personality;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.VoteRecord;
-import com.eulersbridge.iEngage.database.domain.VoteReminder;
 
 public interface UserRepository extends GraphRepository<User> 
 {
@@ -47,7 +42,15 @@ public interface UserRepository extends GraphRepository<User>
 	@Query("Match (u:`User`)-[r:"+DatabaseDomainConstants.VREMINDER_LABEL+"]-(e:`Election`) where id(r)={id} delete r return r")
 	VoteReminder deleteVoteReminder(@Param("id")Long id);
 
-    @Query("Match (u:'User')-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a:'NewsArticle') WHERE id(a)={articleId} RETURN u")
+    @Query("Match (u:User)-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a:'NewsArticle') WHERE id(a)={articleId} RETURN u")
     Page<User> findByArticleId (@Param("articleId")Long id, Pageable p);
 
+    @Query("Match (u:User)-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a) WHERE id(a)={objId} RETURN u")
+    Page<User> findByLikeableObjId (@Param("objId")Long id, Pageable p);
+
+    @Query("Match (a:`User`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE a-[r:LIKES]-b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
+    Like like(@Param("email")String email,@Param("likedId")Long likedId);
+
+    @Query("Match (a:`User`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
+    void unlike(@Param("email")String email,@Param("likedId")Long likedId);
 }

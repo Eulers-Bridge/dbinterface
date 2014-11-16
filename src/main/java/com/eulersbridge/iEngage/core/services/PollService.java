@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 

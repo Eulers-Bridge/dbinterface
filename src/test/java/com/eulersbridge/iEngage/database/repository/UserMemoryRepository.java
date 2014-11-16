@@ -1,10 +1,7 @@
 package com.eulersbridge.iEngage.database.repository;
 
 
-import com.eulersbridge.iEngage.database.domain.Personality;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.VoteRecord;
-import com.eulersbridge.iEngage.database.domain.VoteReminder;
+import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 import java.util.*;
@@ -257,6 +254,21 @@ public VoteReminder deleteVoteReminder(Long id) {
     @Override
     public Page<User> findByArticleId(@Param("articleId") Long id, Pageable p) {
         return null;
+    }
+
+    @Override
+    public Page<User> findByLikeableObjId(@Param("objId") Long id, Pageable p) {
+        return null;
+    }
+
+    @Override
+    public Like like(@Param("email") String email, @Param("likedId") Long likedId) {
+        return null;
+    }
+
+    @Override
+    public void unlike(@Param("email") String email, @Param("likedId") Long likedId) {
+
     }
 
 }
