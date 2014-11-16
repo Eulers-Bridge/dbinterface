@@ -93,7 +93,7 @@ public class PhotoTest
 		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
 		assertEquals(url,testPhoto2.getUrl());
 		url="testUrl";
-		testPhoto2.setURL(url);
+		testPhoto2.setUrl(url);
 		assertEquals(url,testPhoto2.getUrl());
 	}
 
@@ -247,9 +247,9 @@ public class PhotoTest
 		checkHashCode(testPhoto,photoTest);
 		photoTest.setTitle(testPhoto.getTitle());
 		
-		photoTest.setURL(null);;
+		photoTest.setUrl(null);;
 		checkHashCode(testPhoto,photoTest);
-		photoTest.setURL(testPhoto.getUrl());
+		photoTest.setUrl(testPhoto.getUrl());
 	}
 
 	/**
@@ -293,11 +293,11 @@ public class PhotoTest
 		checkNotEquals(testPhoto, photoTest);
 		photoTest.setTitle(testPhoto.getTitle());
 		
-		photoTest.setURL("url");
+		photoTest.setUrl("url");
 		assertNotEquals(testPhoto, photoTest);
-		photoTest.setURL(null);
+		photoTest.setUrl(null);
 		checkNotEquals(testPhoto, photoTest);
-		photoTest.setURL(testPhoto.getUrl());
+		photoTest.setUrl(testPhoto.getUrl());
 	}
 
 }

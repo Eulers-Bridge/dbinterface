@@ -6,6 +6,7 @@ package com.eulersbridge.iEngage.core.events.photo;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.eulersbridge.iEngage.database.domain.Photo;
@@ -45,7 +46,7 @@ public class PhotoDetailsTest
 	@Test
 	public final void testPhotoDetails2()
 	{
-		dets=new PhotoDetails(testPhoto.getNodeId(), testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		dets=new PhotoDetails(testPhoto.getNodeId(), testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getOwner().getNodeId());
 		assertNotNull("Not yet implemented",dets);
 	}
 
@@ -67,6 +68,27 @@ public class PhotoDetailsTest
 		Long nodeId=324324l;
 		dets.setNodeId(nodeId);
 		assertEquals(nodeId,dets.getNodeId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#getOwnerId()}.
+	 */
+	@Ignore
+	@Test
+	public final void testGetOwnerId()
+	{
+		assertEquals("Not yet implemented",testPhoto.getOwner().getNodeId(),dets.getOwnerId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#setOwnerId(java.lang.Long)}.
+	 */
+	@Test
+	public final void testSetOwnerId()
+	{
+		Long ownerId=324324l;
+		dets.setOwnerId(ownerId);
+		assertEquals(ownerId,dets.getOwnerId());
 	}
 
 	/**
