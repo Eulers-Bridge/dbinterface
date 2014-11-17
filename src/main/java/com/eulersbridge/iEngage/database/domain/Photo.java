@@ -24,7 +24,7 @@ public class Photo
 	String title;
 	String description;
 	Long date;
-	@RelatedTo(type = DatabaseDomainConstants.HAS_OWNER_LABEL, direction=Direction.OUTGOING)
+	@RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.INCOMING)
 	private Owner owner;
 
     private static Logger LOG = LoggerFactory.getLogger(Photo.class);

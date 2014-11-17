@@ -14,11 +14,12 @@ public class DatabaseDomainConstants
 	public static final String VERIFIED_BY_LABEL = "verifiedBy";
 	public static final String HAS_NEWS_FEED_LABEL = "HAS_NEWS_FEED";
 	public static final String HAS_ELECTION_LABEL = "HAS_ELECTION";
+	public static final String HAS_PHOTO_LABEL = "HAS_PHOTO";
     public static final String HAS_POSITION_LABEL = "HAS_POSITION";
 	public static final String HAS_EVENT_LABEL = "HAS_EVENT";
 	
 	
-	public static final String NEWS_FEED = "NewsFeed";
 	public static final String INSTITUTION = "Institution";
-	public static final String HAS_OWNER_LABEL = "HAS_OWNER";
+	public static final String NEWS_FEED = "NewsFeed";
+	public static final String PHOTO = "Photo";
 }
