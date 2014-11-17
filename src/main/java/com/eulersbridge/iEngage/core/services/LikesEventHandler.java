@@ -7,7 +7,6 @@ import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,14 +39,14 @@ public class LikesEventHandler implements LikesService {
         if (LOG.isDebugEnabled()) LOG.debug("objId "+objId);
         Pageable pageable = new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
         Page<User> users = userRepository.findByLikeableObjId(objId, pageable);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Total elements = "+users.getTotalElements()+" total pages ="+users.getTotalPages());
-
         if (users != null)
         {
             Iterator<User> iter = users.iterator();
             while (iter.hasNext())
             {
+                if (LOG.isDebugEnabled())
+                    LOG.debug("Total elements = "+users.getTotalElements()+" total pages ="+users.getTotalPages());
+
                 User user =iter.next();
                 if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+user.getEmail());
                 UserDetails userDetails = user.toUserDetails();
