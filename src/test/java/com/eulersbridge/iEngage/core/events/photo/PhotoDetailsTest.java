@@ -241,7 +241,13 @@ public class PhotoDetailsTest
 		photoTest.setDate(null);
 		checkNotEquals(dets, photoTest);
 		photoTest.setDate(dets.getDate());
-		
+
+		photoTest.setOwnerId(4321l);
+		assertNotEquals(dets, photoTest);
+		photoTest.setOwnerId(null);
+		checkNotEquals(dets, photoTest);
+		photoTest.setOwnerId(dets.getOwnerId());
+
 		photoTest.setDescription("Some description");
 		assertNotEquals(dets, photoTest);
 		photoTest.setDescription(null);
