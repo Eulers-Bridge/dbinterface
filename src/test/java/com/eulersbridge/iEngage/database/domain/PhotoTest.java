@@ -272,6 +272,10 @@ public class PhotoTest
 		testPhoto.setNodeId(null);
 		checkNotEquals(testPhoto,photoTest);
 		photoTest.setNodeId(null);
+		// We are setting everything up to be equal here.  We need to equalize the dates as these 
+		// are generated when the object is created.
+		photoTest.setDate(testPhoto.getDate());
+		
 		assertEquals(testPhoto, photoTest);
 		assertEquals(photoTest, testPhoto);
 		
