@@ -3,8 +3,15 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
@@ -13,7 +20,9 @@ import com.eulersbridge.iEngage.core.events.photo.PhotoDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
+import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
@@ -129,6 +138,58 @@ public class PhotoEventHandler implements PhotoService
         	photoDeletedEvent = new PhotoDeletedEvent(photoId);
         }
         return photoDeletedEvent;
+	}
+
+	public PhotosReadEvent findPhotos(ReadPhotosEvent findPhotoEvent,Direction dir,int pageNumber,int pageLength)
+	{
+        if (LOG.isDebugEnabled()) LOG.debug("Entered findPhotos findPhotoEvent = "+findPhotoEvent);
+        Long ownerId = findPhotoEvent.getOwnerId();
+		Page <Photo>photos=null;
+		ArrayList<PhotoDetails> dets=new ArrayList<PhotoDetails>();
+        
+		PhotosReadEvent result=null;
+		
+		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
+		Pageable pageable=new PageRequest(pageNumber,pageLength,dir,"p.date");
+		photos=photoRepository.findByOwnerId(ownerId, pageable);
+
+		if (photos!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+photos.getTotalElements()+" total pages ="+photos.getTotalPages());
+			Iterator<Photo> iter=photos.iterator();
+			while (iter.hasNext())
+			{
+				Photo na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getTitle());
+				PhotoDetails det=na.toPhotoDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found ownerId.
+				Photo inst=photoRepository.findOne(ownerId);
+				if ( (null==inst) || (null==inst.getNodeId()) )
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ownerId)");
+					result=PhotosReadEvent.ownerNotFound();
+				}
+				else
+				{	
+					result=new PhotosReadEvent(ownerId,dets,photos.getTotalElements(),photos.getTotalPages());
+				}
+			}
+			else
+			{	
+				result=new PhotosReadEvent(ownerId,dets,photos.getTotalElements(),photos.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByOwnerId");
+			result=PhotosReadEvent.ownerNotFound();
+		}
+		return result;
 	}
 
 }

@@ -8,12 +8,19 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
@@ -22,10 +29,14 @@ import com.eulersbridge.iEngage.core.events.photo.PhotoDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
+import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 
 /**
@@ -186,4 +197,92 @@ public class PhotoEventHandlerTest
 		assertFalse(evtData.isDeletionCompleted());
 		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
+	
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#findPhotos(com.eulersbridge.iEngage.core.events.photo.findPhotosEvent)}.
+	 */
+	@Test
+	public final void testFindPhotos()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotos()");
+		
+		ArrayList<Photo> evts=new ArrayList<Photo>();
+		evts.add(DatabaseDataFixture.populatePhoto1());
+		evts.add(DatabaseDataFixture.populatePhoto2());
+
+		
+		Long ownerId=1l;
+		ReadPhotosEvent evt=new ReadPhotosEvent(ownerId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Photo> testData=new PageImpl<Photo>(evts,pageable,evts.size());
+		when(photoRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		PhotosReadEvent evtData = service.findPhotos(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalPhotos(),new Long(evts.size()));
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isOwnerFound());
+		assertTrue(evtData.isPhotosFound());
+	}
+	
+	@Test
+	public final void testFindPhotosNoneReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotos()");
+		
+		ArrayList<Photo> evts=new ArrayList<Photo>();
+
+		
+		Long ownerId=1l;
+		ReadPhotosEvent evt=new ReadPhotosEvent(ownerId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Photo> testData=new PageImpl<Photo>(evts,pageable,evts.size());
+		when(photoRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		Photo inst=DatabaseDataFixture.populatePhoto1();
+		when(photoRepository.findOne(any(Long.class))).thenReturn(inst);
+
+		PhotosReadEvent evtData = service.findPhotos(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalPhotos().longValue(),evts.size());
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isOwnerFound());
+		assertTrue(evtData.isPhotosFound());
+	}
+
+	@Test
+	public final void testFindPhotosInstNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotos()");
+		
+		ArrayList<Photo> evts=new ArrayList<Photo>();
+
+		
+		Long ownerId=1l;
+		ReadPhotosEvent evt=new ReadPhotosEvent(ownerId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Photo> testData=new PageImpl<Photo>(evts,pageable,evts.size());
+		when(photoRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(photoRepository.findOne(any(Long.class))).thenReturn(null);
+
+		PhotosReadEvent evtData = service.findPhotos(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertNull(evtData.getTotalPages());
+		assertNull(evtData.getTotalPhotos());
+		assertFalse(evtData.isEntityFound());
+		assertFalse(evtData.isOwnerFound());
+		assertFalse(evtData.isPhotosFound());
+	}
+
+
 }
