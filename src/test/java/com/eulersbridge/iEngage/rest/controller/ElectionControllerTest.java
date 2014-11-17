@@ -417,7 +417,7 @@ public class ElectionControllerTest
 	}
 
 	@Test
-	public final void testElections() throws Exception 
+	public final void testFindElections() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElections()");
 		Long instId=1l;
