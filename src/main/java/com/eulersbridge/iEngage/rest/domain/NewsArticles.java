@@ -80,5 +80,4 @@ public class NewsArticles extends ResourceSupport
 
 	    return news;
 	}
-
 }
