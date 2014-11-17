@@ -201,4 +201,15 @@ public class PhotoDetails
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "PhotoDetails [nodeId=" + nodeId + ", url=" + url + ", title="
+				+ title + ", description=" + description + ", date=" + date
+				+ ", ownerId=" + ownerId + "]";
+	}
+
 }
