@@ -36,6 +36,8 @@ public class CoreConfig
     @Autowired
     EventRepository eventRepository;
     @Autowired
+    PhotoRepository photoRepository;
+    @Autowired
     ForumQuestionRepository forumQuestionRepository;
     @Autowired
     PositionRepository positionRepository;
@@ -104,6 +106,13 @@ public class CoreConfig
     {
         if (LOG.isDebugEnabled()) LOG.debug("createEventService()");
         return new EventEventHandler(eventRepository,instRepo);
+    }
+
+    @Bean
+    public PhotoService createPhotoService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createPhotoService()");
+        return new PhotoEventHandler(photoRepository);
     }
 
     @Bean
