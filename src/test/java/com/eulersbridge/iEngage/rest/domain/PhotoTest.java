@@ -155,6 +155,28 @@ public class PhotoTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getOwnerId()}.
+	 */
+	@Test
+	public final void testGetOwnerId()
+	{
+		assertEquals(photoDetails.getOwnerId(),photo.getOwnerId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setOwnerId(java.lang.Long)}.
+	 */
+	@Test
+	public final void testSetOwnerId()
+	{
+		assertEquals(photoDetails.getOwnerId(),photo.getOwnerId());
+		Long ownerId=43234l;
+		assertNotEquals(ownerId,photo.getOwnerId());
+		photo.setOwnerId(ownerId);
+		assertEquals(ownerId,photo.getOwnerId());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#fromPhotoDetails(com.eulersbridge.iEngage.core.events.photo.PhotoDetails)}.
 	 */
 	@Test
@@ -179,6 +201,15 @@ public class PhotoTest
 		assertEquals(photoDetails.getNodeId(),photo.getNodeId());
 		assertEquals(photoDetails.getTitle(),photo.getTitle());
 		assertEquals(photoDetails.getUrl(),photo.getUrl());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#toString()}.
+	 */
+	@Test
+	public final void testToString()
+	{
+		assertNotNull(photo.toString());
 	}
 
 }

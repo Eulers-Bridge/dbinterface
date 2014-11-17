@@ -73,6 +73,31 @@ public class PhotoTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#getNodeId()}.
+	 */
+	@Test
+	public final void testGetOwner()
+	{
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2.setNodeId(testPhoto.getNodeId());
+		testPhoto2.setOwner(testPhoto.getOwner());
+		assertEquals(testPhoto.getOwner(),testPhoto2.getOwner());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#setNodeId(java.lang.Long)}.
+	 */
+	@Test
+	public final void testSetOwner()
+	{
+		Owner owner=new Owner(23l);
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		assertNull(testPhoto2.getOwner());
+		testPhoto2.setOwner(owner);;
+		assertEquals(owner,testPhoto2.getOwner());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#getUrl()}.
 	 */
 	@Test
