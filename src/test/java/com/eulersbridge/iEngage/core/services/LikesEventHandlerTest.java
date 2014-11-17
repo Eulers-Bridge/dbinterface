@@ -2,16 +2,10 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
-import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
