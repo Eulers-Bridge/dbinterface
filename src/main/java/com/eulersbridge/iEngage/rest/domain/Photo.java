@@ -5,8 +5,12 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
@@ -160,6 +164,22 @@ public class Photo extends ResourceSupport
         return photoDetails;
     }
 
+	public static Iterator<Photo> toPhotosIterator( Iterator<PhotoDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <Photo> photos=new ArrayList<Photo>();
+		while(iter.hasNext())
+		{
+			PhotoDetails dets=iter.next();
+			Photo thisPhoto=Photo.fromPhotoDetails(dets);
+			Link self = thisPhoto.getLink("self");
+			thisPhoto.removeLinks();
+			thisPhoto.add(self);
+			photos.add(thisPhoto);		
+		}
+		return photos.iterator();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -170,5 +190,4 @@ public class Photo extends ResourceSupport
 				+ ", description=" + description + ", date=" + date
 				+ ", ownerId=" + ownerId + "]";
 	}
-
 }
