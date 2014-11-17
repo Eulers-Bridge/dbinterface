@@ -133,9 +133,9 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(dets.getNodeId(), dets);
-		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456}";
+		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
 		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"url\":\""+dets.getUrl()+"\",\"title\":\""+dets.getTitle()+
-								"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+
+								"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+
 								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photo/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photo/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photo/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photos\"}]}";
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
@@ -159,7 +159,7 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(dets.getNodeId(), dets);
-		String content="{\"url1\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456}";
+		String content="{\"url1\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -184,7 +184,7 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=PhotoCreatedEvent.ownerNotFound(dets.getOwnerId());
-		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456}";
+		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -257,9 +257,9 @@ public class PhotoControllerTest
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		dets.setTitle("Test Photo2");
 		PhotoUpdatedEvent testData=new PhotoUpdatedEvent(id, dets);
-		String content="{\"nodeId\":1234,\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456}";
+		String content="{\"nodeId\":1234,\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
 		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"url\":\""+dets.getUrl()+"\",\"title\":\""+dets.getTitle()+
-								"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+
+								"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+
 								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photo/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photo/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photo/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photos\"}]}";
 		when (photoService.updatePhoto(any(UpdatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
@@ -269,6 +269,7 @@ public class PhotoControllerTest
 		.andExpect(jsonPath("$.title",is(dets.getTitle())))
 		.andExpect(jsonPath("$.description",is(dets.getDescription())))
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
+		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))
