@@ -6,6 +6,7 @@ import java.util.List;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.database.domain.*;
+
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -551,4 +552,22 @@ public class UserEventHandler implements UserService,UserDetailsService
         retValue=new LikedEvent(pollId,email,result);
         return retValue;
     }
+    
+	public Long findUserId(String emailAddress)
+	{
+	    if (LOG.isDebugEnabled()) LOG.debug("findUserId("+emailAddress+")");
+	    User user = userRepository.findByEmail(emailAddress);
+	    Long response;
+	    if (user == null) 
+	    {
+	      response=null;
+	    }
+	    else
+	    {
+		    response=user.getNodeId();
+	    }
+	    return response;
+		
+	}
+
 }

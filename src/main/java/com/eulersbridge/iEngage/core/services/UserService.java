@@ -58,6 +58,8 @@ public interface UserService
 	public VoteRecordDeletedEvent deleteVoteRecord(DeleteVoteRecordEvent deleteVoteRecordEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public VoteReminderDeletedEvent deleteVoteReminder(DeleteVoteReminderEvent deleteVoteReminderEvent);
+	
+	public Long findUserId(String emailAddress);
 
     @PreAuthorize("hasRole('ROLE_USER')")
     public LikedEvent like(LikeEvent likeEvent);
