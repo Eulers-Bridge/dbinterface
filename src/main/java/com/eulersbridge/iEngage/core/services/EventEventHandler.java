@@ -127,10 +127,10 @@ public class EventEventHandler implements EventService{
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.start");
 		events=eventRepository.findByInstitutionId(institutionId, pageable);
-		if (LOG.isDebugEnabled())
-				LOG.debug("Total elements = "+events.getTotalElements()+" total pages ="+events.getTotalPages());
 		if (events!=null)
 		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+events.getTotalElements()+" total pages ="+events.getTotalPages());
 			Iterator<Event> iter=events.iterator();
 			while (iter.hasNext())
 			{
