@@ -8,19 +8,30 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
 import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDeletedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
 import com.eulersbridge.iEngage.core.events.events.EventUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.events.EventsReadEvent;
 import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
@@ -201,4 +212,99 @@ public class EventEventHandlerTest
 		assertEquals(testData.getEventId(),evtData.getEventId());
 	}
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#readEvents(com.eulersbridge.iEngage.core.events.events.ReadAllEvent,Direction,int,int)}.
+	 */
+	@Test
+	public final void testReadEvents()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingEvents()");
+		HashMap<Long, Event> events = DatabaseDataFixture.populateEvents();
+		ArrayList<Event> evts=new ArrayList<Event>();
+		Iterator<Event> iter=events.values().iterator();
+		while (iter.hasNext())
+		{
+			Event na=iter.next();
+			evts.add(na);
+		}
+
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Event> testData=new PageImpl<Event>(evts,pageable,evts.size());
+		when(eventRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalEvents(),new Long(evts.size()));
+	}
+
+	@Test
+	public final void testReadEventsNoneAvailable()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingEvents()");
+		ArrayList<Event> evts=new ArrayList<Event>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Event> testData=new PageImpl<Event>(evts,pageable,evts.size());
+		when(eventRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		Institution inst=DatabaseDataFixture.populateInstUniMelb();
+		when(institutionRepository.findOne(any(Long.class))).thenReturn(inst);
+				
+		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalEvents().longValue(),0);
+	}
+
+	@Test
+	public final void testReadEventsNoValidInst()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingEvents()");
+		ArrayList<Event> evts=new ArrayList<Event>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Event> testData=new PageImpl<Event>(evts,pageable,evts.size());
+		when(eventRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(institutionRepository.findOne(any(Long.class))).thenReturn(null);
+				
+		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isInstitutionFound());
+		assertEquals(evtData.getTotalPages(),null);
+		assertEquals(evtData.getTotalEvents(),null);
+	}
+
+	@Test
+	public final void testReadEventsNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingEvents()");
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		
+		Page<Event> testData=null;
+		when(eventRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		int pageLength=10;
+		int pageNumber=0;
+		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isInstitutionFound());
+	}
 }
