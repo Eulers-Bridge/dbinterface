@@ -23,6 +23,7 @@ public class Photo extends ResourceSupport
 	String title;
 	String description;
 	Long date;
+	Long ownerId;
 
     private static Logger LOG = LoggerFactory.getLogger(Election.class);
 
@@ -103,6 +104,22 @@ public class Photo extends ResourceSupport
 		this.date = date;
 	}
 
+	/**
+	 * @return the ownerId
+	 */
+	public Long getOwnerId()
+	{
+		return ownerId;
+	}
+
+	/**
+	 * @param ownerId the ownerId to set
+	 */
+	public void setOwnerId(Long ownerId)
+	{
+		this.ownerId = ownerId;
+	}
+
 	public static Photo fromPhotoDetails(PhotoDetails photoDetails)
     {
     	Photo photo = new Photo();
@@ -113,6 +130,7 @@ public class Photo extends ResourceSupport
         photo.setDescription(photoDetails.getDescription());
         photo.setDate(photoDetails.getDate());
         photo.setUrl(photoDetails.getUrl());
+        photo.setOwnerId(photoDetails.getOwnerId());
 
 	    // {!begin selfRel}
         photo.add(linkTo(PhotoController.class).slash(name).slash(photo.nodeId).withSelfRel());
@@ -137,8 +155,20 @@ public class Photo extends ResourceSupport
         photoDetails.setDate(this.getDate());
         photoDetails.setDescription(this.getDescription());
         photoDetails.setUrl(this.getUrl());
+        photoDetails.setOwnerId(ownerId);
         if (LOG.isTraceEnabled()) LOG.trace("photoDetails "+photoDetails);
         return photoDetails;
     }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "Photo [nodeId=" + nodeId + ", url=" + url + ", title=" + title
+				+ ", description=" + description + ", date=" + date
+				+ ", ownerId=" + ownerId + "]";
+	}
 
 }
