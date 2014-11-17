@@ -33,10 +33,8 @@ import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
-import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 
 /**
@@ -255,6 +253,28 @@ public class PhotoEventHandlerTest
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isOwnerFound());
 		assertTrue(evtData.isPhotosFound());
+	}
+
+	@Test
+	public final void testFindPhotosNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotos()");
+		
+		Long ownerId=1l;
+		ReadPhotosEvent evt=new ReadPhotosEvent(ownerId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Page<Photo> testData=null;
+		when(photoRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		PhotosReadEvent evtData = service.findPhotos(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertNull(evtData.getTotalPages());
+		assertNull(evtData.getTotalPhotos());
+		assertFalse(evtData.isEntityFound());
+		assertFalse(evtData.isOwnerFound());
+		assertFalse(evtData.isPhotosFound());
 	}
 
 	@Test
