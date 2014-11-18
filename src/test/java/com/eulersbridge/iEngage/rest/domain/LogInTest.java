@@ -30,6 +30,7 @@ public class LogInTest
 {
 	LogIn login;
 	UserDetails user;
+	Long userId;
 
 	@Mock
 	private ServletRequestAttributes attrs;
@@ -49,7 +50,8 @@ public class LogInTest
 
 		Iterator<NewsArticleDetails> articles = null;
 		user=RestDataFixture.customEmailUser();
-		LoginDetails dets=new LoginDetails(articles, user);
+		userId=1l;
+		LoginDetails dets=new LoginDetails(articles, user, userId);
 		login=LogIn.fromLoginDetails(dets);
 	}
 

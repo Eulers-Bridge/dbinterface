@@ -23,6 +23,7 @@ public class LoginDetailsTest
 	LoginDetails dets;
 	Iterator<NewsArticleDetails> articles;
 	UserDetails user;
+	Long userId;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -33,7 +34,8 @@ public class LoginDetailsTest
 		ArrayList<NewsArticleDetails> nads=new ArrayList<NewsArticleDetails>();
 		articles=nads.iterator();
 		user=RestDataFixture.customEmailUser();
-		dets = new LoginDetails(articles,user);
+		userId=23l;
+		dets = new LoginDetails(articles,user,userId);
 	}
 
 	/**
@@ -71,6 +73,26 @@ public class LoginDetailsTest
 		Iterator<NewsArticleDetails> articles2=null;
 		dets.setArticles(articles2);
 		assertEquals("Articles does not match expected.",articles2,dets.getArticles());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.users.LoginDetails#getUserId()}.
+	 */
+	@Test
+	public final void testGetUserId()
+	{
+		assertEquals("UserId does not match expected.",userId,dets.getUserId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.users.LoginDetails#setUserId(java.util.Long)}.
+	 */
+	@Test
+	public final void testSetUserId()
+	{
+		Long userId2=15l;
+		dets.setUserId(userId2);
+		assertEquals("userId does not match expected.",userId2,dets.getUserId());
 	}
 
 	/**

@@ -25,6 +25,7 @@ public class LogIn extends ResourceSupport
 {
 	Iterator <NewsArticle> articles;
 	User user;
+	Long userId;
 	/**
 	 * @return the articles
 	 */
@@ -53,6 +54,22 @@ public class LogIn extends ResourceSupport
 		this.user = user;
 	}
 
+	/**
+	 * @return the userId
+	 */
+	public Long getUserId()
+	{
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Long userId)
+	{
+		this.userId = userId;
+	}
+
 	public static LogIn fromLoginDetails(LoginDetails loginDets) 
 	{
 		LogIn login=new LogIn();
@@ -64,6 +81,7 @@ public class LogIn extends ResourceSupport
 		User user=User.fromUserDetails(returnedUser);
 		user.removeLinks();
 		login.user = user;
+		login.userId=loginDets.getUserId();
 		    
 		//TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 		//this section is all that is actually needed in our model to add hateoas support.

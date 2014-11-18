@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 
 public class UserDetailsTest {
     final String email = new String("yikaig@gmail.com");
+    final Long userId=1l;
     final String givenName = new String("Yikai");
     final String familyName = new String("Gong");
     final String gender = new String("male");
@@ -36,6 +37,7 @@ public class UserDetailsTest {
         userDetails.setYearOfBirth(yearOfBirth);
         userDetails.setPassword(password);
         userDetails.setInstitutionId(institutionId);
+        userDetails.setNodeId(userId);
 
         userDetails1 = new UserDetails(email1);
     }
@@ -121,6 +123,20 @@ public class UserDetailsTest {
         Long institutionId1 = new Long(2);
         userDetails1.setInstitutionId(institutionId1);
         assertEquals("InstitutionId does not match", institutionId1, userDetails1.getInstitutionId());
+    }
+
+    @Test
+    public void testGetNodeId() throws Exception
+    {
+        assertEquals("NodeId does not match", userId, userDetails.getNodeId());
+    }
+
+    @Test
+    public void testSetNodeId() throws Exception
+    {
+        Long userId1 = new Long(2);
+        userDetails1.setNodeId(userId1);
+        assertEquals("UserId does not match", userId1, userDetails1.getNodeId());
     }
 
     @Test

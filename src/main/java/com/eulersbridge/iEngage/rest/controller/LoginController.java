@@ -69,6 +69,7 @@ public class LoginController
 		pageLength=Integer.parseInt(ControllerConstants.PAGE_LENGTH);
 
 		Long institutionId=userDetails.getInstitutionId();
+		Long userId=userDetails.getNodeId();
 		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(institutionId);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institutionId. "+institutionId);
 		Direction sortDirection=Direction.DESC;
@@ -79,7 +80,7 @@ public class LoginController
 			return new ResponseEntity<LogIn>(HttpStatus.NOT_FOUND);
 		}		
 		
-		LoginDetails result=new LoginDetails(articleEvent.getArticles().iterator(), userDetails);
+		LoginDetails result=new LoginDetails(articleEvent.getArticles().iterator(), userDetails,userId);
 		
 		LogIn response=LogIn.fromLoginDetails(result);
 		
