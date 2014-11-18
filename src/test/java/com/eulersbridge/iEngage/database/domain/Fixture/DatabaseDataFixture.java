@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
+import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
@@ -172,6 +173,29 @@ public class DatabaseDataFixture
 		Owner owner=new Owner(ownerId);
 		photo.setOwner(owner);
 		return photo;
+	}
+	
+	public static PhotoAlbum populatePhotoAlbum1()
+	{
+		Long nodeId=1l;
+		Long ownerId=2l;
+		PhotoAlbum photoAlbum=populatePhotoAlbum(nodeId,"Graduation Photo Album","Photos of Hot Graduates", Calendar.getInstance().getTimeInMillis(), null,ownerId);
+		return photoAlbum;
+	}
+	public static PhotoAlbum populatePhotoAlbum2()
+	{
+		Long nodeId=2l;
+		Long ownerId=1l;
+		PhotoAlbum photoAlbum=populatePhotoAlbum(nodeId,"Fresher Photo Album","Photos of Hot Freshers", Calendar.getInstance().getTimeInMillis(), null,ownerId);
+		return photoAlbum;
+	}
+	public static PhotoAlbum populatePhotoAlbum(Long nodeId,String name, String description, Long created,Long modified, Long ownerId)
+	{
+		Owner owner=new Owner(ownerId);
+		PhotoAlbum photoAlbum=new PhotoAlbum(name,description,created,owner,modified);
+		photoAlbum.setNodeId(nodeId);
+		photoAlbum.setOwner(owner);
+		return photoAlbum;
 	}
 	
 	public static HashMap<Long,Country> populateCountries()
