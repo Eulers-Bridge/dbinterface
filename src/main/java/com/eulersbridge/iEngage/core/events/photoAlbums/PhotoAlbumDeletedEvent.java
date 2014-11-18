@@ -40,7 +40,7 @@ public class PhotoAlbumDeletedEvent extends DeletedEvent
 	}
 
 	/**
-	 * @return the eventId
+	 * @return the nodeId
 	 */
 	public Long getNodeId()
 	{
@@ -48,8 +48,8 @@ public class PhotoAlbumDeletedEvent extends DeletedEvent
 	}
 
 	/**
-	 * @param eventId
-	 *            the eventId to set
+	 * @param nodeId
+	 *            the nodeId to set
 	 */
 	public void setNodeId(Long nodeId)
 	{
