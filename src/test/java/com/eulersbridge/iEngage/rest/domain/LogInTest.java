@@ -59,7 +59,7 @@ public class LogInTest
 	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.LogIn#fromLoginDetails(com.eulersbridge.iEngage.core.events.users.LoginDetails)}.
 	 */
 	@Test
-	public final void testFromNewsArticleDetails() 
+	public final void testFromLoginDetails() 
 	{
 		assertEquals("",user.getInstitutionId(),login.getUser().getInstitutionId());
 		LOG.debug(login.toString());
