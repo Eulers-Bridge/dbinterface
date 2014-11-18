@@ -15,16 +15,19 @@ public class LoginDetails
 {
 	private Iterator<NewsArticleDetails> articles;
 	private UserDetails user;
+	private Long userId;
 
 	/**
 	 * @param articles
 	 * @param user
+	 * @param userId
 	 */
-	public LoginDetails(Iterator<NewsArticleDetails> articles, UserDetails user) 
+	public LoginDetails(Iterator<NewsArticleDetails> articles, UserDetails user, Long userId) 
 	{
 		super();
 		this.articles = articles;
 		this.user = user;
+		this.userId = userId;
 	}
 
 	public Iterator<NewsArticleDetails> getArticles() 
@@ -51,6 +54,22 @@ public class LoginDetails
 	public void setUser(UserDetails user) 
 	{
 		this.user = user;
+	}
+
+	/**
+	 * @return the userId
+	 */
+	public Long getUserId()
+	{
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Long userId)
+	{
+		this.userId = userId;
 	}
 
 }
