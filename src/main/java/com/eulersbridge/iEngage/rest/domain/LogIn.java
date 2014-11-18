@@ -107,5 +107,15 @@ public class LogIn extends ResourceSupport
 		return login;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "LogIn [articles=" + articles + ", user=" + user + ", userId="
+				+ userId + "]";
+	}
+
 
 }
