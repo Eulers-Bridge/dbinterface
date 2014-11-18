@@ -22,6 +22,7 @@ public class UserDetails
 	private String password;
 	private boolean accountVerified=false;
 	private	Long institutionId;
+	private	Long nodeId;
 	
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     
@@ -80,6 +81,22 @@ public class UserDetails
 
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
+	}
+
+	/**
+	 * @return the nodeId
+	 */
+	public Long getNodeId()
+	{
+		return nodeId;
+	}
+
+	/**
+	 * @param nodeId the nodeId to set
+	 */
+	public void setNodeId(Long nodeId)
+	{
+		this.nodeId = nodeId;
 	}
 
 	public void setEmail(String email) 
