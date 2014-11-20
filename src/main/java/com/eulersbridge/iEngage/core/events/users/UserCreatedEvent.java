@@ -40,7 +40,12 @@ public class UserCreatedEvent extends CreatedEvent
 	    return userDetails;
 	}
 	
-
+	@Override
+	public UserDetails getDetails() 
+	{
+	    return userDetails;
+	}
+	
 	public static UserCreatedEvent instituteNotFound(String email) 
 	{
 		UserCreatedEvent ev = new UserCreatedEvent(email);

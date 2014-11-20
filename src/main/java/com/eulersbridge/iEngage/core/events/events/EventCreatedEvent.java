@@ -22,6 +22,12 @@ public class EventCreatedEvent extends CreatedEvent{
         this.eventId = eventId;
     }
 
+    @Override
+    public EventDetails getDetails()
+    {
+        return eventDetails;
+    }
+
     public EventDetails getEventDetails()
     {
         return eventDetails;

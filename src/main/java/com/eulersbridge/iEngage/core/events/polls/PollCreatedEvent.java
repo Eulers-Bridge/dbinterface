@@ -23,6 +23,12 @@ public class PollCreatedEvent extends CreatedEvent {
         return pollDetails;
     }
 
+    @Override
+    public PollDetails getDetails()
+    {
+        return pollDetails;
+    }
+
     public void setPollDetails(PollDetails pollDetails) {
         this.pollDetails = pollDetails;
     }

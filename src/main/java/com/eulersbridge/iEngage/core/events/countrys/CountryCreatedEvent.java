@@ -30,6 +30,11 @@ public class CountryCreatedEvent extends CreatedEvent
 		this.countryDetails = countryDetails;
 	}
 
+	@Override
+	public CountryDetails getDetails() 
+	{
+	    return countryDetails;
+	}
 	public CountryDetails getCountryDetails() 
 	{
 	    return countryDetails;

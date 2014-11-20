@@ -32,6 +32,12 @@ public class ConfigurationCreatedEvent extends CreatedEvent{
         Configid = configid;
     }
 
+    @Override
+    public ConfigurationDetails getDetails()
+    {
+        return configurationDetails;
+    }
+
     public ConfigurationDetails getConfigurationDetails() {
         return configurationDetails;
     }

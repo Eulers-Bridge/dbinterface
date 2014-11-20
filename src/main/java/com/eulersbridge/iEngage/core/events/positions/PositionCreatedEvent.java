@@ -32,6 +32,12 @@ public class PositionCreatedEvent extends CreatedEvent{
         PositionId = positionId;
     }
 
+    @Override
+    public PositionDetails getDetails()
+    {
+        return positionDetails;
+    }
+
     public PositionDetails getPositionDetails() {
         return positionDetails;
     }

@@ -32,6 +32,12 @@ public class ElectionCreatedEvent extends CreatedEvent{
         this.electionDetails = electionDetails;
     }
 
+    @Override
+    public ElectionDetails getDetails()
+    {
+        return this.electionDetails;
+    }
+
     public ElectionDetails getElectionDetails(){
         return this.electionDetails;
     }

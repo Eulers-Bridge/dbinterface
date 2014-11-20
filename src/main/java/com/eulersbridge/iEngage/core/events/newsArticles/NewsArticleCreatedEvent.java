@@ -38,6 +38,12 @@ public class NewsArticleCreatedEvent extends CreatedEvent
 		this.newsArticleDetails = newsArticleDetails;
 	}
 
+@Override
+	public NewsArticleDetails getDetails() 
+	{
+	    return newsArticleDetails;
+	}
+
 	public NewsArticleDetails getNewsArticleDetails() 
 	{
 	    return newsArticleDetails;

@@ -23,6 +23,12 @@ public class PhotoCreatedEvent extends CreatedEvent
         this.nodeId = nodeId;
     }
 
+@Override
+    public PhotoDetails getDetails()
+    {
+        return photoDetails;
+    }
+
     public PhotoDetails getPhotoDetails()
     {
         return photoDetails;

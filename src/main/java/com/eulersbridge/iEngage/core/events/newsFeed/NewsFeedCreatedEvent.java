@@ -27,6 +27,14 @@ public class NewsFeedCreatedEvent extends CreatedEvent
 	}
 
 	/**
+	 * @return the details
+	 */
+	@Override
+	public NewsFeedDetails getDetails() {
+		return newsFeedDetails;
+	}
+
+	/**
 	 * @return the newsFeedDetails
 	 */
 	public NewsFeedDetails getNewsFeedDetails() {
