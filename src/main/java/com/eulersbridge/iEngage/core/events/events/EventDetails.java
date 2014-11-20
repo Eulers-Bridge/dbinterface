@@ -5,13 +5,14 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Yikai Gong
  */
 
-public class EventDetails
+public class EventDetails extends Details
 {
-    private Long eventId;
     private String name;
     private String location;
     private Long starts;
@@ -72,9 +73,9 @@ public class EventDetails
 	{
 		final int prime = 31;
 		int result = 1;
-		if (eventId != null)
+		if (nodeId != null)
 		{	
-			result = prime * result + eventId.hashCode();
+			result = prime * result + nodeId.hashCode();
 		}
 		else
 		{
@@ -112,15 +113,15 @@ public class EventDetails
 			return false;
 		EventDetails other = (EventDetails) obj;
 		
-		if (eventId != null)
+		if (nodeId != null)
 		{	
-			if (eventId.equals(other.eventId))
+			if (nodeId.equals(other.nodeId))
 				return true;
 			else return false;
 		}
 		else
 		{
-			if (other.eventId!=null) return false;
+			if (other.nodeId!=null) return false;
 			if (created == null) {
 				if (other.created != null)
 					return false;
@@ -180,11 +181,11 @@ public class EventDetails
 	}
 
 	public Long getEventId() {
-        return eventId;
+        return nodeId;
     }
 
     public void setEventId(Long eventId) {
-        this.eventId = eventId;
+        this.nodeId = eventId;
     }
 
     public String getName() {

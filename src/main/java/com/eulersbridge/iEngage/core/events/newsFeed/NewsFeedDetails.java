@@ -3,13 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.newsFeed;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Greg Newitt
  *
  */
-public class NewsFeedDetails 
+public class NewsFeedDetails extends Details
 {
-	Long nodeId;
 	Long institutionId;
 
 	public NewsFeedDetails()
@@ -20,20 +21,6 @@ public class NewsFeedDetails
 	public NewsFeedDetails(Long institutionId)
 	{
 		this.institutionId=institutionId;
-	}
-
-	/**
-	 * @return the nodeId
-	 */
-	public Long getNodeId() {
-		return nodeId;
-	}
-
-	/**
-	 * @param nodeId the nodeId to set
-	 */
-	public void setNodeId(Long nodeId) {
-		this.nodeId = nodeId;
 	}
 
 	/**

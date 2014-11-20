@@ -3,12 +3,14 @@ package com.eulersbridge.iEngage.core.events.configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Yikai Gong
  */
 
-public class ConfigurationDetails {
-    private Long configId;
+public class ConfigurationDetails extends Details
+{
     //TODO add attributes
 
     private static Logger LOG = LoggerFactory.getLogger(ConfigurationDetails.class);
@@ -49,15 +51,15 @@ public class ConfigurationDetails {
         if (getClass() != obj.getClass())
             return false;
         ConfigurationDetails other = (ConfigurationDetails) obj;
-        if (configId != null)
+        if (nodeId != null)
         {
-            if (configId.equals(other.configId))
+            if (nodeId.equals(other.nodeId))
                 return true;
             else return false;
         }
         else
         {
-            if (other.configId != null)
+            if (other.nodeId != null)
                 return false;
             //TODO add attributes
         }
@@ -65,10 +67,10 @@ public class ConfigurationDetails {
     }
 
     public Long getConfigId() {
-        return configId;
+        return nodeId;
     }
 
     public void setConfigId(Long configId) {
-        this.configId = configId;
+        this.nodeId = configId;
     }
 }

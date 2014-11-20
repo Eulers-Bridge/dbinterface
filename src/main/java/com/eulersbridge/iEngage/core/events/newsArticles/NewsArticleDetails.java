@@ -6,9 +6,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NewsArticleDetails {
-	
-	private Long newsArticleId;
+import com.eulersbridge.iEngage.core.events.Details;
+
+public class NewsArticleDetails extends Details
+{
 	private String title;
 	private String content;
 	private Set<String> picture;
@@ -24,11 +25,11 @@ public class NewsArticleDetails {
 	}
 	public Long getNewsArticleId()
 	{
-		return this.newsArticleId;
+		return this.nodeId;
 	}
 	public void setNewsArticleId(Long newsArticleId)
 	{
-		this.newsArticleId = newsArticleId;
+		this.nodeId = newsArticleId;
 	}
 	public String getTitle()
 	{
@@ -134,9 +135,9 @@ public class NewsArticleDetails {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		if (newsArticleId!=null)
+		if (nodeId!=null)
 		{
-			result = prime * result	+ newsArticleId.hashCode();
+			result = prime * result	+ nodeId.hashCode();
 		}
 		else
 		{
@@ -173,7 +174,7 @@ public class NewsArticleDetails {
 		}
 		else
 		{
-			if (newsArticleId != null) 
+			if (nodeId != null) 
 				return false;
 			if (content == null) {
 				if (other.content != null)

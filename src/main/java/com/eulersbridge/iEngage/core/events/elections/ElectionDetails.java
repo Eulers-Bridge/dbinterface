@@ -3,12 +3,14 @@ package com.eulersbridge.iEngage.core.events.elections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Yikai Gong
  */
 
-public class ElectionDetails {
-    private Long electionId;
+public class ElectionDetails extends Details
+{
     private String title;
     private Long start;
     private Long end;
@@ -36,7 +38,7 @@ public class ElectionDetails {
 			Long startVoting, Long endVoting, Long institutionId) 
 	{
 		super();
-		this.electionId = electionId;
+		this.nodeId = electionId;
 		this.title = title;
 		this.start = start;
 		this.end = end;
@@ -46,10 +48,10 @@ public class ElectionDetails {
 	}
 
 	public void setElectionId(Long electionId){
-        this.electionId = electionId;
+        this.nodeId = electionId;
     }
     public Long getElectionId(){
-        return this.electionId;
+        return getNodeId();
     }
 
     public void setTitle(String title){
@@ -88,7 +90,8 @@ public class ElectionDetails {
     }
 
     @Override
-    public String toString(){
+    public String toString()
+    {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
         buff.append(getElectionId());
@@ -129,10 +132,10 @@ public class ElectionDetails {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		if (electionId != null) 
+		if (nodeId != null) 
 		{
 			result = prime * result
-					+ electionId.hashCode();
+					+ nodeId.hashCode();
 		}
 		else
 		{
@@ -159,9 +162,9 @@ public class ElectionDetails {
 		if (getClass() != obj.getClass())
 			return false;
 		ElectionDetails other = (ElectionDetails) obj;
-		if (electionId != null) 
+		if (nodeId != null) 
 		{
-			if (electionId.equals(other.electionId))
+			if (nodeId.equals(other.nodeId))
 				return true;
 			else return false;
 		} else //electionId null, other fields must match.

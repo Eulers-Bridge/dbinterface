@@ -3,13 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.voteReminder;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Greg Newitt
  *
  */
-public class VoteReminderDetails 
+public class VoteReminderDetails extends Details
 {
-	private Long nodeId;
 	private String userEmail;
 	private Long electionId;
 	private Long date;
@@ -33,28 +34,14 @@ public class VoteReminderDetails
 	 * @param timestamp
 	 */
 	public VoteReminderDetails(Long nodeId, String userEmail, Long electionId,
-			Long date, String location, Long timestamp) {
-		super();
-		this.nodeId = nodeId;
+			Long date, String location, Long timestamp)
+	{
+		super(nodeId);
 		this.userEmail = userEmail;
 		this.electionId = electionId;
 		this.date = date;
 		this.location = location;
 		this.timestamp = timestamp;
-	}
-
-	/**
-	 * @return the nodeId
-	 */
-	public Long getNodeId() {
-		return nodeId;
-	}
-
-	/**
-	 * @param nodeId the nodeId to set
-	 */
-	public void setNodeId(Long nodeId) {
-		this.nodeId = nodeId;
 	}
 
 	/**

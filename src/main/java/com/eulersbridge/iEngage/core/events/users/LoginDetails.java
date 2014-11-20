@@ -5,17 +5,17 @@ package com.eulersbridge.iEngage.core.events.users;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 
 /**
  * @author Greg Newitt
  *
  */
-public class LoginDetails 
+public class LoginDetails extends Details
 {
 	private Iterator<NewsArticleDetails> articles;
 	private UserDetails user;
-	private Long userId;
 
 	/**
 	 * @param articles
@@ -24,10 +24,9 @@ public class LoginDetails
 	 */
 	public LoginDetails(Iterator<NewsArticleDetails> articles, UserDetails user, Long userId) 
 	{
-		super();
+		super(userId);
 		this.articles = articles;
 		this.user = user;
-		this.userId = userId;
 	}
 
 	public Iterator<NewsArticleDetails> getArticles() 
@@ -61,7 +60,7 @@ public class LoginDetails
 	 */
 	public Long getUserId()
 	{
-		return userId;
+		return getNodeId();
 	}
 
 	/**
@@ -69,7 +68,7 @@ public class LoginDetails
 	 */
 	public void setUserId(Long userId)
 	{
-		this.userId = userId;
+		setNodeId(userId);
 	}
 
 }

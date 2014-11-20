@@ -3,13 +3,14 @@ package com.eulersbridge.iEngage.core.events.photoAlbums;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Greg Newitt
  */
 
-public class PhotoAlbumDetails
+public class PhotoAlbumDetails extends Details
 {
-	private Long nodeId;
 	private String name;
 	private String location;
 	private String description;
@@ -22,22 +23,28 @@ public class PhotoAlbumDetails
 
 	public PhotoAlbumDetails()
 	{
+		super();
 	}
 
 	/**
-	 * @return the nodeId
+	 * @param nodeId
+	 * @param name
+	 * @param location
+	 * @param description
+	 * @param created
+	 * @param ownerId
+	 * @param modified
 	 */
-	public Long getNodeId()
+	public PhotoAlbumDetails(Long nodeId, String name, String location, String description,
+			Long created, Long ownerId, Long modified)
 	{
-		return nodeId;
-	}
-
-	/**
-	 * @param nodeId the nodeId to set
-	 */
-	public void setNodeId(Long nodeId)
-	{
-		this.nodeId = nodeId;
+		super(nodeId);
+		this.name = name;
+		this.location = location;
+		this.description = description;
+		this.created = created;
+		this.ownerId = ownerId;
+		this.modified = modified;
 	}
 
 	/**
@@ -207,11 +214,6 @@ public class PhotoAlbumDetails
 				if (other.name != null) return false;
 			}
 			else if (!name.equals(other.name)) return false;
-			if (nodeId == null)
-			{
-				if (other.nodeId != null) return false;
-			}
-			else if (!nodeId.equals(other.nodeId)) return false;
 			if (ownerId == null)
 			{
 				if (other.ownerId != null) return false;

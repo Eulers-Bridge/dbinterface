@@ -3,12 +3,14 @@ package com.eulersbridge.iEngage.core.events.polls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Yikai Gong
  */
 
-public class PollDetails {
-    private Long pollId;
+public class PollDetails extends Details
+{
     private String question;
     private String answers;
     private Long start;
@@ -16,14 +18,17 @@ public class PollDetails {
 
     private static Logger LOG = LoggerFactory.getLogger(PollDetails.class);
 
-    public PollDetails(){}
+    public PollDetails()
+    {
+    	super();
+    }
 
     public Long getPollId() {
-        return pollId;
+        return nodeId;
     }
 
     public void setPollId(Long pollId) {
-        this.pollId = pollId;
+        this.nodeId = pollId;
     }
 
     public String getQuestion() {
@@ -85,9 +90,9 @@ public class PollDetails {
 	{
 		final int prime = 31;
 		int result = 1;
-		if (pollId!=null)
+		if (nodeId!=null)
 		{
-			result = prime * result + pollId.hashCode();
+			result = prime * result + nodeId.hashCode();
 		}
 		else
 		{
@@ -113,15 +118,15 @@ public class PollDetails {
 		if (getClass() != obj.getClass())
 			return false;
 		PollDetails other = (PollDetails) obj;
-		if (pollId != null) 
+		if (nodeId != null) 
 		{
-			if (pollId.equals(other.pollId))
+			if (nodeId.equals(other.nodeId))
 				return true;
 			else return false;
 		} 
 		else
 		{
-			if (other.pollId != null)
+			if (other.nodeId != null)
 				return false;
 			if (answers == null) {
 				if (other.answers != null)

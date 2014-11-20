@@ -3,13 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.voteRecord;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Greg Newitt
  *
  */
-public class VoteRecordDetails 
+public class VoteRecordDetails extends Details
 {
-	private Long nodeId;
 	private String voterEmail;
 	private Long electionId;
 	private Long date;
@@ -32,8 +33,7 @@ public class VoteRecordDetails
 	 */
 	public VoteRecordDetails(Long nodeId, String voterEmail, Long electionId,
 			Long date, String location) {
-		super();
-		this.nodeId = nodeId;
+		super(nodeId);
 		this.voterEmail = voterEmail;
 		this.electionId = electionId;
 		this.date = date;

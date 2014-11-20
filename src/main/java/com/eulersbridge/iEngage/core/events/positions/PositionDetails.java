@@ -3,12 +3,15 @@ package com.eulersbridge.iEngage.core.events.positions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Yikai Gong
  */
 
-public class PositionDetails {
-    private Long positionId;
+public class PositionDetails extends Details
+{
+    private Long nodeId;
     private String name;
     private String description;
     private Long electionId;
@@ -58,15 +61,15 @@ public class PositionDetails {
         if (getClass() != obj.getClass())
             return false;
         PositionDetails other = (PositionDetails) obj;
-        if (positionId != null)
+        if (nodeId != null)
         {
-            if (positionId.equals(other.positionId))
+            if (nodeId.equals(other.nodeId))
                 return true;
             else return false;
         }
         else
         {
-            if (other.positionId != null)
+            if (other.nodeId != null)
                 return false;
             if (name == null) {
                 if (other.name != null)
@@ -88,11 +91,11 @@ public class PositionDetails {
     }
 
     public Long getPositionId() {
-        return positionId;
+        return getNodeId();
     }
 
     public void setPositionId(Long positionId) {
-        this.positionId = positionId;
+        setNodeId(positionId);
     }
 
     public String getName() {
@@ -115,7 +118,8 @@ public class PositionDetails {
         return electionId;
     }
 
-    public void setElectionId(Long electionId) {
-        electionId = electionId;
+    public void setElectionId(Long electionId)
+    {
+        electionId = this.electionId;
     }
 }

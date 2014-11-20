@@ -3,9 +3,11 @@ package com.eulersbridge.iEngage.core.events.institutions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InstitutionDetails 
+import com.eulersbridge.iEngage.core.events.Details;
+
+public class InstitutionDetails extends Details
 {
-	private	Long institutionId;
+	private	Long nodeId;
 	private String name;
 	private String campus;
 	private String state;
@@ -15,13 +17,13 @@ public class InstitutionDetails
 
 	public InstitutionDetails(Long id) 
 	{
-		this.institutionId=id;
+		this.nodeId=id;
 	}
 	public Long getInstitutionId() {
-		return institutionId;
+		return nodeId;
 	}
 	public void setInstitutionId(Long institutionId) {
-		this.institutionId = institutionId;
+		this.nodeId = institutionId;
 	}
 	public String getName() {
 		return name;
@@ -76,9 +78,9 @@ public class InstitutionDetails
 		final int prime = 31;
 		int result = 1;
 		
-		if (institutionId!=null)
+		if (nodeId!=null)
 		{
-			result = prime * result	+ institutionId.hashCode();
+			result = prime * result	+ nodeId.hashCode();
 		}
 		else
 		{
@@ -102,15 +104,15 @@ public class InstitutionDetails
 		if (getClass() != obj.getClass())
 			return false;
 		InstitutionDetails other = (InstitutionDetails) obj;
-		if (institutionId!=null)
+		if (nodeId!=null)
 		{
-			if (institutionId.equals(other.institutionId))
+			if (nodeId.equals(other.nodeId))
 				return true;
 			else return false;
 		}
 		else
 		{
-			if (other.institutionId!=null)
+			if (other.nodeId!=null)
 				return false;
 			if (campus == null) {
 				if (other.campus != null)

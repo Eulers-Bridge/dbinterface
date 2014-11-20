@@ -3,13 +3,15 @@
  */
 package com.eulersbridge.iEngage.core.events.users;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Greg Newitt
  *
  */
-public class PersonalityDetails 
+public class PersonalityDetails extends Details
 {
-	private Long personalityId;
+	private Long nodeId;
 	private Float extroversion;
 	private Float agreeableness;
 	private Float conscientiousness;
@@ -25,7 +27,7 @@ public class PersonalityDetails
 	}
 
 	/**
-	 * @param personalityId
+	 * @param nodeId
 	 * @param extroversion
 	 * @param agreeableness
 	 * @param conscientiousness
@@ -36,8 +38,7 @@ public class PersonalityDetails
 			Float agreeableness, Float conscientiousness,
 			Float emotionalStability, Float openess) 
 	{
-		super();
-		this.personalityId = personalityId;
+		super(personalityId);
 		this.extroversion = extroversion;
 		this.agreeableness = agreeableness;
 		this.conscientiousness = conscientiousness;
@@ -46,17 +47,17 @@ public class PersonalityDetails
 	}
 	
 	/**
-	 * @return the personalityId
+	 * @return the nodeId
 	 */
 	public Long getPersonalityId() {
-		return personalityId;
+		return getNodeId();
 	}
 
 	/**
-	 * @param personalityId the personalityId to set
+	 * @param nodeId the nodeId to set
 	 */
 	public void setPersonalityId(Long personalityId) {
-		this.personalityId = personalityId;
+		setNodeId(personalityId);
 	}
 
 	/**
@@ -125,7 +126,7 @@ public class PersonalityDetails
 	 */
 	@Override
 	public String toString() {
-		return "PersonalityDetails [personalityId=" + personalityId
+		return "PersonalityDetails [nodeId=" + nodeId
 				+ ", extroversion=" + extroversion + ", agreeableness="
 				+ agreeableness + ", conscientiousness=" + conscientiousness
 				+ ", emotionalStability=" + emotionalStability + ", openess="
@@ -139,8 +140,8 @@ public class PersonalityDetails
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		if (personalityId!=null)
-			return personalityId.hashCode();
+		if (getNodeId()!=null)
+			return getNodeId().hashCode();
 		else
 		{
 			result = prime * result + Float.floatToIntBits(agreeableness);
@@ -165,9 +166,9 @@ public class PersonalityDetails
 		if (getClass() != obj.getClass())
 			return false;
 		PersonalityDetails other = (PersonalityDetails) obj;
-		if (personalityId!=null)
+		if (getNodeId()!=null)
 		{
-			if (!personalityId.equals(other.getPersonalityId()))
+			if (!getNodeId().equals(other.getPersonalityId()))
 				return false;
 		}
 		else

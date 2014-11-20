@@ -3,13 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.photo;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Greg Newitt
  *
  */
-public class PhotoDetails 
+public class PhotoDetails extends Details
 {
-	Long nodeId;
 	String url;
 	String title;
 	String description;
@@ -27,31 +28,12 @@ public class PhotoDetails
 	public PhotoDetails(Long nodeId, String url, String title,
 			String description, Long date, Long ownerId)
 	{
-		super();
-		this.nodeId = nodeId;
+		super(nodeId);
 		this.url = url;
 		this.title = title;
 		this.description = description;
 		this.date = date;
 		this.ownerId = ownerId;
-	}
-
-	public PhotoDetails() {
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @return the nodeId
-	 */
-	public Long getNodeId() {
-		return nodeId;
-	}
-
-	/**
-	 * @param nodeId the nodeId to set
-	 */
-	public void setNodeId(Long nodeId) {
-		this.nodeId = nodeId;
 	}
 
 	/**

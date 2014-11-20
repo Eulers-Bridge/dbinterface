@@ -6,11 +6,13 @@ package com.eulersbridge.iEngage.core.events.users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Greg Newitt
  *
  */
-public class UserDetails 
+public class UserDetails extends Details
 {
 
 	private String email;
@@ -22,7 +24,6 @@ public class UserDetails
 	private String password;
 	private boolean accountVerified=false;
 	private	Long institutionId;
-	private	Long nodeId;
 	
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     
@@ -81,22 +82,6 @@ public class UserDetails
 
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
-	}
-
-	/**
-	 * @return the nodeId
-	 */
-	public Long getNodeId()
-	{
-		return nodeId;
-	}
-
-	/**
-	 * @param nodeId the nodeId to set
-	 */
-	public void setNodeId(Long nodeId)
-	{
-		this.nodeId = nodeId;
 	}
 
 	public void setEmail(String email) 
@@ -167,7 +152,8 @@ public class UserDetails
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (accountVerified ? 1231 : 1237);
@@ -192,7 +178,8 @@ public class UserDetails
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
 		if (this == obj)
 			return true;
 		if (obj == null)

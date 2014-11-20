@@ -3,12 +3,15 @@ package com.eulersbridge.iEngage.core.events.forumQuestions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 /**
  * @author Yikai Gong
  */
 
-public class ForumQuestionDetails {
-    private Long forumQuestionId;
+public class ForumQuestionDetails extends Details
+{
+    private Long nodeId;
     private String question;
 
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestionDetails.class);
@@ -27,11 +30,11 @@ public class ForumQuestionDetails {
     }
 
     public Long getForumQuestionId() {
-        return forumQuestionId;
+        return nodeId;
     }
 
     public void setForumQuestionId(Long forumQuestionId) {
-        this.forumQuestionId = forumQuestionId;
+        this.nodeId = forumQuestionId;
     }
 
     public String getQuestion() {
@@ -49,9 +52,9 @@ public class ForumQuestionDetails {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		if (forumQuestionId!=null)
+		if (nodeId!=null)
 		{
-			result = prime * result	+ forumQuestionId.hashCode();
+			result = prime * result	+ nodeId.hashCode();
 		}
 		else
 		{
@@ -72,15 +75,15 @@ public class ForumQuestionDetails {
 		if (getClass() != obj.getClass())
 			return false;
 		ForumQuestionDetails other = (ForumQuestionDetails) obj;
-		if (forumQuestionId != null) 
+		if (nodeId != null) 
 		{
-			if (forumQuestionId.equals(other.forumQuestionId))
+			if (nodeId.equals(other.nodeId))
 				return true;
 			else return false;
 		}
 		else
 		{
-			if (other.forumQuestionId != null)
+			if (other.nodeId != null)
 				return false;
 			if (question == null) {
 				if (other.question != null)

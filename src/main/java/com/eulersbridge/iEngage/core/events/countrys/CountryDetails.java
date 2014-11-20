@@ -3,22 +3,24 @@ package com.eulersbridge.iEngage.core.events.countrys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CountryDetails 
+import com.eulersbridge.iEngage.core.events.Details;
+
+public class CountryDetails extends Details
 {
-	private	Long countryId;
 	private String countryName;
 	
     private static Logger LOG = LoggerFactory.getLogger(CountryDetails.class);
 
 	public CountryDetails(Long id) 
 	{
-		this.countryId=id;
+		this.nodeId=id;
 	}
-	public Long getCountryId() {
-		return countryId;
+	public Long getCountryId()
+	{
+		return nodeId;
 	}
 	public void setCountryId(Long countryId) {
-		this.countryId = countryId;
+		this.nodeId = countryId;
 	}
 	public String getCountryName() {
 		return countryName;
@@ -54,7 +56,7 @@ public class CountryDetails
 		}
 		else
 		{
-			result=prime * result + countryId.hashCode();
+			result=prime * result + nodeId.hashCode();
 		}
 		return result;
 	}
