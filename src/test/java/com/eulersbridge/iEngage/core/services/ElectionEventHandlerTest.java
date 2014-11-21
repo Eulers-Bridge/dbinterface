@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
@@ -74,7 +75,7 @@ public class ElectionEventHandlerTest
 		Election testData=DatabaseDataFixture.populateElection1();
 		when(electionRepository.findOne(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
-		ReadElectionEvent evtData = service.readElection(requestReadElectionEvent);
+		ReadElectionEvent evtData = (ReadElectionEvent) service.readElection(requestReadElectionEvent);
 		ElectionDetails returnedDets = evtData.getElectionDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
 		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
@@ -89,10 +90,9 @@ public class ElectionEventHandlerTest
 		Long nodeId=1l;
 		when(electionRepository.findOne(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(nodeId);
-		ReadElectionEvent evtData = service.readElection(requestReadElectionEvent);
-		ElectionDetails returnedDets = evtData.getElectionDetails();
-		assertNull(returnedDets);
-		assertEquals(nodeId,evtData.getElectionId());
+		ReadEvent evtData = service.readElection(requestReadElectionEvent);
+		assertNull(evtData.getDetails());
+		assertEquals(nodeId,evtData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 	}
 
@@ -145,7 +145,7 @@ public class ElectionEventHandlerTest
 		Election testData=DatabaseDataFixture.populateElection1();
 		when(electionRepository.findPreviousElection(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
-		ReadElectionEvent evtData = service.readPreviousElection(requestReadElectionEvent);
+		ReadElectionEvent evtData = (ReadElectionEvent) service.readPreviousElection(requestReadElectionEvent);
 		ElectionDetails returnedDets = evtData.getElectionDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
 		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
@@ -160,10 +160,10 @@ public class ElectionEventHandlerTest
 		Long nodeId=1l;
 		when(electionRepository.findPreviousElection(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(nodeId);
-		ReadElectionEvent evtData = service.readPreviousElection(requestReadElectionEvent);
-		ElectionDetails returnedDets = evtData.getElectionDetails();
+		ReadEvent evtData = service.readPreviousElection(requestReadElectionEvent);
+		ElectionDetails returnedDets = (ElectionDetails) evtData.getDetails();
 		assertNull(returnedDets);
-		assertEquals(nodeId,evtData.getElectionId());
+		assertEquals(nodeId,evtData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 	}
 
@@ -177,7 +177,7 @@ public class ElectionEventHandlerTest
 		Election testData=DatabaseDataFixture.populateElection1();
 		when(electionRepository.findNextElection(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
-		ReadElectionEvent evtData = service.readNextElection(requestReadElectionEvent);
+		ReadElectionEvent evtData = (ReadElectionEvent) service.readNextElection(requestReadElectionEvent);
 		ElectionDetails returnedDets = evtData.getElectionDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
 		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
@@ -192,10 +192,9 @@ public class ElectionEventHandlerTest
 		Long nodeId=1l;
 		when(electionRepository.findNextElection(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(nodeId);
-		ReadElectionEvent evtData = service.readNextElection(requestReadElectionEvent);
-		ElectionDetails returnedDets = evtData.getElectionDetails();
-		assertNull(returnedDets);
-		assertEquals(nodeId,evtData.getElectionId());
+		ReadEvent evtData = service.readNextElection(requestReadElectionEvent);
+		assertNull(evtData.getDetails());
+		assertEquals(nodeId,evtData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 	}
 

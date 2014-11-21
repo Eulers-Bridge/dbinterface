@@ -26,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
@@ -125,7 +126,7 @@ public class ViewCountryIntegrationTest
 		Long id=1L;
 		CountryDetails countryDetails=new CountryDetails(id);
 		countryDetails.setCountryName("Australia");
-		CountryReadEvent testData=CountryReadEvent.notFound(id);
+		ReadEvent testData=CountryReadEvent.notFound(id);
 		when (countryService.readCountry(any(ReadCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

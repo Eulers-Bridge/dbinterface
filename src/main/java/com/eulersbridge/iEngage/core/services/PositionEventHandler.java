@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.repository.PositionRepository;
@@ -31,9 +32,9 @@ public class PositionEventHandler implements PositionService{
     }
 
     @Override
-    public ReadPositionEvent requestReadPosition(RequestReadPositionEvent requestReadPositionEvent) {
+    public ReadEvent requestReadPosition(RequestReadPositionEvent requestReadPositionEvent) {
         Position position = positionRepository.findOne(requestReadPositionEvent.getPositionId());
-        ReadPositionEvent readPositionEvent;
+        ReadEvent readPositionEvent;
         if(position != null){
             readPositionEvent = new ReadPositionEvent(position.getPositionId(), position.toPositionDetails());
         }

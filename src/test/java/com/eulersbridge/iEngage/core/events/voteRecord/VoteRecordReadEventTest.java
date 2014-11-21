@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import static org.junit.Assert.*;
@@ -46,7 +47,7 @@ public class VoteRecordReadEventTest {
 
     @Test
     public void testNotFound() throws Exception {
-        VoteRecordReadEvent voteRecordReadEvent1 = VoteRecordReadEvent.notFound(voteRecordId);
+        ReadEvent voteRecordReadEvent1 = VoteRecordReadEvent.notFound(voteRecordId);
         assertNotNull("notFound() returns null", voteRecordReadEvent1);
         assertFalse("entityFound is not false", voteRecordReadEvent1.isEntityFound());
     }

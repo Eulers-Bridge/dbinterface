@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
@@ -255,7 +256,7 @@ public class ViewNewsIntegrationTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticle()");
 		Long newsArticleId=5l;
-		ReadNewsArticleEvent testData=ReadNewsArticleEvent.notFound(newsArticleId);
+		ReadEvent testData=ReadNewsArticleEvent.notFound(newsArticleId);
 		when (newsService.requestReadNewsArticle(any(RequestReadNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

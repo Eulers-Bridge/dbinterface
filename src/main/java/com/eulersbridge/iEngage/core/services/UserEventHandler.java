@@ -6,6 +6,7 @@ import java.util.List;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.database.domain.*;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -453,11 +454,11 @@ public class UserEventHandler implements UserService,UserDetailsService
 	}
 
 	@Override
-	public VoteRecordReadEvent readVoteRecord(ReadVoteRecordEvent readVoteRecordEvent)
+	public ReadEvent readVoteRecord(ReadVoteRecordEvent readVoteRecordEvent)
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("readVoteRecord("+readVoteRecordEvent.getVoteRecordId()+")");
 	    VoteRecord vr = userRepository.readVoteRecord(readVoteRecordEvent.getVoteRecordId());
-	    VoteRecordReadEvent response;
+	    ReadEvent response;
 	    if (vr == null) 
 	    {
 	      response=VoteRecordReadEvent.notFound(readVoteRecordEvent.getVoteRecordId());
@@ -472,10 +473,10 @@ public class UserEventHandler implements UserService,UserDetailsService
 	}
 
 	@Override
-	public VoteReminderReadEvent readVoteReminder(ReadVoteReminderEvent readVoteReminderEvent) {
+	public ReadEvent readVoteReminder(ReadVoteReminderEvent readVoteReminderEvent) {
 	    if (LOG.isDebugEnabled()) LOG.debug("readVoteRecord("+readVoteReminderEvent.getVoteReminderId()+")");
 	    VoteReminder vr = userRepository.readVoteReminder(readVoteReminderEvent.getVoteReminderId());
-	    VoteReminderReadEvent response;
+	    ReadEvent response;
 	    if (vr == null) 
 	    {
 	      response=VoteReminderReadEvent.notFound(readVoteReminderEvent.getVoteReminderId());

@@ -26,6 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -47,7 +48,6 @@ import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
@@ -676,7 +676,7 @@ public class UserEventHandlerTest
 		readVoteReminderEvent=new ReadVoteReminderEvent(id);
 		when(uRepo.readVoteReminder(any(Long.class))).thenReturn(vr);
 
-		VoteReminderReadEvent nace = userServiceMocked.readVoteReminder(readVoteReminderEvent);
+		VoteReminderReadEvent nace = (VoteReminderReadEvent) userServiceMocked.readVoteReminder(readVoteReminderEvent);
 		assertNotNull(nace);
 		assertEquals(nace.getVoteReminderDetails(),vrd);
 		assertTrue(nace.isEntityFound());
@@ -691,11 +691,11 @@ public class UserEventHandlerTest
 		readVoteReminderEvent=new ReadVoteReminderEvent(id);
 		when(uRepo.readVoteReminder(any(Long.class))).thenReturn(null);
 
-		VoteReminderReadEvent nace = userServiceMocked.readVoteReminder(readVoteReminderEvent);
+		ReadEvent nace = userServiceMocked.readVoteReminder(readVoteReminderEvent);
 		assertNotNull(nace);
-		assertNull(nace.getVoteReminderDetails());
+		assertNull(nace.getDetails());
 		assertFalse(nace.isEntityFound());
-		assertEquals(nace.getVoteReminderId(),id);
+		assertEquals(nace.getNodeId(),id);
 	}
 	
 	@Test
@@ -708,11 +708,11 @@ public class UserEventHandlerTest
 		readVoteRecordEvent=new ReadVoteRecordEvent(id);
 		when(uRepo.readVoteRecord(any(Long.class))).thenReturn(vr);
 
-		VoteRecordReadEvent nace = userServiceMocked.readVoteRecord(readVoteRecordEvent);
+		ReadEvent nace = userServiceMocked.readVoteRecord(readVoteRecordEvent);
 		assertNotNull(nace);
-		assertEquals(nace.getVoteRecordDetails(),vrd);
+		assertEquals(nace.getDetails(),vrd);
 		assertTrue(nace.isEntityFound());
-		assertEquals(nace.getVoteRecordId(),id);
+		assertEquals(nace.getNodeId(),id);
 	}
 	
 	@Test
@@ -723,11 +723,11 @@ public class UserEventHandlerTest
 		readVoteRecordEvent=new ReadVoteRecordEvent(id);
 		when(uRepo.readVoteReminder(any(Long.class))).thenReturn(null);
 
-		VoteRecordReadEvent nace = userServiceMocked.readVoteRecord(readVoteRecordEvent);
+		ReadEvent nace = userServiceMocked.readVoteRecord(readVoteRecordEvent);
 		assertNotNull(nace);
-		assertNull(nace.getVoteRecordDetails());
+		assertNull(nace.getDetails());
 		assertFalse(nace.isEntityFound());
-		assertEquals(nace.getVoteRecordId(),id);
+		assertEquals(nace.getNodeId(),id);
 	}
 	
 	@Test

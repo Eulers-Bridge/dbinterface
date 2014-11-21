@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
@@ -79,7 +80,7 @@ public class CountryEventHandlerTest
 	{
 		ReadCountryEvent rnae=new ReadCountryEvent(new Long(1));
 		assertEquals("1 == 1",rnae.getId(),new Long(1));
-		CountryReadEvent rane=countryService.readCountry(rnae);
+		CountryReadEvent rane=(CountryReadEvent) countryService.readCountry(rnae);
 		if (null==rane)
 			fail("Not yet implemented");
 	}
@@ -89,7 +90,7 @@ public class CountryEventHandlerTest
 	{
 		ReadCountryEvent rnae=new ReadCountryEvent(new Long(19));
 		assertEquals("19 == 19",rnae.getId(),new Long(19));
-		CountryReadEvent rane=countryService.readCountry(rnae);
+		ReadEvent rane=countryService.readCountry(rnae);
 		assertNotNull("Not yet implemented",rane);
 		assertFalse("Entity should not be found.",rane.isEntityFound());
 	}

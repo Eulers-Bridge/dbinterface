@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,7 +63,7 @@ public class ReadNewsArticleEventTest {
 
     @Test
     public void testNotFound() throws Exception {
-        ReadNewsArticleEvent readNewsArticleEvent1 = ReadNewsArticleEvent.notFound(newsArticleId);
+        ReadEvent readNewsArticleEvent1 = ReadNewsArticleEvent.notFound(newsArticleId);
         assertNotNull("notFound() returns null", readNewsArticleEvent1);
         assertFalse("entityFound is not false", readNewsArticleEvent1.isEntityFound());
     }

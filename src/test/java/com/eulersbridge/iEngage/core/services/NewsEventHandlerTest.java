@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
@@ -135,7 +136,7 @@ public class NewsEventHandlerTest
 		createNewsArticleEvent=new CreateNewsArticleEvent(nADs);
 		NewsArticleCreatedEvent nace = newsService.createNewsArticle(createNewsArticleEvent);
 		assertNotNull("News article created event null.",nace);
-		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(nace.getNewsArticleId()));
+		ReadNewsArticleEvent rane=(ReadNewsArticleEvent) newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(nace.getNewsArticleId()));
 		NewsArticleDetails nADs2=rane.getReadNewsArticleDetails();
 		assertEquals("Content not equal",nADs.getContent(),nADs2.getContent());
 		assertEquals("Creator email not equal",nADs.getCreatorEmail(),nADs2.getCreatorEmail());
@@ -153,7 +154,7 @@ public class NewsEventHandlerTest
 	{
 		RequestReadNewsArticleEvent rnae=new RequestReadNewsArticleEvent(new Long(1));
 		assertEquals("1 == 1",rnae.getNewsArticleId(),new Long(1));
-		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(rnae);
+		ReadNewsArticleEvent rane=(ReadNewsArticleEvent) newsService.requestReadNewsArticle(rnae);
 		assertNotNull("Null read news article event returned.",rane);
 		assertEquals("article ids do not match.",rane.getNewsArticleId(),rnae.getNewsArticleId());
 	}
@@ -191,7 +192,7 @@ public class NewsEventHandlerTest
 		DeleteNewsArticleEvent deleteNewsArticleEvent=new DeleteNewsArticleEvent(articleId);
 		DeletedEvent nUDe = newsService.deleteNewsArticle(deleteNewsArticleEvent);
 		assertNotNull("Null event returned",nUDe);
-		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
+		ReadEvent rane=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
 		assertFalse("Entity was not deleted.",rane.isEntityFound());
 	}
 	

@@ -29,6 +29,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
 import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
@@ -253,7 +254,7 @@ public class EventControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElection()");
 		EventDetails dets=DatabaseDataFixture.populateEvent1().toEventDetails();
-		ReadEventEvent testData=ReadEventEvent.notFound(dets.getEventId());
+		ReadEvent testData=ReadEventEvent.notFound(dets.getEventId());
 		when (eventService.readEvent(any(RequestReadEventEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{electionId}/",dets.getEventId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

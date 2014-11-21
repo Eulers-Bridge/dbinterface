@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.configuration.*;
 import com.eulersbridge.iEngage.core.services.ConfigurationService;
 import com.eulersbridge.iEngage.rest.domain.Configuration;
@@ -56,10 +57,10 @@ public class ConfigurationController {
     {
         if (LOG.isInfoEnabled()) LOG.info(configId+" attempting to get configuration. ");
         RequestReadConfigurationEvent requestReadConfigurationEvent= new RequestReadConfigurationEvent(configId);
-        ReadConfigurationEvent readConfigurationEvent= configurationService.requestReadConfiguration(requestReadConfigurationEvent);
+        ReadEvent readConfigurationEvent= configurationService.requestReadConfiguration(requestReadConfigurationEvent);
         if (readConfigurationEvent.isEntityFound())
         {
-            Configuration configuration = Configuration.fromConfigurationDetails(readConfigurationEvent.getConfigurationDetails());
+            Configuration configuration = Configuration.fromConfigurationDetails((ConfigurationDetails)readConfigurationEvent.getDetails());
             return new ResponseEntity<Configuration>(configuration, HttpStatus.OK);
         }
         else

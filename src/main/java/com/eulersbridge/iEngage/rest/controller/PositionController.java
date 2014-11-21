@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.core.services.PositionService;
 import com.eulersbridge.iEngage.rest.domain.Position;
@@ -50,9 +51,9 @@ public class PositionController {
     findPosition(@PathVariable Long positionId){
         if (LOG.isInfoEnabled()) LOG.info(positionId+" attempting to get position. ");
         RequestReadPositionEvent requestReadPositionEvent = new RequestReadPositionEvent(positionId);
-        ReadPositionEvent readPositionEvent = positionService.requestReadPosition(requestReadPositionEvent);
+        ReadEvent readPositionEvent = positionService.requestReadPosition(requestReadPositionEvent);
         if(readPositionEvent.isEntityFound()){
-            Position position = Position.fromPositionDetails(readPositionEvent.getPositionDetails());
+            Position position = Position.fromPositionDetails((PositionDetails)readPositionEvent.getDetails());
             return new ResponseEntity<Position>(position, HttpStatus.OK);
         }else{
             return new ResponseEntity<Position>(HttpStatus.NOT_FOUND);

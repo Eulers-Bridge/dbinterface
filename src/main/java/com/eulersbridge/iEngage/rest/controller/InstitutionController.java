@@ -3,13 +3,14 @@ package com.eulersbridge.iEngage.rest.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
 import com.eulersbridge.iEngage.core.events.institutions.*;
 import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
+import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 import com.eulersbridge.iEngage.core.events.newsFeed.ReadNewsFeedEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedReadEvent;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -110,7 +111,7 @@ public class InstitutionController
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve institution. "+institutionId);
     	Institution restInst=null;
     	ResponseEntity<Institution> result;
-		ReadInstitutionEvent instEvent=instService.requestReadInstitution(new RequestReadInstitutionEvent(institutionId));
+		ReadEvent instEvent=instService.requestReadInstitution(new RequestReadInstitutionEvent(institutionId));
   	
 		if (!instEvent.isEntityFound())
 		{
@@ -118,7 +119,7 @@ public class InstitutionController
 		}
 		else
 		{
-			restInst=Institution.fromInstDetails(instEvent.getInstitutionDetails());
+			restInst=Institution.fromInstDetails((InstitutionDetails)instEvent.getDetails());
 			result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
 		}
 		return result;
@@ -254,7 +255,7 @@ public class InstitutionController
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news feed for inst "+institutionId+".");
     	NewsFeed restNF=null;
     	ResponseEntity<NewsFeed> result;
-		NewsFeedReadEvent nfEvent=instService.readNewsFeed(new ReadNewsFeedEvent(institutionId));
+		ReadEvent nfEvent=instService.readNewsFeed(new ReadNewsFeedEvent(institutionId));
   	
 		if (!nfEvent.isEntityFound())
 		{
@@ -262,7 +263,7 @@ public class InstitutionController
 		}
 		else
 		{
-			restNF=NewsFeed.fromNewsFeedDetails(nfEvent.getReadNewsFeedDetails());
+			restNF=NewsFeed.fromNewsFeedDetails((NewsFeedDetails) nfEvent.getDetails());
 			result=new ResponseEntity<NewsFeed>(restNF,HttpStatus.OK);
 		}
 		return result;

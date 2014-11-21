@@ -30,6 +30,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -117,7 +118,7 @@ public class PhotoControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
-		PhotoReadEvent testData=PhotoReadEvent.notFound(dets.getNodeId());
+		ReadEvent testData=PhotoReadEvent.notFound(dets.getNodeId());
 		when (photoService.readPhoto(any(ReadPhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{photoId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

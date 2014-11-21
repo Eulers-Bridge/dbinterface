@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.controller;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
@@ -50,9 +51,9 @@ public class PollController {
     ResponseEntity<Poll> findPoll(@PathVariable Long pollId){
         if (LOG.isInfoEnabled()) LOG.info(pollId+" attempting to get poll. ");
         RequestReadPollEvent requestReadPollEvent = new RequestReadPollEvent(pollId);
-        ReadPollEvent readPollEvent = pollService.requestReadPoll(requestReadPollEvent);
+        ReadEvent readPollEvent = pollService.requestReadPoll(requestReadPollEvent);
         if(readPollEvent.isEntityFound()){
-            Poll poll = Poll.fromPollDetails(readPollEvent.getPollDetails());
+            Poll poll = Poll.fromPollDetails((PollDetails)readPollEvent.getDetails());
             return new ResponseEntity<Poll>(poll, HttpStatus.OK);
         }
         else{
@@ -175,7 +176,7 @@ public class PollController {
         LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(pollId), sortDirection, pageNumber, pageLength);
         Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
         if (likes.hasNext() == false){
-            ReadPollEvent readPollEvent=pollService.requestReadPoll(new RequestReadPollEvent(pollId));
+            ReadEvent readPollEvent=pollService.requestReadPoll(new RequestReadPollEvent(pollId));
             if (!readPollEvent.isEntityFound())
                 return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
             else

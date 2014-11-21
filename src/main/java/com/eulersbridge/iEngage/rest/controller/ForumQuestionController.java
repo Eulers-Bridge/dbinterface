@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.controller;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
@@ -65,9 +66,9 @@ public class ForumQuestionController {
     ResponseEntity<ForumQuestion> findForumQuestion(@PathVariable Long forumQuestionId){
         if (LOG.isInfoEnabled()) LOG.info(forumQuestionId+" attempting to get forumQuestion. ");
         RequestReadForumQuestionEvent requestReadForumQuestionEvent = new RequestReadForumQuestionEvent(forumQuestionId);
-        ReadForumQuestionEvent readForumQuestionEvent = forumQuestionService.requestReadForumQuestion(requestReadForumQuestionEvent);
+        ReadEvent readForumQuestionEvent = forumQuestionService.requestReadForumQuestion(requestReadForumQuestionEvent);
         if(readForumQuestionEvent.isEntityFound()){
-            ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails(readForumQuestionEvent.getForumQuestionDetails());
+            ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails((ForumQuestionDetails)readForumQuestionEvent.getDetails());
             return new ResponseEntity<ForumQuestion>(forumQuestion, HttpStatus.OK);
         }
         else{
@@ -174,7 +175,7 @@ public class ForumQuestionController {
         LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(forumQuestionId), sortDirection, pageNumber, pageLength);
         Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
         if (likes.hasNext() == false){
-            ReadForumQuestionEvent readPollEvent=forumQuestionService.requestReadForumQuestion(new RequestReadForumQuestionEvent(forumQuestionId));
+            ReadEvent readPollEvent=forumQuestionService.requestReadForumQuestion(new RequestReadForumQuestionEvent(forumQuestionId));
             if (!readPollEvent.isEntityFound())
                 return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
             else

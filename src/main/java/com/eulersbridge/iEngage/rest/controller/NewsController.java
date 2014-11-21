@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
@@ -169,13 +170,13 @@ public class NewsController
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news article. "+articleId);
 		
-		ReadNewsArticleEvent articleEvent=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
+		ReadEvent articleEvent=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
   	
 		if (!articleEvent.isEntityFound())
 		{
 			return new ResponseEntity<NewsArticle>(HttpStatus.NOT_FOUND);
 		}
-		NewsArticle restNews=NewsArticle.fromNewsArticleDetails(articleEvent.getReadNewsArticleDetails());
+		NewsArticle restNews=NewsArticle.fromNewsArticleDetails((NewsArticleDetails)articleEvent.getDetails());
         return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
 	}
     
@@ -318,7 +319,7 @@ public class NewsController
         LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(articleId), sortDirection, pageNumber, pageLength);
         Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
         if (likes.hasNext() == false){
-            ReadNewsArticleEvent articleEvent=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
+            ReadEvent articleEvent=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
             if (!articleEvent.isEntityFound())
                 return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
             else

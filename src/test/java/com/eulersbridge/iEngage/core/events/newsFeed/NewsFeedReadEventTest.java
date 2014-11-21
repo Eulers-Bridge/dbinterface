@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedReadEvent;
 
@@ -49,7 +50,7 @@ public class NewsFeedReadEventTest {
 
     @Test
     public void testNotFound() throws Exception {
-        NewsFeedReadEvent newsFeedReadEvent1 = NewsFeedReadEvent.notFound(id);
+        ReadEvent newsFeedReadEvent1 = NewsFeedReadEvent.notFound(id);
         assertNotNull("testNotFound() returns null", newsFeedReadEvent1);
         assertFalse("entityFound is not false", newsFeedReadEvent1.isEntityFound());
     }

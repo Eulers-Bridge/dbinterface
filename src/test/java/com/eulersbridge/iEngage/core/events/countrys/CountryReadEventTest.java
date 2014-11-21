@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+
 import static org.junit.Assert.*;
 
 /**
@@ -56,7 +58,7 @@ public class CountryReadEventTest {
 
     @Test
     public void testNotFound() throws Exception {
-        CountryReadEvent countryReadEvent1 = CountryReadEvent.notFound(new Long(1));
+        ReadEvent countryReadEvent1 = CountryReadEvent.notFound(new Long(1));
         assertFalse("EntityFound is not false",countryReadEvent1.isEntityFound());
     }
 

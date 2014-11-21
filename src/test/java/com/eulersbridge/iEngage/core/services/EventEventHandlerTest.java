@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
 import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
@@ -125,7 +126,7 @@ public class EventEventHandlerTest
 		Event testData=DatabaseDataFixture.populateEvent1();
 		when(eventRepository.findOne(any(Long.class))).thenReturn(testData);
 		RequestReadEventEvent readElectionEvent=new RequestReadEventEvent(testData.getEventId());
-		ReadEventEvent evtData = service.readEvent(readElectionEvent);
+		ReadEventEvent evtData = (ReadEventEvent) service.readEvent(readElectionEvent);
 		EventDetails returnedDets = evtData.getEventDetails();
 		assertEquals(returnedDets,testData.toEventDetails());
 		assertEquals(evtData.getEventId(),returnedDets.getEventId());
@@ -140,10 +141,9 @@ public class EventEventHandlerTest
 		Long nodeId=1l;
 		when(eventRepository.findOne(any(Long.class))).thenReturn(testData);
 		RequestReadEventEvent readElectionEvent=new RequestReadEventEvent(nodeId);
-		ReadEventEvent evtData = service.readEvent(readElectionEvent);
-		EventDetails returnedDets = evtData.getEventDetails();
-		assertNull(returnedDets);
-		assertEquals(nodeId,evtData.getEventId());
+		ReadEvent evtData = service.readEvent(readElectionEvent);
+		assertNull(evtData.getDetails());
+		assertEquals(nodeId,evtData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 	}
 

@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
@@ -120,17 +121,20 @@ public class InstitutionEventHandlerTest
 	public void testRequestReadInstitution() {
 		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(new Long(1));
 		assertEquals("1 == 1",rnae.getId(),new Long(1));
-		ReadInstitutionEvent rane=instService.requestReadInstitution(rnae);
+		ReadInstitutionEvent rane=(ReadInstitutionEvent) instService.requestReadInstitution(rnae);
 		if (null==rane)
 			fail("Not yet implemented");
 	}
 
 	@Test
 	public void testRequestReadNonExistentInstitutionShouldReturnNotFound() {
-		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(new Long(19));
+		Long nodeId=new Long(19);
+		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(nodeId);
 		assertEquals("19 == 19",rnae.getId(),new Long(19));
-		ReadInstitutionEvent rane=instService.requestReadInstitution(rnae);
+		ReadEvent rane=instService.requestReadInstitution(rnae);
 		assertNotNull("Not yet implemented",rane);
+		assertNull(rane.getDetails());
+		assertEquals(nodeId,rane.getNodeId());
 		assertFalse("Non-existent entity should not be found.",rane.isEntityFound());
 	}
 

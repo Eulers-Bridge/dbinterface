@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GiCountry;
@@ -132,7 +133,7 @@ public class ViewInstitutionIntegrationTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		Long instId=1l;
-		ReadInstitutionEvent testData=ReadInstitutionEvent.notFound(instId);
+		ReadEvent testData=ReadInstitutionEvent.notFound(instId);
 		when (instService.requestReadInstitution(any(RequestReadInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{instId}/",instId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -253,7 +254,7 @@ public class ViewInstitutionIntegrationTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingReadNewsFeed()");
 		Long id=1l;
-		NewsFeedReadEvent testData=NewsFeedReadEvent.notFound(id);
+		ReadEvent testData=NewsFeedReadEvent.notFound(id);
 		when (instService.readNewsFeed(any(ReadNewsFeedEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

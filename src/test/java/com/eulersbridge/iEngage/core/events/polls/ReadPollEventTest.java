@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+
 import static org.junit.Assert.*;
 
 /**
@@ -50,7 +52,7 @@ public class ReadPollEventTest {
 
     @Test
     public void testNotFound() throws Exception {
-        ReadPollEvent readPollEvent1 = ReadPollEvent.notFound(new Long(1));
+        ReadEvent readPollEvent1 = ReadPollEvent.notFound(new Long(1));
         assertNotNull("notFound() returns null", readPollEvent1);
         assertFalse("entityFound is not null", readPollEvent1.isEntityFound());
     }

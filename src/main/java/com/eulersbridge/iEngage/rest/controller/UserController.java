@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.servlet.ServletContext;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.*;
 
@@ -42,12 +43,12 @@ import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.email.EmailConstants;
@@ -278,13 +279,13 @@ public class UserController {
 	public @ResponseBody ResponseEntity<VoteReminder> findVoteReminder(@PathVariable Long id) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve voteReminder. "+id);
-		VoteReminderReadEvent evt=userService.readVoteReminder(new ReadVoteReminderEvent(id));
+		ReadEvent evt=userService.readVoteReminder(new ReadVoteReminderEvent(id));
   	
 		if (!evt.isEntityFound())
 		{
 			return new ResponseEntity<VoteReminder>(HttpStatus.NOT_FOUND);
 		}
-		VoteReminder restVoteReminder=VoteReminder.fromVoteReminderDetails(evt.getVoteReminderDetails());
+		VoteReminder restVoteReminder=VoteReminder.fromVoteReminderDetails((VoteReminderDetails) evt.getDetails());
 		return new ResponseEntity<VoteReminder>(restVoteReminder,HttpStatus.OK);
 	}
     
@@ -304,13 +305,13 @@ public class UserController {
 	public @ResponseBody ResponseEntity<VoteRecord> findVoteRecord(@PathVariable Long id) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve voteRecord. "+id);
-		VoteRecordReadEvent evt=userService.readVoteRecord(new ReadVoteRecordEvent(id));
+		ReadEvent evt=userService.readVoteRecord(new ReadVoteRecordEvent(id));
   	
 		if (!evt.isEntityFound())
 		{
 			return new ResponseEntity<VoteRecord>(HttpStatus.NOT_FOUND);
 		}
-		VoteRecord restVoteRecord=VoteRecord.fromVoteRecordDetails(evt.getVoteRecordDetails());
+		VoteRecord restVoteRecord=VoteRecord.fromVoteRecordDetails((VoteRecordDetails) evt.getDetails());
 		return new ResponseEntity<VoteRecord>(restVoteRecord,HttpStatus.OK);
 	}
     

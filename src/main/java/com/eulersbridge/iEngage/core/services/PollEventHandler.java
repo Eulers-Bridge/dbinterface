@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
@@ -23,9 +24,9 @@ public class PollEventHandler implements PollService{
     }
 
     @Override
-    public ReadPollEvent requestReadPoll(RequestReadPollEvent requestReadPollEvent) {
+    public ReadEvent requestReadPoll(RequestReadPollEvent requestReadPollEvent) {
         Poll poll = pollRepository.findOne(requestReadPollEvent.getPollId());
-        ReadPollEvent readPollEvent;
+        ReadEvent readPollEvent;
         if(poll != null){
             readPollEvent = new ReadPollEvent(requestReadPollEvent.getPollId(), poll.toPollDetails());
         }

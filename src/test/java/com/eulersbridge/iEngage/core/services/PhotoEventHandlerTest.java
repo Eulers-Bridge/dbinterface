@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -98,7 +99,7 @@ public class PhotoEventHandlerTest
 		Photo testData=DatabaseDataFixture.populatePhoto1();
 		when(photoRepository.findOne(any(Long.class))).thenReturn(testData);
 		ReadPhotoEvent readPhotoEvent=new ReadPhotoEvent(testData.getNodeId());
-		PhotoReadEvent evtData = service.readPhoto(readPhotoEvent);
+		PhotoReadEvent evtData = (PhotoReadEvent) service.readPhoto(readPhotoEvent);
 		PhotoDetails returnedDets = evtData.getPhotoDetails();
 		assertEquals(returnedDets,testData.toPhotoDetails());
 		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
@@ -116,9 +117,8 @@ public class PhotoEventHandlerTest
 		Long nodeId=1l;
 		when(photoRepository.findOne(any(Long.class))).thenReturn(testData);
 		ReadPhotoEvent readPhotoEvent=new ReadPhotoEvent(nodeId);
-		PhotoReadEvent evtData = service.readPhoto(readPhotoEvent);
-		PhotoDetails returnedDets = evtData.getPhotoDetails();
-		assertNull(returnedDets);
+		ReadEvent evtData = service.readPhoto(readPhotoEvent);
+		assertNull(evtData.getDetails());
 		assertEquals(nodeId,evtData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 	}

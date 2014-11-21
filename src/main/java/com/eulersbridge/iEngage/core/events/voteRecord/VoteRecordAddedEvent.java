@@ -4,7 +4,6 @@
 package com.eulersbridge.iEngage.core.events.voteRecord;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 
 
 /**

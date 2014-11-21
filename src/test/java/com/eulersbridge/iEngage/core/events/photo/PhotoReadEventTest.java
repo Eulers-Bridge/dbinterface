@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
@@ -18,7 +19,7 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 public class PhotoReadEventTest
 {
     Long nodeId;
-    PhotoReadEvent photoReadEvent;
+    ReadEvent photoReadEvent;
     Photo photo;
     PhotoDetails photoDetails;
     
@@ -43,7 +44,7 @@ public class PhotoReadEventTest
 		photoReadEvent=new PhotoReadEvent(nodeId);
 		assertNotNull(photoReadEvent);
 		assertEquals(nodeId, photoReadEvent.getNodeId());
-		assertNull(photoReadEvent.getPhotoDetails());
+		assertNull(((PhotoReadEvent)photoReadEvent).getPhotoDetails());
 	}
 
 	/**
@@ -54,7 +55,7 @@ public class PhotoReadEventTest
 	{
 		assertNotNull(photoReadEvent);
 		assertEquals(nodeId, photoReadEvent.getNodeId());
-		assertEquals(photoDetails,photoReadEvent.getPhotoDetails());
+		assertEquals(photoDetails,((PhotoReadEvent)photoReadEvent).getPhotoDetails());
 	}
 
 	/**
@@ -72,7 +73,7 @@ public class PhotoReadEventTest
 	@Test
 	public final void testGetPhotoDetails()
 	{
-		assertEquals(photoDetails, photoReadEvent.getPhotoDetails());
+		assertEquals(photoDetails,((PhotoReadEvent)photoReadEvent).getPhotoDetails());
 	}
 
 	/**

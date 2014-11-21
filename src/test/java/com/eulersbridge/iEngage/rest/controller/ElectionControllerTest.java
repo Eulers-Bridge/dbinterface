@@ -34,6 +34,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
@@ -123,7 +124,7 @@ public class ElectionControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ReadElectionEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
+		ReadEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
 		when (electionService.readElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{electionId}/",dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -245,7 +246,7 @@ public class ElectionControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPreviousElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ReadElectionEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
+		ReadEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
 		when (electionService.readPreviousElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{electionId}"+ControllerConstants.PREVIOUS_LABEL,dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -284,7 +285,7 @@ public class ElectionControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindNextElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ReadElectionEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
+		ReadEvent testData=ReadElectionEvent.notFound(dets.getElectionId());
 		when (electionService.readNextElection(any(RequestReadElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{electionId}"+ControllerConstants.NEXT_LABEL,dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

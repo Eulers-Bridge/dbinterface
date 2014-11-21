@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
-import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
@@ -97,7 +97,7 @@ public class CountryController
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve institution. "+countryId);
 		Country restCountry=null;
     	ResponseEntity<Country> result;
-		CountryReadEvent instEvent=countryService.readCountry(new ReadCountryEvent(countryId));
+		ReadEvent instEvent=countryService.readCountry(new ReadCountryEvent(countryId));
   	
 		if (!instEvent.isEntityFound())
 		{
@@ -105,7 +105,7 @@ public class CountryController
 		}
 		else
 		{
-			restCountry=Country.fromCountryDetails(instEvent.getCountryDetails());
+			restCountry=Country.fromCountryDetails((CountryDetails)instEvent.getDetails());
 			result=new ResponseEntity<Country>(restCountry,HttpStatus.OK);
 		}
 		return result;
