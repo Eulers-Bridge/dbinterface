@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -19,7 +20,6 @@ import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
 
 /**
  * @author Greg Newitt
@@ -34,7 +34,7 @@ public interface PhotoService
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public ReadEvent readPhoto(ReadPhotoEvent readPhotoEvent);
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public ReadEvent readPhotoAlbum(ReadPhotoAlbumEvent readPhotoAlbumEvent);
+	public ReadEvent readPhotoAlbum(RequestReadEvent readPhotoAlbumEvent);
 	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
 	public PhotoUpdatedEvent updatePhoto(UpdatePhotoEvent updatePhotoEvent);
 	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")

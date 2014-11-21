@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -32,7 +33,6 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
@@ -234,7 +234,7 @@ public class PhotoEventHandler implements PhotoService
 	}
 
 	@Override
-	public ReadEvent readPhotoAlbum(ReadPhotoAlbumEvent readPhotoAlbumEvent)
+	public ReadEvent readPhotoAlbum(RequestReadEvent readPhotoAlbumEvent)
 	{
         PhotoAlbum photoAlbum = photoAlbumRepository.findOne(readPhotoAlbumEvent.getNodeId());
         ReadEvent photoAlbumReadEvent;
