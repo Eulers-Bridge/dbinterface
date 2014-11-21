@@ -36,7 +36,7 @@ public class PositionController {
             return new ResponseEntity<Position>(HttpStatus.BAD_REQUEST);
         }
         else{
-            Position result = Position.fromPositionDetails(positionCreatedEvent.getPositionDetails());
+            Position result = Position.fromPositionDetails(positionCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("position"+result.toString());
             return new ResponseEntity<Position>(result, HttpStatus.OK);
         }

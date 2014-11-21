@@ -2,7 +2,6 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Sort.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -460,7 +458,7 @@ public class UserController {
     	}
     	else
     	{
-	    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
+	    	User restUser=User.fromUserDetails(userEvent.getDetails());
 	    	if (LOG.isDebugEnabled()) LOG.debug(userEvent.getVerificationEmail().toString());
 	    	emailService.sendEmail(userEvent.getVerificationEmail());
 	    	return new ResponseEntity<User>(restUser,HttpStatus.CREATED);

@@ -51,7 +51,7 @@ public class ForumQuestionController {
             return new ResponseEntity<ForumQuestion>(HttpStatus.BAD_REQUEST);
         }
         else{
-            ForumQuestion result = ForumQuestion.fromForumQuestionDetails(forumQuestionCreatedEvent.getForumQuestionDetails());
+            ForumQuestion result = ForumQuestion.fromForumQuestionDetails(forumQuestionCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("forumQuestion"+result.toString());
             return new ResponseEntity<ForumQuestion>(result, HttpStatus.OK);
         }

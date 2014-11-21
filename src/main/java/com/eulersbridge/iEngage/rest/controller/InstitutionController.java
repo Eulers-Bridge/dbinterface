@@ -190,7 +190,7 @@ public class InstitutionController
     	}
     	else
     	{
-    		restInst=Institution.fromInstDetails(instEvent.getInstitutionDetails());
+    		restInst=Institution.fromInstDetails(instEvent.getDetails());
     		result=new ResponseEntity<Institution>(restInst,HttpStatus.CREATED);
     	}
 		return result;

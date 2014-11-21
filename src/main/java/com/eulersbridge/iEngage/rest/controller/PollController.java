@@ -70,7 +70,7 @@ public class PollController {
             return new ResponseEntity<Poll>(HttpStatus.BAD_REQUEST);
         }
         else{
-            Poll result = Poll.fromPollDetails(pollCreatedEvent.getPollDetails());
+            Poll result = Poll.fromPollDetails(pollCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("poll"+result.toString());
             return new ResponseEntity<Poll>(result, HttpStatus.OK);
         }

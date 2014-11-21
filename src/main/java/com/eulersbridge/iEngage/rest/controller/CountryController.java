@@ -171,7 +171,7 @@ public class CountryController
     	}
     	else
     	{
-    		restCountry=Country.fromCountryDetails(countryEvent.getCountryDetails());
+    		restCountry=Country.fromCountryDetails(countryEvent.getDetails());
     		result=new ResponseEntity<Country>(restCountry,HttpStatus.CREATED);
     	}
 		return result;
