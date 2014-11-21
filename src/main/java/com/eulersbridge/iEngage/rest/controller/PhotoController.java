@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -63,6 +64,22 @@ public class PhotoController
         if (LOG.isInfoEnabled()) LOG.info(photoId+" attempting to get photo. ");
         ReadPhotoEvent readPhotoEvent= new ReadPhotoEvent(photoId);
         ReadEvent photoReadEvent= photoService.readPhoto(readPhotoEvent);
+        if (photoReadEvent.isEntityFound()){
+            Photo photo = Photo.fromPhotoDetails((PhotoDetails) photoReadEvent.getDetails());
+            return new ResponseEntity<Photo>(photo, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<Photo>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //Get
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_LABEL+"/{photoId}")
+    public @ResponseBody ResponseEntity<Photo> findPhotoAlbum(@PathVariable Long photoAlbumId)
+    {
+        if (LOG.isInfoEnabled()) LOG.info(photoAlbumId+" attempting to get photo. ");
+        RequestReadEvent readPhotoEvent= new RequestReadEvent(photoAlbumId);
+        ReadEvent photoReadEvent= photoService.readPhotoAlbum(readPhotoEvent);
         if (photoReadEvent.isEntityFound()){
             Photo photo = Photo.fromPhotoDetails((PhotoDetails) photoReadEvent.getDetails());
             return new ResponseEntity<Photo>(photo, HttpStatus.OK);
