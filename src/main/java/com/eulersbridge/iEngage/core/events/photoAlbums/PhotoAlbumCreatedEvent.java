@@ -27,7 +27,7 @@ public class PhotoAlbumCreatedEvent extends CreatedEvent
 
 	public void setDetails(PhotoAlbumDetails photoAlbumDetails)
 	{
-		setDetails(photoAlbumDetails);
+		super.setDetails(photoAlbumDetails);
 	}
 
 	/**
