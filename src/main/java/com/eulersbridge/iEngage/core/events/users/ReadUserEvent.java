@@ -2,34 +2,38 @@ package com.eulersbridge.iEngage.core.events.users;
 
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 
-public class ReadUserEvent extends ReadEvent 
+public class ReadUserEvent extends ReadEvent
 {
 
 	private String email;
-	private UserDetails readUserDetails;
-	
-	  public ReadUserEvent(String email) {
-	    this.email = email;
-	  }
 
-	  public ReadUserEvent(String email, UserDetails readUserDetails) {
-	    this.email = email;
-	    this.readUserDetails = readUserDetails;
-	  }
+	public ReadUserEvent(String email)
+	{
+		super(1l);
+		this.email = email;
+	}
 
-	  public String getEmail() {
-	    return email;
-	  }
+	public ReadUserEvent(String email, UserDetails readUserDetails)
+	{
+		super(1l,readUserDetails);
+		this.email = email;
+	}
 
-	  public UserDetails getReadUserDetails() {
-	    return readUserDetails;
-	  }
+	public String getEmail()
+	{
+		return email;
+	}
 
-	  public static ReadUserEvent notFound(String email) 
-	  {
-	  	ReadUserEvent ev = new ReadUserEvent(email);
-	    ev.entityFound=false;
-	    return ev;
-	  }
+	public UserDetails getReadUserDetails()
+	{
+		return (UserDetails)getDetails();
+	}
+
+	public static ReadUserEvent notFound(String id)
+	{
+		ReadUserEvent ev = new ReadUserEvent(id);
+		ev.entityFound = false;
+		return ev;
+	}
 
 }

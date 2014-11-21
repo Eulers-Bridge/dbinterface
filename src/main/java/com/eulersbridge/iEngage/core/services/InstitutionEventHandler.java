@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
@@ -86,7 +87,7 @@ public class InstitutionEventHandler implements InstitutionService {
 	}
 
 	@Override
-	public ReadInstitutionEvent requestReadInstitution(
+	public ReadEvent requestReadInstitution(
 			RequestReadInstitutionEvent requestReadInstitutionEvent) 
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("requestReadInstitution("+requestReadInstitutionEvent.getId()+")");
@@ -208,12 +209,12 @@ public class InstitutionEventHandler implements InstitutionService {
 	}
 
 	@Override
-	public NewsFeedReadEvent readNewsFeed(
+	public ReadEvent readNewsFeed(
 			ReadNewsFeedEvent readNewsFeedEvent) 
 	{
 //		NewsFeed sy=newsFeedRepository.findOne(readNewsFeedEvent.getNewsFeedId());
 		NewsFeed newsFeed=newsFeedRepository.findNewsFeed(readNewsFeedEvent.getNewsFeedId());
-		NewsFeedReadEvent result;
+		ReadEvent result;
 		if (newsFeed!=null)
 		{
 			result=new NewsFeedReadEvent(readNewsFeedEvent.getNewsFeedId(),newsFeed.toDetails());

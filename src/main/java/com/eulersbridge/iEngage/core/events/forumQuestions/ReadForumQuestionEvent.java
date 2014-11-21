@@ -6,30 +6,26 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
  * @author Yikai Gong
  */
 
-public class ReadForumQuestionEvent extends ReadEvent {
-    private Long forumQuestionId;
-    private ForumQuestionDetails forumQuestionDetails;
+public class ReadForumQuestionEvent extends ReadEvent
+{
+	public ReadForumQuestionEvent(Long forumQuestionId)
+	{
+		super(forumQuestionId);
+	}
 
-    public ReadForumQuestionEvent(Long forumQuestionId) {
-        this.forumQuestionId = forumQuestionId;
-    }
+	public ReadForumQuestionEvent(Long forumQuestionId,
+			ForumQuestionDetails forumQuestionDetails)
+	{
+		super(forumQuestionId,forumQuestionDetails);
+	}
 
-    public ReadForumQuestionEvent(Long forumQuestionId, ForumQuestionDetails forumQuestionDetails) {
-        this.forumQuestionId = forumQuestionId;
-        this.forumQuestionDetails = forumQuestionDetails;
-    }
+	public Long getForumQuestionId()
+	{
+		return getNodeId();
+	}
 
-    public Long getForumQuestionId() {
-        return forumQuestionId;
-    }
-
-    public ForumQuestionDetails getForumQuestionDetails() {
-        return forumQuestionDetails;
-    }
-
-    public static ReadForumQuestionEvent notFound(Long forumQuestionId){
-        ReadForumQuestionEvent readForumQuestionEvent = new ReadForumQuestionEvent(forumQuestionId);
-        readForumQuestionEvent.entityFound = false;
-        return readForumQuestionEvent;
-    }
+	public ForumQuestionDetails getForumQuestionDetails()
+	{
+		return (ForumQuestionDetails)getDetails();
+	}
 }

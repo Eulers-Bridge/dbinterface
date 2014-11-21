@@ -25,11 +25,12 @@ public class EventsReadEvent extends ReadEvent
 
 	public EventsReadEvent()
 	{
-		super();
+		super(1l);
 	}
 	
 	public EventsReadEvent(Long instId,Collection<EventDetails>articles)
 	{
+		super(1l);
 		this.instId=instId;
 		this.events=articles;
 	}

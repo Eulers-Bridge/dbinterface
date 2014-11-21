@@ -2,34 +2,25 @@ package com.eulersbridge.iEngage.core.events.institutions;
 
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 
-public class ReadInstitutionEvent extends ReadEvent 
+public class ReadInstitutionEvent extends ReadEvent
 {
+	public ReadInstitutionEvent(Long id)
+	{
+		super(id);
+	}
 
-	private Long id;
-	private InstitutionDetails institutionDetails;
-	
-	  public ReadInstitutionEvent(Long id) {
-	    this.id = id;
-	  }
+	public ReadInstitutionEvent(Long id, InstitutionDetails institutionDetails)
+	{
+		super(id,institutionDetails);
+	}
 
-	  public ReadInstitutionEvent(Long id, InstitutionDetails institutionDetails) {
-	    this.id = id;
-	    this.institutionDetails = institutionDetails;
-	  }
+	public Long getId()
+	{
+		return getNodeId();
+	}
 
-	  public Long getId() {
-	    return id;
-	  }
-
-	  public InstitutionDetails getInstitutionDetails() {
-	    return institutionDetails;
-	  }
-
-	  public static ReadInstitutionEvent notFound(Long id) 
-	  {
-		  ReadInstitutionEvent ev = new ReadInstitutionEvent(id);
-	    ev.entityFound=false;
-	    return ev;
-	  }
-
+	public InstitutionDetails getInstitutionDetails()
+	{
+		return (InstitutionDetails)getDetails();
+	}
 }

@@ -25,11 +25,12 @@ public class NewsArticlesReadEvent extends ReadEvent
 
 	public NewsArticlesReadEvent()
 	{
-		super();
+		super(1l);
 	}
 	
 	public NewsArticlesReadEvent(Long instId,Collection<NewsArticleDetails>articles)
 	{
+		super(1l);
 		this.instId=instId;
 		this.articles=articles;
 	}

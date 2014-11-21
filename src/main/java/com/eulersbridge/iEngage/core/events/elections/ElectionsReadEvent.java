@@ -18,18 +18,20 @@ public class ElectionsReadEvent extends ReadEvent
 	
 	public ElectionsReadEvent(Long institutionId, Iterable<ElectionDetails> elections)
 	{
+		super(1l);
 		this.elections=elections;
 		this.institutionId=institutionId;
 	}
 
 	public ElectionsReadEvent(Iterable<ElectionDetails> elections)
 	{
+		super(1l);
 		this.elections=elections;
 	}
 
 	public ElectionsReadEvent()
 	{
-		super();
+		super(1l);
 	}
 	
 	/**

@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 
@@ -75,11 +76,11 @@ public class NewsEventHandler implements NewsService
 	}
 
 	@Override
-	public ReadNewsArticleEvent requestReadNewsArticle(
+	public ReadEvent requestReadNewsArticle(
 			RequestReadNewsArticleEvent requestReadNewsArticleEvent) 
 	{
 		NewsArticle na=newsRepo.findOne(requestReadNewsArticleEvent.getNewsArticleId());
-		ReadNewsArticleEvent nade;
+		ReadEvent nade;
 		if (na!=null)
 			nade=new ReadNewsArticleEvent(requestReadNewsArticleEvent.getNewsArticleId(), na.toNewsArticleDetails());
 		else

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Institution;
@@ -36,10 +37,10 @@ public class ElectionEventHandler implements ElectionService
     }
 
     @Override
-    public ReadElectionEvent readElection(RequestReadElectionEvent requestReadElectionEvent)
+    public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent)
     {
         Election election = eleRepository.findOne(requestReadElectionEvent.getElectionId());
-        ReadElectionEvent readElectionEvent;
+        ReadEvent readElectionEvent;
         if (election!=null){
             readElectionEvent = new ReadElectionEvent(election.getNodeId(), election.toElectionDetails());
         }
@@ -72,11 +73,11 @@ public class ElectionEventHandler implements ElectionService
     }
 
     @Override
-    public ReadElectionEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent)
+    public ReadEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent)
     {
         Election election = eleRepository.findPreviousElection(requestReadElectionEvent.getElectionId());
         if (LOG.isDebugEnabled()) LOG.debug("election = "+election);
-        ReadElectionEvent readElectionEvent;
+        ReadEvent readElectionEvent;
         if (election!=null){
             readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetails());
         }
@@ -87,11 +88,11 @@ public class ElectionEventHandler implements ElectionService
     }
 
     @Override
-    public ReadElectionEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent)
+    public ReadEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent)
     {
         Election election = eleRepository.findNextElection(requestReadElectionEvent.getElectionId());
         if (LOG.isDebugEnabled()) LOG.debug("election = "+election);
-        ReadElectionEvent readElectionEvent;
+        ReadEvent readElectionEvent;
         if (election!=null){
             readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetails());
         }

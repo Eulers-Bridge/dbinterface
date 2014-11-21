@@ -4,34 +4,23 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 
 public class ReadNewsArticleEvent extends ReadEvent 
 {
-	private Long id;
-	private NewsArticleDetails readNewsArticleDetails;
-	
 	public ReadNewsArticleEvent(Long id) 
 	{
-		this.id = id;
+		super(id);
 	}
 
 	  public ReadNewsArticleEvent(Long id, NewsArticleDetails readNewsArticleDetails) 
 	  {
-		  this.id = id;
-		  this.readNewsArticleDetails = readNewsArticleDetails;
+		  super(id,readNewsArticleDetails);
 	  }
 
 	  public Long getNewsArticleId() 
 	  {
-		  return this.id;
+		  return getNodeId();
 	  }
 
 	  public NewsArticleDetails getReadNewsArticleDetails() 
 	  {
-		  return readNewsArticleDetails;
-	  }
-
-	  public static ReadNewsArticleEvent notFound(Long id) 
-	  {
-		  ReadNewsArticleEvent ev = new ReadNewsArticleEvent(id);
-		  ev.entityFound=false;
-		  return ev;
+		  return (NewsArticleDetails)getDetails();
 	  }
 }

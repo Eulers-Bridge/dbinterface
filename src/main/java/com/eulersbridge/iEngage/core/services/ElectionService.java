@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
 
 import org.springframework.data.domain.Sort.Direction;
@@ -12,16 +13,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface ElectionService {
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ReadElectionEvent readElection(RequestReadElectionEvent requestReadElectionEvent);
+    public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ReadElectionEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent);
+    public ReadEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ReadElectionEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent);
+    public ReadEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public DeletedEvent deleteElection(DeleteElectionEvent deleteElectionEvent);

@@ -15,6 +15,7 @@ public class CountrysReadEvent extends ReadEvent
 	
 	public CountrysReadEvent(Iterable<CountryDetails> countrys)
 	{
+		super(1l);
 		this.countrys=countrys;
 	}
 

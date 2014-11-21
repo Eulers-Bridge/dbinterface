@@ -8,35 +8,18 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 
 public class PhotoReadEvent extends ReadEvent
 {
-	private Long nodeId;
-	private PhotoDetails photoDetails;
-
 	public PhotoReadEvent(Long nodeId)
 	{
-		this.nodeId = nodeId;
+		super(nodeId);
 	}
 
 	public PhotoReadEvent(Long nodeId, PhotoDetails photoDetails)
 	{
-		this.nodeId = nodeId;
-		this.photoDetails = photoDetails;
-	}
-
-	public Long getNodeId()
-	{
-		return nodeId;
+		super(nodeId,photoDetails);
 	}
 
 	public PhotoDetails getPhotoDetails()
 	{
-		return photoDetails;
-	}
-
-	public static PhotoReadEvent notFound(Long nodeId)
-	{
-		PhotoReadEvent photoReadEvent = new PhotoReadEvent(
-				nodeId);
-		photoReadEvent.entityFound = false;
-		return photoReadEvent;
+		return (PhotoDetails)getDetails();
 	}
 }

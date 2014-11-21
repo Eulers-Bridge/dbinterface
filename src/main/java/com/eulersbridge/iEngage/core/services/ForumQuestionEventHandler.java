@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
 import com.eulersbridge.iEngage.database.domain.ForumQuestion;
 import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
@@ -31,9 +32,9 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
     }
 
     @Override
-    public ReadForumQuestionEvent requestReadForumQuestion(RequestReadForumQuestionEvent requestReadForumQuestionEvent) {
+    public ReadEvent requestReadForumQuestion(RequestReadForumQuestionEvent requestReadForumQuestionEvent) {
         ForumQuestion forumQuestion = forumQuestionRepository.findOne(requestReadForumQuestionEvent.getForumQuestionId());
-        ReadForumQuestionEvent readForumQuestionEvent;
+        ReadEvent readForumQuestionEvent;
         if(forumQuestion != null){
             readForumQuestionEvent = new ReadForumQuestionEvent(requestReadForumQuestionEvent.getForumQuestionId(), forumQuestion.toForumQuestionDetails());
         }

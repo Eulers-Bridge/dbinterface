@@ -1,10 +1,57 @@
 package com.eulersbridge.iEngage.core.events;
 
-public class ReadEvent {
-  protected boolean entityFound = true;
+public class ReadEvent
+{
+	Long nodeId;
+	Details details;
 
-  public boolean isEntityFound() 
-  {
-    return entityFound;
-  }
+	protected boolean entityFound = true;
+
+	/**
+	 * @param nodeId
+	 */
+	public ReadEvent(Long nodeId)
+	{
+		super();
+		this.nodeId = nodeId;
+	}
+
+	/**
+	 * @param nodeId
+	 * @param details
+	 */
+	public ReadEvent(Long nodeId, Details details)
+	{
+		super();
+		this.nodeId = nodeId;
+		this.details = details;
+	}
+
+	/**
+	 * @return the nodeId
+	 */
+	public Long getNodeId()
+	{
+		return nodeId;
+	}
+
+	/**
+	 * @return the details
+	 */
+	public Details getDetails()
+	{
+		return details;
+	}
+
+	public boolean isEntityFound()
+	{
+		return entityFound;
+	}
+
+	public static ReadEvent notFound(Long id)
+	{
+		ReadEvent ev = new ReadEvent(id);
+		ev.entityFound = false;
+		return ev;
+	}
 }

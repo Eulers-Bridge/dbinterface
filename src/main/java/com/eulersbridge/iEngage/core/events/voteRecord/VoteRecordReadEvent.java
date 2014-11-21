@@ -11,34 +11,23 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
  */
 public class VoteRecordReadEvent extends ReadEvent
 {
-	private Long id;
-	private VoteRecordDetails voteRecordDetails;
-	
 	public VoteRecordReadEvent(Long id) 
 	{
-		this.id = id;
+		super(id);
 	}
 
 	  public VoteRecordReadEvent(Long id, VoteRecordDetails voteRecordDetails) 
 	  {
-		  this.id = id;
-		  this.voteRecordDetails = voteRecordDetails;
+		  super(id,voteRecordDetails);
 	  }
 
 	  public Long getVoteRecordId() 
 	  {
-		  return this.id;
+		  return getNodeId();
 	  }
 
 	  public VoteRecordDetails getVoteRecordDetails() 
 	  {
-		  return voteRecordDetails;
-	  }
-
-	  public static VoteRecordReadEvent notFound(Long id) 
-	  {
-		  VoteRecordReadEvent ev = new VoteRecordReadEvent(id);
-		  ev.entityFound=false;
-		  return ev;
+		  return (VoteRecordDetails)getDetails();
 	  }
 }

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
@@ -54,7 +55,7 @@ public class CountryEventHandler implements CountryService
 	}
 
 	@Override
-	public CountryReadEvent readCountry(
+	public ReadEvent readCountry(
 			ReadCountryEvent readCountryEvent) 
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("readCountry("+readCountryEvent.getId()+")");

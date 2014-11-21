@@ -24,11 +24,12 @@ public class PhotosReadEvent extends ReadEvent
 
 	public PhotosReadEvent()
 	{
-		super();
+		super(1l);
 	}
 	
 	public PhotosReadEvent(Long ownerId,Collection<PhotoDetails>photos)
 	{
+		super(1l);
 		this.ownerId=ownerId;
 		this.photos=photos;
 	}

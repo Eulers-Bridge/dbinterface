@@ -11,34 +11,23 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
  */
 public class VoteReminderReadEvent extends ReadEvent
 {
-	private Long id;
-	private VoteReminderDetails voteReminderDetails;
-	
 	public VoteReminderReadEvent(Long id) 
 	{
-		this.id = id;
+		super(id);
 	}
 
 	  public VoteReminderReadEvent(Long id, VoteReminderDetails voteReminderDetails) 
 	  {
-		  this.id = id;
-		  this.voteReminderDetails = voteReminderDetails;
+		  super(id,voteReminderDetails);
 	  }
 
 	  public Long getVoteReminderId() 
 	  {
-		  return this.id;
+		  return getNodeId();
 	  }
 
 	  public VoteReminderDetails getVoteReminderDetails() 
 	  {
-		  return voteReminderDetails;
-	  }
-
-	  public static VoteReminderReadEvent notFound(Long id) 
-	  {
-		  VoteReminderReadEvent ev = new VoteReminderReadEvent(id);
-		  ev.entityFound=false;
-		  return ev;
+		  return (VoteReminderDetails)getDetails();
 	  }
 }

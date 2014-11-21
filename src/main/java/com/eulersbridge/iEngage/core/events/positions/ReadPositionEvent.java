@@ -6,30 +6,25 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
  * @author Yikai Gong
  */
 
-public class ReadPositionEvent extends ReadEvent{
-    private Long positionId;
-    private PositionDetails positionDetails;
+public class ReadPositionEvent extends ReadEvent
+{
+	public ReadPositionEvent(Long positionId)
+	{
+		super(positionId);
+	}
 
-    public ReadPositionEvent(Long positionId) {
-        this.positionId = positionId;
-    }
+	public ReadPositionEvent(Long positionId, PositionDetails positionDetails)
+	{
+		super(positionId, positionDetails);
+	}
 
-    public ReadPositionEvent(Long positionId, PositionDetails positionDetails) {
-        this.positionId = positionId;
-        this.positionDetails = positionDetails;
-    }
+	public Long getPositionId()
+	{
+		return getNodeId();
+	}
 
-    public Long getPositionId() {
-        return positionId;
-    }
-
-    public PositionDetails getPositionDetails() {
-        return positionDetails;
-    }
-
-    public static ReadPositionEvent notFound(Long positionId){
-        ReadPositionEvent readPositionEvent = new ReadPositionEvent(positionId);
-        readPositionEvent.entityFound = false;
-        return readPositionEvent;
-    }
+	public PositionDetails getPositionDetails()
+	{
+		return (PositionDetails)getDetails();
+	}
 }

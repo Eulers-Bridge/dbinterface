@@ -10,26 +10,54 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class ReadEventTest {
-    ReadEvent readEvent = null;
+public class ReadEventTest
+{
+	ReadEvent readEvent;
+	Long nodeId;
+	Details dets;
 
-    @Before
-    public void setUp() throws Exception {
-        readEvent = new ReadEvent();
-    }
+	@Before
+	public void setUp() throws Exception
+	{
+		nodeId = 4234l;
+		dets = new Details(nodeId);
+		readEvent = new ReadEvent(nodeId, dets);
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception
+	{
 
-    }
+	}
 
-    @Test
-    public void testReadEvent() throws Exception {
-        assertNotNull("readEvent is null");
-    }
+	@Test
+	public void testReadEventLong() throws Exception
+	{
+		readEvent = new ReadEvent(nodeId);
+		assertNotNull("readEvent is null");
+	}
 
-    @Test
-    public void testIsEntityFound() throws Exception {
-        assertTrue("entityFound is not true", readEvent.isEntityFound());
-    }
+	@Test
+	public void testReadEventLongDetails() throws Exception
+	{
+		assertNotNull("readEvent is null");
+	}
+
+	@Test
+	public void testGetNodeId() throws Exception
+	{
+		assertEquals("entityFound is not true", nodeId,readEvent.getNodeId());
+	}
+	
+	@Test
+	public void testGeDetails() throws Exception
+	{
+		assertEquals("entityFound is not true", dets,readEvent.getDetails());
+	}
+	
+	@Test
+	public void testIsEntityFound() throws Exception
+	{
+		assertTrue("entityFound is not true", readEvent.isEntityFound());
+	}
 }
