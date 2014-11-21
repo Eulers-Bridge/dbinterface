@@ -107,6 +107,7 @@ public class PhotoAlbumTest
 	@Test
 	public final void testGetCreated()
 	{
+		photoAlbum.setCreated(photoAlbum2.getCreated());
 		assertEquals(photoAlbum.getCreated(),photoAlbum2.getCreated());
 	}
 
