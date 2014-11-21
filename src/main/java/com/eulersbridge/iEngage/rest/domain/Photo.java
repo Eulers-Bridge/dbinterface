@@ -152,14 +152,9 @@ public class Photo extends ResourceSupport
         return photo;
     }
 
-    public PhotoDetails toPhotoDetails(){
-    	PhotoDetails photoDetails = new PhotoDetails();
-        photoDetails.setNodeId(this.getNodeId());
-        photoDetails.setTitle(this.getTitle());
-        photoDetails.setDate(this.getDate());
-        photoDetails.setDescription(this.getDescription());
-        photoDetails.setUrl(this.getUrl());
-        photoDetails.setOwnerId(ownerId);
+    public PhotoDetails toPhotoDetails()
+    {
+    	PhotoDetails photoDetails = new PhotoDetails(getNodeId(), getUrl(), getTitle(), getDescription(), getDate(), getOwnerId());
         if (LOG.isTraceEnabled()) LOG.trace("photoDetails "+photoDetails);
         return photoDetails;
     }
