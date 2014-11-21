@@ -63,13 +63,13 @@ public class InstitutionCreatedEventTest {
         institutionDetails1.setState(state);
         institutionDetails1.setCountryName(countryName);
         institutionCreatedEvent.setInstitutionDetails(institutionDetails1);
-        assertEquals("InstitutionDetail does not match", institutionDetails1, institutionCreatedEvent.getInstitutionDetails());
-        assertEquals("InstitutionDetail does not match", institutionDetails, institutionCreatedEvent.getInstitutionDetails());
+        assertEquals("InstitutionDetail does not match", institutionDetails1, institutionCreatedEvent.getDetails());
+        assertEquals("InstitutionDetail does not match", institutionDetails, institutionCreatedEvent.getDetails());
     }
 
     @Test
     public void testGetInstitutionDetails() throws Exception {
-        assertEquals("InstitutionDetail does not match", institutionDetails, institutionCreatedEvent.getInstitutionDetails());
+        assertEquals("InstitutionDetail does not match", institutionDetails, institutionCreatedEvent.getDetails());
     }
 
     @Test

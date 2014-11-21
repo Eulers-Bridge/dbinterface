@@ -31,16 +31,6 @@ public class PhotoDetailsTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#PhotoDetails()}.
-	 */
-	@Test
-	public final void testPhotoDetails1()
-	{
-		dets=new PhotoDetails();
-		assertNotNull("Not yet implemented",dets);
-	}
-
-	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#PhotoDetails(java.lang.Long, java.lang.String, java.lang.String, java.lang.String, java.lang.Long)}.
 	 */
 	@Test

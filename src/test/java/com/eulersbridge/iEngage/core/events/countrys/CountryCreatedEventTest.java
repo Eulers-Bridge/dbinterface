@@ -56,12 +56,12 @@ public class CountryCreatedEventTest {
         CountryDetails countryDetails2 = new CountryDetails(countryId2);
         countryDetails2.setCountryName(Germany);
         countryCreatedEvent.setCountryDetails(countryDetails2);
-        assertEquals("Country Detail doesn't match",countryCreatedEvent.getCountryDetails(), countryDetails2);
-        assertEquals("Country Detail doesn't match",countryCreatedEvent.getCountryDetails(), countryDetails1);
+        assertEquals("Country Detail doesn't match",countryCreatedEvent.getDetails(), countryDetails2);
+        assertEquals("Country Detail doesn't match",countryCreatedEvent.getDetails(), countryDetails1);
     }
 
     @Test
     public void testGetCountryDetails() throws Exception {
-        assertEquals("Country Detail doesn't match", countryCreatedEvent.getCountryDetails(), countrydetails);
+        assertEquals("Country Detail doesn't match", countryCreatedEvent.getDetails(), countrydetails);
     }
 }
