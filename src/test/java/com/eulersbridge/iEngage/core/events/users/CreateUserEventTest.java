@@ -35,7 +35,7 @@ public class CreateUserEventTest {
         userDetails.setPassword(password);
         userDetails.setInstitutionId(institutionId);
 
-        createUserEvent = new CreateUserEvent(email,userDetails);
+        createUserEvent = new CreateUserEvent(userDetails);
 
     }
 
@@ -53,7 +53,7 @@ public class CreateUserEventTest {
 
     @Test
     public void testGetUserDetails() throws Exception {
-        assertEquals("userDetails does not match", userDetails, createUserEvent.getUserDetails());
+        assertEquals("userDetails does not match", userDetails, createUserEvent.getDetails());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class CreateUserEventTest {
         userDetails1.setYearOfBirth(yearOfBirth);
         userDetails1.setPassword(password);
         userDetails1.setInstitutionId(institutionId);
-        CreateUserEvent createUserEvent1 = new CreateUserEvent(email, userDetails1);
-        assertEquals("userDetails does not match", userDetails1, createUserEvent1.getUserDetails());
+        CreateUserEvent createUserEvent1 = new CreateUserEvent(userDetails1);
+        assertEquals("userDetails does not match", userDetails1, createUserEvent1.getDetails());
     }
 }

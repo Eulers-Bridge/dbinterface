@@ -49,7 +49,7 @@ public class InstitutionEventHandler implements InstitutionService {
 	public InstitutionCreatedEvent createInstitution(
 			CreateInstitutionEvent createInstitutionEvent) 
 	{
-		InstitutionDetails newInst=createInstitutionEvent.getDetails();
+		InstitutionDetails newInst=(InstitutionDetails) createInstitutionEvent.getDetails();
     	if (LOG.isDebugEnabled()) LOG.debug("Institution Details :"+newInst);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding country with countryName = "+newInst.getCountryName());
     	Country country=countryRepository.findByCountryName(newInst.getCountryName());
@@ -175,7 +175,7 @@ public class InstitutionEventHandler implements InstitutionService {
 	public NewsFeedCreatedEvent createNewsFeed(
 			CreateNewsFeedEvent createNewsFeedEvent) 
 	{
-		NewsFeedDetails newFeed=createNewsFeedEvent.getNewsFeedDetails();
+		NewsFeedDetails newFeed=(NewsFeedDetails) createNewsFeedEvent.getDetails();
 		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with institutionId = "+newFeed.getInstitutionId());
     	Institution inst=instRepository.findOne(newFeed.getInstitutionId());
     	if (LOG.isDebugEnabled()) LOG.debug("inst - "+inst);

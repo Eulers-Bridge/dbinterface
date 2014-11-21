@@ -37,7 +37,7 @@ public class CreateNewsArticleEventTest {
         newsArticleDetails.setPicture(picture);
         newsArticleDetails.setLikes(likes);
 
-        createNewsArticleEvent = new CreateNewsArticleEvent(newsArticleId, newsArticleDetails);
+        createNewsArticleEvent = new CreateNewsArticleEvent(newsArticleDetails);
     }
 
     @After
@@ -54,7 +54,7 @@ public class CreateNewsArticleEventTest {
 
     @Test
     public void testGetNewsArticleDetails() throws Exception {
-        assertEquals("newsArticleDetails does not match", newsArticleDetails, createNewsArticleEvent.getNewsArticleDetails());
+        assertEquals("newsArticleDetails does not match", newsArticleDetails, createNewsArticleEvent.getDetails());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class CreateNewsArticleEventTest {
         newsArticleDetails1.setPicture(picture);
         newsArticleDetails1.setLikes(likes);
         CreateNewsArticleEvent createNewsArticleEvent1 = new CreateNewsArticleEvent(newsArticleDetails1);
-        assertEquals("NewsArticleDetails does not match", newsArticleDetails1, createNewsArticleEvent1.getNewsArticleDetails());
-        assertEquals("NewsArticleDetails does not match", createNewsArticleEvent.getNewsArticleDetails(), createNewsArticleEvent1.getNewsArticleDetails());
+        assertEquals("NewsArticleDetails does not match", newsArticleDetails1, createNewsArticleEvent1.getDetails());
+        assertEquals("NewsArticleDetails does not match", createNewsArticleEvent.getDetails(), createNewsArticleEvent1.getDetails());
     }
 }

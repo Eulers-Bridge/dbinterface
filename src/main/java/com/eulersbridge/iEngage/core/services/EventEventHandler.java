@@ -45,7 +45,7 @@ public class EventEventHandler implements EventService
 	@Override
 	public EventCreatedEvent createEvent(CreateEventEvent createEventEvent)
 	{
-		EventDetails eventDetails = createEventEvent.getEventDetails();
+		EventDetails eventDetails = (EventDetails) createEventEvent.getDetails();
 		Event event = Event.fromEventDetails(eventDetails);
 		Long instId = eventDetails.getInstitutionId();
 

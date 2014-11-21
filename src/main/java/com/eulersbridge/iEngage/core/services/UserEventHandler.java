@@ -84,7 +84,7 @@ public class UserEventHandler implements UserService,UserDetailsService
 	@Transactional
 	public UserCreatedEvent signUpNewUser(CreateUserEvent createUserEvent) 
 	{
-		UserDetails newUser=createUserEvent.getUserDetails();
+		UserDetails newUser=(UserDetails) createUserEvent.getDetails();
 		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with instId = "+newUser.getInstitutionId());
     	Institution inst=instRepository.findOne(newUser.getInstitutionId());
     	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+newUser);

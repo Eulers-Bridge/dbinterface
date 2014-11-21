@@ -22,7 +22,7 @@ public class CreateCountryEventTest {
     public void setUp() throws Exception {
         countryDetails = new CountryDetails(detailId);
         countryDetails.setCountryName(france);
-        createCountryEvent = new CreateCountryEvent(eventId, countryDetails);
+        createCountryEvent = new CreateCountryEvent(countryDetails);
     }
 
     @After
@@ -34,7 +34,7 @@ public class CreateCountryEventTest {
     public void testCreateCountryEvent() throws Exception {
         CountryDetails countryDetails1 = new CountryDetails(new Long (1));
         countryDetails1.setCountryName(france);
-        CreateCountryEvent createCountryEvent1 = new CreateCountryEvent(new Long(1), countryDetails1);
+        CreateCountryEvent createCountryEvent1 = new CreateCountryEvent(countryDetails1);
         assertNotNull("CreateCountryEvent is null", createCountryEvent1);
     }
 
@@ -42,7 +42,7 @@ public class CreateCountryEventTest {
     public void testGetDetails() throws Exception {
         CountryDetails countryDetails1 = new CountryDetails(new Long (1));
         countryDetails1.setCountryName(new String("France"));
-        CreateCountryEvent createCountryEvent1 = new CreateCountryEvent(new Long(1), countryDetails1);
+        CreateCountryEvent createCountryEvent1 = new CreateCountryEvent(countryDetails1);
         assertEquals("Country detail does not match", countryDetails, createCountryEvent.getDetails());
         assertEquals("Country detail does not match", createCountryEvent1.getDetails(),createCountryEvent.getDetails());
 
@@ -50,10 +50,10 @@ public class CreateCountryEventTest {
 
     @Test
     public void testSetInstitutionDetails() throws Exception {
-        CreateCountryEvent createCountryEvent1 = new CreateCountryEvent(new Long(1), countryDetails);
+        CreateCountryEvent createCountryEvent1 = new CreateCountryEvent(countryDetails);
         CountryDetails countryDetails1 = new CountryDetails(new Long ("1"));
         countryDetails1.setCountryName(new String("Germany"));
-        createCountryEvent1.setInstitutionDetails(countryDetails1);
+        createCountryEvent1.setDetails(countryDetails1);
         assertEquals("Country detail does not match", countryDetails1, createCountryEvent1.getDetails());
 
 

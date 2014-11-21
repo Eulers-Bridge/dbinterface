@@ -39,7 +39,7 @@ public class CountryEventHandler implements CountryService
 	public CountryCreatedEvent createCountry(
 			CreateCountryEvent createCountryEvent) 
 	{
-		CountryDetails newCountry=createCountryEvent.getDetails();
+		CountryDetails newCountry=(CountryDetails) createCountryEvent.getDetails();
     	if (LOG.isDebugEnabled()) LOG.debug("Country Details :"+newCountry);
     	Country countryToInsert=Country.fromCountryDetails(newCountry);
     	CountryCreatedEvent result;   	

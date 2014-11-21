@@ -40,7 +40,7 @@ public class CreatePollEventTest {
 
     @Test
     public void testGetPollDetails() throws Exception {
-        assertEquals("pollDetails does not match", pollDetails, createPollEvent.getPollDetails());
+        assertEquals("pollDetails does not match", pollDetails, createPollEvent.getDetails());
     }
 
     @Test
@@ -48,6 +48,6 @@ public class CreatePollEventTest {
         PollDetails pollDetails1 = new PollDetails();
         pollDetails1.setPollId(pollId);
         CreatePollEvent createPollEvent1 = new CreatePollEvent(pollDetails1);
-        assertEquals("pollDetails does not match", pollDetails, createPollEvent1.getPollDetails());
+        assertEquals("pollDetails does not match", pollDetails, createPollEvent1.getDetails());
     }
 }

@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.core.events;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,21 +9,30 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class CreateEventTest {
-    CreateEvent createEvent = null;
+public class CreateEventTest
+{
+	CreateEvent createEvent;
+	Details dets;
+	Long nodeId;
 
-    @Before
-    public void setUp() throws Exception {
-        createEvent = new CreateEvent();
-    }
+	@Before
+	public void setUp() throws Exception
+	{
+		nodeId=42l;
+		dets = new Details(nodeId);
+		createEvent = new CreateEvent(dets);
+	}
 
-    @After
-    public void tearDown() throws Exception {
+	@Test
+	public void testCreateEvent() throws Exception
+	{
+		assertNotNull("createEvent is null", createEvent);
+		assertEquals(dets,createEvent.getDetails());
+	}
 
-    }
-
-    @Test
-    public void testCreateEvent() throws Exception {
-        assertNotNull("createEvent is null", createEvent);
-    }
+	@Test
+	public void testGetDetails() throws Exception
+	{
+		assertEquals(dets,createEvent.getDetails());
+	}
 }

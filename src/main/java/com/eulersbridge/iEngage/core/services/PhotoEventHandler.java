@@ -55,7 +55,7 @@ public class PhotoEventHandler implements PhotoService
 	@Override
 	public PhotoCreatedEvent createPhoto(CreatePhotoEvent createPhotoEvent)
 	{
-        PhotoDetails photoDetails = createPhotoEvent.getPhotoDetails();
+        PhotoDetails photoDetails = (PhotoDetails) createPhotoEvent.getDetails();
         Photo photo = Photo.fromPhotoDetails(photoDetails);
         
 //		if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+photo.getOwnerId());

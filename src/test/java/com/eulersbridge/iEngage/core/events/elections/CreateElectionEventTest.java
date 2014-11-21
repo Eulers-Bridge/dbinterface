@@ -45,7 +45,7 @@ public class CreateElectionEventTest {
 
     @Test
     public void testGetElectionDetails() throws Exception {
-        assertEquals("election detail does not match", electionDetails, createElectionEvent.getElectionDetails());
+        assertEquals("election detail does not match", electionDetails, createElectionEvent.getDetails());
     }
 
     @Test
@@ -58,7 +58,7 @@ public class CreateElectionEventTest {
         electionDetails1.setStartVoting(startVoting);
         electionDetails1.setEndVoting(endVoting);
 
-        createElectionEvent.setElectionDetails(electionDetails1);
-        assertEquals("electionDetails does not match", electionDetails1, createElectionEvent.getElectionDetails());
+        createElectionEvent.setDetails(electionDetails1);
+        assertEquals("electionDetails does not match", electionDetails1, createElectionEvent.getDetails());
     }
 }

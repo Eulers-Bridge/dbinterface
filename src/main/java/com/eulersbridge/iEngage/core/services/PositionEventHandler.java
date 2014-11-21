@@ -24,7 +24,7 @@ public class PositionEventHandler implements PositionService{
 
     @Override
     public PositionCreatedEvent createPosition(CreatePositionEvent createPositionEvent) {
-        PositionDetails positionDetails = createPositionEvent.getPositionDetails();
+        PositionDetails positionDetails = (PositionDetails) createPositionEvent.getDetails();
         Position position = Position.fromPositionDetails(positionDetails);
         Position result = positionRepository.save(position);
         PositionCreatedEvent positionCreatedEvent = new PositionCreatedEvent(result.getPositionId(), result.toPositionDetails());

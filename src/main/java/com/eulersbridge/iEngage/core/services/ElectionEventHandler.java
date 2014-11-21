@@ -53,7 +53,7 @@ public class ElectionEventHandler implements ElectionService
     @Override
     public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent)
     {
-        ElectionDetails electionDetails = createElectionEvent.getElectionDetails();
+        ElectionDetails electionDetails = (ElectionDetails) createElectionEvent.getDetails();
         Election election = Election.fromElectionDetails(electionDetails);
         
 		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with instId = "+electionDetails.getInstitutionId());

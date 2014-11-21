@@ -17,7 +17,7 @@ public class RestEventFixtures
 	}
 */	public static CreateUserEvent userSignedUp(String email)
 	{
-		return new CreateUserEvent(email,customEmailUser(email));
+		return new CreateUserEvent(customEmailUser(email));
 	}
 	public static ReadUserEvent requestUserEvent(String email)
 	{

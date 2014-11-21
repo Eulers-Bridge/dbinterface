@@ -24,7 +24,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
 
     @Override
     public ForumQuestionCreatedEvent createForumQuestion(CreateForumQuestionEvent createForumQuestionEvent) {
-        ForumQuestionDetails forumQuestionDetails = createForumQuestionEvent.getForumQuestionDetails();
+        ForumQuestionDetails forumQuestionDetails = (ForumQuestionDetails) createForumQuestionEvent.getDetails();
         ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails(forumQuestionDetails);
         ForumQuestion result = forumQuestionRepository.save(forumQuestion);
         ForumQuestionCreatedEvent forumQuestionCreatedEvent = new ForumQuestionCreatedEvent(result.getForumQuestionId(), result.toForumQuestionDetails());

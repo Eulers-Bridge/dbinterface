@@ -30,8 +30,7 @@ public class ConfigurationEventHandler implements ConfigurationService
 	public ConfigurationCreatedEvent createConfiguration(
 			CreateConfigurationEvent createConfigurationEvent)
 	{
-		ConfigurationDetails configurationDetails = createConfigurationEvent
-				.getConfigurationDetails();
+		ConfigurationDetails configurationDetails = (ConfigurationDetails) createConfigurationEvent.getDetails();
 		Configuration configuration = Configuration
 				.fromConfigurationDetails(configurationDetails);
 		Configuration result = configurationRepository.save(configuration);

@@ -41,7 +41,7 @@ public class CreatePhotoEventTest
 	public final void testCreatePhotoEventPhotoDetails()
 	{
 		assertNotNull(createPhotoEvent);
-		assertEquals(photoDetails, createPhotoEvent.getPhotoDetails());
+		assertEquals(photoDetails, createPhotoEvent.getDetails());
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class CreatePhotoEventTest
 	@Test
 	public final void testGetPhotoDetails()
 	{
-		assertEquals(photoDetails,createPhotoEvent.getPhotoDetails());
+		assertEquals(photoDetails,createPhotoEvent.getDetails());
 	}
 
 	/**
@@ -63,11 +63,11 @@ public class CreatePhotoEventTest
 	@Test
 	public final void testSetPhotoDetails()
 	{
-		assertEquals(photoDetails,createPhotoEvent.getPhotoDetails());
+		assertEquals(photoDetails,createPhotoEvent.getDetails());
 		photoDetails=DatabaseDataFixture.populatePhoto2().toPhotoDetails();
-		assertNotEquals(photoDetails,createPhotoEvent.getPhotoDetails());
-		createPhotoEvent.setPhotoDetails(photoDetails);
-		assertEquals(photoDetails,createPhotoEvent.getPhotoDetails());
+		assertNotEquals(photoDetails,createPhotoEvent.getDetails());
+		createPhotoEvent.setDetails(photoDetails);
+		assertEquals(photoDetails,createPhotoEvent.getDetails());
 	}
 
 }

@@ -27,7 +27,7 @@ public class CreateInstitutionEventTest {
         institutionDetails.setCampus(campus);
         institutionDetails.setState(state);
         institutionDetails.setCountryName(countryName);
-        createInstitutionEvent = new CreateInstitutionEvent(eventId, institutionDetails);
+        createInstitutionEvent = new CreateInstitutionEvent(institutionDetails);
     }
 
     @After
@@ -38,7 +38,7 @@ public class CreateInstitutionEventTest {
     @Test
     public void testCreateInstitutionEvent() throws Exception {
         InstitutionDetails institutionDetails1 = new InstitutionDetails(new Long(0));
-        CreateInstitutionEvent createInstitutionEvent1 = new CreateInstitutionEvent(new Long(0), institutionDetails1);
+        CreateInstitutionEvent createInstitutionEvent1 = new CreateInstitutionEvent(institutionDetails1);
         assertNotNull("CreateInstitutionEvent is null", createInstitutionEvent1);
     }
 
@@ -54,7 +54,7 @@ public class CreateInstitutionEventTest {
         institutionDetails1.setCampus(campus);
         institutionDetails1.setState(state);
         institutionDetails1.setCountryName(countryName);
-        createInstitutionEvent.setInstitutionDetails(institutionDetails1);
+        createInstitutionEvent.setDetails(institutionDetails1);
         assertEquals("InstitutionDetail does not match", institutionDetails1, createInstitutionEvent.getDetails());
         assertEquals("InstitutionDetail does not match", institutionDetails, createInstitutionEvent.getDetails());
     }

@@ -38,7 +38,7 @@ public class PollEventHandler implements PollService{
 
     @Override
     public PollCreatedEvent createPoll(CreatePollEvent createPollEvent) {
-        PollDetails pollDetails = createPollEvent.getPollDetails();
+        PollDetails pollDetails = (PollDetails) createPollEvent.getDetails();
         Poll poll = Poll.fromPollDetails(pollDetails);
         Poll result = pollRepository.save(poll);
         PollCreatedEvent pollCreatedEvent = new PollCreatedEvent(result.getPollId(), result.toPollDetails());
