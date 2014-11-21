@@ -223,6 +223,7 @@ public class PhotoDetailsTest
 		dets.setNodeId(null);
 		checkNotEquals(dets,photoTest);
 		photoTest.setNodeId(null);
+		photoTest.setDate(dets.getDate());
 		assertEquals(dets, photoTest);
 		assertEquals(photoTest, dets);
 		
