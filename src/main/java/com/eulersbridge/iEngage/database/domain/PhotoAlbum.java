@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
@@ -19,6 +20,7 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
  * @author Greg Newitt
  *
  */
+@NodeEntity
 public class PhotoAlbum
 {
     @GraphId private Long nodeId;
