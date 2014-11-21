@@ -6,14 +6,15 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
  * @author Yikai Gong
  */
 
-public class DeleteEventEvent extends DeleteEvent{
-    private final Long eventId;
-
-    public DeleteEventEvent(Long eventId) {
-        this.eventId = eventId;
+public class DeleteEventEvent extends DeleteEvent
+{
+    public DeleteEventEvent(Long eventId)
+    {
+        super(eventId);
     }
 
-    public Long getEventId() {
-        return eventId;
+    public Long getEventId()
+    {
+        return getNodeId();
     }
 }

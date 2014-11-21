@@ -11,16 +11,14 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
  */
 public class DeleteVoteRecordEvent extends DeleteEvent
 {
-	private final Long id;
-
 	public DeleteVoteRecordEvent(final Long id) 
 	{
-		this.id = id;
+		super(id);
 	}
 
 	public Long getVoteRecordId() 
 	{
-		return this.id;
+		return getNodeId();
 	}
 
 }

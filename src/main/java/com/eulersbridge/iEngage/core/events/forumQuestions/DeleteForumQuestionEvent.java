@@ -6,14 +6,15 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
  * @author Yikai Gong
  */
 
-public class DeleteForumQuestionEvent extends DeleteEvent {
-    private final Long forumQuestionId;
+public class DeleteForumQuestionEvent extends DeleteEvent
+{
+	public DeleteForumQuestionEvent(Long forumQuestionId)
+	{
+		super(forumQuestionId);
+	}
 
-    public DeleteForumQuestionEvent(Long forumQuestionId) {
-        this.forumQuestionId = forumQuestionId;
-    }
-
-    public Long getForumQuestionId() {
-        return forumQuestionId;
-    }
+	public Long getForumQuestionId()
+	{
+		return getNodeId();
+	}
 }

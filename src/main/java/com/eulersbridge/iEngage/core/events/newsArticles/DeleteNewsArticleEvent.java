@@ -4,15 +4,13 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
 
 public class DeleteNewsArticleEvent extends DeleteEvent
 {
-	private final Long id;
-
 	public DeleteNewsArticleEvent(final Long id) 
 	{
-		this.id = id;
+		super(id);
 	}
 
 	public Long getNewsArticleId() 
 	{
-		return this.id;
+		return getNodeId();
 	}
 }

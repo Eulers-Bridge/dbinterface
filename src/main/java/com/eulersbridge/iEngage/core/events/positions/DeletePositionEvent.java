@@ -6,14 +6,15 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
  * @author Yikai Gong
  */
 
-public class DeletePositionEvent extends DeleteEvent{
-    private final Long positionId;
+public class DeletePositionEvent extends DeleteEvent
+{
+	public DeletePositionEvent(Long positionId)
+	{
+		super(positionId);
+	}
 
-    public DeletePositionEvent(Long positionId) {
-        this.positionId = positionId;
-    }
-
-    public Long getPositionId() {
-        return positionId;
-    }
+	public Long getPositionId()
+	{
+		return getNodeId();
+	}
 }

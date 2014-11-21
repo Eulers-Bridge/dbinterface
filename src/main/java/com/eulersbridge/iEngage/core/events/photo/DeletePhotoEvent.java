@@ -8,15 +8,8 @@ import com.eulersbridge.iEngage.core.events.DeleteEvent;
 
 public class DeletePhotoEvent extends DeleteEvent
 {
-	private final Long nodeId;
-
 	public DeletePhotoEvent(Long nodeId)
 	{
-		this.nodeId = nodeId;
-	}
-
-	public Long getNodeId()
-	{
-		return nodeId;
+		super(nodeId);
 	}
 }
