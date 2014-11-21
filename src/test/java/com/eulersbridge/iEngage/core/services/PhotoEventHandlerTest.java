@@ -36,6 +36,7 @@ import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 
 /**
@@ -48,6 +49,8 @@ public class PhotoEventHandlerTest
 
     @Mock
 	PhotoRepository photoRepository;
+    @Mock
+	PhotoAlbumRepository photoAlbumRepository;
 
     PhotoEventHandler service;
 
@@ -59,7 +62,7 @@ public class PhotoEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new PhotoEventHandler(photoRepository);
+		service=new PhotoEventHandler(photoRepository,photoAlbumRepository);
 	}
 
 	/**

@@ -26,7 +26,17 @@ import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
+import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
+import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 
 /**
@@ -38,15 +48,17 @@ public class PhotoEventHandler implements PhotoService
     private static Logger LOG = LoggerFactory.getLogger(PhotoEventHandler.class);
 
     private PhotoRepository photoRepository;
+    private PhotoAlbumRepository photoAlbumRepository;
 
 
 	/**
 	 * @param photoRepository
 	 */
-	public PhotoEventHandler(PhotoRepository photoRepository)
+	public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository)
 	{
 		super();
 		this.photoRepository = photoRepository;
+		this.photoAlbumRepository = photoAlbumRepository;
 	}
 
 	/* (non-Javadoc)
@@ -58,18 +70,20 @@ public class PhotoEventHandler implements PhotoService
         PhotoDetails photoDetails = (PhotoDetails) createPhotoEvent.getDetails();
         Photo photo = Photo.fromPhotoDetails(photoDetails);
         
-//		if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+photo.getOwnerId());
-//    	Object owner=photoRepository.findOne(photo.getOwnerId());
+		if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+photoDetails.getOwnerId());
+    	Photo ownerPhoto=photoRepository.findOne(photoDetails.getOwnerId());
     	PhotoCreatedEvent photoCreatedEvent;
-//    	if (owner!=null)
+    	if (ownerPhoto!=null)
     	{
-//    		photo.setOwner(owner);
+        	Owner owner=new Owner();
+        	owner.setNodeId(ownerPhoto.getNodeId());
+    		photo.setOwner(owner);
     		Photo result = photoRepository.save(photo);
         	photoCreatedEvent = new PhotoCreatedEvent(result.getNodeId(), result.toPhotoDetails());
     	}
-//    	else
+    	else
     	{
-//    		photoCreatedEvent=PhotoCreatedEvent.ownerNotFound(photoDetails.getOwnerId());
+    		photoCreatedEvent=PhotoCreatedEvent.ownerNotFound(photoDetails.getOwnerId());
     	}
         return photoCreatedEvent;
 	}
@@ -192,6 +206,67 @@ public class PhotoEventHandler implements PhotoService
 			result=PhotosReadEvent.ownerNotFound();
 		}
 		return result;
+	}
+
+	@Override
+	public PhotoAlbumCreatedEvent createPhotoAlbum(
+			CreatePhotoAlbumEvent createPhotoAlbumEvent)
+	{
+	       PhotoAlbumDetails photoAlbumDetails = (PhotoAlbumDetails) createPhotoAlbumEvent.getDetails();
+	        PhotoAlbum photoAlbum = PhotoAlbum.fromPhotoAlbumDetails(photoAlbumDetails);
+	        
+			if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+photoAlbumDetails.getOwnerId());
+	    	Photo ownerPhoto=photoRepository.findOne(photoAlbumDetails.getOwnerId());
+	    	PhotoAlbumCreatedEvent photoAlbumCreatedEvent;
+	    	if (ownerPhoto!=null)
+	    	{
+	    		Owner owner=new Owner();
+	    		owner.setNodeId(ownerPhoto.getNodeId());
+	    		photoAlbum.setOwner(owner);
+	    		PhotoAlbum result = photoAlbumRepository.save(photoAlbum);
+	        	photoAlbumCreatedEvent = new PhotoAlbumCreatedEvent(result.toPhotoAlbumDetails());
+	    	}
+	    	else
+	    	{
+	    		photoAlbumCreatedEvent=PhotoAlbumCreatedEvent.ownerNotFound(photoAlbumDetails.getOwnerId());
+	    	}
+	        return photoAlbumCreatedEvent;
+	}
+
+	@Override
+	public ReadEvent readPhotoAlbum(ReadPhotoAlbumEvent readPhotoAlbumEvent)
+	{
+        PhotoAlbum photoAlbum = photoAlbumRepository.findOne(readPhotoAlbumEvent.getNodeId());
+        ReadEvent photoAlbumReadEvent;
+        if (photoAlbum!=null)
+        {
+            photoAlbumReadEvent = new PhotoAlbumReadEvent(photoAlbum.getNodeId(), photoAlbum.toPhotoAlbumDetails());
+        }
+        else{
+        	photoAlbumReadEvent = PhotoAlbumReadEvent.notFound(readPhotoAlbumEvent.getNodeId());
+        }
+        return photoAlbumReadEvent;
+	}
+
+	@Override
+	public DeletedEvent deletePhotoAlbum(
+			DeletePhotoAlbumEvent deletePhotoAlbumEvent)
+	{
+        if (LOG.isDebugEnabled()) LOG.debug("Entered deletePhotoEvent= "+deletePhotoAlbumEvent);
+        Long photoAlbumId = deletePhotoAlbumEvent.getNodeId();
+        DeletedEvent photoDeletedEvent;
+        if (LOG.isDebugEnabled()) LOG.debug("deletePhotoAlbum("+photoAlbumId+")");
+        PhotoAlbum photoAlbum = photoAlbumRepository.findOne(photoAlbumId);
+        if (null == photoAlbum)
+        {
+        	photoDeletedEvent = PhotoAlbumDeletedEvent.notFound(photoAlbumId);
+        }
+        else
+        {
+        	photoAlbumRepository.delete(photoAlbumId);
+        	photoDeletedEvent = new PhotoAlbumDeletedEvent(photoAlbumId);
+        }
+        return photoDeletedEvent;
 	}
 
 }

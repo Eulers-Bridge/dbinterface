@@ -38,6 +38,8 @@ public class CoreConfig
     @Autowired
     PhotoRepository photoRepository;
     @Autowired
+    PhotoAlbumRepository photoAlbumRepository;
+    @Autowired
     ForumQuestionRepository forumQuestionRepository;
     @Autowired
     PositionRepository positionRepository;
@@ -112,7 +114,7 @@ public class CoreConfig
     public PhotoService createPhotoService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPhotoService()");
-        return new PhotoEventHandler(photoRepository);
+        return new PhotoEventHandler(photoRepository,photoAlbumRepository);
     }
 
     @Bean
