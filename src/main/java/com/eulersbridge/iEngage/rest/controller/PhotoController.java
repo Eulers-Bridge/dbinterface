@@ -74,7 +74,7 @@ public class PhotoController
     }
 
     //Get
-    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_LABEL+"/{photoId}")
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_ALBUM_LABEL+"/{photoAlbumId}")
     public @ResponseBody ResponseEntity<Photo> findPhotoAlbum(@PathVariable Long photoAlbumId)
     {
         if (LOG.isInfoEnabled()) LOG.info(photoAlbumId+" attempting to get photo. ");
