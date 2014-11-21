@@ -62,15 +62,4 @@ public class CreatePhotoAlbumEventTest
 		createPhotoAlbumEvent.setDetails(photoAlbumDetails);
 		assertEquals(photoAlbumDetails,createPhotoAlbumEvent.getDetails());
 	}
-
-	@Test
-	public final void testGetPhotoDetails()
-	{
-	}
-
-	@Test
-	public final void testSetPhotoDetails()
-	{
-	}
-
 }
