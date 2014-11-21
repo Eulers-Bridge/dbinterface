@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
@@ -82,13 +83,16 @@ public class PhotoEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CreatingPhoto()");
 		Photo testData=DatabaseDataFixture.populatePhoto1();
+		Photo testPhoto=new Photo();
+		testPhoto.setNodeId(testData.getOwner().getNodeId());
+		when(photoRepository.findOne(any(Long.class))).thenReturn(testPhoto);
 		when(photoRepository.save(any(Photo.class))).thenReturn(testData);
 		PhotoDetails dets=testData.toPhotoDetails();
 		CreatePhotoEvent createPhotoEvent=new CreatePhotoEvent(dets);
 		PhotoCreatedEvent evtData = service.createPhoto(createPhotoEvent);
-		PhotoDetails returnedDets = evtData.getPhotoDetails();
-		assertEquals(returnedDets,testData.toPhotoDetails());
-		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
+		Details returnedDets = evtData.getDetails();
+		assertEquals(testData.toPhotoDetails(),returnedDets);
+		assertEquals(testData.getNodeId(),returnedDets.getNodeId());
 		assertNotNull(evtData.getNodeId());
 	}
 
