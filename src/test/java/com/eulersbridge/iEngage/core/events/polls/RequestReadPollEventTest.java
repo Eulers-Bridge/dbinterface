@@ -28,6 +28,6 @@ public class RequestReadPollEventTest {
 
     @Test
     public void testGetPollId() throws Exception {
-        assertEquals("pollId does not match", pollId, requestReadPollEvent.getPollId());
+        assertEquals("pollId does not match", pollId, requestReadPollEvent.getNodeId());
     }
 }

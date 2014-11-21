@@ -33,13 +33,13 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
 
     @Override
     public ReadEvent requestReadForumQuestion(RequestReadForumQuestionEvent requestReadForumQuestionEvent) {
-        ForumQuestion forumQuestion = forumQuestionRepository.findOne(requestReadForumQuestionEvent.getForumQuestionId());
+        ForumQuestion forumQuestion = forumQuestionRepository.findOne(requestReadForumQuestionEvent.getNodeId());
         ReadEvent readForumQuestionEvent;
         if(forumQuestion != null){
-            readForumQuestionEvent = new ReadForumQuestionEvent(requestReadForumQuestionEvent.getForumQuestionId(), forumQuestion.toForumQuestionDetails());
+            readForumQuestionEvent = new ReadForumQuestionEvent(requestReadForumQuestionEvent.getNodeId(), forumQuestion.toForumQuestionDetails());
         }
         else{
-            readForumQuestionEvent = ReadForumQuestionEvent.notFound(requestReadForumQuestionEvent.getForumQuestionId());
+            readForumQuestionEvent = ReadForumQuestionEvent.notFound(requestReadForumQuestionEvent.getNodeId());
         }
         return readForumQuestionEvent;
     }
@@ -65,7 +65,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
     @Override
     public DeletedEvent deleteForumQuestion(DeleteForumQuestionEvent deleteForumQuestionEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteForumQuestionEvent= "+deleteForumQuestionEvent);
-        Long forumQuestionId = deleteForumQuestionEvent.getForumQuestionId();
+        Long forumQuestionId = deleteForumQuestionEvent.getNodeId();
         if (LOG.isDebugEnabled()) LOG.debug("deleteForumQuestion("+forumQuestionId+")");
         ForumQuestion forumQuestion = forumQuestionRepository.findOne(forumQuestionId);
         if(forumQuestion == null)

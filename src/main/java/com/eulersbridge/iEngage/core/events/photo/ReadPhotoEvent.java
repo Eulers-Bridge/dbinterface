@@ -8,15 +8,8 @@ import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 
 public class ReadPhotoEvent extends RequestReadEvent
 {
-	private Long nodeId;
-
 	public ReadPhotoEvent(Long nodeId)
 	{
-		this.nodeId = nodeId;
-	}
-
-	public Long getNodeId()
-	{
-		return nodeId;
+		super(nodeId);
 	}
 }

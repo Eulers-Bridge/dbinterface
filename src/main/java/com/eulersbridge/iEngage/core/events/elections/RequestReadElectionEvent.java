@@ -8,14 +8,8 @@ import com.eulersbridge.iEngage.core.events.RequestReadEvent;
  */
 
 public class RequestReadElectionEvent extends RequestReadEvent{
-    private Long electionId;
-
-    public RequestReadElectionEvent(Long electionId){
-        this.electionId = electionId;
+    public RequestReadElectionEvent(Long electionId)
+    {
+        super(electionId);
     }
-
-    public Long getElectionId(){
-        return this.electionId;
-    }
-
 }

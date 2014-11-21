@@ -31,6 +31,6 @@ public class RequestReadElectionEventTest {
 
     @Test
     public void testGetElectionId() throws Exception {
-        assertEquals("electionId does not match", electionId, requestReadElectionEvent.getElectionId());
+        assertEquals("electionId does not match", electionId, requestReadElectionEvent.getNodeId());
     }
 }

@@ -75,17 +75,17 @@ public class EventEventHandler implements EventService
 	public ReadEvent readEvent(RequestReadEventEvent requestReadEventEvent)
 	{
 		Event event = eventRepository.findOne(requestReadEventEvent
-				.getEventId());
+				.getNodeId());
 		ReadEvent readEventEvent;
 		if (event != null)
 		{
 			readEventEvent = new ReadEventEvent(
-					requestReadEventEvent.getEventId(), event.toEventDetails());
+					requestReadEventEvent.getNodeId(), event.toEventDetails());
 		}
 		else
 		{
 			readEventEvent = ReadEventEvent.notFound(requestReadEventEvent
-					.getEventId());
+					.getNodeId());
 		}
 		return readEventEvent;
 	}
@@ -127,7 +127,7 @@ public class EventEventHandler implements EventService
 	{
 		if (LOG.isDebugEnabled())
 			LOG.debug("Entered deleteEventEvent= " + deleteEventEvent);
-		Long eventId = deleteEventEvent.getEventId();
+		Long eventId = deleteEventEvent.getNodeId();
 		if (LOG.isDebugEnabled()) LOG.debug("deleteEvent(" + eventId + ")");
 		Event event = eventRepository.findOne(eventId);
 		if (event == null)

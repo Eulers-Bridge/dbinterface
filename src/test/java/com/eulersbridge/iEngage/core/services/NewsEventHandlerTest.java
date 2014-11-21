@@ -153,10 +153,10 @@ public class NewsEventHandlerTest
 	public void testRequestReadNewsArticle() 
 	{
 		RequestReadNewsArticleEvent rnae=new RequestReadNewsArticleEvent(new Long(1));
-		assertEquals("1 == 1",rnae.getNewsArticleId(),new Long(1));
+		assertEquals("1 == 1",rnae.getNodeId(),new Long(1));
 		ReadNewsArticleEvent rane=(ReadNewsArticleEvent) newsService.requestReadNewsArticle(rnae);
 		assertNotNull("Null read news article event returned.",rane);
-		assertEquals("article ids do not match.",rane.getNewsArticleId(),rnae.getNewsArticleId());
+		assertEquals("article ids do not match.",rane.getNewsArticleId(),rnae.getNodeId());
 	}
 
 	/**

@@ -15,11 +15,12 @@ public class ReadPhotosEvent extends RequestReadEvent
 	
 	public ReadPhotosEvent()
 	{
-
+		super(null);
 	}
 
 	public ReadPhotosEvent(Long ownerId)
 	{
+		super(null);
 		this.ownerId=ownerId;
 	}
 

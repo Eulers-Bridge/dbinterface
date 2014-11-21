@@ -15,11 +15,12 @@ public class ReadElectionsEvent extends RequestReadEvent
 	
 	public ReadElectionsEvent()
 	{
-
+		super(null);
 	}
 
 	public ReadElectionsEvent(Long institutionId)
 	{
+		super(null);
 		this.institutionId=institutionId;
 	}
 

@@ -24,7 +24,7 @@ public class ReadCountrysEventTest {
 
     @Test
     public void testReadCountrysEvent() throws Exception {
-        ReadCountrysEvent readCountrysEvent = new ReadCountrysEvent();
+        ReadCountrysEvent readCountrysEvent = new ReadCountrysEvent(null);
         assertNotNull("ReadCountrysEvent is null", readCountrysEvent);
     }
 }

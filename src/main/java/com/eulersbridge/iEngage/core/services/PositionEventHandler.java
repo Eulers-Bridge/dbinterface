@@ -33,13 +33,13 @@ public class PositionEventHandler implements PositionService{
 
     @Override
     public ReadEvent requestReadPosition(RequestReadPositionEvent requestReadPositionEvent) {
-        Position position = positionRepository.findOne(requestReadPositionEvent.getPositionId());
+        Position position = positionRepository.findOne(requestReadPositionEvent.getNodeId());
         ReadEvent readPositionEvent;
         if(position != null){
             readPositionEvent = new ReadPositionEvent(position.getPositionId(), position.toPositionDetails());
         }
         else{
-            readPositionEvent = ReadPositionEvent.notFound(requestReadPositionEvent.getPositionId());
+            readPositionEvent = ReadPositionEvent.notFound(requestReadPositionEvent.getNodeId());
         }
         return readPositionEvent;
     }

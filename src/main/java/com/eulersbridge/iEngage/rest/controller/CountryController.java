@@ -191,7 +191,7 @@ public class CountryController
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve countrys. ");
     	
-		ReadCountrysEvent rce=new ReadCountrysEvent();
+		ReadCountrysEvent rce=new ReadCountrysEvent(null);
 		CountrysReadEvent cre = countryService.readCountrys(rce);
 		Iterator <CountryDetails> iter=cre.getCountrys().iterator();
 		ArrayList <Country> countrys=new ArrayList<Country>();

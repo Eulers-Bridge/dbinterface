@@ -33,6 +33,6 @@ public class ReadVoteRecordEventTest
     @Test
     public void testGetNewsArticleId() throws Exception 
     {
-        assertEquals("voteRecordId does not match", voteRecordId, ReadVoteRecordEvent.getVoteRecordId());
+        assertEquals("voteRecordId does not match", voteRecordId, ReadVoteRecordEvent.getNodeId());
     }
 }

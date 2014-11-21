@@ -39,13 +39,13 @@ public class ElectionEventHandler implements ElectionService
     @Override
     public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent)
     {
-        Election election = eleRepository.findOne(requestReadElectionEvent.getElectionId());
+        Election election = eleRepository.findOne(requestReadElectionEvent.getNodeId());
         ReadEvent readElectionEvent;
         if (election!=null){
             readElectionEvent = new ReadElectionEvent(election.getNodeId(), election.toElectionDetails());
         }
         else{
-            readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getElectionId());
+            readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getNodeId());
         }
         return readElectionEvent;
     }
@@ -75,14 +75,14 @@ public class ElectionEventHandler implements ElectionService
     @Override
     public ReadEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent)
     {
-        Election election = eleRepository.findPreviousElection(requestReadElectionEvent.getElectionId());
+        Election election = eleRepository.findPreviousElection(requestReadElectionEvent.getNodeId());
         if (LOG.isDebugEnabled()) LOG.debug("election = "+election);
         ReadEvent readElectionEvent;
         if (election!=null){
-            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetails());
+            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getNodeId(), election.toElectionDetails());
         }
         else{
-            readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getElectionId());
+            readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getNodeId());
         }
         return readElectionEvent;
     }
@@ -90,14 +90,14 @@ public class ElectionEventHandler implements ElectionService
     @Override
     public ReadEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent)
     {
-        Election election = eleRepository.findNextElection(requestReadElectionEvent.getElectionId());
+        Election election = eleRepository.findNextElection(requestReadElectionEvent.getNodeId());
         if (LOG.isDebugEnabled()) LOG.debug("election = "+election);
         ReadEvent readElectionEvent;
         if (election!=null){
-            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getElectionId(), election.toElectionDetails());
+            readElectionEvent = new ReadElectionEvent(requestReadElectionEvent.getNodeId(), election.toElectionDetails());
         }
         else{
-            readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getElectionId());
+            readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getNodeId());
         }
         return readElectionEvent;
     }
@@ -106,7 +106,7 @@ public class ElectionEventHandler implements ElectionService
     public DeletedEvent deleteElection (DeleteElectionEvent deleteElectionEvent)
     {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteElectionEvent= "+deleteElectionEvent);
-        Long electionId = deleteElectionEvent.getElectionId();
+        Long electionId = deleteElectionEvent.getNodeId();
         if (LOG.isDebugEnabled()) LOG.debug("deleteElection("+electionId+")");
         Election election = eleRepository.findOne(electionId);
         if(election == null)

@@ -11,16 +11,8 @@ import com.eulersbridge.iEngage.core.events.RequestReadEvent;
  */
 public class ReadNewsFeedEvent extends RequestReadEvent 
 {
-	private Long id;
-
 	public ReadNewsFeedEvent(Long id) 
 	{
-	    this.id = id;
+	    super(id);
 	}
-
-	public Long getNewsFeedId() 
-	{
-	    return id;
-	}
-
 }

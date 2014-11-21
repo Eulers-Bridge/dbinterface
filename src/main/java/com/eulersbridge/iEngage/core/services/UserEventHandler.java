@@ -456,36 +456,36 @@ public class UserEventHandler implements UserService,UserDetailsService
 	@Override
 	public ReadEvent readVoteRecord(ReadVoteRecordEvent readVoteRecordEvent)
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("readVoteRecord("+readVoteRecordEvent.getVoteRecordId()+")");
-	    VoteRecord vr = userRepository.readVoteRecord(readVoteRecordEvent.getVoteRecordId());
+	    if (LOG.isDebugEnabled()) LOG.debug("readVoteRecord("+readVoteRecordEvent.getNodeId()+")");
+	    VoteRecord vr = userRepository.readVoteRecord(readVoteRecordEvent.getNodeId());
 	    ReadEvent response;
 	    if (vr == null) 
 	    {
-	      response=VoteRecordReadEvent.notFound(readVoteRecordEvent.getVoteRecordId());
+	      response=VoteRecordReadEvent.notFound(readVoteRecordEvent.getNodeId());
 	    }
 	    else
 	    {
 		    VoteRecordDetails result=vr.toVoteRecordDetails();
 		    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
-		    response=new VoteRecordReadEvent(readVoteRecordEvent.getVoteRecordId(), result);
+		    response=new VoteRecordReadEvent(readVoteRecordEvent.getNodeId(), result);
 	    }
 	    return response;
 	}
 
 	@Override
 	public ReadEvent readVoteReminder(ReadVoteReminderEvent readVoteReminderEvent) {
-	    if (LOG.isDebugEnabled()) LOG.debug("readVoteRecord("+readVoteReminderEvent.getVoteReminderId()+")");
-	    VoteReminder vr = userRepository.readVoteReminder(readVoteReminderEvent.getVoteReminderId());
+	    if (LOG.isDebugEnabled()) LOG.debug("readVoteRecord("+readVoteReminderEvent.getNodeId()+")");
+	    VoteReminder vr = userRepository.readVoteReminder(readVoteReminderEvent.getNodeId());
 	    ReadEvent response;
 	    if (vr == null) 
 	    {
-	      response=VoteReminderReadEvent.notFound(readVoteReminderEvent.getVoteReminderId());
+	      response=VoteReminderReadEvent.notFound(readVoteReminderEvent.getNodeId());
 	    }
 	    else
 	    {
 		    VoteReminderDetails result=vr.toVoteReminderDetails();
 		    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
-		    response=new VoteReminderReadEvent(readVoteReminderEvent.getVoteReminderId(), result);
+		    response=new VoteReminderReadEvent(readVoteReminderEvent.getNodeId(), result);
 	    }
 	    return response;
 	}

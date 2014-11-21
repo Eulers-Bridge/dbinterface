@@ -90,19 +90,19 @@ public class InstitutionEventHandler implements InstitutionService {
 	public ReadEvent requestReadInstitution(
 			RequestReadInstitutionEvent requestReadInstitutionEvent) 
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("requestReadInstitution("+requestReadInstitutionEvent.getId()+")");
-	    Institution inst = instRepository.findOne(requestReadInstitutionEvent.getId());
+	    if (LOG.isDebugEnabled()) LOG.debug("requestReadInstitution("+requestReadInstitutionEvent.getNodeId()+")");
+	    Institution inst = instRepository.findOne(requestReadInstitutionEvent.getNodeId());
 
 	    if (inst == null) 
 	    {
-	      return ReadInstitutionEvent.notFound(requestReadInstitutionEvent.getId());
+	      return ReadInstitutionEvent.notFound(requestReadInstitutionEvent.getNodeId());
 	    }
 
 //	    template.fetch(user.getInstitution());
 
 	    InstitutionDetails result=inst.toInstDetails();
 	    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
-	    return new ReadInstitutionEvent(requestReadInstitutionEvent.getId(), result);
+	    return new ReadInstitutionEvent(requestReadInstitutionEvent.getNodeId(), result);
 	}
 
 	@Override
@@ -213,15 +213,15 @@ public class InstitutionEventHandler implements InstitutionService {
 			ReadNewsFeedEvent readNewsFeedEvent) 
 	{
 //		NewsFeed sy=newsFeedRepository.findOne(readNewsFeedEvent.getNewsFeedId());
-		NewsFeed newsFeed=newsFeedRepository.findNewsFeed(readNewsFeedEvent.getNewsFeedId());
+		NewsFeed newsFeed=newsFeedRepository.findNewsFeed(readNewsFeedEvent.getNodeId());
 		ReadEvent result;
 		if (newsFeed!=null)
 		{
-			result=new NewsFeedReadEvent(readNewsFeedEvent.getNewsFeedId(),newsFeed.toDetails());
+			result=new NewsFeedReadEvent(readNewsFeedEvent.getNodeId(),newsFeed.toDetails());
 		}
 		else
 		{
-			result=NewsFeedReadEvent.notFound(readNewsFeedEvent.getNewsFeedId());
+			result=NewsFeedReadEvent.notFound(readNewsFeedEvent.getNodeId());
 		}
 		return result;
 	}

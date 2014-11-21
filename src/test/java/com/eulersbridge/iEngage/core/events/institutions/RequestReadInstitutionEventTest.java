@@ -31,6 +31,6 @@ public class RequestReadInstitutionEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("id does not match", id, requestReadInstitutionEvent.getId());
+        assertEquals("id does not match", id, requestReadInstitutionEvent.getNodeId());
     }
 }

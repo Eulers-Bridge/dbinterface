@@ -120,7 +120,7 @@ public class InstitutionEventHandlerTest
 	@Test
 	public void testRequestReadInstitution() {
 		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(new Long(1));
-		assertEquals("1 == 1",rnae.getId(),new Long(1));
+		assertEquals("1 == 1",rnae.getNodeId(),new Long(1));
 		ReadInstitutionEvent rane=(ReadInstitutionEvent) instService.requestReadInstitution(rnae);
 		if (null==rane)
 			fail("Not yet implemented");
@@ -130,7 +130,7 @@ public class InstitutionEventHandlerTest
 	public void testRequestReadNonExistentInstitutionShouldReturnNotFound() {
 		Long nodeId=new Long(19);
 		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(nodeId);
-		assertEquals("19 == 19",rnae.getId(),new Long(19));
+		assertEquals("19 == 19",rnae.getNodeId(),new Long(19));
 		ReadEvent rane=instService.requestReadInstitution(rnae);
 		assertNotNull("Not yet implemented",rane);
 		assertNull(rane.getDetails());

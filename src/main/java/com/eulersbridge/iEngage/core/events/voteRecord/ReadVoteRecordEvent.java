@@ -11,16 +11,8 @@ import com.eulersbridge.iEngage.core.events.RequestReadEvent;
  */
 public class ReadVoteRecordEvent extends RequestReadEvent 
 {
-	private Long id;
-
 	public ReadVoteRecordEvent(Long id) 
 	{
-	    this.id = id;
+	    super(id);
 	}
-
-	public Long getVoteRecordId() 
-	{
-	    return id;
-	}
-
 }

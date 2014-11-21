@@ -16,7 +16,7 @@ public class ReadNewsArticlesEvent extends RequestReadEvent
 	
 	private ReadNewsArticlesEvent()
 	{
-		super();
+		super(null);
 	}
 	
 	public ReadNewsArticlesEvent(Long institutionId)

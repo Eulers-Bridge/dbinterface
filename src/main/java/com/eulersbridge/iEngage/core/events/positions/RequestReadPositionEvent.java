@@ -6,14 +6,10 @@ import com.eulersbridge.iEngage.core.events.RequestReadEvent;
  * @author Yikai Gong
  */
 
-public class RequestReadPositionEvent extends RequestReadEvent{
-    private Long positionId;
-
-    public RequestReadPositionEvent(Long positionId) {
-        this.positionId = positionId;
-    }
-
-    public Long getPositionId() {
-        return positionId;
-    }
+public class RequestReadPositionEvent extends RequestReadEvent
+{
+	public RequestReadPositionEvent(Long positionId)
+	{
+		super(positionId);
+	}
 }

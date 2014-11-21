@@ -79,7 +79,7 @@ public class CountryEventHandlerTest
 	public void testReadCountry() 
 	{
 		ReadCountryEvent rnae=new ReadCountryEvent(new Long(1));
-		assertEquals("1 == 1",rnae.getId(),new Long(1));
+		assertEquals("1 == 1",rnae.getNodeId(),new Long(1));
 		CountryReadEvent rane=(CountryReadEvent) countryService.readCountry(rnae);
 		if (null==rane)
 			fail("Not yet implemented");
@@ -89,7 +89,7 @@ public class CountryEventHandlerTest
 	public void testReadNonExistentCountryShouldReturnNotFound() 
 	{
 		ReadCountryEvent rnae=new ReadCountryEvent(new Long(19));
-		assertEquals("19 == 19",rnae.getId(),new Long(19));
+		assertEquals("19 == 19",rnae.getNodeId(),new Long(19));
 		ReadEvent rane=countryService.readCountry(rnae);
 		assertNotNull("Not yet implemented",rane);
 		assertFalse("Entity should not be found.",rane.isEntityFound());
@@ -126,7 +126,7 @@ public class CountryEventHandlerTest
 	@Test
 	public void testReadCountrys() 
 	{
-		ReadCountrysEvent rce=new ReadCountrysEvent();
+		ReadCountrysEvent rce=new ReadCountrysEvent(null);
 		CountrysReadEvent countrys=countryService.readCountrys(rce);
 		if (null==countrys) fail("Not yet implemented");
 	}

@@ -31,7 +31,7 @@ public class ReadCountryEventTest {
     }
 
     @Test
-    public void testGetId() throws Exception {
-        assertEquals("id does not match", id, readCountryEvent.getId());
+    public void testGetNodeId() throws Exception {
+        assertEquals("id does not match", id, readCountryEvent.getNodeId());
     }
 }

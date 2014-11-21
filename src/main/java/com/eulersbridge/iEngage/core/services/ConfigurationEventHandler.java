@@ -45,7 +45,7 @@ public class ConfigurationEventHandler implements ConfigurationService
 			RequestReadConfigurationEvent requestReadConfigurationEvent)
 	{
 		Configuration configuration = configurationRepository
-				.findOne(requestReadConfigurationEvent.getConfigId());
+				.findOne(requestReadConfigurationEvent.getNodeId());
 		ReadEvent readConfigurationEvent;
 		if (configuration != null)
 		{
@@ -56,7 +56,7 @@ public class ConfigurationEventHandler implements ConfigurationService
 		else
 		{
 			readConfigurationEvent = ReadConfigurationEvent
-					.notFound(requestReadConfigurationEvent.getConfigId());
+					.notFound(requestReadConfigurationEvent.getNodeId());
 		}
 		return readConfigurationEvent;
 	}

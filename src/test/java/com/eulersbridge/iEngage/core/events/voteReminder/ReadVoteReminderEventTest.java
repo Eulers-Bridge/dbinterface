@@ -33,6 +33,6 @@ public class ReadVoteReminderEventTest
     @Test
     public void testGetNewsArticleId() throws Exception 
     {
-        assertEquals("voteReminderId does not match", voteReminderId, readVoteReminderEvent.getVoteReminderId());
+        assertEquals("voteReminderId does not match", voteReminderId, readVoteReminderEvent.getNodeId());
     }
 }

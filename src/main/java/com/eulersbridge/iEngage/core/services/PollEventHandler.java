@@ -25,13 +25,13 @@ public class PollEventHandler implements PollService{
 
     @Override
     public ReadEvent requestReadPoll(RequestReadPollEvent requestReadPollEvent) {
-        Poll poll = pollRepository.findOne(requestReadPollEvent.getPollId());
+        Poll poll = pollRepository.findOne(requestReadPollEvent.getNodeId());
         ReadEvent readPollEvent;
         if(poll != null){
-            readPollEvent = new ReadPollEvent(requestReadPollEvent.getPollId(), poll.toPollDetails());
+            readPollEvent = new ReadPollEvent(requestReadPollEvent.getNodeId(), poll.toPollDetails());
         }
         else{
-            readPollEvent = ReadPollEvent.notFound(requestReadPollEvent.getPollId());
+            readPollEvent = ReadPollEvent.notFound(requestReadPollEvent.getNodeId());
         }
         return readPollEvent;
     }
