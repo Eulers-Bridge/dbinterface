@@ -5,7 +5,6 @@ import com.eulersbridge.iEngage.email.EmailVerification;
 
 public class UserCreatedEvent extends CreatedEvent 
 {
-	private UserDetails userDetails;
 	private String email;
 	protected boolean instituteFound = true;
 	private EmailVerification verifyEmail;
@@ -13,7 +12,7 @@ public class UserCreatedEvent extends CreatedEvent
 
 	public UserCreatedEvent(String email, UserDetails userDetails, EmailVerification verifyEmail) 
 	{
-		this.userDetails=userDetails;
+		super(userDetails);
 		this.email=email;
 		this.verifyEmail=verifyEmail;
 	}
@@ -32,18 +31,13 @@ public class UserCreatedEvent extends CreatedEvent
 	}
 
 	public void setUserDetails(UserDetails userDetails) {
-		this.userDetails = userDetails;
+		setDetails(userDetails);
 	}
 
-	public UserDetails getUserDetails() 
-	{
-	    return userDetails;
-	}
-	
 	@Override
 	public UserDetails getDetails() 
 	{
-	    return userDetails;
+	    return (UserDetails)super.getDetails();
 	}
 	
 	public static UserCreatedEvent instituteNotFound(String email) 

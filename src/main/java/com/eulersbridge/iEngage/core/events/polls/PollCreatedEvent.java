@@ -7,11 +7,11 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
  */
 
 public class PollCreatedEvent extends CreatedEvent {
-    private PollDetails pollDetails;
     private Long pollId;
 
-    public PollCreatedEvent( Long pollId, PollDetails pollDetails) {
-        this.pollDetails = pollDetails;
+    public PollCreatedEvent( Long pollId, PollDetails pollDetails)
+    {
+        super(pollDetails);
         this.pollId = pollId;
     }
 
@@ -19,18 +19,14 @@ public class PollCreatedEvent extends CreatedEvent {
         this.pollId = pollId;
     }
 
-    public PollDetails getPollDetails() {
-        return pollDetails;
-    }
-
     @Override
     public PollDetails getDetails()
     {
-        return pollDetails;
+        return (PollDetails) super.getDetails();
     }
 
     public void setPollDetails(PollDetails pollDetails) {
-        this.pollDetails = pollDetails;
+        setDetails(pollDetails);
     }
 
     public Long getPollId() {

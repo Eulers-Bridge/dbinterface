@@ -8,41 +8,40 @@ import org.slf4j.LoggerFactory;
  * @author Yikai Gong
  */
 
-public class PositionCreatedEvent extends CreatedEvent{
-    private Long PositionId;
-    private PositionDetails positionDetails;
+public class PositionCreatedEvent extends CreatedEvent
+{
+    private Long positionId;
 
     private static Logger LOG = LoggerFactory.getLogger(PositionCreatedEvent.class);
 
-    public PositionCreatedEvent(Long positionId) {
+    public PositionCreatedEvent(Long positionId)
+    {
         if (LOG.isDebugEnabled()) LOG.debug("constructor()");
-        PositionId = positionId;
+        this.positionId = positionId;
     }
 
-    public PositionCreatedEvent(Long positionId, PositionDetails positionDetails) {
-        this(positionId);
-        this.positionDetails = positionDetails;
+    public PositionCreatedEvent(Long positionId, PositionDetails positionDetails)
+    {
+    	super(positionDetails);
+        this.positionId = positionId;
     }
 
     public Long getPositionId() {
-        return PositionId;
+        return positionId;
     }
 
     public void setPositionId(Long positionId) {
-        PositionId = positionId;
+        this.positionId = positionId;
     }
 
     @Override
     public PositionDetails getDetails()
     {
-        return positionDetails;
+        return (PositionDetails) super.getDetails();
     }
 
-    public PositionDetails getPositionDetails() {
-        return positionDetails;
-    }
-
-    public void setPositionDetails(PositionDetails positionDetails) {
-        this.positionDetails = positionDetails;
+    public void setPositionDetails(PositionDetails positionDetails)
+    {
+        setDetails(positionDetails);
     }
 }

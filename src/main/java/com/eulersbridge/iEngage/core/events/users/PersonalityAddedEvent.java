@@ -3,14 +3,15 @@
  */
 package com.eulersbridge.iEngage.core.events.users;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
+
 /**
  * @author Greg Newitt
  *
  */
-public class PersonalityAddedEvent 
+public class PersonalityAddedEvent extends CreatedEvent
 {
 	private boolean userFound;
-	private PersonalityDetails personalityDetails;
 	
 	/**
 	 * 
@@ -27,22 +28,22 @@ public class PersonalityAddedEvent
 	 */
 	public PersonalityAddedEvent(PersonalityDetails personalityDetails) 
 	{
-		this();
-		this.personalityDetails = personalityDetails;
+		super(personalityDetails);
 	}
 
 	/**
 	 * @return the personalityDetails
 	 */
-	public PersonalityDetails getPersonalityDetails() {
-		return personalityDetails;
+	public PersonalityDetails getPersonalityDetails()
+	{
+		return (PersonalityDetails) super.getDetails();
 	}
 
 	/**
 	 * @param personalityDetails the personalityDetails to set
 	 */
 	public void setPersonalityDetails(PersonalityDetails personalityDetails) {
-		this.personalityDetails = personalityDetails;
+		setDetails(personalityDetails);
 	}
 
 	/**

@@ -8,13 +8,12 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 
 public class PhotoCreatedEvent extends CreatedEvent
 {
-    private PhotoDetails photoDetails;
     private Long nodeId;
 	private boolean ownerFound=true;
 
     public PhotoCreatedEvent( Long nodeId, PhotoDetails photoDetails)
     {
-        this.photoDetails = photoDetails;
+        super(photoDetails);
         this.nodeId = nodeId;
     }
 
@@ -23,20 +22,14 @@ public class PhotoCreatedEvent extends CreatedEvent
         this.nodeId = nodeId;
     }
 
-@Override
-    public PhotoDetails getDetails()
-    {
-        return photoDetails;
-    }
-
     public PhotoDetails getPhotoDetails()
     {
-        return photoDetails;
+        return (PhotoDetails) super.getDetails();
     }
 
     public void setPhotoDetails(PhotoDetails photoDetails)
     {
-        this.photoDetails = photoDetails;
+        setDetails(photoDetails);
     }
 
     public Long getNodeId()

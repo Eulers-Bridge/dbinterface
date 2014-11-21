@@ -4,24 +4,25 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 
 public class NewsArticleCreatedEvent extends CreatedEvent
 {
-	private NewsArticleDetails newsArticleDetails;
 	private Long id;
 	private boolean creatorFound=true;
 	private boolean institutionFound=true;
 	
 	public NewsArticleCreatedEvent(Long id, NewsArticleDetails newsArticleDetails) 
 	{
-		this.newsArticleDetails=newsArticleDetails;
+		super(newsArticleDetails);
 		this.id=id;
 	}
 
 	public NewsArticleCreatedEvent(Long id) 
 	{
+		super();
 		this.id=id;
 	}
 
 	public NewsArticleCreatedEvent() 
 	{
+		super();
 	}
 
 	public Long getNewsArticleId() 
@@ -34,19 +35,14 @@ public class NewsArticleCreatedEvent extends CreatedEvent
 		this.id = id;
 	}
 
-	public void setNewsArticleDetails(NewsArticleDetails newsArticleDetails) {
-		this.newsArticleDetails = newsArticleDetails;
-	}
-
-@Override
-	public NewsArticleDetails getDetails() 
+	public void setNewsArticleDetails(NewsArticleDetails newsArticleDetails)
 	{
-	    return newsArticleDetails;
+		setDetails(newsArticleDetails);
 	}
 
 	public NewsArticleDetails getNewsArticleDetails() 
 	{
-	    return newsArticleDetails;
+	    return (NewsArticleDetails) super.getDetails();
 	}
 
 	/**

@@ -7,13 +7,12 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
  */
 
 public class EventCreatedEvent extends CreatedEvent{
-    private EventDetails eventDetails;
     private Long eventId;
 	private boolean institutionFound=true;
 
     public EventCreatedEvent( Long eventId, EventDetails eventDetails)
     {
-        this.eventDetails = eventDetails;
+        super(eventDetails);
         this.eventId = eventId;
     }
 
@@ -22,20 +21,14 @@ public class EventCreatedEvent extends CreatedEvent{
         this.eventId = eventId;
     }
 
-    @Override
-    public EventDetails getDetails()
-    {
-        return eventDetails;
-    }
-
     public EventDetails getEventDetails()
     {
-        return eventDetails;
+        return (EventDetails)super.getDetails();
     }
 
     public void setEventDetails(EventDetails eventDetails)
     {
-        this.eventDetails = eventDetails;
+        setDetails(eventDetails);
     }
 
     public Long getEventId()

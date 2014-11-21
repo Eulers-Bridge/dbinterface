@@ -12,14 +12,13 @@ import org.slf4j.LoggerFactory;
 public class ForumQuestionCreatedEvent extends CreatedEvent 
 {
     private Long forumQuestionId;
-    private ForumQuestionDetails forumQuestionDetails;
 
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestionCreatedEvent.class);
     
     public ForumQuestionCreatedEvent(Long forumQuestionId, ForumQuestionDetails forumQuestionDetails) 
     {
-    	this(forumQuestionId);
-        this.forumQuestionDetails = forumQuestionDetails;
+    	super(forumQuestionDetails);
+        this.forumQuestionId = forumQuestionId;
     }
 
     public ForumQuestionCreatedEvent(Long forumQuestionId) 
@@ -36,11 +35,14 @@ public class ForumQuestionCreatedEvent extends CreatedEvent
         this.forumQuestionId = forumQuestionId;
     }
 
-    public ForumQuestionDetails getForumQuestionDetails() {
-        return forumQuestionDetails;
+@Override
+    public ForumQuestionDetails getDetails()
+	{
+        return (ForumQuestionDetails)super.getDetails();
     }
 
-    public void setForumQuestionDetails(ForumQuestionDetails forumQuestionDetails) {
-        this.forumQuestionDetails = forumQuestionDetails;
+    public void setForumQuestionDetails(ForumQuestionDetails forumQuestionDetails)
+    {
+        setDetails(forumQuestionDetails);
     }
 }

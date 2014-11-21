@@ -4,12 +4,11 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 
 public class CountryCreatedEvent extends CreatedEvent 
 {
-	private CountryDetails countryDetails;
 	private Long id;
 
 	public CountryCreatedEvent(Long id, CountryDetails countryDetails) 
 	{
-		this.countryDetails=countryDetails;
+		super(countryDetails);
 		this.id=id;
 	}
 
@@ -27,16 +26,12 @@ public class CountryCreatedEvent extends CreatedEvent
 	}
 
 	public void setCountryDetails(CountryDetails countryDetails) {
-		this.countryDetails = countryDetails;
+		setDetails(countryDetails);
 	}
 
 	@Override
 	public CountryDetails getDetails() 
 	{
-	    return countryDetails;
-	}
-	public CountryDetails getCountryDetails() 
-	{
-	    return countryDetails;
+	    return (CountryDetails)super.getDetails();
 	}
 }

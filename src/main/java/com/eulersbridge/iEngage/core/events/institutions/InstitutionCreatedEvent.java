@@ -4,13 +4,12 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 
 public class InstitutionCreatedEvent extends CreatedEvent 
 {
-	private InstitutionDetails instDetails;
 	private Long id;
 	protected boolean countryFound = true;
 
 	public InstitutionCreatedEvent(Long id, InstitutionDetails instDetails) 
 	{
-		this.instDetails=instDetails;
+		super(instDetails);
 		this.id=id;
 	}
 
@@ -27,13 +26,15 @@ public class InstitutionCreatedEvent extends CreatedEvent
 		this.id = id;
 	}
 
-	public void setInstitutionDetails(InstitutionDetails instDetails) {
-		this.instDetails = instDetails;
+	public void setInstitutionDetails(InstitutionDetails instDetails)
+	{
+		setDetails(instDetails);
 	}
 
-	public InstitutionDetails getInstitutionDetails() 
+	@Override
+	public InstitutionDetails getDetails() 
 	{
-	    return instDetails;
+	    return (InstitutionDetails)super.getDetails();
 	}
 	
 

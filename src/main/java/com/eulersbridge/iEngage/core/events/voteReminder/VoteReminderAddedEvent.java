@@ -3,28 +3,45 @@
  */
 package com.eulersbridge.iEngage.core.events.voteReminder;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
+
 /**
  * @author Greg Newitt
  *
  */
-public class VoteReminderAddedEvent
+public class VoteReminderAddedEvent extends CreatedEvent
 {
 
-	private VoteReminderDetails voteReminderDetails;
 	private boolean userFound =true; 
 	private boolean electionFound = true;
 
+	/**
+	 * 
+	 */
+	public VoteReminderAddedEvent()
+	{
+		super();
+	}
+	/**
+	 * @param details
+	 */
+	public VoteReminderAddedEvent(VoteReminderDetails voteReminderDetails)
+	{
+		super(voteReminderDetails);
+	}
+	
 	/**
 	 * @return the voteReminderDetails
 	 */
 	public VoteReminderDetails getVoteReminderDetails()
 	{
-		return voteReminderDetails;
+		return (VoteReminderDetails) getDetails();
 	}
 
 	public void setVoteReminderDetails(VoteReminderDetails dets) 
 	{
-		this.voteReminderDetails=dets;
+		setDetails(dets);
 		
 	}
 

@@ -9,40 +9,36 @@ import org.slf4j.LoggerFactory;
  */
 
 public class ConfigurationCreatedEvent extends CreatedEvent{
-    private Long Configid;
-    private ConfigurationDetails configurationDetails;
+    private Long configid;
 
     private static Logger LOG = LoggerFactory.getLogger(ConfigurationCreatedEvent.class);
 
-    public ConfigurationCreatedEvent(Long configid) {
+    public ConfigurationCreatedEvent(Long configid)
+    {
         if (LOG.isDebugEnabled()) LOG.debug("constructor()");
-        Configid = configid;
+        this.configid = configid;
     }
 
-    public ConfigurationCreatedEvent(Long configid, ConfigurationDetails configurationDetails) {
-        this(configid);
-        this.configurationDetails = configurationDetails;
+    public ConfigurationCreatedEvent(Long configid, ConfigurationDetails configurationDetails)
+    {
+    	super(configurationDetails);
+        this.configid = configid;
     }
 
     public Long getConfigid() {
-        return Configid;
+        return configid;
     }
 
-    public void setConfigid(Long configid) {
-        Configid = configid;
-    }
-
-    @Override
-    public ConfigurationDetails getDetails()
+    public void setConfigid(Long configid)
     {
-        return configurationDetails;
+        this.configid = configid;
     }
 
     public ConfigurationDetails getConfigurationDetails() {
-        return configurationDetails;
+        return (ConfigurationDetails) getDetails();
     }
 
     public void setConfigurationDetails(ConfigurationDetails configurationDetails) {
-        this.configurationDetails = configurationDetails;
+        setDetails(configurationDetails);
     }
 }

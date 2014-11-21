@@ -11,13 +11,12 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
  */
 public class NewsFeedCreatedEvent extends CreatedEvent 
 {
-	private NewsFeedDetails newsFeedDetails;
 	private Long id;
 	private boolean institutionFound=true;
 	
 	public NewsFeedCreatedEvent(Long id, NewsFeedDetails newsFeedDetails) 
 	{
-		this.newsFeedDetails=newsFeedDetails;
+		super(newsFeedDetails);
 		this.id=id;
 	}
 
@@ -27,25 +26,19 @@ public class NewsFeedCreatedEvent extends CreatedEvent
 	}
 
 	/**
-	 * @return the details
-	 */
-	@Override
-	public NewsFeedDetails getDetails() {
-		return newsFeedDetails;
-	}
-
-	/**
 	 * @return the newsFeedDetails
 	 */
-	public NewsFeedDetails getNewsFeedDetails() {
-		return newsFeedDetails;
+	public NewsFeedDetails getNewsFeedDetails()
+	{
+		return (NewsFeedDetails)super.getDetails();
 	}
 
 	/**
 	 * @param newsFeedDetails the newsFeedDetails to set
 	 */
-	public void setNewsFeedDetails(NewsFeedDetails newsFeedDetails) {
-		this.newsFeedDetails = newsFeedDetails;
+	public void setNewsFeedDetails(NewsFeedDetails newsFeedDetails)
+	{
+		setDetails(newsFeedDetails);
 	}
 
 	/**

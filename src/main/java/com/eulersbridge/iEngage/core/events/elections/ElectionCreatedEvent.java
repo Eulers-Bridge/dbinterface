@@ -6,13 +6,14 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
  * @author Yikai Gong
  */
 
-public class ElectionCreatedEvent extends CreatedEvent{
-    private ElectionDetails electionDetails;
+public class ElectionCreatedEvent extends CreatedEvent
+{
     private Long id;
     private boolean institutionFound=true;
 
-    public ElectionCreatedEvent (Long id, ElectionDetails electionDetails){
-        this.electionDetails = electionDetails;
+    public ElectionCreatedEvent (Long id, ElectionDetails electionDetails)
+    {
+    	super(electionDetails);
         this.id = id;
     }
 
@@ -29,17 +30,12 @@ public class ElectionCreatedEvent extends CreatedEvent{
     }
 
     public void setElectionDetails(ElectionDetails electionDetails){
-        this.electionDetails = electionDetails;
+        setDetails(electionDetails);
     }
 
-    @Override
-    public ElectionDetails getDetails()
+    public ElectionDetails getElectionDetails()
     {
-        return this.electionDetails;
-    }
-
-    public ElectionDetails getElectionDetails(){
-        return this.electionDetails;
+        return (ElectionDetails)super.getDetails();
     }
 
 	/**
