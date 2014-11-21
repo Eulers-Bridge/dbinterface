@@ -8,49 +8,56 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 
 public class PhotoAlbumCreatedEvent extends CreatedEvent
 {
-	private boolean institutionFound = true;
+	private boolean ownerFound = true;
+	private Long ownerId;
 
 	public PhotoAlbumCreatedEvent(PhotoAlbumDetails photoAlbumDetails)
 	{	
 		super(photoAlbumDetails);
 	}
 
-	public PhotoAlbumCreatedEvent(Long eventId)
+	public PhotoAlbumCreatedEvent(Long nodeId)
 	{
-	}
-
-@Override
-	public PhotoAlbumDetails getDetails()
-	{
-		return (PhotoAlbumDetails)super.getDetails();
-	}
-
-	public void setDetails(PhotoAlbumDetails photoAlbumDetails)
-	{
-		super.setDetails(photoAlbumDetails);
+		setOwnerId(nodeId);
 	}
 
 	/**
 	 * @return the institutionFound
 	 */
-	public boolean isInstitutionFound()
+	public boolean isOwnerFound()
 	{
-		return institutionFound;
+		return ownerFound;
 	}
 
 	/**
 	 * @param institutionFound
 	 *            the institutionFound to set
 	 */
-	public void setInstitutionFound(boolean institutionFound)
+	public void setOwnerFound(boolean ownerFound)
 	{
-		this.institutionFound = institutionFound;
+		this.ownerFound = ownerFound;
 	}
 
-	public static PhotoAlbumCreatedEvent institutionNotFound(Long institutionId)
+	public static PhotoAlbumCreatedEvent ownerNotFound(Long ownerId)
 	{
-		PhotoAlbumCreatedEvent evt = new PhotoAlbumCreatedEvent(institutionId);
-		evt.setInstitutionFound(false);
+		PhotoAlbumCreatedEvent evt = new PhotoAlbumCreatedEvent(ownerId);
+		evt.setOwnerFound(false);
 		return evt;
+	}
+
+	/**
+	 * @return the ownerId
+	 */
+	public Long getOwnerId()
+	{
+		return ownerId;
+	}
+
+	/**
+	 * @param ownerId the ownerId to set
+	 */
+	public void setOwnerId(Long ownerId)
+	{
+		this.ownerId = ownerId;
 	}
 }
