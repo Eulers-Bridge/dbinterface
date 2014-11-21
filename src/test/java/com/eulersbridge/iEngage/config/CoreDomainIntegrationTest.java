@@ -18,12 +18,13 @@ import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 //@SpringApplicationConfiguration(classes=ApplicationTest.class)
-@ContextConfiguration(classes = {ApplicationTest.class})
+//@ContextConfiguration(classes = {ApplicationTest.class})
 //@ContextConfiguration("/test-application-context.xml")
 public class CoreDomainIntegrationTest 
 {
@@ -44,16 +45,16 @@ public class CoreDomainIntegrationTest
 		ReadUserEvent reusev=RestDataFixture.customEmailUser2("greg.newitt@eulersbridge.com");
 		CreateUserEvent ev = new CreateUserEvent(reusev.getReadUserDetails());
 
-		if (LOG.isDebugEnabled()) LOG.debug(ev.getUserDetails().toString());
+		if (LOG.isDebugEnabled()) LOG.debug(ev.getDetails().toString());
 		if (userService!=null)
 		{
-			CreateUserEvent crusev=new CreateUserEvent(ev.getUserDetails());
+			CreateUserEvent crusev=new CreateUserEvent((UserDetails) ev.getDetails());
 			userService.signUpNewUser(crusev);
 			
-			ReadUserEvent foundUser=userService.requestReadUser(new RequestReadUserEvent(ev.getUserDetails().getEmail()));
+			ReadUserEvent foundUser=userService.requestReadUser(new RequestReadUserEvent(((UserDetails)ev.getDetails()).getEmail()));
 			assertTrue(foundUser.isEntityFound());
 //			userService.deleteUser(ev.getUserDetails().getEmail())
-			UserDeletedEvent udev=userService.deleteUser(new DeleteUserEvent(ev.getUserDetails().getEmail()));
+			UserDeletedEvent udev=userService.deleteUser(new DeleteUserEvent(((UserDetails)ev.getDetails()).getEmail()));
 			assertTrue(udev.isDeletionCompleted());
 		}
 		else
