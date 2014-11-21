@@ -61,36 +61,36 @@ public class PhotoAlbumCreatedEventTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent#isInstitutionFound()}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent#isOwnerFound()}.
 	 */
 	@Test
-	public final void testIsInstitutionFound()
+	public final void testIsOwnerFound()
 	{
-		assertTrue(evt.isInstitutionFound());
+		assertTrue(evt.isOwnerFound());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent#setInstitutionFound(boolean)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent#setOwnerFound(boolean)}.
 	 */
 	@Test
-	public final void testSetInstitutionFound()
+	public final void testSetOwnerFound()
 	{
-		assertTrue(evt.isInstitutionFound());
-		evt.setInstitutionFound(false);
-		assertFalse(evt.isInstitutionFound());
-		evt.setInstitutionFound(true);
-		assertTrue(evt.isInstitutionFound());
+		assertTrue(evt.isOwnerFound());
+		evt.setOwnerFound(false);
+		assertFalse(evt.isOwnerFound());
+		evt.setOwnerFound(true);
+		assertTrue(evt.isOwnerFound());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent#institutionNotFound(java.lang.Long)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent#ownerNotFound(java.lang.Long)}.
 	 */
 	@Test
 	public final void testInstitutionNotFound()
 	{
 		Long institutionId=22l;
-		evt=PhotoAlbumCreatedEvent.institutionNotFound(institutionId);
-		assertFalse(evt.isInstitutionFound());
+		evt=PhotoAlbumCreatedEvent.ownerNotFound(institutionId);
+		assertFalse(evt.isOwnerFound());
 		assertNull(evt.getDetails());
 	}
 
