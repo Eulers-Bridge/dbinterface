@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -101,7 +102,7 @@ public class EventEventHandler implements EventService{
     }
 
     @Override
-    public EventDeletedEvent deleteEvent(DeleteEventEvent deleteEventEvent) {
+    public DeletedEvent deleteEvent(DeleteEventEvent deleteEventEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteEventEvent= "+deleteEventEvent);
         Long eventId = deleteEventEvent.getEventId();
         if (LOG.isDebugEnabled()) LOG.debug("deleteEvent("+eventId+")");

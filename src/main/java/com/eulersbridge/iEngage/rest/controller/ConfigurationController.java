@@ -1,8 +1,10 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.configuration.*;
 import com.eulersbridge.iEngage.core.services.ConfigurationService;
 import com.eulersbridge.iEngage.rest.domain.Configuration;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +101,7 @@ public class ConfigurationController {
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete configuration. " + configId);
         ResponseEntity<Boolean> response;
-        ConfigurationDeletedEvent configurationDeletedEvent = configurationService.deleteConfiguration(new DeleteConfigurationEvent(configId));
+        DeletedEvent configurationDeletedEvent = configurationService.deleteConfiguration(new DeleteConfigurationEvent(configId));
         if (configurationDeletedEvent.isDeletionCompleted())
             response = new ResponseEntity<Boolean>(configurationDeletedEvent.isDeletionCompleted(), HttpStatus.OK);
         else if (configurationDeletedEvent.isEntityFound())

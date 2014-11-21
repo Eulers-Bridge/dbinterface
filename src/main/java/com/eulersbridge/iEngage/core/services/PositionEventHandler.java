@@ -1,8 +1,10 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.repository.PositionRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +62,7 @@ public class PositionEventHandler implements PositionService{
     }
 
     @Override
-    public PositionDeletedEvent deletePosition(DeletePositionEvent deletePositionEvent) {
+    public DeletedEvent deletePosition(DeletePositionEvent deletePositionEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deletePositionEvent= "+deletePositionEvent);
         Long positionId = deletePositionEvent.getPositionId();
         if (LOG.isDebugEnabled()) LOG.debug("deletePosition("+positionId+")");

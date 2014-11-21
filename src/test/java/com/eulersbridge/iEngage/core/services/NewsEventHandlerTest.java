@@ -21,11 +21,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
@@ -189,7 +189,7 @@ public class NewsEventHandlerTest
 	{
 		Long articleId=(long) 1;
 		DeleteNewsArticleEvent deleteNewsArticleEvent=new DeleteNewsArticleEvent(articleId);
-		NewsArticleDeletedEvent nUDe = newsService.deleteNewsArticle(deleteNewsArticleEvent);
+		DeletedEvent nUDe = newsService.deleteNewsArticle(deleteNewsArticleEvent);
 		assertNotNull("Null event returned",nUDe);
 		ReadNewsArticleEvent rane=newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
 		assertFalse("Entity was not deleted.",rane.isEntityFound());
@@ -200,7 +200,7 @@ public class NewsEventHandlerTest
 	{
 		Long articleId=(long) 27;
 		DeleteNewsArticleEvent deleteNewsArticleEvent=new DeleteNewsArticleEvent(articleId);
-		NewsArticleDeletedEvent nUDe = newsService.deleteNewsArticle(deleteNewsArticleEvent);
+		DeletedEvent nUDe = newsService.deleteNewsArticle(deleteNewsArticleEvent);
 		assertNotNull("Null event returned",nUDe);
 		assertFalse("",nUDe.isEntityFound());
 	}

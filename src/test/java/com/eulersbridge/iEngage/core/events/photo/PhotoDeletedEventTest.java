@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+
 /**
  * @author Greg Newitt
  *
@@ -15,7 +17,7 @@ import org.junit.Test;
 public class PhotoDeletedEventTest
 {
     Long nodeId;
-    PhotoDeletedEvent photoDeletedEvent;
+    DeletedEvent photoDeletedEvent;
 
 	/**
 	 * @throws java.lang.Exception

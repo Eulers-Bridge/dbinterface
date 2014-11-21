@@ -25,6 +25,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -45,14 +46,12 @@ import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
@@ -740,11 +739,11 @@ public class UserEventHandlerTest
 		deleteVoteRecordEvent=new DeleteVoteRecordEvent(id);
 		when(uRepo.deleteVoteRecord(any(Long.class))).thenReturn(vr);
 
-		VoteRecordDeletedEvent nace = userServiceMocked.deleteVoteRecord(deleteVoteRecordEvent);
+		DeletedEvent nace = userServiceMocked.deleteVoteRecord(deleteVoteRecordEvent);
 		assertNotNull(nace);
 		assertTrue(nace.isEntityFound());
 		assertTrue(nace.isDeletionCompleted());
-		assertEquals(nace.getVoteRecordId(),id);
+		assertEquals(nace.getNodeId(),id);
 	}
 	
 	@Test
@@ -755,11 +754,11 @@ public class UserEventHandlerTest
 		deleteVoteRecordEvent=new DeleteVoteRecordEvent(id);
 		when(uRepo.deleteVoteRecord(any(Long.class))).thenReturn(null);
 
-		VoteRecordDeletedEvent nace = userServiceMocked.deleteVoteRecord(deleteVoteRecordEvent);
+		DeletedEvent nace = userServiceMocked.deleteVoteRecord(deleteVoteRecordEvent);
 		assertNotNull(nace);
 		assertFalse(nace.isEntityFound());
 		assertFalse(nace.isDeletionCompleted());
-		assertEquals(nace.getVoteRecordId(),id);
+		assertEquals(nace.getNodeId(),id);
 	}
 	
 	@Test
@@ -771,11 +770,11 @@ public class UserEventHandlerTest
 		deleteVoteReminderEvent=new DeleteVoteReminderEvent(id);
 		when(uRepo.deleteVoteReminder(any(Long.class))).thenReturn(vr);
 
-		VoteReminderDeletedEvent nace = userServiceMocked.deleteVoteReminder(deleteVoteReminderEvent);
+		DeletedEvent nace = userServiceMocked.deleteVoteReminder(deleteVoteReminderEvent);
 		assertNotNull(nace);
 		assertTrue(nace.isEntityFound());
 		assertTrue(nace.isDeletionCompleted());
-		assertEquals(nace.getVoteReminderId(),id);
+		assertEquals(nace.getNodeId(),id);
 	}
 	
 	@Test
@@ -786,11 +785,11 @@ public class UserEventHandlerTest
 		deleteVoteReminderEvent=new DeleteVoteReminderEvent(id);
 		when(uRepo.deleteVoteReminder(any(Long.class))).thenReturn(null);
 
-		VoteReminderDeletedEvent nace = userServiceMocked.deleteVoteReminder(deleteVoteReminderEvent);
+		DeletedEvent nace = userServiceMocked.deleteVoteReminder(deleteVoteReminderEvent);
 		assertNotNull(nace);
 		assertFalse(nace.isEntityFound());
 		assertFalse(nace.isDeletionCompleted());
-		assertEquals(nace.getVoteReminderId(),id);
+		assertEquals(nace.getNodeId(),id);
 	}
 	
 	@Test

@@ -28,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
 import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
@@ -374,7 +375,7 @@ public class EventControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteEvent()");
 		EventDetails dets=DatabaseDataFixture.populateEvent1().toEventDetails();
-		EventDeletedEvent testData=EventDeletedEvent.notFound(dets.getEventId());
+		DeletedEvent testData=EventDeletedEvent.notFound(dets.getEventId());
 		when (eventService.deleteEvent(any(DeleteEventEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{eventId}/",dets.getEventId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -386,7 +387,7 @@ public class EventControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteEvent()");
 		EventDetails dets=DatabaseDataFixture.populateEvent1().toEventDetails();
-		EventDeletedEvent testData=EventDeletedEvent.deletionForbidden(dets.getEventId());
+		DeletedEvent testData=EventDeletedEvent.deletionForbidden(dets.getEventId());
 		when (eventService.deleteEvent(any(DeleteEventEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{eventId}/",dets.getEventId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

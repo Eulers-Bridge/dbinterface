@@ -30,6 +30,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
@@ -280,7 +281,7 @@ public class ViewNewsIntegrationTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteArticle()");
 		Long newsArticleId=1l;
-		NewsArticleDeletedEvent testData=NewsArticleDeletedEvent.notFound(newsArticleId);
+		DeletedEvent testData=NewsArticleDeletedEvent.notFound(newsArticleId);
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -294,7 +295,7 @@ public class ViewNewsIntegrationTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
-		NewsArticleDeletedEvent testData=NewsArticleDeletedEvent.deletionForbidden(dets.getNewsArticleId());
+		DeletedEvent testData=NewsArticleDeletedEvent.deletionForbidden(dets.getNewsArticleId());
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",dets.getNewsArticleId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
@@ -10,8 +11,8 @@ import com.eulersbridge.iEngage.core.services.PollService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.Poll;
-
 import com.eulersbridge.iEngage.rest.domain.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +106,7 @@ public class PollController {
     public @ResponseBody
     ResponseEntity<Boolean> deletePoll(@PathVariable Long pollId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete poll. " + pollId);
-        PollDeletedEvent pollDeletedEvent = pollService.deletePoll(new DeletePollEvent(pollId));
+        DeletedEvent pollDeletedEvent = pollService.deletePoll(new DeletePollEvent(pollId));
         Boolean isDeletionCompleted = Boolean.valueOf(pollDeletedEvent.isDeletionCompleted());
         return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
     }

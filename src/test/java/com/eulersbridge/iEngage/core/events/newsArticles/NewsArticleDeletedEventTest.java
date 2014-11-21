@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,14 +55,14 @@ public class NewsArticleDeletedEventTest {
 
     @Test
     public void testDeletionForbidden() throws Exception {
-        NewsArticleDeletedEvent newsArticleDeletedEvent1 = NewsArticleDeletedEvent.deletionForbidden(newsArticleId);
+        DeletedEvent newsArticleDeletedEvent1 = NewsArticleDeletedEvent.deletionForbidden(newsArticleId);
         assertNotNull("newsArticleDeletedEvent is null", newsArticleDeletedEvent1);
         assertFalse("deletionCompleted is not false", newsArticleDeletedEvent1.isDeletionCompleted());
     }
 
     @Test
     public void testNotFound() throws Exception {
-        NewsArticleDeletedEvent newsArticleDeletedEvent1 = NewsArticleDeletedEvent.notFound(newsArticleId);
+        DeletedEvent newsArticleDeletedEvent1 = NewsArticleDeletedEvent.notFound(newsArticleId);
         assertNotNull("NewsArticleDeletedEvent is null", newsArticleDeletedEvent1);
         assertFalse("entityFound is not false", newsArticleDeletedEvent1.isEntityFound());
         assertFalse("deletion completed is true",newsArticleDeletedEvent1.isDeletionCompleted());

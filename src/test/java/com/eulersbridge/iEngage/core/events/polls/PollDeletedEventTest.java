@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+
 import static org.junit.Assert.*;
 
 /**
@@ -12,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class PollDeletedEventTest {
     final Long pollId = new Long(0);
-    PollDeletedEvent pollDeletedEvent;
+    DeletedEvent pollDeletedEvent;
 
     @Before
     public void setUp() throws Exception {
@@ -27,14 +29,14 @@ public class PollDeletedEventTest {
 
     @Test
     public void testDeletionForbidden() throws Exception {
-        PollDeletedEvent pollDeletedEvent1 = PollDeletedEvent.deletionForbidden(pollId);
+        DeletedEvent pollDeletedEvent1 = PollDeletedEvent.deletionForbidden(pollId);
         assertNotNull("deletionForbidden() returns null", pollDeletedEvent1);
         assertFalse("deletionCompleted is not false", pollDeletedEvent1.isDeletionCompleted());
     }
 
     @Test
     public void testNotFound() throws Exception {
-        PollDeletedEvent pollDeletedEvent1 = PollDeletedEvent.notFound(pollId);
+        DeletedEvent pollDeletedEvent1 = PollDeletedEvent.notFound(pollId);
         assertNotNull("notFound() returns null", pollDeletedEvent1);
         assertFalse("entityFound is not false", pollDeletedEvent1.isEntityFound());
         assertFalse("deletionCompleted is not false", pollDeletedEvent1.isDeletionCompleted());

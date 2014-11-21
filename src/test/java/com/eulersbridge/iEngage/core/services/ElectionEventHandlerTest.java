@@ -15,10 +15,10 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.core.events.elections.ElectionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
@@ -210,10 +210,10 @@ public class ElectionEventHandlerTest
 		when(electionRepository.findOne(any(Long.class))).thenReturn(testData);
 		doNothing().when(electionRepository).delete((any(Long.class)));
 		DeleteElectionEvent deleteElectionEvent=new DeleteElectionEvent(testData.getNodeId());
-		ElectionDeletedEvent evtData = service.deleteElection(deleteElectionEvent);
+		DeletedEvent evtData = service.deleteElection(deleteElectionEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
-		assertEquals(testData.getNodeId(),evtData.getElectionId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 
 	/**
@@ -227,10 +227,10 @@ public class ElectionEventHandlerTest
 		when(electionRepository.findOne(any(Long.class))).thenReturn(null);
 		doNothing().when(electionRepository).delete((any(Long.class)));
 		DeleteElectionEvent deleteElectionEvent=new DeleteElectionEvent(testData.getNodeId());
-		ElectionDeletedEvent evtData = service.deleteElection(deleteElectionEvent);
+		DeletedEvent evtData = service.deleteElection(deleteElectionEvent);
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isDeletionCompleted());
-		assertEquals(testData.getNodeId(),evtData.getElectionId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 
 	/**

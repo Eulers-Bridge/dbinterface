@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
@@ -100,7 +100,7 @@ public class PhotoController
     public @ResponseBody ResponseEntity<Boolean> deletePhoto(@PathVariable Long photoId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete photo. " + photoId);
 		ResponseEntity<Boolean> response;
-        PhotoDeletedEvent elecEvent = photoService.deletePhoto(new DeletePhotoEvent(photoId));
+        DeletedEvent elecEvent = photoService.deletePhoto(new DeletePhotoEvent(photoId));
 		if (elecEvent.isDeletionCompleted())
 			response=new ResponseEntity<Boolean>(elecEvent.isDeletionCompleted(),HttpStatus.OK);
 		else if (elecEvent.isEntityFound())

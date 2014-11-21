@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -13,9 +14,9 @@ import com.eulersbridge.iEngage.core.services.EventService;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.Event;
 import com.eulersbridge.iEngage.rest.domain.Events;
-
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,7 +160,7 @@ public class EventController {
     ResponseEntity<Boolean> deleteEvent(@PathVariable Long eventId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete event. " + eventId);
     	ResponseEntity<Boolean> response;
-        EventDeletedEvent eventDeletedEvent = eventService.deleteEvent(new DeleteEventEvent(eventId));
+        DeletedEvent eventDeletedEvent = eventService.deleteEvent(new DeleteEventEvent(eventId));
     	if (eventDeletedEvent.isDeletionCompleted())
     		response=new ResponseEntity<Boolean>(eventDeletedEvent.isDeletionCompleted(),HttpStatus.OK);
     	else if (eventDeletedEvent.isEntityFound())

@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -17,5 +19,5 @@ public interface ForumQuestionService {
     public ForumQuestionUpdatedEvent updateForumQuestion(UpdateForumQuestionEvent updateForumQuestionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public ForumQuestionDeletedEvent deleteForumQuestion(DeleteForumQuestionEvent deleteForumQuestionEvent);
+    public DeletedEvent deleteForumQuestion(DeleteForumQuestionEvent deleteForumQuestionEvent);
 }

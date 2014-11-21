@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+
 import static org.junit.Assert.*;
 
 /**
@@ -36,14 +38,14 @@ public class ElectionDeletedEventTest {
 
     @Test
     public void testDeletionForbidden() throws Exception {
-        ElectionDeletedEvent electionDeletedEvent1 = ElectionDeletedEvent.deletionForbidden(electionId);
+        DeletedEvent electionDeletedEvent1 = ElectionDeletedEvent.deletionForbidden(electionId);
         assertNotNull("electionDeletedEvent is null", electionDeletedEvent1);
         assertFalse("deletionCompleted is not false", electionDeletedEvent1.isDeletionCompleted());
     }
 
     @Test
     public void testNotFound() throws Exception {
-        ElectionDeletedEvent electionDeletedEvent1 = ElectionDeletedEvent.notFound(electionId);
+        DeletedEvent electionDeletedEvent1 = ElectionDeletedEvent.notFound(electionId);
         assertNotNull("electionDeletedEvent is null", electionDeletedEvent1);
         assertFalse("entityFound is not false", electionDeletedEvent1.isEntityFound());
 

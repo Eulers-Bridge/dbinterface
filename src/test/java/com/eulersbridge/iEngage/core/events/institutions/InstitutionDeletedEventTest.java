@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+
 import static org.junit.Assert.*;
 
 /**
@@ -67,7 +69,7 @@ public class InstitutionDeletedEventTest {
 
     @Test
     public void testNotFound() throws Exception {
-        InstitutionDeletedEvent institutionDeletedEvent1 = InstitutionDeletedEvent.notFound(eventId);
+        DeletedEvent institutionDeletedEvent1 = InstitutionDeletedEvent.notFound(eventId);
         assertNotNull("InstitutionDeletedEvent is null", institutionDeletedEvent1);
         assertFalse("entityFound is not false", institutionDeletedEvent1.isEntityFound());
 

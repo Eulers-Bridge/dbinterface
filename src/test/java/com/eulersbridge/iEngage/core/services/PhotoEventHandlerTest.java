@@ -22,10 +22,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
@@ -173,7 +173,7 @@ public class PhotoEventHandlerTest
 		when(photoRepository.findOne(any(Long.class))).thenReturn(testData);
 		doNothing().when(photoRepository).delete((any(Long.class)));
 		DeletePhotoEvent deletePhotoEvent=new DeletePhotoEvent(testData.getNodeId());
-		PhotoDeletedEvent evtData = service.deletePhoto(deletePhotoEvent);
+		DeletedEvent evtData = service.deletePhoto(deletePhotoEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
 		assertEquals(testData.getNodeId(),evtData.getNodeId());
@@ -190,7 +190,7 @@ public class PhotoEventHandlerTest
 		when(photoRepository.findOne(any(Long.class))).thenReturn(null);
 		doNothing().when(photoRepository).delete((any(Long.class)));
 		DeletePhotoEvent deletePhotoEvent=new DeletePhotoEvent(testData.getNodeId());
-		PhotoDeletedEvent evtData = service.deletePhoto(deletePhotoEvent);
+		DeletedEvent evtData = service.deletePhoto(deletePhotoEvent);
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isDeletionCompleted());
 		assertEquals(testData.getNodeId(),evtData.getNodeId());

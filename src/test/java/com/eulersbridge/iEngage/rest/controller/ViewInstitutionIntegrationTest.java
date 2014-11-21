@@ -201,7 +201,7 @@ public class ViewInstitutionIntegrationTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		Long instId=1l;
-		InstitutionDeletedEvent testData=InstitutionDeletedEvent.notFound(instId);
+		InstitutionDeletedEvent testData=(InstitutionDeletedEvent) InstitutionDeletedEvent.notFound(instId);
 		when (instService.deleteInstitution(any(DeleteInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/institution/{instId}/",instId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

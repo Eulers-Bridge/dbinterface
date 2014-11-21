@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -106,11 +107,10 @@ public class NewsEventHandler implements NewsService
 	}
 
 	@Override
-	public NewsArticleDeletedEvent deleteNewsArticle(
-			DeleteNewsArticleEvent deleteNewsArticleEvent) 
+	public DeletedEvent deleteNewsArticle(DeleteNewsArticleEvent deleteNewsArticleEvent) 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Entered deleteNewsArticle newsarticleEvent = "+deleteNewsArticleEvent);
-		NewsArticleDeletedEvent nade;
+		DeletedEvent nade;
 		Long newsArticleId=deleteNewsArticleEvent.getNewsArticleId();
 	    if (LOG.isDebugEnabled()) LOG.debug("deleteNewsArticle("+newsArticleId+")");
 	    if (newsRepo.exists(newsArticleId))

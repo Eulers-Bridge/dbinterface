@@ -1,8 +1,10 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.configuration.*;
 import com.eulersbridge.iEngage.database.domain.Configuration;
 import com.eulersbridge.iEngage.database.repository.ConfigurationRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +62,7 @@ public class ConfigurationEventHandler implements ConfigurationService {
     }
 
     @Override
-    public ConfigurationDeletedEvent deleteConfiguration(DeleteConfigurationEvent deleteConfigurationEvent) {
+    public DeletedEvent deleteConfiguration(DeleteConfigurationEvent deleteConfigurationEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteConfigurationEvent= "+deleteConfigurationEvent);
         Long configId = deleteConfigurationEvent.getConfigId();
         if (LOG.isDebugEnabled()) LOG.debug("deleteConfiguration("+configId+")");

@@ -33,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
@@ -312,7 +313,7 @@ public class ElectionControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ElectionDeletedEvent testData=ElectionDeletedEvent.notFound(dets.getElectionId());
+		DeletedEvent testData=ElectionDeletedEvent.notFound(dets.getElectionId());
 		when (electionService.deleteElection(any(DeleteElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{electionId}/",dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -324,7 +325,7 @@ public class ElectionControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ElectionDeletedEvent testData=ElectionDeletedEvent.deletionForbidden(dets.getElectionId());
+		DeletedEvent testData=ElectionDeletedEvent.deletionForbidden(dets.getElectionId());
 		when (electionService.deleteElection(any(DeleteElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{electionId}/",dets.getElectionId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

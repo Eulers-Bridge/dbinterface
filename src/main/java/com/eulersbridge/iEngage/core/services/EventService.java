@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -24,7 +25,7 @@ public interface EventService {
     public EventUpdatedEvent updateEvent(UpdateEventEvent updateEventEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public EventDeletedEvent deleteEvent(DeleteEventEvent deleteEventEvent);
+    public DeletedEvent deleteEvent(DeleteEventEvent deleteEventEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
 	public EventsReadEvent readEvents(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);

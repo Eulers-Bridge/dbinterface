@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.database.domain.*;
@@ -489,12 +490,12 @@ public class UserEventHandler implements UserService,UserDetailsService
 	}
 
 	@Override
-	public VoteRecordDeletedEvent deleteVoteRecord(
+	public DeletedEvent deleteVoteRecord(
 			DeleteVoteRecordEvent deleteVoteRecordEvent)
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("deleteVoteRecord("+deleteVoteRecordEvent.getVoteRecordId()+")");
 	    VoteRecord vr = userRepository.deleteVoteRecord(deleteVoteRecordEvent.getVoteRecordId());
-	    VoteRecordDeletedEvent response;
+	    DeletedEvent response;
 	    if (vr == null) 
 	    {
 	      response=VoteRecordDeletedEvent.notFound(deleteVoteRecordEvent.getVoteRecordId());
@@ -510,12 +511,12 @@ public class UserEventHandler implements UserService,UserDetailsService
 	}
 
 	@Override
-	public VoteReminderDeletedEvent deleteVoteReminder(
+	public DeletedEvent deleteVoteReminder(
 			DeleteVoteReminderEvent deleteVoteReminderEvent)
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("deleteVoteReminder("+deleteVoteReminderEvent.getVoteReminderId()+")");
 	    VoteReminder vr = userRepository.deleteVoteReminder(deleteVoteReminderEvent.getVoteReminderId());
-	    VoteReminderDeletedEvent response;
+	    DeletedEvent response;
 	    if (vr == null) 
 	    {
 	      response=VoteReminderDeletedEvent.notFound(deleteVoteReminderEvent.getVoteReminderId());

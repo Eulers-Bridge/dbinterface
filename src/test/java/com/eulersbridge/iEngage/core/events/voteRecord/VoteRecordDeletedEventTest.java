@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+
 /**
  * @author Greg Newitt
  *
@@ -15,7 +17,7 @@ import org.junit.Test;
 public class VoteRecordDeletedEventTest
 {
 	private Long id=45l;
-	VoteRecordDeletedEvent evt=new VoteRecordDeletedEvent(id);
+	DeletedEvent evt=new VoteRecordDeletedEvent(id);
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -41,7 +43,7 @@ public class VoteRecordDeletedEventTest
 	@Test
 	public final void testGetVoteRecordId()
 	{
-		assertEquals(evt.getVoteRecordId(),id);
+		assertEquals(evt.getNodeId(),id);
 	}
 
 	/**

@@ -1,8 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -17,7 +17,7 @@ public interface PollService {
     public PollCreatedEvent createPoll(CreatePollEvent createPollEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public PollDeletedEvent deletePoll(DeletePollEvent deletePollEvent);
+    public DeletedEvent deletePoll(DeletePollEvent deletePollEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public PollUpdatedEvent updatePoll(UpdatePollEvent updatePollEvent);

@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Institution;
@@ -101,7 +102,7 @@ public class ElectionEventHandler implements ElectionService
     }
 
     @Override
-    public ElectionDeletedEvent deleteElection (DeleteElectionEvent deleteElectionEvent)
+    public DeletedEvent deleteElection (DeleteElectionEvent deleteElectionEvent)
     {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteElectionEvent= "+deleteElectionEvent);
         Long electionId = deleteElectionEvent.getElectionId();

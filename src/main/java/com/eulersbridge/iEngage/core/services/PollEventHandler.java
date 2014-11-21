@@ -1,11 +1,10 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
-import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ public class PollEventHandler implements PollService{
     }
 
     @Override
-    public PollDeletedEvent deletePoll(DeletePollEvent deletePollEvent) {
+    public DeletedEvent deletePoll(DeletePollEvent deletePollEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deletePollEvent= "+deletePollEvent);
         Long pollId = deletePollEvent.getPollId();
         if (LOG.isDebugEnabled()) LOG.debug("deletePoll("+pollId+")");

@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
 
 import org.springframework.data.domain.Sort.Direction;
@@ -23,7 +24,7 @@ public interface ElectionService {
     public ReadElectionEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public ElectionDeletedEvent deleteElection(DeleteElectionEvent deleteElectionEvent);
+    public DeletedEvent deleteElection(DeleteElectionEvent deleteElectionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public ElectionUpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent);

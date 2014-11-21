@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -17,5 +19,5 @@ public interface PositionService {
     public PositionUpdatedEvent updatePosition(UpdatePositionEvent updatePositionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public PositionDeletedEvent deletePosition(DeletePositionEvent deletePositionEvent);
+    public DeletedEvent deletePosition(DeletePositionEvent deletePositionEvent);
 }

@@ -1,8 +1,10 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.core.services.PositionService;
 import com.eulersbridge.iEngage.rest.domain.Position;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +86,7 @@ public class PositionController {
     public @ResponseBody ResponseEntity<Boolean>
     deletePosition(@PathVariable Long positionId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete position. " + positionId);
-        PositionDeletedEvent positionDeletedEvent = positionService.deletePosition(new DeletePositionEvent(positionId));
+        DeletedEvent positionDeletedEvent = positionService.deletePosition(new DeletePositionEvent(positionId));
         Boolean isDeletionCompleted = Boolean.valueOf(positionDeletedEvent.isDeletionCompleted());
         return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
     }

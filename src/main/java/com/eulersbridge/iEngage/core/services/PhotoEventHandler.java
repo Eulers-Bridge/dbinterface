@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -121,11 +122,11 @@ public class PhotoEventHandler implements PhotoService
 	 * @see com.eulersbridge.iEngage.core.services.PhotoService#deletePhoto(com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent)
 	 */
 	@Override
-	public PhotoDeletedEvent deletePhoto(DeletePhotoEvent deletePhotoEvent)
+	public DeletedEvent deletePhoto(DeletePhotoEvent deletePhotoEvent)
 	{
         if (LOG.isDebugEnabled()) LOG.debug("Entered deletePhotoEvent= "+deletePhotoEvent);
         Long photoId = deletePhotoEvent.getNodeId();
-        PhotoDeletedEvent photoDeletedEvent;
+        DeletedEvent photoDeletedEvent;
         if (LOG.isDebugEnabled()) LOG.debug("deletePhoto("+photoId+")");
         Photo photo = photoRepository.findOne(photoId);
         if (null == photo)

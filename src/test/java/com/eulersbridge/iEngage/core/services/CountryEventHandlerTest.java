@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
@@ -115,7 +116,7 @@ public class CountryEventHandlerTest
 	public void testDeleteNonExistentCountryShouldReturnNotFound() 
 	{
 		DeleteCountryEvent deleteCountryEvent=new DeleteCountryEvent(new Long(19));
-		CountryDeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
+		DeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
 		assertNotNull("Not yet implemented",nUDe);
 		assertFalse("Entity can't be found...",nUDe.isEntityFound());
 		assertFalse("Deletion has not completed!",nUDe.isDeletionCompleted());

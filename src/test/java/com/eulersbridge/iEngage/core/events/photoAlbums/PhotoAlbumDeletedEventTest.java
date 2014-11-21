@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 
 /**
  * @author Greg Newitt
@@ -16,8 +16,8 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
  */
 public class PhotoAlbumDeletedEventTest
 {
-	PhotoAlbumDeletedEvent evt1;
-	PhotoAlbumDeletedEvent evt2;
+	DeletedEvent evt1;
+	DeletedEvent evt2;
 	Long nodeId;
 	/**
 	 * @throws java.lang.Exception

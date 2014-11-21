@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 
@@ -143,7 +144,7 @@ public class ElectionController
     public @ResponseBody ResponseEntity<Boolean> deleteElection(@PathVariable Long electionId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete election. " + electionId);
 		ResponseEntity<Boolean> response;
-        ElectionDeletedEvent elecEvent = electionService.deleteElection(new DeleteElectionEvent(electionId));
+        DeletedEvent elecEvent = electionService.deleteElection(new DeleteElectionEvent(electionId));
 		if (elecEvent.isDeletionCompleted())
 			response=new ResponseEntity<Boolean>(elecEvent.isDeletionCompleted(),HttpStatus.OK);
 		else if (elecEvent.isEntityFound())

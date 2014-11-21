@@ -7,10 +7,10 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
-import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.*;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -42,13 +42,11 @@ import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
@@ -332,14 +330,14 @@ public class UserController {
 	public @ResponseBody ResponseEntity<VoteReminder> deleteVoteReminder(@PathVariable Long id) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete voteReminder. "+id);
-		VoteReminderDeletedEvent evt=userService.deleteVoteReminder(new DeleteVoteReminderEvent(id));
+		DeletedEvent evt=userService.deleteVoteReminder(new DeleteVoteReminderEvent(id));
   	
 		if (!evt.isEntityFound())
 		{
 			return new ResponseEntity<VoteReminder>(HttpStatus.NOT_FOUND);
 		}
 		VoteReminder restVoteReminder=new VoteReminder();
-		restVoteReminder.setNodeId(evt.getVoteReminderId());
+		restVoteReminder.setNodeId(evt.getNodeId());
 		return new ResponseEntity<VoteReminder>(restVoteReminder,HttpStatus.OK);
 	}
     
@@ -359,14 +357,14 @@ public class UserController {
 	public @ResponseBody ResponseEntity<VoteRecord> deleteVoteRecord(@PathVariable Long id) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete voteRecord. "+id);
-		VoteRecordDeletedEvent evt=userService.deleteVoteRecord(new DeleteVoteRecordEvent(id));
+		DeletedEvent evt=userService.deleteVoteRecord(new DeleteVoteRecordEvent(id));
   	
 		if (!evt.isEntityFound())
 		{
 			return new ResponseEntity<VoteRecord>(HttpStatus.NOT_FOUND);
 		}
 		VoteRecord restVoteRecord=new VoteRecord();
-		restVoteRecord.setNodeId(evt.getVoteRecordId());
+		restVoteRecord.setNodeId(evt.getNodeId());
 		return new ResponseEntity<VoteRecord>(restVoteRecord,HttpStatus.OK);
 	}
     

@@ -1,8 +1,10 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
 import com.eulersbridge.iEngage.database.domain.ForumQuestion;
 import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +62,13 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
     }
 
     @Override
-    public ForumQuestionDeletedEvent deleteForumQuestion(DeleteForumQuestionEvent deleteForumQuestionEvent) {
+    public DeletedEvent deleteForumQuestion(DeleteForumQuestionEvent deleteForumQuestionEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteForumQuestionEvent= "+deleteForumQuestionEvent);
         Long forumQuestionId = deleteForumQuestionEvent.getForumQuestionId();
         if (LOG.isDebugEnabled()) LOG.debug("deleteForumQuestion("+forumQuestionId+")");
         ForumQuestion forumQuestion = forumQuestionRepository.findOne(forumQuestionId);
-        if(forumQuestion == null){
+        if(forumQuestion == null)
+        {
             return ForumQuestionDeletedEvent.notFound(forumQuestionId);
         }
         else{

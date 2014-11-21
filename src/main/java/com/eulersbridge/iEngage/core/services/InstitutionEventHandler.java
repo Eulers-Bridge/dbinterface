@@ -142,7 +142,7 @@ public class InstitutionEventHandler implements InstitutionService {
 	    Institution inst=instRepository.findOne(deleteInstitutionEvent.getId());
 	    if (inst==null)
 	    {
-	    	return InstitutionDeletedEvent.notFound(deleteInstitutionEvent.getId());
+	    	return (InstitutionDeletedEvent) InstitutionDeletedEvent.notFound(deleteInstitutionEvent.getId());
 	    }
 	    instRepository.delete(inst.getNodeId());
 	    return new InstitutionDeletedEvent(deleteInstitutionEvent.getId(),inst.toInstDetails());

@@ -24,11 +24,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
 import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
-import com.eulersbridge.iEngage.core.events.events.EventDeletedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
 import com.eulersbridge.iEngage.core.events.events.EventUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventsReadEvent;
@@ -193,10 +193,10 @@ public class EventEventHandlerTest
 		when(eventRepository.findOne(any(Long.class))).thenReturn(testData);
 		doNothing().when(eventRepository).delete((any(Long.class)));
 		DeleteEventEvent deleteEventEvent=new DeleteEventEvent(testData.getEventId());
-		EventDeletedEvent evtData = service.deleteEvent(deleteEventEvent);
+		DeletedEvent evtData = service.deleteEvent(deleteEventEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
-		assertEquals(testData.getEventId(),evtData.getEventId());
+		assertEquals(testData.getEventId(),evtData.getNodeId());
 	}
 	@Test
 	public final void testDeleteElectionNotFound() 
@@ -206,10 +206,10 @@ public class EventEventHandlerTest
 		when(eventRepository.findOne(any(Long.class))).thenReturn(null);
 		doNothing().when(eventRepository).delete((any(Long.class)));
 		DeleteEventEvent deleteEventEvent=new DeleteEventEvent(testData.getEventId());
-		EventDeletedEvent evtData = service.deleteEvent(deleteEventEvent);
+		DeletedEvent evtData = service.deleteEvent(deleteEventEvent);
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isDeletionCompleted());
-		assertEquals(testData.getEventId(),evtData.getEventId());
+		assertEquals(testData.getEventId(),evtData.getNodeId());
 	}
 
 	/**

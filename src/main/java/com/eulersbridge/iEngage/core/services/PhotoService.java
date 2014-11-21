@@ -6,10 +6,10 @@ package com.eulersbridge.iEngage.core.services;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
@@ -30,6 +30,6 @@ public interface PhotoService
 	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
 	public PhotoUpdatedEvent updatePhoto(UpdatePhotoEvent updatePhotoEvent);
 	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-	public PhotoDeletedEvent deletePhoto(DeletePhotoEvent deletePhotoEvent);
+	public DeletedEvent deletePhoto(DeletePhotoEvent deletePhotoEvent);
 	public PhotosReadEvent findPhotos(ReadPhotosEvent findPhotoEvent,Direction dir,int pageNumber,int pageLength);
 }

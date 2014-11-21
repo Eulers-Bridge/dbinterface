@@ -29,6 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -226,7 +227,7 @@ public class PhotoControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeletePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
-		PhotoDeletedEvent testData=PhotoDeletedEvent.notFound(dets.getNodeId());
+		DeletedEvent testData=PhotoDeletedEvent.notFound(dets.getNodeId());
 		when (photoService.deletePhoto(any(DeletePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -238,7 +239,7 @@ public class PhotoControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeletePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
-		PhotoDeletedEvent testData=PhotoDeletedEvent.deletionForbidden(dets.getNodeId());
+		DeletedEvent testData=PhotoDeletedEvent.deletionForbidden(dets.getNodeId());
 		when (photoService.deletePhoto(any(DeletePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/",dets.getNodeId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
