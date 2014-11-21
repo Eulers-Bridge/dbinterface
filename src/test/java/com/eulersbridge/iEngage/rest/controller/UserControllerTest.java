@@ -493,7 +493,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreate()");
 		UserCreatedEvent testData=RestEventFixtures.populateUserCreatedEvent();
-		UserDetails dets=testData.getUserDetails();
+		UserDetails dets=testData.getDetails();
 		String content=populateContent(dets);
 		String returnedContent=populateReturnedContent(dets);
 		when (userService.signUpNewUser(any(CreateUserEvent.class))).thenReturn(testData);

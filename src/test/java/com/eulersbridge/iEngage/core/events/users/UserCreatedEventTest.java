@@ -72,12 +72,12 @@ public class UserCreatedEventTest {
     public void testSetUserDetails() throws Exception {
         UserCreatedEvent userCreatedEvent1 = new UserCreatedEvent(email);
         userCreatedEvent1.setUserDetails(userDetails);
-        assertEquals("userDetail does not match", userDetails, userCreatedEvent1.getUserDetails());
+        assertEquals("userDetail does not match", userDetails, userCreatedEvent1.getDetails());
     }
 
     @Test
     public void testGetUserDetails() throws Exception {
-        assertEquals("userDetail does not match", userDetails, userCreatedEvent.getUserDetails());
+        assertEquals("userDetail does not match", userDetails, userCreatedEvent.getDetails());
     }
 
     @Test
