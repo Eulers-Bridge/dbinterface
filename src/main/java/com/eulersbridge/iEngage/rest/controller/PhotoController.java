@@ -110,7 +110,7 @@ public class PhotoController
         }
         else
         {
-            Photo result = Photo.fromPhotoDetails(photoCreatedEvent.getPhotoDetails());
+            Photo result = Photo.fromPhotoDetails((PhotoDetails)photoCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("photo "+result.toString());
             response=new ResponseEntity<Photo>(result, HttpStatus.CREATED);
         }

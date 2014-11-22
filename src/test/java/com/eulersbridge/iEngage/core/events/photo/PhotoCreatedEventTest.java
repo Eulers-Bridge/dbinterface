@@ -44,7 +44,7 @@ public class PhotoCreatedEventTest
 	{
 		photoCreatedEvent=new PhotoCreatedEvent(nodeId,photoDetails);
 		assertNotNull("Not yet implemented",photoCreatedEvent);
-		assertEquals(photoDetails, photoCreatedEvent.getPhotoDetails());
+		assertEquals(photoDetails, photoCreatedEvent.getDetails());
 		assertEquals(nodeId,photoCreatedEvent.getNodeId());
 	}
 
@@ -58,7 +58,7 @@ public class PhotoCreatedEventTest
 	{
 		photoCreatedEvent=new PhotoCreatedEvent(nodeId);
 		assertNotNull("Not yet implemented",photoCreatedEvent);
-		assertNull(photoCreatedEvent.getPhotoDetails());
+		assertNull(photoCreatedEvent.getDetails());
 		assertEquals(nodeId,photoCreatedEvent.getNodeId());
 	}
 
@@ -71,7 +71,7 @@ public class PhotoCreatedEventTest
 	public final void testGetPhotoDetails()
 	{
 		photoCreatedEvent=new PhotoCreatedEvent(nodeId,photoDetails);
-		assertEquals(photoDetails, photoCreatedEvent.getPhotoDetails());
+		assertEquals(photoDetails, photoCreatedEvent.getDetails());
 	}
 
 	/**
@@ -84,9 +84,9 @@ public class PhotoCreatedEventTest
 	{
 		photoCreatedEvent=new PhotoCreatedEvent(nodeId);
 		assertNotNull("Not yet implemented",photoCreatedEvent);
-		assertNull(photoCreatedEvent.getPhotoDetails());
-		photoCreatedEvent.setPhotoDetails(photoDetails);
-		assertEquals(photoDetails, photoCreatedEvent.getPhotoDetails());
+		assertNull(photoCreatedEvent.getDetails());
+		photoCreatedEvent.setDetails(photoDetails);
+		assertEquals(photoDetails, photoCreatedEvent.getDetails());
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class PhotoCreatedEventTest
 		Long ownerId=31l;
 		photoCreatedEvent=PhotoCreatedEvent.ownerNotFound(ownerId);
 		assertNotNull("Not yet implemented",photoCreatedEvent);
-		assertNull(photoCreatedEvent.getPhotoDetails());
+		assertNull(photoCreatedEvent.getDetails());
 		assertEquals(ownerId,photoCreatedEvent.getNodeId());
 		assertFalse(photoCreatedEvent.isOwnerFound());
 	}

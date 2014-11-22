@@ -22,16 +22,6 @@ public class PhotoCreatedEvent extends CreatedEvent
         this.nodeId = nodeId;
     }
 
-    public PhotoDetails getPhotoDetails()
-    {
-        return (PhotoDetails) super.getDetails();
-    }
-
-    public void setPhotoDetails(PhotoDetails photoDetails)
-    {
-        setDetails(photoDetails);
-    }
-
     public Long getNodeId()
     {
         return nodeId;
