@@ -8,9 +8,4 @@ public class DeleteCountryEvent extends DeleteEvent
 	{
 		super(countryId);
 	}
-
-	public Long getId() 
-	{
-		    return getNodeId();
-	}
 }

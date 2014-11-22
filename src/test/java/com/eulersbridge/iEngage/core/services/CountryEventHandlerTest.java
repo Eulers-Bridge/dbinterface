@@ -13,7 +13,6 @@ import org.junit.Test;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
@@ -109,7 +108,7 @@ public class CountryEventHandlerTest
 	@Test
 	public void testDeleteCountry() {
 		DeleteCountryEvent deleteCountryEvent=new DeleteCountryEvent(new Long(1));
-		CountryDeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
+		DeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
 		if (null==nUDe)	fail("Not yet implemented");
 	}
 

@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
@@ -91,17 +91,17 @@ public class CountryEventHandler implements CountryService
 
 	@Override
 	@Transactional
-	public CountryDeletedEvent deleteCountry(
+	public DeletedEvent deleteCountry(
 			DeleteCountryEvent deleteCountryEvent) 
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("deleteCountry("+deleteCountryEvent.getId()+")");
-	    Country country=countryRepository.findOne(deleteCountryEvent.getId());
+	    if (LOG.isDebugEnabled()) LOG.debug("deleteCountry("+deleteCountryEvent.getNodeId()+")");
+	    Country country=countryRepository.findOne(deleteCountryEvent.getNodeId());
 	    if (country==null)
 	    {
-	    	return CountryDeletedEvent.notFound(deleteCountryEvent.getId());
+	    	return DeletedEvent.notFound(deleteCountryEvent.getNodeId());
 	    }
 	    countryRepository.delete(country.getNodeId());
-	    return new CountryDeletedEvent(deleteCountryEvent.getId(),country.toCountryDetails());
+	    return new DeletedEvent(deleteCountryEvent.getNodeId(),country.toCountryDetails());
 	}
 
 	@Override

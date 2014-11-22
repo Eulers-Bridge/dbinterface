@@ -45,15 +45,15 @@ public class CountryReadEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("Event id does not match", countryReadEvent.getId(), eventId);
+        assertEquals("Event id does not match", countryReadEvent.getNodeId(), eventId);
     }
 
     @Test
     public void testGetCountryDetails() throws Exception {
         CountryDetails countryDetails1 = new CountryDetails(new Long(1));
         countryDetails1.setCountryName(france);
-        assertEquals("Event detail does not match", countryReadEvent.getCountryDetails(), countryDetails);
-        assertEquals("Event detail does not match", countryReadEvent.getCountryDetails(), countryDetails1);
+        assertEquals("Event detail does not match", countryReadEvent.getDetails(), countryDetails);
+        assertEquals("Event detail does not match", countryReadEvent.getDetails(), countryDetails1);
     }
 
     @Test

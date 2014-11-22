@@ -26,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
@@ -160,7 +161,7 @@ public class ViewCountryIntegrationTest
 		Long id=1L;
 		CountryDetails countryDetails=new CountryDetails(id);
 		countryDetails.setCountryName("Australia");
-		CountryDeletedEvent testData=(CountryDeletedEvent) CountryDeletedEvent.notFound(id);
+		DeletedEvent testData=CountryDeletedEvent.notFound(id);
 		when (countryService.deleteCountry(any(DeleteCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

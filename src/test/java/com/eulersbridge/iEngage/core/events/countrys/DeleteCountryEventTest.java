@@ -33,6 +33,6 @@ public class DeleteCountryEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("CountryId does not match", countryId, deleteCountryEvent.getId());
+        assertEquals("CountryId does not match", countryId, deleteCountryEvent.getNodeId());
     }
 }

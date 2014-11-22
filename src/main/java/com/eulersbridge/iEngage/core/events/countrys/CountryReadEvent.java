@@ -13,14 +13,4 @@ public class CountryReadEvent extends ReadEvent
 	{
 		super(id, countryDetails);
 	}
-
-	public Long getId()
-	{
-		return getNodeId();
-	}
-
-	public CountryDetails getCountryDetails()
-	{
-		return (CountryDetails) getDetails();
-	}
 }

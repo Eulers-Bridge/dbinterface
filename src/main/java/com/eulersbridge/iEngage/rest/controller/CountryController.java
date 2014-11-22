@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
@@ -129,7 +129,7 @@ public class CountryController
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete institution. "+countryId);
 		Country restCountry=null;
     	ResponseEntity<Country> result;
-		CountryDeletedEvent countryEvent=countryService.deleteCountry(new DeleteCountryEvent(countryId));
+		DeletedEvent countryEvent=countryService.deleteCountry(new DeleteCountryEvent(countryId));
   	
 		if (!countryEvent.isEntityFound())
 		{
@@ -137,7 +137,7 @@ public class CountryController
 		}
 		else
 		{
-			restCountry=Country.fromCountryDetails(countryEvent.getDetails());
+			restCountry=Country.fromCountryDetails((CountryDetails)countryEvent.getDetails());
 			result=new ResponseEntity<Country>(restCountry,HttpStatus.OK);
 		}
 		return result;
@@ -171,7 +171,7 @@ public class CountryController
     	}
     	else
     	{
-    		restCountry=Country.fromCountryDetails(countryEvent.getDetails());
+    		restCountry=Country.fromCountryDetails((CountryDetails)countryEvent.getDetails());
     		result=new ResponseEntity<Country>(restCountry,HttpStatus.CREATED);
     	}
 		return result;
