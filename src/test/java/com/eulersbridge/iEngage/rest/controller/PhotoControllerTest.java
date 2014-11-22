@@ -339,6 +339,31 @@ public class PhotoControllerTest
 		.andExpect(status().isBadRequest())	;		
 	}
 
+	@Test
+	public final void testCreatePhotoAlbumNullDetsReturned() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhotoAlbum()");
+		PhotoAlbumDetails dets=null;
+		PhotoAlbumCreatedEvent testData=new PhotoAlbumCreatedEvent(dets);
+		String content="{\"name\":\"testName\",\"description\":\"description\",\"location\":\"location\",\"created\":123456,\"ownerId\":3214,\"modified\":null}";
+		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreatePhotoAlbumNullEvtReturned() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhotoAlbum()");
+		PhotoAlbumCreatedEvent testData=null;
+		String content="{\"name\":\"testName\",\"description\":\"description\",\"location\":\"location\",\"created\":123456,\"ownerId\":3214,\"modified\":null}";
+		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#deletePhoto(java.lang.Long)}.
 	 * @throws Exception 

@@ -35,7 +35,14 @@ import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
 import com.eulersbridge.iEngage.database.domain.Photo;
+import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
@@ -76,7 +83,7 @@ public class PhotoEventHandlerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#createNewsArticle(com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#createPhoto(com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent)}.
 	 */
 	@Test
 	public final void testCreatePhoto()
@@ -94,6 +101,27 @@ public class PhotoEventHandlerTest
 		assertEquals(testData.toPhotoDetails(),returnedDets);
 		assertEquals(testData.getNodeId(),returnedDets.getNodeId());
 		assertNotNull(evtData.getNodeId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#createPhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent)}.
+	 */
+	@Test
+	public final void testCreatePhotoAlbum()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CreatingPhotoAlbum()");
+		PhotoAlbum testData=DatabaseDataFixture.populatePhotoAlbum1();
+		Photo testPhoto=new Photo();
+		testPhoto.setNodeId(testData.getOwner().getNodeId());
+		when(photoRepository.findOne(any(Long.class))).thenReturn(testPhoto);
+		when(photoAlbumRepository.save(any(PhotoAlbum.class))).thenReturn(testData);
+		PhotoAlbumDetails dets=testData.toPhotoAlbumDetails();
+		CreatePhotoAlbumEvent createPhotoAlbumEvent=new CreatePhotoAlbumEvent(dets);
+		PhotoAlbumCreatedEvent evtData = service.createPhotoAlbum(createPhotoAlbumEvent);
+		Details returnedDets = evtData.getDetails();
+		assertEquals(testData.toPhotoAlbumDetails(),returnedDets);
+		assertEquals(testData.getNodeId(),returnedDets.getNodeId());
+		assertNotNull(returnedDets.getNodeId());
 	}
 
 	/**
@@ -125,6 +153,40 @@ public class PhotoEventHandlerTest
 		when(photoRepository.findOne(any(Long.class))).thenReturn(testData);
 		ReadPhotoEvent readPhotoEvent=new ReadPhotoEvent(nodeId);
 		ReadEvent evtData = service.readPhoto(readPhotoEvent);
+		assertNull(evtData.getDetails());
+		assertEquals(nodeId,evtData.getNodeId());
+		assertFalse(evtData.isEntityFound());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#readPhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent)}.
+	 */
+	@Test
+	public final void testReadPhotoAlbum()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingPhotoAlbum()");
+		PhotoAlbum testData=DatabaseDataFixture.populatePhotoAlbum1();
+		when(photoAlbumRepository.findOne(any(Long.class))).thenReturn(testData);
+		ReadPhotoAlbumEvent readPhotoAlbumEvent=new ReadPhotoAlbumEvent(testData.getNodeId());
+		PhotoAlbumReadEvent evtData = (PhotoAlbumReadEvent) service.readPhotoAlbum(readPhotoAlbumEvent);
+		PhotoAlbumDetails returnedDets = (PhotoAlbumDetails) evtData.getDetails();
+		assertEquals(returnedDets,testData.toPhotoAlbumDetails());
+		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
+		assertTrue(evtData.isEntityFound());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#readPhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent)}.
+	 */
+	@Test
+	public final void testReadPhotoAlbumNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingPhotoAlbum()");
+		PhotoAlbum testData=null;
+		Long nodeId=1l;
+		when(photoAlbumRepository.findOne(any(Long.class))).thenReturn(testData);
+		ReadPhotoAlbumEvent readPhotoAlbumEvent=new ReadPhotoAlbumEvent(nodeId);
+		ReadEvent evtData = service.readPhotoAlbum(readPhotoAlbumEvent);
 		assertNull(evtData.getDetails());
 		assertEquals(nodeId,evtData.getNodeId());
 		assertFalse(evtData.isEntityFound());
@@ -198,6 +260,40 @@ public class PhotoEventHandlerTest
 		doNothing().when(photoRepository).delete((any(Long.class)));
 		DeletePhotoEvent deletePhotoEvent=new DeletePhotoEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deletePhoto(deletePhotoEvent);
+		assertFalse(evtData.isEntityFound());
+		assertFalse(evtData.isDeletionCompleted());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
+	}
+	
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#deletePhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent)}.
+	 */
+	@Test
+	public final void testDeleteAlbumPhoto()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("DeletingPhotoAlbum()");
+		PhotoAlbum testData=DatabaseDataFixture.populatePhotoAlbum1();
+		when(photoAlbumRepository.findOne(any(Long.class))).thenReturn(testData);
+		doNothing().when(photoAlbumRepository).delete((any(Long.class)));
+		DeletePhotoAlbumEvent deletePhotoAlbumEvent=new DeletePhotoAlbumEvent(testData.getNodeId());
+		DeletedEvent evtData = service.deletePhotoAlbum(deletePhotoAlbumEvent);
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isDeletionCompleted());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#deletePhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent)}.
+	 */
+	@Test
+	public final void testDeletePhotoAlbumNotFound() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("DeletingPhotoAlbum()");
+		PhotoAlbum testData=DatabaseDataFixture.populatePhotoAlbum1();
+		when(photoAlbumRepository.findOne(any(Long.class))).thenReturn(null);
+		doNothing().when(photoAlbumRepository).delete((any(Long.class)));
+		DeletePhotoAlbumEvent deletePhotoAlbumEvent=new DeletePhotoAlbumEvent(testData.getNodeId());
+		DeletedEvent evtData = service.deletePhotoAlbum(deletePhotoAlbumEvent);
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isDeletionCompleted());
 		assertEquals(testData.getNodeId(),evtData.getNodeId());
