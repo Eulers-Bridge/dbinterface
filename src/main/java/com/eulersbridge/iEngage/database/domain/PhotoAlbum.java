@@ -26,6 +26,7 @@ public class PhotoAlbum
     @GraphId private Long nodeId;
     private String name;
     private String description;
+    private String location;
     private Long created;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_ALBUM_LABEL, direction=Direction.BOTH) @Fetch
     private Owner owner;
@@ -42,12 +43,12 @@ public class PhotoAlbum
 	 * @param owner
 	 * @param modified
 	 */
-	public PhotoAlbum(String name, String description, Long created,
-			Owner owner, Long modified)
+	public PhotoAlbum(String name, String description, String location, Long created, Owner owner, Long modified)
 	{
 		super();
 		this.name = name;
 		this.description = description;
+		this.location = location;
 		this.created = created;
 		this.owner = owner;
 		this.modified = modified;
@@ -104,6 +105,22 @@ public class PhotoAlbum
 	public void setDescription(String description)
 	{
 		this.description = description;
+	}
+
+	/**
+	 * @return the location
+	 */
+	public String getLocation()
+	{
+		return location;
+	}
+
+	/**
+	 * @param location the location to set
+	 */
+	public void setLocation(String location)
+	{
+		this.location = location;
 	}
 
 	/**
@@ -178,6 +195,7 @@ public class PhotoAlbum
         photoAlbum.setNodeId(photoAlbumDetails.getNodeId());
         photoAlbum.setName(photoAlbumDetails.getName());
         photoAlbum.setDescription(photoAlbumDetails.getDescription());
+        photoAlbum.setLocation(photoAlbumDetails.getLocation());
         photoAlbum.setCreated(photoAlbumDetails.getCreated());
         photoAlbum.setModified(photoAlbumDetails.getModified());
         Owner thisOwner=new Owner();
@@ -196,6 +214,7 @@ public class PhotoAlbum
         photoAlbumDetails.setNodeId(this.getNodeId());
         photoAlbumDetails.setName(getName());
         photoAlbumDetails.setDescription(getDescription());
+        photoAlbumDetails.setLocation(getLocation());
         photoAlbumDetails.setCreated(getCreated());
         photoAlbumDetails.setOwnerId(getOwner().getNodeId());
         photoAlbumDetails.setModified(getModified());
@@ -212,15 +231,23 @@ public class PhotoAlbum
 	{
 		final int prime = 31;
 		int result = 1;
+		if (null!=nodeId)
+		{
+			result = prime * result + nodeId.hashCode();
+		}
+		else
+		{
 		result = prime * result + ((created == null) ? 0 : created.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((likes == null) ? 0 : likes.hashCode());
 		result = prime * result
 				+ ((modified == null) ? 0 : modified.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
 		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+	}
 		return result;
 	}
 
@@ -234,41 +261,52 @@ public class PhotoAlbum
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		PhotoAlbum other = (PhotoAlbum) obj;
-		if (created == null)
+		if (nodeId != null)
 		{
-			if (other.created != null) return false;
+			if (nodeId.equals(other.nodeId))
+				return true;
+			else return false;
 		}
-		else if (!created.equals(other.created)) return false;
-		if (description == null)
+		else
 		{
-			if (other.description != null) return false;
+			if (other.nodeId != null)
+				return false;
+			if (created == null)
+			{
+				if (other.created != null) return false;
+			}
+			else if (!created.equals(other.created)) return false;
+			if (description == null)
+			{
+				if (other.description != null) return false;
+			}
+			else if (!description.equals(other.description)) return false;
+			if (likes == null)
+			{
+				if (other.likes != null) return false;
+			}
+			else if (!likes.equals(other.likes)) return false;
+			if (modified == null)
+			{
+				if (other.modified != null) return false;
+			}
+			else if (!modified.equals(other.modified)) return false;
+			if (name == null)
+			{
+				if (other.name != null) return false;
+			}
+			else if (!name.equals(other.name)) return false;
+			if (location == null)
+			{
+				if (other.location != null) return false;
+			}
+			else if (!location.equals(other.location)) return false;
+			if (owner == null)
+			{
+				if (other.owner != null) return false;
+			}
+			else if (!owner.equals(other.owner)) return false;
 		}
-		else if (!description.equals(other.description)) return false;
-		if (likes == null)
-		{
-			if (other.likes != null) return false;
-		}
-		else if (!likes.equals(other.likes)) return false;
-		if (modified == null)
-		{
-			if (other.modified != null) return false;
-		}
-		else if (!modified.equals(other.modified)) return false;
-		if (name == null)
-		{
-			if (other.name != null) return false;
-		}
-		else if (!name.equals(other.name)) return false;
-		if (nodeId == null)
-		{
-			if (other.nodeId != null) return false;
-		}
-		else if (!nodeId.equals(other.nodeId)) return false;
-		if (owner == null)
-		{
-			if (other.owner != null) return false;
-		}
-		else if (!owner.equals(other.owner)) return false;
 		return true;
 	}
 
@@ -279,9 +317,9 @@ public class PhotoAlbum
 	public String toString()
 	{
 		return "PhotoAlbum [nodeId=" + nodeId + ", name=" + name
-				+ ", description=" + description + ", created=" + created
-				+ ", owner=" + owner + ", modified=" + modified + ", likes="
-				+ likes + "]";
+				+ ", description=" + description + ", location=" + location
+				+ ", created=" + created+ ", owner=" + owner + ", modified="
+				+ modified + ", likes="+ likes + "]";
 	}
 
 }
