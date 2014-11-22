@@ -40,6 +40,9 @@ import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -54,6 +57,7 @@ public class PhotoControllerTest
     private static Logger LOG = LoggerFactory.getLogger(PhotoControllerTest.class);
     
     private String urlPrefix=ControllerConstants.API_PREFIX+ControllerConstants.PHOTO_LABEL;
+    private String urlPrefix2=ControllerConstants.API_PREFIX+ControllerConstants.PHOTO_ALBUM_LABEL;
     
     MockMvc mockMvc;
 	
@@ -124,6 +128,34 @@ public class PhotoControllerTest
 		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#findPhotoAlbum(java.lang.Long)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testFindPhotoAlbum() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotoAlbum()");
+		PhotoAlbumDetails dets=DatabaseDataFixture.populatePhotoAlbum1().toPhotoAlbumDetails();
+		PhotoAlbumReadEvent testData=new PhotoAlbumReadEvent(dets.getNodeId(), dets);
+		when (photoService.readPhotoAlbum(any(ReadPhotoAlbumEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix2+"/{photoAlbumId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.name",is(dets.getName())))
+		.andExpect(jsonPath("$.description",is(dets.getDescription())))
+		.andExpect(jsonPath("$.location",is(dets.getLocation())))
+		.andExpect(jsonPath("$.created",is(dets.getCreated())))
+		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
+		.andExpect(jsonPath("$.modified",is(dets.getModified())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
+		.andExpect(status().isOk())	;
+	}
+
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#createPhoto(com.eulersbridge.iEngage.rest.domain.Photo)}.
