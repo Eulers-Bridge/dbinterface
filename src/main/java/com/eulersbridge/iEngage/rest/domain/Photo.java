@@ -29,7 +29,7 @@ public class Photo extends ResourceSupport
 	Long date;
 	Long ownerId;
 
-    private static Logger LOG = LoggerFactory.getLogger(Election.class);
+    private static Logger LOG = LoggerFactory.getLogger(Photo.class);
 
     /**
 	 * @return the nodeId
