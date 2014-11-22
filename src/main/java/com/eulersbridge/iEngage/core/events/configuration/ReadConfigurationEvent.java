@@ -18,14 +18,4 @@ public class ReadConfigurationEvent extends ReadEvent
 	{
 		super(configId,configurationDetails);
 	}
-
-	public Long getConfigId()
-	{
-		return getNodeId();
-	}
-
-	public ConfigurationDetails getConfigurationDetails()
-	{
-		return (ConfigurationDetails)getDetails();
-	}
 }

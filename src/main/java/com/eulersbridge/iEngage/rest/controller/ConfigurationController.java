@@ -44,7 +44,7 @@ public class ConfigurationController {
         }
         else
         {
-            Configuration result = Configuration.fromConfigurationDetails(configurationCreatedEvent.getConfigurationDetails());
+            Configuration result = Configuration.fromConfigurationDetails((ConfigurationDetails)configurationCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("configuration: "+result.toString());
             return new ResponseEntity<Configuration>(result, HttpStatus.OK);
         }

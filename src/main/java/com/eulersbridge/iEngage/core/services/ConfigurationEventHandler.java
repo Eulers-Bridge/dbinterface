@@ -95,7 +95,7 @@ public class ConfigurationEventHandler implements ConfigurationService
 		if (LOG.isDebugEnabled())
 			LOG.debug("Entered deleteConfigurationEvent= "
 					+ deleteConfigurationEvent);
-		Long configId = deleteConfigurationEvent.getConfigId();
+		Long configId = deleteConfigurationEvent.getNodeId();
 		if (LOG.isDebugEnabled())
 			LOG.debug("deleteConfiguration(" + configId + ")");
 		Configuration configuration = configurationRepository.findOne(configId);

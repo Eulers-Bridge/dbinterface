@@ -13,8 +13,4 @@ public class DeleteConfigurationEvent extends DeleteEvent
     {
         super(configId);
     }
-
-    public Long getConfigId() {
-        return getNodeId();
-    }
 }
