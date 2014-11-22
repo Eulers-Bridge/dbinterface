@@ -257,6 +257,7 @@ public class PhotoAlbumTest
 		photoAlbum.setNodeId(null);
 		checkNotEquals(photoAlbum,photoAlbum2);
 		photoAlbum2.setNodeId(null);
+		photoAlbum2.setCreated(photoAlbum.getCreated());
 		assertEquals(photoAlbum, photoAlbum2);
 		assertEquals(photoAlbum2, photoAlbum);
 		photoAlbum2.setCreated(4321l);
