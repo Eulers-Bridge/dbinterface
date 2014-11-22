@@ -1,9 +1,10 @@
 package com.eulersbridge.iEngage.core.events;
 
-
 public class DeletedEvent
 {
 	protected Long nodeId;
+	protected Details details;
+
 	protected boolean deletionCompleted = true;
 	protected boolean entityFound = true;
 
@@ -16,12 +17,30 @@ public class DeletedEvent
 		this.nodeId = nodeId;
 	}
 
+	/**
+	 * @param nodeId
+	 * @param details
+	 */
+	public DeletedEvent(Long nodeId, Details details)
+	{
+		super();
+		this.nodeId = nodeId;
+		this.details = details;
+	}
+
 	public static DeletedEvent deletionForbidden(Long nodeId)
 	{
 		DeletedEvent deletedEvent = new DeletedEvent(nodeId);
 		deletedEvent.entityFound = true;
 		deletedEvent.deletionCompleted = false;
 		return deletedEvent;
+	}
+
+	public static DeletedEvent deletionForbidden(Long id, Details details)
+	{
+		DeletedEvent ev = deletionForbidden(id);
+		ev.setDetails(details);
+		return ev;
 	}
 
 	public static DeletedEvent notFound(Long nodeId)
@@ -57,5 +76,21 @@ public class DeletedEvent
 	public void setNodeId(Long nodeId)
 	{
 		this.nodeId = nodeId;
+	}
+
+	/**
+	 * @return the details
+	 */
+	public Details getDetails()
+	{
+		return details;
+	}
+
+	/**
+	 * @param details the details to set
+	 */
+	public void setDetails(Details details)
+	{
+		this.details = details;
 	}
 }

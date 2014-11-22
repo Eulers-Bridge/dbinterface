@@ -39,7 +39,7 @@ public class CountryDeletedEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("id does not match", countryDeletedEvent.getId(), id);
+        assertEquals("id does not match", countryDeletedEvent.getNodeId(), id);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class CountryDeletedEventTest {
 
     @Test
     public void testDeletionForbidden() throws Exception {
-        CountryDeletedEvent countryDeletedEvent1_forbid= CountryDeletedEvent.deletionForbidden(id, countryDetails);
+        DeletedEvent countryDeletedEvent1_forbid= CountryDeletedEvent.deletionForbidden(id, countryDetails);
         assertTrue("entity has not been found", countryDeletedEvent1_forbid.isEntityFound());
         assertFalse("deletion is not forbidden", countryDeletedEvent1_forbid.isDeletionCompleted());
 
