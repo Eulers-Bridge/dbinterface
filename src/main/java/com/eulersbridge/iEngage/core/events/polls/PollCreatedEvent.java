@@ -19,16 +19,6 @@ public class PollCreatedEvent extends CreatedEvent {
         this.pollId = pollId;
     }
 
-    @Override
-    public PollDetails getDetails()
-    {
-        return (PollDetails) super.getDetails();
-    }
-
-    public void setPollDetails(PollDetails pollDetails) {
-        setDetails(pollDetails);
-    }
-
     public Long getPollId() {
         return pollId;
     }

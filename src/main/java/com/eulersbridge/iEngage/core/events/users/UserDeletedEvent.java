@@ -5,7 +5,6 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 public class UserDeletedEvent extends DeletedEvent
 {
 	private String email;
-	private UserDetails details;
 
 	private UserDeletedEvent(String email)
 	{
@@ -16,19 +15,13 @@ public class UserDeletedEvent extends DeletedEvent
 
 	public UserDeletedEvent(String email, UserDetails details)
 	{
-		this(email);
-		this.details = details;
-		this.deletionCompleted = true;
+		super(1l,details);
+		this.email=email;
 	}
 
 	public String getEmail()
 	{
 		return email;
-	}
-
-	public UserDetails getDetails()
-	{
-		return details;
 	}
 
 	public static UserDeletedEvent deletionForbidden(String email,

@@ -65,7 +65,7 @@ public class PositionEventHandler implements PositionService{
     @Override
     public DeletedEvent deletePosition(DeletePositionEvent deletePositionEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deletePositionEvent= "+deletePositionEvent);
-        Long positionId = deletePositionEvent.getPositionId();
+        Long positionId = deletePositionEvent.getNodeId();
         if (LOG.isDebugEnabled()) LOG.debug("deletePosition("+positionId+")");
         Position position = positionRepository.findOne(positionId);
         if(position == null){

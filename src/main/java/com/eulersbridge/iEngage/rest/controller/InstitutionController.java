@@ -231,7 +231,7 @@ public class InstitutionController
     	}
     	else
     	{
-    		restNewsFeed=NewsFeed.fromNewsFeedDetails(nfEvent.getNewsFeedDetails());
+    		restNewsFeed=NewsFeed.fromNewsFeedDetails((NewsFeedDetails)nfEvent.getDetails());
     		result=new ResponseEntity<NewsFeed>(restNewsFeed,HttpStatus.CREATED);
     	}
 		return result;

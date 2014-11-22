@@ -33,15 +33,4 @@ public class PositionCreatedEvent extends CreatedEvent
     public void setPositionId(Long positionId) {
         this.positionId = positionId;
     }
-
-    @Override
-    public PositionDetails getDetails()
-    {
-        return (PositionDetails) super.getDetails();
-    }
-
-    public void setPositionDetails(PositionDetails positionDetails)
-    {
-        setDetails(positionDetails);
-    }
 }

@@ -17,9 +17,4 @@ public class PhotoReadEvent extends ReadEvent
 	{
 		super(nodeId,photoDetails);
 	}
-
-	public PhotoDetails getPhotoDetails()
-	{
-		return (PhotoDetails)getDetails();
-	}
 }

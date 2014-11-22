@@ -20,14 +20,4 @@ public class VoteRecordReadEvent extends ReadEvent
 	  {
 		  super(id,voteRecordDetails);
 	  }
-
-	  public Long getVoteRecordId() 
-	  {
-		  return getNodeId();
-	  }
-
-	  public VoteRecordDetails getVoteRecordDetails() 
-	  {
-		  return (VoteRecordDetails)getDetails();
-	  }
 }

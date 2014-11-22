@@ -34,6 +34,7 @@ import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent.VerificationErrorType;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
@@ -198,7 +199,7 @@ public class UserController {
     		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+vrEvent);
 	    	if (vrEvent.isUserFound())
 	       	{
-	    		VoteReminder restVoteReminder=VoteReminder.fromVoteReminderDetails(vrEvent.getVoteReminderDetails());
+	    		VoteReminder restVoteReminder=VoteReminder.fromVoteReminderDetails((VoteReminderDetails) vrEvent.getDetails());
 		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restVoteReminder);
 		      	result= new ResponseEntity<VoteReminder>(restVoteReminder,HttpStatus.CREATED);
 	    	}
@@ -246,7 +247,7 @@ public class UserController {
     		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+vrEvent);
 	    	if (vrEvent.isUserFound())
 	       	{
-	    		VoteRecord restVoteRecord=VoteRecord.fromVoteRecordDetails(vrEvent.getVoteRecordDetails());
+	    		VoteRecord restVoteRecord=VoteRecord.fromVoteRecordDetails((VoteRecordDetails) vrEvent.getDetails());
 		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restVoteRecord);
 		      	result= new ResponseEntity<VoteRecord>(restVoteRecord,HttpStatus.CREATED);
 	    	}
@@ -391,7 +392,7 @@ public class UserController {
 		{
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 		}
-		User restUser=User.fromUserDetails(userEvent.getReadUserDetails());
+		User restUser=User.fromUserDetails((UserDetails) userEvent.getDetails());
 		return new ResponseEntity<User>(restUser,HttpStatus.OK);
 	}
     
@@ -417,7 +418,7 @@ public class UserController {
 		{
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
 		}
-		User restUser=User.fromUserDetails(userEvent.getDetails());
+		User restUser=User.fromUserDetails((UserDetails) userEvent.getDetails());
 		return new ResponseEntity<User>(restUser,HttpStatus.OK);
 	}
     
@@ -457,7 +458,7 @@ public class UserController {
     	}
     	else
     	{
-	    	User restUser=User.fromUserDetails(userEvent.getDetails());
+	    	User restUser=User.fromUserDetails((UserDetails) userEvent.getDetails());
 	    	if (LOG.isDebugEnabled()) LOG.debug(userEvent.getVerificationEmail().toString());
 	    	emailService.sendEmail(userEvent.getVerificationEmail());
 	    	return new ResponseEntity<User>(restUser,HttpStatus.CREATED);

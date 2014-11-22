@@ -31,20 +31,6 @@ public class VoteReminderAddedEvent extends CreatedEvent
 	}
 	
 	/**
-	 * @return the voteReminderDetails
-	 */
-	public VoteReminderDetails getVoteReminderDetails()
-	{
-		return (VoteReminderDetails) getDetails();
-	}
-
-	public void setVoteReminderDetails(VoteReminderDetails dets) 
-	{
-		setDetails(dets);
-		
-	}
-
-	/**
 	 * @return the userFound
 	 */
 	public boolean isUserFound() {

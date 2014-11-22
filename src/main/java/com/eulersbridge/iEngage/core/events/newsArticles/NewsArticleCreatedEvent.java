@@ -35,16 +35,6 @@ public class NewsArticleCreatedEvent extends CreatedEvent
 		this.id = id;
 	}
 
-	public void setNewsArticleDetails(NewsArticleDetails newsArticleDetails)
-	{
-		setDetails(newsArticleDetails);
-	}
-
-	public NewsArticleDetails getNewsArticleDetails() 
-	{
-	    return (NewsArticleDetails) super.getDetails();
-	}
-
 	/**
 	 * @return the creatorFound
 	 */

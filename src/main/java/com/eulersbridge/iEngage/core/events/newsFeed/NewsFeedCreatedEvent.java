@@ -26,22 +26,6 @@ public class NewsFeedCreatedEvent extends CreatedEvent
 	}
 
 	/**
-	 * @return the newsFeedDetails
-	 */
-	public NewsFeedDetails getNewsFeedDetails()
-	{
-		return (NewsFeedDetails)super.getDetails();
-	}
-
-	/**
-	 * @param newsFeedDetails the newsFeedDetails to set
-	 */
-	public void setNewsFeedDetails(NewsFeedDetails newsFeedDetails)
-	{
-		setDetails(newsFeedDetails);
-	}
-
-	/**
 	 * @return the id
 	 */
 	public Long getId() {

@@ -1,8 +1,5 @@
 package com.eulersbridge.iEngage.core.events.photoAlbums;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.eulersbridge.iEngage.core.events.Details;
 
 /**
@@ -17,9 +14,6 @@ public class PhotoAlbumDetails extends Details
 	private Long created;
 	private Long ownerId;
 	private Long modified;
-
-	private static Logger LOG = LoggerFactory
-			.getLogger(PhotoAlbumDetails.class);
 
 	public PhotoAlbumDetails()
 	{

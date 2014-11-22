@@ -12,8 +12,4 @@ public class DeletePollEvent extends DeleteEvent
     {
         super(pollId);
     }
-
-    public Long getPollId() {
-        return getNodeId();
-    }
 }

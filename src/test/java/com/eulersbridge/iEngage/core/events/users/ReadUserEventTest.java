@@ -54,7 +54,7 @@ public class ReadUserEventTest {
 
     @Test
     public void testGetReadUserDetails() throws Exception {
-        assertEquals("userDetails does not match", userDetails, readUserEvent.getReadUserDetails());
+        assertEquals("userDetails does not match", userDetails, readUserEvent.getDetails());
     }
 
     @Test

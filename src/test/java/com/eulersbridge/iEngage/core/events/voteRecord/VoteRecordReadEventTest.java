@@ -37,12 +37,12 @@ public class VoteRecordReadEventTest {
 
     @Test
     public void testGetNewsArticleId() throws Exception {
-        assertEquals("voteRecordId does not match", voteRecordId, voteRecordReadEvent.getVoteRecordId());
+        assertEquals("voteRecordId does not match", voteRecordId, voteRecordReadEvent.getNodeId());
     }
 
     @Test
     public void testGetReadNewsArticleDetails() throws Exception {
-        assertEquals("voteRecordDetails does not match", voteRecordDetails, voteRecordReadEvent.getVoteRecordDetails());
+        assertEquals("voteRecordDetails does not match", voteRecordDetails, voteRecordReadEvent.getDetails());
     }
 
     @Test

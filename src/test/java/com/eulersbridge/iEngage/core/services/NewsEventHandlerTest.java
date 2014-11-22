@@ -137,7 +137,7 @@ public class NewsEventHandlerTest
 		NewsArticleCreatedEvent nace = newsService.createNewsArticle(createNewsArticleEvent);
 		assertNotNull("News article created event null.",nace);
 		ReadNewsArticleEvent rane=(ReadNewsArticleEvent) newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(nace.getNewsArticleId()));
-		NewsArticleDetails nADs2=rane.getReadNewsArticleDetails();
+		NewsArticleDetails nADs2=(NewsArticleDetails) rane.getDetails();
 		assertEquals("Content not equal",nADs.getContent(),nADs2.getContent());
 		assertEquals("Creator email not equal",nADs.getCreatorEmail(),nADs2.getCreatorEmail());
 		assertEquals("Dates don't match",nADs.getDate(),nADs2.getDate());
@@ -156,7 +156,7 @@ public class NewsEventHandlerTest
 		assertEquals("1 == 1",rnae.getNodeId(),new Long(1));
 		ReadNewsArticleEvent rane=(ReadNewsArticleEvent) newsService.requestReadNewsArticle(rnae);
 		assertNotNull("Null read news article event returned.",rane);
-		assertEquals("article ids do not match.",rane.getNewsArticleId(),rnae.getNodeId());
+		assertEquals("article ids do not match.",rane.getNodeId(),rnae.getNodeId());
 	}
 
 	/**

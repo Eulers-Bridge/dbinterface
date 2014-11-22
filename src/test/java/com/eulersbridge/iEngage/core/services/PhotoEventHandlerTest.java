@@ -107,7 +107,7 @@ public class PhotoEventHandlerTest
 		when(photoRepository.findOne(any(Long.class))).thenReturn(testData);
 		ReadPhotoEvent readPhotoEvent=new ReadPhotoEvent(testData.getNodeId());
 		PhotoReadEvent evtData = (PhotoReadEvent) service.readPhoto(readPhotoEvent);
-		PhotoDetails returnedDets = evtData.getPhotoDetails();
+		PhotoDetails returnedDets = (PhotoDetails) evtData.getDetails();
 		assertEquals(returnedDets,testData.toPhotoDetails());
 		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
 		assertTrue(evtData.isEntityFound());

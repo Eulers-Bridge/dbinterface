@@ -8,9 +8,4 @@ public class NewsArticleDeletedEvent extends DeletedEvent
 	{
 		super(id);
 	}
-
-	public Long getNewsArticleId()
-	{
-		return getNodeId();
-	}
 }

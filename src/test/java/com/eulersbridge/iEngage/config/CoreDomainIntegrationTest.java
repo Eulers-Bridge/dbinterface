@@ -8,9 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
@@ -43,7 +40,7 @@ public class CoreDomainIntegrationTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("shouldAddNewUserToSystem()");
 		ReadUserEvent reusev=RestDataFixture.customEmailUser2("greg.newitt@eulersbridge.com");
-		CreateUserEvent ev = new CreateUserEvent(reusev.getReadUserDetails());
+		CreateUserEvent ev = new CreateUserEvent((UserDetails) reusev.getDetails());
 
 		if (LOG.isDebugEnabled()) LOG.debug(ev.getDetails().toString());
 		if (userService!=null)

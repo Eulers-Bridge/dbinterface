@@ -40,6 +40,6 @@ public class DeleteVoteReminderEventTest
 	@Test
 	public final void testGetVoteReminderId()
 	{
-        assertEquals("id does not match", id, deleteVoteReminderEvent.getVoteReminderId());
+        assertEquals("id does not match", id, deleteVoteReminderEvent.getNodeId());
 	}
 }

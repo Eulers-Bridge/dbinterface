@@ -31,22 +31,6 @@ public class VoteRecordAddedEvent extends CreatedEvent
 	}
 	
 	/**
-	 * @return the voteRecordDetails
-	 */
-	public VoteRecordDetails getVoteRecordDetails()
-	{
-		return (VoteRecordDetails) getDetails();
-	}
-
-	/**
-	 * @param voteRecordDetails the voteRecordDetails to set
-	 */
-	public void setVoteRecordDetails(VoteRecordDetails voteRecordDetails)
-	{
-		setDetails(voteRecordDetails);
-	}
-
-	/**
 	 * @return the userFound
 	 */
 	public boolean isUserFound() {

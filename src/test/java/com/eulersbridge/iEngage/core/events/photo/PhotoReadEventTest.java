@@ -44,7 +44,7 @@ public class PhotoReadEventTest
 		photoReadEvent=new PhotoReadEvent(nodeId);
 		assertNotNull(photoReadEvent);
 		assertEquals(nodeId, photoReadEvent.getNodeId());
-		assertNull(((PhotoReadEvent)photoReadEvent).getPhotoDetails());
+		assertNull(((PhotoReadEvent)photoReadEvent).getDetails());
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class PhotoReadEventTest
 	{
 		assertNotNull(photoReadEvent);
 		assertEquals(nodeId, photoReadEvent.getNodeId());
-		assertEquals(photoDetails,((PhotoReadEvent)photoReadEvent).getPhotoDetails());
+		assertEquals(photoDetails,((PhotoReadEvent)photoReadEvent).getDetails());
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class PhotoReadEventTest
 	@Test
 	public final void testGetPhotoDetails()
 	{
-		assertEquals(photoDetails,((PhotoReadEvent)photoReadEvent).getPhotoDetails());
+		assertEquals(photoDetails,((PhotoReadEvent)photoReadEvent).getDetails());
 	}
 
 	/**

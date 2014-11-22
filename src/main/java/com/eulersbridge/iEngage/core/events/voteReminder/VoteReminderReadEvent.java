@@ -20,14 +20,4 @@ public class VoteReminderReadEvent extends ReadEvent
 	  {
 		  super(id,voteReminderDetails);
 	  }
-
-	  public Long getVoteReminderId() 
-	  {
-		  return getNodeId();
-	  }
-
-	  public VoteReminderDetails getVoteReminderDetails() 
-	  {
-		  return (VoteReminderDetails)getDetails();
-	  }
 }

@@ -219,7 +219,7 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
 		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
 		VoteReminderAddedEvent resEvt=new VoteReminderAddedEvent();
-		resEvt.setVoteReminderDetails(dets);
+		resEvt.setDetails(dets);
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(resEvt);
 		String content=populateVoteReminderContent(dets);
@@ -242,7 +242,7 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
 		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
 		VoteReminderAddedEvent resEvt=VoteReminderAddedEvent.userNotFound();
-		resEvt.setVoteReminderDetails(dets);
+		resEvt.setDetails(dets);
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(resEvt);
 		String content=populateVoteReminderContent(dets);
@@ -279,7 +279,7 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("addingVoteRecord()");	
 		VoteRecordDetails dets=DatabaseDataFixture.populateVoteRecord1().toVoteRecordDetails();
 		VoteRecordAddedEvent resEvt=new VoteRecordAddedEvent();
-		resEvt.setVoteRecordDetails(dets);
+		resEvt.setDetails(dets);
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(resEvt);
 		String content=populateVoteRecordContent(dets);
@@ -301,7 +301,7 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("addingVoteRecord()");	
 		VoteRecordDetails dets=DatabaseDataFixture.populateVoteRecord1().toVoteRecordDetails();
 		VoteRecordAddedEvent resEvt=VoteRecordAddedEvent.userNotFound();
-		resEvt.setVoteRecordDetails(dets);
+		resEvt.setDetails(dets);
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(resEvt);
 		String content="{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getVoterId()+
@@ -422,7 +422,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		ReadUserEvent testData=RestDataFixture.customEmailUser2(email);
-		UserDetails dets=testData.getReadUserDetails();
+		UserDetails dets=(UserDetails) testData.getDetails();
 		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -454,7 +454,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdate()");
 		ReadUserEvent readData=RestDataFixture.customEmailUser2(email);
-		UserDetails dets=readData.getReadUserDetails();
+		UserDetails dets=(UserDetails) readData.getDetails();
 		UserUpdatedEvent testData=new UserUpdatedEvent(email, dets);
 		String content=populateContent(dets);
 		String returnedContent=populateReturnedContent(dets);
@@ -493,7 +493,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreate()");
 		UserCreatedEvent testData=RestEventFixtures.populateUserCreatedEvent();
-		UserDetails dets=testData.getDetails();
+		UserDetails dets=(UserDetails) testData.getDetails();
 		String content=populateContent(dets);
 		String returnedContent=populateReturnedContent(dets);
 		when (userService.signUpNewUser(any(CreateUserEvent.class))).thenReturn(testData);
@@ -554,7 +554,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDelete()");
 		ReadUserEvent readData=RestDataFixture.customEmailUser2(email);
-		UserDetails dets=readData.getReadUserDetails();
+		UserDetails dets=(UserDetails) readData.getDetails();
 		UserDeletedEvent testData=new UserDeletedEvent(email, dets);
 		when (userService.deleteUser(any(DeleteUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))

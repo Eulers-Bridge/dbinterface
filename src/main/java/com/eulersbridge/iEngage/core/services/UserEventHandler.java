@@ -403,7 +403,7 @@ public class UserEventHandler implements UserService,UserDetailsService
 			if (voteReminderAdded!=null)
 			{
 				evt=new VoteReminderAddedEvent();
-				evt.setVoteReminderDetails(voteReminderAdded.toVoteReminderDetails());
+				evt.setDetails(voteReminderAdded.toVoteReminderDetails());
 			}
 			else
 			{
@@ -438,7 +438,7 @@ public class UserEventHandler implements UserService,UserDetailsService
 			if (voteRecordAdded!=null)
 			{
 				evt=new VoteRecordAddedEvent();
-				evt.setVoteRecordDetails(voteRecordAdded.toVoteRecordDetails());
+				evt.setDetails(voteRecordAdded.toVoteRecordDetails());
 			}
 			else
 			{
@@ -494,19 +494,19 @@ public class UserEventHandler implements UserService,UserDetailsService
 	public DeletedEvent deleteVoteRecord(
 			DeleteVoteRecordEvent deleteVoteRecordEvent)
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("deleteVoteRecord("+deleteVoteRecordEvent.getVoteRecordId()+")");
-	    VoteRecord vr = userRepository.deleteVoteRecord(deleteVoteRecordEvent.getVoteRecordId());
+	    if (LOG.isDebugEnabled()) LOG.debug("deleteVoteRecord("+deleteVoteRecordEvent.getNodeId()+")");
+	    VoteRecord vr = userRepository.deleteVoteRecord(deleteVoteRecordEvent.getNodeId());
 	    DeletedEvent response;
 	    if (vr == null) 
 	    {
-	      response=VoteRecordDeletedEvent.notFound(deleteVoteRecordEvent.getVoteRecordId());
+	      response=VoteRecordDeletedEvent.notFound(deleteVoteRecordEvent.getNodeId());
 	    }
 	    else
 	    {
 		    VoteRecordDetails result=vr.toVoteRecordDetails();
 		    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
 //		    response=new VoteRecordDeletedEvent(deleteVoteRecordEvent.getVoteRecordId(), result);
-		    response=new VoteRecordDeletedEvent(deleteVoteRecordEvent.getVoteRecordId());
+		    response=new VoteRecordDeletedEvent(deleteVoteRecordEvent.getNodeId());
 	    }
 	    return response;
 	}
@@ -515,19 +515,19 @@ public class UserEventHandler implements UserService,UserDetailsService
 	public DeletedEvent deleteVoteReminder(
 			DeleteVoteReminderEvent deleteVoteReminderEvent)
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("deleteVoteReminder("+deleteVoteReminderEvent.getVoteReminderId()+")");
-	    VoteReminder vr = userRepository.deleteVoteReminder(deleteVoteReminderEvent.getVoteReminderId());
+	    if (LOG.isDebugEnabled()) LOG.debug("deleteVoteReminder("+deleteVoteReminderEvent.getNodeId()+")");
+	    VoteReminder vr = userRepository.deleteVoteReminder(deleteVoteReminderEvent.getNodeId());
 	    DeletedEvent response;
 	    if (vr == null) 
 	    {
-	      response=VoteReminderDeletedEvent.notFound(deleteVoteReminderEvent.getVoteReminderId());
+	      response=VoteReminderDeletedEvent.notFound(deleteVoteReminderEvent.getNodeId());
 	    }
 	    else
 	    {
 		    VoteReminderDetails result=vr.toVoteReminderDetails();
 		    if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
 //		    response=new VoteReminderDeletedEvent(deleteVoteReminderEvent.getVoteReminderId(), result);
-		    response=new VoteReminderDeletedEvent(deleteVoteReminderEvent.getVoteReminderId());
+		    response=new VoteReminderDeletedEvent(deleteVoteReminderEvent.getNodeId());
 	    }
 	    return response;
 	}

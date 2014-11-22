@@ -345,7 +345,7 @@ public class UserEventHandlerTest
 
 		assertNotNull(rane);
 		assertEquals(rane.getEmail(),userData.getEmail());
-		assertEquals(rane.getReadUserDetails(),userData.toUserDetails());
+		assertEquals(rane.getDetails(),userData.toUserDetails());
 	}
 
 	/**
@@ -578,7 +578,7 @@ public class UserEventHandlerTest
 
 		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
 		assertNotNull(nace);
-		assertEquals(nace.getVoteReminderDetails(),vrd);
+		assertEquals(nace.getDetails(),vrd);
 		assertTrue(nace.isElectionFound());
 		assertTrue(nace.isUserFound());
 	}
@@ -628,7 +628,7 @@ public class UserEventHandlerTest
 
 		VoteRecordAddedEvent nace = userServiceMocked.addVoteRecord(addVoteRecordEvent);
 		assertNotNull(nace);
-		assertEquals(nace.getVoteRecordDetails(),vrd);
+		assertEquals(nace.getDetails(),vrd);
 		assertTrue(nace.isElectionFound());
 		assertTrue(nace.isUserFound());
 	}
@@ -678,9 +678,9 @@ public class UserEventHandlerTest
 
 		VoteReminderReadEvent nace = (VoteReminderReadEvent) userServiceMocked.readVoteReminder(readVoteReminderEvent);
 		assertNotNull(nace);
-		assertEquals(nace.getVoteReminderDetails(),vrd);
+		assertEquals(nace.getDetails(),vrd);
 		assertTrue(nace.isEntityFound());
-		assertEquals(nace.getVoteReminderId(),id);
+		assertEquals(nace.getNodeId(),id);
 	}
 	
 	@Test

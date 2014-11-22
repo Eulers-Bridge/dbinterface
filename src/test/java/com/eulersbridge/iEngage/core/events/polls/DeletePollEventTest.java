@@ -27,6 +27,6 @@ public class DeletePollEventTest {
 
     @Test
     public void testGetPollId() throws Exception {
-        assertEquals("pollId does not match", pollId, deletePollEvent.getPollId());
+        assertEquals("pollId does not match", pollId, deletePollEvent.getNodeId());
     }
 }

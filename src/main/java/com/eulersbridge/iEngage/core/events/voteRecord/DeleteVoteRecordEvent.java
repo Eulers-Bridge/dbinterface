@@ -15,10 +15,4 @@ public class DeleteVoteRecordEvent extends DeleteEvent
 	{
 		super(id);
 	}
-
-	public Long getVoteRecordId() 
-	{
-		return getNodeId();
-	}
-
 }

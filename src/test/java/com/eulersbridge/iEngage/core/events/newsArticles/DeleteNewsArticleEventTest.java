@@ -27,6 +27,6 @@ public class DeleteNewsArticleEventTest {
 
     @Test
     public void testGetNewsArticleId() throws Exception {
-        assertEquals("id does not match", id, deleteNewsArticleEvent.getNewsArticleId());
+        assertEquals("id does not match", id, deleteNewsArticleEvent.getNodeId());
     }
 }

@@ -112,7 +112,7 @@ public class NewsEventHandler implements NewsService
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Entered deleteNewsArticle newsarticleEvent = "+deleteNewsArticleEvent);
 		DeletedEvent nade;
-		Long newsArticleId=deleteNewsArticleEvent.getNewsArticleId();
+		Long newsArticleId=deleteNewsArticleEvent.getNodeId();
 	    if (LOG.isDebugEnabled()) LOG.debug("deleteNewsArticle("+newsArticleId+")");
 	    if (newsRepo.exists(newsArticleId))
 	    {

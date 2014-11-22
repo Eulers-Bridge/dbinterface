@@ -40,12 +40,12 @@ public class NewsFeedReadEventTest {
 
     @Test
     public void testGetNewsArticleId() throws Exception {
-        assertEquals("id does not match", id, newsFeedReadEvent.getNewsArticleId());
+        assertEquals("id does not match", id, newsFeedReadEvent.getNodeId());
     }
 
     @Test
     public void testGetReadNewsFeedDetails() throws Exception {
-        assertEquals("newsFeedDetails does not match", newsFeedDetails, newsFeedReadEvent.getReadNewsFeedDetails());
+        assertEquals("newsFeedDetails does not match", newsFeedDetails, newsFeedReadEvent.getDetails());
     }
 
     @Test

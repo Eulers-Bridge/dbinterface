@@ -30,16 +30,6 @@ public class UserCreatedEvent extends CreatedEvent
 		this.email = email;
 	}
 
-	public void setUserDetails(UserDetails userDetails) {
-		setDetails(userDetails);
-	}
-
-	@Override
-	public UserDetails getDetails() 
-	{
-	    return (UserDetails)super.getDetails();
-	}
-	
 	public static UserCreatedEvent instituteNotFound(String email) 
 	{
 		UserCreatedEvent ev = new UserCreatedEvent(email);

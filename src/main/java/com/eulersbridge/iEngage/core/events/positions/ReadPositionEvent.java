@@ -17,14 +17,4 @@ public class ReadPositionEvent extends ReadEvent
 	{
 		super(positionId, positionDetails);
 	}
-
-	public Long getPositionId()
-	{
-		return getNodeId();
-	}
-
-	public PositionDetails getPositionDetails()
-	{
-		return (PositionDetails)getDetails();
-	}
 }

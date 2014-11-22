@@ -28,7 +28,7 @@ public class RestEventFixtures
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt2();
 		ReadUserEvent readData=RestDataFixture.customEmailUser2(user.getEmail());
-		UserDetails dets=readData.getReadUserDetails();
+		UserDetails dets=(UserDetails) readData.getDetails();
 		int expirationTimeInMinutes=60;
 		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
 		VerificationToken token=new VerificationToken(tokenType, user, expirationTimeInMinutes);

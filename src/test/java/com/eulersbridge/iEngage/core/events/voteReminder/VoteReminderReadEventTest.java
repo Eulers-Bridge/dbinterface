@@ -37,12 +37,12 @@ public class VoteReminderReadEventTest {
 
     @Test
     public void testGetNewsArticleId() throws Exception {
-        assertEquals("voteReminderId does not match", voteReminderId, voteReminderReadEvent.getVoteReminderId());
+        assertEquals("voteReminderId does not match", voteReminderId, voteReminderReadEvent.getNodeId());
     }
 
     @Test
     public void testGetReadNewsArticleDetails() throws Exception {
-        assertEquals("voteReminderDetails does not match", voteReminderDetails, voteReminderReadEvent.getVoteReminderDetails());
+        assertEquals("voteReminderDetails does not match", voteReminderDetails, voteReminderReadEvent.getDetails());
     }
 
     @Test

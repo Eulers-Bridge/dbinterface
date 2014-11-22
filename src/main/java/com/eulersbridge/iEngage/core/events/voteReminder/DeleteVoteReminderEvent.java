@@ -15,10 +15,4 @@ public class DeleteVoteReminderEvent extends DeleteEvent
 	{
 		super(id);
 	}
-
-	public Long getVoteReminderId() 
-	{
-		return getNodeId();
-	}
-
 }

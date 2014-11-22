@@ -42,12 +42,12 @@ public class ReadPollEventTest {
 
     @Test
     public void testGetPollId() throws Exception {
-        assertEquals("pollId does not match", pollId, readPollEvent.getPollId());
+        assertEquals("pollId does not match", pollId, readPollEvent.getNodeId());
     }
 
     @Test
     public void testGetPollDetails() throws Exception {
-        assertEquals("pollDetails does not match", pollDetails, readPollEvent.getPollDetails());
+        assertEquals("pollDetails does not match", pollDetails, readPollEvent.getDetails());
     }
 
     @Test

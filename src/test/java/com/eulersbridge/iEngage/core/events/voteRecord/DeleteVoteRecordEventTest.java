@@ -40,6 +40,6 @@ public class DeleteVoteRecordEventTest
 	@Test
 	public final void testGetVoteRecordId()
 	{
-        assertEquals("id does not match", id, deleteVoteRecordEvent.getVoteRecordId());
+        assertEquals("id does not match", id, deleteVoteRecordEvent.getNodeId());
 	}
 }

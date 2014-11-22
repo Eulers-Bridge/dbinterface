@@ -12,9 +12,4 @@ public class DeletePositionEvent extends DeleteEvent
 	{
 		super(positionId);
 	}
-
-	public Long getPositionId()
-	{
-		return getNodeId();
-	}
 }

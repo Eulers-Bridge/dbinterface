@@ -243,7 +243,7 @@ public class NewsController
     	}
     	else
     	{
-    		NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.getNewsArticleDetails());
+    		NewsArticle restNews=NewsArticle.fromNewsArticleDetails((NewsArticleDetails)newsEvent.getDetails());
 	    	if (LOG.isDebugEnabled()) LOG.debug("News event"+newsEvent.toString());
 	    	resp = new ResponseEntity<NewsArticle>(restNews,HttpStatus.CREATED);
     	}

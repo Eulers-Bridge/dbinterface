@@ -13,14 +13,4 @@ public class ReadNewsArticleEvent extends ReadEvent
 	  {
 		  super(id,readNewsArticleDetails);
 	  }
-
-	  public Long getNewsArticleId() 
-	  {
-		  return getNodeId();
-	  }
-
-	  public NewsArticleDetails getReadNewsArticleDetails() 
-	  {
-		  return (NewsArticleDetails)getDetails();
-	  }
 }

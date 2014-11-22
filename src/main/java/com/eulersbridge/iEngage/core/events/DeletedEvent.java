@@ -23,8 +23,7 @@ public class DeletedEvent
 	 */
 	public DeletedEvent(Long nodeId, Details details)
 	{
-		super();
-		this.nodeId = nodeId;
+		this(nodeId);
 		this.details = details;
 	}
 

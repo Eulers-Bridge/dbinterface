@@ -47,7 +47,7 @@ public class PollCreatedEventTest {
     public void testSetPollDetails() throws Exception {
         PollDetails pollDetails1 = new PollDetails();
         pollDetails1.setPollId(pollId);
-        pollCreatedEvent.setPollDetails(pollDetails1);
+        pollCreatedEvent.setDetails(pollDetails1);
         assertEquals("PollDetails does not match", pollDetails1, pollCreatedEvent.getDetails());
     }
 

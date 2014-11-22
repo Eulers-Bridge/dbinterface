@@ -53,12 +53,12 @@ public class ReadNewsArticleEventTest {
 
     @Test
     public void testGetNewsArticleId() throws Exception {
-        assertEquals("newsArticleId does not match", newsArticleId, readNewsArticleEvent.getNewsArticleId());
+        assertEquals("newsArticleId does not match", newsArticleId, readNewsArticleEvent.getNodeId());
     }
 
     @Test
     public void testGetReadNewsArticleDetails() throws Exception {
-        assertEquals("newsArticleDetails does not match", newsArticleDetails, readNewsArticleEvent.getReadNewsArticleDetails());
+        assertEquals("newsArticleDetails does not match", newsArticleDetails, readNewsArticleEvent.getDetails());
     }
 
     @Test

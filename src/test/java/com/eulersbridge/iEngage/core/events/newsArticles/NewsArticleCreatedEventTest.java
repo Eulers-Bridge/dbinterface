@@ -69,13 +69,13 @@ public class NewsArticleCreatedEventTest {
     public void testSetNewsArticleDetails() throws Exception {
         NewsArticleDetails newsArticleDetails1 = new NewsArticleDetails();
         newsArticleDetails1.setNewsArticleId(new Long(2));
-        newsArticleCreatedEvent.setNewsArticleDetails(newsArticleDetails1);
-        assertEquals("newsArticleDetails does not match", newsArticleDetails1, newsArticleCreatedEvent.getNewsArticleDetails());
+        newsArticleCreatedEvent.setDetails(newsArticleDetails1);
+        assertEquals("newsArticleDetails does not match", newsArticleDetails1, newsArticleCreatedEvent.getDetails());
     }
 
     @Test
     public void testGetNewsArticleDetails() throws Exception {
-        assertEquals("newsArticleDetails does not match", newsArticleDetails, newsArticleCreatedEvent.getNewsArticleDetails());
+        assertEquals("newsArticleDetails does not match", newsArticleDetails, newsArticleCreatedEvent.getDetails());
     }
 
     @Test

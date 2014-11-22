@@ -24,11 +24,6 @@ public class ReadUserEvent extends ReadEvent
 		return email;
 	}
 
-	public UserDetails getReadUserDetails()
-	{
-		return (UserDetails)getDetails();
-	}
-
 	public static ReadUserEvent notFound(String id)
 	{
 		ReadUserEvent ev = new ReadUserEvent(id);

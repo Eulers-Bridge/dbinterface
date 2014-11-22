@@ -45,7 +45,7 @@ public class NewsArticleDeletedEventTest {
 
     @Test
     public void testGetNewsArticleId() throws Exception {
-        assertEquals("newsArticleId does not match", newsArticleId, newsArticleDeletedEvent.getNewsArticleId());
+        assertEquals("newsArticleId does not match", newsArticleId, newsArticleDeletedEvent.getNodeId());
     }
 
     @Test

@@ -48,7 +48,7 @@ public class PollEventHandler implements PollService{
     @Override
     public DeletedEvent deletePoll(DeletePollEvent deletePollEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deletePollEvent= "+deletePollEvent);
-        Long pollId = deletePollEvent.getPollId();
+        Long pollId = deletePollEvent.getNodeId();
         if (LOG.isDebugEnabled()) LOG.debug("deletePoll("+pollId+")");
         Poll poll = pollRepository.findOne(pollId);
         if(poll == null){

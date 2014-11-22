@@ -17,14 +17,4 @@ public class ReadPollEvent extends ReadEvent
 	{
 		super(pollId,pollDetails);
 	}
-
-	public Long getPollId()
-	{
-		return getNodeId();
-	}
-
-	public PollDetails getPollDetails()
-	{
-		return (PollDetails)getDetails();
-	}
 }

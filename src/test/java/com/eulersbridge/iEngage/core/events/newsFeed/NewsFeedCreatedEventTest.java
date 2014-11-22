@@ -41,14 +41,14 @@ public class NewsFeedCreatedEventTest {
 
     @Test
     public void testGetNewsFeedDetails() throws Exception {
-        assertEquals("newsFeedDetails does not match", newsFeedDetails, newsFeedCreatedEvent.getNewsFeedDetails());
+        assertEquals("newsFeedDetails does not match", newsFeedDetails, newsFeedCreatedEvent.getDetails());
     }
 
     @Test
     public void testSetNewsFeedDetails() throws Exception {
         NewsFeedCreatedEvent newsFeedCreatedEvent1 = new NewsFeedCreatedEvent(id);
-        newsFeedCreatedEvent1.setNewsFeedDetails(newsFeedDetails);
-        assertEquals("newsFeedDetails does not match", newsFeedDetails, newsFeedCreatedEvent1.getNewsFeedDetails());
+        newsFeedCreatedEvent1.setDetails(newsFeedDetails);
+        assertEquals("newsFeedDetails does not match", newsFeedDetails, newsFeedCreatedEvent1.getDetails());
     }
 
     @Test

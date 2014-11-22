@@ -61,7 +61,7 @@ public class LoginController
 			return new ResponseEntity<LogIn>(HttpStatus.NOT_FOUND);
 		}
 
-		UserDetails userDetails=userEvent.getReadUserDetails();
+		UserDetails userDetails=(UserDetails) userEvent.getDetails();
 		
 		int pageNumber=0;
 		int pageLength=10;

@@ -13,21 +13,4 @@ public class PollDeletedEvent extends DeletedEvent
 	{
 		super(pollid);
 	}
-
-	/**
-	 * @return the pollid
-	 */
-	public Long getPollid()
-	{
-		return getNodeId();
-	}
-
-	/**
-	 * @param pollid
-	 *            the pollid to set
-	 */
-	public void setPollid(Long pollid)
-	{
-		setNodeId(pollid);
-	}
 }
