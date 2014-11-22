@@ -123,8 +123,8 @@ public class ElectionController
 		}
 		else
 		{
-			Election result = Election.fromElectionDetails(electionCreatedEvent
-					.getElectionDetails());
+			Election result = Election.fromElectionDetails((ElectionDetails)electionCreatedEvent
+					.getDetails());
 			if (LOG.isDebugEnabled())
 				LOG.debug("election" + result.toString());
 			response = new ResponseEntity<Election>(result, HttpStatus.CREATED);

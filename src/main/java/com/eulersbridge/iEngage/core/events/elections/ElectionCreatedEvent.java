@@ -29,15 +29,6 @@ public class ElectionCreatedEvent extends CreatedEvent
         this.id = id;
     }
 
-    public void setElectionDetails(ElectionDetails electionDetails){
-        setDetails(electionDetails);
-    }
-
-    public ElectionDetails getElectionDetails()
-    {
-        return (ElectionDetails)super.getDetails();
-    }
-
 	/**
 	 * @return the institutionFound
 	 */

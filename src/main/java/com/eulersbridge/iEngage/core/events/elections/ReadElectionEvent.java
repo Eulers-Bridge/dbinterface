@@ -17,14 +17,4 @@ public class ReadElectionEvent extends ReadEvent
 	{
 		super(electionId, electionDetails);
 	}
-
-	public Long getElectionId()
-	{
-		return getNodeId();
-	}
-
-	public ElectionDetails getElectionDetails()
-	{
-		return (ElectionDetails)getDetails();
-	}
 }

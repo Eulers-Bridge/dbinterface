@@ -17,14 +17,4 @@ public class ReadEventEvent extends ReadEvent
 	{
 		super(eventId,eventDetails);
 	}
-
-	public Long getEventId()
-	{
-		return getNodeId();
-	}
-
-	public EventDetails getEventDetails()
-	{
-		return (EventDetails)getDetails();
-	}
 }

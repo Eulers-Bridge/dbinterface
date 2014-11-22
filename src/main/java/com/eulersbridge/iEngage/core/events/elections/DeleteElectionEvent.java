@@ -12,9 +12,4 @@ public class DeleteElectionEvent extends DeleteEvent
     {
         super(electionId);
     }
-
-    public Long getElectionId()
-    {
-        return getNodeId();
-    }
 }

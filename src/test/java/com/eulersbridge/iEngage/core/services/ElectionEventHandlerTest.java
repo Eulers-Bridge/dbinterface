@@ -76,9 +76,9 @@ public class ElectionEventHandlerTest
 		when(electionRepository.findOne(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
 		ReadElectionEvent evtData = (ReadElectionEvent) service.readElection(requestReadElectionEvent);
-		ElectionDetails returnedDets = evtData.getElectionDetails();
+		ElectionDetails returnedDets = (ElectionDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
-		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
+		assertEquals(evtData.getNodeId(),returnedDets.getElectionId());
 		assertTrue(evtData.isEntityFound());
 	}
 
@@ -110,7 +110,7 @@ public class ElectionEventHandlerTest
 		ElectionDetails dets=testData.toElectionDetails();
 		CreateElectionEvent createElectionEvent=new CreateElectionEvent(dets);
 		ElectionCreatedEvent evtData = service.createElection(createElectionEvent);
-		ElectionDetails returnedDets = evtData.getElectionDetails();
+		ElectionDetails returnedDets = (ElectionDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
 		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
 		assertNotNull(evtData.getElectionId());
@@ -132,7 +132,7 @@ public class ElectionEventHandlerTest
 		ElectionCreatedEvent evtData = service.createElection(createElectionEvent);
 		assertFalse(evtData.isInstitutionFound());
 		assertEquals(evtData.getElectionId(),testData.getInstitution().getNodeId());
-		assertNull(evtData.getElectionDetails());
+		assertNull(evtData.getDetails());
 	}
 
 	/**
@@ -146,9 +146,9 @@ public class ElectionEventHandlerTest
 		when(electionRepository.findPreviousElection(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
 		ReadElectionEvent evtData = (ReadElectionEvent) service.readPreviousElection(requestReadElectionEvent);
-		ElectionDetails returnedDets = evtData.getElectionDetails();
+		ElectionDetails returnedDets = (ElectionDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
-		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
+		assertEquals(evtData.getNodeId(),returnedDets.getElectionId());
 		assertTrue(evtData.isEntityFound());
 	}
 
@@ -178,9 +178,9 @@ public class ElectionEventHandlerTest
 		when(electionRepository.findNextElection(any(Long.class))).thenReturn(testData);
 		RequestReadElectionEvent requestReadElectionEvent=new RequestReadElectionEvent(testData.getNodeId());
 		ReadElectionEvent evtData = (ReadElectionEvent) service.readNextElection(requestReadElectionEvent);
-		ElectionDetails returnedDets = evtData.getElectionDetails();
+		ElectionDetails returnedDets = (ElectionDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
-		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
+		assertEquals(evtData.getNodeId(),returnedDets.getElectionId());
 		assertTrue(evtData.isEntityFound());
 	}
 

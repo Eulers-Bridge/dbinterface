@@ -21,16 +21,6 @@ public class EventCreatedEvent extends CreatedEvent{
         this.eventId = eventId;
     }
 
-    public EventDetails getEventDetails()
-    {
-        return (EventDetails)super.getDetails();
-    }
-
-    public void setEventDetails(EventDetails eventDetails)
-    {
-        setDetails(eventDetails);
-    }
-
     public Long getEventId()
     {
         return eventId;

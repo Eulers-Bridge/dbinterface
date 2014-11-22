@@ -12,9 +12,4 @@ public class DeleteEventEvent extends DeleteEvent
     {
         super(eventId);
     }
-
-    public Long getEventId()
-    {
-        return getNodeId();
-    }
 }

@@ -49,15 +49,15 @@ public class ReadElectionEventTest {
 
     @Test
     public void testGetElectionId() throws Exception {
-        assertEquals("electionId does not match", electionId, readElectionEvent.getElectionId());
+        assertEquals("electionId does not match", electionId, readElectionEvent.getNodeId());
     }
 
     @Test
     public void testGetElectionDetail() throws Exception {
-        assertEquals("electionDetail does not match", electionDetails, readElectionEvent.getElectionDetails());
+        assertEquals("electionDetail does not match", electionDetails, readElectionEvent.getDetails());
         ElectionDetails electionDetails1 = new ElectionDetails();
         electionDetails1.setElectionId(electionId);
-        assertEquals("electionDetail does not match", electionDetails1, readElectionEvent.getElectionDetails());
+        assertEquals("electionDetail does not match", electionDetails1, readElectionEvent.getDetails());
 
     }
 

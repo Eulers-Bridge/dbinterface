@@ -31,6 +31,6 @@ public class DeleteElectionEventTest {
 
     @Test
     public void testGetElectionId() throws Exception {
-        assertEquals("id does not match", electionId, deleteElectionEvent.getElectionId());
+        assertEquals("id does not match", electionId, deleteElectionEvent.getNodeId());
     }
 }

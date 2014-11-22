@@ -69,8 +69,8 @@ public class EventController
 		}
 		else
 		{
-			Event result = Event.fromEventDetails(eventCreatedEvent
-					.getEventDetails());
+			Event result = Event.fromEventDetails((EventDetails)eventCreatedEvent
+					.getDetails());
 			if (LOG.isDebugEnabled()) LOG.debug("event" + result.toString());
 			response = new ResponseEntity<Event>(result, HttpStatus.CREATED);
 		}

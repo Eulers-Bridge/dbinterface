@@ -94,10 +94,10 @@ public class EventEventHandlerTest
 		EventDetails dets=testData.toEventDetails();
 		CreateEventEvent createEventEvent=new CreateEventEvent(dets);
 		EventCreatedEvent evtData = service.createEvent(createEventEvent);
-		EventDetails returnedDets = evtData.getEventDetails();
+		EventDetails returnedDets = (EventDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toEventDetails());
 		assertEquals(evtData.getEventId(),returnedDets.getEventId());
-		assertNotNull(evtData.getEventDetails());
+		assertNotNull(evtData.getDetails());
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class EventEventHandlerTest
 		EventCreatedEvent evtData = service.createEvent(createEventEvent);
 		assertFalse(evtData.isInstitutionFound());
 		assertEquals(evtData.getEventId(),testData.getNewsFeed().getInstitution().getNodeId());
-		assertNull(evtData.getEventDetails());
+		assertNull(evtData.getDetails());
 	}
 
 	/**
@@ -127,9 +127,9 @@ public class EventEventHandlerTest
 		when(eventRepository.findOne(any(Long.class))).thenReturn(testData);
 		RequestReadEventEvent readElectionEvent=new RequestReadEventEvent(testData.getEventId());
 		ReadEventEvent evtData = (ReadEventEvent) service.readEvent(readElectionEvent);
-		EventDetails returnedDets = evtData.getEventDetails();
+		EventDetails returnedDets = (EventDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toEventDetails());
-		assertEquals(evtData.getEventId(),returnedDets.getEventId());
+		assertEquals(evtData.getNodeId(),returnedDets.getEventId());
 		assertTrue(evtData.isEntityFound());
 	}
 

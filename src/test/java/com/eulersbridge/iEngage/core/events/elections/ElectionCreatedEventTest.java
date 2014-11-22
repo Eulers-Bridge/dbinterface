@@ -76,16 +76,16 @@ public class ElectionCreatedEventTest
 		electionDetails1.setStartVoting(startVoting);
 		electionDetails1.setEndVoting(endVoting);
 
-		electionCreatedEvent.setElectionDetails(electionDetails1);
+		electionCreatedEvent.setDetails(electionDetails1);
 		assertEquals("electionDetail does not match", electionDetails1,
-				electionCreatedEvent.getElectionDetails());
+				electionCreatedEvent.getDetails());
 	}
 
 	@Test
 	public void testGetElectionDetails() throws Exception
 	{
 		assertEquals("electionDetail does not match", electionDetails,
-				electionCreatedEvent.getElectionDetails());
+				electionCreatedEvent.getDetails());
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class ElectionCreatedEventTest
 		Long id = 5l;
 		ElectionCreatedEvent evt = ElectionCreatedEvent.institutionNotFound(id);
 		assertEquals(id, evt.getElectionId());
-		assertNull(evt.getElectionDetails());
+		assertNull(evt.getDetails());
 		assertFalse(evt.isInstitutionFound());
 	}
 }

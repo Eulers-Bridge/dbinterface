@@ -12,22 +12,4 @@ public class EventDeletedEvent extends DeletedEvent
 	{
 		super(eventId);
 	}
-
-	/**
-	 * @return the eventId
-	 */
-	public Long getEventId()
-	{
-		return getNodeId();
-	}
-
-	/**
-	 * @param eventId
-	 *            the eventId to set
-	 */
-	public void setEventId(Long eventId)
-	{
-		setNodeId(eventId);
-	}
-
 }
