@@ -31,9 +31,13 @@ import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.Photo;
+import com.eulersbridge.iEngage.rest.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.rest.domain.Photos;
 
 /**
@@ -75,17 +79,17 @@ public class PhotoController
 
     //Get
     @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_ALBUM_LABEL+"/{photoAlbumId}")
-    public @ResponseBody ResponseEntity<Photo> findPhotoAlbum(@PathVariable Long photoAlbumId)
+    public @ResponseBody ResponseEntity<PhotoAlbum> findPhotoAlbum(@PathVariable Long photoAlbumId)
     {
         if (LOG.isInfoEnabled()) LOG.info(photoAlbumId+" attempting to get photo. ");
-        RequestReadEvent readPhotoEvent= new RequestReadEvent(photoAlbumId);
-        ReadEvent photoReadEvent= photoService.readPhotoAlbum(readPhotoEvent);
-        if (photoReadEvent.isEntityFound()){
-            Photo photo = Photo.fromPhotoDetails((PhotoDetails) photoReadEvent.getDetails());
-            return new ResponseEntity<Photo>(photo, HttpStatus.OK);
+        RequestReadEvent readPhotoAlbumEvent= new RequestReadEvent(photoAlbumId);
+        ReadEvent photoAlbumReadEvent= photoService.readPhotoAlbum(readPhotoAlbumEvent);
+        if (photoAlbumReadEvent.isEntityFound()){
+            PhotoAlbum photoAlbum = PhotoAlbum.fromPhotoAlbumDetails((PhotoAlbumDetails) photoAlbumReadEvent.getDetails());
+            return new ResponseEntity<PhotoAlbum>(photoAlbum, HttpStatus.OK);
         }
         else{
-            return new ResponseEntity<Photo>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -109,6 +113,30 @@ public class PhotoController
             Photo result = Photo.fromPhotoDetails(photoCreatedEvent.getPhotoDetails());
             if (LOG.isDebugEnabled()) LOG.debug("photo "+result.toString());
             response=new ResponseEntity<Photo>(result, HttpStatus.CREATED);
+        }
+        return response;
+    }
+
+    //Create
+    @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.PHOTO_ALBUM_LABEL)
+    public @ResponseBody ResponseEntity<PhotoAlbum> createPhotoAlbum(@RequestBody PhotoAlbum photoAlbum)
+    {
+        if (LOG.isInfoEnabled()) LOG.info("attempting to create photoAlbum "+photoAlbum);
+        PhotoAlbumCreatedEvent photoAlbumCreatedEvent = photoService.createPhotoAlbum(new CreatePhotoAlbumEvent(photoAlbum.toPhotoAlbumDetails()));
+        ResponseEntity<PhotoAlbum> response;
+        if((null==photoAlbumCreatedEvent)||(null==photoAlbumCreatedEvent.getDetails())||(null==photoAlbumCreatedEvent.getDetails().getNodeId()))
+        {
+            response=new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
+        }
+        else if (!(photoAlbumCreatedEvent.isOwnerFound()))
+        {
+            response=new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            PhotoAlbum result = PhotoAlbum.fromPhotoAlbumDetails((PhotoAlbumDetails)photoAlbumCreatedEvent.getDetails());
+            if (LOG.isDebugEnabled()) LOG.debug("photoAlbum "+result.toString());
+            response=new ResponseEntity<PhotoAlbum>(result, HttpStatus.CREATED);
         }
         return response;
     }
