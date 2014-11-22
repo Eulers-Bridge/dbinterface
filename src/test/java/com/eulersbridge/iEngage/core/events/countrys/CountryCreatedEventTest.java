@@ -55,7 +55,7 @@ public class CountryCreatedEventTest {
     	countryDetails1.setCountryName(Germany);
         CountryDetails countryDetails2 = new CountryDetails(countryId2);
         countryDetails2.setCountryName(Germany);
-        countryCreatedEvent.setCountryDetails(countryDetails2);
+        countryCreatedEvent.setDetails(countryDetails2);
         assertEquals("Country Detail doesn't match",countryCreatedEvent.getDetails(), countryDetails2);
         assertEquals("Country Detail doesn't match",countryCreatedEvent.getDetails(), countryDetails1);
     }
