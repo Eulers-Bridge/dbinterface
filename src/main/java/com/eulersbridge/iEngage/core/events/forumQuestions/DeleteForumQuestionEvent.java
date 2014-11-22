@@ -12,9 +12,4 @@ public class DeleteForumQuestionEvent extends DeleteEvent
 	{
 		super(forumQuestionId);
 	}
-
-	public Long getForumQuestionId()
-	{
-		return getNodeId();
-	}
 }

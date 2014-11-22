@@ -13,11 +13,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
@@ -163,7 +163,7 @@ public class InstitutionEventHandlerTest
 	public void testDeleteInstitution() 
 	{
 		DeleteInstitutionEvent deleteInstitutionEvent=new DeleteInstitutionEvent(new Long(1));
-		InstitutionDeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
+		DeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
 		assertNotNull("Institution Deleted Event returned null.",nUDe);
 	}
 
@@ -174,7 +174,7 @@ public class InstitutionEventHandlerTest
 	public void testDeleteNonExistentInstitutionShouldReturnNotFound() 
 	{
 		DeleteInstitutionEvent deleteInstitutionEvent=new DeleteInstitutionEvent(new Long(19));
-		InstitutionDeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
+		DeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
 		assertNotNull("Institution Deleted Event returned null.",nUDe);
 		assertFalse("Entity allegedly found!",nUDe.isEntityFound());
 		assertFalse("No entity, so deletetion could not have been completed.",nUDe.isDeletionCompleted());

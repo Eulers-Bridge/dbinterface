@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
@@ -136,17 +137,17 @@ public class InstitutionEventHandler implements InstitutionService {
 
 	@Override
 	@Transactional
-	public InstitutionDeletedEvent deleteInstitution(
+	public DeletedEvent deleteInstitution(
 			DeleteInstitutionEvent deleteInstitutionEvent) 
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("deleteInstitution("+deleteInstitutionEvent.getId()+")");
-	    Institution inst=instRepository.findOne(deleteInstitutionEvent.getId());
+	    if (LOG.isDebugEnabled()) LOG.debug("deleteInstitution("+deleteInstitutionEvent.getNodeId()+")");
+	    Institution inst=instRepository.findOne(deleteInstitutionEvent.getNodeId());
 	    if (inst==null)
 	    {
-	    	return (InstitutionDeletedEvent) InstitutionDeletedEvent.notFound(deleteInstitutionEvent.getId());
+	    	return InstitutionDeletedEvent.notFound(deleteInstitutionEvent.getNodeId());
 	    }
 	    instRepository.delete(inst.getNodeId());
-	    return new InstitutionDeletedEvent(deleteInstitutionEvent.getId(),inst.toInstDetails());
+	    return new InstitutionDeletedEvent(deleteInstitutionEvent.getNodeId(),inst.toInstDetails());
 	}
 
 	@Override

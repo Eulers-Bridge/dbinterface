@@ -13,14 +13,4 @@ public class ReadInstitutionEvent extends ReadEvent
 	{
 		super(id,institutionDetails);
 	}
-
-	public Long getId()
-	{
-		return getNodeId();
-	}
-
-	public InstitutionDetails getInstitutionDetails()
-	{
-		return (InstitutionDetails)getDetails();
-	}
 }

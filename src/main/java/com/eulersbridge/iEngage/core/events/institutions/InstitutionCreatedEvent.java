@@ -26,18 +26,6 @@ public class InstitutionCreatedEvent extends CreatedEvent
 		this.id = id;
 	}
 
-	public void setInstitutionDetails(InstitutionDetails instDetails)
-	{
-		setDetails(instDetails);
-	}
-
-	@Override
-	public InstitutionDetails getDetails() 
-	{
-	    return (InstitutionDetails)super.getDetails();
-	}
-	
-
 	public static InstitutionCreatedEvent countryNotFound(Long id) 
 	{
 		InstitutionCreatedEvent ev = new InstitutionCreatedEvent(id);

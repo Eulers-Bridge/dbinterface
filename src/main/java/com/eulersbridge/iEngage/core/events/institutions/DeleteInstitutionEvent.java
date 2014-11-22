@@ -8,9 +8,4 @@ public class DeleteInstitutionEvent extends DeleteEvent
 	{
 		super(institutionId);
 	}
-
-	public Long getId() 
-	{
-		    return getNodeId();
-	}
 }

@@ -18,14 +18,4 @@ public class ReadForumQuestionEvent extends ReadEvent
 	{
 		super(forumQuestionId,forumQuestionDetails);
 	}
-
-	public Long getForumQuestionId()
-	{
-		return getNodeId();
-	}
-
-	public ForumQuestionDetails getForumQuestionDetails()
-	{
-		return (ForumQuestionDetails)getDetails();
-	}
 }

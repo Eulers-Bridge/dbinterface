@@ -34,15 +34,4 @@ public class ForumQuestionCreatedEvent extends CreatedEvent
     public void setForumQuestionId(Long forumQuestionId) {
         this.forumQuestionId = forumQuestionId;
     }
-
-@Override
-    public ForumQuestionDetails getDetails()
-	{
-        return (ForumQuestionDetails)super.getDetails();
-    }
-
-    public void setForumQuestionDetails(ForumQuestionDetails forumQuestionDetails)
-    {
-        setDetails(forumQuestionDetails);
-    }
 }

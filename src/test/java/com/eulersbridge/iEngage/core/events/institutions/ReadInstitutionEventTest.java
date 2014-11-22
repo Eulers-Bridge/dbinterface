@@ -46,12 +46,12 @@ public class ReadInstitutionEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("eventId does not match", eventId, readInstitutionEvent.getId());
+        assertEquals("eventId does not match", eventId, readInstitutionEvent.getNodeId());
     }
 
     @Test
     public void testGetInstitutionDetails() throws Exception {
-        assertEquals("institutionDetails does not match", institutionDetails, readInstitutionEvent.getInstitutionDetails());
+        assertEquals("institutionDetails does not match", institutionDetails, readInstitutionEvent.getDetails());
     }
 
     @Test

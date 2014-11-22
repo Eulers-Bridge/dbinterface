@@ -44,7 +44,7 @@ public class InstitutionDeletedEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("eventId does not match", eventId, institutionDeletedEvent.getId());
+        assertEquals("eventId does not match", eventId, institutionDeletedEvent.getNodeId());
     }
 
     @Test
@@ -55,13 +55,13 @@ public class InstitutionDeletedEventTest {
     @Test
     public void testIsDeletionCompleted() throws Exception {
         assertTrue("deletionCompleted is not true", institutionDeletedEvent.isDeletionCompleted());
-        InstitutionDeletedEvent institutionDeletedEvent1 = InstitutionDeletedEvent.deletionForbidden(eventId, institutionDetails);
+        DeletedEvent institutionDeletedEvent1 = InstitutionDeletedEvent.deletionForbidden(eventId, institutionDetails);
         assertFalse("forbid deletionCompleted is true", institutionDeletedEvent1.isDeletionCompleted());
     }
 
     @Test
     public void testDeletionForbidden() throws Exception {
-        InstitutionDeletedEvent institutionDeletedEvent1 = InstitutionDeletedEvent.deletionForbidden(eventId, institutionDetails);
+        DeletedEvent institutionDeletedEvent1 = InstitutionDeletedEvent.deletionForbidden(eventId, institutionDetails);
         assertNotNull("InstitutionDeletedEvent is null", institutionDeletedEvent1);
         assertTrue("entityFound is not true", institutionDeletedEvent1.isEntityFound());
         assertFalse("forbid deletionCompleted is true", institutionDeletedEvent1.isDeletionCompleted());

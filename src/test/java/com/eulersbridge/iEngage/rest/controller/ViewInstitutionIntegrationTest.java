@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
@@ -202,7 +203,7 @@ public class ViewInstitutionIntegrationTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		Long instId=1l;
-		InstitutionDeletedEvent testData=(InstitutionDeletedEvent) InstitutionDeletedEvent.notFound(instId);
+		DeletedEvent testData=InstitutionDeletedEvent.notFound(instId);
 		when (instService.deleteInstitution(any(DeleteInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/institution/{instId}/",instId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

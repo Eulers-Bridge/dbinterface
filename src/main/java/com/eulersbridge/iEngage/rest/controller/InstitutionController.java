@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
@@ -143,7 +144,7 @@ public class InstitutionController
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete institution. "+institutionId);
     	Institution restInst=null;
     	ResponseEntity<Institution> result;
-		InstitutionDeletedEvent instEvent=instService.deleteInstitution(new DeleteInstitutionEvent(institutionId));
+		DeletedEvent instEvent=instService.deleteInstitution(new DeleteInstitutionEvent(institutionId));
   	
 		if (!instEvent.isEntityFound())
 		{
@@ -151,7 +152,7 @@ public class InstitutionController
 		}
 		else
 		{
-			restInst=Institution.fromInstDetails(instEvent.getDetails());
+			restInst=Institution.fromInstDetails((InstitutionDetails)instEvent.getDetails());
 			result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
 		}
 		return result;
@@ -191,7 +192,7 @@ public class InstitutionController
     	}
     	else
     	{
-    		restInst=Institution.fromInstDetails(instEvent.getDetails());
+    		restInst=Institution.fromInstDetails((InstitutionDetails)instEvent.getDetails());
     		result=new ResponseEntity<Institution>(restInst,HttpStatus.CREATED);
     	}
 		return result;

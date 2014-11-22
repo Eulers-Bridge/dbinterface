@@ -62,7 +62,7 @@ public class InstitutionCreatedEventTest {
         institutionDetails1.setCampus(campus);
         institutionDetails1.setState(state);
         institutionDetails1.setCountryName(countryName);
-        institutionCreatedEvent.setInstitutionDetails(institutionDetails1);
+        institutionCreatedEvent.setDetails(institutionDetails1);
         assertEquals("InstitutionDetail does not match", institutionDetails1, institutionCreatedEvent.getDetails());
         assertEquals("InstitutionDetail does not match", institutionDetails, institutionCreatedEvent.getDetails());
     }
