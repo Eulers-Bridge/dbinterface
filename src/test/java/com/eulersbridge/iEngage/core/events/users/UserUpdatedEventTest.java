@@ -56,18 +56,18 @@ public class UserUpdatedEventTest {
 
     @Test
     public void testGetUserDetails() throws Exception {
-        assertEquals("userDetails does not match", userDetails, userUpdatedEvent.getUserDetails());
+        assertEquals("userDetails does not match", userDetails, userUpdatedEvent.getDetails());
     }
 
     @Test
-    public void testInstituteNotFound() throws Exception {
+    public void testEntityNotFound() throws Exception {
         UserUpdatedEvent userUpdatedEvent1 = UserUpdatedEvent.instituteNotFound(email);
         assertNotNull("userUpdatedEvent is null", userUpdatedEvent1);
-        assertFalse("instituteFound is not false", userUpdatedEvent1.isInstituteFound());
+        assertFalse("instituteFound is not false", userUpdatedEvent1.isEntityFound());
     }
 
     @Test
-    public void testIsInstituteFound() throws Exception {
-        assertTrue("instituteFound is not true", userUpdatedEvent.isInstituteFound());
+    public void testIsEntityFound() throws Exception {
+        assertTrue("instituteFound is not true", userUpdatedEvent.isEntityFound());
     }
 }

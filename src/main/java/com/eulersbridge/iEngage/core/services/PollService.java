@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,5 +22,5 @@ public interface PollService {
     public DeletedEvent deletePoll(DeletePollEvent deletePollEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public PollUpdatedEvent updatePoll(UpdatePollEvent updatePollEvent);
+    public UpdatedEvent updatePoll(UpdatePollEvent updatePollEvent);
 }

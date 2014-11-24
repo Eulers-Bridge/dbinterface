@@ -4,7 +4,8 @@ package com.eulersbridge.iEngage.core.events.elections;
  * @author Yikai Gong
  */
 
-public class UpdateElectionEvent {
+public class UpdateElectionEvent
+{
     private Long electionId;
     private ElectionDetails electionDetails;
 

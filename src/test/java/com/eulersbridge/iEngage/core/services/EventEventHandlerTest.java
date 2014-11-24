@@ -27,11 +27,11 @@ import org.springframework.data.domain.Sort.Direction;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
 import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
-import com.eulersbridge.iEngage.core.events.events.EventUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventsReadEvent;
 import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
@@ -159,12 +159,12 @@ public class EventEventHandlerTest
 		when(eventRepository.save(any(Event.class))).thenReturn(testData);
 		EventDetails dets=testData.toEventDetails();
 		UpdateEventEvent createEventEvent=new UpdateEventEvent(dets.getEventId(), dets);
-		EventUpdatedEvent evtData = service.updateEvent(createEventEvent);
-		EventDetails returnedDets = evtData.getEventDetails();
+		UpdatedEvent evtData = service.updateEvent(createEventEvent);
+		EventDetails returnedDets = (EventDetails) evtData.getDetails();
 		assertEquals(returnedDets,testData.toEventDetails());
-		assertEquals(evtData.getEventId(),returnedDets.getEventId());
+		assertEquals(evtData.getNodeId(),returnedDets.getEventId());
 		assertTrue(evtData.isEntityFound());
-		assertNotNull(evtData.getEventId());
+		assertNotNull(evtData.getNodeId());
 	}
 	@Test
 	public final void testUpdateEventNotFound() 
@@ -175,11 +175,11 @@ public class EventEventHandlerTest
 		when(eventRepository.save(any(Event.class))).thenReturn(testData);
 		EventDetails dets=testData.toEventDetails();
 		UpdateEventEvent createEventEvent=new UpdateEventEvent(dets.getEventId(), dets);
-		EventUpdatedEvent evtData = service.updateEvent(createEventEvent);
-		assertNull(evtData.getEventDetails());
-		assertEquals(evtData.getEventId(),testData.getEventId());
+		UpdatedEvent evtData = service.updateEvent(createEventEvent);
+		assertNull(evtData.getDetails());
+		assertEquals(evtData.getNodeId(),testData.getEventId());
 		assertFalse(evtData.isEntityFound());
-		assertNotNull(evtData.getEventId());
+		assertNotNull(evtData.getNodeId());
 	}
 
 	/**

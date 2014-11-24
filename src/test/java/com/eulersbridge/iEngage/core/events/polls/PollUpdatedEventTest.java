@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+
 import static org.junit.Assert.*;
 
 /**
@@ -40,17 +42,17 @@ public class PollUpdatedEventTest {
 
     @Test
     public void testGetPollId() throws Exception {
-        assertEquals("pollId does not match", pollId, pollUpdatedEvent.getPollId());
+        assertEquals("pollId does not match", pollId, pollUpdatedEvent.getNodeId());
     }
 
     @Test
     public void testGetPollDetails() throws Exception {
-        assertEquals("pollDetails does not match", pollDetails, pollUpdatedEvent.getPollDetails());
+        assertEquals("pollDetails does not match", pollDetails, pollUpdatedEvent.getDetails());
     }
 
     @Test
     public void testNotFound() throws Exception {
-        PollUpdatedEvent pollUpdatedEvent1 = PollUpdatedEvent.notFound(pollId);
+        UpdatedEvent pollUpdatedEvent1 = PollUpdatedEvent.notFound(pollId);
         assertNotNull("notFound() returns null", pollUpdatedEvent1);
         assertFalse("entityFound is not false", pollUpdatedEvent1.isEntityFound());
     }

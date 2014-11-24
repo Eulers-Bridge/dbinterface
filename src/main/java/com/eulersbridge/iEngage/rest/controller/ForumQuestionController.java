@@ -4,6 +4,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
@@ -81,13 +82,13 @@ public class ForumQuestionController {
     public @ResponseBody
     ResponseEntity<ForumQuestion> updateForumQuestion(@PathVariable Long forumQuestionId, @RequestBody ForumQuestion forumQuestion){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update forumQuestion. " + forumQuestionId);
-        ForumQuestionUpdatedEvent forumQuestionUpdatedEvent = forumQuestionService.updateForumQuestion(new UpdateForumQuestionEvent(forumQuestionId, forumQuestion.toForumQuestionDetails()));
+        UpdatedEvent forumQuestionUpdatedEvent = forumQuestionService.updateForumQuestion(new UpdateForumQuestionEvent(forumQuestionId, forumQuestion.toForumQuestionDetails()));
         if ((null != forumQuestionUpdatedEvent))
         {
             if (LOG.isDebugEnabled()) LOG.debug("forumQuestionUpdatedEvent - "+forumQuestionUpdatedEvent);
             if(forumQuestionUpdatedEvent.isEntityFound())
             {
-                ForumQuestion result = ForumQuestion.fromForumQuestionDetails(forumQuestionUpdatedEvent.getForumQuestionDetails());
+                ForumQuestion result = ForumQuestion.fromForumQuestionDetails((ForumQuestionDetails) forumQuestionUpdatedEvent.getDetails());
                 if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
                 return new ResponseEntity<ForumQuestion>(result, HttpStatus.OK);
             }

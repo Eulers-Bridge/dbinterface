@@ -6,30 +6,15 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
  * @author Yikai Gong
  */
 
-public class EventUpdatedEvent extends UpdatedEvent{
-    private Long eventId;
-    private EventDetails eventDetails;
+public class EventUpdatedEvent extends UpdatedEvent
+{
+	public EventUpdatedEvent(Long eventId, EventDetails eventDetails)
+	{
+		super(eventId,eventDetails);
+	}
 
-    public EventUpdatedEvent(Long eventId, EventDetails eventDetails) {
-        this.eventId = eventId;
-        this.eventDetails = eventDetails;
-    }
-
-    public EventUpdatedEvent(Long eventId) {
-        this.eventId = eventId;
-    }
-
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public EventDetails getEventDetails() {
-        return eventDetails;
-    }
-
-    public static EventUpdatedEvent notFound(Long id){
-        EventUpdatedEvent eventUpdatedEvent = new EventUpdatedEvent(id);
-        eventUpdatedEvent.entityFound = false;
-        return eventUpdatedEvent;
-    }
+	public EventUpdatedEvent(Long eventId)
+	{
+		super(eventId);
+	}
 }

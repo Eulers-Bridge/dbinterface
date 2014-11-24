@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -227,7 +228,7 @@ public class PhotoController
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to update photo. " + photoId);
-		PhotoUpdatedEvent photoUpdatedEvent = photoService
+		UpdatedEvent photoUpdatedEvent = photoService
 				.updatePhoto(new UpdatePhotoEvent(photoId, photo
 						.toPhotoDetails()));
 		if ((null != photoUpdatedEvent))
@@ -236,8 +237,8 @@ public class PhotoController
 				LOG.debug("photoUpdatedEvent - " + photoUpdatedEvent);
 			if (photoUpdatedEvent.isEntityFound())
 			{
-				Photo restPhoto = Photo.fromPhotoDetails(photoUpdatedEvent
-						.getPhotoDetails());
+				Photo restPhoto = Photo.fromPhotoDetails((PhotoDetails) photoUpdatedEvent
+						.getDetails());
 				if (LOG.isDebugEnabled())
 					LOG.debug("restPhoto = " + restPhoto);
 				return new ResponseEntity<Photo>(restPhoto, HttpStatus.OK);

@@ -4,6 +4,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
@@ -83,13 +84,13 @@ public class PollController {
     public @ResponseBody
     ResponseEntity<Poll> updatePoll(@PathVariable Long pollId, @RequestBody Poll poll){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update poll. " + pollId);
-        PollUpdatedEvent pollUpdatedEvent = pollService.updatePoll(new UpdatePollEvent(pollId, poll.toPollDetails()));
+        UpdatedEvent pollUpdatedEvent = pollService.updatePoll(new UpdatePollEvent(pollId, poll.toPollDetails()));
         if (null != pollUpdatedEvent )
         {
        		if (LOG.isDebugEnabled()) LOG.debug("pollUpdatedEvent - "+pollUpdatedEvent);
         	if(pollUpdatedEvent.isEntityFound())
         	{
-	            Poll resultPoll = Poll.fromPollDetails(pollUpdatedEvent.getPollDetails());
+	            Poll resultPoll = Poll.fromPollDetails((PollDetails) pollUpdatedEvent.getDetails());
 	            if (LOG.isDebugEnabled()) LOG.debug("resultPoll = "+resultPoll);
 	            return new ResponseEntity<Poll>(resultPoll, HttpStatus.OK);
         	}

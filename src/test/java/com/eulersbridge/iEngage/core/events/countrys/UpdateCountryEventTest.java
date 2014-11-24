@@ -38,11 +38,11 @@ public class UpdateCountryEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("Event id does not match", eventId, updateCountryEvent.getId());
+        assertEquals("Event id does not match", eventId, updateCountryEvent.getNodeId());
     }
 
     @Test
     public void testGetCountryDetails() throws Exception {
-        assertEquals("CountryDetail does not match", countryDetails, updateCountryEvent.getCountryDetails());
+        assertEquals("CountryDetail does not match", countryDetails, updateCountryEvent.getDetails());
     }
 }

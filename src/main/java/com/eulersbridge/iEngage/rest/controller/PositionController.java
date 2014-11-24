@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.core.services.PositionService;
 import com.eulersbridge.iEngage.rest.domain.Position;
@@ -65,11 +66,11 @@ public class PositionController {
     public @ResponseBody ResponseEntity<Position>
     updatePosition(@PathVariable Long positionId, @RequestBody Position position){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update position. " + positionId);
-        PositionUpdatedEvent positionUpdatedEvent = positionService.updatePosition(new UpdatePositionEvent(positionId, position.toPositionDetails()));
+        UpdatedEvent positionUpdatedEvent = positionService.updatePosition(new UpdatePositionEvent(positionId, position.toPositionDetails()));
         if(null != positionUpdatedEvent){
             if (LOG.isDebugEnabled()) LOG.debug("positionUpdatedEvent - "+positionUpdatedEvent);
             if(positionUpdatedEvent.isEntityFound()){
-                Position result = Position.fromPositionDetails(positionUpdatedEvent.getPositionDetails());
+                Position result = Position.fromPositionDetails((PositionDetails) positionUpdatedEvent.getDetails());
                 if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
                 return new ResponseEntity<Position>(result, HttpStatus.OK);
             }

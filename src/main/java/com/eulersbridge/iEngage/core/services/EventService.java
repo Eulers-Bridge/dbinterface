@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
 
 import org.springframework.data.domain.Sort.Direction;
@@ -23,7 +24,7 @@ public interface EventService {
     public ReadEvent readEvent(RequestReadEventEvent requestReadEventEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public EventUpdatedEvent updateEvent(UpdateEventEvent updateEventEvent);
+    public UpdatedEvent updateEvent(UpdateEventEvent updateEventEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public DeletedEvent deleteEvent(DeleteEventEvent deleteEventEvent);

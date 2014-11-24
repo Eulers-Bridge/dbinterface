@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
@@ -68,12 +69,12 @@ public class NewsController
     {
     	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit newsArticle. "+articleId);
     	UpdateNewsArticleEvent unae=new UpdateNewsArticleEvent(articleId,newsArticle.toNewsArticleDetails());
-    	if (LOG.isDebugEnabled()) LOG.debug("Update na event - "+unae.getUNewsArticleDetails());
-    	NewsArticleUpdatedEvent newsEvent=newsService.updateNewsArticle(unae);
+    	if (LOG.isDebugEnabled()) LOG.debug("Update na event - "+unae.getDetails());
+    	UpdatedEvent newsEvent=newsService.updateNewsArticle(unae);
     	if (null!=newsEvent)
     	{	
     		if (LOG.isDebugEnabled()) LOG.debug("newsEvent - "+newsEvent);
-			NewsArticle restNews=NewsArticle.fromNewsArticleDetails(newsEvent.getNewsArticleDetails());
+			NewsArticle restNews=NewsArticle.fromNewsArticleDetails((NewsArticleDetails) newsEvent.getDetails());
 			if (LOG.isDebugEnabled()) LOG.debug("restNews = "+restNews);
 		  	return new ResponseEntity<NewsArticle>(restNews,HttpStatus.OK);
     	}

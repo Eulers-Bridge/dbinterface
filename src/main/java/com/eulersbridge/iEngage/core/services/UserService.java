@@ -4,6 +4,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
@@ -19,7 +20,6 @@ import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
@@ -38,7 +38,7 @@ public interface UserService
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public ReadUserEvent requestReadUser(RequestReadUserEvent requestReadUserEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
-	public UserUpdatedEvent updateUser(UpdateUserEvent updateUserEvent);
+	public UpdatedEvent updateUser(UpdateUserEvent updateUserEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent);
 	public UserAccountVerifiedEvent validateUserAccount(VerifyUserAccountEvent verifyUserAccountEvent);

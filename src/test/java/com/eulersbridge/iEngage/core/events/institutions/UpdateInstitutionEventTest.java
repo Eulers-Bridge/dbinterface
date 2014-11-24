@@ -41,7 +41,7 @@ public class UpdateInstitutionEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("eventId does not match", institutionId, updateInstitutionEvent.getId());
+        assertEquals("eventId does not match", institutionId, updateInstitutionEvent.getNodeId());
     }
 
     @Test
@@ -51,8 +51,8 @@ public class UpdateInstitutionEventTest {
         institutionDetails1.setCampus(campus);
         institutionDetails1.setState(state);
         institutionDetails1.setCountryName(countryName);
-        assertEquals("InstitutionDetails does not match", institutionDetails, updateInstitutionEvent.getInstDetails());
-        assertEquals("InstitutionDetails does not match", institutionDetails1, updateInstitutionEvent.getInstDetails());
+        assertEquals("InstitutionDetails does not match", institutionDetails, updateInstitutionEvent.getDetails());
+        assertEquals("InstitutionDetails does not match", institutionDetails1, updateInstitutionEvent.getDetails());
 
     }
 }

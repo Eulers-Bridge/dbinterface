@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.*;
 
@@ -35,7 +36,6 @@ import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent.Verif
 import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
@@ -97,17 +97,17 @@ public class UserController {
     	if (LOG.isInfoEnabled()) LOG.info("Attempting to edit user. "+user.getEmail());
     	ResponseEntity<User> result;
     	
-    	UserUpdatedEvent userEvent=userService.updateUser(new UpdateUserEvent(email,user.toUserDetails()));
+    	UpdatedEvent userEvent=userService.updateUser(new UpdateUserEvent(email,user.toUserDetails()));
     	if (null!=userEvent)
     	{
    			if(LOG.isDebugEnabled()) LOG.debug("userEvent - "+userEvent);
-	    	if (!userEvent.isInstituteFound())
+	    	if (!userEvent.isEntityFound())
 	    	{
 	    		result=new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
 	    	}
 	    	else
 	    	{
-		    	User restUser=User.fromUserDetails(userEvent.getUserDetails());
+		    	User restUser=User.fromUserDetails((UserDetails) userEvent.getDetails());
 		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restUser);
 		    	result=new ResponseEntity<User>(restUser,HttpStatus.OK);
 	    	}

@@ -486,6 +486,7 @@ public class PhotoControllerTest
 	@Test
 	public final void testFindPhotos()
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotos()");
 		fail("Not yet implemented"); // TODO
 	}
 

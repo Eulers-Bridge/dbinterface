@@ -41,14 +41,14 @@ public class CountryUpdatedEventTest {
 
     @Test
     public void testGetId() throws Exception {
-        assertEquals("event id does not match", eventId, countryUpdatedEvent.getId());
+        assertEquals("event id does not match", eventId, countryUpdatedEvent.getNodeId());
     }
 
     @Test
     public void testGetCountryDetails() throws Exception {
         CountryDetails countryDetails1 = new CountryDetails(new Long(1));
         countryDetails1.setCountryName("France");
-        assertEquals("country detail does not match", countryDetails, countryUpdatedEvent.getCountryDetails());
-        assertEquals("country detail does not match", countryDetails1, countryUpdatedEvent.getCountryDetails());
+        assertEquals("country detail does not match", countryDetails, countryUpdatedEvent.getDetails());
+        assertEquals("country detail does not match", countryDetails1, countryUpdatedEvent.getDetails());
     }
 }

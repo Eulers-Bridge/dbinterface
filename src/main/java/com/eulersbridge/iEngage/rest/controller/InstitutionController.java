@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
 import com.eulersbridge.iEngage.core.events.institutions.*;
@@ -69,9 +70,9 @@ public class InstitutionController
     	ResponseEntity<Institution> result;
     	UpdateInstitutionEvent updEvt=new UpdateInstitutionEvent(institutionId,inst.toInstitutionDetails());
     	if (LOG.isDebugEnabled()) LOG.debug("updateEvt = "+updEvt);
-    	InstitutionUpdatedEvent instEvent=instService.updateInstitution(updEvt);
+    	UpdatedEvent instEvent=instService.updateInstitution(updEvt);
 
-    	if ((null==instEvent)||(!instEvent.isCountryFound()))
+    	if ((null==instEvent)||(!instEvent.isEntityFound()))
     	{
     		if (LOG.isDebugEnabled())
     		{
@@ -81,14 +82,14 @@ public class InstitutionController
 	    		}
 	    		else
 	    		{
-	    			LOG.debug("countryFound = "+instEvent.isCountryFound());
+	    			LOG.debug("countryFound = "+instEvent.isEntityFound());
 	    		}
     		}
     		result=new ResponseEntity<Institution>(HttpStatus.FAILED_DEPENDENCY);
     	}
     	else
     	{
-    		restInst=Institution.fromInstDetails(instEvent.getInstDetails());
+    		restInst=Institution.fromInstDetails((InstitutionDetails) instEvent.getDetails());
     		result=new ResponseEntity<Institution>(restInst,HttpStatus.OK);
     	}
     	return result;

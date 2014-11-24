@@ -5,17 +5,16 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 public class UserUpdatedEvent extends UpdatedEvent 
 {
 	private String email;
-	private UserDetails userDetails;
-	protected boolean instituteFound = true;
 
 	public UserUpdatedEvent(String email, UserDetails userDetails) 
 	{
+	    super(1l,userDetails);
 	    this.email = email;
-	    this.userDetails = userDetails;
 	}
 
 	public UserUpdatedEvent(String email)
 	{
+		super(1l);
 	    this.email = email;
 	}
 
@@ -24,21 +23,10 @@ public class UserUpdatedEvent extends UpdatedEvent
 	    return email;
 	}
 
-	public UserDetails getUserDetails()
-	{
-	    return userDetails;
-	}
-
 	public static UserUpdatedEvent instituteNotFound(String email) 
 	{
 		UserUpdatedEvent ev = new UserUpdatedEvent(email);
-	    ev.instituteFound=false;
+	    ev.entityFound=false;
 	    return ev;
-	}
-	
-	public boolean isInstituteFound() 
-	{
-		return instituteFound;
-	}
-
+	}	
 }

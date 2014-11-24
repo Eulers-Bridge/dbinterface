@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GiCountry;
@@ -336,7 +337,7 @@ public class ViewInstitutionIntegrationTest
 	{	// Empty content.
 		Long id=1l;
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateBadRequest()");
-		InstitutionUpdatedEvent testData=InstitutionUpdatedEvent.countryNotFound(id);
+		UpdatedEvent testData=InstitutionUpdatedEvent.notFound(id);
 		when (instService.updateInstitution(any(UpdateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -375,7 +376,7 @@ public class ViewInstitutionIntegrationTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdate()");
 		Long id=1l;
-		InstitutionUpdatedEvent testData=InstitutionUpdatedEvent.countryNotFound(id);
+		UpdatedEvent testData=InstitutionUpdatedEvent.notFound(id);
 		String content="{\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Canadia\"}";
 		when (instService.updateInstitution(any(UpdateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))

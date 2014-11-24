@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 
@@ -206,7 +207,7 @@ public class ElectionController
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to update election. " + electionId);
-		ElectionUpdatedEvent electionUpdatedEvent = electionService
+		UpdatedEvent electionUpdatedEvent = electionService
 				.updateElection(new UpdateElectionEvent(electionId, election
 						.toElectionDetails()));
 		if ((null != electionUpdatedEvent))
@@ -216,8 +217,8 @@ public class ElectionController
 			if (electionUpdatedEvent.isEntityFound())
 			{
 				Election restElection = Election
-						.fromElectionDetails(electionUpdatedEvent
-								.getElectionDetails());
+						.fromElectionDetails((ElectionDetails) electionUpdatedEvent
+								.getDetails());
 				if (LOG.isDebugEnabled())
 					LOG.debug("restElection = " + restElection);
 				return new ResponseEntity<Election>(restElection, HttpStatus.OK);

@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
@@ -107,13 +108,13 @@ public class InstitutionEventHandler implements InstitutionService {
 	}
 
 	@Override
-	public InstitutionUpdatedEvent updateInstitution(
+	public UpdatedEvent updateInstitution(
 			UpdateInstitutionEvent updateInstitutionEvent) 
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("updateInstitution("+updateInstitutionEvent.getId()+")");
-		InstitutionDetails updInst=updateInstitutionEvent.getInstDetails();
+	    if (LOG.isDebugEnabled()) LOG.debug("updateInstitution("+updateInstitutionEvent.getNodeId()+")");
+		InstitutionDetails updInst=(InstitutionDetails) updateInstitutionEvent.getDetails();
 		Institution result=null,instToUpdate=Institution.fromInstDetails(updInst);
-		instToUpdate.setNodeId(updateInstitutionEvent.getId());
+		instToUpdate.setNodeId(updateInstitutionEvent.getNodeId());
     	if (LOG.isDebugEnabled()) LOG.debug("Inst Details :"+updInst);
     	
 		if (LOG.isDebugEnabled()) LOG.debug("Finding country with countryName = "+updInst.getCountryName());
@@ -128,7 +129,7 @@ public class InstitutionEventHandler implements InstitutionService {
     	}
     	else
     	{
-    		return InstitutionUpdatedEvent.countryNotFound(updateInstitutionEvent.getId());
+    		return InstitutionUpdatedEvent.notFound(updateInstitutionEvent.getNodeId());
     	}
 		if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
     	return new InstitutionUpdatedEvent(result.getNodeId(),result.toInstDetails());

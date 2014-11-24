@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
@@ -74,19 +75,18 @@ public class CountryEventHandler implements CountryService
 	}
 
 	@Override
-	public CountryUpdatedEvent updateCountry(
+	public UpdatedEvent updateCountry(
 			UpdateCountryEvent updateCountryEvent) 
 	{
-	    if (LOG.isDebugEnabled()) LOG.debug("updateCountry("+updateCountryEvent.getId()+")");
-		CountryDetails updCountry=updateCountryEvent.getCountryDetails();
+	    if (LOG.isDebugEnabled()) LOG.debug("updateCountry("+updateCountryEvent.getNodeId()+")");
+		CountryDetails updCountry=(CountryDetails) updateCountryEvent.getDetails();
 		Country result=null,countryToUpdate=Country.fromCountryDetails(updCountry);
-		countryToUpdate.setNodeId(updateCountryEvent.getId());
+		countryToUpdate.setNodeId(updateCountryEvent.getNodeId());
     	if (LOG.isDebugEnabled()) LOG.debug("Country Details :"+updCountry);
     	if (LOG.isDebugEnabled()) LOG.debug("countryToUpdate :"+countryToUpdate);
 		result = countryRepository.save(countryToUpdate);
 		if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
     	return new CountryUpdatedEvent(result.getNodeId(),result.toCountryDetails());
-
 	}
 
 	@Override

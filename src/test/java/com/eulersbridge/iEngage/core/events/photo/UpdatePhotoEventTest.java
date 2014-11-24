@@ -42,7 +42,7 @@ public class UpdatePhotoEventTest
 	{
 		assertNotNull(updatePhotoEvent);
 		assertEquals(nodeId,updatePhotoEvent.getNodeId());
-		assertEquals(photoDetails,updatePhotoEvent.getPhotoDetails());
+		assertEquals(photoDetails,updatePhotoEvent.getDetails());
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class UpdatePhotoEventTest
 	@Test
 	public final void testGetPhotoDetails()
 	{
-		assertEquals(photoDetails,updatePhotoEvent.getPhotoDetails());
+		assertEquals(photoDetails,updatePhotoEvent.getDetails());
 	}
 
 }

@@ -12,10 +12,10 @@ import org.junit.Test;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
@@ -101,7 +101,7 @@ public class CountryEventHandlerTest
 		cDs.setCountryName("New Zealand");
 		
 		UpdateCountryEvent updateCountryEvent=new UpdateCountryEvent(cDs.getCountryId(), cDs);
-		CountryUpdatedEvent nude = countryService.updateCountry(updateCountryEvent);
+		UpdatedEvent nude = countryService.updateCountry(updateCountryEvent);
 		if (null==nude) fail("Not yet implemented");
 	}
 

@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.configuration.*;
 import com.eulersbridge.iEngage.core.services.ConfigurationService;
 import com.eulersbridge.iEngage.rest.domain.Configuration;
@@ -75,13 +76,13 @@ public class ConfigurationController {
     updateConfiguration(@PathVariable Long configId, @RequestBody Configuration configuration)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update configuration. " + configId);
-        ConfigurationUpdatedEvent configurationUpdatedEvent = configurationService.updateConfiguration(new UpdateConfigurationEvent(configId, configuration.toConfigurationDetails()));
+        UpdatedEvent configurationUpdatedEvent = configurationService.updateConfiguration(new UpdateConfigurationEvent(configId, configuration.toConfigurationDetails()));
         if(null != configurationUpdatedEvent)
         {
             if (LOG.isDebugEnabled()) LOG.debug("configurationUpdatedEvent - "+configurationUpdatedEvent);
             if(configurationUpdatedEvent.isEntityFound())
             {
-                Configuration result = Configuration.fromConfigurationDetails(configurationUpdatedEvent.getConfigurationDetails());
+                Configuration result = Configuration.fromConfigurationDetails((ConfigurationDetails) configurationUpdatedEvent.getDetails());
                 if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
                 return new ResponseEntity<Configuration>(result, HttpStatus.OK);
             }

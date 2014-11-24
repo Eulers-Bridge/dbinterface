@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort.Direction;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -110,12 +111,12 @@ public class PhotoEventHandler implements PhotoService
 	 * @see com.eulersbridge.iEngage.core.services.PhotoService#updatePhoto(com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent)
 	 */
 	@Override
-	public PhotoUpdatedEvent updatePhoto(UpdatePhotoEvent updatePhotoEvent)
+	public UpdatedEvent updatePhoto(UpdatePhotoEvent updatePhotoEvent)
 	{
-        PhotoDetails photoDetails = updatePhotoEvent.getPhotoDetails();
+        PhotoDetails photoDetails = (PhotoDetails) updatePhotoEvent.getDetails();
         Photo photo = Photo.fromPhotoDetails(photoDetails);
         Long photoId = photoDetails.getNodeId();
-        PhotoUpdatedEvent resultEvt;
+        UpdatedEvent resultEvt;
         
         if(LOG.isDebugEnabled()) LOG.debug("photo Id is " + photoId);
         Photo photoOld = photoRepository.findOne(photoId);

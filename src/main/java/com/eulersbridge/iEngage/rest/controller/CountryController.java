@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
-import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
@@ -61,7 +61,7 @@ public class CountryController
     	ResponseEntity<Country> result;
     	UpdateCountryEvent updEvt=new UpdateCountryEvent(countryId,country.toCountryDetails());
     	if (LOG.isDebugEnabled()) LOG.debug("updateEvt = "+updEvt);
-    	CountryUpdatedEvent countryEvent=countryService.updateCountry(updEvt);
+    	UpdatedEvent countryEvent=countryService.updateCountry(updEvt);
 
     	if ((null==countryEvent))
     	{
@@ -73,7 +73,7 @@ public class CountryController
     	}
     	else
     	{
-    		restCountry=Country.fromCountryDetails(countryEvent.getCountryDetails());
+    		restCountry=Country.fromCountryDetails((CountryDetails) countryEvent.getDetails());
     		result=new ResponseEntity<Country>(restCountry,HttpStatus.OK);
     	}
     	return result;

@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.configuration.*;
 import com.eulersbridge.iEngage.database.domain.Configuration;
 import com.eulersbridge.iEngage.database.repository.ConfigurationRepository;
@@ -61,11 +62,11 @@ public class ConfigurationEventHandler implements ConfigurationService
 	}
 
 	@Override
-	public ConfigurationUpdatedEvent updateConfiguration(
+	public UpdatedEvent updateConfiguration(
 			UpdateConfigurationEvent updateConfigurationEvent)
 	{
-		ConfigurationDetails configurationDetails = updateConfigurationEvent
-				.getConfigurationDetails();
+		ConfigurationDetails configurationDetails = (ConfigurationDetails) updateConfigurationEvent
+				.getDetails();
 		Configuration configuration = Configuration
 				.fromConfigurationDetails(configurationDetails);
 		Long configId = configurationDetails.getConfigId();

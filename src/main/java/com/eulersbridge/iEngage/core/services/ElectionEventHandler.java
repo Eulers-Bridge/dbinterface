@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Institution;
@@ -122,7 +123,7 @@ public class ElectionEventHandler implements ElectionService
     }
 
     @Override
-    public ElectionUpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent)
+    public UpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent)
     {
         ElectionDetails electionDetails = updateElectionEvent.getElectionDetails();
         Election election = Election.fromElectionDetails(electionDetails);

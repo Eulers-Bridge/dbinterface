@@ -8,6 +8,7 @@ import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Institution;
@@ -91,9 +92,9 @@ public class EventEventHandler implements EventService
 	}
 
 	@Override
-	public EventUpdatedEvent updateEvent(UpdateEventEvent updateEventEvent)
+	public UpdatedEvent updateEvent(UpdateEventEvent updateEventEvent)
 	{
-		EventDetails eventDetails = updateEventEvent.getEventDetails();
+		EventDetails eventDetails = (EventDetails) updateEventEvent.getDetails();
 		Event event = Event.fromEventDetails(eventDetails);
 		Long eventId = eventDetails.getEventId();
 		if (LOG.isDebugEnabled())

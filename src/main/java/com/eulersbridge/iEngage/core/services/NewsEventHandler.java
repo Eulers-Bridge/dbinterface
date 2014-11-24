@@ -6,6 +6,7 @@ import java.util.Iterator;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 
@@ -89,10 +90,10 @@ public class NewsEventHandler implements NewsService
 	}
 
 	@Override
-	public NewsArticleUpdatedEvent updateNewsArticle(
+	public UpdatedEvent updateNewsArticle(
 			UpdateNewsArticleEvent updateNewsArticleEvent) 
 	{
-		NewsArticleDetails nADs = updateNewsArticleEvent.getUNewsArticleDetails();
+		NewsArticleDetails nADs = (NewsArticleDetails) updateNewsArticleEvent.getDetails();
 		NewsArticle na=NewsArticle.fromNewsArticleDetails(nADs);
 		if (LOG.isDebugEnabled()) LOG.debug("Finding institution with id = "+nADs.getInstitutionId());
 		NewsFeed nf=instRepo.findNewsFeed(nADs.getInstitutionId());

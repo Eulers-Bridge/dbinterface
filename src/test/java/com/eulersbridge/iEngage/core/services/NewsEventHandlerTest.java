@@ -24,12 +24,12 @@ import org.springframework.data.domain.Sort.Direction;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
@@ -175,11 +175,11 @@ public class NewsEventHandlerTest
 		nADs.setDate(new Date().getTime());
 		
 		UpdateNewsArticleEvent updateNewsArticleEvent=new UpdateNewsArticleEvent(nADs.getNewsArticleId(), nADs);
-		NewsArticleUpdatedEvent nude = newsService.updateNewsArticle(updateNewsArticleEvent);
+		UpdatedEvent nude = newsService.updateNewsArticle(updateNewsArticleEvent);
 		assertNotNull("Null event returned",nude);
-		assertEquals("Content was not updated.",nude.getNewsArticleDetails().getContent(),nADs.getContent());
-		assertEquals("Title not updated.",nude.getNewsArticleDetails().getTitle(),nADs.getTitle());
-		assertEquals("Timestamp not updated.",nADs.getDate(),nude.getNewsArticleDetails().getDate());
+		assertEquals("Content was not updated.",((NewsArticleDetails)nude.getDetails()).getContent(),nADs.getContent());
+		assertEquals("Title not updated.",((NewsArticleDetails)nude.getDetails()).getTitle(),nADs.getTitle());
+		assertEquals("Timestamp not updated.",nADs.getDate(),((NewsArticleDetails)nude.getDetails()).getDate());
 	}
 
 	/**

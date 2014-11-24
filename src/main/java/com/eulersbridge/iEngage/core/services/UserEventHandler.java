@@ -7,6 +7,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.database.domain.*;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -163,9 +164,9 @@ public class UserEventHandler implements UserService,UserDetailsService
 
 	@Override
 	@Transactional
-	public UserUpdatedEvent updateUser(UpdateUserEvent updateUserEvent) 
+	public UpdatedEvent updateUser(UpdateUserEvent updateUserEvent) 
 	{
-		UserDetails newUser=updateUserEvent.getUserDetails();
+		UserDetails newUser=(UserDetails) updateUserEvent.getDetails();
 		User user=null,result=null,userToUpdate=User.fromUserDetails(newUser);
     	if (LOG.isDebugEnabled()) LOG.debug("User Details :"+newUser);
 	    user=userRepository.findByEmail(updateUserEvent.getEmail());

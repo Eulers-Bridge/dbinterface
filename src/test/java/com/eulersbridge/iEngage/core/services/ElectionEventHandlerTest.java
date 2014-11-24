@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
-import com.eulersbridge.iEngage.core.events.elections.ElectionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
@@ -244,12 +244,12 @@ public class ElectionEventHandlerTest
 		when(electionRepository.save(any(Election.class))).thenReturn(testData);
 		ElectionDetails dets=testData.toElectionDetails();
 		UpdateElectionEvent createElectionEvent=new UpdateElectionEvent(dets.getElectionId(), dets);
-		ElectionUpdatedEvent evtData = service.updateElection(createElectionEvent);
-		ElectionDetails returnedDets = evtData.getElectionDetails();
+		UpdatedEvent evtData = service.updateElection(createElectionEvent);
+		ElectionDetails returnedDets = (ElectionDetails) evtData.getDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
-		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
+		assertEquals(evtData.getNodeId(),returnedDets.getElectionId());
 		assertTrue(evtData.isEntityFound());
-		assertNotNull(evtData.getElectionId());
+		assertNotNull(evtData.getNodeId());
 	}
 
 	/**
@@ -264,11 +264,11 @@ public class ElectionEventHandlerTest
 		when(electionRepository.save(any(Election.class))).thenReturn(testData);
 		ElectionDetails dets=testData.toElectionDetails();
 		UpdateElectionEvent createElectionEvent=new UpdateElectionEvent(dets.getElectionId(), dets);
-		ElectionUpdatedEvent evtData = service.updateElection(createElectionEvent);
-		assertNull(evtData.getElectionDetails());
-		assertEquals(evtData.getElectionId(),testData.getNodeId());
+		UpdatedEvent evtData = service.updateElection(createElectionEvent);
+		assertNull(evtData.getDetails());
+		assertEquals(evtData.getNodeId(),testData.getNodeId());
 		assertFalse(evtData.isEntityFound());
-		assertNotNull(evtData.getElectionId());
+		assertNotNull(evtData.getNodeId());
 	}
 
 }

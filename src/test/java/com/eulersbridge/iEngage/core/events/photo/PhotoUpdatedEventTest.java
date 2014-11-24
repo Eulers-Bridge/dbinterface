@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
@@ -20,7 +21,7 @@ public class PhotoUpdatedEventTest
     Photo photo;
     PhotoDetails photoDetails;
     Long nodeId;
-    PhotoUpdatedEvent photoUpdatedEvent;
+    UpdatedEvent photoUpdatedEvent;
 
 	/**
 	 * @throws java.lang.Exception
@@ -41,7 +42,7 @@ public class PhotoUpdatedEventTest
 	public final void testPhotoUpdatedEventLongPhotoDetails()
 	{
 		assertNotNull(photoUpdatedEvent);
-		assertEquals(photoDetails, photoUpdatedEvent.getPhotoDetails());
+		assertEquals(photoDetails, photoUpdatedEvent.getDetails());
 		assertEquals(nodeId, photoUpdatedEvent.getNodeId());
 		assertTrue(photoUpdatedEvent.isEntityFound());
 	}
@@ -54,7 +55,7 @@ public class PhotoUpdatedEventTest
 	{
 		photoUpdatedEvent=new PhotoUpdatedEvent(nodeId);
 		assertNotNull(photoUpdatedEvent);
-		assertNull(photoUpdatedEvent.getPhotoDetails());
+		assertNull(photoUpdatedEvent.getDetails());
 		assertEquals(nodeId, photoUpdatedEvent.getNodeId());
 		assertTrue(photoUpdatedEvent.isEntityFound());
 	}
@@ -74,7 +75,7 @@ public class PhotoUpdatedEventTest
 	@Test
 	public final void testGetPhotoDetails()
 	{
-		assertEquals(photoDetails, photoUpdatedEvent.getPhotoDetails());
+		assertEquals(photoDetails, photoUpdatedEvent.getDetails());
 	}
 
 	/**
@@ -85,7 +86,7 @@ public class PhotoUpdatedEventTest
 	{
 		photoUpdatedEvent=PhotoUpdatedEvent.notFound(nodeId);
 		assertNotNull(photoUpdatedEvent);
-		assertNull(photoUpdatedEvent.getPhotoDetails());
+		assertNull(photoUpdatedEvent.getDetails());
 		assertEquals(nodeId, photoUpdatedEvent.getNodeId());
 		assertFalse(photoUpdatedEvent.isEntityFound());
 	}

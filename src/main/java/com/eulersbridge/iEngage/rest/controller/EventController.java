@@ -7,6 +7,7 @@ import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
@@ -160,7 +161,7 @@ public class EventController
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to update event. " + eventId);
-		EventUpdatedEvent eventUpdatedEvent = eventService
+		UpdatedEvent eventUpdatedEvent = eventService
 				.updateEvent(new UpdateEventEvent(eventId, event
 						.toEventDetails()));
 		if ((null != eventUpdatedEvent))
@@ -169,8 +170,8 @@ public class EventController
 				LOG.debug("eventUpdatedEvent - " + eventUpdatedEvent);
 			if (eventUpdatedEvent.isEntityFound())
 			{
-				Event resultEvent = Event.fromEventDetails(eventUpdatedEvent
-						.getEventDetails());
+				Event resultEvent = Event.fromEventDetails((EventDetails) eventUpdatedEvent
+						.getDetails());
 				if (LOG.isDebugEnabled())
 					LOG.debug("resultEvent = " + resultEvent);
 				return new ResponseEntity<Event>(resultEvent, HttpStatus.OK);
