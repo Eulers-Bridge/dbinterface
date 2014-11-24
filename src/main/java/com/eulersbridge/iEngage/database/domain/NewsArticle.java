@@ -71,12 +71,28 @@ public class NewsArticle extends Likeable
 		return title;
 	}
 	
+	/**
+	 * @param title the title to set
+	 */
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
+
 	public String getContent()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getContent() = "+content);
 		return content;
 	}
 	
+	/**
+	 * @param content the content to set
+	 */
+	public void setContent(String content)
+	{
+		this.content = content;
+	}
+
 	public Iterable<String> getPicture()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getPicture() = "+picture);
@@ -107,6 +123,14 @@ public class NewsArticle extends Likeable
 		return date;
 	}
 	
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(Long date)
+	{
+		this.date = date;
+	}
+
 	public User getCreator()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("getCreator() = "+creator);
