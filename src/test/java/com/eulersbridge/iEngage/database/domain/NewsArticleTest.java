@@ -28,7 +28,7 @@ public class NewsArticleTest
 	final String title="The title";
 	final String content="The content.";
 	final Calendar date=Calendar.getInstance();
-	final User creator=DatabaseDataFixture.populateUserGnewitt();
+	final User creator=DatabaseDataFixture.populateUserGnewitt2();
 	final NewsFeed year=DatabaseDataFixture.populateNewsFeed2();
 	final Long node1=new Long(1);
 	final Long node2=new Long(2);
@@ -117,12 +117,34 @@ public class NewsArticleTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#setTitle(java.lang.String)}.
+	 */
+	@Test
+	public void testSetTitle() 
+	{
+		String title="Some title";
+		news.setTitle(title);
+		assertEquals("dates don't match.",title,news.getTitle());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#getContent()}.
 	 */
 	@Test
 	public void testGetContent() 
 	{
 		assertEquals("Content doesn't match.",content,news.getContent());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#setContent(java.lang.String)}.
+	 */
+	@Test
+	public void testSetContent() 
+	{
+		String content="Some content";
+		news.setContent(content);
+		assertEquals("dates don't match.",content,news.getContent());
 	}
 
 	/**
@@ -153,6 +175,16 @@ public class NewsArticleTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#setDate(java.lang.Long)}.
+	 */
+	@Test
+	public void testSetDate() 
+	{
+		news.setDate(node2);
+		assertEquals("dates don't match.",node2,news.getDate());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#getCreator()}.
 	 */
 	@Test
@@ -167,7 +199,7 @@ public class NewsArticleTest
 	@Test
 	public void testSetCreator() 
 	{
-		User creator2=DatabaseDataFixture.populateUserGnewitt2();
+		User creator2=DatabaseDataFixture.populateUserGnewitt();
 		news.setCreator(creator2);
 		assertNotEquals("",news.getCreator(),creator);
 		assertEquals("",news.getCreator(),creator2);
@@ -207,14 +239,97 @@ public class NewsArticleTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#hashCode()}.
+	 */
+	@Test
+	public final void testHashCode() 
+	{
+		NewsArticle articleTest=DatabaseDataFixture.populateNewsArticle1();
+		NewsArticle newsTest=DatabaseDataFixture.populateNewsArticle1();
+		assertEquals(articleTest.hashCode(),articleTest.hashCode());
+		assertEquals(articleTest.hashCode(),newsTest.hashCode());
+		articleTest.setNodeId(null);
+		assertNotEquals(newsTest.hashCode(), articleTest.hashCode());
+		assertNotEquals(articleTest.hashCode(), newsTest.hashCode());
+		newsTest.setNodeId(null);
+		articleTest.setCreator(null);
+		assertNotEquals(newsTest.hashCode(), articleTest.hashCode());
+		assertNotEquals(articleTest.hashCode(), newsTest.hashCode());
+		articleTest.setCreator(newsTest.getCreator());
+		articleTest.setNewsFeed(null);
+		assertNotEquals(newsTest.hashCode(), articleTest.hashCode());
+		assertNotEquals(articleTest.hashCode(), newsTest.hashCode());
+		articleTest.setNewsFeed(newsTest.getNewsFeed());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#equals(com.eulersbridge.iEngage.database.domain.NewsArticle)}.
 	 */
 	@Test
 	public void testEqualsNewsArticle() 
 	{
+		NewsArticle news1 = DatabaseDataFixture.populateNewsArticle1();
+		NewsArticle news2=null;
+		assertNotEquals(news2,news1);
+		assertNotEquals(news1,news2);
+		String notElection="";
+		assertNotEquals(news1,notElection);
+		news2 = DatabaseDataFixture.populateNewsArticle1();
+		news2.setDate(news1.getDate());
+		assertEquals(news2,news2);
+		assertEquals(news2,news1);
+		news2.setNodeId(54l);
+		assertNotEquals(news1, news2);
+		assertNotEquals(news2, news1);
+		news1.setNodeId(null);
+		assertNotEquals(news1, news2);
+		assertNotEquals(news2, news1);
+		news2.setNodeId(null);
+		assertEquals(news1, news2);
+		assertEquals(news2, news1);
+		
+		news2.setCreator(creator);
+		assertNotEquals(news1, news2);
+		news2.setCreator(null);
+		assertNotEquals(news1, news2);
+		assertNotEquals(news2, news1);
+		news2.setCreator(news1.getCreator());
+		
+		news2.setDate(415l);
+		assertNotEquals(news1, news2);
+		news2.setDate(null);
+		assertNotEquals(news1, news2);
+		assertNotEquals(news2, news1);
+		news2.setDate(news1.getDate());
+		
+		news2.setTitle("A title");
+		assertNotEquals(news1, news2);
+		news2.setTitle(null);
+		assertNotEquals(news1, news2);
+		assertNotEquals(news2, news1);
+		news2.setTitle(news1.getTitle());
+		
+		news2.setContent("A content");
+		assertNotEquals(news1, news2);
+		news2.setContent(null);
+		assertNotEquals(news1, news2);
+		assertNotEquals(news2, news1);
+		news2.setContent(news1.getContent());
+		
+		news2.setNewsFeed(DatabaseDataFixture.populateNewsFeed1());
+		assertNotEquals(news1, news2);
+		news2.setNewsFeed(null);
+		assertNotEquals(news1, news2);
+		assertNotEquals(news2, news1);
+		news2.setNewsFeed(news1.getNewsFeed());
+	}
+
+	@Test
+	public void testToString() 
+	{
 		NewsArticleDetails dets = news.toNewsArticleDetails();
 		NewsArticle news2 = NewsArticle.fromNewsArticleDetails(dets);
-		assertEquals("Objects with same nodeId should match.",news,news2);
+		assertNotNull(news2.toString());
 	}
 
 }
