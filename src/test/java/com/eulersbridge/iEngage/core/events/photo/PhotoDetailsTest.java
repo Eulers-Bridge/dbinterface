@@ -6,7 +6,6 @@ package com.eulersbridge.iEngage.core.events.photo;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.eulersbridge.iEngage.database.domain.Photo;
@@ -63,7 +62,6 @@ public class PhotoDetailsTest
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#getOwnerId()}.
 	 */
-	@Ignore
 	@Test
 	public final void testGetOwnerId()
 	{

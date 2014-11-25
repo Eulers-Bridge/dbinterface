@@ -52,8 +52,7 @@ public class ResponseTest {
 	public final void testShouldConstructResponseObject() 
 	{
 		Response testObj=new Response(true,"Successful");
-		if (testObj.getClass()!=Response.class)
-			fail("Class created is not of type Response."); 
+		assertEquals("Class created is not of type Response.",testObj.getClass(),Response.class); 
 	}
 
 	/**
@@ -65,13 +64,11 @@ public class ResponseTest {
 		boolean res=true;
 		String errMesg="Successful";
 		Response testObj=new Response(res,errMesg);
-		if (testObj.getSuccess()!=res)
-			fail("Result not returning true."); 
+		assertEquals("Result not returning true.",testObj.getSuccess(),res); 
 		
 		res=false;
 		testObj=new Response(res,errMesg);
-		if (testObj.getSuccess()!=res)
-			fail("Result not returning false."); 
+		assertEquals("Result not returning false.",testObj.getSuccess(),res); 
 	}
 
 	/**
@@ -83,14 +80,12 @@ public class ResponseTest {
 		boolean res=true;
 		String errMesg="Successful";
 		Response testObj=new Response(res,errMesg);
-		if (!testObj.getErrorReason().equals(errMesg))
-			fail("Error Message not matching"+errMesg+"."); 
+		assertEquals("Error Message not matching"+errMesg+".",testObj.getErrorReason(),errMesg); 
 		
 		res=false;
 		errMesg="failure";
 		testObj=new Response(res,errMesg);
-		if (!testObj.getErrorReason().equals(errMesg))
-			fail("Error Message not matching"+errMesg+"."); 
+		assertEquals("Error Message not matching"+errMesg+".",testObj.getErrorReason(),errMesg); 
 	}
 
 }
