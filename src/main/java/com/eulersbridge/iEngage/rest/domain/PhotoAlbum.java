@@ -23,6 +23,7 @@ public class PhotoAlbum extends ResourceSupport
     private String description;
     private String location;
     private Long created;
+    private Long creatorId;
     private Long ownerId;
     private Long modified;
 
@@ -93,6 +94,22 @@ public class PhotoAlbum extends ResourceSupport
 	}
 
 	/**
+	 * @return the creatorId
+	 */
+	public Long getCreatorId()
+	{
+		return creatorId;
+	}
+
+	/**
+	 * @param creatorId the creatorId to set
+	 */
+	public void setCreatorId(Long creatorId)
+	{
+		this.creatorId = creatorId;
+	}
+
+	/**
 	 * @return the created
 	 */
 	public Long getCreated()
@@ -142,7 +159,7 @@ public class PhotoAlbum extends ResourceSupport
 
 	public PhotoAlbumDetails toPhotoAlbumDetails()
 	{
-    	PhotoAlbumDetails photoAlbumDetails = new PhotoAlbumDetails(getNodeId(), getName(), getLocation(), getDescription(), getCreated(), getOwnerId(),getModified());
+    	PhotoAlbumDetails photoAlbumDetails = new PhotoAlbumDetails(getNodeId(), getName(), getLocation(), getDescription(), getCreatorId(), getCreated(), getOwnerId(),getModified());
         if (LOG.isTraceEnabled()) LOG.trace("photoAlbumDetails "+photoAlbumDetails);
         return photoAlbumDetails;
 	}
@@ -156,6 +173,7 @@ public class PhotoAlbum extends ResourceSupport
         photoAlbum.setName(details.getName());
         photoAlbum.setLocation(details.getLocation());
         photoAlbum.setDescription(details.getDescription());
+        photoAlbum.setCreatorId(details.getCreatorId());
         photoAlbum.setCreated(details.getCreated());
         photoAlbum.setModified(details.getModified());
         photoAlbum.setOwnerId(details.getOwnerId());

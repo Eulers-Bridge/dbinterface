@@ -12,6 +12,7 @@ public class PhotoAlbumDetails extends Details
 	private String location;
 	private String description;
 	private Long created;
+	private Long creatorId;
 	private Long ownerId;
 	private Long modified;
 
@@ -30,7 +31,7 @@ public class PhotoAlbumDetails extends Details
 	 * @param modified
 	 */
 	public PhotoAlbumDetails(Long nodeId, String name, String location, String description,
-			Long created, Long ownerId, Long modified)
+			Long creatorId, Long created, Long ownerId, Long modified)
 	{
 		super(nodeId);
 		this.name = name;
@@ -87,6 +88,22 @@ public class PhotoAlbumDetails extends Details
 	public void setDescription(String description)
 	{
 		this.description = description;
+	}
+
+	/**
+	 * @return the creatorId
+	 */
+	public Long getCreatorId()
+	{
+		return creatorId;
+	}
+
+	/**
+	 * @param creatorId the creatorId to set
+	 */
+	public void setCreatorId(Long creatorId)
+	{
+		this.creatorId = creatorId;
 	}
 
 	/**

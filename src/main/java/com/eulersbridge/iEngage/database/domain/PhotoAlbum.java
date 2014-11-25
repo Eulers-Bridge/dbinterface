@@ -27,6 +27,8 @@ public class PhotoAlbum
     private String name;
     private String description;
     private String location;
+	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction=Direction.BOTH) @Fetch
+    private Owner creator;
     private Long created;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_ALBUM_LABEL, direction=Direction.BOTH) @Fetch
     private Owner owner;
@@ -43,12 +45,13 @@ public class PhotoAlbum
 	 * @param owner
 	 * @param modified
 	 */
-	public PhotoAlbum(String name, String description, String location, Long created, Owner owner, Long modified)
+	public PhotoAlbum(String name, String description, String location, Owner creator, Long created, Owner owner, Long modified)
 	{
 		super();
 		this.name = name;
 		this.description = description;
 		this.location = location;
+		this.creator = creator;
 		this.created = created;
 		this.owner = owner;
 		this.modified = modified;
@@ -121,6 +124,22 @@ public class PhotoAlbum
 	public void setLocation(String location)
 	{
 		this.location = location;
+	}
+
+	/**
+	 * @return the creator
+	 */
+	public Owner getCreator()
+	{
+		return creator;
+	}
+
+	/**
+	 * @param creator the creator to set
+	 */
+	public void setCreator(Owner creator)
+	{
+		this.creator = creator;
 	}
 
 	/**
@@ -201,6 +220,9 @@ public class PhotoAlbum
         Owner thisOwner=new Owner();
         thisOwner.setNodeId(photoAlbumDetails.getOwnerId());
         photoAlbum.setOwner(thisOwner);
+        Owner thisCreator=new Owner();
+        thisCreator.setNodeId(photoAlbumDetails.getCreatorId());
+        photoAlbum.setCreator(thisOwner);
 
         if (LOG.isTraceEnabled()) LOG.trace("photoAlbum "+photoAlbum);
         return photoAlbum;
@@ -215,6 +237,7 @@ public class PhotoAlbum
         photoAlbumDetails.setName(getName());
         photoAlbumDetails.setDescription(getDescription());
         photoAlbumDetails.setLocation(getLocation());
+        photoAlbumDetails.setCreatorId(getCreator().getNodeId());
         photoAlbumDetails.setCreated(getCreated());
         photoAlbumDetails.setOwnerId(getOwner().getNodeId());
         photoAlbumDetails.setModified(getModified());
@@ -237,16 +260,17 @@ public class PhotoAlbum
 		}
 		else
 		{
-		result = prime * result + ((created == null) ? 0 : created.hashCode());
-		result = prime * result
+			result = prime * result + ((creator == null) ? 0 : creator.hashCode());
+			result = prime * result + ((created == null) ? 0 : created.hashCode());
+			result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result
+			result = prime * result
 				+ ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((likes == null) ? 0 : likes.hashCode());
-		result = prime * result
+			result = prime * result + ((likes == null) ? 0 : likes.hashCode());
+			result = prime * result
 				+ ((modified == null) ? 0 : modified.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result + ((owner == null) ? 0 : owner.hashCode());
 	}
 		return result;
 	}
@@ -271,6 +295,11 @@ public class PhotoAlbum
 		{
 			if (other.nodeId != null)
 				return false;
+			if (creator == null)
+			{
+				if (other.creator != null) return false;
+			}
+			else if (!creator.equals(other.creator)) return false;
 			if (created == null)
 			{
 				if (other.created != null) return false;
@@ -318,7 +347,7 @@ public class PhotoAlbum
 	{
 		return "PhotoAlbum [nodeId=" + nodeId + ", name=" + name
 				+ ", description=" + description + ", location=" + location
-				+ ", created=" + created+ ", owner=" + owner + ", modified="
+				+ ", creator=" + creator+ ", created=" + created+ ", owner=" + owner + ", modified="
 				+ modified + ", likes="+ likes + "]";
 	}
 
