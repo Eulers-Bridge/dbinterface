@@ -162,7 +162,7 @@ public class UserEventHandlerTest
 		nADs.setInstitutionId((long)1);
 		createUserEvent=new CreateUserEvent(nADs);
 		UserCreatedEvent nace = userService.signUpNewUser(createUserEvent);
-		if (null==nace) fail("Not yet implemented");
+		assertNull("Not yet implemented",nace);
 		VerificationToken token=tokenRepo.findToken();
 		VerifyUserAccountEvent verifyUserAccountEvent=new VerifyUserAccountEvent("gnewitt@hotmail.com", token.getEncodedTokenString());
 		UserAccountVerifiedEvent test = userService.validateUserAccount(verifyUserAccountEvent);
@@ -331,8 +331,7 @@ public class UserEventHandlerTest
 		RequestReadUserEvent rnae=new RequestReadUserEvent("gnewitt2@hotmail.com");
 		assertEquals("1 == 1",rnae.getEmail(),"gnewitt2@hotmail.com");
 		ReadUserEvent rane=userService.requestReadUser(rnae);
-		if (null==rane)
-			fail("Not yet implemented");
+		assertNotNull("Not yet implemented",rane);
 	}
 
 	@Test
@@ -357,7 +356,7 @@ public class UserEventHandlerTest
 	{
 		DeleteUserEvent deleteUserEvent=new DeleteUserEvent("gnewitt@hotmail.com");
 		UserDeletedEvent nUDe = userService.deleteUser(deleteUserEvent);
-		if (null==nUDe)	fail("Not yet implemented");
+		assertNotNull("Not yet implemented",nUDe);
 	}
 
 	@Test
