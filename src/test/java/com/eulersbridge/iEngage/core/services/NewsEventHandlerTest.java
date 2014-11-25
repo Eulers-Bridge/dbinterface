@@ -251,13 +251,7 @@ public class NewsEventHandlerTest
 		assertTrue(nare.isInstitutionFound());
 		Iterable <NewsArticleDetails> artDets=nare.getArticles();
 		Iterator <NewsArticleDetails> iter=artDets.iterator();
-		int count=0;
-		while(iter.hasNext())
-		{
-			count++;
-			iter.next();
-		}
-		assertEquals(count,0);
+		assertFalse(iter.hasNext());
 	}
 		
 	@Test

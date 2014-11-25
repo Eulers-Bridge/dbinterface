@@ -132,7 +132,7 @@ public class InstitutionEventHandlerTest
 		nADs.setCountryName("Australia");
 		createInstitutionEvent=new CreateInstitutionEvent(nADs);
 		InstitutionCreatedEvent nace = instService.createInstitution(createInstitutionEvent);
-		if (null==nace) fail("Not yet implemented");
+		assertNotNull("Not yet implemented",nace);
 	}
 
 	/**
@@ -143,8 +143,7 @@ public class InstitutionEventHandlerTest
 		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(new Long(1));
 		assertEquals("1 == 1",rnae.getNodeId(),new Long(1));
 		ReadInstitutionEvent rane=(ReadInstitutionEvent) instService.requestReadInstitution(rnae);
-		if (null==rane)
-			fail("Not yet implemented");
+		assertNotNull("Not yet implemented",rane);
 	}
 
 	@Test
@@ -233,10 +232,10 @@ public class InstitutionEventHandlerTest
 	{
 		ReadInstitutionsEvent rie=new ReadInstitutionsEvent();
 		InstitutionsReadEvent institutions=instService.readInstitutions(rie);
-		if (null==institutions) fail("Not yet implemented");
+		assertNotNull("Not yet implemented",institutions);
 		rie=new ReadInstitutionsEvent((long)1);
 		institutions=instService.readInstitutions(rie);
-		if (null==institutions) fail("Not yet implemented");
+		assertNotNull("Not yet implemented",institutions);
 	}
 	
 	@Test

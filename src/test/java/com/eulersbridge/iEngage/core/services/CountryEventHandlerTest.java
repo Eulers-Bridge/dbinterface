@@ -71,7 +71,7 @@ public class CountryEventHandlerTest
 		cDs.setCountryName("United Kingdom");
 		createCountryEvent=new CreateCountryEvent(cDs);
 		CountryCreatedEvent nace = countryService.createCountry(createCountryEvent);
-		if (null==nace) fail("Not yet implemented");
+		assertNotNull("Not yet implemented",nace);
 	}
 
 	@Test
@@ -80,8 +80,7 @@ public class CountryEventHandlerTest
 		ReadCountryEvent rnae=new ReadCountryEvent(new Long(1));
 		assertEquals("1 == 1",rnae.getNodeId(),new Long(1));
 		CountryReadEvent rane=(CountryReadEvent) countryService.readCountry(rnae);
-		if (null==rane)
-			fail("Not yet implemented");
+		assertNotNull("Not yet implemented",rane);
 	}
 
 	@Test
@@ -102,14 +101,14 @@ public class CountryEventHandlerTest
 		
 		UpdateCountryEvent updateCountryEvent=new UpdateCountryEvent(cDs.getCountryId(), cDs);
 		UpdatedEvent nude = countryService.updateCountry(updateCountryEvent);
-		if (null==nude) fail("Not yet implemented");
+		assertNotNull("Not yet implemented",nude);
 	}
 
 	@Test
 	public void testDeleteCountry() {
 		DeleteCountryEvent deleteCountryEvent=new DeleteCountryEvent(new Long(1));
 		DeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
-		if (null==nUDe)	fail("Not yet implemented");
+		assertNotNull("Not yet implemented",nUDe);
 	}
 
 	@Test
@@ -127,7 +126,7 @@ public class CountryEventHandlerTest
 	{
 		ReadCountrysEvent rce=new ReadCountrysEvent(null);
 		CountrysReadEvent countrys=countryService.readCountrys(rce);
-		if (null==countrys) fail("Not yet implemented");
+		assertNotNull("Not yet implemented",countrys);
 	}
 
 }
