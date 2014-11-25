@@ -162,7 +162,7 @@ public class UserEventHandlerTest
 		nADs.setInstitutionId((long)1);
 		createUserEvent=new CreateUserEvent(nADs);
 		UserCreatedEvent nace = userService.signUpNewUser(createUserEvent);
-		assertNull("Not yet implemented",nace);
+		assertNotNull("Not yet implemented",nace);
 		VerificationToken token=tokenRepo.findToken();
 		VerifyUserAccountEvent verifyUserAccountEvent=new VerifyUserAccountEvent("gnewitt@hotmail.com", token.getEncodedTokenString());
 		UserAccountVerifiedEvent test = userService.validateUserAccount(verifyUserAccountEvent);
