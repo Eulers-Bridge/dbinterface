@@ -20,7 +20,7 @@ public class PhotoAlbums extends ResourceSupport
 	/**
 	 * @return the totalPhotos
 	 */
-	public Long getTotalPhotos()
+	public Long getTotalPhotoAlbums()
 	{
 		return totalPhotoAlbums;
 	}
