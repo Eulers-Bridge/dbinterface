@@ -150,7 +150,7 @@ public class PhotoAlbumsReadEvent extends ReadEvent
 	/**
 	 * @return the events
 	 */
-	public Collection<PhotoAlbumDetails> getEvents()
+	public Collection<PhotoAlbumDetails> getPhotoAlbums()
 	{
 		return events;
 	}
@@ -159,7 +159,7 @@ public class PhotoAlbumsReadEvent extends ReadEvent
 	 * @param events
 	 *            the events to set
 	 */
-	public void setEvents(Collection<PhotoAlbumDetails> articles)
+	public void setPhotoAlbums(Collection<PhotoAlbumDetails> articles)
 	{
 		this.events = articles;
 	}
