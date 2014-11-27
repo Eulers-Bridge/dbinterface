@@ -125,7 +125,8 @@ public class NewsFeedTest
 	{
 		Institution inst=nf.getInstitution();
 		String name="UCLA",campus="LA",state="California";
-		Institution inst2=DatabaseDataFixture.populateInst(name,campus,state , DatabaseDataFixture.populateCountryAust());
+		Long nodeId = 23l;
+		Institution inst2=DatabaseDataFixture.populateInst(nodeId,name,campus,state , DatabaseDataFixture.populateCountryAust());
 		nf.setInstitution(inst2);
 		assertEquals("",inst2.getName(),name);
 		assertEquals("",inst2.getCampus(),campus);

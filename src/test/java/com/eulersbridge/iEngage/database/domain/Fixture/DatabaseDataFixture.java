@@ -65,22 +65,27 @@ public class DatabaseDataFixture
 	public static Institution populateInstUniMelb()
 	{
 		Country country=populateCountryAust();
-		Institution inst=populateInst("University of Melbourne", "Parkville", "Victoria", country);
-		inst.setNodeId((long)1);
+		Long nodeId=1l;
+		Institution inst=populateInst(nodeId,"University of Melbourne", "Parkville", "Victoria", country);
 		return inst;
 	}
 	
 	public static Institution populateInstMonashUni()
 	{
 		Country country=populateCountryAust();
-		Institution inst=populateInst("Monash University", "Clayton", "Victoria", country);
-		inst.setNodeId((long)2);
+		Long nodeId=2l;
+		Institution inst=populateInst(nodeId,"Monash University", "Clayton", "Victoria", country);
 		return inst;
 	}
 	
-	public static Institution populateInst(String name,String campus,String state,Country country)
+	public static Institution populateInst(Long nodeId, String name,String campus,String state,Country country)
 	{
 		Institution inst=new Institution(name, campus, state, country);
+		inst.setNodeId(nodeId);
+		NewsFeed newsFeed=new NewsFeed();
+		newsFeed.setInstitution(inst);
+		newsFeed.setNodeId(nodeId+100);
+		inst.setNewsFeed(newsFeed);
 		return inst;
 	}
 	

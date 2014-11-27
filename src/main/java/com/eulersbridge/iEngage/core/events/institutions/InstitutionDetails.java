@@ -12,18 +12,41 @@ public class InstitutionDetails extends Details
 	private String campus;
 	private String state;
 	private String countryName;
+	private	Long newsFeedId;
 	
     private static Logger LOG = LoggerFactory.getLogger(InstitutionDetails.class);
 
+	/**
+	 * @return the nodeId
+	 */
+	public Long getNodeId()
+	{
+		return nodeId;
+	}
+	/**
+	 * @param nodeId the nodeId to set
+	 */
+	public void setNodeId(Long nodeId)
+	{
+		this.nodeId = nodeId;
+	}
+	/**
+	 * @return the newsFeedId
+	 */
+	public Long getNewsFeedId()
+	{
+		return newsFeedId;
+	}
+	/**
+	 * @param newsFeedId the newsFeedId to set
+	 */
+	public void setNewsFeedId(Long newsFeedId)
+	{
+		this.newsFeedId = newsFeedId;
+	}
 	public InstitutionDetails(Long id) 
 	{
 		this.nodeId=id;
-	}
-	public Long getInstitutionId() {
-		return nodeId;
-	}
-	public void setInstitutionId(Long institutionId) {
-		this.nodeId = institutionId;
 	}
 	public String getName() {
 		return name;
@@ -55,7 +78,7 @@ public class InstitutionDetails extends Details
 	{
 		StringBuffer buff=new StringBuffer("[ id = ");
 		String retValue;
-		buff.append(getInstitutionId());
+		buff.append(getNodeId());
 		buff.append(", name = ");
 		buff.append(getName());
 		buff.append(", campus = ");
@@ -88,6 +111,7 @@ public class InstitutionDetails extends Details
 			result = prime * result
 					+ ((countryName == null) ? 0 : countryName.hashCode());
 			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result + ((newsFeedId == null) ? 0 : newsFeedId.hashCode());
 			result = prime * result + ((state == null) ? 0 : state.hashCode());
 		}
 		return result;
@@ -128,6 +152,11 @@ public class InstitutionDetails extends Details
 				if (other.name != null)
 					return false;
 			} else if (!name.equals(other.name))
+				return false;
+			if (newsFeedId == null) {
+				if (other.newsFeedId != null)
+					return false;
+			} else if (!newsFeedId.equals(other.newsFeedId))
 				return false;
 			if (state == null) {
 				if (other.state != null)

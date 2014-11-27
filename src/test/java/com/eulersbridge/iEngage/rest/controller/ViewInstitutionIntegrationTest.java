@@ -116,7 +116,7 @@ public class ViewInstitutionIntegrationTest
 		InstitutionDetails inst=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
 		insts.add(inst);
 		InstitutionsReadEvent testData=new InstitutionsReadEvent(insts);
-		String returnedContent="[{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
+		String returnedContent="[{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
 		when (instService.readInstitutions(any(ReadInstitutionsEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institutions/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -124,7 +124,7 @@ public class ViewInstitutionIntegrationTest
 		.andExpect(jsonPath("$.[0].state",is(insts.get(0).getState())))
 		.andExpect(jsonPath("$.[0].campus",is(insts.get(0).getCampus())))
 		.andExpect(jsonPath("$.[0].country",is(insts.get(0).getCountryName())))
-		.andExpect(jsonPath("$.[0].institutionId",is(insts.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.[0].institutionId",is(insts.get(0).getNodeId().intValue())))
 		.andExpect(jsonPath("$.[0].links[0].rel",is("self")))
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
@@ -151,7 +151,7 @@ public class ViewInstitutionIntegrationTest
 		InstitutionDetails inst=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
 		insts.add(inst);
 		InstitutionsReadEvent testData=new InstitutionsReadEvent(insts);
-		String returnedContent="[{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
+		String returnedContent="[{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
 		when (instService.readInstitutions(any(ReadInstitutionsEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institutions/{countryId}",countryId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -159,7 +159,7 @@ public class ViewInstitutionIntegrationTest
 		.andExpect(jsonPath("$.[0].state",is(insts.get(0).getState())))
 		.andExpect(jsonPath("$.[0].campus",is(insts.get(0).getCampus())))
 		.andExpect(jsonPath("$.[0].country",is(insts.get(0).getCountryName())))
-		.andExpect(jsonPath("$.[0].institutionId",is(insts.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.[0].institutionId",is(insts.get(0).getNodeId().intValue())))
 		.andExpect(jsonPath("$.[0].links[0].rel",is("self")))
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
@@ -185,7 +185,7 @@ public class ViewInstitutionIntegrationTest
 		Long id=1l;
 		InstitutionDetails dets=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
 		ReadInstitutionEvent testData=new ReadInstitutionEvent(id, dets);
-		String returnedContent="{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
+		String returnedContent="{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.requestReadInstitution(any(RequestReadInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -193,7 +193,7 @@ public class ViewInstitutionIntegrationTest
 		.andExpect(jsonPath("$.state",is(dets.getState())))
 		.andExpect(jsonPath("$.campus",is(dets.getCampus())))
 		.andExpect(jsonPath("$.country",is(dets.getCountryName())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
@@ -218,7 +218,7 @@ public class ViewInstitutionIntegrationTest
 		Long id=1l;
 		InstitutionDetails dets=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
 		InstitutionDeletedEvent testData=new InstitutionDeletedEvent(id, dets);
-		String returnedContent="{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
+		String returnedContent="{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.deleteInstitution(any(DeleteInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/institution/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -226,7 +226,7 @@ public class ViewInstitutionIntegrationTest
 		.andExpect(jsonPath("$.state",is(dets.getState())))
 		.andExpect(jsonPath("$.campus",is(dets.getCampus())))
 		.andExpect(jsonPath("$.country",is(dets.getCountryName())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
@@ -244,7 +244,7 @@ public class ViewInstitutionIntegrationTest
 		when (instService.readNewsFeed(any(ReadNewsFeedEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(content().string(returnedContent))
@@ -276,7 +276,7 @@ public class ViewInstitutionIntegrationTest
 		when (instService.createNewsFeed(any(CreateNewsFeedEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(content().string(returnedContent))
@@ -318,7 +318,7 @@ public class ViewInstitutionIntegrationTest
 		InstitutionDetails dets=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
 		InstitutionUpdatedEvent testData=new InstitutionUpdatedEvent(id, dets);
 		String content="{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\"}";
-		String returnedContent="{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
+		String returnedContent="{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.updateInstitution(any(UpdateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -326,7 +326,7 @@ public class ViewInstitutionIntegrationTest
 		.andExpect(jsonPath("$.state",is(dets.getState())))
 		.andExpect(jsonPath("$.campus",is(dets.getCampus())))
 		.andExpect(jsonPath("$.country",is(dets.getCountryName())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
@@ -392,7 +392,7 @@ public class ViewInstitutionIntegrationTest
 		InstitutionDetails dets=DatabaseDataFixture.populateInstUniMelb().toInstDetails();
 		InstitutionCreatedEvent testData=new InstitutionCreatedEvent(id, dets);
 		String content="{\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\"}";
-		String returnedContent="{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
+		String returnedContent="{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.createInstitution(any(CreateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -400,7 +400,7 @@ public class ViewInstitutionIntegrationTest
 		.andExpect(jsonPath("$.state",is(dets.getState())))
 		.andExpect(jsonPath("$.campus",is(dets.getCampus())))
 		.andExpect(jsonPath("$.country",is(dets.getCountryName())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isCreated());

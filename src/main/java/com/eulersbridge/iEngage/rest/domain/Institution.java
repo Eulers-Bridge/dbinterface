@@ -12,111 +12,138 @@ import com.eulersbridge.iEngage.rest.controller.InstitutionController;
 public class Institution extends ResourceSupport
 {
 	Long institutionId;
+	Long newsFeedId;
 	String name;
 	String state;
 	String campus;
 	String country;
-	
-    private static Logger LOG = LoggerFactory.getLogger(Institution.class);
-	
+
+	/**
+	 * @return the newsFeedId
+	 */
+	public Long getNewsFeedId()
+	{
+		return newsFeedId;
+	}
+
+	private static Logger LOG = LoggerFactory.getLogger(Institution.class);
+
 	public Institution()
 	{
 	}
-	
+
 	public Institution(Long id)
 	{
-		this.institutionId=id;
-	}
-	
-	public Long getInstitutionId() {
-		return institutionId;
-	}
-
-	public void setId(Long id) {
 		this.institutionId = id;
 	}
 
-	public String getName() {
+	public Long getInstitutionId()
+	{
+		return institutionId;
+	}
+
+	public void setId(Long id)
+	{
+		this.institutionId = id;
+	}
+
+	public String getName()
+	{
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
 
-	public void setCampus(String campus) 
+	public void setCampus(String campus)
 	{
-		this.campus=campus;
-		
+		this.campus = campus;
+
 	}
-	public String getCampus() {
+
+	public String getCampus()
+	{
 		return campus;
 	}
 
-	public String getState() {
+	public String getState()
+	{
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(String state)
+	{
 		this.state = state;
 	}
 
-	public String getCountry() {
+	public String getCountry()
+	{
 		return country;
 	}
 
-	public void setCountry(String country) {
+	public void setCountry(String country)
+	{
 		this.country = country;
 	}
 
-	public Institution(Long id,String name)
+	public Institution(Long id, String name)
 	{
-		this.institutionId=id;
-		this.name=name;
+		this.institutionId = id;
+		this.name = name;
 	}
-	public InstitutionDetails toInstitutionDetails() 
-	  {
+
+	public InstitutionDetails toInstitutionDetails()
+	{
 		InstitutionDetails details = new InstitutionDetails(institutionId);
 
-	    details.setName(getName());
-	    details.setCampus(getCampus());
-	    details.setState(getState());
-	    details.setCountryName(getCountry());
+		details.setName(getName());
+		details.setCampus(getCampus());
+		details.setState(getState());
+		details.setCountryName(getCountry());
 
-	    return details;
-	  }
+		return details;
+	}
 
-	  // {!begin fromOrderDetails}
-	  public static Institution fromInstDetails(InstitutionDetails readInstitute) {
-		  Institution inst = new Institution();
+	// {!begin fromOrderDetails}
+	public static Institution fromInstDetails(InstitutionDetails readInstitute)
+	{
+		Institution inst = new Institution();
 
-		inst.institutionId = readInstitute.getInstitutionId();
-	    inst.name = readInstitute.getName();
-	    inst.campus = readInstitute.getCampus();
-	    inst.state = readInstitute.getState();
-	    inst.country = readInstitute.getCountryName();
-	    
-	    String simpleName=Institution.class.getSimpleName();
-	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
+		inst.institutionId = readInstitute.getNodeId();
+		inst.name = readInstitute.getName();
+		inst.campus = readInstitute.getCampus();
+		inst.state = readInstitute.getState();
+		inst.country = readInstitute.getCountryName();
+		inst.newsFeedId = readInstitute.getNewsFeedId();
 
-	    
-	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
-	    //this section is all that is actually needed in our model to add hateoas support.
+		String simpleName = Institution.class.getSimpleName();
+		String name = simpleName.substring(0, 1).toLowerCase()
+				+ simpleName.substring(1);
 
-	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
-	    //We have explicitly avoided that.
-	    // {!begin selfRel}
-	    inst.add(linkTo(InstitutionController.class).slash(name).slash(inst.institutionId).withSelfRel());
-	    // {!end selfRel}
+		// TODOCUMENT. Adding the library, the above extends ResourceSupport and
+		// this section is all that is actually needed in our model to add
+		// hateoas support.
 
-	    return inst;
-	  }
+		// Much of the rest of the framework is helping deal with the blending
+		// of domains that happens in many spring apps
+		// We have explicitly avoided that.
+		// {!begin selfRel}
+		inst.add(linkTo(InstitutionController.class).slash(name)
+				.slash(inst.institutionId).withSelfRel());
+		// {!end selfRel}
+
+		return inst;
+	}
 
 	public String toString()
 	{
-		StringBuffer buff=new StringBuffer("[ id = ");
+		StringBuffer buff = new StringBuffer("[ id = ");
 		String retValue;
 		buff.append(getId());
+		buff.append(", newsFeedId = ");
+		buff.append(getNewsFeedId());
 		buff.append(", name = ");
 		buff.append(getName());
 		buff.append(", campus = ");
@@ -127,8 +154,8 @@ public class Institution extends ResourceSupport
 		buff.append(getCountry());
 		buff.append(", yearOfBirth = ");
 		buff.append(" ]");
-		retValue=buff.toString();
-		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
+		retValue = buff.toString();
+		if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
 		return retValue;
 	}
 
