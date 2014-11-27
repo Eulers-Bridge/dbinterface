@@ -34,6 +34,8 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
@@ -268,6 +270,61 @@ public class PhotoEventHandler implements PhotoService
         	photoDeletedEvent = new PhotoAlbumDeletedEvent(photoAlbumId);
         }
         return photoDeletedEvent;
+	}
+
+	@Override
+	public PhotoAlbumsReadEvent findPhotoAlbums(
+			ReadPhotoAlbumsEvent findPhotoAlbumsEvent, Direction dir,
+			int pageNumber, int pageLength)
+	{
+        if (LOG.isDebugEnabled()) LOG.debug("Entered findPhotoAlbums findPhotoAlbumsEvent = "+findPhotoAlbumsEvent);
+        Long ownerId = findPhotoAlbumsEvent.getOwnerId();
+		Page <PhotoAlbum>photoAlbums=null;
+		ArrayList<PhotoAlbumDetails> dets=new ArrayList<PhotoAlbumDetails>();
+        
+		PhotoAlbumsReadEvent result=null;
+		
+		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
+		Pageable pageable=new PageRequest(pageNumber,pageLength,dir,"p.date");
+		photoAlbums=photoAlbumRepository.findByOwnerId(ownerId, pageable);
+
+		if (photoAlbums!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+photoAlbums.getTotalElements()+" total pages ="+photoAlbums.getTotalPages());
+			Iterator<PhotoAlbum> iter=photoAlbums.iterator();
+			while (iter.hasNext())
+			{
+				PhotoAlbum na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getName());
+				PhotoAlbumDetails det=na.toPhotoAlbumDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found ownerId.
+				PhotoAlbum inst=photoAlbumRepository.findOne(ownerId);
+				if ( (null==inst) || (null==inst.getNodeId()) )
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ownerId)");
+					result=PhotoAlbumsReadEvent.institutionNotFound();
+				}
+				else
+				{	
+					result=new PhotoAlbumsReadEvent(ownerId,dets,photoAlbums.getTotalElements(),photoAlbums.getTotalPages());
+				}
+			}
+			else
+			{	
+				result=new PhotoAlbumsReadEvent(ownerId,dets,photoAlbums.getTotalElements(),photoAlbums.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByOwnerId");
+			result=PhotoAlbumsReadEvent.institutionNotFound();
+		}
+		return result;
 	}
 
 }

@@ -5,8 +5,12 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
@@ -193,5 +197,20 @@ public class PhotoAlbum extends ResourceSupport
 
         return photoAlbum;
 	}
-
+	
+	public static Iterator<PhotoAlbum> toPhotoAlbumsIterator( Iterator<PhotoAlbumDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <PhotoAlbum> photoAlbums=new ArrayList<PhotoAlbum>();
+		while(iter.hasNext())
+		{
+			PhotoAlbumDetails dets=iter.next();
+			PhotoAlbum thisPhotoAlbum=PhotoAlbum.fromPhotoAlbumDetails(dets);
+			Link self = thisPhotoAlbum.getLink("self");
+			thisPhotoAlbum.removeLinks();
+			thisPhotoAlbum.add(self);
+			photoAlbums.add(thisPhotoAlbum);		
+		}
+		return photoAlbums.iterator();
+	}
 }

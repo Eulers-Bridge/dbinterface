@@ -23,4 +23,5 @@ public class DatabaseDomainConstants
 	public static final String INSTITUTION = "Institution";
 	public static final String NEWS_FEED = "NewsFeed";
 	public static final String PHOTO = "Photo";
+	public static final String PHOTO_ALBUM = "PhotoAlbum";
 }

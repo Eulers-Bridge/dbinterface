@@ -20,6 +20,8 @@ import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 
 /**
  * @author Greg Newitt
@@ -42,5 +44,5 @@ public interface PhotoService
 	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
 	public DeletedEvent deletePhotoAlbum(DeletePhotoAlbumEvent deletePhotoAlbumEvent);
 	public PhotosReadEvent findPhotos(ReadPhotosEvent findPhotoEvent,Direction dir,int pageNumber,int pageLength);
-//	public PhotoAlbumsReadEvent findPhotoAlbums(ReadPhotosEvent findPhotoAlbumsEvent,Direction dir,int pageNumber,int pageLength);
+	public PhotoAlbumsReadEvent findPhotoAlbums(ReadPhotoAlbumsEvent findPhotoAlbumsEvent,Direction dir,int pageNumber,int pageLength);
 }

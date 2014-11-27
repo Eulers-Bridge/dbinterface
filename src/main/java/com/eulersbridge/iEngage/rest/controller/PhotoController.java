@@ -27,7 +27,6 @@ import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
@@ -36,10 +35,13 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.Photo;
 import com.eulersbridge.iEngage.rest.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.rest.domain.PhotoAlbums;
 import com.eulersbridge.iEngage.rest.domain.Photos;
 
 /**
@@ -343,6 +345,61 @@ public class PhotoController
 			Photos photos = Photos.fromPhotosIterator(photoIter,
 					photoEvent.getTotalPhotos(), photoEvent.getTotalPages());
 			response = new ResponseEntity<Photos>(photos, HttpStatus.OK);
+		}
+		return response;
+	}
+
+	/**
+	 * Is passed all the necessary data to read photoAlbums from the database. The
+	 * request must be a GET with the ownerId presented as the final portion of
+	 * the URL.
+	 * <p/>
+	 * This method will return the photoAlbums read from the database.
+	 * 
+	 * @param ownerId
+	 *            the ownerId of the photoAlbum objects to be read.
+	 * @return the photoAlbums.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_ALBUMS_LABEL
+			+ "/{ownerId}")
+	public @ResponseBody ResponseEntity<PhotoAlbums> findPhotoAlbums(
+			@PathVariable(value = "") Long ownerId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve photoAlbums for owner " + ownerId + '.');
+
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		return getThePhotoAlbums(ownerId, sortDirection, pageNumber, pageLength);
+	}
+
+	private @ResponseBody ResponseEntity<PhotoAlbums> getThePhotoAlbums(Long ownerId,
+			Direction sortDirection, int pageNumber, int pageLength)
+	{
+		ResponseEntity<PhotoAlbums> response;
+
+		PhotoAlbumsReadEvent photoAlbumEvent = photoService.findPhotoAlbums(
+				new ReadPhotoAlbumsEvent(ownerId), sortDirection, pageNumber,
+				pageLength);
+
+		if (!photoAlbumEvent.isEntityFound())
+		{
+			response = new ResponseEntity<PhotoAlbums>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Iterator<PhotoAlbum> photoAlbumIter = PhotoAlbum.toPhotoAlbumsIterator(photoAlbumEvent.getPhotoAlbums().iterator());
+			PhotoAlbums photoAlbums = PhotoAlbums.fromPhotoAlbumsIterator(photoAlbumIter,
+					photoAlbumEvent.getTotalEvents(), photoAlbumEvent.getTotalPages());
+			response = new ResponseEntity<PhotoAlbums>(photoAlbums, HttpStatus.OK);
 		}
 		return response;
 	}
