@@ -52,7 +52,9 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -527,7 +529,7 @@ public class PhotoControllerTest
 	}
 
 	@Test
-	public final void testFindElectionsZeroArticles() throws Exception 
+	public final void testFindPhotosZeroPhotos() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotos()");
 		Long instId=11l;
@@ -540,7 +542,7 @@ public class PhotoControllerTest
 	}
 
 	@Test
-	public final void testFindElectionsNoInst() throws Exception 
+	public final void testFindPhotosNoOwner() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotos()");
 		Long instId=11l;
@@ -551,4 +553,82 @@ public class PhotoControllerTest
 		.andExpect(status().isNotFound())	;
 	}
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#findPhotos(java.lang.Long, java.lang.String, java.lang.String, java.lang.String)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testFindPhotoAlbums() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotoAlbums()");
+		Long instId=1l;
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.PhotoAlbum> dets=DatabaseDataFixture.populatePhotoAlbums();
+		Iterable<com.eulersbridge.iEngage.database.domain.PhotoAlbum> photos=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.PhotoAlbum> iter=photos.iterator();
+		ArrayList<PhotoAlbumDetails> photoDets=new ArrayList<PhotoAlbumDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.PhotoAlbum article=iter.next();
+			photoDets.add(article.toPhotoAlbumDetails());
+		}
+		PhotoAlbumsReadEvent testData=new PhotoAlbumsReadEvent(instId,photoDets);
+		testData.setTotalPages(1);
+		testData.setTotalEvents(new Long(photoDets.size()));
+		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$totalPhotoAlbums",is(testData.getTotalEvents().intValue())))
+		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("$photoAlbums[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$photoAlbums[0].name",is(photoDets.get(0).getName())))
+		.andExpect(jsonPath("$photoAlbums[0].description",is(photoDets.get(0).getDescription())))
+		.andExpect(jsonPath("$photoAlbums[0].location",is(photoDets.get(0).getLocation())))
+		.andExpect(jsonPath("$photoAlbums[0].created",is(photoDets.get(0).getCreated())))
+		.andExpect(jsonPath("$photoAlbums[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("$photoAlbums[0].modified",is(photoDets.get(0).getModified())))
+		.andExpect(jsonPath("$photoAlbums[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$photoAlbums[1].name",is(photoDets.get(1).getName())))
+		.andExpect(jsonPath("$photoAlbums[1].description",is(photoDets.get(1).getDescription())))
+		.andExpect(jsonPath("$photoAlbums[1].location",is(photoDets.get(1).getLocation())))
+		.andExpect(jsonPath("$photoAlbums[1].created",is(photoDets.get(1).getCreated())))
+		.andExpect(jsonPath("$photoAlbums[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
+		.andExpect(jsonPath("$photoAlbums[1].modified",is(photoDets.get(1).getModified())))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindPhotoAlbumsZeroAlbums() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotoAlbums()");
+		Long instId=11l;
+		ArrayList<PhotoAlbumDetails> photoAlbumDets=new ArrayList<PhotoAlbumDetails>(); 
+		PhotoAlbumsReadEvent testData=new PhotoAlbumsReadEvent(instId,photoAlbumDets);
+		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindPhotoAlbumsNoInstitution() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotoAlbums()");
+		Long instId=11l;
+		PhotoAlbumsReadEvent testData= PhotoAlbumsReadEvent.institutionNotFound();
+		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+	@Test
+	public final void testFindPhotoAlbumsNoNewsFeed() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotoAlbums()");
+		Long instId=11l;
+		PhotoAlbumsReadEvent testData= PhotoAlbumsReadEvent.newsFeedNotFound();
+		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
 }

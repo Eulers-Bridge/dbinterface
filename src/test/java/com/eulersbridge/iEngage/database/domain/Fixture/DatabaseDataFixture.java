@@ -216,6 +216,15 @@ public class DatabaseDataFixture
 		return photoAlbum;
 	}
 	
+	public static HashMap<Long, PhotoAlbum> populatePhotoAlbums()
+	{
+		HashMap<Long, PhotoAlbum> photoAlbums=new HashMap<Long, PhotoAlbum>();
+		PhotoAlbum initialInst=populatePhotoAlbum1();
+		photoAlbums.put(initialInst.getNodeId(), initialInst);
+		initialInst=populatePhotoAlbum2();
+		photoAlbums.put(initialInst.getNodeId(), initialInst);
+		return photoAlbums;
+	}
 	public static HashMap<Long,Country> populateCountries()
 	{
 		HashMap<Long, Country> countrys=new HashMap<Long, Country>();
