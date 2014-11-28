@@ -181,6 +181,15 @@ public class DatabaseDataFixture
 		return photo;
 	}
 	
+	public static HashMap<Long, Photo> populatePhotos()
+	{
+		HashMap<Long, Photo> photos=new HashMap<Long, Photo>();
+		Photo initialInst=populatePhoto1();
+		photos.put(initialInst.getNodeId(), initialInst);
+		initialInst=populatePhoto2();
+		photos.put(initialInst.getNodeId(), initialInst);
+		return photos;
+	}
 	public static PhotoAlbum populatePhotoAlbum1()
 	{
 		Long nodeId=1l;
