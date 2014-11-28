@@ -21,7 +21,7 @@ public class PhotoAlbumsReadEvent extends ReadEvent
 	private Long totalEvents;
 	private Integer totalPages;
 
-	private Collection<PhotoAlbumDetails> events;
+	private Collection<PhotoAlbumDetails> photoAlbums;
 
 	public PhotoAlbumsReadEvent()
 	{
@@ -29,11 +29,11 @@ public class PhotoAlbumsReadEvent extends ReadEvent
 	}
 
 	public PhotoAlbumsReadEvent(Long instId,
-			Collection<PhotoAlbumDetails> articles)
+			Collection<PhotoAlbumDetails> photoAlbums)
 	{
 		super(1l);
 		this.instId = instId;
-		this.events = articles;
+		this.photoAlbums = photoAlbums;
 	}
 
 	public PhotoAlbumsReadEvent(Long institutionId,
@@ -148,20 +148,20 @@ public class PhotoAlbumsReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @return the events
+	 * @return the photoAlbums
 	 */
 	public Collection<PhotoAlbumDetails> getPhotoAlbums()
 	{
-		return events;
+		return photoAlbums;
 	}
 
 	/**
-	 * @param events
-	 *            the events to set
+	 * @param photoAlbums
+	 *            the photoAlbums to set
 	 */
 	public void setPhotoAlbums(Collection<PhotoAlbumDetails> articles)
 	{
-		this.events = articles;
+		this.photoAlbums = articles;
 	}
 
 	public static PhotoAlbumsReadEvent newsFeedNotFound()
