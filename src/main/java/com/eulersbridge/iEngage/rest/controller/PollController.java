@@ -111,7 +111,7 @@ public class PollController
 
 	// Update
 	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL
-			+ "{pollId}")
+			+ "/{pollId}")
 	public @ResponseBody ResponseEntity<Poll> updatePoll(
 			@PathVariable Long pollId, @RequestBody Poll poll)
 	{
@@ -148,15 +148,23 @@ public class PollController
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to delete poll. " + pollId);
+		ResponseEntity<Boolean> response;
 		DeletedEvent pollDeletedEvent = pollService
 				.deletePoll(new DeletePollEvent(pollId));
-		Boolean isDeletionCompleted = Boolean.valueOf(pollDeletedEvent
-				.isDeletionCompleted());
-		return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+		
+		if (pollDeletedEvent.isDeletionCompleted())
+			response = new ResponseEntity<Boolean>(
+					pollDeletedEvent.isDeletionCompleted(), HttpStatus.OK);
+		else if (pollDeletedEvent.isEntityFound())
+			response = new ResponseEntity<Boolean>(
+					pollDeletedEvent.isDeletionCompleted(), HttpStatus.GONE);
+		else response = new ResponseEntity<Boolean>(
+				pollDeletedEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
+		return response;
 	}
 
 	// like
-	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.NEWS_ARTICLE_LABEL
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL
 			+ "/{pollId}/likedBy/{email}/")
 	public @ResponseBody ResponseEntity<Boolean> likePoll(
 			@PathVariable Long pollId, @PathVariable String email)
@@ -183,7 +191,7 @@ public class PollController
 	}
 
 	// unlike
-	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.NEWS_ARTICLE_LABEL
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL
 			+ "/{pollId}/unlikedBy/{email}/")
 	public @ResponseBody ResponseEntity<Boolean> unlikePoll(
 			@PathVariable Long pollId, @PathVariable String email)
@@ -210,7 +218,7 @@ public class PollController
 	}
 
 	// likes
-	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.NEWS_ARTICLE_LABEL
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POLL_LABEL
 			+ "/{pollId}" + ControllerConstants.LIKES_LABEL)
 	public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
 			@PathVariable Long pollId,
