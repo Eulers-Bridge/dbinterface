@@ -206,7 +206,7 @@ public class PhotoControllerTest
 	@Test
 	public final void testCreatePhotoInvalidContent() throws Exception 
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(dets.getNodeId(), dets);
 		String content="{\"url1\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
@@ -219,7 +219,7 @@ public class PhotoControllerTest
 	@Test
 	public final void testCreatePhotoNoContent() throws Exception 
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(dets.getNodeId(), dets);
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
