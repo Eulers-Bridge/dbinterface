@@ -14,7 +14,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  */
 
 public class Poll extends ResourceSupport{
-    private Long pollId;
+    private Long nodeId;
     private String question;
     private String answers;
     private Long start;
@@ -29,30 +29,31 @@ public class Poll extends ResourceSupport{
         String simpleName=Poll.class.getSimpleName();
         String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 
-        poll.setPollId(pollDetails.getPollId());
+        poll.setNodeId(pollDetails.getPollId());
         poll.setQuestion(pollDetails.getQuestion());
         poll.setAnswers(pollDetails.getAnswers());
         poll.setStart(pollDetails.getStart());
         poll.setDuration(pollDetails.getDuration());
         poll.setNewsFeedId(pollDetails.getOwnerId());
+        poll.setCreatorId(pollDetails.getCreatorId());
 
 	    // {!begin selfRel}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.getPollId()).withSelfRel());
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.getNodeId()).withSelfRel());
 	    // {!end selfRel}
 	    // {!begin previous}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.PREVIOUS).withRel(RestDomainConstants.PREVIOUS_LABEL));
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.PREVIOUS).withRel(RestDomainConstants.PREVIOUS_LABEL));
 	    // {!end previous}
 	    // {!begin next}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.NEXT).withRel(RestDomainConstants.NEXT_LABEL));
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.NEXT).withRel(RestDomainConstants.NEXT_LABEL));
 	    // {!end next}
 	    // {!begin likedBy}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.LIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.LIKEDBY_LABEL));
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.LIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.LIKEDBY_LABEL));
 	    // {!end likedBy}
 	    // {!begin unlikedBy}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.UNLIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.UNLIKEDBY_LABEL));
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.UNLIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.UNLIKEDBY_LABEL));
 	    // {!end unlikedBy}
 	    // {!begin likes}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.pollId).slash(RestDomainConstants.LIKES).withRel(RestDomainConstants.LIKES_LABEL));
+        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.LIKES).withRel(RestDomainConstants.LIKES_LABEL));
 	    // {!end likes}
 	    // {!begin readAll}
         poll.add(linkTo(PollController.class).slash(name+'s').withRel(RestDomainConstants.READALL_LABEL));
@@ -64,7 +65,7 @@ public class Poll extends ResourceSupport{
     public PollDetails toPollDetails(){
         PollDetails pollDetails = new PollDetails();
 //        BeanUtils.copyProperties(pollDetails, this);
-        pollDetails.setPollId(this.getPollId());
+        pollDetails.setPollId(this.getNodeId());
         pollDetails.setQuestion(this.getQuestion());
         pollDetails.setAnswers(this.getAnswers());
         pollDetails.setStart(this.getStart());
@@ -74,12 +75,12 @@ public class Poll extends ResourceSupport{
         return pollDetails;
     }
 
-    public Long getPollId() {
-        return pollId;
+    public Long getNodeId() {
+        return nodeId;
     }
 
-    public void setPollId(Long pollId) {
-        this.pollId = pollId;
+    public void setNodeId(Long pollId) {
+        this.nodeId = pollId;
     }
 
     public String getQuestion() {
