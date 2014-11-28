@@ -41,9 +41,11 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
+import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 
@@ -59,6 +61,8 @@ public class PhotoEventHandlerTest
 	PhotoRepository photoRepository;
     @Mock
 	PhotoAlbumRepository photoAlbumRepository;
+    @Mock
+    OwnerRepository ownerRepository;
 
     PhotoEventHandler service;
 
@@ -70,7 +74,7 @@ public class PhotoEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new PhotoEventHandler(photoRepository,photoAlbumRepository);
+		service=new PhotoEventHandler(photoRepository,photoAlbumRepository,ownerRepository);
 	}
 
 	/**
@@ -90,9 +94,9 @@ public class PhotoEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CreatingPhoto()");
 		Photo testData=DatabaseDataFixture.populatePhoto1();
-		Photo testPhoto=new Photo();
-		testPhoto.setNodeId(testData.getOwner().getNodeId());
-		when(photoRepository.findOne(any(Long.class))).thenReturn(testPhoto);
+		Owner testOwner=new Owner();
+		testOwner.setNodeId(testData.getOwner().getNodeId());
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
 		when(photoRepository.save(any(Photo.class))).thenReturn(testData);
 		PhotoDetails dets=testData.toPhotoDetails();
 		CreatePhotoEvent createPhotoEvent=new CreatePhotoEvent(dets);
@@ -103,6 +107,21 @@ public class PhotoEventHandlerTest
 		assertNotNull(evtData.getNodeId());
 	}
 
+	@Test
+	public final void testCreatePhotoOwnerNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CreatingPhoto()");
+		Photo testData=DatabaseDataFixture.populatePhoto1();
+		Owner testOwner=null;
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+		PhotoDetails dets=testData.toPhotoDetails();
+		CreatePhotoEvent createPhotoEvent=new CreatePhotoEvent(dets);
+		PhotoCreatedEvent evtData = service.createPhoto(createPhotoEvent);
+		Details returnedDets = evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isOwnerFound());
+		assertEquals(evtData.getNodeId(),testData.getOwner().getNodeId());
+	}
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#createPhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent)}.
 	 */
@@ -111,9 +130,9 @@ public class PhotoEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CreatingPhotoAlbum()");
 		PhotoAlbum testData=DatabaseDataFixture.populatePhotoAlbum1();
-		Photo testPhoto=new Photo();
-		testPhoto.setNodeId(testData.getOwner().getNodeId());
-		when(photoRepository.findOne(any(Long.class))).thenReturn(testPhoto);
+		Owner testOwner=new Owner();
+		testOwner.setNodeId(testData.getOwner().getNodeId());
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
 		when(photoAlbumRepository.save(any(PhotoAlbum.class))).thenReturn(testData);
 		PhotoAlbumDetails dets=testData.toPhotoAlbumDetails();
 		CreatePhotoAlbumEvent createPhotoAlbumEvent=new CreatePhotoAlbumEvent(dets);
@@ -122,6 +141,21 @@ public class PhotoEventHandlerTest
 		assertEquals(testData.toPhotoAlbumDetails(),returnedDets);
 		assertEquals(testData.getNodeId(),returnedDets.getNodeId());
 		assertNotNull(returnedDets.getNodeId());
+	}
+	@Test
+	public final void testCreatePhotoAlbumOwnerNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CreatingPhotoAlbum()");
+		PhotoAlbum testData=DatabaseDataFixture.populatePhotoAlbum1();
+		Owner testOwner=null;
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+		PhotoAlbumDetails dets=testData.toPhotoAlbumDetails();
+		CreatePhotoAlbumEvent createPhotoAlbumEvent=new CreatePhotoAlbumEvent(dets);
+		PhotoAlbumCreatedEvent evtData = service.createPhotoAlbum(createPhotoAlbumEvent);
+		Details returnedDets = evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isOwnerFound());
+		assertEquals(evtData.getOwnerId(),testData.getOwner().getNodeId());
 	}
 
 	/**
