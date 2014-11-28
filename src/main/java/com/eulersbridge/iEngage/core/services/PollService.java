@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
 
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -23,4 +24,8 @@ public interface PollService {
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public UpdatedEvent updatePoll(UpdatePollEvent updatePollEvent);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public PollsReadEvent findPolls(ReadPollsEvent readPollsEvent,
+			Direction sortDirection, int pageNumber, int pageLength);
 }

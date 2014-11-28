@@ -1,10 +1,14 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.rest.controller.PollController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -75,6 +79,21 @@ public class Poll extends ResourceSupport{
         return pollDetails;
     }
 
+	public static Iterator<Poll> toPollsIterator( Iterator<PollDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <Poll> polls=new ArrayList<Poll>();
+		while(iter.hasNext())
+		{
+			PollDetails dets=iter.next();
+			Poll thisPoll=Poll.fromPollDetails(dets);
+			Link self = thisPoll.getLink("self");
+			thisPoll.removeLinks();
+			thisPoll.add(self);
+			polls.add(thisPoll);		
+		}
+		return polls.iterator();
+	}
     public Long getNodeId() {
         return nodeId;
     }

@@ -13,6 +13,7 @@ import com.eulersbridge.iEngage.core.services.PollService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.Poll;
+import com.eulersbridge.iEngage.rest.domain.Polls;
 import com.eulersbridge.iEngage.rest.domain.User;
 
 import org.slf4j.Logger;
@@ -70,6 +71,56 @@ public class PollController
 		{
 			return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
 		}
+	}
+
+	/**
+	 * Is passed all the necessary data to read polls from the database. The
+	 * request must be a GET with the ownerId presented as the final portion of
+	 * the URL.
+	 * <p/>
+	 * This method will return the polls read from the database.
+	 * 
+	 * @param ownerId
+	 *            the ownerId of the poll objects to be read.
+	 * @return the polls.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_ALBUMS_LABEL
+			+ "/{ownerId}")
+	public @ResponseBody ResponseEntity<Polls> findPolls(
+			@PathVariable(value = "") Long ownerId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve photoAlbums for owner " + ownerId + '.');
+
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+
+		ResponseEntity<Polls> response;
+
+		PollsReadEvent pollEvent = pollService.findPolls(
+				new ReadPollsEvent(ownerId), sortDirection, pageNumber,
+				pageLength);
+
+		if (!pollEvent.isEntityFound())
+		{
+			response = new ResponseEntity<Polls>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Iterator<Poll> pollIter = Poll.toPollsIterator(pollEvent.getPolls().iterator());
+			Polls polls = Polls.fromPollsIterator(pollIter,
+					pollEvent.getTotalEvents(), pollEvent.getTotalPages());
+			response = new ResponseEntity<Polls>(polls, HttpStatus.OK);
+		}
+		return response;
 	}
 
 	// Create

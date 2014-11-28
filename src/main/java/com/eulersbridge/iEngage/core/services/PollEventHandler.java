@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -11,6 +14,10 @@ import com.eulersbridge.iEngage.database.repository.PollRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * @author Yikai Gong
@@ -123,5 +130,59 @@ public class PollEventHandler implements PollService
 					result.toPollDetails());
 		}
 	    return resultEvt;		
+	}
+
+	@Override
+	public PollsReadEvent findPolls(ReadPollsEvent readPollsEvent,
+			Direction dir, int pageNumber, int pageLength)
+	{
+        if (LOG.isDebugEnabled()) LOG.debug("Entered findPolls readPollsEvent = "+readPollsEvent);
+        Long ownerId = readPollsEvent.getOwnerId();
+		Page <Poll>polls=null;
+		ArrayList<PollDetails> dets=new ArrayList<PollDetails>();
+        
+		PollsReadEvent result=null;
+		
+		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
+		Pageable pageable=new PageRequest(pageNumber,pageLength,dir,"p.date");
+		polls=pollRepository.findByOwnerId(ownerId, pageable);
+
+		if (polls!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+polls.getTotalElements()+" total pages ="+polls.getTotalPages());
+			Iterator<Poll> iter=polls.iterator();
+			while (iter.hasNext())
+			{
+				Poll na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getQuestion());
+				PollDetails det=na.toPollDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found ownerId.
+				Poll inst=pollRepository.findOne(ownerId);
+				if ( (null==inst) || (null==inst.getNodeId()) )
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ownerId)");
+					result=PollsReadEvent.institutionNotFound();
+				}
+				else
+				{	
+					result=new PollsReadEvent(ownerId,dets,polls.getTotalElements(),polls.getTotalPages());
+				}
+			}
+			else
+			{	
+				result=new PollsReadEvent(ownerId,dets,polls.getTotalElements(),polls.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByOwnerId");
+			result=PollsReadEvent.institutionNotFound();
+		}
+		return result;
 	}
 }
