@@ -19,7 +19,7 @@ public class Poll extends ResourceSupport{
     private String answers;
     private Long start;
     private Long duration;
-    private Long newsFeedId;
+    private Long ownerId;
     private Long creatorId;
 
     private static Logger LOG = LoggerFactory.getLogger(Poll.class);
@@ -34,7 +34,7 @@ public class Poll extends ResourceSupport{
         poll.setAnswers(pollDetails.getAnswers());
         poll.setStart(pollDetails.getStart());
         poll.setDuration(pollDetails.getDuration());
-        poll.setNewsFeedId(pollDetails.getOwnerId());
+        poll.setOwnerId(pollDetails.getOwnerId());
         poll.setCreatorId(pollDetails.getCreatorId());
 
 	    // {!begin selfRel}
@@ -70,7 +70,7 @@ public class Poll extends ResourceSupport{
         pollDetails.setAnswers(this.getAnswers());
         pollDetails.setStart(this.getStart());
         pollDetails.setDuration(this.getDuration());
-        pollDetails.setOwnerId(getNewsFeedId());
+        pollDetails.setOwnerId(getOwnerId());
         if (LOG.isTraceEnabled()) LOG.trace("pollDetails "+pollDetails);
         return pollDetails;
     }
@@ -116,19 +116,19 @@ public class Poll extends ResourceSupport{
     }
 
 	/**
-	 * @return the newsFeedId
+	 * @return the ownerId
 	 */
-	public Long getNewsFeedId()
+	public Long getOwnerId()
 	{
-		return newsFeedId;
+		return ownerId;
 	}
 
 	/**
-	 * @param newsFeedId the newsFeedId to set
+	 * @param ownerId the ownerId to set
 	 */
-	public void setNewsFeedId(Long newsFeedId)
+	public void setOwnerId(Long newsFeedId)
 	{
-		this.newsFeedId = newsFeedId;
+		this.ownerId = newsFeedId;
 	}
 
 	/**
