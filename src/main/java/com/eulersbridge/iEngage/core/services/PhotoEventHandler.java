@@ -39,6 +39,7 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 
@@ -52,16 +53,18 @@ public class PhotoEventHandler implements PhotoService
 
     private PhotoRepository photoRepository;
     private PhotoAlbumRepository photoAlbumRepository;
+    private OwnerRepository ownerRepository;
 
 
 	/**
 	 * @param photoRepository
 	 */
-	public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository)
+	public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository,OwnerRepository ownerRepository)
 	{
 		super();
 		this.photoRepository = photoRepository;
 		this.photoAlbumRepository = photoAlbumRepository;
+		this.ownerRepository = ownerRepository;
 	}
 
 	/* (non-Javadoc)
@@ -74,12 +77,10 @@ public class PhotoEventHandler implements PhotoService
         Photo photo = Photo.fromPhotoDetails(photoDetails);
         
 		if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+photoDetails.getOwnerId());
-    	Photo ownerPhoto=photoRepository.findOne(photoDetails.getOwnerId());
+		Owner owner=ownerRepository.findOne(photoDetails.getOwnerId());
     	PhotoCreatedEvent photoCreatedEvent;
-    	if (ownerPhoto!=null)
+    	if (owner!=null)
     	{
-        	Owner owner=new Owner();
-        	owner.setNodeId(ownerPhoto.getNodeId());
     		photo.setOwner(owner);
     		Photo result = photoRepository.save(photo);
         	photoCreatedEvent = new PhotoCreatedEvent(result.getNodeId(), result.toPhotoDetails());
@@ -219,12 +220,10 @@ public class PhotoEventHandler implements PhotoService
 	        PhotoAlbum photoAlbum = PhotoAlbum.fromPhotoAlbumDetails(photoAlbumDetails);
 	        
 			if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+photoAlbumDetails.getOwnerId());
-	    	Photo ownerPhoto=photoRepository.findOne(photoAlbumDetails.getOwnerId());
+			Owner owner=ownerRepository.findOne(photoAlbumDetails.getOwnerId());
 	    	PhotoAlbumCreatedEvent photoAlbumCreatedEvent;
-	    	if (ownerPhoto!=null)
+	    	if (owner!=null)
 	    	{
-	    		Owner owner=new Owner();
-	    		owner.setNodeId(ownerPhoto.getNodeId());
 	    		photoAlbum.setOwner(owner);
 	    		PhotoAlbum result = photoAlbumRepository.save(photoAlbum);
 	        	photoAlbumCreatedEvent = new PhotoAlbumCreatedEvent(result.toPhotoAlbumDetails());

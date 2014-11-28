@@ -36,6 +36,8 @@ public class CoreConfig
     @Autowired
     EventRepository eventRepository;
     @Autowired
+    OwnerRepository ownerRepository;
+    @Autowired
     PhotoRepository photoRepository;
     @Autowired
     PhotoAlbumRepository photoAlbumRepository;
@@ -100,7 +102,7 @@ public class CoreConfig
     public PollService createPollService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
-        return new PollEventHandler(pollRepository);
+        return new PollEventHandler(pollRepository,ownerRepository);
     }
 
     @Bean
@@ -114,7 +116,7 @@ public class CoreConfig
     public PhotoService createPhotoService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPhotoService()");
-        return new PhotoEventHandler(photoRepository,photoAlbumRepository);
+        return new PhotoEventHandler(photoRepository,photoAlbumRepository,ownerRepository);
     }
 
     @Bean
