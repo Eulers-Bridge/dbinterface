@@ -60,7 +60,7 @@ public class PhotoAlbums extends ResourceSupport
 	/**
 	 * @param photoAlbums the photoAlbums to set
 	 */
-	public void setPhotos(Iterator<PhotoAlbum> photoAlbums)
+	public void setPhotoAlbums(Iterator<PhotoAlbum> photoAlbums)
 	{
 		this.photoAlbums = photoAlbums;
 	}
