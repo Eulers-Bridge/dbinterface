@@ -378,12 +378,6 @@ public class PhotoController
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		return getThePhotoAlbums(ownerId, sortDirection, pageNumber, pageLength);
-	}
-
-	private @ResponseBody ResponseEntity<PhotoAlbums> getThePhotoAlbums(Long ownerId,
-			Direction sortDirection, int pageNumber, int pageLength)
-	{
 		ResponseEntity<PhotoAlbums> response;
 
 		PhotoAlbumsReadEvent photoAlbumEvent = photoService.findPhotoAlbums(
