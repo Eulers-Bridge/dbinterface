@@ -85,7 +85,7 @@ public class PollController
 	 * @return the polls.
 	 * 
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_ALBUMS_LABEL
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POLLS_LABEL
 			+ "/{ownerId}")
 	public @ResponseBody ResponseEntity<Polls> findPolls(
 			@PathVariable(value = "") Long ownerId,

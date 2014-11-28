@@ -17,6 +17,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,7 +43,9 @@ import com.eulersbridge.iEngage.core.events.polls.PollCreatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollDeletedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.polls.PollsReadEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
+import com.eulersbridge.iEngage.core.events.polls.ReadPollsEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
 import com.eulersbridge.iEngage.core.services.PollService;
@@ -383,5 +390,83 @@ public class PollControllerTest
 	{
 		fail("Not yet implemented"); // TODO
 	}
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#findPhotos(java.lang.Long, java.lang.String, java.lang.String, java.lang.String)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testFindPolls() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPolls()");
+		Long instId=1l;
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Poll> dets=DatabaseDataFixture.populatePolls();
+		Iterable<com.eulersbridge.iEngage.database.domain.Poll> thePolls=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Poll> iter=thePolls.iterator();
+		ArrayList<PollDetails> pollDets=new ArrayList<PollDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Poll poll=iter.next();
+			pollDets.add(poll.toPollDetails());
+		}
+		PollsReadEvent testData=new PollsReadEvent(instId,pollDets);
+		testData.setTotalPages(1);
+		testData.setTotalEvents(new Long(pollDets.size()));
+		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$totalPolls",is(testData.getTotalEvents().intValue())))
+		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("$polls[0].nodeId",is(pollDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$polls[0].question",is(pollDets.get(0).getQuestion())))
+		.andExpect(jsonPath("$polls[0].answers",is(pollDets.get(0).getAnswers())))
+		.andExpect(jsonPath("$polls[0].start",is(pollDets.get(0).getStart().intValue())))
+		.andExpect(jsonPath("$polls[0].duration",is(pollDets.get(0).getDuration().intValue())))
+		.andExpect(jsonPath("$polls[0].creatorId",is(pollDets.get(0).getCreatorId().intValue())))
+		.andExpect(jsonPath("$polls[0].ownerId",is(pollDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("$polls[1].nodeId",is(pollDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$polls[1].question",is(pollDets.get(1).getQuestion())))
+		.andExpect(jsonPath("$polls[1].answers",is(pollDets.get(1).getAnswers())))
+		.andExpect(jsonPath("$polls[1].start",is(pollDets.get(1).getStart().intValue())))
+		.andExpect(jsonPath("$polls[1].duration",is(pollDets.get(1).getDuration().intValue())))
+		.andExpect(jsonPath("$polls[1].creatorId",is(pollDets.get(1).getCreatorId().intValue())))
+		.andExpect(jsonPath("$polls[1].ownerId",is(pollDets.get(1).getOwnerId().intValue())))
+		.andExpect(status().isOk())	;
+	}
 
+	@Test
+	public final void testFindPollsZeroPolls() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPolls()");
+		Long instId=11l;
+		ArrayList<PollDetails> eleDets=new ArrayList<PollDetails>(); 
+		PollsReadEvent testData=new PollsReadEvent(instId,eleDets);
+		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindPollsNoNewsFeed() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPolls()");
+		Long instId=11l;
+		PollsReadEvent testData=PollsReadEvent.newsFeedNotFound();
+		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+
+	@Test
+	public final void testFindPollsNoInstitution() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPolls()");
+		Long instId=11l;
+		PollsReadEvent testData=PollsReadEvent.institutionNotFound();
+		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
 }

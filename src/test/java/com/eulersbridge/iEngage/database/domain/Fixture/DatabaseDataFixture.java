@@ -402,4 +402,11 @@ public class DatabaseDataFixture
 		poll.setNodeId(nodeId);
 		return poll;
 	}
+	public static HashMap<Long, Poll> populatePolls()
+	{
+		HashMap<Long, Poll> polls=new HashMap<Long, Poll>();
+		polls.put(new Long(1), populatePoll1());
+		polls.put(2l, populatePoll2());
+		return polls;
+	}
 }
