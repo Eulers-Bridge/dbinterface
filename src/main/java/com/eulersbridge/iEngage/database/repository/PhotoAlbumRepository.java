@@ -21,4 +21,7 @@ public interface PhotoAlbumRepository extends GraphRepository<PhotoAlbum>
 	@Query ("MATCH (p:`"+DatabaseDomainConstants.PHOTO_ALBUM+"`)-[r:`"+DatabaseDomainConstants.HAS_PHOTO_ALBUM_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
 	Page<PhotoAlbum> findByOwnerId(@Param("ownerId")Long ownerId,Pageable p);
 
+	@Query ("MATCH (p:`"+DatabaseDomainConstants.PHOTO_ALBUM+"`)-[r:`"+DatabaseDomainConstants.CREATED_BY_LABEL+"`]-(o) where id(o)={creatorId} RETURN p")
+	Page<PhotoAlbum> findByCreatorId(@Param("creatorId")Long creatorId,Pageable p);
+
 }
