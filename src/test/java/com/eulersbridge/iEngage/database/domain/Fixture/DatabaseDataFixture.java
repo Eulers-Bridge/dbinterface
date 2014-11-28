@@ -15,6 +15,7 @@ import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
@@ -360,5 +361,27 @@ public class DatabaseDataFixture
 		voteRecords.put(new Long(1), populateVoteRecord1());
 		voteRecords.put(2l, populateVoteRecord2());
 		return voteRecords;
+	}
+	public static Poll populatePoll1()
+	{
+		Long nodeId=1l;
+		String answers="John Curtin, Robert Menzies, Gough Whitlam, Bob Hawke, John Howard";
+		return populatePoll(nodeId,"Who is your favourite PM?",answers,123214l,12312321l,42l,7449l);
+	}
+	public static Poll populatePoll2()
+	{
+		Long nodeId=2l;
+		String answers="Richmond, Collingwood, Sydney, North Melbourne, Saint Kilda";
+		return populatePoll(nodeId,"Who is your favourite footy team?",answers,123214l,12312321l,42l,7449l);
+	}
+	public static Poll populatePoll(Long nodeId,String question, String answers, Long duration, Long start, Long creatorId, Long ownerId)
+	{
+		Poll poll = new Poll(question,answers, start, duration);
+		Owner creator=new Owner(creatorId);
+		Owner owner= new Owner(ownerId);
+		poll.setCreator(creator);
+		poll.setOwner(owner);
+		poll.setNodeId(nodeId);
+		return poll;
 	}
 }

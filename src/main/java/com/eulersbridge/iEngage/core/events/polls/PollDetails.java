@@ -15,6 +15,8 @@ public class PollDetails extends Details
     private String answers;
     private Long start;
     private Long duration;
+    private Long ownerId;
+    private Long creatorId;
 
     private static Logger LOG = LoggerFactory.getLogger(PollDetails.class);
 
@@ -63,7 +65,39 @@ public class PollDetails extends Details
         this.duration = duration;
     }
 
-    @Override
+    /**
+	 * @return the ownerId
+	 */
+	public Long getOwnerId()
+	{
+		return ownerId;
+	}
+
+	/**
+	 * @param ownerId the ownerId to set
+	 */
+	public void setOwnerId(Long ownerId)
+	{
+		this.ownerId = ownerId;
+	}
+
+	/**
+	 * @return the creatorId
+	 */
+	public Long getCreatorId()
+	{
+		return creatorId;
+	}
+
+	/**
+	 * @param creatorId the creatorId to set
+	 */
+	public void setCreatorId(Long creatorId)
+	{
+		this.creatorId = creatorId;
+	}
+
+	@Override
     public String toString() {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
@@ -76,6 +110,8 @@ public class PollDetails extends Details
         buff.append(getStart());
         buff.append(", duration = ");
         buff.append(getDuration());
+        buff.append(", ownerId = ");
+        buff.append(getOwnerId());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -97,6 +133,8 @@ public class PollDetails extends Details
 		else
 		{
 			result = prime * result + ((answers == null) ? 0 : answers.hashCode());
+			result = prime * result + ((ownerId == null) ? 0 : ownerId.hashCode());
+			result = prime * result + ((creatorId == null) ? 0 : creatorId.hashCode());
 			result = prime * result
 					+ ((duration == null) ? 0 : duration.hashCode());
 			result = prime * result
@@ -142,6 +180,16 @@ public class PollDetails extends Details
 				if (other.question != null)
 					return false;
 			} else if (!question.equals(other.question))
+				return false;
+			if (ownerId == null) {
+				if (other.ownerId != null)
+					return false;
+			} else if (!ownerId.equals(other.ownerId))
+				return false;
+			if (creatorId == null) {
+				if (other.creatorId != null)
+					return false;
+			} else if (!creatorId.equals(other.creatorId))
 				return false;
 			if (start == null) {
 				if (other.start != null)

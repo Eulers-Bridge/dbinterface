@@ -16,6 +16,7 @@ public class DatabaseDomainConstants
 	public static final String HAS_ELECTION_LABEL = "HAS_ELECTION";
 	public static final String HAS_PHOTO_LABEL = "HAS_PHOTO";
 	public static final String HAS_PHOTO_ALBUM_LABEL = "HAS_PHOTO_ALBUM";
+	public static final String HAS_POLL_LABEL = "HAS_POLL";
     public static final String HAS_POSITION_LABEL = "HAS_POSITION";
 	public static final String HAS_EVENT_LABEL = "HAS_EVENT";
 	
@@ -24,4 +25,5 @@ public class DatabaseDomainConstants
 	public static final String NEWS_FEED = "NewsFeed";
 	public static final String PHOTO = "Photo";
 	public static final String PHOTO_ALBUM = "PhotoAlbum";
+	public static final String POLL = "Poll";
 }

@@ -19,6 +19,8 @@ public class Poll extends ResourceSupport{
     private String answers;
     private Long start;
     private Long duration;
+    private Long newsFeedId;
+    private Long creatorId;
 
     private static Logger LOG = LoggerFactory.getLogger(Poll.class);
 
@@ -32,6 +34,7 @@ public class Poll extends ResourceSupport{
         poll.setAnswers(pollDetails.getAnswers());
         poll.setStart(pollDetails.getStart());
         poll.setDuration(pollDetails.getDuration());
+        poll.setNewsFeedId(pollDetails.getOwnerId());
 
 	    // {!begin selfRel}
         poll.add(linkTo(PollController.class).slash(name).slash(poll.getPollId()).withSelfRel());
@@ -66,6 +69,7 @@ public class Poll extends ResourceSupport{
         pollDetails.setAnswers(this.getAnswers());
         pollDetails.setStart(this.getStart());
         pollDetails.setDuration(this.getDuration());
+        pollDetails.setOwnerId(getNewsFeedId());
         if (LOG.isTraceEnabled()) LOG.trace("pollDetails "+pollDetails);
         return pollDetails;
     }
@@ -109,4 +113,36 @@ public class Poll extends ResourceSupport{
     public void setDuration(Long duration) {
         this.duration = duration;
     }
+
+	/**
+	 * @return the newsFeedId
+	 */
+	public Long getNewsFeedId()
+	{
+		return newsFeedId;
+	}
+
+	/**
+	 * @param newsFeedId the newsFeedId to set
+	 */
+	public void setNewsFeedId(Long newsFeedId)
+	{
+		this.newsFeedId = newsFeedId;
+	}
+
+	/**
+	 * @return the creatorId
+	 */
+	public Long getCreatorId()
+	{
+		return creatorId;
+	}
+
+	/**
+	 * @param creatorId the creatorId to set
+	 */
+	public void setCreatorId(Long creatorId)
+	{
+		this.creatorId = creatorId;
+	}
 }

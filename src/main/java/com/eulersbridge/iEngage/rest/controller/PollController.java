@@ -31,160 +31,219 @@ import java.util.Iterator;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
-public class PollController {
+public class PollController
+{
 
-    @Autowired
-    PollService pollService;
+	@Autowired
+	PollService pollService;
 
-    @Autowired
-    UserService userService;
+	@Autowired
+	UserService userService;
 
-    @Autowired
-    LikesService likesService;
+	@Autowired
+	LikesService likesService;
 
-    public PollController(){}
+	public PollController()
+	{
+	}
 
-    private static Logger LOG = LoggerFactory.getLogger(PollController.class);
+	private static Logger LOG = LoggerFactory.getLogger(PollController.class);
 
-    //Get
-    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POLL_LABEL+"/{pollId}")
-    public @ResponseBody
-    ResponseEntity<Poll> findPoll(@PathVariable Long pollId){
-        if (LOG.isInfoEnabled()) LOG.info(pollId+" attempting to get poll. ");
-        RequestReadPollEvent requestReadPollEvent = new RequestReadPollEvent(pollId);
-        ReadEvent readPollEvent = pollService.requestReadPoll(requestReadPollEvent);
-        if(readPollEvent.isEntityFound()){
-            Poll poll = Poll.fromPollDetails((PollDetails)readPollEvent.getDetails());
-            return new ResponseEntity<Poll>(poll, HttpStatus.OK);
-        }
-        else{
-            return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
-        }
-    }
+	// Get
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POLL_LABEL
+			+ "/{pollId}")
+	public @ResponseBody ResponseEntity<Poll> findPoll(@PathVariable Long pollId)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info(pollId + " attempting to get poll. ");
+		RequestReadPollEvent requestReadPollEvent = new RequestReadPollEvent(
+				pollId);
+		ReadEvent readPollEvent = pollService
+				.requestReadPoll(requestReadPollEvent);
+		if (readPollEvent.isEntityFound())
+		{
+			Poll poll = Poll.fromPollDetails((PollDetails) readPollEvent
+					.getDetails());
+			return new ResponseEntity<Poll>(poll, HttpStatus.OK);
+		}
+		else
+		{
+			return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
+		}
+	}
 
-    //Create
-    @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.POLL_LABEL)
-    public @ResponseBody
-    ResponseEntity<Poll> createPoll(@RequestBody Poll poll){
-        if (LOG.isInfoEnabled()) LOG.info("attempting to create poll "+poll);
-        CreatePollEvent createPollEvent = new CreatePollEvent(poll.toPollDetails());
-        PollCreatedEvent pollCreatedEvent = pollService.createPoll(createPollEvent);
-        if(pollCreatedEvent.getPollId() == null){
-            return new ResponseEntity<Poll>(HttpStatus.BAD_REQUEST);
-        }
-        else{
-            Poll result = Poll.fromPollDetails((PollDetails) pollCreatedEvent.getDetails());
-            if (LOG.isDebugEnabled()) LOG.debug("poll"+result.toString());
-            return new ResponseEntity<Poll>(result, HttpStatus.OK);
-        }
-    }
+	// Create
+	@RequestMapping(method = RequestMethod.POST, value = ControllerConstants.POLL_LABEL)
+	public @ResponseBody ResponseEntity<Poll> createPoll(@RequestBody Poll poll)
+	{
+		if (LOG.isInfoEnabled()) LOG.info("attempting to create poll " + poll);
+		CreatePollEvent createPollEvent = new CreatePollEvent(
+				poll.toPollDetails());
+		PollCreatedEvent pollCreatedEvent = pollService
+				.createPoll(createPollEvent);
+		ResponseEntity<Poll> response;
+		if (null == pollCreatedEvent)
+		{
+			response = new ResponseEntity<Poll>(HttpStatus.BAD_REQUEST);
+		}
+		else if (!(pollCreatedEvent.isOwnerFound()))
+		{
+			response = new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
+		}
+		else if (!(pollCreatedEvent.isCreatorFound()))
+		{
+			response = new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
+		}
+		else if ((null == pollCreatedEvent.getDetails())
+				|| (null == pollCreatedEvent.getDetails().getNodeId()))
+		{
+			response = new ResponseEntity<Poll>(HttpStatus.BAD_REQUEST);
+		}
+		else
+		{
+			Poll result = Poll.fromPollDetails((PollDetails) pollCreatedEvent
+					.getDetails());
+			if (LOG.isDebugEnabled()) LOG.debug("poll" + result.toString());
+			return new ResponseEntity<Poll>(result, HttpStatus.CREATED);
+		}
+		return response;
+	}
 
-    //Update
-    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL+"{pollId}")
-    public @ResponseBody
-    ResponseEntity<Poll> updatePoll(@PathVariable Long pollId, @RequestBody Poll poll){
-        if (LOG.isInfoEnabled()) LOG.info("Attempting to update poll. " + pollId);
-        UpdatedEvent pollUpdatedEvent = pollService.updatePoll(new UpdatePollEvent(pollId, poll.toPollDetails()));
-        if (null != pollUpdatedEvent )
-        {
-       		if (LOG.isDebugEnabled()) LOG.debug("pollUpdatedEvent - "+pollUpdatedEvent);
-        	if(pollUpdatedEvent.isEntityFound())
-        	{
-	            Poll resultPoll = Poll.fromPollDetails((PollDetails) pollUpdatedEvent.getDetails());
-	            if (LOG.isDebugEnabled()) LOG.debug("resultPoll = "+resultPoll);
-	            return new ResponseEntity<Poll>(resultPoll, HttpStatus.OK);
-        	}
-        	else
-        	{
-        		return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
-        	}
-        }
-        else
-    		return new ResponseEntity<Poll>(HttpStatus.BAD_REQUEST);
-    }
+	// Update
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL
+			+ "{pollId}")
+	public @ResponseBody ResponseEntity<Poll> updatePoll(
+			@PathVariable Long pollId, @RequestBody Poll poll)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to update poll. " + pollId);
+		UpdatedEvent pollUpdatedEvent = pollService
+				.updatePoll(new UpdatePollEvent(pollId, poll.toPollDetails()));
+		if (null != pollUpdatedEvent)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("pollUpdatedEvent - " + pollUpdatedEvent);
+			if (pollUpdatedEvent.isEntityFound())
+			{
+				Poll resultPoll = Poll
+						.fromPollDetails((PollDetails) pollUpdatedEvent
+								.getDetails());
+				if (LOG.isDebugEnabled())
+					LOG.debug("resultPoll = " + resultPoll);
+				return new ResponseEntity<Poll>(resultPoll, HttpStatus.OK);
+			}
+			else
+			{
+				return new ResponseEntity<Poll>(HttpStatus.NOT_FOUND);
+			}
+		}
+		else return new ResponseEntity<Poll>(HttpStatus.BAD_REQUEST);
+	}
 
-    //Delete
-    @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.POLL_LABEL+"/{pollId}")
-    public @ResponseBody
-    ResponseEntity<Boolean> deletePoll(@PathVariable Long pollId){
-        if (LOG.isInfoEnabled()) LOG.info("Attempting to delete poll. " + pollId);
-        DeletedEvent pollDeletedEvent = pollService.deletePoll(new DeletePollEvent(pollId));
-        Boolean isDeletionCompleted = Boolean.valueOf(pollDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
-    }
+	// Delete
+	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.POLL_LABEL
+			+ "/{pollId}")
+	public @ResponseBody ResponseEntity<Boolean> deletePoll(
+			@PathVariable Long pollId)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to delete poll. " + pollId);
+		DeletedEvent pollDeletedEvent = pollService
+				.deletePoll(new DeletePollEvent(pollId));
+		Boolean isDeletionCompleted = Boolean.valueOf(pollDeletedEvent
+				.isDeletionCompleted());
+		return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+	}
 
-    //like
-    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{pollId}/likedBy/{email}/")
-    public @ResponseBody ResponseEntity<Boolean> likePoll(@PathVariable Long pollId,@PathVariable String email)
-    {
-        if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like poll. "+pollId);
-        LikedEvent likedPollEvent = userService.like(new LikeEvent(pollId, email));
-        ResponseEntity<Boolean> response;
-        if (!likedPollEvent.isEntityFound())
-        {
-            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
-        }
-        else if (!likedPollEvent.isUserFound())
-        {
-            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
-        }
-        else
-        {
-            Boolean restNews=likedPollEvent.isResultSuccess();
-            response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
-        }
-        return response;
-    }
+	// like
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.NEWS_ARTICLE_LABEL
+			+ "/{pollId}/likedBy/{email}/")
+	public @ResponseBody ResponseEntity<Boolean> likePoll(
+			@PathVariable Long pollId, @PathVariable String email)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to have " + email + " like poll. " + pollId);
+		LikedEvent likedPollEvent = userService.like(new LikeEvent(pollId,
+				email));
+		ResponseEntity<Boolean> response;
+		if (!likedPollEvent.isEntityFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+		}
+		else if (!likedPollEvent.isUserFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Boolean restNews = likedPollEvent.isResultSuccess();
+			response = new ResponseEntity<Boolean>(restNews, HttpStatus.OK);
+		}
+		return response;
+	}
 
-    //unlike
-    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{pollId}/unlikedBy/{email}/")
-    public @ResponseBody ResponseEntity<Boolean> unlikePoll(@PathVariable Long pollId,@PathVariable String email)
-    {
-        if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike poll. "+pollId);
-        LikedEvent unlikedPollEvent = userService.unlike(new LikeEvent(pollId, email));
-        ResponseEntity<Boolean> response;
-        if (!unlikedPollEvent.isEntityFound())
-        {
-            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
-        }
-        else if (!unlikedPollEvent.isUserFound())
-        {
-            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
-        }
-        else
-        {
-            Boolean restNews = unlikedPollEvent.isResultSuccess();
-            response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
-        }
-        return response;
-    }
+	// unlike
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.NEWS_ARTICLE_LABEL
+			+ "/{pollId}/unlikedBy/{email}/")
+	public @ResponseBody ResponseEntity<Boolean> unlikePoll(
+			@PathVariable Long pollId, @PathVariable String email)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to have " + email + " unlike poll. " + pollId);
+		LikedEvent unlikedPollEvent = userService.unlike(new LikeEvent(pollId,
+				email));
+		ResponseEntity<Boolean> response;
+		if (!unlikedPollEvent.isEntityFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+		}
+		else if (!unlikedPollEvent.isUserFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Boolean restNews = unlikedPollEvent.isResultSuccess();
+			response = new ResponseEntity<Boolean>(restNews, HttpStatus.OK);
+		}
+		return response;
+	}
 
-    //likes
-    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{pollId}" + ControllerConstants.LIKES_LABEL)
-    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
-            @PathVariable Long pollId,
-            @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
-            @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
-            @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
-    {
-        int pageNumber = 0;
-        int pageLength = 10;
-        pageNumber = Integer.parseInt(page);
-        pageLength = Integer.parseInt(pageSize);
-        if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users from poll "+pollId+'.');
-        Direction sortDirection = Direction.DESC;
-        if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-        LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(pollId), sortDirection, pageNumber, pageLength);
-        Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
-        if (likes.hasNext() == false){
-            ReadEvent readPollEvent=pollService.requestReadPoll(new RequestReadPollEvent(pollId));
-            if (!readPollEvent.isEntityFound())
-                return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
-            else
-                return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
-        }
-        else
-            return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
-    }
+	// likes
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.NEWS_ARTICLE_LABEL
+			+ "/{pollId}" + ControllerConstants.LIKES_LABEL)
+	public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
+			@PathVariable Long pollId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve liked users from poll " + pollId
+					+ '.');
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(
+				new LikesLikeableObjectEvent(pollId), sortDirection,
+				pageNumber, pageLength);
+		Iterator<LikeInfo> likes = User
+				.toLikesIterator(likeableObjectLikesEvent.getUserDetails()
+						.iterator());
+		if (likes.hasNext() == false)
+		{
+			ReadEvent readPollEvent = pollService
+					.requestReadPoll(new RequestReadPollEvent(pollId));
+			if (!readPollEvent.isEntityFound())
+				return new ResponseEntity<Iterator<LikeInfo>>(
+						HttpStatus.NOT_FOUND);
+			else return new ResponseEntity<Iterator<LikeInfo>>(likes,
+					HttpStatus.OK);
+		}
+		else return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+	}
 
 }
