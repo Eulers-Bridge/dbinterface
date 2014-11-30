@@ -35,7 +35,7 @@ public class Candidate extends ResourceSupport{
         String name = simpleName.substring(0, 1).toLowerCase()
                 + simpleName.substring(1);
 
-        candidate.setCandidateId(candidateDetails.getCandidateId());
+        candidate.setCandidateId(candidateDetails.getNodeId());
         candidate.setCandidateEmail(candidateDetails.getCandidateEmail());
         candidate.setInformation(candidateDetails.getInformation());
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
@@ -57,7 +57,7 @@ public class Candidate extends ResourceSupport{
 
     public CandidateDetails toCandidateDetails(){
         CandidateDetails candidateDetails = new CandidateDetails();
-        candidateDetails.setCandidateId(getCandidateId());
+        candidateDetails.setNodeId(getCandidateId());
         candidateDetails.setCandidateEmail(getCandidateEmail());
         candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());

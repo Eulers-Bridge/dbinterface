@@ -1,5 +1,5 @@
 package com.eulersbridge.iEngage.core.events.candidate;
-
+import com.eulersbridge.iEngage.core.events.Details;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,8 +9,7 @@ import java.util.Set;
  * @author Yikai Gong
  */
 
-public class CandidateDetails {
-    private Long candidateId;
+public class CandidateDetails extends Details {
     private String candidateEmail;
     private String information;
     private String policyStatement;
@@ -24,7 +23,7 @@ public class CandidateDetails {
     public String toString() {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
-        buff.append(getCandidateId());
+        buff.append(getNodeId());
         buff.append(", candidateEmail = ");
         buff.append(getCandidateEmail());
         buff.append(", information = ");
@@ -47,9 +46,9 @@ public class CandidateDetails {
     public int hashCode(){
         final int prime = 31;
         int result = 1;
-        if (getCandidateId()!=null)
+        if (getNodeId()!=null)
         {
-            result = prime * result	+ getCandidateId().hashCode();
+            result = prime * result	+ getNodeId().hashCode();
         }
         else
         {
@@ -72,15 +71,15 @@ public class CandidateDetails {
         if (getClass() != obj.getClass())
             return false;
         CandidateDetails other = (CandidateDetails) obj;
-        if (candidateId != null)
+        if (nodeId != null)
         {
-            if (candidateId.equals(other.candidateId))
+            if (nodeId.equals(other.nodeId))
                 return true;
             else return false;
         }
         else
         {
-            if (other.candidateId != null)
+            if (other.nodeId != null)
                 return false;
             if (candidateEmail == null) {
                 if (other.candidateEmail != null)
@@ -99,14 +98,6 @@ public class CandidateDetails {
                 return false;
         }
         return true;
-    }
-
-    public Long getCandidateId() {
-        return candidateId;
-    }
-
-    public void setCandidateId(Long candidateId) {
-        this.candidateId = candidateId;
     }
 
     public String getCandidateEmail() {

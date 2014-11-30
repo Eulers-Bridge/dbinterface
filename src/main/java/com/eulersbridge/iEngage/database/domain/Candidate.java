@@ -34,7 +34,7 @@ public class Candidate {
         if (LOG.isTraceEnabled()) LOG.trace("fromCandidateDetails()");
         Candidate candidate = new Candidate();
         if (LOG.isTraceEnabled()) LOG.trace("candidateDetails "+candidateDetails);
-        candidate.setCandidateId(candidateDetails.getCandidateId());
+        candidate.setCandidateId(candidateDetails.getNodeId());
         candidate.setCandidateEmail(candidateDetails.getCandidateEmail());
         candidate.setInformation(candidateDetails.getInformation());
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
@@ -50,7 +50,7 @@ public class Candidate {
         if (LOG.isTraceEnabled()) LOG.trace("toCandidateDetails()");
         CandidateDetails candidateDetails = new CandidateDetails();
         if (LOG.isTraceEnabled()) LOG.trace("candidate "+this);
-        candidateDetails.setCandidateId(getCandidateId());
+        candidateDetails.setNodeId(getCandidateId());
         candidateDetails.setCandidateEmail(getCandidateEmail());
         candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());
