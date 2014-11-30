@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
-import com.eulersbridge.iEngage.rest.controller.CanditateController;
+import com.eulersbridge.iEngage.rest.controller.CandidateController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.ResourceSupport;
@@ -44,11 +44,11 @@ public class Candidate extends ResourceSupport{
         candidate.setGivenName(candidateDetails.getGivenName());
 
         // {!begin selfRel}
-        candidate.add(linkTo(CanditateController.class).slash(name)
+        candidate.add(linkTo(CandidateController.class).slash(name)
                 .slash(candidate.candidateId).withSelfRel());
         // {!end selfRel}
         // {!begin readAll}
-        candidate.add(linkTo(CanditateController.class).slash(name + 's')
+        candidate.add(linkTo(CandidateController.class).slash(name + 's')
                 .withRel(RestDomainConstants.READALL_LABEL));
         // {!end readAll}
 
