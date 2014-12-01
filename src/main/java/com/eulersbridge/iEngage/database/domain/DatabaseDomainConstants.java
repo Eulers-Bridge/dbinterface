@@ -19,6 +19,10 @@ public class DatabaseDomainConstants
 	public static final String HAS_POLL_LABEL = "HAS_POLL";
     public static final String HAS_POSITION_LABEL = "HAS_POSITION";
 	public static final String HAS_EVENT_LABEL = "HAS_EVENT";
+    public static final String IS_CANDIDATE_LABEL ="IS_CANDIDATE";
+    public static final String HAS_CANDIDATE_LABE = "HAS_CANDIDATE";
+    public static final String WAS_ASKED_LABEL = "WAS_ASKED";
+    public static final String IS_ON_TICKET_LABEL = "IS_ON_TICKET";
 	
 	
 	public static final String INSTITUTION = "Institution";

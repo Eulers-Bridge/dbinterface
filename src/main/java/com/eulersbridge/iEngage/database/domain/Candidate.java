@@ -1,10 +1,12 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
+import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,6 +25,18 @@ public class Candidate {
     private Iterable<String> pictures;
     private String familyName;
     private String givenName;
+
+    @RelatedTo(type = DatabaseDomainConstants.IS_CANDIDATE_LABEL, direction= Direction.BOTH)
+    private User user;
+
+    @RelatedTo(type = DatabaseDomainConstants.HAS_CANDIDATE_LABE, direction= Direction.BOTH)
+    private Position position;
+
+    @RelatedTo(type = DatabaseDomainConstants.WAS_ASKED_LABEL, direction= Direction.BOTH)
+    private ForumQuestion forumQuestion;
+
+//    @RelatedTo(type = DatabaseDomainConstants.IS_ON_TICKET_LABEL, direction= Direction.BOTH)
+    
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
