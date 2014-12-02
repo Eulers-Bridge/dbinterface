@@ -87,5 +87,54 @@ public class PollCreatedEventTest
 		assertEquals("pollId does not match", pollId,
 				pollCreatedEvent.getFailedNodeId());
 	}
-
+	
+	@Test
+	public void testIsCreatorFound() throws Exception
+	{
+		assertTrue(pollCreatedEvent.isCreatorFound());
+	}
+	
+	@Test
+	public void testSetCreatorFound() throws Exception
+	{
+		assertTrue(pollCreatedEvent.isCreatorFound());
+		pollCreatedEvent.setCreatorFound(false);
+		assertFalse(pollCreatedEvent.isCreatorFound());
+		pollCreatedEvent.setCreatorFound(true);
+		assertTrue(pollCreatedEvent.isCreatorFound());
+	}
+	
+	@Test
+	public void testIsOwnerFound() throws Exception
+	{
+		assertTrue(pollCreatedEvent.isOwnerFound());
+	}
+	
+	@Test
+	public void testSetOwnerFound() throws Exception
+	{
+		assertTrue(pollCreatedEvent.isOwnerFound());
+		pollCreatedEvent.setOwnerFound(false);
+		assertFalse(pollCreatedEvent.isOwnerFound());
+		pollCreatedEvent.setOwnerFound(true);
+		assertTrue(pollCreatedEvent.isOwnerFound());
+	}
+	
+	@Test
+	public void testCreatorNotFound() throws Exception
+	{
+		pollCreatedEvent = PollCreatedEvent.creatorNotFound(creatorId);
+		assertFalse(pollCreatedEvent.isCreatorFound());
+		assertNull(pollCreatedEvent.getDetails());
+		assertEquals(pollCreatedEvent.getFailedNodeId(),creatorId);
+	}
+	
+	@Test
+	public void testOwnerNotFound() throws Exception
+	{
+		pollCreatedEvent = PollCreatedEvent.ownerNotFound(ownerId);
+		assertFalse(pollCreatedEvent.isOwnerFound());
+		assertNull(pollCreatedEvent.getDetails());
+		assertEquals(pollCreatedEvent.getFailedNodeId(),ownerId);
+	}
 }

@@ -60,8 +60,8 @@ public class Poll
 		pollDetails.setAnswers(this.getAnswers());
 		pollDetails.setStart(this.getStart());
 		pollDetails.setDuration(this.getDuration());
-		pollDetails.setOwnerId(owner.getNodeId());
-		pollDetails.setCreatorId(creator.getNodeId());
+		pollDetails.setOwnerId((owner == null) ? null : owner.getNodeId());
+		pollDetails.setCreatorId((creator == null) ? null : creator.getNodeId());
 		if (LOG.isTraceEnabled()) LOG.trace("pollDetails; " + pollDetails);
 		return pollDetails;
 	}

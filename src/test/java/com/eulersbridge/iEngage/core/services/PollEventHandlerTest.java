@@ -23,6 +23,7 @@ import com.eulersbridge.iEngage.core.events.polls.CreatePollEvent;
 import com.eulersbridge.iEngage.core.events.polls.DeletePollEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollCreatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
+import com.eulersbridge.iEngage.core.events.polls.PollUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
@@ -201,7 +202,12 @@ public final void testCreatePollCreatorNotFound()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
 		Poll testData=DatabaseDataFixture.populatePoll1();
+		Owner testOwner=new Owner();
+		testOwner.setNodeId(testData.getOwner().getNodeId());
+		Owner testCreator=new Owner();
+		testCreator.setNodeId(testData.getCreator().getNodeId());
 		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testCreator);
 		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
 		PollDetails dets=testData.toPollDetails();
 		UpdatePollEvent createPollEvent=new UpdatePollEvent(dets.getNodeId(), dets);
@@ -229,6 +235,43 @@ public final void testCreatePollCreatorNotFound()
 		assertEquals(testData.getNodeId(),evtData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
+	}
+
+	@Test
+	public final void testUpdatePollOwnerNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
+		Poll testData=DatabaseDataFixture.populatePoll1();
+		Owner testOwner=null;
+		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
+		PollDetails dets=testData.toPollDetails();
+		UpdatePollEvent createPollEvent=new UpdatePollEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updatePoll(createPollEvent);
+		assertEquals(evtData.getNodeId(),testData.getOwner().getNodeId());
+		assertFalse(((PollUpdatedEvent)evtData).isOwnerFound());
+		assertNull(evtData.getDetails());
+	}
+
+	@Test
+	public final void testUpdatePollCreatorNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
+		Poll testData=DatabaseDataFixture.populatePoll1();
+		Owner testOwner=new Owner();
+		testOwner.setNodeId(testData.getOwner().getNodeId());
+		Owner testCreator=null;
+		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testCreator);
+		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
+		PollDetails dets=testData.toPollDetails();
+		UpdatePollEvent createPollEvent=new UpdatePollEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updatePoll(createPollEvent);
+		assertNotNull(evtData.getNodeId());
+		assertEquals(evtData.getNodeId(),testData.getCreator().getNodeId());
+		assertFalse(((PollUpdatedEvent)evtData).isCreatorFound());
+		assertNull(evtData.getDetails());
 	}
 
 
