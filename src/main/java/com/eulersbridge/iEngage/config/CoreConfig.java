@@ -47,6 +47,8 @@ public class CoreConfig
     PositionRepository positionRepository;
     @Autowired
     ConfigurationRepository configurationRepository;
+    @Autowired
+    CandidateRepository candidateRepository;
 
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -145,5 +147,12 @@ public class CoreConfig
     {
         if (LOG.isDebugEnabled()) LOG.debug("createLikesService()");
         return new LikesEventHandler(userRepo);
+    }
+
+    @Bean
+    public CandidateService createCandidateService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createCandidateService()");
+        return new CandidateEventHandler(candidateRepository);
     }
 }
