@@ -44,7 +44,7 @@ public class PhotoTest
 	@Test
 	public final void testPhoto2()
 	{
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(), testPhoto.getSequence());
 		assertNotNull("Not yet implemented",testPhoto2);
 	}
 
@@ -54,7 +54,7 @@ public class PhotoTest
 	@Test
 	public final void testGetNodeId()
 	{
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		testPhoto2.setNodeId(testPhoto.getNodeId());
 		assertEquals(testPhoto.getNodeId(),testPhoto2.getNodeId());
 	}
@@ -66,7 +66,7 @@ public class PhotoTest
 	public final void testSetNodeId()
 	{
 		Long nodeId=23l;
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertNull(testPhoto2.getNodeId());
 		testPhoto2.setNodeId(nodeId);
 		assertEquals(nodeId,testPhoto2.getNodeId());
@@ -78,7 +78,7 @@ public class PhotoTest
 	@Test
 	public final void testGetOwner()
 	{
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		testPhoto2.setNodeId(testPhoto.getNodeId());
 		testPhoto2.setOwner(testPhoto.getOwner());
 		assertEquals(testPhoto.getOwner(),testPhoto2.getOwner());
@@ -91,7 +91,7 @@ public class PhotoTest
 	public final void testSetOwner()
 	{
 		Owner owner=new Owner(23l);
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertNull(testPhoto2.getOwner());
 		testPhoto2.setOwner(owner);;
 		assertEquals(owner,testPhoto2.getOwner());
@@ -104,7 +104,7 @@ public class PhotoTest
 	public final void testGetUrl()
 	{
 		String url=testPhoto.getUrl();
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertEquals(url,testPhoto2.getUrl());
 	}
 
@@ -115,11 +115,36 @@ public class PhotoTest
 	public final void testSetURL()
 	{
 		String url=testPhoto.getUrl();
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertEquals(url,testPhoto2.getUrl());
 		url="testUrl";
 		testPhoto2.setUrl(url);
 		assertEquals(url,testPhoto2.getUrl());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#getUrl()}.
+	 */
+	@Test
+	public final void testGetThumbNailUrl()
+	{
+		String thumbNailurl=testPhoto.getThumbNailUrl();
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
+		assertEquals(thumbNailurl,testPhoto2.getThumbNailUrl());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#setURL(java.lang.String)}.
+	 */
+	@Test
+	public final void testSetThumbNailURL()
+	{
+		String thumbNailurl=testPhoto.getUrl();
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
+		assertEquals(thumbNailurl,testPhoto2.getUrl());
+		thumbNailurl="testUrl";
+		testPhoto2.setUrl(thumbNailurl);
+		assertEquals(thumbNailurl,testPhoto2.getUrl());
 	}
 
 	/**
@@ -129,7 +154,7 @@ public class PhotoTest
 	public final void testGetTitle()
 	{
 		String title=testPhoto.getTitle();
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertEquals(title,testPhoto2.getTitle());
 	}
 
@@ -140,7 +165,7 @@ public class PhotoTest
 	public final void testSetTitle()
 	{
 		String title=testPhoto.getTitle();
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertEquals(title,testPhoto2.getTitle());
 		title="testTitle";
 		testPhoto2.setTitle(title);
@@ -154,7 +179,7 @@ public class PhotoTest
 	public final void testGetDescription()
 	{
 		String description=testPhoto.getDescription();
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertEquals(description,testPhoto2.getDescription());
 	}
 
@@ -165,7 +190,7 @@ public class PhotoTest
 	public final void testSetDescription()
 	{
 		String description=testPhoto.getDescription();
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertEquals(description,testPhoto2.getDescription());
 		description="testDescription";
 		testPhoto2.setDescription(description);
@@ -179,7 +204,7 @@ public class PhotoTest
 	public final void testGetDate()
 	{
 		Long date=testPhoto.getDate();
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertEquals(date,testPhoto2.getDate());
 	}
 
@@ -190,11 +215,36 @@ public class PhotoTest
 	public final void testSetDate()
 	{
 		Long date=testPhoto.getDate();
-		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate());
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
 		assertEquals(date,testPhoto2.getDate());
 		date=4949494l;
 		testPhoto2.setDate(date);
 		assertEquals(date,testPhoto2.getDate());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#getDate()}.
+	 */
+	@Test
+	public final void testGetSequence()
+	{
+		Integer sequence=testPhoto.getSequence();
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
+		assertEquals(sequence,testPhoto2.getSequence());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#setDate(java.lang.Long)}.
+	 */
+	@Test
+	public final void testSetSequence()
+	{
+		Integer sequence=testPhoto.getSequence();
+		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence());
+		assertEquals(sequence,testPhoto2.getSequence());
+		sequence=4949494;
+		testPhoto2.setSequence(sequence);
+		assertEquals(sequence,testPhoto2.getSequence());
 	}
 
 	/**
@@ -218,6 +268,8 @@ public class PhotoTest
 		assertEquals(dets.getNodeId(),testPhoto.getNodeId());
 		assertEquals(dets.getTitle(),testPhoto.getTitle());
 		assertEquals(dets.getUrl(),testPhoto.getUrl());
+		assertEquals(dets.getThumbNailUrl(),testPhoto.getThumbNailUrl());
+		assertEquals(dets.getSequence(),testPhoto.getSequence());
 	}
 
 	/**
@@ -275,6 +327,10 @@ public class PhotoTest
 		photoTest.setUrl(null);;
 		checkHashCode(testPhoto,photoTest);
 		photoTest.setUrl(testPhoto.getUrl());
+		
+		photoTest.setThumbNailUrl(null);
+		checkHashCode(testPhoto,photoTest);
+		photoTest.setThumbNailUrl(testPhoto.getThumbNailUrl());
 	}
 
 	/**
@@ -327,6 +383,12 @@ public class PhotoTest
 		photoTest.setUrl(null);
 		checkNotEquals(testPhoto, photoTest);
 		photoTest.setUrl(testPhoto.getUrl());
-	}
+
+		photoTest.setThumbNailUrl("ThumbNailUrl");
+		assertNotEquals(testPhoto, photoTest);
+		photoTest.setThumbNailUrl(null);
+		checkNotEquals(testPhoto, photoTest);
+		photoTest.setThumbNailUrl(testPhoto.getThumbNailUrl());
+}
 
 }

@@ -102,6 +102,48 @@ public class PhotoAlbumTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#getLocation()}.
+	 */
+	@Test
+	public final void testGetLocation()
+	{
+		assertEquals(photoAlbum.getLocation(),photoAlbum2.getLocation());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#setLocation(java.lang.String)}.
+	 */
+	@Test
+	public final void testSetLocation()
+	{
+		String location="new Location";
+		assertNotEquals(location,photoAlbum.getLocation());
+		photoAlbum.setLocation(location);
+		assertEquals(location,photoAlbum.getLocation());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#getThumbNailUrl()}.
+	 */
+	@Test
+	public final void testGetThumbNailUrl()
+	{
+		assertEquals(photoAlbum.getThumbNailUrl(),photoAlbum2.getThumbNailUrl());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#setThumbNailUrl(java.lang.String)}.
+	 */
+	@Test
+	public final void testSetThumbNailUrl()
+	{
+		String thumbNailUrl="new ThumbNailUrl";
+		assertNotEquals(thumbNailUrl,photoAlbum.getThumbNailUrl());
+		photoAlbum.setThumbNailUrl(thumbNailUrl);
+		assertEquals(thumbNailUrl,photoAlbum.getThumbNailUrl());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#getCreated()}.
 	 */
 	@Test
@@ -227,6 +269,15 @@ public class PhotoAlbumTest
 		photoAlbum2.setDescription(null);
 		checkHashCode(photoAlbum,photoAlbum2);
 		photoAlbum2.setDescription(photoAlbum.getDescription());
+		
+		photoAlbum2.setLocation(null);
+		checkHashCode(photoAlbum,photoAlbum2);
+		photoAlbum2.setLocation(photoAlbum.getLocation());
+
+		photoAlbum2.setThumbNailUrl(null);
+		checkHashCode(photoAlbum,photoAlbum2);
+		photoAlbum2.setThumbNailUrl(photoAlbum.getThumbNailUrl());
+		
 		photoAlbum2.setCreated(null);
 		checkHashCode(photoAlbum,photoAlbum2);
 		photoAlbum2.setCreated(photoAlbum.getCreated());
@@ -265,11 +316,24 @@ public class PhotoAlbumTest
 		photoAlbum2.setCreated(null);
 		checkNotEquals(photoAlbum, photoAlbum2);
 		photoAlbum2.setCreated(photoAlbum.getCreated());
+
 		photoAlbum2.setDescription("Some description");
 		assertNotEquals(photoAlbum, photoAlbum2);
 		photoAlbum2.setDescription(null);
 		checkNotEquals(photoAlbum2, photoAlbum);
 		photoAlbum2.setDescription(photoAlbum.getDescription());
+		
+		photoAlbum2.setLocation("Some location");
+		assertNotEquals(photoAlbum, photoAlbum2);
+		photoAlbum2.setLocation(null);
+		checkNotEquals(photoAlbum2, photoAlbum);
+		photoAlbum2.setLocation(photoAlbum.getLocation());
+		
+		photoAlbum2.setThumbNailUrl("Some thumbNailUrl");
+		assertNotEquals(photoAlbum, photoAlbum2);
+		photoAlbum2.setThumbNailUrl(null);
+		checkNotEquals(photoAlbum2, photoAlbum);
+		photoAlbum2.setThumbNailUrl(photoAlbum.getThumbNailUrl());
 		
 		photoAlbum2.setModified(54l);
 		checkNotEquals(photoAlbum, photoAlbum2);

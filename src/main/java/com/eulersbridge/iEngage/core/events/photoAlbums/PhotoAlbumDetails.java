@@ -11,6 +11,7 @@ public class PhotoAlbumDetails extends Details
 	private String name;
 	private String location;
 	private String description;
+	private String thumbNailUrl;
 	private Long created;
 	private Long creatorId;
 	private Long ownerId;
@@ -30,13 +31,14 @@ public class PhotoAlbumDetails extends Details
 	 * @param ownerId
 	 * @param modified
 	 */
-	public PhotoAlbumDetails(Long nodeId, String name, String location, String description,
+	public PhotoAlbumDetails(Long nodeId, String name, String location, String description, String thumbNailUrl,
 			Long creatorId, Long created, Long ownerId, Long modified)
 	{
 		super(nodeId);
 		this.name = name;
 		this.location = location;
 		this.description = description;
+		this.thumbNailUrl = thumbNailUrl;
 		this.created = created;
 		this.ownerId = ownerId;
 		this.modified = modified;
@@ -88,6 +90,22 @@ public class PhotoAlbumDetails extends Details
 	public void setDescription(String description)
 	{
 		this.description = description;
+	}
+
+	/**
+	 * @return the thumbNailUrl
+	 */
+	public String getThumbNailUrl()
+	{
+		return thumbNailUrl;
+	}
+
+	/**
+	 * @param thumbNailUrl the thumbNailUrl to set
+	 */
+	public void setThumbNailUrl(String thumbNailUrl)
+	{
+		this.thumbNailUrl = thumbNailUrl;
 	}
 
 	/**
@@ -174,6 +192,8 @@ public class PhotoAlbumDetails extends Details
 			result = prime * result
 					+ ((location == null) ? 0 : location.hashCode());
 			result = prime * result
+					+ ((thumbNailUrl == null) ? 0 : thumbNailUrl.hashCode());
+			result = prime * result
 					+ ((modified == null) ? 0 : modified.hashCode());
 			result = prime * result + ((name == null) ? 0 : name.hashCode());
 			result = prime * result + ((ownerId == null) ? 0 : ownerId.hashCode());
@@ -215,6 +235,11 @@ public class PhotoAlbumDetails extends Details
 				if (other.location != null) return false;
 			}
 			else if (!location.equals(other.location)) return false;
+			if (thumbNailUrl == null)
+			{
+				if (other.thumbNailUrl != null) return false;
+			}
+			else if (!thumbNailUrl.equals(other.thumbNailUrl)) return false;
 			if (modified == null)
 			{
 				if (other.modified != null) return false;
@@ -241,7 +266,7 @@ public class PhotoAlbumDetails extends Details
 	public String toString()
 	{
 		return "PhotoAlbumDetails [nodeId=" + nodeId + ", name=" + name
-				+ ", location=" + location + ", description=" + description
+				+ ", location=" + location + ", description=" + description + ", thumbNailUrl=" + thumbNailUrl
 				+ ", created=" + created + ", ownerId=" + ownerId
 				+ ", modified=" + modified + "]";
 	}
