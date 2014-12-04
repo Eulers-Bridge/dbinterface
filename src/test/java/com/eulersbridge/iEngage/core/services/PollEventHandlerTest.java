@@ -255,6 +255,23 @@ public final void testCreatePollCreatorNotFound()
 	}
 
 	@Test
+	public final void testUpdatePollOwnerNotFoundNull()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
+		Poll testData=DatabaseDataFixture.populatePoll1();
+		Owner testOwner=new Owner(null);
+		testData.setOwner(testOwner);
+		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
+		PollDetails dets=testData.toPollDetails();
+		UpdatePollEvent createPollEvent=new UpdatePollEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updatePoll(createPollEvent);
+		assertEquals(evtData.getNodeId(),testData.getOwner().getNodeId());
+		assertFalse(((PollUpdatedEvent)evtData).isOwnerFound());
+		assertNull(evtData.getDetails());
+	}
+
+	@Test
 	public final void testUpdatePollCreatorNotFound()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
@@ -274,5 +291,24 @@ public final void testCreatePollCreatorNotFound()
 		assertNull(evtData.getDetails());
 	}
 
+	@Test
+	public final void testUpdatePollCreatorNotFoundNull()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
+		Poll testData=DatabaseDataFixture.populatePoll1();
+		Owner testOwner=new Owner();
+		testOwner.setNodeId(testData.getOwner().getNodeId());
+		Owner testCreator=new Owner(null);
+		testData.setCreator(testCreator);
+		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testCreator);
+		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
+		PollDetails dets=testData.toPollDetails();
+		UpdatePollEvent createPollEvent=new UpdatePollEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updatePoll(createPollEvent);
+		assertEquals(evtData.getNodeId(),testData.getCreator().getNodeId());
+		assertFalse(((PollUpdatedEvent)evtData).isCreatorFound());
+		assertNull(evtData.getDetails());
+	}
 
 }

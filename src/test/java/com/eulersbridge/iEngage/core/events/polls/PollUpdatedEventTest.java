@@ -97,6 +97,7 @@ public class PollUpdatedEventTest {
 	{
 		pollUpdatedEvent = PollUpdatedEvent.creatorNotFound(creatorId);
 		assertFalse(pollUpdatedEvent.isCreatorFound());
+		assertFalse(pollUpdatedEvent.isEntityFound());
 		assertNull(pollUpdatedEvent.getDetails());
 		assertEquals(pollUpdatedEvent.getNodeId(),creatorId);
 	}
@@ -106,7 +107,26 @@ public class PollUpdatedEventTest {
 	{
 		pollUpdatedEvent = PollUpdatedEvent.ownerNotFound(ownerId);
 		assertFalse(pollUpdatedEvent.isOwnerFound());
+		assertFalse(pollUpdatedEvent.isEntityFound());
 		assertNull(pollUpdatedEvent.getDetails());
 		assertEquals(pollUpdatedEvent.getNodeId(),ownerId);
+	}
+	@Test
+	public void testOwnerNotFoundNull() throws Exception
+	{
+		pollUpdatedEvent = PollUpdatedEvent.ownerNotFound(null);
+		assertFalse(pollUpdatedEvent.isOwnerFound());
+		assertFalse(pollUpdatedEvent.isEntityFound());
+		assertNull(pollUpdatedEvent.getDetails());
+		assertEquals(pollUpdatedEvent.getNodeId(),null);
+	}
+	@Test
+	public void testCreatorNotFoundNull() throws Exception
+	{
+		pollUpdatedEvent = PollUpdatedEvent.creatorNotFound(null);
+		assertFalse(pollUpdatedEvent.isCreatorFound());
+		assertFalse(pollUpdatedEvent.isEntityFound());
+		assertNull(pollUpdatedEvent.getDetails());
+		assertEquals(pollUpdatedEvent.getNodeId(),null);
 	}
 }

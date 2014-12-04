@@ -57,6 +57,7 @@ public class PollUpdatedEvent extends UpdatedEvent
 	{
 		PollUpdatedEvent evt = new PollUpdatedEvent(ownerId);
 		evt.setOwnerFound(false);
+		evt.entityFound=false;
 		return evt;
 	}
 	
@@ -64,6 +65,7 @@ public class PollUpdatedEvent extends UpdatedEvent
 	{
 		PollUpdatedEvent evt = new PollUpdatedEvent(creatorId);
 		evt.setCreatorFound(false);
+		evt.entityFound=false;
 		return evt;
 	}
 }

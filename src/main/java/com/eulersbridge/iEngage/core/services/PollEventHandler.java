@@ -125,14 +125,18 @@ public class PollEventHandler implements PollService
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+pollDetails.getOwnerId());
-	    	Owner owner=ownerRepository.findOne(pollDetails.getOwnerId());
+			Owner owner=null;
+			if (null!=pollDetails.getOwnerId())
+				owner=ownerRepository.findOne(pollDetails.getOwnerId());
 	    	if (null==owner)
 	    		resultEvt=PollUpdatedEvent.ownerNotFound(pollDetails.getOwnerId());
 	    	else
 	    	{
 	    		
 				if (LOG.isDebugEnabled()) LOG.debug("Finding creator with creatorId = "+pollDetails.getCreatorId());
-		    	Owner creator=ownerRepository.findOne(pollDetails.getCreatorId());
+				Owner creator=null;
+				if (null!=pollDetails.getCreatorId())
+					creator=ownerRepository.findOne(pollDetails.getCreatorId());
 		
 		    	if (null==creator)
 		    		resultEvt=PollUpdatedEvent.creatorNotFound(pollDetails.getCreatorId());
