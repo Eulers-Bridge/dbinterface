@@ -146,7 +146,6 @@ public class ViewLoginIntegrationTest {
 		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -159,7 +158,6 @@ public class ViewLoginIntegrationTest {
 		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -168,7 +166,6 @@ public class ViewLoginIntegrationTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingLogout()");
 		this.mockMvc.perform(get("/api/logout").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
 

@@ -154,7 +154,6 @@ public class PollControllerTest
 								"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/polls\"}]}";
 		when (pollService.createPoll(any(CreatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.question",is(dets.getQuestion())))
 		.andExpect(jsonPath("$.answers",is(dets.getAnswers())))
@@ -194,7 +193,6 @@ public class PollControllerTest
 		PollCreatedEvent testData=new PollCreatedEvent(dets);
 		when (pollService.createPoll(any(CreatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -207,7 +205,6 @@ public class PollControllerTest
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
 		when (pollService.createPoll(any(CreatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
 
@@ -220,7 +217,6 @@ public class PollControllerTest
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
 		when (pollService.createPoll(any(CreatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
 
@@ -233,7 +229,6 @@ public class PollControllerTest
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
 		when (pollService.createPoll(any(CreatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -245,7 +240,6 @@ public class PollControllerTest
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
 		when (pollService.createPoll(any(CreatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -270,7 +264,6 @@ public class PollControllerTest
 				"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/polls\"}]}";
 		when (pollService.updatePoll(any(UpdatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.question",is(dets.getQuestion())))
 		.andExpect(jsonPath("$.answers",is(dets.getAnswers())))
@@ -300,7 +293,6 @@ public class PollControllerTest
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
 		when (pollService.updatePoll(any(UpdatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
 
@@ -315,7 +307,6 @@ public class PollControllerTest
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
 		when (pollService.updatePoll(any(UpdatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -331,7 +322,6 @@ public class PollControllerTest
 		PollDeletedEvent testData=new PollDeletedEvent(dets.getNodeId());
 		when (pollService.deletePoll(any(DeletePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{pollId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;
 	}
@@ -345,7 +335,6 @@ public class PollControllerTest
 		DeletedEvent testData=PollDeletedEvent.notFound(dets.getNodeId());
 		when (pollService.deletePoll(any(DeletePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{pollId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -357,7 +346,6 @@ public class PollControllerTest
 		DeletedEvent testData=PollDeletedEvent.deletionForbidden(dets.getNodeId());
 		when (pollService.deletePoll(any(DeletePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{pollId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isGone())	;
 	}
 
@@ -442,7 +430,6 @@ public class PollControllerTest
 		PollsReadEvent testData=new PollsReadEvent(instId,eleDets);
 		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
 
@@ -454,7 +441,6 @@ public class PollControllerTest
 		PollsReadEvent testData=PollsReadEvent.newsFeedNotFound();
 		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -466,7 +452,6 @@ public class PollControllerTest
 		PollsReadEvent testData=PollsReadEvent.institutionNotFound();
 		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 }

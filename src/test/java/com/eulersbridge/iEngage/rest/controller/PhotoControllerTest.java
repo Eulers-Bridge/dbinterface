@@ -137,7 +137,6 @@ public class PhotoControllerTest
 		ReadEvent testData=PhotoReadEvent.notFound(dets.getNodeId());
 		when (photoService.readPhoto(any(ReadPhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{photoId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -153,7 +152,6 @@ public class PhotoControllerTest
 		PhotoAlbumReadEvent testData=new PhotoAlbumReadEvent(dets.getNodeId(), dets);
 		when (photoService.readPhotoAlbum(any(ReadPhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"/{photoAlbumId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.name",is(dets.getName())))
 		.andExpect(jsonPath("$.description",is(dets.getDescription())))
@@ -176,7 +174,6 @@ public class PhotoControllerTest
 		ReadEvent testData=PhotoAlbumReadEvent.notFound(dets.getNodeId());
 		when (photoService.readPhotoAlbum(any(ReadPhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"/{photoAlbumId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound());
 	}
 
@@ -197,7 +194,6 @@ public class PhotoControllerTest
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photo/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photo/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photo/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photos\"}]}";
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.url",is(dets.getUrl())))
 		.andExpect(jsonPath("$.thumbNailUrl",is(dets.getThumbNailUrl())))
@@ -223,7 +219,6 @@ public class PhotoControllerTest
 		String content="{\"url1\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -235,7 +230,6 @@ public class PhotoControllerTest
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(dets.getNodeId(), dets);
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -248,7 +242,6 @@ public class PhotoControllerTest
 		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
 
@@ -261,7 +254,6 @@ public class PhotoControllerTest
 		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456}";
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -283,7 +275,6 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("returnedContent = "+returnedContent);
 		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.name",is(dets.getName())))
 		.andExpect(jsonPath("$.description",is(dets.getDescription())))
@@ -308,7 +299,6 @@ public class PhotoControllerTest
 		String content="{\"name1\":\"testName\",\"description\":\"description\",\"location\":\"location\",\"created\":123456,\"ownerId\":3214,\"modified\":null}";
 		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -320,7 +310,6 @@ public class PhotoControllerTest
 		PhotoAlbumCreatedEvent testData=new PhotoAlbumCreatedEvent(dets);
 		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -333,7 +322,6 @@ public class PhotoControllerTest
 		String content="{\"name\":\"testName\",\"description\":\"description\",\"location\":\"location\",\"created\":123456,\"ownerId\":3214,\"modified\":null}";
 		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
 
@@ -347,7 +335,6 @@ public class PhotoControllerTest
 		String content="{\"name\":\"testName\",\"description\":\"description\",\"location\":\"location\",\"created\":123456,\"ownerId\":3214,\"modified\":null}";
 		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -360,7 +347,6 @@ public class PhotoControllerTest
 		String content="{\"name\":\"testName\",\"description\":\"description\",\"location\":\"location\",\"created\":123456,\"ownerId\":3214,\"modified\":null}";
 		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -372,7 +358,6 @@ public class PhotoControllerTest
 		String content="{\"name\":\"testName\",\"description\":\"description\",\"location\":\"location\",\"created\":123456,\"ownerId\":3214,\"modified\":null}";
 		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -388,7 +373,6 @@ public class PhotoControllerTest
 		PhotoDeletedEvent testData=new PhotoDeletedEvent(dets.getNodeId());
 		when (photoService.deletePhoto(any(DeletePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;
 	}
@@ -401,7 +385,6 @@ public class PhotoControllerTest
 		DeletedEvent testData=PhotoDeletedEvent.notFound(dets.getNodeId());
 		when (photoService.deletePhoto(any(DeletePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -413,7 +396,6 @@ public class PhotoControllerTest
 		DeletedEvent testData=PhotoDeletedEvent.deletionForbidden(dets.getNodeId());
 		when (photoService.deletePhoto(any(DeletePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/",dets.getNodeId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isGone())	;
 	}
 
@@ -429,7 +411,6 @@ public class PhotoControllerTest
 		PhotoAlbumDeletedEvent testData=new PhotoAlbumDeletedEvent(dets.getNodeId());
 		when (photoService.deletePhotoAlbum(any(DeletePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix2+"/{photoAlbumId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;
 	}
@@ -442,7 +423,6 @@ public class PhotoControllerTest
 		DeletedEvent testData=PhotoAlbumDeletedEvent.notFound(dets.getNodeId());
 		when (photoService.deletePhotoAlbum(any(DeletePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix2+"/{photoAlbumId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -454,7 +434,6 @@ public class PhotoControllerTest
 		DeletedEvent testData=PhotoAlbumDeletedEvent.deletionForbidden(dets.getNodeId());
 		when (photoService.deletePhotoAlbum(any(DeletePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix2+"/{photoAlbumId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isGone())	;
 	}
 
@@ -543,7 +522,6 @@ public class PhotoControllerTest
 		PhotosReadEvent testData=new PhotosReadEvent(instId,eleDets);
 		when (photoService.findPhotos(any(ReadPhotosEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
 
@@ -555,7 +533,6 @@ public class PhotoControllerTest
 		PhotosReadEvent testData=PhotosReadEvent.ownerNotFound();
 		when (photoService.findPhotos(any(ReadPhotosEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -611,7 +588,6 @@ public class PhotoControllerTest
 		PhotoAlbumsReadEvent testData=new PhotoAlbumsReadEvent(instId,photoAlbumDets);
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
 
@@ -623,7 +599,6 @@ public class PhotoControllerTest
 		PhotoAlbumsReadEvent testData= PhotoAlbumsReadEvent.institutionNotFound();
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 	@Test
@@ -634,7 +609,6 @@ public class PhotoControllerTest
 		PhotoAlbumsReadEvent testData= PhotoAlbumsReadEvent.newsFeedNotFound();
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 }
