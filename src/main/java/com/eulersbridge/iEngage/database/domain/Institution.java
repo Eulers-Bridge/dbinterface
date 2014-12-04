@@ -148,7 +148,8 @@ public class Institution
 
 	    BeanUtils.copyProperties(this, details);
 	    details.setCountryName(getCountry().getCountryName());
-	    details.setNewsFeedId(getNewsFeed().getNodeId());
+	    if (getNewsFeed()!=null)
+	    	details.setNewsFeedId(getNewsFeed().getNodeId());
 	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
 
 	    return details;
