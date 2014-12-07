@@ -87,7 +87,6 @@ public class ViewNewsIntegrationTest {
 		String returnedContent="{\"articleId\":1,\"institutionId\":1,\"title\":\"Test Article2\",\"content\":\"Contents of the Test Article\",\"picture\":[\"http://localhost:8080/testPictures/picture2.jpg\",\"http://localhost:8080/testPictures/picture.jpg\"],\"likes\":0,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewitt@hotmail.com\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/newsArticle/1/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/newsArticle/1/likedBy/USERID\"},{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/newsArticle/1/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/newsArticle/1/likes\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/newsArticles\"}]}";
 		when (newsService.updateNewsArticle(any(UpdateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.articleId",is(dets.getNewsArticleId().intValue())))
 		.andExpect(jsonPath("$.title",is(dets.getTitle())))
 		.andExpect(jsonPath("$.content",is(dets.getContent())))
@@ -114,7 +113,6 @@ public class ViewNewsIntegrationTest {
 		String content="{\"articleId\":1,\"institutionId\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":1234567,\"creatorEmail\":\"gnewitt@hotmail.com\"}";
 		when (newsService.updateNewsArticle(any(UpdateNewsArticleEvent.class))).thenReturn(null);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -126,7 +124,6 @@ public class ViewNewsIntegrationTest {
 		String content="{\"articleId\":1,\"institutionId1\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likers\":null,\"date\":1234567,\"creatorEmail\":\"gnewitt@hotmail.com\"}";
 		when (newsService.updateNewsArticle(any(UpdateNewsArticleEvent.class))).thenReturn(null);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -137,7 +134,6 @@ public class ViewNewsIntegrationTest {
 		Long id=1L;
 		when (newsService.updateNewsArticle(any(UpdateNewsArticleEvent.class))).thenReturn(null);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -151,7 +147,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticleLikedEvent testData=new NewsArticleLikedEvent(id, email,true);
 		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;		
 	}
@@ -165,7 +160,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticleLikedEvent testData=NewsArticleLikedEvent.articleNotFound(id, email);
 		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isGone())	;		
 	}
 
@@ -178,7 +172,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticleLikedEvent testData=NewsArticleLikedEvent.userNotFound(id, email);
 		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
 
@@ -191,7 +184,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticleUnlikedEvent testData=new NewsArticleUnlikedEvent(id, email,true);
 		when (newsService.unlikeNewsArticle(any(UnlikeNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;		
 	}
@@ -205,7 +197,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticleUnlikedEvent testData=NewsArticleUnlikedEvent.articleNotFound(id, email);
 		when (newsService.unlikeNewsArticle(any(UnlikeNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isGone())	;		
 	}
 
@@ -218,7 +209,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticleUnlikedEvent testData=NewsArticleUnlikedEvent.userNotFound(id, email);
 		when (newsService.unlikeNewsArticle(any(UnlikeNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
 
@@ -231,7 +221,6 @@ public class ViewNewsIntegrationTest {
 		ReadNewsArticleEvent testData=new ReadNewsArticleEvent(newsArticleId, dets);
 		when (newsService.requestReadNewsArticle(any(RequestReadNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.title",is(dets.getTitle())))
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
 		.andExpect(jsonPath("$.creatorEmail",is(dets.getCreatorEmail())))
@@ -259,7 +248,6 @@ public class ViewNewsIntegrationTest {
 		ReadEvent testData=ReadNewsArticleEvent.notFound(newsArticleId);
 		when (newsService.requestReadNewsArticle(any(RequestReadNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -271,7 +259,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticleDeletedEvent testData=new NewsArticleDeletedEvent(dets.getNewsArticleId());
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",dets.getNewsArticleId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(content().string("true"))
 //TODO This should not be returning boolean.
 		.andExpect(status().isOk())	;
@@ -285,7 +272,6 @@ public class ViewNewsIntegrationTest {
 		DeletedEvent testData=NewsArticleDeletedEvent.notFound(newsArticleId);
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(content().string("false"))
 //TODO This should not be returning boolean.
 		.andExpect(status().isNotFound())	;
@@ -299,7 +285,6 @@ public class ViewNewsIntegrationTest {
 		DeletedEvent testData=NewsArticleDeletedEvent.deletionForbidden(dets.getNewsArticleId());
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",dets.getNewsArticleId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(content().string("false"))
 //TODO This should not be returning boolean.
 		.andExpect(status().isGone())	;
@@ -316,7 +301,6 @@ public class ViewNewsIntegrationTest {
 		String returnedContent="{\"articleId\":1,\"institutionId\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":[\"http://localhost:8080/testPictures/picture2.jpg\",\"http://localhost:8080/testPictures/picture.jpg\"],\"likes\":0,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewitt@hotmail.com\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/newsArticle/1/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/newsArticle/1/likedBy/USERID\"},{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/newsArticle/1/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/newsArticle/1/likes\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/newsArticles\"}]}";
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.articleId",is(dets.getNewsArticleId().intValue())))
 		.andExpect(jsonPath("$.title",is(dets.getTitle())))
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
@@ -345,7 +329,6 @@ public class ViewNewsIntegrationTest {
 		String content="{\"institutionId1\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":12345678,\"creatorEmail\":\"gnewitt@hotmail.com\"}";
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -356,7 +339,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticleCreatedEvent testData=null;
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -369,7 +351,6 @@ public class ViewNewsIntegrationTest {
 		String content="{\"institutionId\":56,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewitt@hotmail.com\"}";
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -382,7 +363,6 @@ public class ViewNewsIntegrationTest {
 		String content="{\"institutionId\":56,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewittt@hotmail.com\"}";
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -395,7 +375,6 @@ public class ViewNewsIntegrationTest {
 		String content="{\"institutionId\":56,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewittt@hotmail.com\"}";
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -416,7 +395,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets,15l,2);
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$totalArticles",is(15)))
 		.andExpect(jsonPath("$totalPages",is(2)))
 		.andExpect(jsonPath("$articles[0].title",is(artDets.get(0).getTitle())))
@@ -448,7 +426,6 @@ public class ViewNewsIntegrationTest {
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+""
 				+ "s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
 
@@ -460,7 +437,6 @@ public class ViewNewsIntegrationTest {
 		NewsArticlesReadEvent testData=NewsArticlesReadEvent.institutionNotFound();
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 

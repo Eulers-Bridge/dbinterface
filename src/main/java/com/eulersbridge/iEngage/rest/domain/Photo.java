@@ -24,10 +24,12 @@ public class Photo extends ResourceSupport
 {
 	Long nodeId;
 	String url;
+	String thumbNailUrl;
 	String title;
 	String description;
 	Long date;
 	Long ownerId;
+	Integer sequence;
 
     private static Logger LOG = LoggerFactory.getLogger(Photo.class);
 
@@ -61,6 +63,22 @@ public class Photo extends ResourceSupport
 	public void setUrl(String url)
 	{
 		this.url = url;
+	}
+
+	/**
+	 * @return the thumbNailUrl
+	 */
+	public String getThumbNailUrl()
+	{
+		return thumbNailUrl;
+	}
+
+	/**
+	 * @param thumbNailUrl the thumbNailUrl to set
+	 */
+	public void setThumbNailUrl(String thumbNailUrl)
+	{
+		this.thumbNailUrl = thumbNailUrl;
 	}
 
 	/**
@@ -124,6 +142,22 @@ public class Photo extends ResourceSupport
 		this.ownerId = ownerId;
 	}
 
+	/**
+	 * @return the sequence
+	 */
+	public Integer getSequence()
+	{
+		return sequence;
+	}
+
+	/**
+	 * @param sequence the sequence to set
+	 */
+	public void setSequence(Integer sequence)
+	{
+		this.sequence = sequence;
+	}
+
 	public static Photo fromPhotoDetails(PhotoDetails photoDetails)
     {
     	Photo photo = new Photo();
@@ -134,7 +168,9 @@ public class Photo extends ResourceSupport
         photo.setDescription(photoDetails.getDescription());
         photo.setDate(photoDetails.getDate());
         photo.setUrl(photoDetails.getUrl());
+        photo.setThumbNailUrl(photoDetails.getThumbNailUrl());
         photo.setOwnerId(photoDetails.getOwnerId());
+        photo.setSequence(photoDetails.getSequence());
 
 	    // {!begin selfRel}
         photo.add(linkTo(PhotoController.class).slash(name).slash(photo.nodeId).withSelfRel());
@@ -154,7 +190,7 @@ public class Photo extends ResourceSupport
 
     public PhotoDetails toPhotoDetails()
     {
-    	PhotoDetails photoDetails = new PhotoDetails(getNodeId(), getUrl(), getTitle(), getDescription(), getDate(), getOwnerId());
+    	PhotoDetails photoDetails = new PhotoDetails(getNodeId(), getUrl(), getThumbNailUrl(), getTitle(), getDescription(), getDate(), getSequence(), getOwnerId());
         if (LOG.isTraceEnabled()) LOG.trace("photoDetails "+photoDetails);
         return photoDetails;
     }
@@ -181,7 +217,7 @@ public class Photo extends ResourceSupport
 	@Override
 	public String toString()
 	{
-		return "Photo [nodeId=" + nodeId + ", url=" + url + ", title=" + title
+		return "Photo [nodeId=" + nodeId + ", url=" + url + ", thumbNailUrl=" + thumbNailUrl + ", title=" + title
 				+ ", description=" + description + ", date=" + date
 				+ ", ownerId=" + ownerId + "]";
 	}

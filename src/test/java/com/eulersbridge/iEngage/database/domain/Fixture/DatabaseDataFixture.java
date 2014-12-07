@@ -161,19 +161,19 @@ public class DatabaseDataFixture
 	{
 		Long nodeId=1l;
 		Long ownerId=2l;
-		Photo photo=populatePhoto("http://localhost:8080/photos/photo1.jpg","Test Photo", "Contents of the Test Photo", Calendar.getInstance().getTimeInMillis(), nodeId,ownerId);
+		Photo photo=populatePhoto("http://localhost:8080/photos/photo1.jpg","http://localhost:8080/photos/thumb1.jpg","Test Photo", "Contents of the Test Photo", Calendar.getInstance().getTimeInMillis(), nodeId,ownerId,3);
 		return photo;
 	}
 	public static Photo populatePhoto2()
 	{
 		Long nodeId=2l;
 		Long ownerId=1l;
-		Photo photo=populatePhoto("http://localhost:8080/photos/photo2.jpg","Test Photo2", "Contents of the Test Photo2", Calendar.getInstance().getTimeInMillis(), nodeId,ownerId);
+		Photo photo=populatePhoto("http://localhost:8080/photos/photo2.jpg","http://localhost:8080/photos/thumb2.jpg","Test Photo2", "Contents of the Test Photo2", Calendar.getInstance().getTimeInMillis(), nodeId,ownerId,1);
 		return photo;
 	}
-	public static Photo populatePhoto(String url, String title, String content, Long date,Long id, Long ownerId)
+	public static Photo populatePhoto(String url, String thumbNailUrl, String title, String content, Long date,Long id, Long ownerId, Integer sequence)
 	{
-		Photo photo=new Photo(url, title, content, date);
+		Photo photo=new Photo(url, thumbNailUrl, title, content, date, sequence);
 		Long nodeId=id;
 		photo.setNodeId(nodeId);
 		Owner owner=new Owner(ownerId);
@@ -195,7 +195,7 @@ public class DatabaseDataFixture
 		Long nodeId=1l;
 		Long ownerId=2l;
 		Long creatorId=4l;
-		PhotoAlbum photoAlbum=populatePhotoAlbum(nodeId,"Graduation Photo Album","Photos of Hot Graduates", "Union lawn",creatorId,Calendar.getInstance().getTimeInMillis(), null,ownerId);
+		PhotoAlbum photoAlbum=populatePhotoAlbum(nodeId,"Graduation Photo Album","Photos of Hot Graduates", "Union lawn","http://localhost:8080/thumb1.jpg",creatorId,Calendar.getInstance().getTimeInMillis(), null,ownerId);
 		return photoAlbum;
 	}
 	public static PhotoAlbum populatePhotoAlbum2()
@@ -203,14 +203,14 @@ public class DatabaseDataFixture
 		Long nodeId=2l;
 		Long ownerId=1l;
 		Long creatorId=3l;
-		PhotoAlbum photoAlbum=populatePhotoAlbum(nodeId,"Fresher Photo Album","Photos of Hot Freshers", "Union Building",creatorId,Calendar.getInstance().getTimeInMillis(), null,ownerId);
+		PhotoAlbum photoAlbum=populatePhotoAlbum(nodeId,"Fresher Photo Album","Photos of Hot Freshers", "Union Building","http://localhost:8080/thumb2.jpg",creatorId,Calendar.getInstance().getTimeInMillis(), null,ownerId);
 		return photoAlbum;
 	}
-	public static PhotoAlbum populatePhotoAlbum(Long nodeId,String name, String description, String location, Long creatorId,Long created,Long modified, Long ownerId)
+	public static PhotoAlbum populatePhotoAlbum(Long nodeId,String name, String description, String location, String thumbNailUrl, Long creatorId,Long created,Long modified, Long ownerId)
 	{
 		Owner owner=new Owner(ownerId);
 		Owner creator=new Owner(creatorId);
-		PhotoAlbum photoAlbum=new PhotoAlbum(name,description,location,creator,created,owner,modified);
+		PhotoAlbum photoAlbum=new PhotoAlbum(name,description,location,thumbNailUrl,creator,created,owner,modified);
 		photoAlbum.setNodeId(nodeId);
 		photoAlbum.setOwner(owner);
 		return photoAlbum;

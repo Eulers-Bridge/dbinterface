@@ -96,7 +96,6 @@ public class ViewCountryIntegrationTest
 		String content="{\"countryName\":\"Australia\",\"institutions\":null,\"countryId\":"+id.intValue()+"}";
 		when (countryService.updateCountry(any(UpdateCountryEvent.class))).thenReturn(null);
 		this.mockMvc.perform(put("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isFailedDependency())	;		
 	}
 
@@ -112,7 +111,6 @@ public class ViewCountryIntegrationTest
 		CountryReadEvent testData=new CountryReadEvent(id, countryDetails);
 		when (countryService.readCountry(any(ReadCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.countryName",is(countryDetails.getCountryName())))
 		.andExpect(jsonPath("$.countryId",is(countryDetails.getCountryId().intValue())))
 		.andExpect(content().string(returnedContent))
@@ -130,7 +128,6 @@ public class ViewCountryIntegrationTest
 		ReadEvent testData=CountryReadEvent.notFound(id);
 		when (countryService.readCountry(any(ReadCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -146,7 +143,6 @@ public class ViewCountryIntegrationTest
 		CountryDeletedEvent testData=new CountryDeletedEvent(id, countryDetails);
 		when (countryService.deleteCountry(any(DeleteCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.countryName",is(countryDetails.getCountryName())))
 		.andExpect(jsonPath("$.countryId",is(countryDetails.getCountryId().intValue())))
 		.andExpect(content().string(returnedContent))
@@ -164,7 +160,6 @@ public class ViewCountryIntegrationTest
 		DeletedEvent testData=CountryDeletedEvent.notFound(id);
 		when (countryService.deleteCountry(any(DeleteCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/country/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -181,7 +176,6 @@ public class ViewCountryIntegrationTest
 								"\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/countrys\"}]}";
 		when (countryService.createCountry(any(CreateCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/country/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.countryName",is(dets.getCountryName())))
 //TODO		.andExpect(jsonPath("$.universities",is(dets.get())))
 		.andExpect(jsonPath("$.countryId",is(id.intValue())))
@@ -201,7 +195,6 @@ public class ViewCountryIntegrationTest
 		String content="{\"countryName\":\"Australia\",\"institutions\":null}";
 		when (countryService.createCountry(any(CreateCountryEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/country/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -212,7 +205,6 @@ public class ViewCountryIntegrationTest
 		String content="{\"countryName\":\"Australia\",\"institutions\":null}";
 		when (countryService.createCountry(any(CreateCountryEvent.class))).thenReturn(null);
 		this.mockMvc.perform(post("/api/country/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
 
@@ -222,7 +214,6 @@ public class ViewCountryIntegrationTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingTestDisplayDetails()");
 		String content="{\"countryName\":\"Australia\",\"institutions\":null}";
 		this.mockMvc.perform(post("/api/displayCountryParams/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isOk())	;		
 	}
 
@@ -243,7 +234,6 @@ public class ViewCountryIntegrationTest
 		CountrysReadEvent testData=new CountrysReadEvent(countrys);
 		when (countryService.readCountrys(any(ReadCountrysEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/countrys").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$[0].countryName",is(countryDetails.getCountryName())))
 		.andExpect(jsonPath("$[0].countryId",is(countryDetails.getCountryId().intValue())))
 		.andExpect(content().string(returnedContent))

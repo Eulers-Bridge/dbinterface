@@ -72,6 +72,36 @@ public class PhotoAlbumDetailsTest
 	}
 
 	@Test
+	public final void testGetLocation()
+	{
+		assertEquals(photoAlbum.getLocation(),dets.getLocation());
+	}
+
+	@Test
+	public final void testSetLocation()
+	{
+		String description="Some location";
+		assertNotEquals(description,dets.getLocation());
+		dets.setLocation(description);
+		assertEquals(description,dets.getLocation());
+	}
+
+	@Test
+	public final void testGetThumbNailUrl()
+	{
+		assertEquals(photoAlbum.getThumbNailUrl(),dets.getThumbNailUrl());
+	}
+
+	@Test
+	public final void testSetThumbNailUrl()
+	{
+		String description="Some thumbnail";
+		assertNotEquals(description,dets.getThumbNailUrl());
+		dets.setThumbNailUrl(description);
+		assertEquals(description,dets.getThumbNailUrl());
+	}
+
+	@Test
 	public final void testGetCreated()
 	{
 		assertEquals(photoAlbum.getCreated(),dets.getCreated());
@@ -147,7 +177,17 @@ public class PhotoAlbumDetailsTest
 		assertNotEquals(detsTest.hashCode(), photoAlbumTest.hashCode());
 		assertNotEquals(photoAlbumTest.hashCode(), detsTest.hashCode());
 		photoAlbumTest.setDescription(detsTest.getDescription());
-	}
+
+		photoAlbumTest.setLocation(null);
+		assertNotEquals(detsTest.hashCode(), photoAlbumTest.hashCode());
+		assertNotEquals(photoAlbumTest.hashCode(), detsTest.hashCode());
+		photoAlbumTest.setLocation(detsTest.getLocation());
+
+		photoAlbumTest.setThumbNailUrl(null);
+		assertNotEquals(detsTest.hashCode(), photoAlbumTest.hashCode());
+		assertNotEquals(photoAlbumTest.hashCode(), detsTest.hashCode());
+		photoAlbumTest.setThumbNailUrl(detsTest.getThumbNailUrl());
+}
 
 	@Test
 	public final void testEqualsObject()
@@ -185,6 +225,20 @@ public class PhotoAlbumDetailsTest
 		assertNotEquals(photoAlbumDetails, photoAlbumTest);
 		assertNotEquals(photoAlbumTest, photoAlbumDetails);
 		photoAlbumTest.setDescription(photoAlbumDetails.getDescription());
+
+		photoAlbumTest.setLocation("Some other location");
+		assertNotEquals(photoAlbumDetails, photoAlbumTest);
+		photoAlbumTest.setLocation(null);
+		assertNotEquals(photoAlbumDetails, photoAlbumTest);
+		assertNotEquals(photoAlbumTest, photoAlbumDetails);
+		photoAlbumTest.setLocation(photoAlbumDetails.getLocation());
+
+		photoAlbumTest.setThumbNailUrl("Some other thumbnail.");
+		assertNotEquals(photoAlbumDetails, photoAlbumTest);
+		photoAlbumTest.setThumbNailUrl(null);
+		assertNotEquals(photoAlbumDetails, photoAlbumTest);
+		assertNotEquals(photoAlbumTest, photoAlbumDetails);
+		photoAlbumTest.setThumbNailUrl(photoAlbumDetails.getThumbNailUrl());
 
 		photoAlbumTest.setCreated(54l);
 		PhotoAlbumDetails dets2=photoAlbumDetails;

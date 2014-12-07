@@ -26,6 +26,7 @@ public class PhotoAlbum extends ResourceSupport
     private String name;
     private String description;
     private String location;
+    private String thumbNailUrl;
     private Long created;
     private Long creatorId;
     private Long ownerId;
@@ -98,6 +99,22 @@ public class PhotoAlbum extends ResourceSupport
 	}
 
 	/**
+	 * @return the thumbNailUrl
+	 */
+	public String getThumbNailUrl()
+	{
+		return thumbNailUrl;
+	}
+
+	/**
+	 * @param thumbNailUrl the thumbNailUrl to set
+	 */
+	public void setThumbNailUrl(String thumbNailUrl)
+	{
+		this.thumbNailUrl = thumbNailUrl;
+	}
+
+	/**
 	 * @return the creatorId
 	 */
 	public Long getCreatorId()
@@ -163,7 +180,7 @@ public class PhotoAlbum extends ResourceSupport
 
 	public PhotoAlbumDetails toPhotoAlbumDetails()
 	{
-    	PhotoAlbumDetails photoAlbumDetails = new PhotoAlbumDetails(getNodeId(), getName(), getLocation(), getDescription(), getCreatorId(), getCreated(), getOwnerId(),getModified());
+    	PhotoAlbumDetails photoAlbumDetails = new PhotoAlbumDetails(getNodeId(), getName(), getLocation(), getDescription(), getThumbNailUrl(), getCreatorId(), getCreated(), getOwnerId(),getModified());
         if (LOG.isTraceEnabled()) LOG.trace("photoAlbumDetails "+photoAlbumDetails);
         return photoAlbumDetails;
 	}
@@ -176,6 +193,7 @@ public class PhotoAlbum extends ResourceSupport
         photoAlbum.setNodeId(details.getNodeId());
         photoAlbum.setName(details.getName());
         photoAlbum.setLocation(details.getLocation());
+        photoAlbum.setThumbNailUrl(details.getThumbNailUrl());
         photoAlbum.setDescription(details.getDescription());
         photoAlbum.setCreatorId(details.getCreatorId());
         photoAlbum.setCreated(details.getCreated());

@@ -75,6 +75,7 @@ public class Poll extends ResourceSupport{
         pollDetails.setStart(this.getStart());
         pollDetails.setDuration(this.getDuration());
         pollDetails.setOwnerId(getOwnerId());
+        pollDetails.setCreatorId(getCreatorId());
         if (LOG.isTraceEnabled()) LOG.trace("pollDetails "+pollDetails);
         return pollDetails;
     }

@@ -38,4 +38,14 @@ public class UpdatedEvent
 		updatedEvent.entityFound = false;
 		return updatedEvent;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "UpdatedEvent [nodeId=" + nodeId + ", details=" + details
+				+ ", entityFound=" + entityFound + "]";
+	}
 }

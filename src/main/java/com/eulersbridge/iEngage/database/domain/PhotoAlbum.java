@@ -27,6 +27,7 @@ public class PhotoAlbum
     private String name;
     private String description;
     private String location;
+	private String thumbNailUrl;
 	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction=Direction.BOTH) @Fetch
     private Owner creator;
     private Long created;
@@ -41,16 +42,19 @@ public class PhotoAlbum
     /**
 	 * @param name
 	 * @param description
+	 * @param location
+	 * @param thumbNailUrl
 	 * @param created
 	 * @param owner
 	 * @param modified
 	 */
-	public PhotoAlbum(String name, String description, String location, Owner creator, Long created, Owner owner, Long modified)
+	public PhotoAlbum(String name, String description, String location, String thumbNailUrl, Owner creator, Long created, Owner owner, Long modified)
 	{
 		super();
 		this.name = name;
 		this.description = description;
 		this.location = location;
+		this.thumbNailUrl = thumbNailUrl;
 		this.creator = creator;
 		this.created = created;
 		this.owner = owner;
@@ -124,6 +128,22 @@ public class PhotoAlbum
 	public void setLocation(String location)
 	{
 		this.location = location;
+	}
+
+	/**
+	 * @return the thumbNailUrl
+	 */
+	public String getThumbNailUrl()
+	{
+		return thumbNailUrl;
+	}
+
+	/**
+	 * @param thumbNailUrl the thumbNailUrl to set
+	 */
+	public void setThumbNailUrl(String thumbNailUrl)
+	{
+		this.thumbNailUrl = thumbNailUrl;
 	}
 
 	/**
@@ -215,6 +235,7 @@ public class PhotoAlbum
         photoAlbum.setName(photoAlbumDetails.getName());
         photoAlbum.setDescription(photoAlbumDetails.getDescription());
         photoAlbum.setLocation(photoAlbumDetails.getLocation());
+        photoAlbum.setThumbNailUrl(photoAlbumDetails.getThumbNailUrl());
         photoAlbum.setCreated(photoAlbumDetails.getCreated());
         photoAlbum.setModified(photoAlbumDetails.getModified());
         Owner thisOwner=new Owner();
@@ -231,16 +252,8 @@ public class PhotoAlbum
     public PhotoAlbumDetails toPhotoAlbumDetails()
     {
         if (LOG.isTraceEnabled()) LOG.trace("toPhotoAlbumDetails()");
-        PhotoAlbumDetails photoAlbumDetails = new PhotoAlbumDetails();
+        PhotoAlbumDetails photoAlbumDetails = new PhotoAlbumDetails(getNodeId(),getName(),getLocation(),getDescription(),getThumbNailUrl(),getCreator().getNodeId(),getCreated(),getOwner().getNodeId(),getModified());
         if (LOG.isTraceEnabled()) LOG.trace("photoAlbum "+this);
-        photoAlbumDetails.setNodeId(this.getNodeId());
-        photoAlbumDetails.setName(getName());
-        photoAlbumDetails.setDescription(getDescription());
-        photoAlbumDetails.setLocation(getLocation());
-        photoAlbumDetails.setCreatorId(getCreator().getNodeId());
-        photoAlbumDetails.setCreated(getCreated());
-        photoAlbumDetails.setOwnerId(getOwner().getNodeId());
-        photoAlbumDetails.setModified(getModified());
 
         if (LOG.isTraceEnabled()) LOG.trace("photoAlbumDetails; "+ photoAlbumDetails);
         return photoAlbumDetails;
@@ -265,7 +278,9 @@ public class PhotoAlbum
 			result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
 			result = prime * result
-				+ ((location == null) ? 0 : location.hashCode());
+					+ ((location == null) ? 0 : location.hashCode());
+			result = prime * result
+					+ ((thumbNailUrl == null) ? 0 : thumbNailUrl.hashCode());
 			result = prime * result + ((likes == null) ? 0 : likes.hashCode());
 			result = prime * result
 				+ ((modified == null) ? 0 : modified.hashCode());
@@ -330,6 +345,11 @@ public class PhotoAlbum
 				if (other.location != null) return false;
 			}
 			else if (!location.equals(other.location)) return false;
+			if (thumbNailUrl == null)
+			{
+				if (other.thumbNailUrl != null) return false;
+			}
+			else if (!thumbNailUrl.equals(other.thumbNailUrl)) return false;
 			if (owner == null)
 			{
 				if (other.owner != null) return false;
@@ -346,7 +366,7 @@ public class PhotoAlbum
 	public String toString()
 	{
 		return "PhotoAlbum [nodeId=" + nodeId + ", name=" + name
-				+ ", description=" + description + ", location=" + location
+				+ ", description=" + description + ", location=" + location + ", thumbNailUrl=" + thumbNailUrl
 				+ ", creator=" + creator+ ", created=" + created+ ", owner=" + owner + ", modified="
 				+ modified + ", likes="+ likes + "]";
 	}

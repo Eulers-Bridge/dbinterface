@@ -94,7 +94,6 @@ public class ViewInstitutionIntegrationTest
 //		String returnedContent="[{\"institutionId\":1,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
 		when (instService.getGeneralInfo(any(ReadGeneralInfoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/general-info/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.countrys[0].countryName",is(countries.get(0).getCountryName())))
 		.andExpect(jsonPath("$.countrys[0].countryId",is(countries.get(0).getCountryId().intValue())))
 		.andExpect(jsonPath("$.countrys[0].institutions[0].institutionId",is(insts.get(0).getInstId().intValue())))
@@ -119,7 +118,6 @@ public class ViewInstitutionIntegrationTest
 		String returnedContent="[{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
 		when (instService.readInstitutions(any(ReadInstitutionsEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institutions/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.[0].name",is(insts.get(0).getName())))
 		.andExpect(jsonPath("$.[0].state",is(insts.get(0).getState())))
 		.andExpect(jsonPath("$.[0].campus",is(insts.get(0).getCampus())))
@@ -138,7 +136,6 @@ public class ViewInstitutionIntegrationTest
 		ReadEvent testData=ReadInstitutionEvent.notFound(instId);
 		when (instService.requestReadInstitution(any(RequestReadInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{instId}/",instId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 	
@@ -154,7 +151,6 @@ public class ViewInstitutionIntegrationTest
 		String returnedContent="[{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
 		when (instService.readInstitutions(any(ReadInstitutionsEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institutions/{countryId}",countryId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.[0].name",is(insts.get(0).getName())))
 		.andExpect(jsonPath("$.[0].state",is(insts.get(0).getState())))
 		.andExpect(jsonPath("$.[0].campus",is(insts.get(0).getCampus())))
@@ -173,7 +169,6 @@ public class ViewInstitutionIntegrationTest
 		String content="{\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\"}";
 		String returnedContent="true";
 		this.mockMvc.perform(post("/api/displayInstParams/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
@@ -188,7 +183,6 @@ public class ViewInstitutionIntegrationTest
 		String returnedContent="{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.requestReadInstitution(any(RequestReadInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.name",is(dets.getName())))
 		.andExpect(jsonPath("$.state",is(dets.getState())))
 		.andExpect(jsonPath("$.campus",is(dets.getCampus())))
@@ -207,7 +201,6 @@ public class ViewInstitutionIntegrationTest
 		DeletedEvent testData=InstitutionDeletedEvent.notFound(instId);
 		when (instService.deleteInstitution(any(DeleteInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/institution/{instId}/",instId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
 	
@@ -221,7 +214,6 @@ public class ViewInstitutionIntegrationTest
 		String returnedContent="{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.deleteInstitution(any(DeleteInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete("/api/institution/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.name",is(dets.getName())))
 		.andExpect(jsonPath("$.state",is(dets.getState())))
 		.andExpect(jsonPath("$.campus",is(dets.getCampus())))
@@ -243,7 +235,6 @@ public class ViewInstitutionIntegrationTest
 		String returnedContent="{\"nodeId\":1,\"institutionId\":1,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.readNewsFeed(any(ReadNewsFeedEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
@@ -259,7 +250,6 @@ public class ViewInstitutionIntegrationTest
 		ReadEvent testData=NewsFeedReadEvent.notFound(id);
 		when (instService.readNewsFeed(any(ReadNewsFeedEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isNotFound());
 	}
 	
@@ -275,7 +265,6 @@ public class ViewInstitutionIntegrationTest
 		String returnedContent="{\"nodeId\":1,\"institutionId\":1,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.createNewsFeed(any(CreateNewsFeedEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
@@ -293,7 +282,6 @@ public class ViewInstitutionIntegrationTest
 		String content="{\"institutionId\":1}";
 		when (instService.createNewsFeed(any(CreateNewsFeedEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest());
 	}
 	
@@ -306,7 +294,6 @@ public class ViewInstitutionIntegrationTest
 		String content="{\"institutionId\":1}";
 		when (instService.createNewsFeed(any(CreateNewsFeedEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isFailedDependency());
 	}
 	
@@ -321,7 +308,6 @@ public class ViewInstitutionIntegrationTest
 		String returnedContent="{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.updateInstitution(any(UpdateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.name",is(dets.getName())))
 		.andExpect(jsonPath("$.state",is(dets.getState())))
 		.andExpect(jsonPath("$.campus",is(dets.getCampus())))
@@ -340,7 +326,6 @@ public class ViewInstitutionIntegrationTest
 		UpdatedEvent testData=InstitutionUpdatedEvent.notFound(id);
 		when (instService.updateInstitution(any(UpdateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;
 	}
 	
@@ -354,7 +339,6 @@ public class ViewInstitutionIntegrationTest
 		String content="{\"givenName2\":\"Greg\",\"familyName2\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email2\":\"greg.newitt@unimelb.edu.au\"}";
 		when (instService.updateInstitution(any(UpdateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;
 	}
 	
@@ -367,7 +351,6 @@ public class ViewInstitutionIntegrationTest
 		String content="{\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Canadia\"}";
 		when (instService.updateInstitution(any(UpdateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isFailedDependency())	;
 	}
 	
@@ -380,7 +363,6 @@ public class ViewInstitutionIntegrationTest
 		String content="{\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Canadia\"}";
 		when (instService.updateInstitution(any(UpdateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isFailedDependency())	;
 	}
 	
@@ -395,7 +377,6 @@ public class ViewInstitutionIntegrationTest
 		String returnedContent="{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}";
 		when (instService.createInstitution(any(CreateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(jsonPath("$.name",is(dets.getName())))
 		.andExpect(jsonPath("$.state",is(dets.getState())))
 		.andExpect(jsonPath("$.campus",is(dets.getCampus())))
@@ -414,7 +395,6 @@ public class ViewInstitutionIntegrationTest
 		InstitutionCreatedEvent testData=InstitutionCreatedEvent.countryNotFound(id);
 		when (instService.createInstitution(any(CreateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;
 	}
 	
@@ -428,7 +408,6 @@ public class ViewInstitutionIntegrationTest
 		String content="{\"givenName2\":\"Greg\",\"familyName2\":\"Newitt\",\"gender\":\"Male\",\"nationality\":\"Australian\",\"yearOfBirth\":\"1971\",\"password\":\"password\",\"accountVerified\":false,\"institutionId\":26,\"email2\":\"greg.newitt@unimelb.edu.au\"}";
 		when (instService.createInstitution(any(CreateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;
 	}
 	
@@ -441,7 +420,6 @@ public class ViewInstitutionIntegrationTest
 		String content="{\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Canadia\"}";
 		when (instService.createInstitution(any(CreateInstitutionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
 		.andExpect(status().isBadRequest())	;
 	}
 	

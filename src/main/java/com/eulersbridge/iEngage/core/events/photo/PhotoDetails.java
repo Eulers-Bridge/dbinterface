@@ -12,28 +12,34 @@ import com.eulersbridge.iEngage.core.events.Details;
 public class PhotoDetails extends Details
 {
 	String url;
+	String thumbNailUrl;
 	String title;
 	String description;
+	Integer sequence;
 	Long date;
 	Long ownerId;
 	
 	/**
 	 * @param nodeId
 	 * @param url
+	 * @param thumbNailUrl
 	 * @param title
 	 * @param description
 	 * @param date
+	 * @param sequence 
 	 * @param ownerId
 	 */
-	public PhotoDetails(Long nodeId, String url, String title,
-			String description, Long date, Long ownerId)
+	public PhotoDetails(Long nodeId, String url, String thumbNailUrl, String title,
+			String description, Long date, Integer sequence, Long ownerId)
 	{
 		super(nodeId);
 		this.url = url;
+		this.thumbNailUrl = thumbNailUrl;
 		this.title = title;
 		this.description = description;
 		this.date = date;
 		this.ownerId = ownerId;
+		this.sequence = sequence;
 	}
 
 	/**
@@ -64,6 +70,22 @@ public class PhotoDetails extends Details
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	/**
+	 * @return the thumbNailUrl
+	 */
+	public String getThumbNailUrl()
+	{
+		return thumbNailUrl;
+	}
+
+	/**
+	 * @param thumbNailUrl the thumbNailUrl to set
+	 */
+	public void setThumbNailUrl(String thumbNailUrl)
+	{
+		this.thumbNailUrl = thumbNailUrl;
 	}
 
 	/**
@@ -108,6 +130,22 @@ public class PhotoDetails extends Details
 		this.date = date;
 	}
 
+	/**
+	 * @return the sequence
+	 */
+	public Integer getSequence()
+	{
+		return sequence;
+	}
+
+	/**
+	 * @param sequence the sequence to set
+	 */
+	public void setSequence(Integer sequence)
+	{
+		this.sequence = sequence;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -124,10 +162,12 @@ public class PhotoDetails extends Details
 		{
 			result = prime * result + ((ownerId == null) ? 0 : ownerId.hashCode());
 			result = prime * result + ((date == null) ? 0 : date.hashCode());
+			result = prime * result + ((sequence == null) ? 0 : sequence.hashCode());
 			result = prime * result
 					+ ((description == null) ? 0 : description.hashCode());
 			result = prime * result + ((title == null) ? 0 : title.hashCode());
 			result = prime * result + ((url == null) ? 0 : url.hashCode());
+			result = prime * result + ((thumbNailUrl == null) ? 0 : thumbNailUrl.hashCode());
 		}
 		return result;
 	}
@@ -159,6 +199,11 @@ public class PhotoDetails extends Details
 					return false;
 			} else if (!date.equals(other.date))
 				return false;
+			if (sequence == null) {
+				if (other.sequence != null)
+					return false;
+			} else if (!sequence.equals(other.sequence))
+				return false;
 			if (ownerId == null) {
 				if (other.ownerId != null)
 					return false;
@@ -179,6 +224,12 @@ public class PhotoDetails extends Details
 					return false;
 			} else if (!url.equals(other.url))
 				return false;
+			if (thumbNailUrl == null) {
+				if (other.thumbNailUrl != null)
+					return false;
+			} else if (!thumbNailUrl.equals(other.thumbNailUrl))
+				return false;
+			
 		}
 		return true;
 	}
@@ -189,7 +240,7 @@ public class PhotoDetails extends Details
 	@Override
 	public String toString()
 	{
-		return "PhotoDetails [nodeId=" + nodeId + ", url=" + url + ", title="
+		return "PhotoDetails [nodeId=" + nodeId + ", url=" + url +", thumbNailUrl=" + thumbNailUrl +", sequence=" + sequence + ", title="
 				+ title + ", description=" + description + ", date=" + date
 				+ ", ownerId=" + ownerId + "]";
 	}

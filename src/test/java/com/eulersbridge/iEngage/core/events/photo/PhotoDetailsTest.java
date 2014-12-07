@@ -35,7 +35,7 @@ public class PhotoDetailsTest
 	@Test
 	public final void testPhotoDetails2()
 	{
-		dets=new PhotoDetails(testPhoto.getNodeId(), testPhoto.getUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getOwner().getNodeId());
+		dets=new PhotoDetails(testPhoto.getNodeId(), testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence(),testPhoto.getOwner().getNodeId());
 		assertNotNull("Not yet implemented",dets);
 	}
 
@@ -80,6 +80,26 @@ public class PhotoDetailsTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#getOwnerId()}.
+	 */
+	@Test
+	public final void testGetSequence()
+	{
+		assertEquals("Not yet implemented",testPhoto.getSequence(),dets.getSequence());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#setOwnerId(java.lang.Long)}.
+	 */
+	@Test
+	public final void testSetSequence()
+	{
+		Integer sequence=324324;
+		dets.setSequence(sequence);
+		assertEquals(sequence,dets.getSequence());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#getUrl()}.
 	 */
 	@Test
@@ -97,6 +117,26 @@ public class PhotoDetailsTest
 		String testUrl="testUrl";
 		dets.setUrl(testUrl);
 		assertEquals(testUrl,dets.getUrl());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#getThumbNailUrl()}.
+	 */
+	@Test
+	public final void testGetThumbNailUrl()
+	{
+		assertEquals(testPhoto.getThumbNailUrl(),dets.getThumbNailUrl());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#setThumbNailUrl(java.lang.String)}.
+	 */
+	@Test
+	public final void testSetThumbNailUrl()
+	{
+		String testThumbNailUrl="testThumbNailUrl";
+		dets.setThumbNailUrl(testThumbNailUrl);
+		assertEquals(testThumbNailUrl,dets.getThumbNailUrl());
 	}
 
 	/**
@@ -254,7 +294,13 @@ public class PhotoDetailsTest
 		photoTest.setUrl(null);
 		checkNotEquals(dets, photoTest);
 		photoTest.setUrl(dets.getUrl());
-	}
+
+		photoTest.setThumbNailUrl("ThumbNailurl");
+		assertNotEquals(dets, photoTest);
+		photoTest.setThumbNailUrl(null);
+		checkNotEquals(dets, photoTest);
+		photoTest.setThumbNailUrl(dets.getThumbNailUrl());
+}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.events.photo.PhotoDetails#toString()}.

@@ -113,7 +113,8 @@ public class PollEventHandler implements PollService
 		Poll poll = Poll.fromPollDetails(pollDetails);
 		Long pollId = pollDetails.getPollId();
 	    UpdatedEvent resultEvt;
-		if (LOG.isDebugEnabled()) LOG.debug("poll Id is " + pollId);
+
+	    if (LOG.isDebugEnabled()) LOG.debug("poll Id is " + pollId);
 		Poll pollOld = pollRepository.findOne(pollId);
 		if (pollOld == null)
 		{
@@ -123,11 +124,30 @@ public class PollEventHandler implements PollService
 		}
 		else
 		{
-			Poll result = pollRepository.save(poll);
-			if (LOG.isDebugEnabled())
-				LOG.debug("updated successfully" + result.getNodeId());
-			resultEvt =  new PollUpdatedEvent(result.getNodeId(),
-					result.toPollDetails());
+			if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+pollDetails.getOwnerId());
+			Owner owner=null;
+			if (null!=pollDetails.getOwnerId())
+				owner=ownerRepository.findOne(pollDetails.getOwnerId());
+	    	if (null==owner)
+	    		resultEvt=PollUpdatedEvent.ownerNotFound(pollDetails.getOwnerId());
+	    	else
+	    	{
+	    		
+				if (LOG.isDebugEnabled()) LOG.debug("Finding creator with creatorId = "+pollDetails.getCreatorId());
+				Owner creator=null;
+				if (null!=pollDetails.getCreatorId())
+					creator=ownerRepository.findOne(pollDetails.getCreatorId());
+		
+		    	if (null==creator)
+		    		resultEvt=PollUpdatedEvent.creatorNotFound(pollDetails.getCreatorId());
+		    	else
+		    	{
+		    		poll.setOwner(owner);
+		    		poll.setCreator(creator);
+		    		Poll result = pollRepository.save(poll);
+		    		resultEvt = new PollUpdatedEvent( result.getNodeId(), result.toPollDetails());
+		    	}
+	    	}
 		}
 	    return resultEvt;		
 	}

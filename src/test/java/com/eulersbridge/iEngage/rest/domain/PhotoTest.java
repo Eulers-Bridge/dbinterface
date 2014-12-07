@@ -89,6 +89,28 @@ public class PhotoTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getUrl()}.
+	 */
+	@Test
+	public final void testGetThumbNailUrl()
+	{
+		assertEquals(photoDetails.getThumbNailUrl(),photo.getThumbNailUrl());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setUrl(java.lang.String)}.
+	 */
+	@Test
+	public final void testSetThumbNailUrl()
+	{
+		assertEquals(photoDetails.getThumbNailUrl(),photo.getThumbNailUrl());
+		String url="Some different ThumbNail title.";
+		assertNotEquals(url,photo.getThumbNailUrl());
+		photo.setThumbNailUrl(url);;
+		assertEquals(url,photo.getThumbNailUrl());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getTitle()}.
 	 */
 	@Test
@@ -177,6 +199,28 @@ public class PhotoTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getOwnerId()}.
+	 */
+	@Test
+	public final void testGetSequence()
+	{
+		assertEquals(photoDetails.getSequence(),photo.getSequence());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setOwnerId(java.lang.Long)}.
+	 */
+	@Test
+	public final void testSetSequence()
+	{
+		assertEquals(photoDetails.getSequence(),photo.getSequence());
+		Integer sequence=43234;
+		assertNotEquals(sequence,photo.getSequence());
+		photo.setSequence(sequence);
+		assertEquals(sequence,photo.getSequence());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#fromPhotoDetails(com.eulersbridge.iEngage.core.events.photo.PhotoDetails)}.
 	 */
 	@Test
@@ -187,6 +231,8 @@ public class PhotoTest
 		assertEquals(photoDetails.getNodeId(),photo.getNodeId());
 		assertEquals(photoDetails.getTitle(),photo.getTitle());
 		assertEquals(photoDetails.getUrl(),photo.getUrl());
+		assertEquals(photoDetails.getThumbNailUrl(),photo.getThumbNailUrl());
+		assertEquals(photoDetails.getSequence(),photo.getSequence());
 	}
 
 	/**
@@ -201,6 +247,8 @@ public class PhotoTest
 		assertEquals(photoDetails.getNodeId(),photo.getNodeId());
 		assertEquals(photoDetails.getTitle(),photo.getTitle());
 		assertEquals(photoDetails.getUrl(),photo.getUrl());
+		assertEquals(photoDetails.getThumbNailUrl(),photo.getThumbNailUrl());
+		assertEquals(photoDetails.getSequence(),photo.getSequence());
 	}
 
 	/**
