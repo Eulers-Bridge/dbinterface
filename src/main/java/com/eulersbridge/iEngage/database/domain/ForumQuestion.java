@@ -32,7 +32,7 @@ public class ForumQuestion
 		if (LOG.isTraceEnabled())
 			LOG.trace("forumQuestionDetails " + forumQuestionDetails);
 		forumQuestion.setForumQuestionId(forumQuestionDetails
-				.getForumQuestionId());
+				.getNodeId());
 		forumQuestion.setQuestion(forumQuestionDetails.getQuestion());
 
 		if (LOG.isTraceEnabled()) LOG.trace("forumQuestion " + forumQuestion);
@@ -44,7 +44,7 @@ public class ForumQuestion
 		if (LOG.isTraceEnabled()) LOG.trace("toForumQuestionDetails()");
 		ForumQuestionDetails forumQuestionDetails = new ForumQuestionDetails();
 		if (LOG.isTraceEnabled()) LOG.trace("forumQuestion " + this);
-		forumQuestionDetails.setForumQuestionId(this.getForumQuestionId());
+		forumQuestionDetails.setNodeId(this.getForumQuestionId());
 		forumQuestionDetails.setQuestion(getQuestion());
 
 		if (LOG.isTraceEnabled())
