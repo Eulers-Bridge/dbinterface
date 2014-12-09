@@ -156,9 +156,11 @@ public class UserEventHandlerTest
 	{
 		CreateUserEvent createUserEvent;
 		UserDetails nADs;
-		String email="gnewitt2@hotmail.com";
+		String email="joeblogs@hotmail.com";
 		nADs=new UserDetails(email);
-		nADs.setGivenName("Greg");
+		nADs.setGivenName("Joe");
+		nADs.setFamilyName("Blogs");
+		nADs.setPassword("pass");
 		nADs.setInstitutionId((long)1);
 		createUserEvent=new CreateUserEvent(nADs);
 		UserCreatedEvent nace = userService.signUpNewUser(createUserEvent);
@@ -200,9 +202,11 @@ public class UserEventHandlerTest
 	{
 		CreateUserEvent createUserEvent;
 		UserDetails nADs;
-		String email="gnewitt2@hotmail.com";
+		String email="joeblogs@hotmail.com";
 		nADs=new UserDetails(email);
-		nADs.setGivenName("Greg");
+		nADs.setGivenName("Joe");
+		nADs.setFamilyName("Blogs");
+		nADs.setPassword("pass");
 		createUserEvent=new CreateUserEvent(nADs);
 
 		UserCreatedEvent nace = userServiceMocked.signUpNewUser(createUserEvent);
@@ -214,9 +218,11 @@ public class UserEventHandlerTest
 	{
 		CreateUserEvent createUserEvent;
 		UserDetails nADs;
-		String email="gnewitt2@hotmail.com";
+		String email="joeblogs@hotmail.com";
 		nADs=new UserDetails(email);
-		nADs.setGivenName("Greg");
+		nADs.setGivenName("Joe");
+		nADs.setFamilyName("Blogs");
+		nADs.setPassword("pass");
 		nADs.setInstitutionId((long)1);
 		createUserEvent=new CreateUserEvent(nADs);
 		Institution instData=null;
@@ -233,9 +239,11 @@ public class UserEventHandlerTest
 	{
 		CreateUserEvent createUserEvent;
 		UserDetails nADs;
-		String email="gnewitt2@hotmail.com";
+		String email="joeblogs@hotmail.com";
 		nADs=new UserDetails(email);
-		nADs.setGivenName("Greg");
+		nADs.setGivenName("Joe");
+		nADs.setFamilyName("Blogs");
+		nADs.setPassword("pass");
 		nADs.setInstitutionId((long)1);
 		createUserEvent=new CreateUserEvent(nADs);
 		Institution instData=DatabaseDataFixture.populateInstUniMelb();
