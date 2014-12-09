@@ -6,14 +6,14 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
  * @author Yikai Gong
  */
 
-public class ReadForumQuestionEvent extends ReadEvent
+public class ForumQuestionReadEvent extends ReadEvent
 {
-	public ReadForumQuestionEvent(Long forumQuestionId)
+	public ForumQuestionReadEvent(Long forumQuestionId)
 	{
 		super(forumQuestionId);
 	}
 
-	public ReadForumQuestionEvent(Long forumQuestionId,
+	public ForumQuestionReadEvent(Long forumQuestionId,
 			ForumQuestionDetails forumQuestionDetails)
 	{
 		super(forumQuestionId,forumQuestionDetails);

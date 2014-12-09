@@ -29,8 +29,7 @@ public class ForumQuestion
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("fromForumQuestionDetails()");
 		ForumQuestion forumQuestion = new ForumQuestion();
-		if (LOG.isTraceEnabled())
-			LOG.trace("forumQuestionDetails " + forumQuestionDetails);
+		if (LOG.isTraceEnabled()) LOG.trace("forumQuestionDetails " + forumQuestionDetails);
 		forumQuestion.setForumQuestionId(forumQuestionDetails
 				.getNodeId());
 		forumQuestion.setQuestion(forumQuestionDetails.getQuestion());
@@ -47,8 +46,7 @@ public class ForumQuestion
 		forumQuestionDetails.setNodeId(this.getForumQuestionId());
 		forumQuestionDetails.setQuestion(getQuestion());
 
-		if (LOG.isTraceEnabled())
-			LOG.trace("forumQuestionDetails; " + forumQuestionDetails);
+		if (LOG.isTraceEnabled()) LOG.trace("forumQuestionDetails; " + forumQuestionDetails);
 		return forumQuestionDetails;
 	}
 

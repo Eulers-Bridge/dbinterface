@@ -37,10 +37,10 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
         ForumQuestion forumQuestion = forumQuestionRepository.findOne(requestReadForumQuestionEvent.getNodeId());
         ReadEvent readForumQuestionEvent;
         if(forumQuestion != null){
-            readForumQuestionEvent = new ReadForumQuestionEvent(requestReadForumQuestionEvent.getNodeId(), forumQuestion.toForumQuestionDetails());
+            readForumQuestionEvent = new ForumQuestionReadEvent(requestReadForumQuestionEvent.getNodeId(), forumQuestion.toForumQuestionDetails());
         }
         else{
-            readForumQuestionEvent = ReadForumQuestionEvent.notFound(requestReadForumQuestionEvent.getNodeId());
+            readForumQuestionEvent = ForumQuestionReadEvent.notFound(requestReadForumQuestionEvent.getNodeId());
         }
         return readForumQuestionEvent;
     }
