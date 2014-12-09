@@ -11,7 +11,6 @@ import com.eulersbridge.iEngage.core.events.Details;
 
 public class ForumQuestionDetails extends Details
 {
-    private Long nodeId;
     private String question;
 
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestionDetails.class);
@@ -20,21 +19,13 @@ public class ForumQuestionDetails extends Details
     public String toString(){
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
-        buff.append(getForumQuestionId());
+        buff.append(getNodeId());
         buff.append(", question = ");
         buff.append(getQuestion());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
         return retValue;
-    }
-
-    public Long getForumQuestionId() {
-        return nodeId;
-    }
-
-    public void setForumQuestionId(Long forumQuestionId) {
-        this.nodeId = forumQuestionId;
     }
 
     public String getQuestion() {

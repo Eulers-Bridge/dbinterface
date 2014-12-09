@@ -50,7 +50,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
     public UpdatedEvent updateForumQuestion(UpdateForumQuestionEvent updateForumQuestionEvent) {
         ForumQuestionDetails forumQuestionDetails = (ForumQuestionDetails) updateForumQuestionEvent.getDetails();
         ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails(forumQuestionDetails);
-        Long forumQuestionId = forumQuestionDetails.getForumQuestionId();
+        Long forumQuestionId = forumQuestionDetails.getNodeId();
         if(LOG.isDebugEnabled()) LOG.debug("forumQuestionId is " + forumQuestionId);
         ForumQuestion forumQuestionOld = forumQuestionRepository.findOne(forumQuestionId);
         if(forumQuestionOld == null){

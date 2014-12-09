@@ -30,7 +30,7 @@ public class ForumQuestion extends ResourceSupport {
         String simpleName = ForumQuestion.class.getSimpleName();
         String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 
-        forumQuestion.setForumQuestionId(forumQuestionDetails.getForumQuestionId());
+        forumQuestion.setForumQuestionId(forumQuestionDetails.getNodeId());
         forumQuestion.setQuestion(forumQuestionDetails.getQuestion());
 
 	    // {!begin selfRel}
@@ -59,7 +59,7 @@ public class ForumQuestion extends ResourceSupport {
 
     public ForumQuestionDetails toForumQuestionDetails(){
         ForumQuestionDetails forumQuestionDetails = new ForumQuestionDetails();
-        forumQuestionDetails.setForumQuestionId(this.getForumQuestionId());
+        forumQuestionDetails.setNodeId(this.getForumQuestionId());
         forumQuestionDetails.setQuestion(getQuestion());
 
         return forumQuestionDetails;
