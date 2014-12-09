@@ -15,7 +15,7 @@ public interface ForumQuestionService {
     public ForumQuestionCreatedEvent createForumQuestion(CreateForumQuestionEvent createForumQuestionEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ReadEvent requestReadForumQuestion(RequestReadForumQuestionEvent requestReadForumQuestionEvent);
+    public ReadEvent readForumQuestion(ReadForumQuestionEvent readForumQuestionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public UpdatedEvent updateForumQuestion(UpdateForumQuestionEvent updateForumQuestionEvent);

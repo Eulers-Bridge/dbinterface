@@ -66,10 +66,10 @@ public class ForumQuestionController {
     public @ResponseBody
     ResponseEntity<ForumQuestion> findForumQuestion(@PathVariable Long forumQuestionId){
         if (LOG.isInfoEnabled()) LOG.info(forumQuestionId+" attempting to get forumQuestion. ");
-        RequestReadForumQuestionEvent requestReadForumQuestionEvent = new RequestReadForumQuestionEvent(forumQuestionId);
-        ReadEvent readForumQuestionEvent = forumQuestionService.requestReadForumQuestion(requestReadForumQuestionEvent);
-        if(readForumQuestionEvent.isEntityFound()){
-            ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails((ForumQuestionDetails)readForumQuestionEvent.getDetails());
+        ReadForumQuestionEvent readForumQuestionEvent = new ReadForumQuestionEvent(forumQuestionId);
+        ReadEvent forumQuestionReadEvent = forumQuestionService.readForumQuestion(readForumQuestionEvent);
+        if(forumQuestionReadEvent.isEntityFound()){
+            ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails((ForumQuestionDetails)forumQuestionReadEvent.getDetails());
             return new ResponseEntity<ForumQuestion>(forumQuestion, HttpStatus.OK);
         }
         else{
@@ -176,7 +176,7 @@ public class ForumQuestionController {
         LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(forumQuestionId), sortDirection, pageNumber, pageLength);
         Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
         if (likes.hasNext() == false){
-            ReadEvent readPollEvent=forumQuestionService.requestReadForumQuestion(new RequestReadForumQuestionEvent(forumQuestionId));
+            ReadEvent readPollEvent=forumQuestionService.readForumQuestion(new ReadForumQuestionEvent(forumQuestionId));
             if (!readPollEvent.isEntityFound())
                 return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
             else
