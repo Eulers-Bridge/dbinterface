@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
+import com.eulersbridge.iEngage.database.domain.ForumQuestion;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
@@ -408,5 +409,25 @@ public class DatabaseDataFixture
 		polls.put(new Long(1), populatePoll1());
 		polls.put(2l, populatePoll2());
 		return polls;
+	}
+	
+	public static ForumQuestion populateForumQuestion1()
+	{
+		Long nodeId=1l;
+		String question="Forum question 1";
+		return populateForumQuestion(nodeId,question);
+	}
+	public static ForumQuestion populateForumQuestion2()
+	{
+		Long nodeId=1l;
+		String question="Forum question 2";
+		return populateForumQuestion(nodeId,question);
+	}
+	private static ForumQuestion populateForumQuestion(Long nodeId, String question)
+	{
+		ForumQuestion fq=new ForumQuestion();
+		fq.setForumQuestionId(nodeId);
+		fq.setQuestion(question);
+		return fq;
 	}
 }

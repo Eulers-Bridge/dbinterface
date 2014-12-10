@@ -498,6 +498,24 @@ public class UserControllerTest
 	}
 	
 	@Test
+	public void postShouldReturnBadRequestNoEmptyContent() throws Exception
+	{	// Empty content.
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadRequest()");
+		String content="{}";
+		this.mockMvc.perform(post("/api/signUp/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(status().isBadRequest())	;
+	}
+	
+	@Test
+	public void postShouldReturnBadRequestNullEmail() throws Exception
+	{	// Empty content.
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadRequest()");
+		String content="{\"email\":null}";
+		this.mockMvc.perform(post("/api/signUp/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content)) 
+		.andExpect(status().isBadRequest())	;
+	}
+	
+	@Test
 	public void postShouldReturnBadRequestNoContent() throws Exception
 	{	// Empty content.
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadRequest()");
