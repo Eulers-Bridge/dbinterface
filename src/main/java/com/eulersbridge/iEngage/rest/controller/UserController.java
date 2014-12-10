@@ -444,7 +444,7 @@ public class UserController {
     	if (LOG.isInfoEnabled()) LOG.info("attempting to save user "+user);
     	UserCreatedEvent userEvent=userService.signUpNewUser(new CreateUserEvent(user.toUserDetails()));
 
-    	if (userEvent.getEmail()==null)
+    	if ((null==userEvent)||(null==userEvent.getEmail()))
     	{
     		return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
     	}
