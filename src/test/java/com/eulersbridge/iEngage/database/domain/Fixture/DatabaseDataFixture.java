@@ -419,7 +419,7 @@ public class DatabaseDataFixture
 	}
 	public static ForumQuestion populateForumQuestion2()
 	{
-		Long nodeId=1l;
+		Long nodeId=2l;
 		String question="Forum question 2";
 		return populateForumQuestion(nodeId,question);
 	}
@@ -429,5 +429,12 @@ public class DatabaseDataFixture
 		fq.setForumQuestionId(nodeId);
 		fq.setQuestion(question);
 		return fq;
+	}
+	public static HashMap<Long, ForumQuestion> populateForumQuestions()
+	{
+		HashMap<Long, ForumQuestion> forumQuestions=new HashMap<Long, ForumQuestion>();
+		forumQuestions.put(new Long(1), populateForumQuestion1());
+		forumQuestions.put(2l, populateForumQuestion2());
+		return forumQuestions;
 	}
 }

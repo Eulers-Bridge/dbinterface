@@ -1,10 +1,14 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionDetails;
 import com.eulersbridge.iEngage.rest.controller.ForumQuestionController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -65,7 +69,23 @@ public class ForumQuestion extends ResourceSupport {
         return forumQuestionDetails;
     }
 
-    public Long getForumQuestionId() {
+	public static Iterator<ForumQuestion> toForumQuestionsIterator( Iterator<ForumQuestionDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <ForumQuestion> polls=new ArrayList<ForumQuestion>();
+		while(iter.hasNext())
+		{
+			ForumQuestionDetails dets=iter.next();
+			ForumQuestion thisForumQuestion=ForumQuestion.fromForumQuestionDetails(dets);
+			Link self = thisForumQuestion.getLink("self");
+			thisForumQuestion.removeLinks();
+			thisForumQuestion.add(self);
+			polls.add(thisForumQuestion);		
+		}
+		return polls.iterator();
+	}
+
+	public Long getForumQuestionId() {
         return forumQuestionId;
     }
 

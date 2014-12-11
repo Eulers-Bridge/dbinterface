@@ -12,6 +12,7 @@ import com.eulersbridge.iEngage.core.services.ForumQuestionService;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.ForumQuestion;
+import com.eulersbridge.iEngage.rest.domain.ForumQuestions;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
 
@@ -39,7 +40,8 @@ public class ForumQuestionController {
     @Autowired
     LikesService likesService;
 
-    public ForumQuestionController() {
+    public ForumQuestionController()
+    {
     }
 
     private static Logger LOG = LoggerFactory.getLogger(ForumQuestionController.class);
@@ -47,24 +49,76 @@ public class ForumQuestionController {
     //Create
     @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.FORUM_QUESTION_LABEL)
     public @ResponseBody
-    ResponseEntity<ForumQuestion> createForumQuestion(@RequestBody ForumQuestion forumQuestion){
+    ResponseEntity<ForumQuestion> createForumQuestion(@RequestBody ForumQuestion forumQuestion)
+    {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create forumQuestion "+forumQuestion);
         CreateForumQuestionEvent createForumQuestionEvent = new CreateForumQuestionEvent(forumQuestion.toForumQuestionDetails());
         ForumQuestionCreatedEvent forumQuestionCreatedEvent = forumQuestionService.createForumQuestion(createForumQuestionEvent);
-        if(forumQuestionCreatedEvent.getForumQuestionId() == null){
-            return new ResponseEntity<ForumQuestion>(HttpStatus.BAD_REQUEST);
-        }
-        else{
-            ForumQuestion result = ForumQuestion.fromForumQuestionDetails((ForumQuestionDetails)forumQuestionCreatedEvent.getDetails());
+       
+		ResponseEntity<ForumQuestion> response;
+		if (null == forumQuestionCreatedEvent)
+		{
+			response = new ResponseEntity<ForumQuestion>(HttpStatus.BAD_REQUEST);
+		}
+		else if ((null == forumQuestionCreatedEvent.getDetails())
+				|| (null == forumQuestionCreatedEvent.getDetails().getNodeId()))
+		{
+			response = new ResponseEntity<ForumQuestion>(HttpStatus.BAD_REQUEST);
+		}
+		else
+		{
+			ForumQuestion result = ForumQuestion.fromForumQuestionDetails((ForumQuestionDetails) forumQuestionCreatedEvent
+					.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("forumQuestion"+result.toString());
-            return new ResponseEntity<ForumQuestion>(result, HttpStatus.OK);
-        }
+			return new ResponseEntity<ForumQuestion>(result, HttpStatus.CREATED);
+		}
+		return response;
+
+    }
+
+    //Get
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.FORUM_QUESTIONS_LABEL+"/{ownerId}")
+    public @ResponseBody
+    ResponseEntity<ForumQuestions> findForumQuestions(@PathVariable(value = "") Long ownerId
+    		,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
+			)
+    {
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve photoAlbums for owner " + ownerId + '.');
+		
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+
+		ResponseEntity<ForumQuestions> response;
+
+		ForumQuestionsReadEvent event = forumQuestionService.findForumQuestions(
+				new ReadForumQuestionsEvent(ownerId), sortDirection, pageNumber,
+				pageLength);
+
+		if (!event.isEntityFound())
+		{
+			response = new ResponseEntity<ForumQuestions>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Iterator<ForumQuestion> fqIter = ForumQuestion.toForumQuestionsIterator(event.getForumQuestions().iterator());
+			ForumQuestions fQuestions = ForumQuestions.fromForumQuestionsIterator(fqIter,
+					event.getTotalEvents(), event.getTotalPages());
+			response = new ResponseEntity<ForumQuestions>(fQuestions, HttpStatus.OK);
+		}
+		return response;
     }
 
     //Get
     @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}")
     public @ResponseBody
-    ResponseEntity<ForumQuestion> findForumQuestion(@PathVariable Long forumQuestionId){
+    ResponseEntity<ForumQuestion> readForumQuestion(@PathVariable Long forumQuestionId){
         if (LOG.isInfoEnabled()) LOG.info(forumQuestionId+" attempting to get forumQuestion. ");
         ReadForumQuestionEvent readForumQuestionEvent = new ReadForumQuestionEvent(forumQuestionId);
         ReadEvent forumQuestionReadEvent = forumQuestionService.readForumQuestion(readForumQuestionEvent);
@@ -105,11 +159,21 @@ public class ForumQuestionController {
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}")
     public @ResponseBody
-    ResponseEntity<Boolean> deleteForumQuestion(@PathVariable Long forumQuestionId){
+    ResponseEntity<Boolean> deleteForumQuestion(@PathVariable Long forumQuestionId)
+    {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete forumQuestion. " + forumQuestionId);
-        DeletedEvent forumQuestionDeletedEvent = forumQuestionService.deleteForumQuestion(new DeleteForumQuestionEvent(forumQuestionId));
-        Boolean isDeletionCompleted = Boolean.valueOf(forumQuestionDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+		ResponseEntity<Boolean> response;
+		DeletedEvent forumQuestionDeletedEvent = forumQuestionService.deleteForumQuestion(new DeleteForumQuestionEvent(forumQuestionId));
+		
+		if (forumQuestionDeletedEvent.isDeletionCompleted())
+			response = new ResponseEntity<Boolean>(
+					forumQuestionDeletedEvent.isDeletionCompleted(), HttpStatus.OK);
+		else if (forumQuestionDeletedEvent.isEntityFound())
+			response = new ResponseEntity<Boolean>(
+					forumQuestionDeletedEvent.isDeletionCompleted(), HttpStatus.GONE);
+		else response = new ResponseEntity<Boolean>(
+				forumQuestionDeletedEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
+		return response;
     }
 
     //like

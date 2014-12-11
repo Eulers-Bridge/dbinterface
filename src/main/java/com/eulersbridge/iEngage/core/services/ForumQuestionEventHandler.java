@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * @author Yikai Gong
@@ -28,7 +29,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
         ForumQuestionDetails forumQuestionDetails = (ForumQuestionDetails) createForumQuestionEvent.getDetails();
         ForumQuestion forumQuestion = ForumQuestion.fromForumQuestionDetails(forumQuestionDetails);
         ForumQuestion result = forumQuestionRepository.save(forumQuestion);
-        ForumQuestionCreatedEvent forumQuestionCreatedEvent = new ForumQuestionCreatedEvent(result.getForumQuestionId(), result.toForumQuestionDetails());
+        ForumQuestionCreatedEvent forumQuestionCreatedEvent = new ForumQuestionCreatedEvent(result.toForumQuestionDetails());
         return forumQuestionCreatedEvent;
     }
 
@@ -80,4 +81,13 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
             return forumQuestionDeletedEvent;
         }
     }
+
+	@Override
+	public ForumQuestionsReadEvent findForumQuestions(
+			ReadForumQuestionsEvent readForumQuestionsEvent,
+			Direction sortDirection, int pageNumber, int pageLength)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

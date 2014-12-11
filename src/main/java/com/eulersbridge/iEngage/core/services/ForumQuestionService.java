@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
 
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -22,4 +23,7 @@ public interface ForumQuestionService {
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public DeletedEvent deleteForumQuestion(DeleteForumQuestionEvent deleteForumQuestionEvent);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public ForumQuestionsReadEvent findForumQuestions(ReadForumQuestionsEvent readForumQuestionsEvent, Direction sortDirection, int pageNumber, int pageLength);
 }
