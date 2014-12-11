@@ -131,7 +131,7 @@ public class PollControllerTest
 		when (pollService.requestReadPoll(any(RequestReadPollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{pollId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(status().isNotFound())	;
+		.andExpect(status().isNotFound());
 	}
 
 
@@ -325,7 +325,6 @@ public class PollControllerTest
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;
 	}
-
 
 	@Test
 	public final void testDeletePollNotFound() throws Exception 
