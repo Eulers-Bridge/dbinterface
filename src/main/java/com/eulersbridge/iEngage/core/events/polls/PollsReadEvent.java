@@ -21,7 +21,7 @@ public class PollsReadEvent extends ReadEvent
 	private Long totalEvents;
 	private Integer totalPages;
 
-	private Collection<PollDetails> photoAlbums;
+	private Collection<PollDetails> polls;
 
 	public PollsReadEvent()
 	{
@@ -29,11 +29,11 @@ public class PollsReadEvent extends ReadEvent
 	}
 
 	public PollsReadEvent(Long instId,
-			Collection<PollDetails> photoAlbums)
+			Collection<PollDetails> polls)
 	{
 		super(1l);
 		this.instId = instId;
-		this.photoAlbums = photoAlbums;
+		this.polls = polls;
 	}
 
 	public PollsReadEvent(Long institutionId,
@@ -148,20 +148,20 @@ public class PollsReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @return the photoAlbums
+	 * @return the polls
 	 */
 	public Collection<PollDetails> getPolls()
 	{
-		return photoAlbums;
+		return polls;
 	}
 
 	/**
-	 * @param photoAlbums
-	 *            the photoAlbums to set
+	 * @param polls
+	 *            the polls to set
 	 */
 	public void setPolls(Collection<PollDetails> articles)
 	{
-		this.photoAlbums = articles;
+		this.polls = articles;
 	}
 
 	public static PollsReadEvent newsFeedNotFound()
