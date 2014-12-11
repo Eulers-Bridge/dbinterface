@@ -106,6 +106,21 @@ public class PhotoEventHandlerTest
 		assertEquals(testData.getNodeId(),returnedDets.getNodeId());
 		assertNotNull(evtData.getNodeId());
 	}
+	@Test
+	public final void testCreatePhotoNullOwnerId()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CreatingPhoto()");
+		Photo testData=DatabaseDataFixture.populatePhoto1();
+		Owner testOwner=new Owner(null);
+		testData.setOwner(testOwner);
+		PhotoDetails dets=testData.toPhotoDetails();
+		CreatePhotoEvent createPhotoEvent=new CreatePhotoEvent(dets);
+		PhotoCreatedEvent evtData = service.createPhoto(createPhotoEvent);
+		Details returnedDets = evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isOwnerFound());
+		assertEquals(evtData.getNodeId(),testData.getOwner().getNodeId());
+	}
 
 	@Test
 	public final void testCreatePhotoOwnerNotFound()

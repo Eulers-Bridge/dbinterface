@@ -223,6 +223,7 @@ public class PhotoAlbumTest
 		assertEquals(photoAlbum.getCreated(), photoAlbum2.getCreated());
 		assertEquals(photoAlbum.getModified(), photoAlbum2.getModified());
 		assertEquals(photoAlbum.getOwner(), photoAlbum2.getOwner());
+		assertEquals(photoAlbum.getCreator(), photoAlbum2.getCreator());
 	}
 
 	/**
@@ -238,6 +239,7 @@ public class PhotoAlbumTest
 		assertEquals(photoAlbum.getCreated(), dets.getCreated());
 		assertEquals(photoAlbum.getModified(), dets.getModified());
 		assertEquals(photoAlbum.getOwner().getNodeId(), dets.getOwnerId());
+		assertEquals(photoAlbum.getCreator().getNodeId(), dets.getCreatorId());
 	}
 
 	private void checkHashCode(PhotoAlbum test1,PhotoAlbum test2)
