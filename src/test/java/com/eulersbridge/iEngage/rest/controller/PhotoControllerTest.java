@@ -223,6 +223,18 @@ public class PhotoControllerTest
 	}
 
 	@Test
+	public final void testCreatePhotoEmptyContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
+		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
+		PhotoCreatedEvent testData=PhotoCreatedEvent.ownerNotFound(dets.getOwnerId());
+		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
+		String content="{}";
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(status().isNotFound())	;		
+	}
+
+	@Test
 	public final void testCreatePhotoNoContent() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
@@ -310,6 +322,15 @@ public class PhotoControllerTest
 		PhotoAlbumCreatedEvent testData=new PhotoAlbumCreatedEvent(dets);
 		when (photoService.createPhotoAlbum(any(CreatePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreatePhotoAlbumEmptyContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhotoAlbum()");
+		String content="{}";
+		this.mockMvc.perform(post(urlPrefix2+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		
 	}
 
