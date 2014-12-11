@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 public class PhotoAlbumCreatedEvent extends CreatedEvent
 {
 	private boolean ownerFound = true;
+	private boolean creatorFound = true;
 	private Long ownerId;
 
 	public PhotoAlbumCreatedEvent(PhotoAlbumDetails photoAlbumDetails)
@@ -59,5 +60,28 @@ public class PhotoAlbumCreatedEvent extends CreatedEvent
 	public void setOwnerId(Long ownerId)
 	{
 		this.ownerId = ownerId;
+	}
+
+	/**
+	 * @return the creatorFound
+	 */
+	public boolean isCreatorFound()
+	{
+		return creatorFound;
+	}
+
+	/**
+	 * @param creatorFound the creatorFound to set
+	 */
+	public void setCreatorFound(boolean creatorFound)
+	{
+		this.creatorFound = creatorFound;
+	}
+
+	public static PhotoAlbumCreatedEvent creatorNotFound(Long creatorId)
+	{
+		PhotoAlbumCreatedEvent evt = new PhotoAlbumCreatedEvent(creatorId);
+		evt.setCreatorFound(false);
+		return evt;
 	}
 }

@@ -76,18 +76,21 @@ public class PhotoEventHandler implements PhotoService
         PhotoDetails photoDetails = (PhotoDetails) createPhotoEvent.getDetails();
         Photo photo = Photo.fromPhotoDetails(photoDetails);
         
-		if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+photoDetails.getOwnerId());
-		Owner owner=ownerRepository.findOne(photoDetails.getOwnerId());
+        Long ownerId=photoDetails.getOwnerId();
+    	if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+ownerId);
+		Owner owner=null;
+		if (ownerId!=null) owner=ownerRepository.findOne(ownerId);
+		
     	PhotoCreatedEvent photoCreatedEvent;
-    	if (owner!=null)
+    	if (null==owner)
+    	{
+    		photoCreatedEvent=PhotoCreatedEvent.ownerNotFound(photoDetails.getOwnerId());
+    	}
+    	else
     	{
     		photo.setOwner(owner);
     		Photo result = photoRepository.save(photo);
         	photoCreatedEvent = new PhotoCreatedEvent(result.getNodeId(), result.toPhotoDetails());
-    	}
-    	else
-    	{
-    		photoCreatedEvent=PhotoCreatedEvent.ownerNotFound(photoDetails.getOwnerId());
     	}
         return photoCreatedEvent;
 	}
@@ -219,18 +222,34 @@ public class PhotoEventHandler implements PhotoService
 	       PhotoAlbumDetails photoAlbumDetails = (PhotoAlbumDetails) createPhotoAlbumEvent.getDetails();
 	        PhotoAlbum photoAlbum = PhotoAlbum.fromPhotoAlbumDetails(photoAlbumDetails);
 	        
-			if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+photoAlbumDetails.getOwnerId());
-			Owner owner=ownerRepository.findOne(photoAlbumDetails.getOwnerId());
+	        Long ownerId=photoAlbumDetails.getOwnerId();
+			if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+ownerId);
+			Owner owner=null;
+			if (ownerId!=null) owner=ownerRepository.findOne(ownerId);
+			
 	    	PhotoAlbumCreatedEvent photoAlbumCreatedEvent;
-	    	if (owner!=null)
+	    	if (null==owner)
 	    	{
-	    		photoAlbum.setOwner(owner);
-	    		PhotoAlbum result = photoAlbumRepository.save(photoAlbum);
-	        	photoAlbumCreatedEvent = new PhotoAlbumCreatedEvent(result.toPhotoAlbumDetails());
+	    		photoAlbumCreatedEvent=PhotoAlbumCreatedEvent.ownerNotFound(photoAlbumDetails.getOwnerId());
 	    	}
 	    	else
 	    	{
-	    		photoAlbumCreatedEvent=PhotoAlbumCreatedEvent.ownerNotFound(photoAlbumDetails.getOwnerId());
+	    		photoAlbum.setOwner(owner);
+
+		        Long creatorId=photoAlbumDetails.getCreatorId();
+				if (LOG.isDebugEnabled()) LOG.debug("Finding owner with creatorId = "+creatorId);
+				Owner creator=null;
+				if (creatorId!=null) creator=ownerRepository.findOne(creatorId);
+		    	if (null==creator)
+		    	{
+		    		photoAlbumCreatedEvent=PhotoAlbumCreatedEvent.creatorNotFound(photoAlbumDetails.getCreatorId());
+		    	}
+		    	else
+		    	{
+		    		photoAlbum.setCreator(creator);
+		    		PhotoAlbum result = photoAlbumRepository.save(photoAlbum);
+		        	photoAlbumCreatedEvent = new PhotoAlbumCreatedEvent(result.toPhotoAlbumDetails());
+		    	}
 	    	}
 	        return photoAlbumCreatedEvent;
 	}

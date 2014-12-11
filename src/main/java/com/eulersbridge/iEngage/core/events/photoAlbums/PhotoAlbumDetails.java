@@ -41,6 +41,7 @@ public class PhotoAlbumDetails extends Details
 		this.thumbNailUrl = thumbNailUrl;
 		this.created = created;
 		this.ownerId = ownerId;
+		this.creatorId = creatorId;
 		this.modified = modified;
 	}
 

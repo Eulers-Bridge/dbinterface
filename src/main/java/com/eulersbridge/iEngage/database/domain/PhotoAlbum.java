@@ -243,7 +243,7 @@ public class PhotoAlbum
         photoAlbum.setOwner(thisOwner);
         Owner thisCreator=new Owner();
         thisCreator.setNodeId(photoAlbumDetails.getCreatorId());
-        photoAlbum.setCreator(thisOwner);
+        photoAlbum.setCreator(thisCreator);
 
         if (LOG.isTraceEnabled()) LOG.trace("photoAlbum "+photoAlbum);
         return photoAlbum;
