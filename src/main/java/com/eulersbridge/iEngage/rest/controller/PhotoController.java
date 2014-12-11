@@ -118,25 +118,33 @@ public class PhotoController
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("attempting to create photo " + photo);
-		PhotoCreatedEvent photoCreatedEvent = photoService
-				.createPhoto(new CreatePhotoEvent(photo.toPhotoDetails()));
 		ResponseEntity<Photo> response;
-		if ((null == photoCreatedEvent)
-				|| (null == photoCreatedEvent.getNodeId()))
+		if (null==photo)
 		{
 			response = new ResponseEntity<Photo>(HttpStatus.BAD_REQUEST);
 		}
-		else if (!(photoCreatedEvent.isOwnerFound()))
-		{
-			response = new ResponseEntity<Photo>(HttpStatus.NOT_FOUND);
-		}
 		else
 		{
-			Photo result = Photo
-					.fromPhotoDetails((PhotoDetails) photoCreatedEvent
-							.getDetails());
-			if (LOG.isDebugEnabled()) LOG.debug("photo " + result.toString());
-			response = new ResponseEntity<Photo>(result, HttpStatus.CREATED);
+			PhotoCreatedEvent photoCreatedEvent = photoService
+					.createPhoto(new CreatePhotoEvent(photo.toPhotoDetails()));
+			if (LOG.isDebugEnabled()) LOG.debug("photoCreatedEvent "+photoCreatedEvent);
+			if ((null == photoCreatedEvent)
+					|| (null == photoCreatedEvent.getNodeId()))
+			{
+				response = new ResponseEntity<Photo>(HttpStatus.BAD_REQUEST);
+			}
+			else if (!(photoCreatedEvent.isOwnerFound()))
+			{
+				response = new ResponseEntity<Photo>(HttpStatus.NOT_FOUND);
+			}
+			else
+			{
+				Photo result = Photo
+						.fromPhotoDetails((PhotoDetails) photoCreatedEvent
+								.getDetails());
+				if (LOG.isDebugEnabled()) LOG.debug("photo " + result.toString());
+				response = new ResponseEntity<Photo>(result, HttpStatus.CREATED);
+			}
 		}
 		return response;
 	}
@@ -148,32 +156,43 @@ public class PhotoController
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("attempting to create photoAlbum " + photoAlbum);
-		PhotoAlbumCreatedEvent photoAlbumCreatedEvent = photoService
-				.createPhotoAlbum(new CreatePhotoAlbumEvent(photoAlbum
-						.toPhotoAlbumDetails()));
 		ResponseEntity<PhotoAlbum> response;
-		if (null == photoAlbumCreatedEvent)
-		{
-			response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
-		}
-		else if (!(photoAlbumCreatedEvent.isOwnerFound()))
-		{
-			response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
-		}
-		else if ((null == photoAlbumCreatedEvent.getDetails())
-				|| (null == photoAlbumCreatedEvent.getDetails().getNodeId()))
+		if (null==photoAlbum)
 		{
 			response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
 		}
 		else
 		{
-			PhotoAlbum result = PhotoAlbum
-					.fromPhotoAlbumDetails((PhotoAlbumDetails) photoAlbumCreatedEvent
-							.getDetails());
-			if (LOG.isDebugEnabled())
-				LOG.debug("photoAlbum " + result.toString());
-			response = new ResponseEntity<PhotoAlbum>(result,
-					HttpStatus.CREATED);
+			PhotoAlbumCreatedEvent photoAlbumCreatedEvent = photoService
+					.createPhotoAlbum(new CreatePhotoAlbumEvent(photoAlbum
+							.toPhotoAlbumDetails()));
+			if (null == photoAlbumCreatedEvent)
+			{
+				response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
+			}
+			else if (!(photoAlbumCreatedEvent.isOwnerFound()))
+			{
+				response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+			}
+			else if (!(photoAlbumCreatedEvent.isCreatorFound()))
+			{
+				response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+			}
+			else if ((null == photoAlbumCreatedEvent.getDetails())
+					|| (null == photoAlbumCreatedEvent.getDetails().getNodeId()))
+			{
+				response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
+			}
+			else
+			{
+				PhotoAlbum result = PhotoAlbum
+						.fromPhotoAlbumDetails((PhotoAlbumDetails) photoAlbumCreatedEvent
+								.getDetails());
+				if (LOG.isDebugEnabled())
+					LOG.debug("photoAlbum " + result.toString());
+				response = new ResponseEntity<PhotoAlbum>(result,
+						HttpStatus.CREATED);
+			}
 		}
 		return response;
 	}
