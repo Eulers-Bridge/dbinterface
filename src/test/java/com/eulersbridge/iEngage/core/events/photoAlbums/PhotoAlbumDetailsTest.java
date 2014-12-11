@@ -27,6 +27,31 @@ public class PhotoAlbumDetailsTest
 	}
 
 	@Test
+	public final void testPhotoAlbumDetails2()
+	{
+		String description="This description";
+		Long modified=456l;
+		String location="some location";
+		String name="some name";
+		String thumbNailUrl="some url";
+		Long creatorId=54l;
+		Long ownerId=43l;
+		Long created=547l;
+		Long nodeId=5l;
+		dets=new PhotoAlbumDetails(nodeId, name, location, description, thumbNailUrl, creatorId, created, ownerId, modified);
+		assertNotNull("Not yet implemented",dets);
+		assertEquals(description,dets.getDescription());
+		assertEquals(modified,dets.getModified());
+		assertEquals(location,dets.getLocation());
+		assertEquals(name,dets.getName());
+		assertEquals(thumbNailUrl,dets.getThumbNailUrl());
+		assertEquals(creatorId,dets.getCreatorId());
+		assertEquals(ownerId,dets.getOwnerId());
+		assertEquals(nodeId,dets.getNodeId());
+		assertEquals(created,dets.getCreated());
+	}
+
+	@Test
 	public final void testGetNodeId()
 	{
 		assertEquals(photoAlbum.getNodeId(),dets.getNodeId());
