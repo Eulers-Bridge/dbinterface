@@ -8,7 +8,7 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 
 public class PhotoCreatedEvent extends CreatedEvent
 {
-    private Long nodeId;
+	private Long nodeId;
 	private boolean ownerFound=true;
 
     public PhotoCreatedEvent( Long nodeId, PhotoDetails photoDetails)
@@ -54,4 +54,14 @@ public class PhotoCreatedEvent extends CreatedEvent
 		evt.setOwnerFound(false);
 		return evt;
 	}
+    /* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "PhotoCreatedEvent [nodeId=" + nodeId + ", ownerFound="
+				+ ownerFound + ", details=" + getDetails() + "]";
+	}
+
 }
