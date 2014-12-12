@@ -15,7 +15,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -56,6 +55,7 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
@@ -583,10 +583,14 @@ public class UserEventHandlerTest
 	public void shouldAddPersonalityToUser() 
 	{
 		User user = DatabaseDataFixture.populateUserGnewitt();
-		PersonalityDetails details = new PersonalityDetails(null, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
+		PersonalityDetails details = new PersonalityDetails(11l, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
 		AddPersonalityEvent addEvt = new AddPersonalityEvent(user.getEmail(),
 				details);
-		PersonalityAddedEvent evtAdd=userService.addPersonality(addEvt);
+		Personality personality=Personality.fromPersonalityDetails(details);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+		when(pRepo.save(any(Personality.class))).thenReturn(personality);
+		when(uRepo.addPersonality(any(Long.class), any(Long.class))).thenReturn(personality);
+		PersonalityAddedEvent evtAdd=userServiceMocked.addPersonality(addEvt);
 		assertNotNull("",evtAdd.getPersonalityDetails().getPersonalityId());
 		assertEquals("",evtAdd.getPersonalityDetails().getAgreeableness(),details.getAgreeableness());
 		assertEquals("",evtAdd.getPersonalityDetails().getConscientiousness(),details.getConscientiousness());
@@ -598,20 +602,33 @@ public class UserEventHandlerTest
 	@Test
 	public void shouldNotAddPersonalityToUserNotFound() 
 	{
-		User user = DatabaseDataFixture.populateUserGnewitt2();
-		PersonalityDetails details = new PersonalityDetails(null, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
+		User user = DatabaseDataFixture.populateUserGnewitt();
+		PersonalityDetails details = new PersonalityDetails(11l, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
 		AddPersonalityEvent addEvt = new AddPersonalityEvent(user.getEmail(),
 				details);
-		PersonalityAddedEvent evtAdd=userService.addPersonality(addEvt);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(null);
+		PersonalityAddedEvent evtAdd=userServiceMocked.addPersonality(addEvt);
 		assertNotNull("",evtAdd);
 		assertFalse("",evtAdd.isUserFound());
 	}
 
-	@Ignore
 	@Test
 	public void shouldNotAddPersonalityToUserAlreadyHasPersonality() 
 	{
-		// TODO
+		User user = DatabaseDataFixture.populateUserGnewitt();
+		PersonalityDetails details = new PersonalityDetails(11l, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
+		PersonalityDetails details2 = new PersonalityDetails(15l, 4.2F, 3.2F, 1.7F, 2.9F, 3.9F);
+		AddPersonalityEvent addEvt = new AddPersonalityEvent(user.getEmail(),
+				details);
+		Personality personality=Personality.fromPersonalityDetails(details);
+		Personality personality2=Personality.fromPersonalityDetails(details2);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+		when(pRepo.save(any(Personality.class))).thenReturn(personality);
+		when(uRepo.addPersonality(any(Long.class), any(Long.class))).thenReturn(personality2);
+		PersonalityAddedEvent evtAdd=userServiceMocked.addPersonality(addEvt);
+		assertNotNull("",evtAdd);
+		assertNull("",evtAdd.getPersonalityDetails());
+		assertFalse(evtAdd.isUserFound());
 	}
 	
 	@Test
