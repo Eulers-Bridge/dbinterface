@@ -52,9 +52,11 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -485,6 +487,42 @@ public class PhotoControllerTest
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
 		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
 		.andExpect(jsonPath("$.sequence",is(dets.getSequence())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;		
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#updatePhotoAlbum(java.lang.Long, com.eulersbridge.iEngage.rest.domain.PhotoAlbum)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testUpdatePhotoAlbum() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdatePhotoAlbum()");
+		Long id=1L;
+		PhotoAlbumDetails dets=DatabaseDataFixture.populatePhotoAlbum1().toPhotoAlbumDetails();
+		dets.setName("Test PhotoAlbum 2");
+		PhotoAlbumUpdatedEvent testData=new PhotoAlbumUpdatedEvent(id, dets);
+		String content="{\"nodeId\":1234,\"name\":\"testName\",\"description\":\"description\",\"location\":\"location\",\"thumbNailUrl\":\"thumbNailUrl\",\"created\":123456,\"ownerId\":3214,\"modified\":null}";
+		if (LOG.isDebugEnabled()) LOG.debug("content = "+content);
+		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+
+								"\",\"location\":\""+dets.getLocation()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"created\":"+dets.getCreated()+",\"creatorId\":"+dets.getCreatorId()+",\"ownerId\":"+dets.getOwnerId()+",\"modified\":"+dets.getModified()+
+								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photoAlbum/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photoAlbum/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photoAlbum/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photoAlbums\"}]}";
+		when (photoService.updatePhotoAlbum(any(UpdatePhotoAlbumEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix2+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.name",is(dets.getName())))
+		.andExpect(jsonPath("$.description",is(dets.getDescription())))
+		.andExpect(jsonPath("$.location",is(dets.getLocation())))
+		.andExpect(jsonPath("$.thumbNailUrl",is(dets.getThumbNailUrl())))
+		.andExpect(jsonPath("$.created",is(dets.getCreated())))
+		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
+		.andExpect(jsonPath("$.modified",is(dets.getModified())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))

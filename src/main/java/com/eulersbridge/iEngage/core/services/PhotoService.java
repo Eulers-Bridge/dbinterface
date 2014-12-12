@@ -22,6 +22,7 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 
 /**
  * @author Greg Newitt
@@ -39,6 +40,8 @@ public interface PhotoService
 	public ReadEvent readPhotoAlbum(RequestReadEvent readPhotoAlbumEvent);
 	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
 	public UpdatedEvent updatePhoto(UpdatePhotoEvent updatePhotoEvent);
+	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+	public UpdatedEvent updatePhotoAlbum(UpdatePhotoAlbumEvent updatePhotoAlbumEvent);
 	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
 	public DeletedEvent deletePhoto(DeletePhotoEvent deletePhotoEvent);
 	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")

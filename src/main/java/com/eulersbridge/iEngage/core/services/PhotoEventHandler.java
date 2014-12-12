@@ -34,8 +34,10 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
@@ -267,6 +269,31 @@ public class PhotoEventHandler implements PhotoService
         	photoAlbumReadEvent = PhotoAlbumReadEvent.notFound(readPhotoAlbumEvent.getNodeId());
         }
         return photoAlbumReadEvent;
+	}
+
+	@Override
+	public UpdatedEvent updatePhotoAlbum(
+			UpdatePhotoAlbumEvent updatePhotoAlbumEvent)
+	{
+        PhotoAlbumDetails photoAlbumDetails = (PhotoAlbumDetails) updatePhotoAlbumEvent.getDetails();
+        PhotoAlbum photoAlbum = PhotoAlbum.fromPhotoAlbumDetails(photoAlbumDetails);
+        Long photoAlbumId = photoAlbumDetails.getNodeId();
+        UpdatedEvent resultEvt;
+        
+        if(LOG.isDebugEnabled()) LOG.debug("photoAlbum Id is " + photoAlbumId);
+        PhotoAlbum photoAlbumOld = photoAlbumRepository.findOne(photoAlbumId);
+        if(photoAlbumOld ==null)
+        {
+            if(LOG.isDebugEnabled()) LOG.debug("photo album entity not found " + photoAlbumId);
+            resultEvt = PhotoAlbumUpdatedEvent.notFound(photoAlbumId);
+        }
+        else
+        {
+            PhotoAlbum result = photoAlbumRepository.save(photoAlbum);
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+            resultEvt = new PhotoAlbumUpdatedEvent(result.getNodeId(), result.toPhotoAlbumDetails());
+        }
+        return resultEvt;
 	}
 
 	@Override

@@ -35,8 +35,10 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.Photo;
@@ -273,6 +275,56 @@ public class PhotoController
 		{
 			return new ResponseEntity<Photo>(HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	// Update
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.PHOTO_ALBUM_LABEL
+			+ "/{photoAlbumId}")
+	public @ResponseBody ResponseEntity<PhotoAlbum> updatePhotoAlbum(
+			@PathVariable Long photoAlbumId, @RequestBody PhotoAlbum photoAlbum)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to update photo. " + photoAlbumId);
+		ResponseEntity<PhotoAlbum> response;
+		
+		UpdatedEvent photoAlbumUpdatedEvent = photoService
+				.updatePhotoAlbum(new UpdatePhotoAlbumEvent(photoAlbumId, photoAlbum
+						.toPhotoAlbumDetails()));
+		if ((null == photoAlbumUpdatedEvent))
+		{
+			response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
+		}
+		else if (!((PhotoAlbumUpdatedEvent)photoAlbumUpdatedEvent).isOwnerFound())
+		{
+			response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+		}
+		else if (!((PhotoAlbumUpdatedEvent)photoAlbumUpdatedEvent).isCreatorFound())
+		{
+			response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+		}
+		else if ((null == photoAlbumUpdatedEvent.getDetails())
+				|| (null == photoAlbumUpdatedEvent.getDetails().getNodeId()))
+		{
+			response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
+		}
+		else
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("photoUpdatedEvent - " + photoAlbumUpdatedEvent);
+			if (photoAlbumUpdatedEvent.isEntityFound())
+			{
+				PhotoAlbum restPhotoAlbum = PhotoAlbum.fromPhotoAlbumDetails((PhotoAlbumDetails) photoAlbumUpdatedEvent
+						.getDetails());
+				if (LOG.isDebugEnabled())
+					LOG.debug("restPhotoAlbum = " + restPhotoAlbum);
+				response = new ResponseEntity<PhotoAlbum>(restPhotoAlbum, HttpStatus.OK);
+			}
+			else
+			{
+				response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+			}
+		}
+		return response;
 	}
 
 	/**

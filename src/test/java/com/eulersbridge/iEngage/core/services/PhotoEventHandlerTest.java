@@ -41,6 +41,7 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
@@ -274,6 +275,45 @@ public class PhotoEventHandlerTest
 		PhotoDetails dets=testData.toPhotoDetails();
 		UpdatePhotoEvent updatePhotoEvent=new UpdatePhotoEvent(dets.getNodeId(), dets);
 		UpdatedEvent evtData = service.updatePhoto(updatePhotoEvent);
+		assertNull(evtData.getDetails());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
+		assertFalse(evtData.isEntityFound());
+		assertNotNull(evtData.getNodeId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#updatePhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent)}.
+	 */
+	@Test
+	public final void testUpdatePhotoAlbum()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPhotoAlbum()");
+		PhotoAlbum testData=DatabaseDataFixture.populatePhotoAlbum1();
+		when(photoAlbumRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(photoAlbumRepository.save(any(PhotoAlbum.class))).thenReturn(testData);
+		PhotoAlbumDetails dets=testData.toPhotoAlbumDetails();
+		UpdatePhotoAlbumEvent createPhotoAlbumEvent=new UpdatePhotoAlbumEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updatePhotoAlbum(createPhotoAlbumEvent);
+		PhotoAlbumDetails returnedDets = (PhotoAlbumDetails) evtData.getDetails();
+		assertEquals(returnedDets,testData.toPhotoAlbumDetails());
+		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
+		assertTrue(evtData.isEntityFound());
+		assertNotNull(evtData.getNodeId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#updatePhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent)}.
+	 */
+	@Test
+	public final void testUpdatePhotoAlbumNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPhotoAlbum()");
+		PhotoAlbum testData=DatabaseDataFixture.populatePhotoAlbum1();
+		when(photoAlbumRepository.findOne(any(Long.class))).thenReturn(null);
+		when(photoAlbumRepository.save(any(PhotoAlbum.class))).thenReturn(testData);
+		PhotoAlbumDetails dets=testData.toPhotoAlbumDetails();
+		UpdatePhotoAlbumEvent updatePhotoAlbumEvent=new UpdatePhotoAlbumEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updatePhotoAlbum(updatePhotoAlbumEvent);
 		assertNull(evtData.getDetails());
 		assertEquals(testData.getNodeId(),evtData.getNodeId());
 		assertFalse(evtData.isEntityFound());
