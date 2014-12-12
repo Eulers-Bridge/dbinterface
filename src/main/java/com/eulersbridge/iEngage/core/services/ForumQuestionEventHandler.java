@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -9,6 +12,9 @@ import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
 /**
@@ -87,7 +93,53 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
 			ReadForumQuestionsEvent readForumQuestionsEvent,
 			Direction sortDirection, int pageNumber, int pageLength)
 	{
-		// TODO Auto-generated method stub
-		return null;
+        if (LOG.isDebugEnabled()) LOG.debug("Entered findPhotos findPhotoEvent = "+readForumQuestionsEvent);
+        Long ownerId = readForumQuestionsEvent.getOwnerId();
+		Page <ForumQuestion>forumQuestions=null;
+		ArrayList<ForumQuestionDetails> dets=new ArrayList<ForumQuestionDetails>();
+        
+		ForumQuestionsReadEvent result=null;
+		
+		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"p.date");
+		forumQuestions=forumQuestionRepository.findByOwnerId(ownerId, pageable);
+
+		if (forumQuestions!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+forumQuestions.getTotalElements()+" total pages ="+forumQuestions.getTotalPages());
+			Iterator<ForumQuestion> iter=forumQuestions.iterator();
+			while (iter.hasNext())
+			{
+				ForumQuestion na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getQuestion());
+				ForumQuestionDetails det=na.toForumQuestionDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found ownerId.
+				ForumQuestion inst=forumQuestionRepository.findOne(ownerId);
+				if ( (null==inst) || (null==inst.getForumQuestionId()) )
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ownerId)");
+					result=ForumQuestionsReadEvent.institutionNotFound();
+				}
+				else
+				{	
+					result=new ForumQuestionsReadEvent(ownerId,dets,forumQuestions.getTotalElements(),forumQuestions.getTotalPages());
+				}
+			}
+			else
+			{	
+				result=new ForumQuestionsReadEvent(ownerId,dets,forumQuestions.getTotalElements(),forumQuestions.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByOwnerId");
+			result=ForumQuestionsReadEvent.institutionNotFound();
+		}
+		return result;
 	}
 }
