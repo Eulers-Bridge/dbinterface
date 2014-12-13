@@ -33,7 +33,7 @@ public class Ticket extends ResourceSupport{
 
     public static Ticket fromTicketDetails(TicketDetails ticketDetails){
         Ticket ticket = new Ticket();
-        String simpleName = Candidate.class.getSimpleName();
+        String simpleName = Ticket.class.getSimpleName();
         String name = simpleName.substring(0, 1).toLowerCase()
                 + simpleName.substring(1);
 
