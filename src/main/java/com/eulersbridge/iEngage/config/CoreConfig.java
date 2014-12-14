@@ -51,6 +51,8 @@ public class CoreConfig
     CandidateRepository candidateRepository;
     @Autowired
     TicketRepository ticketRepository;
+    @Autowired
+    TaskRepository taskRepository;
 
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -163,5 +165,12 @@ public class CoreConfig
     {
         if (LOG.isDebugEnabled()) LOG.debug("createTicketService()");
         return new TIcketEventHandler(ticketRepository);
+    }
+
+    @Bean
+    public TaskService createTaskService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createTaskService()");
+        return new TaskEventHandler(taskRepository);
     }
 }
