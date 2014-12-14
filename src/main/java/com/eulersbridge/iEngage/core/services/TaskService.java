@@ -18,8 +18,8 @@ public interface TaskService {
     public ReadEvent requestReadTask(RequestReadTaskEvent requestReadTaskEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public UpdatedEvent updateCandidate(UpdateTaskEvent updateTaskEvent);
+    public UpdatedEvent updateTask(UpdateTaskEvent updateTaskEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public DeletedEvent deleteCandidate(DeleteTaskEvent deleteTaskEvent);
+    public DeletedEvent deleteTask(DeleteTaskEvent deleteTaskEvent);
 }

@@ -45,7 +45,7 @@ public class TaskEventHandler implements TaskService {
     }
 
     @Override
-    public UpdatedEvent updateCandidate(UpdateTaskEvent updateTaskEvent) {
+    public UpdatedEvent updateTask(UpdateTaskEvent updateTaskEvent) {
         TaskDetails taskDetails = (TaskDetails) updateTaskEvent.getDetails();
         Task task = Task.fromTaskDetails(taskDetails);
         Long taskId = taskDetails.getNodeId();
@@ -63,7 +63,7 @@ public class TaskEventHandler implements TaskService {
     }
 
     @Override
-    public DeletedEvent deleteCandidate(DeleteTaskEvent deleteTaskEvent) {
+    public DeletedEvent deleteTask(DeleteTaskEvent deleteTaskEvent) {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteTaskEvent= "+deleteTaskEvent);
         Long taskId = deleteTaskEvent.getNodeId();
         if (LOG.isDebugEnabled()) LOG.debug("deleteTask("+taskId+")");
