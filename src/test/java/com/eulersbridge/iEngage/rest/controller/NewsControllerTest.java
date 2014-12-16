@@ -1,9 +1,17 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -25,8 +33,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -113,7 +124,7 @@ public class NewsControllerTest
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
 		ReadEvent testData=ReadNewsArticleEvent.notFound(dets.getNodeId());
 		when (newsService.requestReadNewsArticle(any(RequestReadNewsArticleEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get(urlPrefix+"/{electionId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(get(urlPrefix+"/{articleId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
@@ -139,17 +150,68 @@ public class NewsControllerTest
 
 	}
 
-	@Ignore
 	@Test
 	public void testDeleteNewsArticle() throws Exception
 	{
-
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteNewsArticle()");
+		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
+		NewsArticleDeletedEvent testData=new NewsArticleDeletedEvent(dets.getNodeId());
+		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"/{articleId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(content().string("true"))
+		.andExpect(status().isOk())	;
+	}
+	@Test
+	public void testDeleteNewsArticleNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteNewsArticle()");
+		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
+		DeletedEvent testData=NewsArticleDeletedEvent.notFound(dets.getNodeId());
+		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"/{articleId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(content().string("false"))
+		.andExpect(status().isNotFound());
+	}
+	@Test
+	public void testDeleteNewsArticleForbidden() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteNewsArticle()");
+		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
+		DeletedEvent testData=NewsArticleDeletedEvent.deletionForbidden(dets.getNodeId());
+		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"/{articleId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(content().string("false"))
+		.andExpect(status().isGone());
 	}
 
-	@Ignore
 	@Test
 	public void testCreateNewsArticle() throws Exception
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
+		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
+		NewsArticleCreatedEvent testData=new NewsArticleCreatedEvent(dets.getNodeId(), dets);
+		String content="{\"institutionId\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":[\"http://localhost:8080/testPictures/picture2.jpg\",\"http://localhost:8080/testPictures/picture.jpg\"],\"likes\":0,\"date\":1418382150369,\"creatorEmail\":\"gnewitt@hotmail.com\"}";
+		if (LOG.isDebugEnabled()) LOG.debug("content = "+content);
+		String returnedContent="{\"articleId\":"+dets.getNodeId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"content\":\""+dets.getContent()+
+								"\",\"picture\":"+dets.getPicture()+",\"likes\":"+dets.getLikes()+",\"date\":"+dets.getDate()+",\"creatorEmail\":\""+dets.getCreatorEmail()+
+								"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/newsArticle/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/newsArticles\"}]}";
+		if (LOG.isDebugEnabled()) LOG.debug("returnedContent = "+returnedContent);
+		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(jsonPath("$.articleId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.title",is(dets.getTitle())))
+		.andExpect(jsonPath("$.content",is(dets.getContent())))
+		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
+		.andExpect(jsonPath("$.likes",is(dets.getLikes())))
+		.andExpect(jsonPath("$.date",is(dets.getDate())))
+		.andExpect(jsonPath("$.creatorEmail",is(dets.getCreatorEmail())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isCreated());		
 
 	}
 
