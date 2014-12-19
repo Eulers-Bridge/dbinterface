@@ -10,26 +10,26 @@ import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
 
 @RelationshipEntity(type=DatabaseDomainConstants.APQ_LABEL)
-public class AnsweredPollQuestion 
+public class PollQuestionAnswer 
 {
 	@GraphId private Long id;
 	@StartNode private User answerer;
 	@EndNode private Poll poll;
-	String answer;
+	Integer answerIndex;
 	private Long timeStamp;
 	
-    private static Logger LOG = LoggerFactory.getLogger(AnsweredPollQuestion.class);
+    private static Logger LOG = LoggerFactory.getLogger(PollQuestionAnswer.class);
 
-    public AnsweredPollQuestion()
+    public PollQuestionAnswer()
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public AnsweredPollQuestion(User answerer, Poll poll, String answer)
+	public PollQuestionAnswer(User answerer, Poll poll, Integer answer)
 	{
 		this.answerer=answerer;
 		this.poll=poll;
-		this.answer=answer;
+		this.answerIndex=answer;
 		timeStamp=Calendar.getInstance().getTimeInMillis();
 	}
 
@@ -92,21 +92,21 @@ public class AnsweredPollQuestion
 	/**
 	 * @return the answer
 	 */
-	public String getAnswer() {
-		return answer;
+	public Integer getAnswer() {
+		return answerIndex;
 	}
 
 	/**
 	 * @param answer the answer to set
 	 */
-	public void setAnswer(String answer) {
-		this.answer = answer;
+	public void setAnswer(Integer answer) {
+		this.answerIndex = answer;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "id = "+id+" answerer = "+answerer+" poll = "+poll+" timeStamp = "+timeStamp+" answer = "+answer;
+		return "id = "+id+" answerer = "+answerer+" poll = "+poll+" timeStamp = "+timeStamp+" answerIndex = "+answerIndex;
 	}
 
 	/* (non-Javadoc)
@@ -122,7 +122,7 @@ public class AnsweredPollQuestion
 		}
 		else
 		{
-			result = prime * result + ((answer == null) ? 0 : answer.hashCode());
+			result = prime * result + ((answerIndex == null) ? 0 : answerIndex.hashCode());
 			result = prime * result
 					+ ((answerer == null) ? 0 : answerer.hashCode());
 			result = prime * result + ((poll == null) ? 0 : poll.hashCode());
@@ -143,7 +143,7 @@ public class AnsweredPollQuestion
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AnsweredPollQuestion other = (AnsweredPollQuestion) obj;
+		PollQuestionAnswer other = (PollQuestionAnswer) obj;
 		if (id != null) 
 		{
 			if (id.equals(other.id))
@@ -154,10 +154,10 @@ public class AnsweredPollQuestion
 		{
 			if (other.id != null)
 				return false;
-			if (answer == null) {
-				if (other.answer != null)
+			if (answerIndex == null) {
+				if (other.answerIndex != null)
 					return false;
-			} else if (!answer.equals(other.answer))
+			} else if (!answerIndex.equals(other.answerIndex))
 				return false;
 			if (answerer == null) {
 				if (other.answerer != null)
