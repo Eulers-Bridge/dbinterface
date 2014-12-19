@@ -17,7 +17,7 @@ import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.database.domain.Poll;
-import com.eulersbridge.iEngage.database.domain.PollQuestionAnswer;
+import com.eulersbridge.iEngage.database.domain.PollAnswer;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
@@ -439,7 +439,7 @@ public class DatabaseDataFixture
 		return forumQuestions;
 	}
 
-	public static PollQuestionAnswer populatePollAnswer1()
+	public static PollAnswer populatePollAnswer1()
 	{
 		Long nodeId=9l;
 		Integer answer=1;
@@ -448,7 +448,7 @@ public class DatabaseDataFixture
 		Long timestamp=Calendar.getInstance().getTimeInMillis();
 		return populatePollAnswer(nodeId,poll,answerer,answer,timestamp);
 	}
-	public static PollQuestionAnswer populatePollAnswer2()
+	public static PollAnswer populatePollAnswer2()
 	{
 		Long nodeId=9l;
 		Integer answer=1;
@@ -457,9 +457,9 @@ public class DatabaseDataFixture
 		Long timestamp=Calendar.getInstance().getTimeInMillis();
 		return populatePollAnswer(nodeId,poll,answerer,answer,timestamp);
 	}
-	public static PollQuestionAnswer populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp)
+	public static PollAnswer populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp)
 	{
-		PollQuestionAnswer fq=new PollQuestionAnswer(answerer,poll,answer);
+		PollAnswer fq=new PollAnswer(answerer,poll,answer);
 		fq.setNodeId(id);
 		return fq;
 	}

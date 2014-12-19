@@ -12,7 +12,7 @@ import org.springframework.data.neo4j.annotation.StartNode;
 import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 
 @RelationshipEntity(type=DatabaseDomainConstants.APQ_LABEL)
-public class PollQuestionAnswer 
+public class PollAnswer 
 {
 	@GraphId private Long id;
 	@StartNode private User answerer;
@@ -20,14 +20,14 @@ public class PollQuestionAnswer
 	Integer answerIndex;
 	private Long timeStamp;
 	
-    private static Logger LOG = LoggerFactory.getLogger(PollQuestionAnswer.class);
+    private static Logger LOG = LoggerFactory.getLogger(PollAnswer.class);
 
-    public PollQuestionAnswer()
+    public PollAnswer()
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public PollQuestionAnswer(User answerer, Poll poll, Integer answer)
+	public PollAnswer(User answerer, Poll poll, Integer answer)
 	{
 		this.answerer=answerer;
 		this.poll=poll;
@@ -112,9 +112,9 @@ public class PollQuestionAnswer
 		return dets;
 	}
 	
-	static public PollQuestionAnswer fromPollAnswerDetails(PollAnswerDetails dets)
+	static public PollAnswer fromPollAnswerDetails(PollAnswerDetails dets)
 	{
-		PollQuestionAnswer answer=new PollQuestionAnswer();
+		PollAnswer answer=new PollAnswer();
 		answer.setAnswer(dets.getAnswerIndex());
 		User answerer=new User();
 		answerer.setNodeId(dets.getAnswererId());
@@ -167,7 +167,7 @@ public class PollQuestionAnswer
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		PollQuestionAnswer other = (PollQuestionAnswer) obj;
+		PollAnswer other = (PollAnswer) obj;
 		if (id != null) 
 		{
 			if (id.equals(other.id))
