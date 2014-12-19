@@ -43,7 +43,7 @@ public class CandidateController {
     //Create
     @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.CANDIDATE_LABEL)
     public @ResponseBody ResponseEntity<Candidate>
-    createPosition(@RequestBody Candidate candidate){
+    createCandidate(@RequestBody Candidate candidate){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create candidate "+candidate);
         CreateCandidateEvent createCandidateEvent = new CreateCandidateEvent(candidate.toCandidateDetails());
         CandidateCreatedEvent candidateCreatedEvent = candidateService.createCandidate(createCandidateEvent);
@@ -60,7 +60,7 @@ public class CandidateController {
     //Get
     @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CANDIDATE_LABEL + "/{candidateid}")
     public @ResponseBody ResponseEntity<Candidate>
-    findPosition(@PathVariable Long candidateId){
+    findCandidate(@PathVariable Long candidateId){
         if (LOG.isInfoEnabled()) LOG.info(candidateId+" attempting to get candidate. ");
         RequestReadCandidateEvent requestReadCandidateEvent = new RequestReadCandidateEvent(candidateId);
         ReadEvent readCandidateEvent = candidateService.requestReadCandidate(requestReadCandidateEvent);
@@ -75,7 +75,7 @@ public class CandidateController {
     //Update
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL+"/{candidateid}")
     public @ResponseBody ResponseEntity<Candidate>
-    updatePosition(@PathVariable Long candidateId, @RequestBody Candidate candidate){
+    updateCandidate(@PathVariable Long candidateId, @RequestBody Candidate candidate){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update candidate. " + candidateId);
         UpdatedEvent candidateUpdatedEvent = candidateService.updateCandidate(new UpdateCandidateEvent(candidateId, candidate.toCandidateDetails()));
         if(null != candidateUpdatedEvent){
@@ -97,7 +97,7 @@ public class CandidateController {
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CANDIDATE_LABEL+"/{candidateid}")
     public @ResponseBody ResponseEntity<Boolean>
-    deletePosition(@PathVariable Long candidateid){
+    deleteCandidate(@PathVariable Long candidateid){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete candidate. " + candidateid);
         DeletedEvent candidateDeletedEvent = candidateService.deleteCandidate(new DeleteCandidateEvent(candidateid));
         Boolean isDeletionCompleted = Boolean.valueOf(candidateDeletedEvent.isDeletionCompleted());
@@ -107,7 +107,7 @@ public class CandidateController {
     // like
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL
             + "/{candidateId}/likedBy/{email}/")
-    public @ResponseBody ResponseEntity<Boolean> likePoll(
+    public @ResponseBody ResponseEntity<Boolean> likeCandidate(
             @PathVariable Long candidateId, @PathVariable String email)
     {
         if (LOG.isInfoEnabled())
@@ -134,7 +134,7 @@ public class CandidateController {
     // unlike
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL
             + "/{candidateId}/unlikedBy/{email}/")
-    public @ResponseBody ResponseEntity<Boolean> unlikePoll(
+    public @ResponseBody ResponseEntity<Boolean> unlikeCandidate(
             @PathVariable Long candidateId, @PathVariable String email)
     {
         if (LOG.isInfoEnabled())

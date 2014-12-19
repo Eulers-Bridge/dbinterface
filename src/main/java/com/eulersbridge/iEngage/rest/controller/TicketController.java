@@ -31,7 +31,7 @@ public class TicketController {
     //Create
     @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.TICKET_LABEL)
     public @ResponseBody ResponseEntity<Ticket>
-    createPosition(@RequestBody Ticket ticket){
+    createTicket(@RequestBody Ticket ticket){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create ticket "+ticket);
         CreateTicketEvent createTicketEvent = new CreateTicketEvent(ticket.toTicketDetails());
         TicketCreatedEvent ticketCreatedEvent = ticketService.createTicket(createTicketEvent);
@@ -48,7 +48,7 @@ public class TicketController {
     //Get
     @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.TICKET_LABEL + "/{ticketId}")
     public @ResponseBody ResponseEntity<Ticket>
-    findPosition(@PathVariable Long ticketId){
+    findTicket(@PathVariable Long ticketId){
         if (LOG.isInfoEnabled()) LOG.info(ticketId+" attempting to get ticket. ");
         RequestReadTicketEvent requestReadTicketEvent = new RequestReadTicketEvent(ticketId);
         ReadEvent readTicketEvent = ticketService.requestReadTicket(requestReadTicketEvent);
@@ -63,7 +63,7 @@ public class TicketController {
     //Update
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.TICKET_LABEL+"/{ticketId}")
     public @ResponseBody ResponseEntity<Ticket>
-    updatePosition(@PathVariable Long ticketId, @RequestBody Ticket ticket){
+    updateTicket(@PathVariable Long ticketId, @RequestBody Ticket ticket){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update ticket. " + ticketId);
         UpdatedEvent ticketUpdatedEvent = ticketService.updateTicket(new UpdateTicketEvent(ticketId, ticket.toTicketDetails()));
         if(null != ticketUpdatedEvent){
@@ -85,7 +85,7 @@ public class TicketController {
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.TICKET_LABEL+"/{ticketId}")
     public @ResponseBody ResponseEntity<Boolean>
-    deletePosition(@PathVariable Long ticketId){
+    deleteTicket(@PathVariable Long ticketId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete ticket. " + ticketId);
         DeletedEvent ticketDeletedEvent = ticketService.deleteTicket(new DeleteTicketEvent(ticketId));
         Boolean isDeletionCompleted = Boolean.valueOf(ticketDeletedEvent.isDeletionCompleted());
