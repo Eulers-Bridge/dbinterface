@@ -3,12 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.polls;
 
+import com.eulersbridge.iEngage.core.events.Details;
+
 
 /**
  * @author Greg Newitt
  *
  */
-public class PollAnswerDetails
+public class PollAnswerDetails extends Details
 {
 	Long nodeId;
 	Long answererId;
@@ -34,20 +36,6 @@ public class PollAnswerDetails
 		this.timeStamp = timeStamp;
 	}
 
-	/**
-	 * @return the nodeId
-	 */
-	public Long getNodeId()
-	{
-		return nodeId;
-	}
-	/**
-	 * @param nodeId the nodeId to set
-	 */
-	public void setNodeId(Long nodeId)
-	{
-		this.nodeId = nodeId;
-	}
 	/**
 	 * @return the answererId
 	 */
