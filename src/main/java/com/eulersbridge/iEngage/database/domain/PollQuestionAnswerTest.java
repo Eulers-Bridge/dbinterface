@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -53,28 +54,28 @@ public class PollQuestionAnswerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollQuestionAnswer#getId()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollQuestionAnswer#getNodeId()}.
 	 */
 	@Test
 	public final void testGetId()
 	{
 		PollQuestionAnswer answer2=DatabaseDataFixture.populatePollAnswer1();
-		assertEquals(answer.getId(),answer2.getId());
+		assertEquals(answer.getNodeId(),answer2.getNodeId());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollQuestionAnswer#setId(java.lang.Long)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollQuestionAnswer#setNodeId(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetId()
 	{
 		PollQuestionAnswer answer2=DatabaseDataFixture.populatePollAnswer1();
-		assertEquals(answer.getId(),answer2.getId());
-		Long id=answer.getId();
+		assertEquals(answer.getNodeId(),answer2.getNodeId());
+		Long id=answer.getNodeId();
 		id++;
-		assertNotEquals(id,answer.getId());
-		answer.setId(id);
-		assertEquals(id, answer.getId());
+		assertNotEquals(id,answer.getNodeId());
+		answer.setNodeId(id);
+		assertEquals(id, answer.getNodeId());
 	}
 
 	/**
@@ -171,6 +172,28 @@ public class PollQuestionAnswerTest
 		answer.setAnswer(answerIndex);
 		assertEquals(answerIndex, answer.getAnswer());
 	}
+	
+	@Test
+	public final void testToPollAnswerDetails()
+	{
+		PollAnswerDetails dets=answer.toPollAnswerDetails();
+		assertEquals(answer.getAnswer(),dets.getAnswerIndex());
+		assertEquals(answer.getAnswerer().getNodeId(),dets.getAnswererId());
+		assertEquals(answer.getPoll().getNodeId(),dets.getPollId());
+		assertEquals(answer.getNodeId(),dets.getNodeId());
+		assertEquals(answer.getTimeStamp(),dets.getTimeStamp());
+	}
+
+	@Test
+	public final void testFromPollAnswerDetails()
+	{
+		PollQuestionAnswer answer2=PollQuestionAnswer.fromPollAnswerDetails(answer.toPollAnswerDetails());
+		assertEquals(answer.getAnswer(),answer2.getAnswer());
+		assertEquals(answer.getAnswerer().getNodeId(),answer2.getAnswerer().getNodeId());
+		assertEquals(answer.getPoll().getNodeId(),answer2.getPoll().getNodeId());
+		assertEquals(answer.getNodeId(),answer2.getNodeId());
+		assertEquals(answer.getTimeStamp(),answer2.getTimeStamp());
+	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollQuestionAnswer#toString()}.
@@ -202,9 +225,9 @@ public class PollQuestionAnswerTest
 		PollQuestionAnswer pollAnswerTest=DatabaseDataFixture.populatePollAnswer1();
 		assertEquals(pollAnswerTest.hashCode(),pollAnswerTest.hashCode());
 		assertEquals(pollAnswerTest.hashCode(),answer.hashCode());
-		pollAnswerTest.setId(null);
+		pollAnswerTest.setNodeId(null);
 		checkHashCode(answer,pollAnswerTest);
-		answer.setId(null);
+		answer.setNodeId(null);
 		pollAnswerTest.setAnswerer(null);;
 		checkHashCode(answer,pollAnswerTest);
 		pollAnswerTest.setAnswerer(answer.getAnswerer());
@@ -233,11 +256,11 @@ public class PollQuestionAnswerTest
 		pollAnswerTest=DatabaseDataFixture.populatePollAnswer1();
 		assertEquals(pollAnswerTest,pollAnswerTest);
 		assertEquals(pollAnswerTest,answer);
-		pollAnswerTest.setId(54l);
+		pollAnswerTest.setNodeId(54l);
 		checkNotEquals(answer,pollAnswerTest);
-		answer.setId(null);
+		answer.setNodeId(null);
 		checkNotEquals(answer,pollAnswerTest);
-		pollAnswerTest.setId(null);
+		pollAnswerTest.setNodeId(null);
 		pollAnswerTest.setTimeStamp(answer.getTimeStamp());
 		assertEquals(answer, pollAnswerTest);
 		assertEquals(pollAnswerTest, answer);

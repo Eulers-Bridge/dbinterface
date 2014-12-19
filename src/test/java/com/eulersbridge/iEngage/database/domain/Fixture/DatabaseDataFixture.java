@@ -460,7 +460,7 @@ public class DatabaseDataFixture
 	public static PollQuestionAnswer populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp)
 	{
 		PollQuestionAnswer fq=new PollQuestionAnswer(answerer,poll,answer);
-		fq.setId(id);
+		fq.setNodeId(id);
 		return fq;
 	}
 }

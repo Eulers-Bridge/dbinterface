@@ -9,6 +9,8 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
 
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
+
 @RelationshipEntity(type=DatabaseDomainConstants.APQ_LABEL)
 public class PollQuestionAnswer 
 {
@@ -36,14 +38,15 @@ public class PollQuestionAnswer
 	/**
 	 * @return the id
 	 */
-	public Long getId() {
+	public Long getNodeId()
+	{
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Long id) {
+	public void setNodeId(Long id) {
 		this.id = id;
 	}
 
@@ -101,6 +104,27 @@ public class PollQuestionAnswer
 	 */
 	public void setAnswer(Integer answer) {
 		this.answerIndex = answer;
+	}
+	
+	public PollAnswerDetails toPollAnswerDetails()
+	{
+		PollAnswerDetails dets=new PollAnswerDetails(id, answerer.getNodeId(), poll.getNodeId(), answerIndex, timeStamp);
+		return dets;
+	}
+	
+	static public PollQuestionAnswer fromPollAnswerDetails(PollAnswerDetails dets)
+	{
+		PollQuestionAnswer answer=new PollQuestionAnswer();
+		answer.setAnswer(dets.getAnswerIndex());
+		User answerer=new User();
+		answerer.setNodeId(dets.getAnswererId());
+		answer.setAnswerer(answerer);
+		Poll poll=new Poll();
+		poll.setNodeId(dets.getPollId());
+		answer.setPoll(poll);
+		answer.setNodeId(dets.getNodeId());
+		if (dets.getTimeStamp()!=null) answer.setTimeStamp(dets.getTimeStamp());
+		return answer;
 	}
 	
 	@Override
