@@ -19,7 +19,7 @@ public class BadgeCreatedEvent extends CreatedEvent{
         this.badgeId = badgeId;
     }
 
-    public BadgeCreatedEvent(BadgeDetails badgeDetails, Long badgeId) {
+    public BadgeCreatedEvent(Long badgeId, BadgeDetails badgeDetails) {
         super(badgeDetails);
         this.badgeId = badgeId;
     }

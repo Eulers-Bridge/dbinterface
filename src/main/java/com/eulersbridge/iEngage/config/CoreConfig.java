@@ -53,6 +53,8 @@ public class CoreConfig
     TicketRepository ticketRepository;
     @Autowired
     TaskRepository taskRepository;
+    @Autowired
+    BadgeRepository badgeRepository;
 
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -172,5 +174,11 @@ public class CoreConfig
     {
         if (LOG.isDebugEnabled()) LOG.debug("createTaskService()");
         return new TaskEventHandler(taskRepository);
+    }
+
+    @Bean
+    public BadgeService createBadgeService(){
+        if (LOG.isDebugEnabled()) LOG.debug("createBadgeService()");
+        return new BadgeEventHandler(badgeRepository);
     }
 }
