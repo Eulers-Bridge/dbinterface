@@ -34,6 +34,8 @@ public class CoreConfig
     @Autowired
     PollRepository pollRepository;
     @Autowired
+    PollAnswerRepository pollAnswerRepository;
+    @Autowired
     EventRepository eventRepository;
     @Autowired
     OwnerRepository ownerRepository;
@@ -108,7 +110,7 @@ public class CoreConfig
     public PollService createPollService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
-        return new PollEventHandler(pollRepository,ownerRepository);
+        return new PollEventHandler(pollRepository,pollAnswerRepository,ownerRepository);
     }
 
     @Bean
