@@ -4,10 +4,8 @@ import java.util.Calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
-import org.springframework.data.neo4j.annotation.StartNode;
 
 import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 
@@ -15,8 +13,8 @@ import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 public class PollAnswer 
 {
 	@GraphId private Long id;
-	@StartNode private Owner answerer;
-	@EndNode private Poll poll;
+	private Owner answerer;
+	private Poll poll;
 	Integer answerIndex;
 	private Long timeStamp;
 	
