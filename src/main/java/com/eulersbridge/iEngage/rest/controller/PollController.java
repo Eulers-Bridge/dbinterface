@@ -13,6 +13,7 @@ import com.eulersbridge.iEngage.core.services.PollService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.Poll;
+import com.eulersbridge.iEngage.rest.domain.PollAnswer;
 import com.eulersbridge.iEngage.rest.domain.Polls;
 import com.eulersbridge.iEngage.rest.domain.User;
 
@@ -211,6 +212,47 @@ public class PollController
 					pollDeletedEvent.isDeletionCompleted(), HttpStatus.GONE);
 		else response = new ResponseEntity<Boolean>(
 				pollDeletedEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
+		return response;
+	}
+
+	// Answer Poll
+	@RequestMapping(method = RequestMethod.POST, value = ControllerConstants.POLL_LABEL+"/answer")
+	public @ResponseBody ResponseEntity<PollAnswer> answerPoll(@RequestBody PollAnswer pollAnswer)
+	{
+		if (LOG.isInfoEnabled()) LOG.info("attempting to answer poll " + pollAnswer);
+		CreatePollAnswerEvent createPollAnswerEvent = new CreatePollAnswerEvent(
+				pollAnswer.toPollAnswerDetails());
+		PollAnswerCreatedEvent pollAnswerCreatedEvent = pollService
+				.answerPoll(createPollAnswerEvent);
+		ResponseEntity<PollAnswer> response;
+		if (null == pollAnswerCreatedEvent)
+		{
+			response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
+		}
+		else if (!(pollAnswerCreatedEvent.isPollFound()))
+		{
+			response = new ResponseEntity<PollAnswer>(HttpStatus.NOT_FOUND);
+		}
+		else if (!(pollAnswerCreatedEvent.isAnswererFound()))
+		{
+			response = new ResponseEntity<PollAnswer>(HttpStatus.NOT_FOUND);
+		}
+		else if (!(pollAnswerCreatedEvent.isAnswerValid()))
+		{
+			response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
+		}
+		else if ((null == pollAnswerCreatedEvent.getDetails())
+				|| (null == pollAnswerCreatedEvent.getDetails().getNodeId()))
+		{
+			response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
+		}
+		else
+		{
+			PollAnswer result = PollAnswer.fromPollAnswerDetails((PollAnswerDetails) pollAnswerCreatedEvent
+					.getDetails());
+			if (LOG.isDebugEnabled()) LOG.debug("pollAnswer" + result.toString());
+			return new ResponseEntity<PollAnswer>(result, HttpStatus.CREATED);
+		}
 		return response;
 	}
 

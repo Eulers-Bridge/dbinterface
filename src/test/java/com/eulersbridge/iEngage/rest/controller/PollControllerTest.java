@@ -37,8 +37,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollEvent;
 import com.eulersbridge.iEngage.core.events.polls.DeletePollEvent;
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerCreatedEvent;
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollCreatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollDeletedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
@@ -346,6 +349,109 @@ public class PollControllerTest
 		when (pollService.deletePoll(any(DeletePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{pollId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isGone())	;
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PollController#answerPoll(com.eulersbridge.iEngage.rest.domain.PollAnswer)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testAnswerPoll() throws Exception
+	{
+		LOG.debug("performingAnswerPoll()");
+		PollAnswerDetails dets=DatabaseDataFixture.populatePollAnswer1().toPollAnswerDetails();
+		PollAnswerCreatedEvent testData=new PollAnswerCreatedEvent(dets);
+		String content="{\"answererId\":12,\"answerIndex\":3,\"timeStamp\":12345,\"pollId\":123}";
+		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"answerIndex\":"+dets.getAnswerIndex()+
+								",\"timeStamp\":"+dets.getTimeStamp()+",\"answererId\":"+dets.getAnswererId()+",\"pollId\":"+dets.getPollId()+
+								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/poll/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/poll/"+dets.getNodeId().intValue()+"/previous\"},"+
+								"{\"rel\":\"Next\",\"href\":\"http://localhost/api/poll/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/poll/"+dets.getNodeId().intValue()+"/likedBy/USERID\"},"+
+								"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/poll/"+dets.getNodeId().intValue()+"/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/poll/"+dets.getNodeId().intValue()+"/likes\"}]}";
+		when (pollService.answerPoll(any(CreatePollAnswerEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/answer/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.answererId",is(dets.getAnswererId().intValue())))
+		.andExpect(jsonPath("$.answerIndex",is(dets.getAnswerIndex())))
+		.andExpect(jsonPath("$.timeStamp",is(dets.getTimeStamp())))
+		.andExpect(jsonPath("$.pollId",is(dets.getPollId().intValue())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Liked By")))
+		.andExpect(jsonPath("$.links[4].rel",is("UnLiked By")))
+		.andExpect(jsonPath("$.links[5].rel",is("Likes")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isCreated());		
+	}
+	@Test
+	public final void testAnswerPollInvalidContent() throws Exception
+	{
+		LOG.debug("performingAnswerPoll()");
+		String content="{\"answererId1\":12,\"answerIndex\":3,\"timeStamp\":12345,\"pollId\":123}";
+		this.mockMvc.perform(post(urlPrefix+"/answer/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(status().isBadRequest())	;		
+	}
+	@Test
+	public final void testAnswerPollNoContent() throws Exception 
+	{
+		LOG.debug("performingAnswerPoll()");
+		this.mockMvc.perform(post(urlPrefix+"/answer/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isBadRequest())	;		
+	}
+	@Test
+	public final void testAnswerPollAnswererNotFound() throws Exception 
+	{
+		LOG.debug("performingAnswerPoll()");
+		PollAnswerDetails dets=DatabaseDataFixture.populatePollAnswer1().toPollAnswerDetails();
+		PollAnswerCreatedEvent testData=PollAnswerCreatedEvent.answererNotFound(dets.getAnswererId());
+		String content="{\"answererId\":12,\"answerIndex\":3,\"timeStamp\":12345,\"pollId\":123}";
+		when (pollService.answerPoll(any(CreatePollAnswerEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/answer/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(status().isNotFound())	;		
+	}
+	@Test
+	public final void testAnswerPollPollNotFound() throws Exception 
+	{
+		LOG.debug("performingAnswerPoll()");
+		PollAnswerDetails dets=DatabaseDataFixture.populatePollAnswer1().toPollAnswerDetails();
+		PollAnswerCreatedEvent testData=PollAnswerCreatedEvent.pollNotFound(dets.getPollId());
+		String content="{\"answererId\":12,\"answerIndex\":3,\"timeStamp\":12345,\"pollId\":123}";
+		when (pollService.answerPoll(any(CreatePollAnswerEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/answer/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(status().isNotFound())	;		
+	}
+	@Test
+	public final void testAnswerPollBadAnswer() throws Exception 
+	{
+		LOG.debug("performingAnswerPoll()");
+		PollAnswerDetails dets=DatabaseDataFixture.populatePollAnswer1().toPollAnswerDetails();
+		PollAnswerCreatedEvent testData=PollAnswerCreatedEvent.badAnswer(dets.getAnswerIndex());
+		String content="{\"answererId\":12,\"answerIndex\":3,\"timeStamp\":12345,\"pollId\":123}";
+		when (pollService.answerPoll(any(CreatePollAnswerEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/answer/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(status().isBadRequest())	;		
+	}
+	@Test
+	public final void testAnswerPollNullIdReturned() throws Exception 
+	{
+		LOG.debug("performingAnswerPoll()");
+		PollAnswerDetails dets=null;
+		PollAnswerCreatedEvent testData=new PollAnswerCreatedEvent(dets);
+		String content="{\"answererId\":12,\"answerIndex\":3,\"timeStamp\":12345,\"pollId\":123}";
+		when (pollService.answerPoll(any(CreatePollAnswerEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/answer/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testAnswerPollNullEventReturned() throws Exception 
+	{
+		LOG.debug("performingAnswerPoll()");
+		PollAnswerCreatedEvent testData=null;
+		String content="{\"answererId\":12,\"answerIndex\":3,\"timeStamp\":12345,\"pollId\":123}";
+		when (pollService.answerPoll(any(CreatePollAnswerEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/answer/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andExpect(status().isBadRequest())	;		
 	}
 
 	/**
