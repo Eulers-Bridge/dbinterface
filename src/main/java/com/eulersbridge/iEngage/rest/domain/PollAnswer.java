@@ -55,9 +55,6 @@ public class PollAnswer extends ResourceSupport
 	    // {!begin likes}
         pollAnswer.add(linkTo(PollController.class).slash(name).slash(pollAnswer.nodeId).slash(RestDomainConstants.LIKES).withRel(RestDomainConstants.LIKES_LABEL));
 	    // {!end likes}
-	    // {!begin readAll}
-        pollAnswer.add(linkTo(PollController.class).slash(name+'s').withRel(RestDomainConstants.READALL_LABEL));
-	    // {!end readAll}
 
         return pollAnswer;
     }
