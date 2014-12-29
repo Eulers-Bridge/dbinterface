@@ -15,7 +15,7 @@ import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 public class PollAnswer 
 {
 	@GraphId private Long id;
-	@StartNode private User answerer;
+	@StartNode private Owner answerer;
 	@EndNode private Poll poll;
 	Integer answerIndex;
 	private Long timeStamp;
@@ -27,7 +27,7 @@ public class PollAnswer
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public PollAnswer(User answerer, Poll poll, Integer answer)
+	public PollAnswer(Owner answerer, Poll poll, Integer answer)
 	{
 		this.answerer=answerer;
 		this.poll=poll;
@@ -53,14 +53,14 @@ public class PollAnswer
 	/**
 	 * @return the answerer
 	 */
-	public User getAnswerer() {
+	public Owner getAnswerer() {
 		return answerer;
 	}
 
 	/**
 	 * @param answerer the answerer to set
 	 */
-	public void setAnswerer(User answerer) {
+	public void setAnswerer(Owner answerer) {
 		this.answerer = answerer;
 	}
 
@@ -116,7 +116,7 @@ public class PollAnswer
 	{
 		PollAnswer answer=new PollAnswer();
 		answer.setAnswer(dets.getAnswerIndex());
-		User answerer=new User();
+		Owner answerer=new Owner();
 		answerer.setNodeId(dets.getAnswererId());
 		answer.setAnswerer(answerer);
 		Poll poll=new Poll();

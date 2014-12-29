@@ -446,7 +446,7 @@ public class DatabaseDataFixture
 		User answerer=populateUserGnewitt();
 		Poll poll=populatePoll1();
 		Long timestamp=Calendar.getInstance().getTimeInMillis();
-		return populatePollAnswer(nodeId,poll,answerer,answer,timestamp);
+		return populatePollAnswer(nodeId,poll,new Owner(answerer.getNodeId()),answer,timestamp);
 	}
 	public static PollAnswer populatePollAnswer2()
 	{
@@ -455,9 +455,9 @@ public class DatabaseDataFixture
 		User answerer=populateUserGnewitt();
 		Poll poll=populatePoll2();
 		Long timestamp=Calendar.getInstance().getTimeInMillis();
-		return populatePollAnswer(nodeId,poll,answerer,answer,timestamp);
+		return populatePollAnswer(nodeId,poll,new Owner(answerer.getNodeId()),answer,timestamp);
 	}
-	public static PollAnswer populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp)
+	public static PollAnswer populatePollAnswer(Long id, Poll poll, Owner answerer, Integer answer, Long timeStamp)
 	{
 		PollAnswer fq=new PollAnswer(answerer,poll,answer);
 		fq.setNodeId(id);

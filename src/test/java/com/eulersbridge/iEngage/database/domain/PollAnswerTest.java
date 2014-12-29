@@ -44,11 +44,12 @@ public class PollAnswerTest
 	public final void testPollQuestionAnswerUserPollInteger()
 	{
 		User answerer=DatabaseDataFixture.populateUserGnewitt();
+		Owner owner=new Owner(answerer.getNodeId());
 		Poll poll=DatabaseDataFixture.populatePoll1();
 		Integer answerIndex=3;
-		answer=new PollAnswer(answerer,poll,answerIndex);
+		answer=new PollAnswer(owner,poll,answerIndex);
 		assertNotNull("Not yet implemented",answer);
-		assertEquals(answer.getAnswerer(),answerer);
+		assertEquals(answer.getAnswerer(),owner);
 		assertEquals(answer.getPoll(),poll);
 		assertEquals(answer.getAnswer(),answerIndex);
 	}
@@ -97,9 +98,10 @@ public class PollAnswerTest
 		PollAnswer answer2=DatabaseDataFixture.populatePollAnswer1();
 		assertEquals(answer.getAnswerer(),answer2.getAnswerer());
 		User answerer=DatabaseDataFixture.populateUserGnewitt2();
+		Owner owner=new Owner(answerer.getNodeId());
 		assertNotEquals(answerer,answer.getAnswerer());
-		answer.setAnswerer(answerer);
-		assertEquals(answerer, answer.getAnswerer());
+		answer.setAnswerer(owner);
+		assertEquals(owner, answer.getAnswerer());
 	}
 
 	/**
@@ -270,7 +272,7 @@ public class PollAnswerTest
 		checkNotEquals(answer, pollAnswerTest);
 		pollAnswerTest.setTimeStamp(answer.getTimeStamp());
 		
-		pollAnswerTest.setAnswerer(DatabaseDataFixture.populateUserGnewitt2());
+		pollAnswerTest.setAnswerer(new Owner(DatabaseDataFixture.populateUserGnewitt2().getNodeId()));
 		assertNotEquals(answer, pollAnswerTest);
 		pollAnswerTest.setAnswerer(null);
 		checkNotEquals(pollAnswerTest, answer);

@@ -19,8 +19,11 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollEvent;
 import com.eulersbridge.iEngage.core.events.polls.DeletePollEvent;
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerCreatedEvent;
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollCreatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollUpdatedEvent;
@@ -29,8 +32,10 @@ import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Poll;
+import com.eulersbridge.iEngage.database.domain.PollAnswer;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
 
 /**
@@ -44,6 +49,8 @@ public class PollEventHandlerTest
     @Mock
 	PollRepository pollRepository;
     @Mock
+	PollAnswerRepository answerRepository;
+    @Mock
     OwnerRepository ownerRepository;
 
     PollEventHandler service;
@@ -55,7 +62,7 @@ public class PollEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new PollEventHandler(pollRepository,ownerRepository);
+		service=new PollEventHandler(pollRepository,answerRepository,ownerRepository);
 	}
 
 	/**
@@ -311,4 +318,60 @@ public final void testCreatePollCreatorNotFound()
 		assertNull(evtData.getDetails());
 	}
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PollEventHandler#answerPoll(com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent)}.
+	 */
+@Test
+public final void testAnswerPoll()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
+	PollAnswer testData=DatabaseDataFixture.populatePollAnswer1();
+	Owner testOwner=testData.getAnswerer();
+	Poll testPoll=testData.getPoll();
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+	PollAnswerDetails dets=testData.toPollAnswerDetails();
+	CreatePollAnswerEvent createPollEvent=new CreatePollAnswerEvent(dets);
+	PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
+	Details returnedDets = evtData.getDetails();
+	assertEquals(testData.toPollAnswerDetails(),returnedDets);
+	assertEquals(testData.getNodeId(),returnedDets.getNodeId());
+}
+@Test
+public final void testAnswerPollOwnerNotFound()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
+	PollAnswer testData=DatabaseDataFixture.populatePollAnswer1();
+	Owner testOwner=null;
+	Poll testPoll=testData.getPoll();
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+	PollAnswerDetails dets=testData.toPollAnswerDetails();
+	CreatePollAnswerEvent createPollEvent=new CreatePollAnswerEvent(dets);
+	PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
+	assertNotNull(evtData);
+//	assertEquals(evtData.getFailedNodeId(),testData.getAnswerer().getNodeId());
+//	assertFalse(evtData.isAnswererFound());
+	assertNull(evtData.getDetails());
+}
+@Test
+public final void testAnswerPollPollNotFound()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
+	PollAnswer testData=DatabaseDataFixture.populatePollAnswer1();
+	Owner testOwner=testData.getAnswerer();
+	Poll testPoll=null;
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testOwner);
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+	PollAnswerDetails dets=testData.toPollAnswerDetails();
+	CreatePollAnswerEvent createPollEvent=new CreatePollAnswerEvent(dets);
+	PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
+	assertNotNull(evtData);
+//	assertEquals(evtData.getFailedNodeId(),testData.getCreator().getNodeId());
+//	assertFalse(evtData.isCreatorFound());
+	assertNull(evtData.getDetails());
+}
 }

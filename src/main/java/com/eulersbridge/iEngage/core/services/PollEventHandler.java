@@ -9,7 +9,9 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Poll;
+import com.eulersbridge.iEngage.database.domain.PollAnswer;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
 
 import org.slf4j.Logger;
@@ -29,11 +31,13 @@ public class PollEventHandler implements PollService
 			.getLogger(ElectionEventHandler.class);
 	// @Autowired
 	private PollRepository pollRepository;
+	private PollAnswerRepository answerRepository;
 	private OwnerRepository ownerRepository;
 
-	public PollEventHandler(PollRepository pollRepository, OwnerRepository ownerRepository)
+	public PollEventHandler(PollRepository pollRepository, PollAnswerRepository answerRepository, OwnerRepository ownerRepository)
 	{
 		this.pollRepository = pollRepository;
+		this.answerRepository=answerRepository;
 		this.ownerRepository = ownerRepository;
 	}
 
@@ -150,6 +154,36 @@ public class PollEventHandler implements PollService
 	    	}
 		}
 	    return resultEvt;		
+	}
+	
+	@Override
+	public PollAnswerCreatedEvent answerPoll(
+			CreatePollAnswerEvent pollAnswerEvent)
+	{
+		PollAnswerDetails answerDetails = (PollAnswerDetails) pollAnswerEvent.getDetails();
+		PollAnswer pollAnswer = PollAnswer.fromPollAnswerDetails(answerDetails);
+		
+		if (LOG.isDebugEnabled()) LOG.debug("Finding owner with answererId = "+answerDetails.getAnswererId());
+    	Owner owner=ownerRepository.findOne(answerDetails.getAnswererId());
+    	PollAnswerCreatedEvent answerCreatedEvent;
+    	if (null==owner)
+    		answerCreatedEvent=PollAnswerCreatedEvent.answererNotFound(answerDetails.getAnswererId());
+    	else
+    	{
+			if (LOG.isDebugEnabled()) LOG.debug("Finding poll with pollId = "+answerDetails.getPollId());
+	    	Poll poll=pollRepository.findOne(answerDetails.getPollId());
+	
+	    	if (null==poll)
+	    		answerCreatedEvent=PollAnswerCreatedEvent.pollNotFound(answerDetails.getPollId());
+	    	else
+	    	{
+	    		pollAnswer.setAnswerer(owner);
+	    		pollAnswer.setPoll(poll);
+	    		PollAnswer result = answerRepository.save(pollAnswer);
+	        	answerCreatedEvent = new PollAnswerCreatedEvent( result.toPollAnswerDetails());
+	    	}
+    	}
+		return answerCreatedEvent;
 	}
 
 	@Override

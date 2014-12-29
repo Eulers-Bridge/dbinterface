@@ -26,6 +26,9 @@ public interface PollService {
     public UpdatedEvent updatePoll(UpdatePollEvent updatePollEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
+	public PollAnswerCreatedEvent answerPoll(CreatePollAnswerEvent pollAnswerEvent);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
 	public PollsReadEvent findPolls(ReadPollsEvent readPollsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 }

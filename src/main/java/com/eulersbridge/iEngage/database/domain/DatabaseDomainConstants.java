@@ -32,4 +32,5 @@ public class DatabaseDomainConstants
 	public static final String PHOTO_ALBUM = "PhotoAlbum";
 	public static final String POLL = "Poll";
 	public static final String FORUM_QUESTION = "ForumQuestion";
+	public static final String POLL_ANSWER = "PollAnswer";
 }

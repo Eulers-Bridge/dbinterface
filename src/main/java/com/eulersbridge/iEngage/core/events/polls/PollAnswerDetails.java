@@ -12,7 +12,6 @@ import com.eulersbridge.iEngage.core.events.Details;
  */
 public class PollAnswerDetails extends Details
 {
-	Long nodeId;
 	Long answererId;
 	Long pollId;
 	Integer answerIndex;
@@ -28,7 +27,7 @@ public class PollAnswerDetails extends Details
 	public PollAnswerDetails(Long nodeId, Long answererId, Long pollId,
 			Integer answerIndex, Long timeStamp)
 	{
-		super();
+		super(nodeId);
 		this.nodeId = nodeId;
 		this.answererId = answererId;
 		this.pollId = pollId;
