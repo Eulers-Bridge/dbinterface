@@ -179,8 +179,17 @@ public class PollEventHandler implements PollService
 	    	{
 	    		pollAnswer.setAnswerer(owner);
 	    		pollAnswer.setPoll(poll);
-	    		PollAnswer result = answerRepository.save(pollAnswer);
-	        	answerCreatedEvent = new PollAnswerCreatedEvent( result.toPollAnswerDetails());
+	    		Integer answerIndex=pollAnswer.getAnswer();
+	    		String answers=poll.getAnswers();
+	    		String [] answerArray=answers.split(",");
+	    		int numAnswers=answerArray.length;
+	    		if  ((answerIndex==null)||(answerIndex<0)||(answerIndex>numAnswers))
+	    			answerCreatedEvent=PollAnswerCreatedEvent.badAnswer(answerDetails.getAnswerIndex());
+	    		else
+	    		{
+		    		PollAnswer result = answerRepository.save(pollAnswer);
+		        	answerCreatedEvent = new PollAnswerCreatedEvent( result.toPollAnswerDetails());
+	    		}
 	    	}
     	}
 		return answerCreatedEvent;

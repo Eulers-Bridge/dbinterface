@@ -13,6 +13,7 @@ public class PollAnswerCreatedEvent extends CreatedEvent
 {
 	private Long failedNodeId;
 	private boolean answererFound = true;
+	private boolean answerValid = true;
 	private boolean pollFound = true;
 
 	public PollAnswerCreatedEvent(PollAnswerDetails pollAnswerDetails)
@@ -65,6 +66,22 @@ public class PollAnswerCreatedEvent extends CreatedEvent
 		this.pollFound = pollFound;
 	}
 
+	/**
+	 * @return the answerValid
+	 */
+	public boolean isAnswerValid()
+	{
+		return answerValid;
+	}
+
+	/**
+	 * @param answerValid the answerValid to set
+	 */
+	public void setAnswerValid(boolean answerValid)
+	{
+		this.answerValid = answerValid;
+	}
+
 	public static PollAnswerCreatedEvent answererNotFound(Long answererId)
 	{
 		PollAnswerCreatedEvent evt = new PollAnswerCreatedEvent(answererId);
@@ -76,6 +93,15 @@ public class PollAnswerCreatedEvent extends CreatedEvent
 	{
 		PollAnswerCreatedEvent evt = new PollAnswerCreatedEvent(pollId);
 		evt.setPollFound(false);
+		return evt;
+	}
+
+	public static PollAnswerCreatedEvent badAnswer(Integer answerIndex)
+	{
+		Long index=null;
+		if (answerIndex!=null) index=new Long(answerIndex);
+		PollAnswerCreatedEvent evt = new PollAnswerCreatedEvent(index);
+		evt.setAnswerValid(false);
 		return evt;
 	}
 

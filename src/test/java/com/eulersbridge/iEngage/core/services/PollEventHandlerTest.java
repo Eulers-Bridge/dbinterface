@@ -352,8 +352,8 @@ public final void testAnswerPollOwnerNotFound()
 	CreatePollAnswerEvent createPollEvent=new CreatePollAnswerEvent(dets);
 	PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
 	assertNotNull(evtData);
-//	assertEquals(evtData.getFailedNodeId(),testData.getAnswerer().getNodeId());
-//	assertFalse(evtData.isAnswererFound());
+	assertEquals(evtData.getFailedNodeId(),testData.getAnswerer().getNodeId());
+	assertFalse(evtData.isAnswererFound());
 	assertNull(evtData.getDetails());
 }
 @Test
@@ -370,8 +370,65 @@ public final void testAnswerPollPollNotFound()
 	CreatePollAnswerEvent createPollEvent=new CreatePollAnswerEvent(dets);
 	PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
 	assertNotNull(evtData);
-//	assertEquals(evtData.getFailedNodeId(),testData.getCreator().getNodeId());
-//	assertFalse(evtData.isCreatorFound());
+	assertEquals(evtData.getFailedNodeId(),testData.getPoll().getNodeId());
+	assertFalse(evtData.isPollFound());
+	assertNull(evtData.getDetails());
+}
+@Test
+public final void testAnswerPollNullAnswerIndex()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
+	PollAnswer testData=DatabaseDataFixture.populatePollAnswer1();
+	testData.setAnswer(null);
+	Owner testOwner=testData.getAnswerer();
+	Poll testPoll=testData.getPoll();
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+	PollAnswerDetails dets=testData.toPollAnswerDetails();
+	CreatePollAnswerEvent createPollEvent=new CreatePollAnswerEvent(dets);
+	PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
+	assertNotNull(evtData);
+	assertEquals(evtData.getFailedNodeId(),testData.getAnswer());
+	assertFalse(evtData.isAnswerValid());
+	assertNull(evtData.getDetails());
+}
+@Test
+public final void testAnswerPollLowAnswerIndex()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
+	PollAnswer testData=DatabaseDataFixture.populatePollAnswer1();
+	testData.setAnswer(-1);
+	Owner testOwner=testData.getAnswerer();
+	Poll testPoll=testData.getPoll();
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+	PollAnswerDetails dets=testData.toPollAnswerDetails();
+	CreatePollAnswerEvent createPollEvent=new CreatePollAnswerEvent(dets);
+	PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
+	assertNotNull(evtData);
+	assertEquals(evtData.getFailedNodeId().intValue(),testData.getAnswer().intValue());
+	assertFalse(evtData.isAnswerValid());
+	assertNull(evtData.getDetails());
+}
+@Test
+public final void testAnswerPollHighAnswerIndex()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
+	PollAnswer testData=DatabaseDataFixture.populatePollAnswer1();
+	testData.setAnswer(15);
+	Owner testOwner=testData.getAnswerer();
+	Poll testPoll=testData.getPoll();
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+	PollAnswerDetails dets=testData.toPollAnswerDetails();
+	CreatePollAnswerEvent createPollEvent=new CreatePollAnswerEvent(dets);
+	PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
+	assertNotNull(evtData);
+	assertEquals(evtData.getFailedNodeId().intValue(),testData.getAnswer().intValue());
+	assertFalse(evtData.isAnswerValid());
 	assertNull(evtData.getDetails());
 }
 }
