@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
+import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.ForumQuestion;
@@ -475,7 +476,6 @@ public class DatabaseDataFixture
 		results.add(2, 145);
 		results.add(3, 115);
 		results.add(4, 15);
-		// TODO Auto-generated method stub
 		return populatePollResultDetails(pollId,results);
 	}
 	public static PollResultDetails populatePollResultDetails(Long pollId,Collection<Integer> results)
@@ -483,4 +483,26 @@ public class DatabaseDataFixture
 		PollResultDetails dets=new PollResultDetails(pollId,results);
 		return dets;
 	}
+
+    public static Badge populateBadge(Long id, String name, boolean awarded, Long timestamp, Long xpValue)
+    {
+        Badge badge = new Badge();
+        badge.setBadgeId(id);
+        badge.setName(name);
+        badge.setAwarded(awarded);
+        badge.setTimestamp(timestamp);
+        badge.setXpValue(xpValue);
+        return badge;
+    }
+
+    public static Badge populateBadge1()
+    {
+        Long id = 100l;
+        String name = "Badge name";
+        boolean awarede = true;
+        Long timestamp = 100000l;
+        Long xpValue = 50l;
+        return populateBadge(id, name, awarede, timestamp, xpValue);
+    }
+
 }

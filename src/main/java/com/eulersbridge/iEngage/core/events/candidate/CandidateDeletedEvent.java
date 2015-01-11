@@ -7,7 +7,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
  */
 
 public class CandidateDeletedEvent extends DeletedEvent{
-    public CandidateDeletedEvent(Long candidateid) {
-        super(candidateid);
+    public CandidateDeletedEvent(Long candidateId) {
+        super(candidateId);
     }
 }
