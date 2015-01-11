@@ -2,10 +2,12 @@ package com.eulersbridge.iEngage.database.domain.Fixture;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.ForumQuestion;
@@ -462,5 +464,23 @@ public class DatabaseDataFixture
 		PollAnswer fq=new PollAnswer(answerer,poll,answer);
 		fq.setNodeId(id);
 		return fq;
+	}
+	
+	public static PollResultDetails populatePollResultDetails1()
+	{
+		Long pollId=1l;
+		ArrayList<Integer> results=new ArrayList<Integer>();
+		results.add(0, 165);
+		results.add(1, 95);
+		results.add(2, 145);
+		results.add(3, 115);
+		results.add(4, 15);
+		// TODO Auto-generated method stub
+		return populatePollResultDetails(pollId,results);
+	}
+	public static PollResultDetails populatePollResultDetails(Long pollId,Collection<Integer> results)
+	{
+		PollResultDetails dets=new PollResultDetails(pollId,results);
+		return dets;
 	}
 }

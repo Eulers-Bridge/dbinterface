@@ -196,6 +196,30 @@ public class PollEventHandler implements PollService
 	}
 
 	@Override
+	public ReadEvent readPollResult(
+			ReadPollResultEvent readPollResultEvent)
+	{
+		Long pollId=readPollResultEvent.getNodeId();
+		if (LOG.isDebugEnabled()) LOG.debug("Finding results for poll - "+pollId);;
+		Poll poll = pollRepository.findOne(pollId);
+		ReadEvent pollResultReadEvent=null;
+		if (poll != null)
+		{
+//			pollRepository.getPollResults(pollId);
+			
+			
+			
+//			pollResultReadEvent = new ReadPollResultEvent(readPollResultEvent.getNodeId(),
+//					poll.toPollDetails());
+		}
+		else
+		{
+			pollResultReadEvent = PollResultReadEvent.notFound(readPollResultEvent.getNodeId());
+		}
+		return pollResultReadEvent;
+	}
+
+	@Override
 	public PollsReadEvent findPolls(ReadPollsEvent readPollsEvent,
 			Direction dir, int pageNumber, int pageLength)
 	{
