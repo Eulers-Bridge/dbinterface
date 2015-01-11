@@ -41,7 +41,7 @@ public class BadgeController {
         else{
             Badge result = Badge.fromBadgeDetails((BadgeDetails) badgeCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("badge"+result.toString());
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
         }
     }
 

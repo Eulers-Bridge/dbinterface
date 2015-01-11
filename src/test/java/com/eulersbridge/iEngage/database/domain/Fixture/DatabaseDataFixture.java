@@ -6,22 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import com.eulersbridge.iEngage.database.domain.Country;
-import com.eulersbridge.iEngage.database.domain.Election;
-import com.eulersbridge.iEngage.database.domain.ForumQuestion;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Like;
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Photo;
-import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.database.domain.Poll;
-import com.eulersbridge.iEngage.database.domain.PollAnswer;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.VoteRecord;
-import com.eulersbridge.iEngage.database.domain.VoteReminder;
-import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
@@ -463,4 +448,24 @@ public class DatabaseDataFixture
 		fq.setNodeId(id);
 		return fq;
 	}
+
+    public static Badge populateBadge(Long id, String name, boolean awarded, Long timestamp, Long xpValue){
+        Badge badge = new Badge();
+        badge.setBadgeId(id);
+        badge.setName(name);
+        badge.setAwarded(awarded);
+        badge.setTimestamp(timestamp);
+        badge.setXpValue(xpValue);
+        return badge;
+    }
+
+    public static Badge populateBadge1(){
+        Long id = 100l;
+        String name = "Badge name";
+        boolean awarede = true;
+        Long timestamp = 100000l;
+        Long xpValue = 50l;
+        return populateBadge(id, name, awarede, timestamp, xpValue);
+    }
+
 }
