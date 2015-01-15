@@ -45,9 +45,12 @@ import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollCreatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollDeletedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
+import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
+import com.eulersbridge.iEngage.core.events.polls.PollResultReadEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollsReadEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
+import com.eulersbridge.iEngage.core.events.polls.ReadPollResultEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollsEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
@@ -127,6 +130,52 @@ public class PollControllerTest
 	}
 	@Test
 	public final void testFindPollNotFound() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPoll()");
+		PollDetails dets=DatabaseDataFixture.populatePoll1().toPollDetails();
+		ReadEvent testData=ReadPollEvent.notFound(dets.getNodeId());
+		when (pollService.requestReadPoll(any(RequestReadPollEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"/{pollId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PollController#getPollResults(java.lang.Long)}.
+	 * @throws Exception 
+	 */
+	@Ignore
+	@Test
+	public final void testGetPollResults() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingGetPollResults()");
+		PollResultDetails dets=DatabaseDataFixture.populatePollResultDetails1();
+		PollResultReadEvent testData=new PollResultReadEvent(dets.getPollId(),dets);
+		when (pollService.readPollResult(any(ReadPollResultEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"/result/{pollId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+/*		.andExpect(jsonPath("$.question",is(dets.getQuestion())))
+		.andExpect(jsonPath("$.answers[0]",is(dets.getAnswers().)))
+		.andExpect(jsonPath("$.answers[1]",is(dets.getAnswers())))
+		.andExpect(jsonPath("$.answers[2]",is(dets.getAnswers())))
+		.andExpect(jsonPath("$.answers[3]",is(dets.getAnswers())))
+		.andExpect(jsonPath("$.answers[4]",is(dets.getAnswers())))
+		.andExpect(jsonPath("$.start",is(dets.getStart().intValue())))
+		.andExpect(jsonPath("$.duration",is(dets.getDuration().intValue())))
+		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
+		.andExpect(jsonPath("$.creatorId",is(dets.getCreatorId().intValue())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
+		.andExpect(jsonPath("$.links[2].rel",is("Next")))
+		.andExpect(jsonPath("$.links[3].rel",is("Liked By")))
+		.andExpect(jsonPath("$.links[4].rel",is("UnLiked By")))
+		.andExpect(jsonPath("$.links[5].rel",is("Likes")))
+		.andExpect(jsonPath("$.links[6].rel",is("Read all")))
+*/		.andExpect(status().isOk())	;
+	}
+	@Test
+	public final void testGetPollResultsNotFound() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPoll()");
 		PollDetails dets=DatabaseDataFixture.populatePoll1().toPollDetails();

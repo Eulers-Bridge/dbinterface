@@ -2,11 +2,29 @@ package com.eulersbridge.iEngage.database.domain.Fixture;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
+import com.eulersbridge.iEngage.database.domain.Badge;
+import com.eulersbridge.iEngage.database.domain.Country;
+import com.eulersbridge.iEngage.database.domain.Election;
+import com.eulersbridge.iEngage.database.domain.ForumQuestion;
+import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Like;
+import com.eulersbridge.iEngage.database.domain.NewsArticle;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
+import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Photo;
+import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.database.domain.Poll;
+import com.eulersbridge.iEngage.database.domain.PollAnswer;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VoteRecord;
+import com.eulersbridge.iEngage.database.domain.VoteReminder;
+import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
@@ -448,8 +466,26 @@ public class DatabaseDataFixture
 		fq.setNodeId(id);
 		return fq;
 	}
+	
+	public static PollResultDetails populatePollResultDetails1()
+	{
+		Long pollId=1l;
+		ArrayList<Integer> results=new ArrayList<Integer>();
+		results.add(0, 165);
+		results.add(1, 95);
+		results.add(2, 145);
+		results.add(3, 115);
+		results.add(4, 15);
+		return populatePollResultDetails(pollId,results);
+	}
+	public static PollResultDetails populatePollResultDetails(Long pollId,Collection<Integer> results)
+	{
+		PollResultDetails dets=new PollResultDetails(pollId,results);
+		return dets;
+	}
 
-    public static Badge populateBadge(Long id, String name, boolean awarded, Long timestamp, Long xpValue){
+    public static Badge populateBadge(Long id, String name, boolean awarded, Long timestamp, Long xpValue)
+    {
         Badge badge = new Badge();
         badge.setBadgeId(id);
         badge.setName(name);
@@ -459,7 +495,8 @@ public class DatabaseDataFixture
         return badge;
     }
 
-    public static Badge populateBadge1(){
+    public static Badge populateBadge1()
+    {
         Long id = 100l;
         String name = "Badge name";
         boolean awarede = true;

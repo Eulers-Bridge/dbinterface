@@ -31,4 +31,7 @@ public interface PollService {
     @PreAuthorize("hasRole('ROLE_USER')")
 	public PollsReadEvent findPolls(ReadPollsEvent readPollsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public ReadEvent readPollResult(ReadPollResultEvent ReadPollResultEvent);
 }
