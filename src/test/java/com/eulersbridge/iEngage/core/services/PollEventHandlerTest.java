@@ -8,6 +8,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -16,11 +17,18 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
+import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollEvent;
 import com.eulersbridge.iEngage.core.events.polls.DeletePollEvent;
@@ -31,11 +39,14 @@ import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollResult;
 import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.polls.PollsReadEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollResultEvent;
+import com.eulersbridge.iEngage.core.events.polls.ReadPollsEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -487,6 +498,104 @@ public final void testReadPollResultNoResults()
 @Test
 public final void testFindPolls()
 {
+	if (LOG.isDebugEnabled()) LOG.debug("FindingPolls()");
 	
+	ArrayList<Poll> evts=new ArrayList<Poll>();
+	evts.add(DatabaseDataFixture.populatePoll1());
+	evts.add(DatabaseDataFixture.populatePoll2());
+
+	Long ownerId=1L;
+	ReadPollsEvent readPollsEvent=new ReadPollsEvent(ownerId);
+	int pageLength=10;
+	int pageNumber=0;
+
+	Pageable p=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+	Page<Poll> testData=new PageImpl<Poll>(evts,p,evts.size());
+	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(testData);
+	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
+	assertNotNull(evtData);
+	assertEquals(evtData.getTotalPages(),new Integer(1));
+	assertEquals(evtData.getTotalEvents(),new Long(evts.size()));
+	assertTrue(evtData.isEntityFound());
+	assertTrue(evtData.isInstitutionFound());
+	assertTrue(evtData.isNewsFeedFound());
 }
+
+@Test
+public final void testFindPollsNoPolls()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("FindingPolls()");
+	
+	ArrayList<Poll> evts=new ArrayList<Poll>();
+
+	Long ownerId=1L;
+	ReadPollsEvent readPollsEvent=new ReadPollsEvent(ownerId);
+	int pageLength=10;
+	int pageNumber=0;
+	Poll testPoll=DatabaseDataFixture.populatePoll1();
+	
+	Pageable p=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+	Page<Poll> testData=new PageImpl<Poll>(evts,p,evts.size());
+	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(testData);
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
+	assertNotNull(evtData);
+	assertEquals(evtData.getTotalPages(),new Integer(0));
+	assertEquals(evtData.getTotalEvents(),new Long(evts.size()));
+	assertTrue(evtData.isEntityFound());
+	assertTrue(evtData.isInstitutionFound());
+	assertTrue(evtData.isNewsFeedFound());
+}
+
+@Test
+public final void testFindPollsNoPollsNoOwner()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("FindingPolls()");
+	
+	ArrayList<Poll> evts=new ArrayList<Poll>();
+
+	Long ownerId=1L;
+	ReadPollsEvent readPollsEvent=new ReadPollsEvent(ownerId);
+	int pageLength=10;
+	int pageNumber=0;
+	
+	Pageable p=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+	Page<Poll> testData=new PageImpl<Poll>(evts,p,evts.size());
+	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(testData);
+	when(pollRepository.findOne(any(Long.class))).thenReturn(null);
+	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
+	assertNotNull(evtData);
+	assertNull(evtData.getDetails());
+	assertFalse(evtData.isEntityFound());
+	assertFalse(evtData.isInstitutionFound());
+	assertFalse(evtData.isNewsFeedFound());
+}
+
+@Test
+public final void testFindPollsNullPolls()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("FindingPolls()");
+	
+	ArrayList<Poll> evts=new ArrayList<Poll>();
+	evts.add(DatabaseDataFixture.populatePoll1());
+	evts.add(DatabaseDataFixture.populatePoll2());
+
+	Long ownerId=1L;
+	ReadPollsEvent readPollsEvent=new ReadPollsEvent(ownerId);
+	int pageLength=10;
+	int pageNumber=0;
+
+	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(null);
+	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
+	assertNotNull(evtData);
+	assertNull(evtData.getDetails());
+	assertFalse(evtData.isEntityFound());
+	assertFalse(evtData.isInstitutionFound());
+	assertFalse(evtData.isNewsFeedFound());
+}
+
+
+
+
+
 }
