@@ -174,8 +174,8 @@ public class PollControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPoll()");
 		PollDetails dets=DatabaseDataFixture.populatePoll1().toPollDetails();
 		ReadEvent testData=ReadPollEvent.notFound(dets.getNodeId());
-		when (pollService.requestReadPoll(any(RequestReadPollEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get(urlPrefix+"/{pollId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		when (pollService.readPollResult(any(ReadPollResultEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"/{pollId}/results/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound());
 	}
