@@ -35,7 +35,7 @@ public class Position {
         position.setPositionId(positionDetails.getPositionId());
         position.setName(positionDetails.getName());
         position.setDescription(positionDetails.getDescription());
-        position.election = new Election(positionDetails.getPositionId(), null, null, null, null, null, null);
+        position.election = new Election(positionDetails.getPositionId(), null, null, null, null, null, null,null,null);
 
         if (LOG.isTraceEnabled()) LOG.trace("position "+position);
         return position;

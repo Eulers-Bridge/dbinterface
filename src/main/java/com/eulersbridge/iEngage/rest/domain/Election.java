@@ -28,6 +28,8 @@ public class Election extends ResourceSupport
     private Long startVoting;
     private Long endVoting;
     private Long institutionId;
+    private String introduction;
+    private String process;
 
     private static Logger LOG = LoggerFactory.getLogger(Election.class);
 
@@ -43,6 +45,8 @@ public class Election extends ResourceSupport
         election.setStartVoting(electionDetails.getStartVoting());
         election.setEndVoting(electionDetails.getEndVoting());
         election.setInstitutionId(electionDetails.getInstitutionId());
+        election.setIntroduction(electionDetails.getIntroduction());
+        election.setProcess(electionDetails.getProcess());
 
 	    // {!begin selfRel}
         election.add(linkTo(ElectionController.class).slash(name).slash(election.electionId).withSelfRel());
@@ -68,7 +72,9 @@ public class Election extends ResourceSupport
         electionDetails.setEnd(this.getEnd());
         electionDetails.setStartVoting(this.getStartVoting());
         electionDetails.setEndVoting(this.getEndVoting());
-        electionDetails.setInstitutionId(this.institutionId);
+        electionDetails.setInstitutionId(this.getInstitutionId());
+        electionDetails.setIntroduction(this.getIntroduction());
+        electionDetails.setProcess(this.getProcess());
         if (LOG.isTraceEnabled()) LOG.trace("electionDetails "+electionDetails);
         return electionDetails;
     }
@@ -169,6 +175,38 @@ public class Election extends ResourceSupport
 	 */
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
+	}
+
+	/**
+	 * @return the introduction
+	 */
+	public String getIntroduction()
+	{
+		return introduction;
+	}
+
+	/**
+	 * @param introduction the introduction to set
+	 */
+	public void setIntroduction(String introduction)
+	{
+		this.introduction = introduction;
+	}
+
+	/**
+	 * @return the process
+	 */
+	public String getProcess()
+	{
+		return process;
+	}
+
+	/**
+	 * @param process the process to set
+	 */
+	public void setProcess(String process)
+	{
+		this.process = process;
 	}
 
 	public static Iterator<Election> toElectionsIterator(Iterator<ElectionDetails> iter)

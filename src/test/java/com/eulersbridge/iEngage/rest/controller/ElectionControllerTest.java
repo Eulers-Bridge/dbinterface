@@ -141,10 +141,10 @@ public class ElectionControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateElection()");
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
 		ElectionCreatedEvent testData=new ElectionCreatedEvent(dets.getElectionId(), dets);
-		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1,\"introduction\":\"introduction 1\",\"process\":\"process 1\"}";
 		String returnedContent="{\"electionId\":"+dets.getElectionId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"start\":"+dets.getStart().intValue()+",\"end\":"+dets.getEnd().intValue()+
 								",\"startVoting\":"+dets.getStartVoting().intValue()+",\"endVoting\":"+dets.getEndVoting()+",\"institutionId\":"+dets.getInstitutionId()+
-								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
+								",\"introduction\":\""+dets.getIntroduction()+"\",\"process\":\""+dets.getProcess()+"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
 		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -155,6 +155,8 @@ public class ElectionControllerTest
 		.andExpect(jsonPath("$.endVoting",is(dets.getEndVoting().intValue())))
 		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.introduction",is(dets.getIntroduction())))
+		.andExpect(jsonPath("$.process",is(dets.getProcess())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))
@@ -345,10 +347,10 @@ public class ElectionControllerTest
 		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
 		dets.setTitle("Test Election2");
 		ElectionUpdatedEvent testData=new ElectionUpdatedEvent(id, dets);
-		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1,\"introduction\":\"introduction 1\",\"process\":\"process 1\"}";
 		String returnedContent="{\"electionId\":"+dets.getElectionId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"start\":"+dets.getStart().intValue()+",\"end\":"+dets.getEnd().intValue()+
 								",\"startVoting\":"+dets.getStartVoting().intValue()+",\"endVoting\":"+dets.getEndVoting()+",\"institutionId\":"+dets.getInstitutionId()+
-								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
+								",\"introduction\":\""+dets.getIntroduction()+"\",\"process\":\""+dets.getProcess()+"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
 		when (electionService.updateElection(any(UpdateElectionEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -359,6 +361,8 @@ public class ElectionControllerTest
 		.andExpect(jsonPath("$.endVoting",is(dets.getEndVoting().intValue())))
 		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.introduction",is(dets.getIntroduction())))
+		.andExpect(jsonPath("$.process",is(dets.getProcess())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))

@@ -46,10 +46,11 @@ public class ElectionTest
 	Long startVote=125444l;
 	Long endVote=126444l;
 	Long instId=26l;
+	String introduction = "This introduction",process="This process";
 	
     public ElectionDetails populateElectionDetails()
     {
-		ElectionDetails election=new ElectionDetails(id, title, start, end, startVote, endVote, instId);
+		ElectionDetails election=new ElectionDetails(id, title, start, end, startVote, endVote, instId, introduction, process);
     	return election;
     }
 
@@ -63,6 +64,8 @@ public class ElectionTest
 		election.setStartVoting(startVote);
 		election.setEndVoting(endVote);
 		election.setInstitutionId(instId);
+		election.setIntroduction(introduction);
+		election.setProcess(process);
     	return election;
     }
 
@@ -89,6 +92,8 @@ public class ElectionTest
 		assertEquals("Start Voting doesn't match.",dets.getStartVoting(),election.getStartVoting());
 		assertEquals("End Voting doesn't match.",dets.getEndVoting(),election.getEndVoting());
 		assertEquals("Inst Id doesn't match.",dets.getInstitutionId(),election.getInstitutionId());
+		assertEquals("Introduction doesn't match.",dets.getIntroduction(),election.getIntroduction());
+		assertEquals("Process doesn't match.",dets.getProcess(),election.getProcess());
 	}
 
 	/**
@@ -106,6 +111,8 @@ public class ElectionTest
 		assertEquals("Start Voting doesn't match.",elec.getStartVoting(),dets.getStartVoting());
 		assertEquals("End Voting doesn't match.",elec.getEndVoting(),dets.getEndVoting());
 		assertEquals("Inst Id doesn't match.",elec.getInstitutionId(),dets.getInstitutionId());
+		assertEquals("Introduction doesn't match.",elec.getIntroduction(),dets.getIntroduction());
+		assertEquals("Process doesn't match.",elec.getProcess(),dets.getProcess());
 	}
 
 	/**
@@ -171,6 +178,24 @@ public class ElectionTest
 		assertEquals("Inst Id doesn't match.",instId,elec.getInstitutionId());
 	}
 	
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getIntroduction()}.
+	 */
+	@Test
+	public final void testGetIntroduction() 
+	{
+		assertEquals("Introduction doesn't match.",introduction,elec.getIntroduction());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getProcess()}.
+	 */
+	@Test
+	public final void testGetProcess() 
+	{
+		assertEquals("Process doesn't match.",process,elec.getProcess());
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#setElectionId(java.lang.Long)}.
 	 */

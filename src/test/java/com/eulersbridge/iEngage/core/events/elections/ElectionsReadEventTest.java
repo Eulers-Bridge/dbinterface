@@ -23,7 +23,7 @@ public class ElectionsReadEventTest
     ElectionDetails electionDetails = null;
     ElectionDetails electionDetails1 = null;
     ElectionsReadEvent electionsReadEvent = null;
-    String title1="Student Union Election",title2="Union Election";
+    String title1="Student Union Election",title2="Union Election",intro1="intro1",intro2="intro2",process1="process1",process2="process2";
     Long start=123555l,end=123888l,startVoting=123666l,endVoting=123777l,institutionId=26l;
 
 	/**
@@ -33,8 +33,8 @@ public class ElectionsReadEventTest
 	public void setUp() throws Exception 
 	{
         elections = new ArrayList<>();
-        electionDetails = new ElectionDetails(new Long(1), title1, start, end, startVoting, endVoting, institutionId);
-        electionDetails1 = new ElectionDetails(new Long(2), title2, start, end, startVoting, endVoting, institutionId);
+        electionDetails = new ElectionDetails(new Long(1), title1, start, end, startVoting, endVoting, institutionId,intro1,process1);
+        electionDetails1 = new ElectionDetails(new Long(2), title2, start, end, startVoting, endVoting, institutionId,intro1,process1);
         elections.add(electionDetails);
         elections.add(electionDetails1);
         electionsReadEvent = new ElectionsReadEvent(institutionId, elections);

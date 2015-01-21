@@ -21,6 +21,8 @@ public class ElectionDetailsTest {
     Long startVoting;
     Long endVoting;
     Long institutionId;
+    String introduction;
+    String process;
 
     @Before
     public void setUp() throws Exception {
@@ -32,6 +34,8 @@ public class ElectionDetailsTest {
         startVoting = electionDetails.getStartVoting();
         endVoting = electionDetails.getEndVoting();
         institutionId = electionDetails.getInstitutionId();
+        introduction = electionDetails.getIntroduction();
+        process = electionDetails.getProcess();
     }
 
     @After
@@ -47,7 +51,7 @@ public class ElectionDetailsTest {
     @Test
     public void testElectionDetailParams() throws Exception
     {
-    	ElectionDetails electionDetails2=new ElectionDetails(electionId, title, start, end, startVoting, endVoting, institutionId);
+    	ElectionDetails electionDetails2=new ElectionDetails(electionId, title, start, end, startVoting, endVoting, institutionId, introduction, process);
         assertNotNull("electionDetail is null", electionDetails2);
     }
 
@@ -136,6 +140,30 @@ public class ElectionDetailsTest {
     }
 
     @Test
+    public void testSetIntroduction() throws Exception {
+        ElectionDetails electionDetails1 = new ElectionDetails();
+        electionDetails1.setIntroduction(introduction);
+        assertEquals("Introduction does not match", introduction, electionDetails1.getIntroduction());
+    }
+
+    @Test
+    public void testGetIntroduction() throws Exception {
+        assertEquals("Introduction does not match", introduction, electionDetails.getIntroduction());
+    }
+
+    @Test
+    public void testSetProcess() throws Exception {
+        ElectionDetails electionDetails1 = new ElectionDetails();
+        electionDetails1.setProcess(process);
+        assertEquals("Process does not match", process, electionDetails1.getProcess());
+    }
+
+    @Test
+    public void testGetProcess() throws Exception {
+        assertEquals("Process does not match", process, electionDetails.getProcess());
+    }
+
+    @Test
     public void testToString() throws Exception {
         assertNotNull("toSting is null", electionDetails.toString());
         ElectionDetails electionDetails1 = new ElectionDetails();
@@ -145,6 +173,8 @@ public class ElectionDetailsTest {
         electionDetails1.setEnd(end);
         electionDetails1.setStartVoting(startVoting);
         electionDetails1.setEndVoting(endVoting);
+        electionDetails1.setIntroduction(introduction);
+        electionDetails1.setProcess(process);
         assertEquals("toString does not match", electionDetails1.toString(), electionDetails.toString());
     }
 
@@ -170,12 +200,28 @@ public class ElectionDetailsTest {
 		electionTest.setElectionId(null);
 		assertEquals(electionDetails, electionTest);
 		assertEquals(electionTest, electionDetails);
+
 		electionTest.setTitle("Something else");
 		assertNotEquals(electionDetails, electionTest);
 		electionTest.setTitle(null);
 		assertNotEquals(electionDetails, electionTest);
 		assertNotEquals(electionTest, electionDetails);
 		electionTest.setTitle(electionDetails.getTitle());
+
+		electionTest.setIntroduction("Something else");
+		assertNotEquals(electionDetails, electionTest);
+		electionTest.setIntroduction(null);
+		assertNotEquals(electionDetails, electionTest);
+		assertNotEquals(electionTest, electionDetails);
+		electionTest.setIntroduction(electionDetails.getIntroduction());
+
+		electionTest.setProcess("Something else");
+		assertNotEquals(electionDetails, electionTest);
+		electionTest.setProcess(null);
+		assertNotEquals(electionDetails, electionTest);
+		assertNotEquals(electionTest, electionDetails);
+		electionTest.setProcess(electionDetails.getProcess());
+
 		electionTest.setStart(54l);
 		ElectionDetails election=electionDetails;
 		assertNotEquals(election, electionTest);
@@ -244,10 +290,21 @@ public class ElectionDetailsTest {
 		assertNotEquals(election.hashCode(), electionTest.hashCode());
 		assertNotEquals(electionTest.hashCode(), election.hashCode());
 		electionTest.setInstitutionId(election.getInstitutionId());
+
 		electionTest.setTitle(null);
 		assertNotEquals(election.hashCode(), electionTest.hashCode());
 		assertNotEquals(electionTest.hashCode(), election.hashCode());
 		electionTest.setTitle(election.getTitle());
+
+		electionTest.setIntroduction(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setIntroduction(election.getIntroduction());
+
+		electionTest.setProcess(null);
+		assertNotEquals(election.hashCode(), electionTest.hashCode());
+		assertNotEquals(electionTest.hashCode(), election.hashCode());
+		electionTest.setProcess(election.getProcess());
 	}
 
 

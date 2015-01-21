@@ -261,15 +261,15 @@ public class DatabaseDataFixture
 	{
 		Long nodeId=(long)1;
 		Institution inst=populateInstUniMelb();
-		return populateElection(nodeId, "This election", 123456l, 123756l, 123656l, 123706l, inst);
+		return populateElection(nodeId, "This election", 123456l, 123756l, 123656l, 123706l, inst,"introduction 1","process 1");
 	}
 	public static Election populateElection2()
 	{
 		Long nodeId=(long)2;
 		Institution inst=populateInstUniMelb();
-		return populateElection(nodeId, "That election", 123555l, 123777l, 123555l, 123666l, inst);
+		return populateElection(nodeId, "That election", 123555l, 123777l, 123555l, 123666l, inst,"introduction 2","process 2");
 	}
-	public static Election populateElection(Long id, String title, Long starts, Long ends, Long voteStarts, Long voteEnds, Institution inst)
+	public static Election populateElection(Long id, String title, Long starts, Long ends, Long voteStarts, Long voteEnds, Institution inst, String introduction, String process)
 	{
 		Election election=new Election();
 		election.setNodeId(id);
@@ -279,6 +279,8 @@ public class DatabaseDataFixture
 		election.setEnd(ends);
 		election.setVotingStart(voteStarts);
 		election.setVotingEnd(voteEnds);
+		election.setIntroduction(introduction);
+		election.setProcess(process);
 		return election;
 	}
 	public static HashMap<Long,Election> populateElections()
@@ -470,7 +472,6 @@ public class DatabaseDataFixture
 	
 	public static List<PollResult> populatePollResultDetails1()
 	{
-		Long pollId=1l;
 		ArrayList<PollResult> results=new ArrayList<PollResult>();
 		results.add(new PollResult(0, 165));
 		results.add(new PollResult(1, 95));
