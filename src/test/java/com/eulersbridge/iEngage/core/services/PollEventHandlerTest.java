@@ -453,4 +453,40 @@ public final void testReadPollResult()
 	assertTrue(evtData.isEntityFound());
 	assertEquals(((PollResultDetails)evtData.getDetails()).getAnswers(),pollResults);
 }
+
+@Test
+public final void testReadPollResultNoPoll()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("ReadingPollResult()");
+	Long nodeId=1l;
+	Poll testPoll=null;
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	ReadPollResultEvent readPollResultEvt = new ReadPollResultEvent(nodeId);
+	ReadEvent evtData = service.readPollResult(readPollResultEvt);
+	assertEquals(evtData.getNodeId(),nodeId);
+	assertFalse(evtData.isEntityFound());
+	assertNull(((PollResultDetails)evtData.getDetails()));
+}
+
+@Test
+public final void testReadPollResultNoResults()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("ReadingPollResult()");
+	Long nodeId=1l;
+	List<PollResult> pollResults=null;
+	Poll testPoll=DatabaseDataFixture.populatePoll1();
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(pollRepository.getPollResults(any(Long.class))).thenReturn(pollResults);
+	ReadPollResultEvent readPollResultEvt = new ReadPollResultEvent(nodeId);
+	ReadEvent evtData = service.readPollResult(readPollResultEvt);
+	assertEquals(evtData.getNodeId(),nodeId);
+	assertFalse(evtData.isEntityFound());
+	assertNull(((PollResultDetails)evtData.getDetails()));
+}
+
+@Test
+public final void testFindPolls()
+{
+	
+}
 }

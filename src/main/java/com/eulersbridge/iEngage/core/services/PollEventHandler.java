@@ -211,23 +211,30 @@ public class PollEventHandler implements PollService
 		if (poll != null)
 		{
 			List<PollResult> results=pollRepository.getPollResults(pollId);
-			String answers[]=poll.getAnswers().split(",");
-			int numAnswers=answers.length;
-			ArrayList <PollResult> resultDetails=new ArrayList<PollResult>();
-			for (int i=0;i<numAnswers;i++)
+			if (results!=null)
 			{
-				PollResult emptyResult=new PollResult(i,0);
-				resultDetails.add(emptyResult);
+				String answers[]=poll.getAnswers().split(",");
+				int numAnswers=answers.length;
+				ArrayList <PollResult> resultDetails=new ArrayList<PollResult>();
+				for (int i=0;i<numAnswers;i++)
+				{
+					PollResult emptyResult=new PollResult(i,0);
+					resultDetails.add(emptyResult);
+				}
+				Iterator <PollResult> iter=results.iterator();
+				while (iter.hasNext())
+				{
+					PollResult data=iter.next();
+					resultDetails.set(data.getAnswer(), data);
+				}
+				
+				PollResultDetails dets=new PollResultDetails(pollId, resultDetails);
+				pollResultReadEvent = new PollResultReadEvent(pollId,dets);
 			}
-			Iterator <PollResult> iter=results.iterator();
-			while (iter.hasNext())
+			else
 			{
-				PollResult data=iter.next();
-				resultDetails.set(data.getAnswer(), data);
+				pollResultReadEvent = PollResultReadEvent.notFound(readPollResultEvent.getNodeId());
 			}
-			
-			PollResultDetails dets=new PollResultDetails(pollId, resultDetails);
-			pollResultReadEvent = new PollResultReadEvent(pollId,dets);
 		}
 		else
 		{
