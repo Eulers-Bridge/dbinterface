@@ -5,6 +5,8 @@ package com.eulersbridge.iEngage.database.domain;
 
 import static org.junit.Assert.*;
 
+import java.util.Calendar;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -144,8 +146,8 @@ public class PollAnswerTest
 	public final void testSetTimeStamp()
 	{
 		Long timestamp=answer.getTimeStamp();
-		timestamp++;
-		assertNotEquals(timestamp,answer.getTimeStamp());
+		assertNull(answer.getTimeStamp());
+		timestamp=Calendar.getInstance().getTimeInMillis();
 		answer.setTimeStamp(timestamp);
 		assertEquals(timestamp, answer.getTimeStamp());
 	}
@@ -230,16 +232,16 @@ public class PollAnswerTest
 		pollAnswerTest.setNodeId(null);
 		checkHashCode(answer,pollAnswerTest);
 		answer.setNodeId(null);
-		pollAnswerTest.setUser(null);;
+		pollAnswerTest.setUser(null);
 		checkHashCode(answer,pollAnswerTest);
 		pollAnswerTest.setUser(answer.getUser());
 		pollAnswerTest.setPoll(null);
 		checkHashCode(answer,pollAnswerTest);
 		pollAnswerTest.setPoll(answer.getPoll());
-		pollAnswerTest.setAnswer(null);;
+		pollAnswerTest.setAnswer(null);
 		checkHashCode(answer,pollAnswerTest);
 		pollAnswerTest.setAnswer(answer.getAnswer());
-		pollAnswerTest.setTimeStamp(null);;
+		pollAnswerTest.setTimeStamp(Calendar.getInstance().getTimeInMillis());
 		checkHashCode(answer,pollAnswerTest);
 		pollAnswerTest.setTimeStamp(answer.getTimeStamp());
 	}
@@ -267,9 +269,9 @@ public class PollAnswerTest
 		assertEquals(answer, pollAnswerTest);
 		assertEquals(pollAnswerTest, answer);
 		pollAnswerTest.setTimeStamp(4321l);
-		assertNotEquals(answer, pollAnswerTest);
-		pollAnswerTest.setTimeStamp(null);
 		checkNotEquals(answer, pollAnswerTest);
+		pollAnswerTest.setTimeStamp(null);
+		assertEquals(answer, pollAnswerTest);
 		pollAnswerTest.setTimeStamp(answer.getTimeStamp());
 		
 		pollAnswerTest.setUser(new Owner(DatabaseDataFixture.populateUserGnewitt2().getNodeId()));
