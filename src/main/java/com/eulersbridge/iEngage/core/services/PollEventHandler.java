@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -177,7 +178,7 @@ public class PollEventHandler implements PollService
 	    		answerCreatedEvent=PollAnswerCreatedEvent.pollNotFound(answerDetails.getPollId());
 	    	else
 	    	{
-	    		pollAnswer.setAnswerer(owner);
+	    		pollAnswer.setUser(owner);
 	    		pollAnswer.setPoll(poll);
 	    		Integer answerIndex=pollAnswer.getAnswer();
 	    		String answers=poll.getAnswers();
@@ -187,8 +188,12 @@ public class PollEventHandler implements PollService
 	    			answerCreatedEvent=PollAnswerCreatedEvent.badAnswer(answerDetails.getAnswerIndex());
 	    		else
 	    		{
-		    		PollAnswer result = answerRepository.save(pollAnswer);
-		        	answerCreatedEvent = new PollAnswerCreatedEvent( result.toPollAnswerDetails());
+	    			if (LOG.isDebugEnabled()) LOG.debug("pollAnswer - "+pollAnswer);
+	    			if (LOG.isDebugEnabled()) LOG.debug("userId - "+answerDetails.getAnswererId()+" pollId - "+ answerDetails.getPollId()+" answer Index - "+ answerDetails.getAnswerIndex());
+//	    			PollAnswer result = answerRepository.save(pollAnswer);
+		    		PollAnswer result = pollRepository.addPollAnswer(answerDetails.getAnswererId(), answerDetails.getPollId(), answerDetails.getAnswerIndex());
+		        	if (LOG.isDebugEnabled()) LOG.debug("result - "+result);
+		    		answerCreatedEvent = new PollAnswerCreatedEvent( result.toPollAnswerDetails());
 	    		}
 	    	}
     	}
@@ -205,12 +210,24 @@ public class PollEventHandler implements PollService
 		ReadEvent pollResultReadEvent=null;
 		if (poll != null)
 		{
-//			pollRepository.getPollResults(pollId);
+			List<PollResult> results=pollRepository.getPollResults(pollId);
+			String answers[]=poll.getAnswers().split(",");
+			int numAnswers=answers.length;
+			ArrayList <PollResult> resultDetails=new ArrayList<PollResult>();
+			for (int i=0;i<numAnswers;i++)
+			{
+				PollResult emptyResult=new PollResult(i,0);
+				resultDetails.add(emptyResult);
+			}
+			Iterator <PollResult> iter=results.iterator();
+			while (iter.hasNext())
+			{
+				PollResult data=iter.next();
+				resultDetails.set(data.getAnswer(), data);
+			}
 			
-			
-			
-//			pollResultReadEvent = new ReadPollResultEvent(readPollResultEvent.getNodeId(),
-//					poll.toPollDetails());
+			PollResultDetails dets=new PollResultDetails(pollId, resultDetails);
+			pollResultReadEvent = new PollResultReadEvent(pollId,dets);
 		}
 		else
 		{

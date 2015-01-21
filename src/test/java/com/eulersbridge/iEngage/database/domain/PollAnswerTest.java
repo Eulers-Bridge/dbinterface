@@ -49,7 +49,7 @@ public class PollAnswerTest
 		Integer answerIndex=3;
 		answer=new PollAnswer(owner,poll,answerIndex);
 		assertNotNull("Not yet implemented",answer);
-		assertEquals(answer.getAnswerer(),owner);
+		assertEquals(answer.getUser(),owner);
 		assertEquals(answer.getPoll(),poll);
 		assertEquals(answer.getAnswer(),answerIndex);
 	}
@@ -80,28 +80,28 @@ public class PollAnswerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollAnswer#getAnswerer()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollAnswer#getUser()}.
 	 */
 	@Test
 	public final void testGetAnswerer()
 	{
 		PollAnswer answer2=DatabaseDataFixture.populatePollAnswer1();
-		assertEquals(answer.getAnswerer(),answer2.getAnswerer());
+		assertEquals(answer.getUser(),answer2.getUser());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollAnswer#setAnswerer(com.eulersbridge.iEngage.database.domain.User)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.PollAnswer#setUser(com.eulersbridge.iEngage.database.domain.User)}.
 	 */
 	@Test
 	public final void testSetAnswerer()
 	{
 		PollAnswer answer2=DatabaseDataFixture.populatePollAnswer1();
-		assertEquals(answer.getAnswerer(),answer2.getAnswerer());
+		assertEquals(answer.getUser(),answer2.getUser());
 		User answerer=DatabaseDataFixture.populateUserGnewitt2();
 		Owner owner=new Owner(answerer.getNodeId());
-		assertNotEquals(answerer,answer.getAnswerer());
-		answer.setAnswerer(owner);
-		assertEquals(owner, answer.getAnswerer());
+		assertNotEquals(answerer,answer.getUser());
+		answer.setUser(owner);
+		assertEquals(owner, answer.getUser());
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class PollAnswerTest
 	{
 		PollAnswerDetails dets=answer.toPollAnswerDetails();
 		assertEquals(answer.getAnswer(),dets.getAnswerIndex());
-		assertEquals(answer.getAnswerer().getNodeId(),dets.getAnswererId());
+		assertEquals(answer.getUser().getNodeId(),dets.getAnswererId());
 		assertEquals(answer.getPoll().getNodeId(),dets.getPollId());
 		assertEquals(answer.getNodeId(),dets.getNodeId());
 		assertEquals(answer.getTimeStamp(),dets.getTimeStamp());
@@ -191,7 +191,7 @@ public class PollAnswerTest
 	{
 		PollAnswer answer2=PollAnswer.fromPollAnswerDetails(answer.toPollAnswerDetails());
 		assertEquals(answer.getAnswer(),answer2.getAnswer());
-		assertEquals(answer.getAnswerer().getNodeId(),answer2.getAnswerer().getNodeId());
+		assertEquals(answer.getUser().getNodeId(),answer2.getUser().getNodeId());
 		assertEquals(answer.getPoll().getNodeId(),answer2.getPoll().getNodeId());
 		assertEquals(answer.getNodeId(),answer2.getNodeId());
 		assertEquals(answer.getTimeStamp(),answer2.getTimeStamp());
@@ -230,9 +230,9 @@ public class PollAnswerTest
 		pollAnswerTest.setNodeId(null);
 		checkHashCode(answer,pollAnswerTest);
 		answer.setNodeId(null);
-		pollAnswerTest.setAnswerer(null);;
+		pollAnswerTest.setUser(null);;
 		checkHashCode(answer,pollAnswerTest);
-		pollAnswerTest.setAnswerer(answer.getAnswerer());
+		pollAnswerTest.setUser(answer.getUser());
 		pollAnswerTest.setPoll(null);
 		checkHashCode(answer,pollAnswerTest);
 		pollAnswerTest.setPoll(answer.getPoll());
@@ -272,11 +272,11 @@ public class PollAnswerTest
 		checkNotEquals(answer, pollAnswerTest);
 		pollAnswerTest.setTimeStamp(answer.getTimeStamp());
 		
-		pollAnswerTest.setAnswerer(new Owner(DatabaseDataFixture.populateUserGnewitt2().getNodeId()));
+		pollAnswerTest.setUser(new Owner(DatabaseDataFixture.populateUserGnewitt2().getNodeId()));
 		assertNotEquals(answer, pollAnswerTest);
-		pollAnswerTest.setAnswerer(null);
+		pollAnswerTest.setUser(null);
 		checkNotEquals(pollAnswerTest, answer);
-		pollAnswerTest.setAnswerer(answer.getAnswerer());
+		pollAnswerTest.setUser(answer.getUser());
 		
 		pollAnswerTest.setPoll(DatabaseDataFixture.populatePoll2());
 		assertNotEquals(answer, pollAnswerTest);

@@ -2,12 +2,12 @@ package com.eulersbridge.iEngage.database.domain.Fixture;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
-import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
+import com.eulersbridge.iEngage.core.events.polls.PollResult;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
@@ -21,6 +21,7 @@ import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
+import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
@@ -449,7 +450,7 @@ public class DatabaseDataFixture
 		User answerer=populateUserGnewitt();
 		Poll poll=populatePoll1();
 		Long timestamp=Calendar.getInstance().getTimeInMillis();
-		return populatePollAnswer(nodeId,poll,new Owner(answerer.getNodeId()),answer,timestamp);
+		return populatePollAnswer(nodeId,poll,answerer,answer,timestamp);
 	}
 	public static PollAnswer populatePollAnswer2()
 	{
@@ -458,31 +459,56 @@ public class DatabaseDataFixture
 		User answerer=populateUserGnewitt();
 		Poll poll=populatePoll2();
 		Long timestamp=Calendar.getInstance().getTimeInMillis();
-		return populatePollAnswer(nodeId,poll,new Owner(answerer.getNodeId()),answer,timestamp);
+		return populatePollAnswer(nodeId,poll,answerer,answer,timestamp);
 	}
-	public static PollAnswer populatePollAnswer(Long id, Poll poll, Owner answerer, Integer answer, Long timeStamp)
+	public static PollAnswer populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp)
 	{
-		PollAnswer fq=new PollAnswer(answerer,poll,answer);
+		PollAnswer fq=new PollAnswer(new Owner(answerer.getNodeId()),poll,answer);
 		fq.setNodeId(id);
 		return fq;
 	}
 	
-	public static PollResultDetails populatePollResultDetails1()
+	public static List<PollResult> populatePollResultDetails1()
 	{
 		Long pollId=1l;
-		ArrayList<Integer> results=new ArrayList<Integer>();
-		results.add(0, 165);
-		results.add(1, 95);
-		results.add(2, 145);
-		results.add(3, 115);
-		results.add(4, 15);
-		return populatePollResultDetails(pollId,results);
+		ArrayList<PollResult> results=new ArrayList<PollResult>();
+		results.add(new PollResult(0, 165));
+		results.add(new PollResult(1, 95));
+		results.add(new PollResult(2, 145));
+		results.add(new PollResult(3, 115));
+		results.add(new PollResult(4, 15));
+		return populatePollResultDetails(results);
 	}
-	public static PollResultDetails populatePollResultDetails(Long pollId,Collection<Integer> results)
+	public static List<PollResult> populatePollResultDetails(List<PollResult> results)
 	{
-		PollResultDetails dets=new PollResultDetails(pollId,results);
-		return dets;
+		return results;
 	}
+
+	public static Position populatePosition1()
+	{
+		Long nodeId=9l;
+		String position="Shit kicker";
+		Election election=populateElection1();
+		String description="This person does the shitkicking.";
+		return populatePosition(nodeId,position,description,election);
+	}
+	public static Position populatePosition2()
+	{
+		Long nodeId=19l;
+		String position="Piss taker";
+		Election election=populateElection1();
+		String description="This person does the pisstaking.";
+		return populatePosition(nodeId,position,description,election);
+	}
+    public static Position populatePosition(Long id, String name, String description, Election election)
+    {
+    	Position position = new Position();
+        position.setPositionId(id);
+        position.setName(name);
+        position.setDescription(description);
+        position.setElection(election);
+        return position;
+    }
 
     public static Badge populateBadge(Long id, String name, boolean awarded, Long timestamp, Long xpValue)
     {

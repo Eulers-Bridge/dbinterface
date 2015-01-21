@@ -74,6 +74,27 @@ public class PollController
 		}
 	}
 
+	// Get
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POLL_LABEL
+			+ "/{pollId}/results")
+	public @ResponseBody ResponseEntity<PollResultDetails> getPollResults(@PathVariable Long pollId)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info(pollId + " attempting to get poll results. ");
+		ReadPollResultEvent readPollResultEvent = new ReadPollResultEvent(pollId);
+		ReadEvent pollResultReadEvent = pollService
+				.readPollResult(readPollResultEvent);
+		if (pollResultReadEvent.isEntityFound())
+		{
+			PollResultDetails poll = ((PollResultDetails) pollResultReadEvent.getDetails());
+			return new ResponseEntity<PollResultDetails>(poll, HttpStatus.OK);
+		}
+		else
+		{
+			return new ResponseEntity<PollResultDetails>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	/**
 	 * Is passed all the necessary data to read polls from the database. The
 	 * request must be a GET with the ownerId presented as the final portion of
@@ -216,42 +237,48 @@ public class PollController
 	}
 
 	// Answer Poll
-	@RequestMapping(method = RequestMethod.POST, value = ControllerConstants.POLL_LABEL+"/answer")
-	public @ResponseBody ResponseEntity<PollAnswer> answerPoll(@RequestBody PollAnswer pollAnswer)
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL+"/{pollId}/answer")
+	public @ResponseBody ResponseEntity<PollAnswer> answerPoll(@PathVariable Long pollId,@RequestBody PollAnswer pollAnswer)
 	{
-		if (LOG.isInfoEnabled()) LOG.info("attempting to answer poll " + pollAnswer);
-		CreatePollAnswerEvent createPollAnswerEvent = new CreatePollAnswerEvent(
-				pollAnswer.toPollAnswerDetails());
-		PollAnswerCreatedEvent pollAnswerCreatedEvent = pollService
-				.answerPoll(createPollAnswerEvent);
+		if (LOG.isInfoEnabled()) LOG.info("attempting to answer poll " + pollId+" answer - "+pollAnswer);
 		ResponseEntity<PollAnswer> response;
-		if (null == pollAnswerCreatedEvent)
-		{
-			response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
-		}
-		else if (!(pollAnswerCreatedEvent.isPollFound()))
-		{
-			response = new ResponseEntity<PollAnswer>(HttpStatus.NOT_FOUND);
-		}
-		else if (!(pollAnswerCreatedEvent.isAnswererFound()))
-		{
-			response = new ResponseEntity<PollAnswer>(HttpStatus.NOT_FOUND);
-		}
-		else if (!(pollAnswerCreatedEvent.isAnswerValid()))
-		{
-			response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
-		}
-		else if ((null == pollAnswerCreatedEvent.getDetails())
-				|| (null == pollAnswerCreatedEvent.getDetails().getNodeId()))
+		if ((null==pollAnswer)||(null==pollId)||(null==pollAnswer.getPollId())||(null==pollAnswer.getAnswererId()))
 		{
 			response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
 		}
 		else
 		{
-			PollAnswer result = PollAnswer.fromPollAnswerDetails((PollAnswerDetails) pollAnswerCreatedEvent
-					.getDetails());
-			if (LOG.isDebugEnabled()) LOG.debug("pollAnswer" + result.toString());
-			return new ResponseEntity<PollAnswer>(result, HttpStatus.CREATED);
+			CreatePollAnswerEvent createPollAnswerEvent = new CreatePollAnswerEvent(
+					pollAnswer.toPollAnswerDetails());
+			PollAnswerCreatedEvent pollAnswerCreatedEvent = pollService.answerPoll(createPollAnswerEvent);
+			if (null == pollAnswerCreatedEvent)
+			{
+				response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
+			}
+			else if (!(pollAnswerCreatedEvent.isPollFound()))
+			{
+				response = new ResponseEntity<PollAnswer>(HttpStatus.NOT_FOUND);
+			}
+			else if (!(pollAnswerCreatedEvent.isAnswererFound()))
+			{
+				response = new ResponseEntity<PollAnswer>(HttpStatus.NOT_FOUND);
+			}
+			else if (!(pollAnswerCreatedEvent.isAnswerValid()))
+			{
+				response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
+			}
+			else if ((null == pollAnswerCreatedEvent.getDetails())
+					|| (null == pollAnswerCreatedEvent.getDetails().getNodeId()))
+			{
+				response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
+			}
+			else
+			{
+				PollAnswer result = PollAnswer.fromPollAnswerDetails((PollAnswerDetails) pollAnswerCreatedEvent
+						.getDetails());
+				if (LOG.isDebugEnabled()) LOG.debug(result.toString());
+				return new ResponseEntity<PollAnswer>(result, HttpStatus.CREATED);
+			}
 		}
 		return response;
 	}

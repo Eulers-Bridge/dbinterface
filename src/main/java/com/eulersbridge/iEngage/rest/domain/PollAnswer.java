@@ -143,4 +143,15 @@ public class PollAnswer extends ResourceSupport
 		this.timeStamp = timeStamp;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "PollAnswer [nodeId=" + nodeId + ", answerIndex=" + answerIndex
+				+ ", timeStamp=" + timeStamp + ", answererId=" + answererId
+				+ ", pollId=" + pollId + "]";
+	}
+
 }

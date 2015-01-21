@@ -1,11 +1,11 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import java.util.Calendar;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
+import org.springframework.data.neo4j.annotation.StartNode;
 
 import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 
@@ -13,8 +13,8 @@ import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
 public class PollAnswer 
 {
 	@GraphId private Long id;
-	private Owner answerer;
-	private Poll poll;
+	@StartNode private Owner user;
+	@EndNode private Poll poll;
 	Integer answerIndex;
 	private Long timeStamp;
 	
@@ -27,10 +27,9 @@ public class PollAnswer
 	
 	public PollAnswer(Owner answerer, Poll poll, Integer answer)
 	{
-		this.answerer=answerer;
+		this.user=answerer;
 		this.poll=poll;
 		this.answerIndex=answer;
-		timeStamp=Calendar.getInstance().getTimeInMillis();
 	}
 
 	/**
@@ -49,17 +48,19 @@ public class PollAnswer
 	}
 
 	/**
-	 * @return the answerer
+	 * @return the user
 	 */
-	public Owner getAnswerer() {
-		return answerer;
+	public Owner getUser()
+	{
+		return user;
 	}
 
 	/**
-	 * @param answerer the answerer to set
+	 * @param user the user to set
 	 */
-	public void setAnswerer(Owner answerer) {
-		this.answerer = answerer;
+	public void setUser(Owner answerer)
+	{
+		this.user = answerer;
 	}
 
 	/**
@@ -106,7 +107,10 @@ public class PollAnswer
 	
 	public PollAnswerDetails toPollAnswerDetails()
 	{
-		PollAnswerDetails dets=new PollAnswerDetails(id, answerer.getNodeId(), poll.getNodeId(), answerIndex, timeStamp);
+		Long userId=null,pollId=null;
+		if (user!=null) userId=user.getNodeId();
+		if (poll!=null) pollId=poll.getNodeId();
+		PollAnswerDetails dets=new PollAnswerDetails(id, userId, pollId, answerIndex, timeStamp);
 		return dets;
 	}
 	
@@ -114,9 +118,9 @@ public class PollAnswer
 	{
 		PollAnswer answer=new PollAnswer();
 		answer.setAnswer(dets.getAnswerIndex());
-		Owner answerer=new Owner();
+		Owner answerer = new Owner();
 		answerer.setNodeId(dets.getAnswererId());
-		answer.setAnswerer(answerer);
+		answer.setUser(answerer);
 		Poll poll=new Poll();
 		poll.setNodeId(dets.getPollId());
 		answer.setPoll(poll);
@@ -128,7 +132,7 @@ public class PollAnswer
 	@Override
 	public String toString()
 	{
-		return "id = "+id+" answerer = "+answerer+" poll = "+poll+" timeStamp = "+timeStamp+" answerIndex = "+answerIndex;
+		return "id = "+id+" user = "+user+" poll = "+poll+" timeStamp = "+timeStamp+" answerIndex = "+answerIndex;
 	}
 
 	/* (non-Javadoc)
@@ -146,7 +150,7 @@ public class PollAnswer
 		{
 			result = prime * result + ((answerIndex == null) ? 0 : answerIndex.hashCode());
 			result = prime * result
-					+ ((answerer == null) ? 0 : answerer.hashCode());
+					+ ((user == null) ? 0 : user.hashCode());
 			result = prime * result + ((poll == null) ? 0 : poll.hashCode());
 			result = prime * result
 					+ ((timeStamp == null) ? 0 : timeStamp.hashCode());
@@ -181,10 +185,10 @@ public class PollAnswer
 					return false;
 			} else if (!answerIndex.equals(other.answerIndex))
 				return false;
-			if (answerer == null) {
-				if (other.answerer != null)
+			if (user == null) {
+				if (other.user != null)
 					return false;
-			} else if (!answerer.equals(other.answerer))
+			} else if (!user.equals(other.user))
 				return false;
 			if (poll == null) {
 				if (other.poll != null)

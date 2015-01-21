@@ -3,7 +3,7 @@
  */
 package com.eulersbridge.iEngage.core.events.polls;
 
-import java.util.Collection;
+import java.util.List;
 
 import com.eulersbridge.iEngage.core.events.Details;
 
@@ -14,11 +14,11 @@ import com.eulersbridge.iEngage.core.events.Details;
 public class PollResultDetails extends Details
 {
 	Long pollId;
-	private Collection<Integer> answers;
+	private List<PollResult> answers;
 	
-	public PollResultDetails(Long pollId, Collection<Integer> results)
+	public PollResultDetails(Long pollId, List<PollResult> results)
 	{
-		this.pollId=pollId;
+		super(pollId);
 		this.answers=results;
 	}
 	/**
@@ -26,26 +26,26 @@ public class PollResultDetails extends Details
 	 */
 	public Long getPollId()
 	{
-		return pollId;
+		return getNodeId();
 	}
 	/**
 	 * @param pollId the pollId to set
 	 */
 	public void setPollId(Long pollId)
 	{
-		this.pollId = pollId;
+		setNodeId(pollId);
 	}
 	/**
 	 * @return the answers
 	 */
-	public Collection<Integer> getAnswers()
+	public List<PollResult> getAnswers()
 	{
 		return answers;
 	}
 	/**
 	 * @param answers the answers to set
 	 */
-	public void setAnswers(Collection<Integer> answers)
+	public void setAnswers(List<PollResult> answers)
 	{
 		this.answers = answers;
 	}
