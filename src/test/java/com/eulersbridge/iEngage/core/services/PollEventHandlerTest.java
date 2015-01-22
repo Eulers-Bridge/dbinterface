@@ -22,13 +22,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollEvent;
 import com.eulersbridge.iEngage.core.events.polls.DeletePollEvent;
@@ -46,9 +45,9 @@ import com.eulersbridge.iEngage.core.events.polls.ReadPollsEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
@@ -454,15 +453,41 @@ public final void testReadPollResult()
 {
 	if (LOG.isDebugEnabled()) LOG.debug("ReadingPollResult()");
 	Long nodeId=1l;
-	List<PollResult> pollResults=DatabaseDataFixture.populatePollResultDetails1();
+	Result<PollResultTemplate> pollResultTemplates=DatabaseDataFixture.populatePollResultDetails1();
 	Poll testPoll=DatabaseDataFixture.populatePoll1();
 	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
-	when(pollRepository.getPollResults(any(Long.class))).thenReturn(pollResults);
+	when(pollRepository.getPollResults(any(Long.class))).thenReturn(pollResultTemplates);
 	ReadPollResultEvent readPollResultEvt = new ReadPollResultEvent(nodeId);
 	ReadEvent evtData = service.readPollResult(readPollResultEvt);
 	assertEquals(evtData.getNodeId(),nodeId);
 	assertTrue(evtData.isEntityFound());
-	assertEquals(((PollResultDetails)evtData.getDetails()).getAnswers(),pollResults);
+	
+	String answers[]=testPoll.getAnswers().split(",");
+	int numAnswers=answers.length;
+
+	List<PollResult> prs=PollResultDetails.toPollResultList(pollResultTemplates.iterator(),numAnswers);
+	assertEquals(prs,((PollResultDetails)evtData.getDetails()).getAnswers());
+}
+
+@Test
+public final void testReadPollResult2()
+{
+	if (LOG.isDebugEnabled()) LOG.debug("ReadingPollResult()");
+	Long nodeId=1l;
+	Result<PollResultTemplate> pollResultTemplates=DatabaseDataFixture.populatePollResultDetails2();
+	Poll testPoll=DatabaseDataFixture.populatePoll1();
+	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(pollRepository.getPollResults(any(Long.class))).thenReturn(pollResultTemplates);
+	ReadPollResultEvent readPollResultEvt = new ReadPollResultEvent(nodeId);
+	ReadEvent evtData = service.readPollResult(readPollResultEvt);
+	assertEquals(evtData.getNodeId(),nodeId);
+	assertTrue(evtData.isEntityFound());
+	
+	String answers[]=testPoll.getAnswers().split(",");
+	int numAnswers=answers.length;
+
+	List<PollResult> prs=PollResultDetails.toPollResultList(pollResultTemplates.iterator(),numAnswers);
+	assertEquals(prs,((PollResultDetails)evtData.getDetails()).getAnswers());
 }
 
 @Test
@@ -484,10 +509,10 @@ public final void testReadPollResultNoResults()
 {
 	if (LOG.isDebugEnabled()) LOG.debug("ReadingPollResult()");
 	Long nodeId=1l;
-	List<PollResult> pollResults=null;
+	Result<PollResultTemplate> pollResultTemplates=null;
 	Poll testPoll=DatabaseDataFixture.populatePoll1();
 	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
-	when(pollRepository.getPollResults(any(Long.class))).thenReturn(pollResults);
+	when(pollRepository.getPollResults(any(Long.class))).thenReturn(pollResultTemplates);
 	ReadPollResultEvent readPollResultEvt = new ReadPollResultEvent(nodeId);
 	ReadEvent evtData = service.readPollResult(readPollResultEvt);
 	assertEquals(evtData.getNodeId(),nodeId);

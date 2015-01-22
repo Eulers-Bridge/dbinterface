@@ -2,7 +2,6 @@ package com.eulersbridge.iEngage.core.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -11,6 +10,7 @@ import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.neo4j.conversion.Result;
 
 /**
  * @author Yikai Gong
@@ -210,34 +211,28 @@ public class PollEventHandler implements PollService
 		ReadEvent pollResultReadEvent=null;
 		if (poll != null)
 		{
-			List<PollResult> results=pollRepository.getPollResults(pollId);
+			if (LOG.isDebugEnabled()) LOG.debug("poll - "+poll);
+			Result<PollResultTemplate> results=pollRepository.getPollResults(pollId);
 			if (results!=null)
 			{
+				if (LOG.isDebugEnabled()) LOG.debug("Got results");
 				String answers[]=poll.getAnswers().split(",");
 				int numAnswers=answers.length;
 				ArrayList <PollResult> resultDetails=new ArrayList<PollResult>();
-				for (int i=0;i<numAnswers;i++)
-				{
-					PollResult emptyResult=new PollResult(i,0);
-					resultDetails.add(emptyResult);
-				}
-				Iterator <PollResult> iter=results.iterator();
-				while (iter.hasNext())
-				{
-					PollResult data=iter.next();
-					resultDetails.set(data.getAnswer(), data);
-				}
 				
+				resultDetails=PollResultDetails.toPollResultList(results.iterator(),numAnswers);
 				PollResultDetails dets=new PollResultDetails(pollId, resultDetails);
 				pollResultReadEvent = new PollResultReadEvent(pollId,dets);
 			}
 			else
 			{
+				if (LOG.isDebugEnabled()) LOG.debug("No results");
 				pollResultReadEvent = PollResultReadEvent.notFound(readPollResultEvent.getNodeId());
 			}
 		}
 		else
 		{
+			if (LOG.isDebugEnabled()) LOG.debug("No poll");
 			pollResultReadEvent = PollResultReadEvent.notFound(readPollResultEvent.getNodeId());
 		}
 		return pollResultReadEvent;

@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,6 +31,7 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,6 +57,8 @@ import com.eulersbridge.iEngage.core.events.polls.ReadPollsEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
 import com.eulersbridge.iEngage.core.services.PollService;
+import com.eulersbridge.iEngage.database.domain.Poll;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 
@@ -148,8 +152,14 @@ public class PollControllerTest
 	public final void testGetPollResults() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingGetPollResults()");
-		Long pollId=34l;
-		PollResultDetails dets=new PollResultDetails(pollId, DatabaseDataFixture.populatePollResultDetails1());
+		Poll poll=DatabaseDataFixture.populatePoll1();
+		Long pollId=poll.getNodeId();
+		String answers[]=poll.getAnswers().split(",");
+		int numAnswers=answers.length;
+
+		Result<PollResultTemplate> prd = DatabaseDataFixture.populatePollResultDetails1();
+		List<com.eulersbridge.iEngage.core.events.polls.PollResult> other=PollResultDetails.toPollResultList(prd.iterator(), numAnswers);
+		PollResultDetails dets=new PollResultDetails(pollId,other );
 		PollResultReadEvent testData=new PollResultReadEvent(dets.getPollId(),dets);
 		when (pollService.readPollResult(any(ReadPollResultEvent.class))).thenReturn(testData);
 		if (LOG.isDebugEnabled()) LOG.debug("pollId = "+dets.getNodeId());

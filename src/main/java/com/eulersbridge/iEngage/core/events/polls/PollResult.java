@@ -89,7 +89,7 @@ public class PollResult
 	@Override
 	public String toString()
 	{
-		return "PollResult [answer=" + answer + ", count=" + count + "]";
+		return "PollResultTemplate [answer=" + answer + ", count=" + count + "]";
 	}
 	
 	

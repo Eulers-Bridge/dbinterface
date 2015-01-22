@@ -3,9 +3,12 @@
  */
 package com.eulersbridge.iEngage.core.events.polls;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 
 /**
  * @author Greg Newitt
@@ -48,6 +51,24 @@ public class PollResultDetails extends Details
 	public void setAnswers(List<PollResult> answers)
 	{
 		this.answers = answers;
+	}
+	
+	static public ArrayList<PollResult> toPollResultList(Iterator<PollResultTemplate> iter,int numAnswers)
+	{
+		ArrayList<PollResult> al=new ArrayList<PollResult>();
+		for (int i=0;i<numAnswers;i++)
+		{
+			al.add(i, new PollResult(i,0));
+		}
+		while(iter.hasNext())
+		{
+			PollResultTemplate prt=iter.next();
+			Integer answer=prt.getAnswer();
+			Integer freq=prt.getFrequency();
+			PollResult elem=new PollResult(answer,freq);
+			al.set(answer,elem);
+		}
+		return al;
 	}
 
 }

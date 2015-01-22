@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 
-import com.eulersbridge.iEngage.core.events.polls.PollResult;
+import org.springframework.data.neo4j.conversion.Result;
+
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
@@ -21,11 +22,14 @@ import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
+import com.eulersbridge.iEngage.database.domain.PollResultImpl;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.repository.ResultImpl;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
@@ -470,17 +474,27 @@ public class DatabaseDataFixture
 		return fq;
 	}
 	
-	public static List<PollResult> populatePollResultDetails1()
+	public static Result<PollResultTemplate> populatePollResultDetails1()
 	{
-		ArrayList<PollResult> results=new ArrayList<PollResult>();
-		results.add(new PollResult(0, 165));
-		results.add(new PollResult(1, 95));
-		results.add(new PollResult(2, 145));
-		results.add(new PollResult(3, 115));
-		results.add(new PollResult(4, 15));
+		ArrayList<PollResultTemplate> prts=new ArrayList<PollResultTemplate>();
+		prts.add(0,new PollResultImpl(0,165));
+		prts.add(1,new PollResultImpl(1,95));
+		prts.add(2,new PollResultImpl(2,145));
+		prts.add(3,new PollResultImpl(3,115));
+		prts.add(4,new PollResultImpl(4,15));
+		ResultImpl<PollResultTemplate> results=new ResultImpl<PollResultTemplate>(prts);
 		return populatePollResultDetails(results);
 	}
-	public static List<PollResult> populatePollResultDetails(List<PollResult> results)
+	public static Result<PollResultTemplate> populatePollResultDetails2()
+	{	
+		LinkedList<PollResultTemplate> prts=new LinkedList<PollResultTemplate>();
+		prts.add(new PollResultImpl(0,165));
+		prts.add(new PollResultImpl(2,145));
+		prts.add(new PollResultImpl(3,115));
+		ResultImpl<PollResultTemplate> results=new ResultImpl<PollResultTemplate>(prts);
+		return populatePollResultDetails(results);
+	}
+	public static Result<PollResultTemplate> populatePollResultDetails(Result<PollResultTemplate> results)
 	{
 		return results;
 	}
