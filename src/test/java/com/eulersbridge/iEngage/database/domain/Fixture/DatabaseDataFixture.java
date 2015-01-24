@@ -518,7 +518,7 @@ public class DatabaseDataFixture
     public static Position populatePosition(Long id, String name, String description, Election election)
     {
     	Position position = new Position();
-        position.setPositionId(id);
+        position.setNodeId(id);
         position.setName(name);
         position.setDescription(description);
         position.setElection(election);
