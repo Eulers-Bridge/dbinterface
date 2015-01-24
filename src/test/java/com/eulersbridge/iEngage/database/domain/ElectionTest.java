@@ -46,7 +46,7 @@ public class ElectionTest {
 	@Test
 	public final void testElectionLongStringLongLongLongLong() 
 	{
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("electionTest not of Election class",electionTest.getClass(),Election.class);
 		assertEquals("",election.getNodeId(),electionTest.getNodeId());
 		assertEquals("",election.getTitle(),electionTest.getTitle());
@@ -63,7 +63,7 @@ public class ElectionTest {
 	@Test
 	public final void testGetStart() 
 	{
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getStart(),electionTest.getStart());
 	}
 
@@ -72,7 +72,7 @@ public class ElectionTest {
 	 */
 	@Test
 	public final void testGetEnd() {
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getEnd(),electionTest.getEnd());
 	}
 
@@ -81,7 +81,7 @@ public class ElectionTest {
 	 */
 	@Test
 	public final void testGetVotingStart() {
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getVotingStart(),electionTest.getVotingStart());
 	}
 
@@ -90,7 +90,7 @@ public class ElectionTest {
 	 */
 	@Test
 	public final void testGetTitle() {
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getTitle(),electionTest.getTitle());
 	}
 
@@ -99,7 +99,7 @@ public class ElectionTest {
 	 */
 	@Test
 	public final void testGetVotingEnd() {
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getVotingEnd(),electionTest.getVotingEnd());
 	}
 
@@ -109,7 +109,7 @@ public class ElectionTest {
 	@Test
 	public final void testGetNodeId() 
 	{
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getNodeId(),electionTest.getNodeId());
 	}
 
@@ -120,7 +120,7 @@ public class ElectionTest {
 	public final void testSetNodeId() 
 	{
 		Long nodeId=494l;
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getNodeId(),electionTest.getNodeId());
 		electionTest.setNodeId(nodeId);
 		assertEquals("",nodeId,electionTest.getNodeId());
@@ -133,7 +133,7 @@ public class ElectionTest {
 	public final void testSetStart() 
 	{
 		Long start=494l;
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getStart(),electionTest.getStart());
 		electionTest.setStart(start);
 		assertEquals("",start,electionTest.getStart());
@@ -146,7 +146,7 @@ public class ElectionTest {
 	public final void testSetEnd() 
 	{
 		Long end=494l;
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getEnd(),electionTest.getEnd());
 		electionTest.setEnd(end);
 		assertEquals("",end,electionTest.getEnd());
@@ -158,7 +158,7 @@ public class ElectionTest {
 	@Test
 	public final void testSetVotingStart() {
 		Long start=494l;
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getVotingStart(),electionTest.getVotingStart());
 		electionTest.setVotingStart(start);
 		assertEquals("",start,electionTest.getVotingStart());
@@ -170,7 +170,7 @@ public class ElectionTest {
 	@Test
 	public final void testSetVotingEnd() {
 		Long end=494l;
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getVotingEnd(),electionTest.getVotingEnd());
 		electionTest.setVotingEnd(end);
 		assertEquals("",end,electionTest.getVotingEnd());
@@ -183,10 +183,36 @@ public class ElectionTest {
 	public final void testSetTitle() 
 	{
 		String title="Whatever";
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getTitle(),electionTest.getTitle());
 		electionTest.setTitle(title);
 		assertEquals("",title,electionTest.getTitle());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Election#setIntroduction(java.lang.String)}.
+	 */
+	@Test
+	public final void testSetIntroduction() 
+	{
+		String introduction="Whatever";
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
+		assertEquals("",election.getIntroduction(),electionTest.getIntroduction());
+		electionTest.setIntroduction(introduction);
+		assertEquals("",introduction,electionTest.getIntroduction());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Election#setProcess(java.lang.String)}.
+	 */
+	@Test
+	public final void testSetProcess() 
+	{
+		String process="Whatever";
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
+		assertEquals("",election.getProcess(),electionTest.getProcess());
+		electionTest.setProcess(process);
+		assertEquals("",process,electionTest.getProcess());
 	}
 
 	/**
@@ -195,7 +221,7 @@ public class ElectionTest {
 	@Test
 	public final void testGetInstitution() 
 	{
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getInstitution(),electionTest.getInstitution());
 	}
 
@@ -206,7 +232,7 @@ public class ElectionTest {
 	public final void testSetInstitution() 
 	{
 		Institution inst=DatabaseDataFixture.populateInstMonashUni();
-		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution());
+		Election electionTest=new Election(election.getNodeId(),election.getTitle(),election.getStart(),election.getEnd(),election.getVotingStart(),election.getVotingEnd(),election.getInstitution(),election.getIntroduction(),election.getProcess());
 		assertEquals("",election.getInstitution(),electionTest.getInstitution());
 		electionTest.setInstitution(inst);
 		assertEquals("",inst,electionTest.getInstitution());

@@ -2,12 +2,13 @@ package com.eulersbridge.iEngage.database.domain.Fixture;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 
-import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
+import org.springframework.data.neo4j.conversion.Result;
+
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
@@ -21,10 +22,14 @@ import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
+import com.eulersbridge.iEngage.database.domain.PollResultImpl;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
+import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.repository.ResultImpl;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
@@ -260,15 +265,15 @@ public class DatabaseDataFixture
 	{
 		Long nodeId=(long)1;
 		Institution inst=populateInstUniMelb();
-		return populateElection(nodeId, "This election", 123456l, 123756l, 123656l, 123706l, inst);
+		return populateElection(nodeId, "This election", 123456l, 123756l, 123656l, 123706l, inst,"introduction 1","process 1");
 	}
 	public static Election populateElection2()
 	{
 		Long nodeId=(long)2;
 		Institution inst=populateInstUniMelb();
-		return populateElection(nodeId, "That election", 123555l, 123777l, 123555l, 123666l, inst);
+		return populateElection(nodeId, "That election", 123555l, 123777l, 123555l, 123666l, inst,"introduction 2","process 2");
 	}
-	public static Election populateElection(Long id, String title, Long starts, Long ends, Long voteStarts, Long voteEnds, Institution inst)
+	public static Election populateElection(Long id, String title, Long starts, Long ends, Long voteStarts, Long voteEnds, Institution inst, String introduction, String process)
 	{
 		Election election=new Election();
 		election.setNodeId(id);
@@ -278,6 +283,8 @@ public class DatabaseDataFixture
 		election.setEnd(ends);
 		election.setVotingStart(voteStarts);
 		election.setVotingEnd(voteEnds);
+		election.setIntroduction(introduction);
+		election.setProcess(process);
 		return election;
 	}
 	public static HashMap<Long,Election> populateElections()
@@ -449,7 +456,7 @@ public class DatabaseDataFixture
 		User answerer=populateUserGnewitt();
 		Poll poll=populatePoll1();
 		Long timestamp=Calendar.getInstance().getTimeInMillis();
-		return populatePollAnswer(nodeId,poll,new Owner(answerer.getNodeId()),answer,timestamp);
+		return populatePollAnswer(nodeId,poll,answerer,answer,timestamp);
 	}
 	public static PollAnswer populatePollAnswer2()
 	{
@@ -458,31 +465,65 @@ public class DatabaseDataFixture
 		User answerer=populateUserGnewitt();
 		Poll poll=populatePoll2();
 		Long timestamp=Calendar.getInstance().getTimeInMillis();
-		return populatePollAnswer(nodeId,poll,new Owner(answerer.getNodeId()),answer,timestamp);
+		return populatePollAnswer(nodeId,poll,answerer,answer,timestamp);
 	}
-	public static PollAnswer populatePollAnswer(Long id, Poll poll, Owner answerer, Integer answer, Long timeStamp)
+	public static PollAnswer populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp)
 	{
-		PollAnswer fq=new PollAnswer(answerer,poll,answer);
+		PollAnswer fq=new PollAnswer(new Owner(answerer.getNodeId()),poll,answer);
 		fq.setNodeId(id);
 		return fq;
 	}
 	
-	public static PollResultDetails populatePollResultDetails1()
+	public static Result<PollResultTemplate> populatePollResultDetails1()
 	{
-		Long pollId=1l;
-		ArrayList<Integer> results=new ArrayList<Integer>();
-		results.add(0, 165);
-		results.add(1, 95);
-		results.add(2, 145);
-		results.add(3, 115);
-		results.add(4, 15);
-		return populatePollResultDetails(pollId,results);
+		ArrayList<PollResultTemplate> prts=new ArrayList<PollResultTemplate>();
+		prts.add(0,new PollResultImpl(0,165));
+		prts.add(1,new PollResultImpl(1,95));
+		prts.add(2,new PollResultImpl(2,145));
+		prts.add(3,new PollResultImpl(3,115));
+		prts.add(4,new PollResultImpl(4,15));
+		ResultImpl<PollResultTemplate> results=new ResultImpl<PollResultTemplate>(prts);
+		return populatePollResultDetails(results);
 	}
-	public static PollResultDetails populatePollResultDetails(Long pollId,Collection<Integer> results)
+	public static Result<PollResultTemplate> populatePollResultDetails2()
+	{	
+		LinkedList<PollResultTemplate> prts=new LinkedList<PollResultTemplate>();
+		prts.add(new PollResultImpl(0,165));
+		prts.add(new PollResultImpl(2,145));
+		prts.add(new PollResultImpl(3,115));
+		ResultImpl<PollResultTemplate> results=new ResultImpl<PollResultTemplate>(prts);
+		return populatePollResultDetails(results);
+	}
+	public static Result<PollResultTemplate> populatePollResultDetails(Result<PollResultTemplate> results)
 	{
-		PollResultDetails dets=new PollResultDetails(pollId,results);
-		return dets;
+		return results;
 	}
+
+	public static Position populatePosition1()
+	{
+		Long nodeId=9l;
+		String position="Shit kicker";
+		Election election=populateElection1();
+		String description="This person does the shitkicking.";
+		return populatePosition(nodeId,position,description,election);
+	}
+	public static Position populatePosition2()
+	{
+		Long nodeId=19l;
+		String position="Piss taker";
+		Election election=populateElection1();
+		String description="This person does the pisstaking.";
+		return populatePosition(nodeId,position,description,election);
+	}
+    public static Position populatePosition(Long id, String name, String description, Election election)
+    {
+    	Position position = new Position();
+        position.setPositionId(id);
+        position.setName(name);
+        position.setDescription(description);
+        position.setElection(election);
+        return position;
+    }
 
     public static Badge populateBadge(Long id, String name, boolean awarded, Long timestamp, Long xpValue)
     {

@@ -20,6 +20,8 @@ public class Election
 	private Long votingEnd;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_ELECTION_LABEL, direction=Direction.OUTGOING)
 	private Institution institution;
+	private String introduction;
+	private String process;
 
     private static Logger LOG = LoggerFactory.getLogger(Election.class);
 
@@ -29,9 +31,9 @@ public class Election
 	}
 
 	public Election(Long nodeId, String title, Long start, Long end, Long votingStart,
-                    Long votingEnd, Institution inst)
+                    Long votingEnd, Institution inst, String introduction, String process)
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+nodeId+','+start+','+end+','+votingStart+','+votingEnd+')');
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+nodeId+','+start+','+end+','+votingStart+','+votingEnd+','+introduction+','+process+')');
 		this.nodeId = nodeId;
         this.title = title;
 		this.start = start;
@@ -39,6 +41,8 @@ public class Election
 		this.votingStart = votingStart;
 		this.votingEnd = votingEnd;
 		this.institution = inst;
+		this.introduction = introduction;
+		this.process = process;
 	}
 
 	public Long getStart()
@@ -113,6 +117,38 @@ public class Election
 		this.institution = institution;
 	}
 
+	/**
+	 * @return the introduction
+	 */
+	public String getIntroduction()
+	{
+		return introduction;
+	}
+
+	/**
+	 * @param introduction the introduction to set
+	 */
+	public void setIntroduction(String introduction)
+	{
+		this.introduction = introduction;
+	}
+
+	/**
+	 * @return the process
+	 */
+	public String getProcess()
+	{
+		return process;
+	}
+
+	/**
+	 * @param process the process to set
+	 */
+	public void setProcess(String process)
+	{
+		this.process = process;
+	}
+
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
@@ -130,6 +166,10 @@ public class Election
 		buff.append(getVotingEnd());
 		buff.append(", institution = ");
 		buff.append(getInstitution());
+		buff.append(", introduction = ");
+		buff.append(getIntroduction());
+		buff.append(", process = ");
+		buff.append(getProcess());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -148,7 +188,9 @@ public class Election
         electionDetails.setEnd(this.getEnd());
         electionDetails.setStartVoting(this.getVotingStart());
         electionDetails.setEndVoting(this.getVotingEnd());
-        electionDetails.setInstitutionId(this.institution.getNodeId());
+        electionDetails.setInstitutionId(this.getInstitution().getNodeId());
+        electionDetails.setIntroduction(getIntroduction());
+        electionDetails.setProcess(this.getProcess());
         if (LOG.isTraceEnabled()) LOG.trace("electionDetail; "+ electionDetails);
         return electionDetails;
     }
@@ -166,6 +208,8 @@ public class Election
         Institution inst=new Institution();
         inst.setNodeId(electionDetails.getInstitutionId());
         election.setInstitution(inst);
+        election.setIntroduction(electionDetails.getIntroduction());
+        election.setProcess(electionDetails.getProcess());
         if (LOG.isTraceEnabled()) LOG.trace("election "+election);
         return election;
     }
@@ -189,6 +233,8 @@ public class Election
 					+ ((institution == null) ? 0 : institution.hashCode());
 			result = prime * result + ((start == null) ? 0 : start.hashCode());
 			result = prime * result + ((title == null) ? 0 : title.hashCode());
+			result = prime * result + ((introduction == null) ? 0 : introduction.hashCode());
+			result = prime * result + ((process == null) ? 0 : process.hashCode());
 			result = prime * result
 					+ ((votingEnd == null) ? 0 : votingEnd.hashCode());
 			result = prime * result
@@ -239,6 +285,16 @@ public class Election
 				if (other.title != null)
 					return false;
 			} else if (!title.equals(other.title))
+				return false;
+			if (introduction == null) {
+				if (other.introduction != null)
+					return false;
+			} else if (!introduction.equals(other.introduction))
+				return false;
+			if (process == null) {
+				if (other.process != null)
+					return false;
+			} else if (!process.equals(other.process))
 				return false;
 			if (votingEnd == null) {
 				if (other.votingEnd != null)

@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
@@ -20,12 +22,12 @@ import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@SpringApplicationConfiguration(classes=ApplicationTest.class)
+@SpringApplicationConfiguration(classes=ApplicationTest.class)
 //@ContextConfiguration(classes = {ApplicationTest.class})
 //@ContextConfiguration("/test-application-context.xml")
-public class CoreDomainIntegrationTest 
+public class CoreDomainITCase 
 {
-    private static Logger LOG = LoggerFactory.getLogger(CoreDomainIntegrationTest.class);
+    private static Logger LOG = LoggerFactory.getLogger(CoreDomainITCase.class);
 
 //	@Autowired 
 	UserService userService;
@@ -34,7 +36,6 @@ public class CoreDomainIntegrationTest
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	@Ignore
 	@Test
 	public final void shouldAddNewUserToSystem() 
 	{

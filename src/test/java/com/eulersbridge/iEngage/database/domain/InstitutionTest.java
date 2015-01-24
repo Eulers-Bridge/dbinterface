@@ -77,8 +77,7 @@ public class InstitutionTest {
 		Country country=new Country();
 		country.setCountryName("Australia");
 		Institution testObj=new Institution("University of Melbourne","Parkville","VIC",country);
-		if (testObj.getClass()!=Institution.class)
-			fail("University constructor does not return a class of type institution."); 
+		assertEquals("University constructor does not return a class of type institution.",testObj.getClass(),Institution.class);
 	}
 
 	/**
@@ -94,8 +93,7 @@ public class InstitutionTest {
 		Country country=new Country();
 		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
-		if (testObj.getName()!=name)
-			fail("getName() does not return the value class was constructed with."); 
+		assertEquals("getName() does not return the value class was constructed with.",testObj.getName(),name);
 	}
 
 	/**
@@ -113,8 +111,7 @@ public class InstitutionTest {
 		Institution testObj=new Institution(name,campus,state,country);
 		String name2="Monash University";
 		testObj.setName(name2);
-		if (testObj.getName()!=name2)
-			fail("getName() does not return the value that setter should have set it to."); 
+		assertEquals("getName() does not return the value that setter should have set it to.",testObj.getName(),name2);
 	}
 
 	/**
@@ -130,8 +127,7 @@ public class InstitutionTest {
 		Country country=new Country();
 		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
-		if (testObj.getCampus()!=campus)
-			fail("getCampus() does not return the value class was constructed with."); 
+		assertEquals("getCampus() does not return the value class was constructed with.",testObj.getCampus(),campus); 
 	}
 
 	/**
@@ -148,8 +144,7 @@ public class InstitutionTest {
 		Institution testObj=new Institution(name,campus,state,country);
 		String campus2="Clayton";
 		testObj.setCampus(campus2);
-		if (testObj.getCampus()!=campus2)
-			fail("getCampus() does not return the value that setter should have set it to."); 
+		assertEquals("getCampus() does not return the value that setter should have set it to.",testObj.getCampus(),campus2); 
 	}
 
 	/**
@@ -164,8 +159,7 @@ public class InstitutionTest {
 		Country country=new Country();
 		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
-		if (testObj.getState()!=state)
-			fail("getState() does not return the value class was constructed with."); 
+		assertEquals("getState() does not return the value class was constructed with.",testObj.getState(),state);
 	}
 
 	/**
@@ -182,8 +176,7 @@ public class InstitutionTest {
 		Institution testObj=new Institution(name,campus,state,country);
 		String state2="NSW";
 		testObj.setState(state2);
-		if (testObj.getState()!=state2)
-			fail("getState() does not return the value that setter should have set it to."); 
+		assertEquals("getState() does not return the value that setter should have set it to.",testObj.getState(),state2);
 	}
 
 	/**
@@ -199,8 +192,7 @@ public class InstitutionTest {
 		Country country=new Country();
 		country.setCountryName("Australia");
 		Institution testObj=new Institution(name,campus,state,country);
-		if (!(testObj.getCountry().getCountryName()).equals(country.getCountryName()))
-			fail("getCountry() does not return the value class was constructed with."); 
+		assertEquals("getCountry() does not return the value class was constructed with.",testObj.getCountry().getCountryName(),country.getCountryName());
 	}
 
 	/**
@@ -218,8 +210,7 @@ public class InstitutionTest {
 		Country country2=new Country();
 		country2.setCountryName("Australia");
 		testObj.setCountry(country2);
-		if (!(testObj.getCountry().getCountryName()).equals(country2.getCountryName()))
-			fail("getCountry() does not return the value that setter should have set it to."); 
+		assertEquals("getCountry() does not return the value that setter should have set it to.",testObj.getCountry().getCountryName(),country2.getCountryName());
 	}
 
 	/**

@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.neo4j.conversion.Result;
 
 /**
  * @author Yikai Gong
@@ -177,7 +179,7 @@ public class PollEventHandler implements PollService
 	    		answerCreatedEvent=PollAnswerCreatedEvent.pollNotFound(answerDetails.getPollId());
 	    	else
 	    	{
-	    		pollAnswer.setAnswerer(owner);
+	    		pollAnswer.setUser(owner);
 	    		pollAnswer.setPoll(poll);
 	    		Integer answerIndex=pollAnswer.getAnswer();
 	    		String answers=poll.getAnswers();
@@ -187,8 +189,12 @@ public class PollEventHandler implements PollService
 	    			answerCreatedEvent=PollAnswerCreatedEvent.badAnswer(answerDetails.getAnswerIndex());
 	    		else
 	    		{
-		    		PollAnswer result = answerRepository.save(pollAnswer);
-		        	answerCreatedEvent = new PollAnswerCreatedEvent( result.toPollAnswerDetails());
+	    			if (LOG.isDebugEnabled()) LOG.debug("pollAnswer - "+pollAnswer);
+	    			if (LOG.isDebugEnabled()) LOG.debug("userId - "+answerDetails.getAnswererId()+" pollId - "+ answerDetails.getPollId()+" answer Index - "+ answerDetails.getAnswerIndex());
+//	    			PollAnswer result = answerRepository.save(pollAnswer);
+		    		PollAnswer result = pollRepository.addPollAnswer(answerDetails.getAnswererId(), answerDetails.getPollId(), answerDetails.getAnswerIndex());
+		        	if (LOG.isDebugEnabled()) LOG.debug("result - "+result);
+		    		answerCreatedEvent = new PollAnswerCreatedEvent( result.toPollAnswerDetails());
 	    		}
 	    	}
     	}
@@ -205,15 +211,28 @@ public class PollEventHandler implements PollService
 		ReadEvent pollResultReadEvent=null;
 		if (poll != null)
 		{
-//			pollRepository.getPollResults(pollId);
-			
-			
-			
-//			pollResultReadEvent = new ReadPollResultEvent(readPollResultEvent.getNodeId(),
-//					poll.toPollDetails());
+			if (LOG.isDebugEnabled()) LOG.debug("poll - "+poll);
+			Result<PollResultTemplate> results=pollRepository.getPollResults(pollId);
+			if (results!=null)
+			{
+				if (LOG.isDebugEnabled()) LOG.debug("Got results");
+				String answers[]=poll.getAnswers().split(",");
+				int numAnswers=answers.length;
+				ArrayList <PollResult> resultDetails=new ArrayList<PollResult>();
+				
+				resultDetails=PollResultDetails.toPollResultList(results.iterator(),numAnswers);
+				PollResultDetails dets=new PollResultDetails(pollId, resultDetails);
+				pollResultReadEvent = new PollResultReadEvent(pollId,dets);
+			}
+			else
+			{
+				if (LOG.isDebugEnabled()) LOG.debug("No results");
+				pollResultReadEvent = PollResultReadEvent.notFound(readPollResultEvent.getNodeId());
+			}
 		}
 		else
 		{
+			if (LOG.isDebugEnabled()) LOG.debug("No poll");
 			pollResultReadEvent = PollResultReadEvent.notFound(readPollResultEvent.getNodeId());
 		}
 		return pollResultReadEvent;

@@ -17,6 +17,8 @@ public class ElectionDetails extends Details
     private Long startVoting;
     private Long endVoting;
     private Long institutionId;
+    private String introduction;
+    private String process;
 
     private static Logger LOG = LoggerFactory.getLogger(ElectionDetails.class);
 
@@ -33,9 +35,11 @@ public class ElectionDetails extends Details
 	 * @param startVoting
 	 * @param endVoting
 	 * @param institutionId
+	 * @param introduction
+	 * @param process
 	 */
 	public ElectionDetails(Long electionId, String title, Long start, Long end,
-			Long startVoting, Long endVoting, Long institutionId) 
+			Long startVoting, Long endVoting, Long institutionId,String introduction,String process) 
 	{
 		super();
 		this.nodeId = electionId;
@@ -45,6 +49,8 @@ public class ElectionDetails extends Details
 		this.startVoting = startVoting;
 		this.endVoting = endVoting;
 		this.institutionId = institutionId;
+		this.introduction = introduction;
+		this.process = process;
 	}
 
 	public void setElectionId(Long electionId){
@@ -105,6 +111,10 @@ public class ElectionDetails extends Details
         buff.append(getStartVoting());
         buff.append(", endVoting = ");
         buff.append(getEndVoting());
+        buff.append(", introduction = ");
+        buff.append(getIntroduction());
+        buff.append(", process = ");
+        buff.append(getProcess());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -123,6 +133,38 @@ public class ElectionDetails extends Details
 	 */
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
+	}
+
+	/**
+	 * @return the introduction
+	 */
+	public String getIntroduction()
+	{
+		return introduction;
+	}
+
+	/**
+	 * @param introduction the introduction to set
+	 */
+	public void setIntroduction(String introduction)
+	{
+		this.introduction = introduction;
+	}
+
+	/**
+	 * @return the process
+	 */
+	public String getProcess()
+	{
+		return process;
+	}
+
+	/**
+	 * @param process the process to set
+	 */
+	public void setProcess(String process)
+	{
+		this.process = process;
 	}
 
 	/* (non-Javadoc)
@@ -146,6 +188,8 @@ public class ElectionDetails extends Details
 			result = prime * result
 					+ ((startVoting == null) ? 0 : startVoting.hashCode());
 			result = prime * result + ((title == null) ? 0 : title.hashCode());
+			result = prime * result + ((introduction == null) ? 0 : introduction.hashCode());
+			result = prime * result + ((process == null) ? 0 : process.hashCode());
 		}
 		return result;
 	}
@@ -194,6 +238,16 @@ public class ElectionDetails extends Details
 				if (other.title != null)
 					return false;
 			} else if (!title.equals(other.title))
+				return false;
+			if (introduction == null) {
+				if (other.introduction != null)
+					return false;
+			} else if (!introduction.equals(other.introduction))
+				return false;
+			if (process == null) {
+				if (other.process != null)
+					return false;
+			} else if (!process.equals(other.process))
 				return false;
 			if (institutionId == null) {
 				if (other.institutionId != null)

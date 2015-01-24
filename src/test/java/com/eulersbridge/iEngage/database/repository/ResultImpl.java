@@ -18,12 +18,26 @@ import org.springframework.data.neo4j.mapping.MappingPolicy;
  */
 public class ResultImpl<T> implements Result<T> 
 {
-	Iterator <T> iterator;
+	Iterator <T> iterator=null;
+	Iterable <T> collection=null;
+	
+	public ResultImpl(Iterable<T> collection)
+	{
+		super();
+		this.collection=collection;
+	}
+
+	public ResultImpl()
+	{
+		super();
+	}
 
 	@Override
 	public Iterator<T> iterator() 
 	{
-		return iterator;
+		if (collection!=null)
+			return collection.iterator();
+		else return iterator;
 	}
 	
 	public void setIterator(Iterator<T> iter)
