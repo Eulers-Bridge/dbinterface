@@ -140,7 +140,7 @@ public class CoreConfig
     public PositionService createPositionService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPositionService()");
-        return new PositionEventHandler(positionRepository);
+        return new PositionEventHandler(positionRepository,eleRepo);
     }
 
     @Bean
