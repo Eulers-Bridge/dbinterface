@@ -16,7 +16,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 @NodeEntity
 public class Position {
     @GraphId
-    private Long positionId;
+    private Long nodeId;
     private String name;
     private String description;
     @RelatedTo(type = DatabaseDomainConstants.HAS_POSITION_LABEL, direction = Direction.BOTH) @Fetch
@@ -32,7 +32,7 @@ public class Position {
         if (LOG.isTraceEnabled()) LOG.trace("fromPositionDetails()");
         Position position = new Position();
         if (LOG.isTraceEnabled()) LOG.trace("positionDetails "+positionDetails);
-        position.setPositionId(positionDetails.getPositionId());
+        position.setNodeId(positionDetails.getNodeId());
         position.setName(positionDetails.getName());
         position.setDescription(positionDetails.getDescription());
         position.election = new Election(positionDetails.getElectionId(), null, null, null, null, null, null,null,null);
@@ -45,7 +45,7 @@ public class Position {
         if (LOG.isTraceEnabled()) LOG.trace("toPositionDetails()");
         PositionDetails positionDetails = new PositionDetails();
         if (LOG.isTraceEnabled()) LOG.trace("position "+this);
-        positionDetails.setPositionId(getPositionId());
+        positionDetails.setNodeId(getNodeId());
         positionDetails.setName(getName());
         positionDetails.setDescription(getDescription());
         positionDetails.setElectionId(election.getNodeId());
@@ -58,7 +58,7 @@ public class Position {
     public String toString() {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
-        buff.append(getPositionId());
+        buff.append(getNodeId());
         buff.append(", name = ");
         buff.append(getName());
         buff.append(", description = ");
@@ -71,12 +71,12 @@ public class Position {
         return retValue;
     }
 
-    public Long getPositionId() {
-        return positionId;
+    public Long getNodeId() {
+        return nodeId;
     }
 
-    public void setPositionId(Long positionId) {
-        this.positionId = positionId;
+    public void setNodeId(Long nodeId) {
+        this.nodeId = nodeId;
     }
 
     public String getName() {

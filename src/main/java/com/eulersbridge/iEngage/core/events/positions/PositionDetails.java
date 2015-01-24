@@ -11,18 +11,38 @@ import com.eulersbridge.iEngage.core.events.Details;
 
 public class PositionDetails extends Details
 {
-    private Long nodeId;
     private String name;
     private String description;
     private Long electionId;
 
     private static Logger LOG = LoggerFactory.getLogger(PositionDetails.class);
 
-    @Override
+    /**
+	 * 
+	 */
+	public PositionDetails()
+	{
+		super();
+	}
+
+	/**
+	 * @param name
+	 * @param description
+	 * @param electionId
+	 */
+	public PositionDetails(Long nodeId,String name, String description, Long electionId)
+	{
+		super(nodeId);
+		this.name = name;
+		this.description = description;
+		this.electionId = electionId;
+	}
+
+	@Override
     public String toString() {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
-        buff.append(getPositionId());
+        buff.append(getNodeId());
         buff.append(", name = ");
         buff.append(getName());
         buff.append(", description = ");
@@ -39,9 +59,9 @@ public class PositionDetails extends Details
     public int hashCode(){
         final int prime = 31;
         int result = 1;
-        if (getPositionId()!=null)
+        if (getNodeId()!=null)
         {
-            result = prime * result	+ getPositionId().hashCode();
+            result = prime * result	+ getNodeId().hashCode();
         }
         else
         {
@@ -90,14 +110,6 @@ public class PositionDetails extends Details
         return true;
     }
 
-    public Long getPositionId() {
-        return getNodeId();
-    }
-
-    public void setPositionId(Long positionId) {
-        setNodeId(positionId);
-    }
-
     public String getName() {
         return name;
     }
@@ -120,6 +132,6 @@ public class PositionDetails extends Details
 
     public void setElectionId(Long electionId)
     {
-        electionId = this.electionId;
+    	this.electionId = electionId;
     }
 }
