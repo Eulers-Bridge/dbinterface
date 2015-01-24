@@ -37,4 +37,17 @@ public class CreatedEvent
 		this.details = details;
 	}
 	
+    public Long getNodeId()
+    {
+    	Long nodeId=null;
+    	if (getDetails()!=null) nodeId=this.getDetails().getNodeId();
+    		
+        return nodeId;
+    }
+    
+    public void setNodeId(Long nodeId)
+    {
+    	if (getDetails()!=null) this.getDetails().setNodeId(nodeId);
+    }
+
 }
