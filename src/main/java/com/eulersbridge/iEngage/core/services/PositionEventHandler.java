@@ -4,6 +4,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.PositionRepository;
@@ -29,11 +30,25 @@ public class PositionEventHandler implements PositionService{
 	}
 
 	@Override
-    public PositionCreatedEvent createPosition(CreatePositionEvent createPositionEvent) {
+    public PositionCreatedEvent createPosition(CreatePositionEvent createPositionEvent)
+	{
         PositionDetails positionDetails = (PositionDetails) createPositionEvent.getDetails();
         Position position = Position.fromPositionDetails(positionDetails);
-        Position result = positionRepository.save(position);
-        PositionCreatedEvent positionCreatedEvent = new PositionCreatedEvent(result.toPositionDetails());
+        
+    	if (LOG.isDebugEnabled()) LOG.debug("Finding election with nodeId = "+positionDetails.getElectionId());
+    	Election elect=electionRepository.findOne(positionDetails.getElectionId());
+
+    	PositionCreatedEvent positionCreatedEvent;
+    	if (elect!=null)
+    	{
+    		position.setElection(elect);
+            Position result = positionRepository.save(position);
+            positionCreatedEvent = new PositionCreatedEvent(result.toPositionDetails());
+    	}
+    	else
+    	{
+    		positionCreatedEvent=PositionCreatedEvent.electionNotFound(positionDetails.getElectionId());
+    	}
         return positionCreatedEvent;
     }
 

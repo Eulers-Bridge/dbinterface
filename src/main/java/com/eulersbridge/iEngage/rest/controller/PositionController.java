@@ -42,7 +42,7 @@ public class PositionController {
         else{
             Position result = Position.fromPositionDetails((PositionDetails) positionCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("position"+result.toString());
-            return new ResponseEntity<Position>(result, HttpStatus.OK);
+            return new ResponseEntity<Position>(result, HttpStatus.CREATED);
         }
     }
 
