@@ -4,8 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import static org.junit.Assert.*;
 
@@ -14,29 +13,13 @@ import static org.junit.Assert.*;
  */
 
 public class CandidateCreatedEventTest {
-    CandidateDetails candidateDetails = null;
-    Long candidateId = new Long(1);
-    String candidateEmail = "test@test.com";
-    String information = "info";
-    String policyStatement = "policy";
-    Set<String> pictures = new HashSet<>();
-    String familyName = "Gong";
-    String givenName = "Yikai";
-    CandidateCreatedEvent candidateCreatedEvent = null;
+    CandidateDetails candidateDetails;
+    CandidateCreatedEvent candidateCreatedEvent;
 
     @Before
     public void setUp() throws Exception {
-        candidateDetails = new CandidateDetails();
-        candidateDetails.setNodeId(candidateId);
-        candidateDetails.setCandidateEmail(candidateEmail);
-        candidateDetails.setInformation(information);
-        candidateDetails.setPolicyStatement(policyStatement);
-        pictures.add("http://url");
-        candidateDetails.setPictures(pictures);
-        candidateDetails.setFamilyName(familyName);
-        candidateDetails.setGivenName(givenName);
-        candidateCreatedEvent = new CandidateCreatedEvent(candidateId, candidateDetails);
-        assertNotNull("candidateCreatedEvent is null", candidateCreatedEvent);
+        candidateDetails = DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+        candidateCreatedEvent = new CandidateCreatedEvent(candidateDetails);
     }
 
     @After
@@ -46,12 +29,14 @@ public class CandidateCreatedEventTest {
 
     @Test
     public void testGetCandidateId() throws Exception {
-        assertEquals("id does not match", candidateId, candidateCreatedEvent.getCandidateId());
+        assertNotNull("candidateCreatedEvent is null", candidateCreatedEvent);
+        assertEquals("id does not match", candidateDetails.getNodeId(), candidateCreatedEvent.getNodeId());
     }
 
     @Test
     public void testSetCandidateId() throws Exception {
-        candidateCreatedEvent.setCandidateId(new Long(10));
-        assertEquals("id does not match", new Long(10), candidateCreatedEvent.getCandidateId());
+        assertNotNull("candidateCreatedEvent is null", candidateCreatedEvent);
+        candidateCreatedEvent.setNodeId(new Long(10));
+        assertEquals("id does not match", new Long(10), candidateCreatedEvent.getNodeId());
     }
 }

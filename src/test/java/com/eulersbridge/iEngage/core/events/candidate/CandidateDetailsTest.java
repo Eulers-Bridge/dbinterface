@@ -13,15 +13,16 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class CandidateDetailsTest {
+public class CandidateDetailsTest
+{
     CandidateDetails candidateDetails = null;
     Long candidateId = new Long(1);
     String candidateEmail = "test@test.com";
     String information = "info";
     String policyStatement = "policy";
     Set<String> pictures = new HashSet<>();
-    String familyName = "Gong";
-    String givenName = "Yikai";
+    Long userId = 1414l;
+    Long positionId = 4141l;
 
     @Before
     public void setUp() throws Exception {
@@ -32,8 +33,8 @@ public class CandidateDetailsTest {
         candidateDetails.setPolicyStatement(policyStatement);
         pictures.add("http://url");
         candidateDetails.setPictures(pictures);
-        candidateDetails.setFamilyName(familyName);
-        candidateDetails.setGivenName(givenName);
+        candidateDetails.setUserId(userId);
+        candidateDetails.setPositionId(positionId);
         assertNotNull("candidateDetails is null", candidateDetails);
     }
 
@@ -103,26 +104,27 @@ public class CandidateDetailsTest {
     }
 
     @Test
-    public void testGetFamilyName() throws Exception {
-        assertEquals("familyname does not match", familyName, candidateDetails.getFamilyName());
+    public void testGetUserId() throws Exception
+    {
+        assertEquals("familyname does not match", userId, candidateDetails.getUserId());
     }
 
     @Test
-    public void testSetFamilyName() throws Exception {
+    public void testSetUserId() throws Exception {
         CandidateDetails candidateDetails1 = new CandidateDetails();
-        candidateDetails1.setFamilyName(familyName);
-        assertEquals("familyname does not match", familyName, candidateDetails1.getFamilyName());
+        candidateDetails1.setUserId(userId);
+        assertEquals("familyname does not match", userId, candidateDetails1.getUserId());
     }
 
     @Test
-    public void testGetGivenName() throws Exception {
-        assertEquals("givenname does not match", givenName, candidateDetails.getGivenName());
+    public void testGetPositionId() throws Exception {
+        assertEquals("givenname does not match", positionId, candidateDetails.getPositionId());
     }
 
     @Test
-    public void testSetGivenName() throws Exception {
+    public void testSetPositionId() throws Exception {
         CandidateDetails candidateDetails1 = new CandidateDetails();
-        candidateDetails1.setGivenName(givenName);
-        assertEquals("givenname does not match", givenName, candidateDetails1.getGivenName());
+        candidateDetails1.setPositionId(positionId);
+        assertEquals("givenname does not match", positionId, candidateDetails1.getPositionId());
     }
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.domain.Badge;
+import com.eulersbridge.iEngage.database.domain.Candidate;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.ForumQuestion;
@@ -545,5 +546,29 @@ public class DatabaseDataFixture
         Long xpValue = 50l;
         return populateBadge(id, name, awarede, timestamp, xpValue);
     }
+    
+	public static Candidate populateCandidate1()
+	{
+		Long candidateId=43234l;
+		String information="I am a 3rd year Law student looking to pad out my CV.";
+		String policyStatement="I will do anything that benefits me.";
+		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt(),populatePosition1());
+		return candidate;
+	}
+
+	public static Candidate populateCandidate2()
+	{
+		Long candidateId=43235l;
+		String information="I am a 2nd year Law student looking to pad out my CV.";
+		String policyStatement="I will do anything that benefits my family.";
+		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt2(),populatePosition2());
+		return candidate;
+	}
+
+	public static Candidate populateCandidate(Long candidateId, String information, String policyStatement, User user, Position position)
+	{
+		Candidate candidate=new Candidate(candidateId, information, policyStatement, user, position);
+		return candidate;
+	}
 
 }

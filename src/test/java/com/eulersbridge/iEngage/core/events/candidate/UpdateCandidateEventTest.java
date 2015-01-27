@@ -4,8 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import static org.junit.Assert.*;
 
@@ -14,28 +13,12 @@ import static org.junit.Assert.*;
  */
 
 public class UpdateCandidateEventTest {
-    UpdateCandidateEvent updateCandidateEvent = null;
-    CandidateDetails candidateDetails = null;
-    Long candidateId = new Long(1);
-    String candidateEmail = "test@test.com";
-    String information = "info";
-    String policyStatement = "policy";
-    Set<String> pictures = new HashSet<>();
-    String familyName = "Gong";
-    String givenName = "Yikai";
+    UpdateCandidateEvent updateCandidateEvent;
+    CandidateDetails candidateDetails;
 
     @Before
     public void setUp() throws Exception {
-        candidateDetails = new CandidateDetails();
-        candidateDetails.setNodeId(candidateId);
-        candidateDetails.setCandidateEmail(candidateEmail);
-        candidateDetails.setInformation(information);
-        candidateDetails.setPolicyStatement(policyStatement);
-        pictures.add("http://url");
-        candidateDetails.setPictures(pictures);
-        candidateDetails.setFamilyName(familyName);
-        candidateDetails.setGivenName(givenName);
-        assertNotNull("candidateDetails is null", candidateDetails);
+        candidateDetails = DatabaseDataFixture.populateCandidate1().toCandidateDetails();
     }
 
     @After
@@ -44,8 +27,10 @@ public class UpdateCandidateEventTest {
     }
 
     @Test
-    public void testConstructor() throws Exception {
-        updateCandidateEvent = new UpdateCandidateEvent(candidateId, candidateDetails);
+    public void testConstructor() throws Exception
+    {
+        assertNotNull("candidateDetails is null", candidateDetails);
+        updateCandidateEvent = new UpdateCandidateEvent(candidateDetails.getNodeId(), candidateDetails);
         assertNotNull("updateCandidateEvent is null", updateCandidateEvent);
     }
 }

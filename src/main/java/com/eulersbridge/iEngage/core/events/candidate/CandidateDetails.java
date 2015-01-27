@@ -14,8 +14,8 @@ public class CandidateDetails extends Details {
     private String information;
     private String policyStatement;
     private Set<String> pictures;
-    private String familyName;
-    private String givenName;
+    private Long userId;
+    private Long positionId;
 
     private static Logger LOG = LoggerFactory.getLogger(CandidateDetails.class);
 
@@ -32,10 +32,10 @@ public class CandidateDetails extends Details {
         buff.append(getPolicyStatement());
         buff.append(", pictures = ");
         buff.append(getPictures());
-        buff.append(", familyName = ");
-        buff.append(getFamilyName());
-        buff.append(", givenName = ");
-        buff.append(getGivenName());
+        buff.append(", userId = ");
+        buff.append(getUserId());
+        buff.append(", positionId = ");
+        buff.append(getPositionId());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -56,8 +56,8 @@ public class CandidateDetails extends Details {
             result = prime * result	+ ((information == null) ? 0 : information.hashCode());
             result = prime * result + ((policyStatement == null) ? 0 : policyStatement.hashCode());
             result = prime * result + ((pictures == null) ? 0 : pictures.hashCode());
-            result = prime * result + ((familyName == null) ? 0 : familyName.hashCode());
-            result = prime * result + ((givenName == null) ? 0 : givenName.hashCode());
+            result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+            result = prime * result + ((positionId == null) ? 0 : positionId.hashCode());
         }
         return result;
     }
@@ -96,6 +96,16 @@ public class CandidateDetails extends Details {
                     return false;
             } else if (!policyStatement.equals(other.policyStatement))
                 return false;
+            if (userId == null) {
+                if (other.userId != null)
+                    return false;
+            } else if (!userId.equals(other.userId))
+                return false;
+            if (positionId == null) {
+                if (other.positionId != null)
+                    return false;
+            } else if (!positionId.equals(other.positionId))
+                return false;
         }
         return true;
     }
@@ -132,19 +142,36 @@ public class CandidateDetails extends Details {
         this.pictures = pictures;
     }
 
-    public String getFamilyName() {
-        return familyName;
-    }
+	/**
+	 * @return the userId
+	 */
+	public Long getUserId()
+	{
+		return userId;
+	}
 
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
-    }
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(Long userId)
+	{
+		this.userId = userId;
+	}
 
-    public String getGivenName() {
-        return givenName;
-    }
+	/**
+	 * @return the positionId
+	 */
+	public Long getPositionId()
+	{
+		return positionId;
+	}
 
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
+	/**
+	 * @param positionId the positionId to set
+	 */
+	public void setPositionId(Long positionId)
+	{
+		this.positionId = positionId;
+	}
+
 }

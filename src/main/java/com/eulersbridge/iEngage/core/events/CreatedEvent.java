@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.events;
 public class CreatedEvent
 {
 	Details details;
+	boolean failed=false;
 
 	/**
 	 * 
@@ -50,4 +51,26 @@ public class CreatedEvent
     	if (getDetails()!=null) this.getDetails().setNodeId(nodeId);
     }
 
+	/**
+	 * @return the failed
+	 */
+	public boolean isFailed()
+	{
+		return failed;
+	}
+
+	/**
+	 * @param failed the failed to set
+	 */
+	public void setFailed(boolean failed)
+	{
+		this.failed = failed;
+	}
+
+	public static CreatedEvent failed(Details details)
+	{
+		CreatedEvent failedEvent = new CreatedEvent(details);
+		failedEvent.setFailed(true);
+		return failedEvent;
+	}
 }

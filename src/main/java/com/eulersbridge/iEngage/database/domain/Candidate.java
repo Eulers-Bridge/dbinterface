@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
+
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,53 +9,69 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 /**
  * @author Yikai Gong
  */
 
 @NodeEntity
-public class Candidate {
+public class Candidate
+{
     @GraphId
-    private Long candidateId;
-    private String candidateEmail;
+    private Long nodeId;
     private String information;
     private String policyStatement;
-    private Iterable<String> pictures;
-    private String familyName;
-    private String givenName;
-
     @RelatedTo(type = DatabaseDomainConstants.IS_CANDIDATE_LABEL, direction= Direction.BOTH)
     private User user;
 
     @RelatedTo(type = DatabaseDomainConstants.HAS_CANDIDATE_LABE, direction= Direction.BOTH)
     private Position position;
 
-    @RelatedTo(type = DatabaseDomainConstants.WAS_ASKED_LABEL, direction= Direction.BOTH)
-    private ForumQuestion forumQuestion;
+//    @RelatedTo(type = DatabaseDomainConstants.WAS_ASKED_LABEL, direction= Direction.BOTH)
+//    private ForumQuestion forumQuestion;
 
 //    @RelatedTo(type = DatabaseDomainConstants.IS_ON_TICKET_LABEL, direction= Direction.BOTH)
     
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
-    public Candidate() {
+    public Candidate()
+    {
+		super();
         if (LOG.isTraceEnabled()) LOG.trace("Constructor");
     }
 
-    public static Candidate fromCandidateDetails(CandidateDetails candidateDetails){
+    /**
+	 * @param nodeId
+	 * @param information
+	 * @param policyStatement
+	 * @param user
+	 * @param position
+	 */
+	public Candidate(Long candidateId, String information,
+			String policyStatement, User user, Position position)
+	{
+		super();
+		this.nodeId = candidateId;
+		this.information = information;
+		this.policyStatement = policyStatement;
+		this.user = user;
+		this.position = position;
+	}
+
+	public static Candidate fromCandidateDetails(CandidateDetails candidateDetails)
+    {
         if (LOG.isTraceEnabled()) LOG.trace("fromCandidateDetails()");
         Candidate candidate = new Candidate();
         if (LOG.isTraceEnabled()) LOG.trace("candidateDetails "+candidateDetails);
-        candidate.setCandidateId(candidateDetails.getNodeId());
-        candidate.setCandidateEmail(candidateDetails.getCandidateEmail());
+        candidate.setNodeId(candidateDetails.getNodeId());
         candidate.setInformation(candidateDetails.getInformation());
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
-        candidate.setPictures(candidateDetails.getPictures());
-        candidate.setFamilyName(candidateDetails.getFamilyName());
-        candidate.setGivenName(candidateDetails.getGivenName());
+        User user=new User();
+        user.setNodeId(candidateDetails.getUserId());
+        candidate.setUser(user);
+        Position position=new Position();
+        position.setNodeId(candidateDetails.getPositionId());
+        candidate.setPosition(position);
 
         if (LOG.isTraceEnabled()) LOG.trace("candidate "+candidate);
         return candidate;
@@ -64,24 +81,12 @@ public class Candidate {
         if (LOG.isTraceEnabled()) LOG.trace("toCandidateDetails()");
         CandidateDetails candidateDetails = new CandidateDetails();
         if (LOG.isTraceEnabled()) LOG.trace("candidate "+this);
-        candidateDetails.setNodeId(getCandidateId());
-        candidateDetails.setCandidateEmail(getCandidateEmail());
+        candidateDetails.setNodeId(getNodeId());
+        candidateDetails.setUserId(getUser().getNodeId());
         candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());
-        candidateDetails.setFamilyName(getFamilyName());
-        candidateDetails.setGivenName(getGivenName());
+        candidateDetails.setPositionId(getPosition().getNodeId());
 
-        HashSet<String> pictures = new HashSet<String>();
-        if (getPictures()!=null)
-        {
-            Iterator<String> iter = getPictures().iterator();
-            while(iter.hasNext())
-            {
-                String url = iter.next();
-                pictures.add(url);
-            }
-        }
-        candidateDetails.setPictures(pictures);
         if (LOG.isTraceEnabled()) LOG.trace("candidateDetails; "+ candidateDetails);
         return candidateDetails;
     }
@@ -90,39 +95,23 @@ public class Candidate {
     public String toString() {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
-        buff.append(getCandidateId());
-        buff.append(", candidateEmail = ");
-        buff.append(getCandidateEmail());
+        buff.append(getNodeId());
         buff.append(", information = ");
         buff.append(getInformation());
         buff.append(", policyStatement = ");
         buff.append(getPolicyStatement());
-        buff.append(", pictures = ");
-        buff.append(getPictures());
-        buff.append(", familyName = ");
-        buff.append(getFamilyName());
-        buff.append(", givenName = ");
-        buff.append(getGivenName());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
         return retValue;
     }
 
-    public Long getCandidateId() {
-        return candidateId;
+    public Long getNodeId() {
+        return nodeId;
     }
 
-    public void setCandidateId(Long candidateId) {
-        this.candidateId = candidateId;
-    }
-
-    public String getCandidateEmail() {
-        return candidateEmail;
-    }
-
-    public void setCandidateEmail(String candidateEmail) {
-        this.candidateEmail = candidateEmail;
+    public void setNodeId(Long nodeId) {
+        this.nodeId = nodeId;
     }
 
     public String getInformation() {
@@ -133,7 +122,39 @@ public class Candidate {
         this.information = information;
     }
 
-    public String getPolicyStatement() {
+    /**
+	 * @return the user
+	 */
+	public User getUser()
+	{
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user)
+	{
+		this.user = user;
+	}
+
+	/**
+	 * @return the position
+	 */
+	public Position getPosition()
+	{
+		return position;
+	}
+
+	/**
+	 * @param position the position to set
+	 */
+	public void setPosition(Position position)
+	{
+		this.position = position;
+	}
+
+	public String getPolicyStatement() {
         return policyStatement;
     }
 
@@ -141,27 +162,4 @@ public class Candidate {
         this.policyStatement = policyStatement;
     }
 
-    public Iterable<String> getPictures() {
-        return pictures;
-    }
-
-    public void setPictures(Iterable<String> picture) {
-        this.pictures = picture;
-    }
-
-    public String getFamilyName() {
-        return familyName;
-    }
-
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
-    }
-
-    public String getGivenName() {
-        return givenName;
-    }
-
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
 }
