@@ -29,6 +29,4 @@ public class RestDomainConstants
 	
 	
 	public static final String USERID = "USERID";
-
-
 }
