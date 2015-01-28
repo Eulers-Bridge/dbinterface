@@ -140,7 +140,7 @@ public class CoreConfig
     public PositionService createPositionService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPositionService()");
-        return new PositionEventHandler(positionRepository);
+        return new PositionEventHandler(positionRepository,eleRepo);
     }
 
     @Bean
@@ -161,7 +161,7 @@ public class CoreConfig
     public CandidateService createCandidateService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createCandidateService()");
-        return new CandidateEventHandler(candidateRepository);
+        return new CandidateEventHandler(candidateRepository,userRepo,positionRepository);
     }
 
     @Bean

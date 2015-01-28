@@ -33,7 +33,7 @@ public class Position extends ResourceSupport
 		String name = simpleName.substring(0, 1).toLowerCase()
 				+ simpleName.substring(1);
 
-		position.setPositionId(positionDetails.getPositionId());
+		position.setPositionId(positionDetails.getNodeId());
 		position.setName(positionDetails.getName());
 		position.setDescription(positionDetails.getDescription());
 		position.setElectionId(positionDetails.getElectionId());
@@ -63,7 +63,7 @@ public class Position extends ResourceSupport
 	public PositionDetails toPositionDetails()
 	{
 		PositionDetails positionDetails = new PositionDetails();
-		positionDetails.setPositionId(getPositionId());
+		positionDetails.setNodeId(getPositionId());
 		positionDetails.setName(getName());
 		positionDetails.setDescription(getDescription());
 		positionDetails.setElectionId(getElectionId());

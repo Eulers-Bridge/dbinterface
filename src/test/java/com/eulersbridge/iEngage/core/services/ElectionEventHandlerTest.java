@@ -112,8 +112,8 @@ public class ElectionEventHandlerTest
 		ElectionCreatedEvent evtData = service.createElection(createElectionEvent);
 		ElectionDetails returnedDets = (ElectionDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toElectionDetails());
-		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
 		assertNotNull(evtData.getElectionId());
+		assertEquals(evtData.getElectionId(),returnedDets.getElectionId());
 	}
 
 	/**

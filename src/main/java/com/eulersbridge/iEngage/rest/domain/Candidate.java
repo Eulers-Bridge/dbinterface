@@ -20,8 +20,8 @@ public class Candidate extends ResourceSupport{
     private String information;
     private String policyStatement;
     private Set<String> pictures;
-    private String familyName;
-    private String givenName;
+    private Long userId;
+    private Long positionId;
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
@@ -40,8 +40,8 @@ public class Candidate extends ResourceSupport{
         candidate.setInformation(candidateDetails.getInformation());
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
         candidate.setPictures(candidateDetails.getPictures());
-        candidate.setFamilyName(candidateDetails.getFamilyName());
-        candidate.setGivenName(candidateDetails.getGivenName());
+        candidate.setUserId(candidateDetails.getUserId());
+        candidate.setPositionId(candidateDetails.getPositionId());
 
         // {!begin selfRel}
         candidate.add(linkTo(CandidateController.class).slash(name)
@@ -62,8 +62,8 @@ public class Candidate extends ResourceSupport{
         candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());
         candidateDetails.setPictures(getPictures());
-        candidateDetails.setFamilyName(getFamilyName());
-        candidateDetails.setGivenName(getGivenName());
+        candidateDetails.setUserId(getUserId());
+        candidateDetails.setPositionId(getPositionId());
         return candidateDetails;
     }
 
@@ -107,19 +107,23 @@ public class Candidate extends ResourceSupport{
         this.pictures = pictures;
     }
 
-    public String getFamilyName() {
-        return familyName;
+    public Long getUserId()
+    {
+        return userId;
     }
 
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
+    public void setUserId(Long userId)
+    {
+        this.userId = userId;
     }
 
-    public String getGivenName() {
-        return givenName;
+    public Long getPositionId()
+    {
+        return positionId;
     }
 
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
+    public void setPositionId(Long positionId)
+    {
+        this.positionId = positionId;
     }
 }

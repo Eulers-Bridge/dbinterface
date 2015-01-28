@@ -41,8 +41,7 @@ public class ElectionDetails extends Details
 	public ElectionDetails(Long electionId, String title, Long start, Long end,
 			Long startVoting, Long endVoting, Long institutionId,String introduction,String process) 
 	{
-		super();
-		this.nodeId = electionId;
+		super(electionId);
 		this.title = title;
 		this.start = start;
 		this.end = end;

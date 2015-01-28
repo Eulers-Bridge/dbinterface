@@ -36,13 +36,13 @@ public class PositionController {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create position "+position);
         CreatePositionEvent createPositionEvent = new CreatePositionEvent(position.toPositionDetails());
         PositionCreatedEvent positionCreatedEvent = positionService.createPosition(createPositionEvent);
-        if(positionCreatedEvent.getPositionId() == null){
+        if(positionCreatedEvent.getNodeId() == null){
             return new ResponseEntity<Position>(HttpStatus.BAD_REQUEST);
         }
         else{
             Position result = Position.fromPositionDetails((PositionDetails) positionCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("position"+result.toString());
-            return new ResponseEntity<Position>(result, HttpStatus.OK);
+            return new ResponseEntity<Position>(result, HttpStatus.CREATED);
         }
     }
 
@@ -52,7 +52,7 @@ public class PositionController {
     findPosition(@PathVariable Long positionId){
         if (LOG.isInfoEnabled()) LOG.info(positionId+" attempting to get position. ");
         RequestReadPositionEvent requestReadPositionEvent = new RequestReadPositionEvent(positionId);
-        ReadEvent readPositionEvent = positionService.requestReadPosition(requestReadPositionEvent);
+        ReadEvent readPositionEvent = positionService.readPosition(requestReadPositionEvent);
         if(readPositionEvent.isEntityFound()){
             Position position = Position.fromPositionDetails((PositionDetails)readPositionEvent.getDetails());
             return new ResponseEntity<Position>(position, HttpStatus.OK);

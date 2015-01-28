@@ -4,7 +4,9 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
+import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.PositionRepository;
 
 import org.slf4j.Logger;
@@ -18,29 +20,47 @@ public class PositionEventHandler implements PositionService{
     private static Logger LOG = LoggerFactory.getLogger(PositionService.class);
 
     private PositionRepository positionRepository;
+    private ElectionRepository electionRepository;
 
-    public PositionEventHandler(PositionRepository positionRepository) {
+    public PositionEventHandler(PositionRepository positionRepository,
+			ElectionRepository electionRepository)
+	{
         this.positionRepository = positionRepository;
-    }
+		this.electionRepository = electionRepository;
+	}
 
-    @Override
-    public PositionCreatedEvent createPosition(CreatePositionEvent createPositionEvent) {
+	@Override
+    public PositionCreatedEvent createPosition(CreatePositionEvent createPositionEvent)
+	{
         PositionDetails positionDetails = (PositionDetails) createPositionEvent.getDetails();
         Position position = Position.fromPositionDetails(positionDetails);
-        Position result = positionRepository.save(position);
-        PositionCreatedEvent positionCreatedEvent = new PositionCreatedEvent(result.getPositionId(), result.toPositionDetails());
+        
+    	if (LOG.isDebugEnabled()) LOG.debug("Finding election with nodeId = "+positionDetails.getElectionId());
+    	Election elect=electionRepository.findOne(positionDetails.getElectionId());
+
+    	PositionCreatedEvent positionCreatedEvent;
+    	if (elect!=null)
+    	{
+    		position.setElection(elect);
+            Position result = positionRepository.save(position);
+            positionCreatedEvent = new PositionCreatedEvent(result.toPositionDetails());
+    	}
+    	else
+    	{
+    		positionCreatedEvent=PositionCreatedEvent.electionNotFound(positionDetails.getElectionId());
+    	}
         return positionCreatedEvent;
     }
 
     @Override
-    public ReadEvent requestReadPosition(RequestReadPositionEvent requestReadPositionEvent) {
+    public ReadEvent readPosition(RequestReadPositionEvent requestReadPositionEvent) {
         Position position = positionRepository.findOne(requestReadPositionEvent.getNodeId());
         ReadEvent readPositionEvent;
         if(position != null){
-            readPositionEvent = new ReadPositionEvent(position.getPositionId(), position.toPositionDetails());
+            readPositionEvent = new PositionReadEvent(position.getNodeId(), position.toPositionDetails());
         }
         else{
-            readPositionEvent = ReadPositionEvent.notFound(requestReadPositionEvent.getNodeId());
+            readPositionEvent = PositionReadEvent.notFound(requestReadPositionEvent.getNodeId());
         }
         return readPositionEvent;
     }
@@ -49,7 +69,7 @@ public class PositionEventHandler implements PositionService{
     public UpdatedEvent updatePosition(UpdatePositionEvent updatePositionEvent) {
         PositionDetails positionDetails = (PositionDetails) updatePositionEvent.getDetails();
         Position position = Position.fromPositionDetails(positionDetails);
-        Long positionId = positionDetails.getPositionId();
+        Long positionId = positionDetails.getNodeId();
         if(LOG.isDebugEnabled()) LOG.debug("positionId is " + positionId);
         Position positionOld = positionRepository.findOne(positionId);
         if(positionOld == null){
@@ -58,8 +78,8 @@ public class PositionEventHandler implements PositionService{
         }
         else{
             Position result = positionRepository.save(position);
-            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getPositionId());
-            return new PositionUpdatedEvent(result.getPositionId(), result.toPositionDetails());
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+            return new PositionUpdatedEvent(result.getNodeId(), result.toPositionDetails());
         }
     }
 

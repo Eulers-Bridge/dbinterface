@@ -23,6 +23,7 @@ public class PhotoAlbumDetailsTest
 	@Test
 	public final void testPhotoAlbumDetails()
 	{
+		dets=new PhotoAlbumDetails();
 		assertNotNull("Not yet implemented",dets);
 	}
 

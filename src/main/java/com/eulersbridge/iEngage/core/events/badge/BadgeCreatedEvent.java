@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.core.events.badge;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.Details;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

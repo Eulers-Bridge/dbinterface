@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.core.events.candidate;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,8 +11,8 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class UpdateCandidateEventTest {
-    UpdateCandidateEvent updateCandidateEvent;
+public class CandidateReadEventTest {
+    CandidateReadEvent candidateReadEvent;
     CandidateDetails candidateDetails;
 
     @Before
@@ -21,16 +20,12 @@ public class UpdateCandidateEventTest {
         candidateDetails = DatabaseDataFixture.populateCandidate1().toCandidateDetails();
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-    }
-
     @Test
-    public void testConstructor() throws Exception
-    {
+    public void testConstructor() throws Exception {
         assertNotNull("candidateDetails is null", candidateDetails);
-        updateCandidateEvent = new UpdateCandidateEvent(candidateDetails.getNodeId(), candidateDetails);
-        assertNotNull("updateCandidateEvent is null", updateCandidateEvent);
+        candidateReadEvent = new CandidateReadEvent(candidateDetails.getNodeId());
+        assertNotNull("candidateReadEvent is null", candidateReadEvent);
+        candidateReadEvent = new CandidateReadEvent(candidateDetails.getNodeId(), candidateDetails);
+        assertNotNull("candidateReadEvent is null", candidateReadEvent);
     }
 }

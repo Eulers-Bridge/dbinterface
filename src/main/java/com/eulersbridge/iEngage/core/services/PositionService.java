@@ -15,7 +15,7 @@ public interface PositionService {
     public PositionCreatedEvent createPosition(CreatePositionEvent createPositionEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ReadEvent requestReadPosition(RequestReadPositionEvent requestReadPositionEvent);
+    public ReadEvent readPosition(RequestReadPositionEvent requestReadPositionEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public UpdatedEvent updatePosition(UpdatePositionEvent updatePositionEvent);

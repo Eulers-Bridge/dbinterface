@@ -4,13 +4,13 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.candidate.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
-import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.services.CandidateService;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.Candidate;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,62 +46,80 @@ public class CandidateController {
     createCandidate(@RequestBody Candidate candidate){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create candidate "+candidate);
         CreateCandidateEvent createCandidateEvent = new CreateCandidateEvent(candidate.toCandidateDetails());
-        CandidateCreatedEvent candidateCreatedEvent = candidateService.createCandidate(createCandidateEvent);
-        if(candidateCreatedEvent.getCandidateId() == null){
+        CreatedEvent candidateCreatedEvent = candidateService.createCandidate(createCandidateEvent);
+        if((null==candidateCreatedEvent)||(null==candidateCreatedEvent.getNodeId())||(candidateCreatedEvent.isFailed()))
+        {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        else{
+        else
+        {
             Candidate result = Candidate.fromCandidateDetails((CandidateDetails)candidateCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("candidate"+result.toString());
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
         }
     }
 
     //Get
-    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CANDIDATE_LABEL + "/{candidateid}")
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CANDIDATE_LABEL + "/{candidateId}")
     public @ResponseBody ResponseEntity<Candidate>
-    findCandidate(@PathVariable Long candidateId){
+    findCandidate(@PathVariable Long candidateId)
+    {
         if (LOG.isInfoEnabled()) LOG.info(candidateId+" attempting to get candidate. ");
         RequestReadCandidateEvent requestReadCandidateEvent = new RequestReadCandidateEvent(candidateId);
         ReadEvent readCandidateEvent = candidateService.requestReadCandidate(requestReadCandidateEvent);
-        if(readCandidateEvent.isEntityFound()){
-            Candidate candidate = Candidate.fromCandidateDetails((CandidateDetails) readCandidateEvent.getDetails());
+        if(readCandidateEvent.isEntityFound())
+        {
+            Candidate candidate = Candidate.fromCandidateDetails((CandidateDetails) (readCandidateEvent.getDetails()));
             return new ResponseEntity<>(candidate, HttpStatus.OK);
-        }else{
+        }else
+        {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
+	
     //Update
-    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL+"/{candidateid}")
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL+"/{candidateId}")
     public @ResponseBody ResponseEntity<Candidate>
     updateCandidate(@PathVariable Long candidateId, @RequestBody Candidate candidate){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update candidate. " + candidateId);
         UpdatedEvent candidateUpdatedEvent = candidateService.updateCandidate(new UpdateCandidateEvent(candidateId, candidate.toCandidateDetails()));
-        if(null != candidateUpdatedEvent){
+        if(null != candidateUpdatedEvent)
+        {
             if (LOG.isDebugEnabled()) LOG.debug("candidateUpdatedEvent - "+candidateUpdatedEvent);
-            if(candidateUpdatedEvent.isEntityFound()){
+            if(candidateUpdatedEvent.isEntityFound())
+            {
                 Candidate result = Candidate.fromCandidateDetails((CandidateDetails) candidateUpdatedEvent.getDetails());
                 if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
-            else{
+            else
+            {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
-        else{
+        else
+        {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     //Delete
-    @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CANDIDATE_LABEL+"/{candidateid}")
+    @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CANDIDATE_LABEL+"/{candidateId}")
     public @ResponseBody ResponseEntity<Boolean>
-    deleteCandidate(@PathVariable Long candidateid){
-        if (LOG.isInfoEnabled()) LOG.info("Attempting to delete candidate. " + candidateid);
-        DeletedEvent candidateDeletedEvent = candidateService.deleteCandidate(new DeleteCandidateEvent(candidateid));
-        Boolean isDeletionCompleted = Boolean.valueOf(candidateDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    deleteCandidate(@PathVariable Long candidateId)
+    {
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to delete candidate. " + candidateId);
+        DeletedEvent candidateDeletedEvent = candidateService.deleteCandidate(new DeleteCandidateEvent(candidateId));
+        ResponseEntity<Boolean> response;
+
+		if (candidateDeletedEvent.isDeletionCompleted())
+			response=new ResponseEntity<Boolean>(candidateDeletedEvent.isDeletionCompleted(),HttpStatus.OK);
+		else if (candidateDeletedEvent.isEntityFound())
+			response=new ResponseEntity<Boolean>(candidateDeletedEvent.isDeletionCompleted(),HttpStatus.GONE);
+		else
+			response=new ResponseEntity<Boolean>(candidateDeletedEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
+		return response;
+		
     }
 
     // like
