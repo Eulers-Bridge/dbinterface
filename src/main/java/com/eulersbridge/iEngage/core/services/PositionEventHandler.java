@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -30,7 +31,7 @@ public class PositionEventHandler implements PositionService{
 	}
 
 	@Override
-    public PositionCreatedEvent createPosition(CreatePositionEvent createPositionEvent)
+    public CreatedEvent createPosition(CreatePositionEvent createPositionEvent)
 	{
         PositionDetails positionDetails = (PositionDetails) createPositionEvent.getDetails();
         Position position = Position.fromPositionDetails(positionDetails);

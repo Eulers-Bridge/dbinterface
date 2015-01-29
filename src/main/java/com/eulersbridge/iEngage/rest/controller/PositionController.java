@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -35,15 +36,27 @@ public class PositionController {
     createPosition(@RequestBody Position position){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create position "+position);
         CreatePositionEvent createPositionEvent = new CreatePositionEvent(position.toPositionDetails());
-        PositionCreatedEvent positionCreatedEvent = positionService.createPosition(createPositionEvent);
-        if(positionCreatedEvent.getNodeId() == null){
-            return new ResponseEntity<Position>(HttpStatus.BAD_REQUEST);
+        CreatedEvent positionCreatedEvent = positionService.createPosition(createPositionEvent);
+        ResponseEntity<Position> response;
+        if(null==positionCreatedEvent)
+        {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        else{
+    	else if ((positionCreatedEvent.getClass()==PositionCreatedEvent.class)&&(!((PositionCreatedEvent)positionCreatedEvent).isElectionFound()))
+    	{
+    		response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
+    	else if((null==positionCreatedEvent.getNodeId())||(positionCreatedEvent.isFailed()))
+        {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        else
+        {
             Position result = Position.fromPositionDetails((PositionDetails) positionCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("position"+result.toString());
-            return new ResponseEntity<Position>(result, HttpStatus.CREATED);
+            response = new ResponseEntity<Position>(result, HttpStatus.CREATED);
         }
+        return response;
     }
 
     //Get
@@ -88,9 +101,18 @@ public class PositionController {
     public @ResponseBody ResponseEntity<Boolean>
     deletePosition(@PathVariable Long positionId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete position. " + positionId);
+        ResponseEntity<Boolean> response;
+
         DeletedEvent positionDeletedEvent = positionService.deletePosition(new DeletePositionEvent(positionId));
         Boolean isDeletionCompleted = Boolean.valueOf(positionDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    	if (isDeletionCompleted)
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.OK);
+    	else if (positionDeletedEvent.isEntityFound())
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.GONE);
+    	else
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.NOT_FOUND);
+    	return response;
     }
+
 
 }

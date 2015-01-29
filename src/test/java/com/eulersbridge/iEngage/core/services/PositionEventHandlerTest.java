@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -79,7 +80,7 @@ public class PositionEventHandlerTest
 		when(positionRepository.save(any(Position.class))).thenReturn(testData);
 		PositionDetails dets=testData.toPositionDetails();
 		CreatePositionEvent createPositionEvent=new CreatePositionEvent(dets);
-		PositionCreatedEvent evtData = service.createPosition(createPositionEvent);
+		CreatedEvent evtData = service.createPosition(createPositionEvent);
 		PositionDetails returnedDets = (PositionDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toPositionDetails());
 		assertNotNull(evtData.getNodeId());
@@ -99,9 +100,9 @@ public class PositionEventHandlerTest
 		when(positionRepository.save(any(Position.class))).thenReturn(testData);
 		PositionDetails dets=testData.toPositionDetails();
 		CreatePositionEvent createElectionEvent=new CreatePositionEvent(dets);
-		PositionCreatedEvent evtData = service.createPosition(createElectionEvent);
-		assertFalse(evtData.isElectionFound());
-		assertEquals(evtData.getFailedNodeId(),testData.getElection().getNodeId());
+		CreatedEvent evtData = service.createPosition(createElectionEvent);
+		assertFalse(((PositionCreatedEvent)evtData).isElectionFound());
+		assertEquals(((PositionCreatedEvent)evtData).getFailedNodeId(),testData.getElection().getNodeId());
 		assertNull(evtData.getDetails());
 	}
 
