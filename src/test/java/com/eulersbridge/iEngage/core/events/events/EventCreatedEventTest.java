@@ -60,9 +60,12 @@ public class EventCreatedEventTest {
     }
 
     @Test
-    public void testSetEventId() throws Exception {
-        eventCreatedEvent.setEventId(new Long(11));
-        assertEquals("Id does not match", eventId, eventCreatedEvent.getEventId());
+    public void testSetEventId() throws Exception
+    {
+    	Long thisId=11L;
+        assertNotEquals("Id does match", thisId, eventCreatedEvent.getEventId());
+        eventCreatedEvent.setEventId(thisId);
+        assertEquals("Id does not match", thisId, eventCreatedEvent.getEventId());
     }
 
     @Test
