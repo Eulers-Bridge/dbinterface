@@ -10,7 +10,6 @@ import java.util.Set;
  */
 
 public class CandidateDetails extends Details {
-    private String candidateEmail;
     private String information;
     private String policyStatement;
     private Set<String> pictures;
@@ -24,8 +23,6 @@ public class CandidateDetails extends Details {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
         buff.append(getNodeId());
-        buff.append(", candidateEmail = ");
-        buff.append(getCandidateEmail());
         buff.append(", information = ");
         buff.append(getInformation());
         buff.append(", policyStatement = ");
@@ -52,7 +49,6 @@ public class CandidateDetails extends Details {
         }
         else
         {
-            result = prime * result	+ ((candidateEmail == null) ? 0 : candidateEmail.hashCode());
             result = prime * result	+ ((information == null) ? 0 : information.hashCode());
             result = prime * result + ((policyStatement == null) ? 0 : policyStatement.hashCode());
             result = prime * result + ((pictures == null) ? 0 : pictures.hashCode());
@@ -81,11 +77,6 @@ public class CandidateDetails extends Details {
         {
             if (other.nodeId != null)
                 return false;
-            if (candidateEmail == null) {
-                if (other.candidateEmail != null)
-                    return false;
-            } else if (!candidateEmail.equals(other.candidateEmail))
-                return false;
             if (information == null) {
                 if (other.information != null)
                     return false;
@@ -108,14 +99,6 @@ public class CandidateDetails extends Details {
                 return false;
         }
         return true;
-    }
-
-    public String getCandidateEmail() {
-        return candidateEmail;
-    }
-
-    public void setCandidateEmail(String candidateEmail) {
-        this.candidateEmail = candidateEmail;
     }
 
     public String getInformation() {

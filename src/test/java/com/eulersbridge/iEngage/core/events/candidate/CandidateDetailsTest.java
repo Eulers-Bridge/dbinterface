@@ -28,7 +28,6 @@ public class CandidateDetailsTest
     public void setUp() throws Exception {
         candidateDetails = new CandidateDetails();
         candidateDetails.setNodeId(candidateId);
-        candidateDetails.setCandidateEmail(candidateEmail);
         candidateDetails.setInformation(information);
         candidateDetails.setPolicyStatement(policyStatement);
         pictures.add("http://url");
@@ -53,18 +52,6 @@ public class CandidateDetailsTest
         CandidateDetails candidateDetails1 = new CandidateDetails();
         candidateDetails1.setNodeId(new Long(1));
         assertEquals("candidateDetails does not match", candidateDetails1, candidateDetails);
-    }
-
-    @Test
-    public void testGetCandidateEmail() throws Exception {
-        assertEquals("email does not match", candidateEmail, candidateDetails.getCandidateEmail());
-    }
-
-    @Test
-    public void testSetCandidateEmail() throws Exception {
-        CandidateDetails candidateDetails1 = new CandidateDetails();
-        candidateDetails1.setCandidateEmail(candidateEmail);
-        assertEquals("email does not match", candidateEmail, candidateDetails1.getCandidateEmail());
     }
 
     @Test

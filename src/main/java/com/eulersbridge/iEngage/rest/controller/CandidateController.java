@@ -47,16 +47,26 @@ public class CandidateController {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create candidate "+candidate);
         CreateCandidateEvent createCandidateEvent = new CreateCandidateEvent(candidate.toCandidateDetails());
         CreatedEvent candidateCreatedEvent = candidateService.createCandidate(createCandidateEvent);
-        if((null==candidateCreatedEvent)||(null==candidateCreatedEvent.getNodeId())||(candidateCreatedEvent.isFailed()))
+        ResponseEntity<Candidate> response;
+        if(null==candidateCreatedEvent)
         {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+		else if ((candidateCreatedEvent.getClass()==CandidateCreatedEvent.class)&&(!(((CandidateCreatedEvent)candidateCreatedEvent).isPositionFound())||!(((CandidateCreatedEvent)candidateCreatedEvent).isUserFound())))
+		{
+			response = new ResponseEntity<Candidate>(HttpStatus.NOT_FOUND);
+		}
+		else if((null==candidateCreatedEvent.getNodeId())||(candidateCreatedEvent.isFailed()))
+        {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else
         {
             Candidate result = Candidate.fromCandidateDetails((CandidateDetails)candidateCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("candidate"+result.toString());
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
+            response = new ResponseEntity<>(result, HttpStatus.CREATED);
         }
+        return response;
     }
 
     //Get

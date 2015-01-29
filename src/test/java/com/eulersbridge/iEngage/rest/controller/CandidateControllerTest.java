@@ -41,6 +41,9 @@ import com.eulersbridge.iEngage.core.events.candidate.CreateCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.DeleteCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.RequestReadCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent;
+import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
+import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
+import com.eulersbridge.iEngage.core.events.events.EventDetails;
 import com.eulersbridge.iEngage.core.services.CandidateService;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.PositionService;
@@ -83,6 +86,34 @@ public class CandidateControllerTest
 		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
 	}
 
+	String setupContent(CandidateDetails dets)
+	{
+		int evtId=dets.getNodeId().intValue();
+		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
+				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+"}";
+	}
+	
+	String setupInvalidContent(CandidateDetails dets)
+	{
+		int evtId=dets.getNodeId().intValue();
+		return "{\"candidateId1\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
+				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+"}";
+	}
+	
+	String setupReturnedContent(CandidateDetails dets)
+	{
+		int evtId=dets.getNodeId().intValue();
+		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
+				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
+				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+evtId+"\"},"+
+				"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+evtId+"/previous\"},"+
+				"{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+evtId+"/next\"},"+
+				"{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/candidate/"+evtId+"/likedBy/USERID\"},"+
+				"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/candidate/"+evtId+"/unlikedBy/USERID\"},"+
+				"{\"rel\":\"Likes\",\"href\":\"http://localhost/api/candidate/"+evtId+"/likes\"},"+
+				"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/candidates\"}]}";	
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.CandidateController#CandidateController()}.
 	 */
@@ -103,7 +134,7 @@ public class CandidateControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateCandidate()");
 		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
 		CandidateCreatedEvent testData=new CandidateCreatedEvent(dets);
-		String content="{\"information\":\"Test info\",\"policyStatement\":\"Test policy statement\",\"userId\":123756,\"positionId\":124756}";
+		String content=setupContent(dets);
 //		String returnedContent="{\"candidateId\":"+dets.getNodeId().intValue()+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+"\",\"electionId\":"+dets.getElectionId().intValue()+
 //								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/candidates\"}]}";
 		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(testData);
@@ -126,9 +157,34 @@ public class CandidateControllerTest
 	public final void testCreateCandidateNullEvt() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateCandidate()");
-		String content="{\"information\":\"Test info\",\"policyStatement\":\"Test policy statement\",\"userId\":123756,\"positionId\":124756}";
+		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		String content=setupContent(dets);
 		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(null);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateEventInvalidContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateCandidate()");
+		CandidateCreatedEvent testData=null;
+		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		String content=setupInvalidContent(dets);
+		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateEventNoContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateCandidate()");
+		CandidateCreatedEvent testData=null;
+		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
 	}
@@ -138,9 +194,9 @@ public class CandidateControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateCandidate()");
 		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		String content=setupContent(dets);
 		CandidateCreatedEvent testData=new CandidateCreatedEvent(dets);
 		testData.setNodeId(null);
-		String content="{\"information\":\"Test info\",\"policyStatement\":\"Test policy statement\",\"userId\":123756,\"positionId\":124756}";
 		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -152,13 +208,39 @@ public class CandidateControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateCandidate()");
 		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		String content=setupContent(dets);
 		CreatedEvent testData=CandidateCreatedEvent.failed(dets);
 		testData.setNodeId(null);
-		String content="{\"information\":\"Test info\",\"policyStatement\":\"Test policy statement\",\"userId\":123756,\"positionId\":124756}";
 		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
 		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreatePositonNotFound() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateEvent()");
+		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		CandidateCreatedEvent testData=CandidateCreatedEvent.positionNotFound(dets.getPositionId());
+		String content=setupContent(dets);
+		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
+
+	@Test
+	public final void testCreateUserNotFound() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateEvent()");
+		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		CandidateCreatedEvent testData=CandidateCreatedEvent.userNotFound(dets.getUserId());
+		String content=setupContent(dets);
+		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
 	}
 
 	/**
@@ -215,7 +297,7 @@ public class CandidateControllerTest
 		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
 		dets.setInformation("Test Information that differs");
 		CandidateUpdatedEvent testData=new CandidateUpdatedEvent(id, dets);
-		String content="{\"candidateId\":1,\"information\":\"Test information\",\"policyStatement\":\"Test policy\",\"userId\":123756,\"positionId\":4567}";
+		String content=setupContent(dets);
 		String returnedContent="{\"candidateId\":"+dets.getNodeId().intValue()+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+"\",\"userId\":"+dets.getUserId().intValue()+"\",\"positionId\":"+dets.getPositionId().intValue()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/candidates\"}]}";
 		when (candidateService.updateCandidate(any(UpdateCandidateEvent.class))).thenReturn(testData);
@@ -230,6 +312,58 @@ public class CandidateControllerTest
 		.andExpect(jsonPath("$.links[1].rel",is("Read all")))
 /*		.andExpect(content().string(returnedContent))
 */		.andExpect(status().isOk())	;		
+	}
+	@Test
+	public void testUpdateCandidateNullEventReturned() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateCandidate()");
+		Long id=1L;
+		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		String content=setupContent(dets);
+		when (candidateService.updateCandidate(any(UpdateCandidateEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateCandidateBadContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateCandidate()");
+		Long id=1L;
+		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		CandidateUpdatedEvent testData=new CandidateUpdatedEvent(id, dets);
+		String content=setupInvalidContent(dets);
+		when (candidateService.updateCandidate(any(UpdateCandidateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateCandidateEmptyContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateCandidate()");
+		Long id=1L;
+		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		CandidateUpdatedEvent testData=new CandidateUpdatedEvent(id, dets);
+		when (candidateService.updateCandidate(any(UpdateCandidateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateCandidateNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateCandidate()");
+		Long id=1L;
+		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
+		String content=setupContent(dets);
+		when (candidateService.updateCandidate(any(UpdateCandidateEvent.class))).thenReturn(CandidateUpdatedEvent.notFound(id));
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
 	}
 
 	/**

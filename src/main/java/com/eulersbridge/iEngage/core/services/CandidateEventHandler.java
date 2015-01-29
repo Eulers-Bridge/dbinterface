@@ -41,12 +41,16 @@ public class CandidateEventHandler implements CandidateService {
         
         Long userId=candidateDetails.getUserId();
     	if (LOG.isDebugEnabled()) LOG.debug("Finding user with nodeId = "+userId);
-        User user=userRepository.findOne(userId);
+    	
+        User user=null;
+        if (userId!=null) user = userRepository.findOne(userId);
+        
         if (user!=null)
         {
 	        Long positionId=candidateDetails.getPositionId();
 	    	if (LOG.isDebugEnabled()) LOG.debug("Finding position with nodeId = "+positionId);
-	        Position position=positionRepository.findOne(positionId);
+	        Position position=null;
+	        if (positionId!=null) position=positionRepository.findOne(positionId);
 	    	if (position!=null)
 	    	{
 		        Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);

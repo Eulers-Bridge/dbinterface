@@ -136,6 +136,26 @@ public class CandidateEventHandlerTest
 		assertNull(evtData.getDetails());
 	}
 
+	@Test
+	public final void testCreateCandidatePositionIdNull() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CreatingCandidate()");
+		Candidate testData=DatabaseDataFixture.populateCandidate1();
+		Position testPosition=testData.getPosition();
+		testPosition.setNodeId(null);
+		testData.setPosition(testPosition);
+		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		when(positionRepository.findOne(any(Long.class))).thenReturn(testPosition);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+		when(candidateRepository.save(any(Candidate.class))).thenReturn(testData);
+		CandidateDetails dets=testData.toCandidateDetails();
+		CreateCandidateEvent createPositionEvent=new CreateCandidateEvent(dets);
+		CandidateCreatedEvent evtData = (CandidateCreatedEvent) service.createCandidate(createPositionEvent);
+		assertFalse(evtData.isPositionFound());
+		assertEquals(evtData.getFailedId(),testData.getPosition().getNodeId());
+		assertNull(evtData.getDetails());
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.PositionEventHandler#createPosition(com.eulersbridge.iEngage.core.events.positions.CreatePositionEvent)}.
 	 */
@@ -146,6 +166,26 @@ public class CandidateEventHandlerTest
 		Candidate testData=DatabaseDataFixture.populateCandidate1();
 		Position testInst=null;
 		when(positionRepository.findOne(any(Long.class))).thenReturn(testInst);
+		when(candidateRepository.save(any(Candidate.class))).thenReturn(testData);
+		CandidateDetails dets=testData.toCandidateDetails();
+		CreateCandidateEvent createPositionEvent=new CreateCandidateEvent(dets);
+		CandidateCreatedEvent evtData = (CandidateCreatedEvent) service.createCandidate(createPositionEvent);
+		assertFalse(evtData.isUserFound());
+		assertEquals(evtData.getFailedId(),testData.getUser().getNodeId());
+		assertNull(evtData.getDetails());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PositionEventHandler#createPosition(com.eulersbridge.iEngage.core.events.positions.CreatePositionEvent)}.
+	 */
+	@Test
+	public final void testCreateCandidateUserIDNull() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CreatingCandidate()");
+		Candidate testData=DatabaseDataFixture.populateCandidate1();
+		User user=testData.getUser();
+		user.setNodeId(null);
+		testData.setUser(user);
 		when(candidateRepository.save(any(Candidate.class))).thenReturn(testData);
 		CandidateDetails dets=testData.toCandidateDetails();
 		CreateCandidateEvent createPositionEvent=new CreateCandidateEvent(dets);

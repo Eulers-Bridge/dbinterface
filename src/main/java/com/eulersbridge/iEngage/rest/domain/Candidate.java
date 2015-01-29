@@ -16,7 +16,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 public class Candidate extends ResourceSupport{
     private Long candidateId;
-    private String candidateEmail;
     private String information;
     private String policyStatement;
     private Set<String> pictures;
@@ -36,7 +35,6 @@ public class Candidate extends ResourceSupport{
                 + simpleName.substring(1);
 
         candidate.setCandidateId(candidateDetails.getNodeId());
-        candidate.setCandidateEmail(candidateDetails.getCandidateEmail());
         candidate.setInformation(candidateDetails.getInformation());
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
         candidate.setPictures(candidateDetails.getPictures());
@@ -58,8 +56,7 @@ public class Candidate extends ResourceSupport{
     public CandidateDetails toCandidateDetails(){
         CandidateDetails candidateDetails = new CandidateDetails();
         candidateDetails.setNodeId(getCandidateId());
-        candidateDetails.setCandidateEmail(getCandidateEmail());
-        candidateDetails.setInformation(getInformation());
+         candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());
         candidateDetails.setPictures(getPictures());
         candidateDetails.setUserId(getUserId());
@@ -73,14 +70,6 @@ public class Candidate extends ResourceSupport{
 
     public void setCandidateId(Long candidateId) {
         this.candidateId = candidateId;
-    }
-
-    public String getCandidateEmail() {
-        return candidateEmail;
-    }
-
-    public void setCandidateEmail(String candidateEmail) {
-        this.candidateEmail = candidateEmail;
     }
 
     public String getInformation() {
