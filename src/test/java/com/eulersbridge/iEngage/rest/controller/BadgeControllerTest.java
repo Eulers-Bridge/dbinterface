@@ -80,15 +80,53 @@ public class BadgeControllerTest {
         when (badgeService.createBadge(any(CreateBadgeEvent.class))).thenReturn(testData);
         this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
             .andDo(print())
-                .andExpect(jsonPath("$.badgeId", is(dets.getNodeId().intValue())))
-                .andExpect(jsonPath("$.name", is(dets.getName())))
-                .andExpect(jsonPath("$.awarded", is(dets.isAwarded())))
-                .andExpect(jsonPath("$.timestamp", is(dets.getTimestamp().intValue())))
-                .andExpect(jsonPath("$.xpValue", is(dets.getXpValue().intValue())))
-                .andExpect(jsonPath("$.links[0].rel",is("self")))
-                .andExpect(jsonPath("$.links[1].rel",is("Read all")))
-                .andExpect(content().string(returnedContent))
-                .andExpect(status().isCreated());
+            .andExpect(jsonPath("$.badgeId", is(dets.getNodeId().intValue())))
+            .andExpect(jsonPath("$.name", is(dets.getName())))
+            .andExpect(jsonPath("$.awarded", is(dets.isAwarded())))
+            .andExpect(jsonPath("$.timestamp", is(dets.getTimestamp().intValue())))
+            .andExpect(jsonPath("$.xpValue", is(dets.getXpValue().intValue())))
+            .andExpect(jsonPath("$.links[0].rel",is("self")))
+            .andExpect(jsonPath("$.links[1].rel",is("Read all")))
+            .andExpect(content().string(returnedContent))
+            .andExpect(status().isCreated());
+    }
+
+    @Test
+    public final void testCreateBadgeInvalidContent() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadge()");
+        BadgeDetails dets = DatabaseDataFixture.populateBadge1().toBadgeDetails();
+        BadgeCreatedEvent testData=new BadgeCreatedEvent(dets.getNodeId(), dets);
+        String content = "{\"badgeId1\":100,\"name\":\"Test Badge\",\"awarded\":true,\"timestamp\":100000,\"xpValue\":50}";
+        when (badgeService.createBadge(any(CreateBadgeEvent.class))).thenReturn(testData);
+        this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+                .andDo(print())
+                .andExpect(status().isBadRequest())	;
+    }
+
+    @Test
+    public final void testCreateBadgeNoContent() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadge()");
+        BadgeDetails dets = DatabaseDataFixture.populateBadge1().toBadgeDetails();
+        BadgeCreatedEvent testData=new BadgeCreatedEvent(dets.getNodeId(), dets);
+        when (badgeService.createBadge(any(CreateBadgeEvent.class))).thenReturn(testData);
+        this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())	;
+    }
+
+    @Test
+    public final void testCreateBadgeNullIdReturned() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadge()");
+        BadgeDetails dets = DatabaseDataFixture.populateBadge1().toBadgeDetails();
+        BadgeCreatedEvent testData=new BadgeCreatedEvent(null, dets);
+        String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
+        when (badgeService.createBadge(any(CreateBadgeEvent.class))).thenReturn(testData);
+        this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+                .andDo(print())
+                .andExpect(status().isBadRequest())	;
     }
 
     @Test

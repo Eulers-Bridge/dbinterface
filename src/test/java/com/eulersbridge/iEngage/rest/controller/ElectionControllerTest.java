@@ -308,7 +308,7 @@ public class ElectionControllerTest
 		this.mockMvc.perform(delete(urlPrefix+"/{electionId}/",dets.getElectionId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(content().string("true"))
-		.andExpect(status().isOk())	;
+		.andExpect(status().isOk());
 	}
 
 	@Test
