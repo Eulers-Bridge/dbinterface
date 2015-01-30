@@ -1,11 +1,13 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.*;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,13 +25,20 @@ public class BadgeEventHandler implements BadgeService{
     }
 
     @Override
-    public BadgeCreatedEvent createBadge(CreateBadgeEvent createBadgeEvent) {
+    public CreatedEvent createBadge(CreateBadgeEvent createBadgeEvent)
+    {
         BadgeDetails badgeDetails = (BadgeDetails) createBadgeEvent.getDetails();
+        CreatedEvent badgeCreatedEvent;
+        
         Badge badge = Badge.fromBadgeDetails(badgeDetails);
         Badge result = badgeRepository.save(badge);
-        BadgeCreatedEvent badgeCreatedEvent = new BadgeCreatedEvent(result.getBadgeId(), result.toBadgeDetails());
+        if ((null==result)||(null==result.getBadgeId()))
+        	badgeCreatedEvent = CreatedEvent.failed(badgeDetails);
+        else
+        	badgeCreatedEvent = new BadgeCreatedEvent(result.getBadgeId(), result.toBadgeDetails());
         return badgeCreatedEvent;
     }
+    
 
     @Override
     public ReadEvent requestReadBadge(RequestReadBadgeEvent requestReadBadgeEvent) {

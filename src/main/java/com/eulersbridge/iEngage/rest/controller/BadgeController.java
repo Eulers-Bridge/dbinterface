@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -35,8 +36,8 @@ public class BadgeController {
     createBadge(@RequestBody Badge badge){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create badge "+badge);
         CreateBadgeEvent createBadgeEvent = new CreateBadgeEvent(badge.toBadgeDetails());
-        BadgeCreatedEvent badgeCreatedEvent = badgeService.createBadge(createBadgeEvent);
-        if(badgeCreatedEvent.getBadgeId() == null){
+        CreatedEvent badgeCreatedEvent = badgeService.createBadge(createBadgeEvent);
+        if(badgeCreatedEvent.getNodeId() == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else{
