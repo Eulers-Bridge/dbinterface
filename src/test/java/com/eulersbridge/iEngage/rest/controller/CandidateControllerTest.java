@@ -101,13 +101,13 @@ public class CandidateControllerTest
 	{
 		int evtId=dets.getNodeId().intValue();
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
-				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
+				"\",\"pictures\":"+dets.getPictures()+",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+evtId+"\"},"+
-				"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+evtId+"/previous\"},"+
-				"{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+evtId+"/next\"},"+
-				"{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/candidate/"+evtId+"/likedBy/USERID\"},"+
-				"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/candidate/"+evtId+"/unlikedBy/USERID\"},"+
-				"{\"rel\":\"Likes\",\"href\":\"http://localhost/api/candidate/"+evtId+"/likes\"},"+
+//				"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+evtId+"/previous\"},"+
+//				"{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+evtId+"/next\"},"+
+//				"{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/candidate/"+evtId+"/likedBy/USERID\"},"+
+//				"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/candidate/"+evtId+"/unlikedBy/USERID\"},"+
+//				"{\"rel\":\"Likes\",\"href\":\"http://localhost/api/candidate/"+evtId+"/likes\"},"+
 				"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/candidates\"}]}";	
 	}
 
@@ -250,8 +250,7 @@ public class CandidateControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindCandidate()");
 		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
 		CandidateReadEvent testData=new CandidateReadEvent(dets.getNodeId(),dets);
-		String returnedContent="{\"candidateId\":"+dets.getNodeId().intValue()+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+"\",\"userId\":"+dets.getUserId().intValue()+"\",\"positionId\":"+dets.getPositionId().intValue()+
-				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/candidates\"}]}";
+		String returnedContent = setupReturnedContent(dets);
 		when (candidateService.requestReadCandidate(any(RequestReadCandidateEvent.class))).thenReturn(testData);
 		if (LOG.isDebugEnabled()) LOG.debug("testData - "+testData);
 		this.mockMvc.perform(get(urlPrefix+"/{candidateId}",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -262,11 +261,9 @@ public class CandidateControllerTest
 		.andExpect(jsonPath("$.userId",is(dets.getUserId().intValue())))
 		.andExpect(jsonPath("$.positionId",is(dets.getPositionId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-//		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
-//		.andExpect(jsonPath("$.links[2].rel",is("Next")))
 		.andExpect(jsonPath("$.links[1].rel",is("Read all")))
-/*		.andExpect(content().string(returnedContent))
-*/		.andExpect(status().isOk())	;
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;
 	}
 
 	@Test
@@ -295,8 +292,7 @@ public class CandidateControllerTest
 		dets.setInformation("Test Information that differs");
 		CandidateUpdatedEvent testData=new CandidateUpdatedEvent(id, dets);
 		String content=setupContent(dets);
-		String returnedContent="{\"candidateId\":"+dets.getNodeId().intValue()+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+"\",\"userId\":"+dets.getUserId().intValue()+"\",\"positionId\":"+dets.getPositionId().intValue()+
-				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/candidates\"}]}";
+		String returnedContent=setupReturnedContent(dets);
 		when (candidateService.updateCandidate(any(UpdateCandidateEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
@@ -307,8 +303,8 @@ public class CandidateControllerTest
 		.andExpect(jsonPath("$.positionId",is(dets.getPositionId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Read all")))
-/*		.andExpect(content().string(returnedContent))
-*/		.andExpect(status().isOk())	;		
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;		
 	}
 	@Test
 	public void testUpdateCandidateNullEventReturned() throws Exception
