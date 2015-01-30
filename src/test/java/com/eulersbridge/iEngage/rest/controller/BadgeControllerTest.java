@@ -155,8 +155,9 @@ public class BadgeControllerTest {
     {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateBadge()");
         BadgeDetails dets = DatabaseDataFixture.populateBadge1().toBadgeDetails();
-        BadgeCreatedEvent testData=new BadgeCreatedEvent(null, dets);
         String content=setupContent(dets);
+        dets.setNodeId(null);
+        BadgeCreatedEvent testData=new BadgeCreatedEvent(null, dets);
         when (badgeService.createBadge(any(CreateBadgeEvent.class))).thenReturn(testData);
         this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
                 .andDo(print())
