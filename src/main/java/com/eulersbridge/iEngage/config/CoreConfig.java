@@ -168,7 +168,7 @@ public class CoreConfig
     public TicketService createTicketService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createTicketService()");
-        return new TIcketEventHandler(ticketRepository);
+        return new TicketEventHandler(ticketRepository);
     }
 
     @Bean
