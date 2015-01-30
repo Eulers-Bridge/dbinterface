@@ -13,12 +13,12 @@ import org.slf4j.LoggerFactory;
  * @author Yikai Gong
  */
 
-public class TIcketEventHandler implements TicketService{
+public class TicketEventHandler implements TicketService{
     private static Logger LOG = LoggerFactory.getLogger(TicketService.class);
 
     private TicketRepository ticketRepository;
 
-    public TIcketEventHandler(TicketRepository ticketRepository) {
+    public TicketEventHandler(TicketRepository ticketRepository) {
         this.ticketRepository = ticketRepository;
     }
 
