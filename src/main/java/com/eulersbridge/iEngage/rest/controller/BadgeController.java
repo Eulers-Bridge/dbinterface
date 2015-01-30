@@ -6,6 +6,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.*;
 import com.eulersbridge.iEngage.core.services.BadgeService;
 import com.eulersbridge.iEngage.rest.domain.Badge;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,10 +88,19 @@ public class BadgeController {
     public @ResponseBody ResponseEntity<Boolean>
     deleteBadge(@PathVariable Long badgeId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete badge. " + badgeId);
+
+        ResponseEntity<Boolean> response;
         DeletedEvent badgeDeletedEvent = badgeService.deleteBadge(new DeleteBadgeEvent(badgeId));
         Boolean isDeletionCompleted = Boolean.valueOf(badgeDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    	if (isDeletionCompleted)
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.OK);
+    	else if (badgeDeletedEvent.isEntityFound())
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.GONE);
+    	else
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.NOT_FOUND);
+    	return response;
     }
+
 
     //TODO ReadAll
 }
