@@ -2,10 +2,14 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.rest.controller.TicketController;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -147,5 +151,22 @@ public class Ticket extends ResourceSupport{
 		return "Ticket [ticketId=" + ticketId + ", name=" + name + ", logo="
 				+ logo + ", pictures=" + pictures + ", information="
 				+ information + ", candidateIds=" + candidateIds + ", electionId = "+electionId+"]";
+	}
+
+	public static Iterator<Ticket> toTicketsIterator(
+			Iterator<TicketDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <Ticket> elections=new ArrayList<Ticket>();
+		while(iter.hasNext())
+		{
+			TicketDetails dets=iter.next();
+			Ticket thisTicket=Ticket.fromTicketDetails(dets);
+			Link self = thisTicket.getLink("self");
+			thisTicket.removeLinks();
+			thisTicket.add(self);
+			elections.add(thisTicket);		
+		}
+		return elections.iterator();
 	}
 }
