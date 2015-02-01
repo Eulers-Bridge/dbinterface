@@ -7,12 +7,12 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
  * @author Yikai Gong
  */
 
-public class ReadTIcketEvent extends ReadEvent{
-    public ReadTIcketEvent(Long ticketId) {
+public class ReadTicketEvent extends ReadEvent{
+    public ReadTicketEvent(Long ticketId) {
         super(ticketId);
     }
 
-    public ReadTIcketEvent(Long ticketId, TicketDetails ticketDetails) {
+    public ReadTicketEvent(Long ticketId, TicketDetails ticketDetails) {
         super(ticketId, ticketDetails);
     }
 }

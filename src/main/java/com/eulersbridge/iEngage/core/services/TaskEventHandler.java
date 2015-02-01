@@ -27,7 +27,7 @@ public class TaskEventHandler implements TaskService {
         TaskDetails taskDetails = (TaskDetails) createTaskEvent.getDetails();
         Task task = Task.fromTaskDetails(taskDetails);
         Task result = taskRepository.save(task);
-        TaskCreatedEvent taskCreatedEvent = new TaskCreatedEvent(result.getTaskId(), result.toTaskDetails());
+        TaskCreatedEvent taskCreatedEvent = new TaskCreatedEvent(result.toTaskDetails());
         return taskCreatedEvent;
     }
 

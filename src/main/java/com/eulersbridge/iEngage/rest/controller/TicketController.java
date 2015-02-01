@@ -35,13 +35,14 @@ public class TicketController {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create ticket "+ticket);
         CreateTicketEvent createTicketEvent = new CreateTicketEvent(ticket.toTicketDetails());
         TicketCreatedEvent ticketCreatedEvent = ticketService.createTicket(createTicketEvent);
-        if(ticketCreatedEvent.getTicketId() == null){
+        if(ticketCreatedEvent.getFailedId() != null)
+        {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else{
             Ticket result = Ticket.fromTicketDetails((TicketDetails) ticketCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("ticket"+result.toString());
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
         }
     }
 

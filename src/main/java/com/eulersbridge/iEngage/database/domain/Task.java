@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
@@ -11,13 +12,14 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
  */
 
 @NodeEntity
-public class Task {
+public class Task
+{
     @GraphId
     private Long taskId;
     private String action;
-    private boolean completed;
-    private Long timestamp;
-    private Long xpValue;
+//    private boolean completed;
+//    private Long timestamp;
+    private Integer xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(Task.class);
 
@@ -25,14 +27,25 @@ public class Task {
         if (LOG.isTraceEnabled()) LOG.trace("Constructor");
     }
 
-    public static Task fromTaskDetails(TaskDetails taskDetails){
+    /**
+	 * @param taskId
+	 * @param action
+	 * @param xpValue
+	 */
+	public Task(Long taskId, String action, Integer xpValue)
+	{
+		super();
+		this.taskId = taskId;
+		this.action = action;
+		this.xpValue = xpValue;
+	}
+
+	public static Task fromTaskDetails(TaskDetails taskDetails){
         if (LOG.isTraceEnabled()) LOG.trace("fromTaskDetails()");
         Task task = new Task();
         if (LOG.isTraceEnabled()) LOG.trace("taskDetails "+taskDetails);
         task.setTaskId(taskDetails.getNodeId());
         task.setAction(taskDetails.getAction());
-        task.setCompleted(taskDetails.isCompleted());
-        task.setTimestamp(taskDetails.getTimestamp());
         task.setXpValue(taskDetails.getXpValue());
 
         if (LOG.isTraceEnabled()) LOG.trace("task "+task);
@@ -45,8 +58,6 @@ public class Task {
         if (LOG.isTraceEnabled()) LOG.trace("task "+this);
         taskDetails.setNodeId(getTaskId());
         taskDetails.setAction(getAction());
-        taskDetails.setCompleted(isCompleted());
-        taskDetails.setTimestamp(getTimestamp());
         taskDetails.setXpValue(getXpValue());
         if (LOG.isTraceEnabled()) LOG.trace("taskDetails; "+ taskDetails);
         return taskDetails;
@@ -59,10 +70,6 @@ public class Task {
         buff.append(getTaskId());
         buff.append(", action = ");
         buff.append(getAction());
-        buff.append(", completed = ");
-        buff.append(isCompleted());
-        buff.append(", timestamp = ");
-        buff.append(getTimestamp());
         buff.append(", xpValue = ");
         buff.append(getXpValue());
         buff.append(" ]");
@@ -87,27 +94,11 @@ public class Task {
         this.action = action;
     }
 
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Long getXpValue() {
+    public Integer getXpValue() {
         return xpValue;
     }
 
-    public void setXpValue(Long xpValue) {
+    public void setXpValue(Integer xpValue) {
         this.xpValue = xpValue;
     }
 }

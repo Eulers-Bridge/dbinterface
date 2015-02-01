@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
-import com.eulersbridge.iEngage.rest.controller.CandidateController;
 import com.eulersbridge.iEngage.rest.controller.TicketController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +21,7 @@ public class Ticket extends ResourceSupport{
     private String logo;
     private Set<String> pictures;
     private String information;
-    private String candidatesEmails;
-    private String candidatesNames;
+    private Iterable<Long> candidateIds;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -42,8 +40,7 @@ public class Ticket extends ResourceSupport{
         ticket.setLogo(ticketDetails.getLogo());
         ticket.setPictures(ticketDetails.getPictures());
         ticket.setInformation(ticketDetails.getInformation());
-        ticket.setCandidatesEmails(ticketDetails.getCandidatesEmails());
-        ticket.setCandidatesNames(ticketDetails.getCandidatesNames());
+        ticket.setCandidateIds(ticketDetails.getCandidateIds());
 
         // {!begin selfRel}
         ticket.add(linkTo(TicketController.class).slash(name)
@@ -63,8 +60,6 @@ public class Ticket extends ResourceSupport{
         ticketDetails.setLogo(getLogo());
         ticketDetails.setPictures(getPictures());
         ticketDetails.setInformation(getInformation());
-        ticketDetails.setCandidatesEmails(getCandidatesEmails());
-        ticketDetails.setCandidatesNames(getCandidatesNames());
         return ticketDetails;
     }
 
@@ -108,19 +103,30 @@ public class Ticket extends ResourceSupport{
         this.information = information;
     }
 
-    public String getCandidatesEmails() {
-        return candidatesEmails;
-    }
+    /**
+	 * @return the candidateIds
+	 */
+	public Iterable<Long> getCandidateIds()
+	{
+		return candidateIds;
+	}
 
-    public void setCandidatesEmails(String candidatesEmails) {
-        this.candidatesEmails = candidatesEmails;
-    }
+	/**
+	 * @param candidateIds the candidateIds to set
+	 */
+	public void setCandidateIds(Iterable<Long> candidateIds)
+	{
+		this.candidateIds = candidateIds;
+	}
 
-    public String getCandidatesNames() {
-        return candidatesNames;
-    }
-
-    public void setCandidatesNames(String candidatesNames) {
-        this.candidatesNames = candidatesNames;
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "Ticket [ticketId=" + ticketId + ", name=" + name + ", logo="
+				+ logo + ", pictures=" + pictures + ", information="
+				+ information + ", candidateIds=" + candidateIds + "]";
+	}
 }

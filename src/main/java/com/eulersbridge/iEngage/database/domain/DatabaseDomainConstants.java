@@ -12,16 +12,17 @@ public class DatabaseDomainConstants
 	public static final String HAS_PERSONALITY_LABEL = "HAS_PERSONALITY";
 	public static final String USERS_LABEL = "USER_OF";
 	public static final String VERIFIED_BY_LABEL = "verifiedBy";
-	public static final String HAS_FORUM_QUESTION_LABEL = "HAS_FORUM_QUESTION";
-	public static final String HAS_NEWS_FEED_LABEL = "HAS_NEWS_FEED";
+    public static final String HAS_CANDIDATE_LABEL = "HAS_CANDIDATE";
 	public static final String HAS_ELECTION_LABEL = "HAS_ELECTION";
+	public static final String HAS_FORUM_QUESTION_LABEL = "HAS_FORUM_QUESTION";
+	public static final String HAS_MEMBER_LABEL = "HAS_MEMBER";
+	public static final String HAS_NEWS_FEED_LABEL = "HAS_NEWS_FEED";
 	public static final String HAS_PHOTO_LABEL = "HAS_PHOTO";
 	public static final String HAS_PHOTO_ALBUM_LABEL = "HAS_PHOTO_ALBUM";
 	public static final String HAS_POLL_LABEL = "HAS_POLL";
     public static final String HAS_POSITION_LABEL = "HAS_POSITION";
 	public static final String HAS_EVENT_LABEL = "HAS_EVENT";
     public static final String IS_CANDIDATE_LABEL ="IS_CANDIDATE";
-    public static final String HAS_CANDIDATE_LABE = "HAS_CANDIDATE";
     public static final String WAS_ASKED_LABEL = "WAS_ASKED";
     public static final String IS_ON_TICKET_LABEL = "IS_ON_TICKET";
 	

@@ -8,11 +8,10 @@ import org.slf4j.LoggerFactory;
  * @author Yikai Gong
  */
 
-public class TaskDetails extends Details{
+public class TaskDetails extends Details
+{
     private String action;
-    private boolean completed;
-    private Long timestamp;
-    private Long xpValue;
+    private Integer xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(TaskDetails.class);
 
@@ -23,10 +22,6 @@ public class TaskDetails extends Details{
         buff.append(getNodeId());
         buff.append(", action = ");
         buff.append(getAction());
-        buff.append(", completed = ");
-        buff.append(isCompleted());
-        buff.append(", timestamp = ");
-        buff.append(getTimestamp());
         buff.append(", xpValue = ");
         buff.append(getXpValue());
         buff.append(" ]");
@@ -46,8 +41,6 @@ public class TaskDetails extends Details{
         else
         {
             result = prime * result	+ ((action == null) ? 0 : action.hashCode());
-            result = prime * result	+ (new Boolean(completed).hashCode());
-            result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
             result = prime * result + ((xpValue == null) ? 0 : xpValue.hashCode());
         }
         return result;
@@ -77,13 +70,6 @@ public class TaskDetails extends Details{
                     return false;
             } else if (!action.equals(other.action))
                 return false;
-            if (completed != other.completed)
-                return false;
-            if (timestamp == null) {
-                if (other.timestamp != null)
-                    return false;
-            } else if (!timestamp.equals(other.timestamp))
-                return false;
             if (xpValue == null) {
                 if (other.xpValue != null)
                     return false;
@@ -101,27 +87,11 @@ public class TaskDetails extends Details{
         this.action = action;
     }
 
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Long getXpValue() {
+    public Integer getXpValue() {
         return xpValue;
     }
 
-    public void setXpValue(Long xpValue) {
+    public void setXpValue(Integer xpValue) {
         this.xpValue = xpValue;
     }
 }

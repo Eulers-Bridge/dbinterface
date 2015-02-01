@@ -35,13 +35,14 @@ public class TaskController {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create task "+task);
         CreateTaskEvent createTaskEvent = new CreateTaskEvent(task.toTaskDetails());
         TaskCreatedEvent taskCreatedEvent = taskService.createTask(createTaskEvent);
-        if(taskCreatedEvent.getTaskId() == null){
+        if(taskCreatedEvent.getNodeId() == null)
+        {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else{
             Task result = Task.fromTaskDetails((TaskDetails) taskCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("task"+result.toString());
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.CREATED);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.events.ticket;
 
 import com.eulersbridge.iEngage.core.events.Details;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +16,7 @@ public class TicketDetails extends Details{
     private String logo;
     private Set<String> pictures;
     private String information;
-    private String candidatesEmails;
-    private String candidatesNames;
+    private Iterable<Long> candidateIds;
 
     private static Logger LOG = LoggerFactory.getLogger(TicketDetails.class);
 
@@ -33,10 +33,8 @@ public class TicketDetails extends Details{
         buff.append(getPictures());
         buff.append(", information = ");
         buff.append(getInformation());
-        buff.append(", candidatesEmails = ");
-        buff.append(getCandidatesEmails());
-        buff.append(", givenName = ");
-        buff.append(getCandidatesNames());
+        buff.append(", candidateIds = ");
+        buff.append(getCandidateIds());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -57,8 +55,7 @@ public class TicketDetails extends Details{
             result = prime * result	+ ((logo == null) ? 0 : logo.hashCode());
             result = prime * result + ((pictures == null) ? 0 : pictures.hashCode());
             result = prime * result + ((information == null) ? 0 : information.hashCode());
-            result = prime * result + ((candidatesEmails == null) ? 0 : candidatesEmails.hashCode());
-            result = prime * result + ((candidatesNames == null) ? 0 : candidatesNames.hashCode());
+            result = prime * result + ((candidateIds == null) ? 0 : candidateIds.hashCode());
         }
         return result;
     }
@@ -92,15 +89,10 @@ public class TicketDetails extends Details{
                     return false;
             } else if (!information.equals(other.information))
                 return false;
-            if (candidatesEmails == null) {
-                if (other.candidatesEmails != null)
+            if (candidateIds == null) {
+                if (other.candidateIds != null)
                     return false;
-            } else if (!candidatesEmails.equals(other.candidatesEmails))
-                return false;
-            if (candidatesNames == null) {
-                if (other.candidatesNames != null)
-                    return false;
-            } else if (!candidatesNames.equals(other.candidatesNames))
+            } else if (!candidateIds.equals(other.candidateIds))
                 return false;
         }
         return true;
@@ -138,19 +130,19 @@ public class TicketDetails extends Details{
         this.information = information;
     }
 
-    public String getCandidatesEmails() {
-        return candidatesEmails;
-    }
+	/**
+	 * @return the candidateIds
+	 */
+	public Iterable<Long> getCandidateIds()
+	{
+		return candidateIds;
+	}
 
-    public void setCandidatesEmails(String candidatesEmails) {
-        this.candidatesEmails = candidatesEmails;
-    }
-
-    public String getCandidatesNames() {
-        return candidatesNames;
-    }
-
-    public void setCandidatesNames(String candidatesNames) {
-        this.candidatesNames = candidatesNames;
-    }
+	/**
+	 * @param candidateIds the candidateIds to set
+	 */
+	public void setCandidateIds(Iterable<Long> candidateIds)
+	{
+		this.candidateIds = candidateIds;
+	}
 }

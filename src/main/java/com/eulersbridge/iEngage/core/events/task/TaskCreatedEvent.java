@@ -8,26 +8,27 @@ import org.slf4j.LoggerFactory;
  * @author Yikai Gong
  */
 
-public class TaskCreatedEvent extends CreatedEvent {
-    private Long taskId;
+public class TaskCreatedEvent extends CreatedEvent
+{
+    private Long failedId;
 
     private static Logger LOG = LoggerFactory.getLogger(TaskCreatedEvent.class);
 
-    public TaskCreatedEvent(Long taskId){
+    public TaskCreatedEvent(Long failedId){
         if (LOG.isDebugEnabled()) LOG.debug("constructor()");
-        this.taskId = taskId;
+        this.failedId = failedId;
     }
 
-    public TaskCreatedEvent(Long taskId, TaskDetails taskDetails){
+    public TaskCreatedEvent(TaskDetails taskDetails)
+    {
         super(taskDetails);
-        this.taskId = taskId;
     }
 
-    public Long getTaskId() {
-        return taskId;
+	public Long getFailedId() {
+        return failedId;
     }
 
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
+    public void setFailedId(Long failedId) {
+        this.failedId = failedId;
     }
 }

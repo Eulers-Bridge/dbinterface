@@ -8,26 +8,30 @@ import org.slf4j.LoggerFactory;
  * @author Yikai Gong
  */
 
-public class TicketCreatedEvent extends CreatedEvent{
-    private Long ticketId;
+public class TicketCreatedEvent extends CreatedEvent
+{
+    private Long failedId;
 
     private static Logger LOG = LoggerFactory.getLogger(TicketCreatedEvent.class);
 
-    public TicketCreatedEvent(Long ticketId) {
+    public TicketCreatedEvent(Long ticketId)
+    {
         if (LOG.isDebugEnabled()) LOG.debug("constructor()");
-        this.ticketId = ticketId;
+        this.failedId = ticketId;
     }
 
-    public TicketCreatedEvent(Long ticketId, TicketDetails ticketDetails) {
+    public TicketCreatedEvent(TicketDetails ticketDetails)
+    {
         super(ticketDetails);
-        this.ticketId = ticketId;
     }
 
-    public Long getTicketId() {
-        return ticketId;
+    public Long getFailedId()
+    {
+        return failedId;
     }
 
-    public void setTicketId(Long ticketId) {
-        this.ticketId = ticketId;
+    public void setFailedId(Long ticketId)
+    {
+        this.failedId = ticketId;
     }
 }

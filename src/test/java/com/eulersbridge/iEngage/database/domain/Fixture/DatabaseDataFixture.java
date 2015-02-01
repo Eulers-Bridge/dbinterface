@@ -26,11 +26,13 @@ import com.eulersbridge.iEngage.database.domain.PollAnswer;
 import com.eulersbridge.iEngage.database.domain.PollResultImpl;
 import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import com.eulersbridge.iEngage.database.domain.Position;
+import com.eulersbridge.iEngage.database.domain.Task;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.repository.ResultImpl;
+import com.eulersbridge.iEngage.database.domain.Ticket;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
@@ -569,6 +571,43 @@ public class DatabaseDataFixture
 	{
 		Candidate candidate=new Candidate(candidateId, information, policyStatement, user, position);
 		return candidate;
+	}
+	
+	public static Task populateTask1()
+	{
+		return populateTask(453l,"Read an article.",500);
+	}
+
+	public static Task populateTask2()
+	{
+		return populateTask(45l,"Respond to a poll.",1500);
+	}
+
+	public static Task populateTask(Long taskId, String action, Integer xpValue)
+	{
+		Task task=new Task(taskId,action,xpValue);
+		return task;
+	}
+
+	public static Ticket populateTicket1()
+	{
+		LinkedList<Candidate> candidates=new LinkedList<Candidate>();
+		candidates.add(populateCandidate1());
+		return populateTicket(234l, "Old Crew", "OC", "We are the Old Crew", candidates);
+	}
+
+	public static Ticket populateTicket2()
+	{
+		LinkedList<Candidate> candidates=new LinkedList<Candidate>();
+		candidates.add(populateCandidate1());
+		candidates.add(populateCandidate2());
+		return populateTicket(234l, "New Start", "NS", "We are the New Start", candidates);
+	}
+
+	public static Ticket populateTicket(Long ticketId, String name, String logo, String information, Iterable<Candidate> candidates)
+	{
+		Ticket ticket=new Ticket(ticketId, name, logo, information, candidates);
+		return ticket;
 	}
 
 }

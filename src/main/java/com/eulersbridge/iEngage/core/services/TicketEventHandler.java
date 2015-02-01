@@ -27,7 +27,7 @@ public class TicketEventHandler implements TicketService{
         TicketDetails ticketDetails = (TicketDetails) createTicketEvent.getDetails();
         Ticket ticket = Ticket.fromTicketDetails(ticketDetails);
         Ticket result = ticketRepository.save(ticket);
-        TicketCreatedEvent ticketCreatedEvent = new TicketCreatedEvent(result.getTicketId(), result.toTicketDetails());
+        TicketCreatedEvent ticketCreatedEvent = new TicketCreatedEvent(result.toTicketDetails());
         return ticketCreatedEvent;
     }
 
@@ -36,10 +36,10 @@ public class TicketEventHandler implements TicketService{
         Ticket ticket = ticketRepository.findOne(requestReadTicketEvent.getNodeId());
         ReadEvent readTicketEvent;
         if(ticket != null){
-            readTicketEvent = new ReadTIcketEvent(ticket.getTicketId(), ticket.toTicketDetails());
+            readTicketEvent = new ReadTicketEvent(ticket.getTicketId(), ticket.toTicketDetails());
         }
         else{
-            readTicketEvent = ReadTIcketEvent.notFound(requestReadTicketEvent.getNodeId());
+            readTicketEvent = ReadTicketEvent.notFound(requestReadTicketEvent.getNodeId());
         }
         return readTicketEvent;
     }

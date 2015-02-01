@@ -16,9 +16,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class Task extends ResourceSupport{
     private Long taskId;
     private String action;
-    private boolean completed;
-    private Long timestamp;
-    private Long xpValue;
+    private Integer xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(Task.class);
 
@@ -30,8 +28,6 @@ public class Task extends ResourceSupport{
 
         task.setTaskId(taskDetails.getNodeId());
         task.setAction(taskDetails.getAction());
-        task.setCompleted(taskDetails.isCompleted());
-        task.setTimestamp(taskDetails.getTimestamp());
         task.setXpValue(taskDetails.getXpValue());
 
         // {!begin selfRel}
@@ -46,8 +42,6 @@ public class Task extends ResourceSupport{
         TaskDetails taskDetails = new TaskDetails();
         taskDetails.setNodeId(getTaskId());
         taskDetails.setAction(getAction());
-        taskDetails.setCompleted(isCompleted());
-        taskDetails.setTimestamp(getTimestamp());
         taskDetails.setXpValue(getXpValue());
         return taskDetails;
     }
@@ -72,27 +66,11 @@ public class Task extends ResourceSupport{
         this.action = action;
     }
 
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Long getXpValue() {
+    public Integer getXpValue() {
         return xpValue;
     }
 
-    public void setXpValue(Long xpValue) {
+    public void setXpValue(Integer xpValue) {
         this.xpValue = xpValue;
     }
 }
