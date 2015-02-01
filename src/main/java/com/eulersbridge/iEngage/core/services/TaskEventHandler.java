@@ -23,7 +23,8 @@ public class TaskEventHandler implements TaskService {
     }
 
     @Override
-    public TaskCreatedEvent createTask(CreateTaskEvent createTaskEvent) {
+    public TaskCreatedEvent createTask(CreateTaskEvent createTaskEvent)
+    {
         TaskDetails taskDetails = (TaskDetails) createTaskEvent.getDetails();
         Task task = Task.fromTaskDetails(taskDetails);
         Task result = taskRepository.save(task);
