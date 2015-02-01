@@ -167,7 +167,7 @@ public class PositionControllerTest
 	}
 
 	@Test
-	public final void testCreateEventNoContent() throws Exception 
+	public final void testCreatePositionNoContent() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePosition()");
 		PositionCreatedEvent testData=null;

@@ -17,6 +17,7 @@ public class TicketDetails extends Details{
     private Set<String> pictures;
     private String information;
     private Iterable<Long> candidateIds;
+    private Long electionId;
 
     private static Logger LOG = LoggerFactory.getLogger(TicketDetails.class);
 
@@ -35,6 +36,8 @@ public class TicketDetails extends Details{
         buff.append(getInformation());
         buff.append(", candidateIds = ");
         buff.append(getCandidateIds());
+        buff.append(", electionId = ");
+        buff.append(getElectionId());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -56,6 +59,7 @@ public class TicketDetails extends Details{
             result = prime * result + ((pictures == null) ? 0 : pictures.hashCode());
             result = prime * result + ((information == null) ? 0 : information.hashCode());
             result = prime * result + ((candidateIds == null) ? 0 : candidateIds.hashCode());
+            result = prime * result + ((electionId == null) ? 0 : electionId.hashCode());
         }
         return result;
     }
@@ -83,6 +87,11 @@ public class TicketDetails extends Details{
                 if (other.name != null)
                     return false;
             } else if (!name.equals(other.name))
+                return false;
+            if (electionId == null) {
+                if (other.electionId != null)
+                    return false;
+            } else if (!electionId.equals(other.electionId))
                 return false;
             if (information == null) {
                 if (other.information != null)
@@ -144,5 +153,21 @@ public class TicketDetails extends Details{
 	public void setCandidateIds(Iterable<Long> candidateIds)
 	{
 		this.candidateIds = candidateIds;
+	}
+
+	/**
+	 * @return the electionId
+	 */
+	public Long getElectionId()
+	{
+		return electionId;
+	}
+
+	/**
+	 * @param electionId the electionId to set
+	 */
+	public void setElectionId(Long electionId)
+	{
+		this.electionId = electionId;
 	}
 }

@@ -15,8 +15,10 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
@@ -25,9 +27,11 @@ import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketCreatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Ticket;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.CandidateRepository;
+import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.TicketRepository;
 
 /**
@@ -42,6 +46,8 @@ public class TicketEventHandlerTest
     @Mock
 	TicketRepository ticketRepository;
     @Mock
+	ElectionRepository electionRepository;
+    @Mock
 	CandidateRepository candidateRepository;
 
     TicketEventHandler service;
@@ -55,7 +61,7 @@ public class TicketEventHandlerTest
 		MockitoAnnotations.initMocks(this);
 
 //		service=new TicketEventHandler(ticketRepository,candidateRepository);
-		service=new TicketEventHandler(ticketRepository);
+		service=new TicketEventHandler(ticketRepository,electionRepository);
 	}
 
 	/**
@@ -75,14 +81,34 @@ public class TicketEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CreatingTicket()");
 		Ticket testData=DatabaseDataFixture.populateTicket1();
+		Election testElec = DatabaseDataFixture.populateElection1();
+		when(electionRepository.findOne(any(Long.class))).thenReturn(testElec);
 		when(ticketRepository.save(any(Ticket.class))).thenReturn(testData);
 		TicketDetails dets=testData.toTicketDetails();
 		CreateTicketEvent createTicketEvent=new CreateTicketEvent(dets);
-		TicketCreatedEvent evtData = service.createTicket(createTicketEvent);
+		CreatedEvent evtData = service.createTicket(createTicketEvent);
 		Details returnedDets = evtData.getDetails();
 		assertEquals(testData.toTicketDetails(),returnedDets);
 		assertEquals(testData.getTicketId(),returnedDets.getNodeId());
 		assertNotNull(evtData.getNodeId());
+	}
+
+	@Test
+	public final void testCreateTicketElectionNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CreatingTicket()");
+		Ticket testData=DatabaseDataFixture.populateTicket1();
+		Election testElec = null;
+		when(electionRepository.findOne(any(Long.class))).thenReturn(testElec);
+		when(ticketRepository.save(any(Ticket.class))).thenReturn(testData);
+		TicketDetails dets=testData.toTicketDetails();
+		CreateTicketEvent createTicketEvent=new CreateTicketEvent(dets);
+		CreatedEvent evtData = service.createTicket(createTicketEvent);
+		Details returnedDets = evtData.getDetails();
+		assertNull(returnedDets);
+		assertTrue(evtData.isFailed());
+		assertFalse(((TicketCreatedEvent)evtData).isElectionFound());
+		assertEquals(testData.getElection().getNodeId(),((TicketCreatedEvent)evtData).getFailedId());
 	}
 
 	/**
@@ -101,6 +127,21 @@ public class TicketEventHandlerTest
 		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
 		assertTrue(evtData.isEntityFound());
 	}
+	@Test
+	public final void testReadTicketNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingTicket()");
+		Ticket testData=null;
+		Long nodeId=23l;
+		when(ticketRepository.findOne(any(Long.class))).thenReturn(testData);
+		RequestReadTicketEvent requestReadTicketEvent=new RequestReadTicketEvent(nodeId);
+		ReadEvent evtData = service.requestReadTicket(requestReadTicketEvent);
+		TicketDetails returnedDets = (TicketDetails)evtData.getDetails();
+		assertNull(returnedDets);
+		assertEquals(evtData.getNodeId(),nodeId);
+		assertFalse(evtData.isEntityFound());
+	}
+
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.TicketEventHandler#updateTicket(com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent)}.
@@ -123,6 +164,25 @@ public class TicketEventHandlerTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.TicketEventHandler#updateTicket(com.eulersbridge.iEngage.core.events.tickets.UpdateTicketEvent)}.
+	 */
+	@Test
+	public final void testUpdateTicketNotFound() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingTicket()");
+		Ticket testData=DatabaseDataFixture.populateTicket1();
+		when(ticketRepository.findOne(any(Long.class))).thenReturn(null);
+		when(ticketRepository.save(any(Ticket.class))).thenReturn(testData);
+		TicketDetails dets=testData.toTicketDetails();
+		UpdateTicketEvent createTicketEvent=new UpdateTicketEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updateTicket(createTicketEvent);
+		assertNull(evtData.getDetails());
+		assertEquals(evtData.getNodeId(),testData.getTicketId());
+		assertFalse(evtData.isEntityFound());
+		assertNotNull(evtData.getNodeId());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.TicketEventHandler#deleteTicket(com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent)}.
 	 */
 	@Test
@@ -136,6 +196,22 @@ public class TicketEventHandlerTest
 		DeletedEvent evtData = service.deleteTicket(deleteTicketEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
+		assertEquals(testData.getTicketId(),evtData.getNodeId());
+	}
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.TicketEventHandler#deleteTicket(com.eulersbridge.iEngage.core.events.tickets.DeleteTicketEvent)}.
+	 */
+	@Test
+	public final void testDeleteTicketNotFound() 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("DeletingTicket()");
+		Ticket testData=DatabaseDataFixture.populateTicket1();
+		when(ticketRepository.findOne(any(Long.class))).thenReturn(null);
+		doNothing().when(ticketRepository).delete((any(Long.class)));
+		DeleteTicketEvent deleteTicketEvent=new DeleteTicketEvent(testData.getTicketId());
+		DeletedEvent evtData = service.deleteTicket(deleteTicketEvent);
+		assertFalse(evtData.isEntityFound());
+		assertFalse(evtData.isDeletionCompleted());
 		assertEquals(testData.getTicketId(),evtData.getNodeId());
 	}
 

@@ -28,6 +28,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
@@ -74,14 +77,14 @@ public class TicketControllerTest
 	String setupContent(TicketDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"logo\":\""+dets.getLogo()+"\"}";
+		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"logo\":\""+dets.getLogo()+"\",\"electionId\":"+dets.getElectionId()+"}";
 		return content;
 	}
 	
 	String setupInvalidContent(TicketDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"ticketId1\":"+evtId+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"logo\":\""+dets.getLogo()+"\"}";
+		String content="{\"ticketId1\":"+evtId+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"logo\":\""+dets.getLogo()+"\",\"electionId\":"+dets.getElectionId()+"}";
 		return content;
 	}
 	
@@ -90,7 +93,7 @@ public class TicketControllerTest
 		int evtId=dets.getNodeId().intValue();
 		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"logo\":\""+dets.getLogo()+
 						"\",\"pictures\":null,\"information\":\""+dets.getInformation()+
-						"\",\"candidateIds\":"+dets.getCandidateIds()+
+						"\",\"candidateIds\":"+dets.getCandidateIds()+",\"electionId\":"+dets.getElectionId()+
 						",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
 //						"{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
 //						"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
@@ -135,6 +138,83 @@ public class TicketControllerTest
 		.andExpect(status().isCreated())	;		
 	}
 
+	@Test
+	public final void testCreateTicketNullEvt() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTicket()");
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		String content=setupContent(dets);
+		when (ticketService.createTicket(any(CreateTicketEvent.class))).thenReturn(null);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateTicketInvalidContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTicket()");
+		TicketCreatedEvent testData=null;
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		String content=setupInvalidContent(dets);
+		when (ticketService.createTicket(any(CreateTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateEventNoContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTicket()");
+		TicketCreatedEvent testData=null;
+		when (ticketService.createTicket(any(CreateTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateTicketNullNodeId() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTicket()");
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		String content=setupContent(dets);
+		TicketCreatedEvent testData=new TicketCreatedEvent(dets);
+		testData.setNodeId(null);
+		when (ticketService.createTicket(any(CreateTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateTicketFailed() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTicket()");
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		String content=setupContent(dets);
+		CreatedEvent testData=TicketCreatedEvent.failed(dets);
+		testData.setNodeId(null);
+		when (ticketService.createTicket(any(CreateTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateElectionNotFound() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateEvent()");
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		TicketCreatedEvent testData=TicketCreatedEvent.electionNotFound(dets.getElectionId());
+		String content=setupContent(dets);
+		when (ticketService.createTicket(any(CreateTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.TicketController#findTicket(java.lang.Long)}.
 	 * @throws Exception 
@@ -147,7 +227,7 @@ public class TicketControllerTest
 		ReadTicketEvent testData=new ReadTicketEvent(dets.getNodeId(),dets);
 		String returnedContent=setupReturnedContent(dets);
 		when (ticketService.requestReadTicket(any(RequestReadTicketEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get(urlPrefix+"/{positionId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(get(urlPrefix+"/{ticketId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.name",is(dets.getName())))
 		.andExpect(jsonPath("$.information",is(dets.getInformation())))
@@ -159,6 +239,19 @@ public class TicketControllerTest
 //		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindTicketNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindTicket()");
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		ReadEvent testData=ReadTicketEvent.notFound(dets.getNodeId());
+		when (ticketService.requestReadTicket(any(RequestReadTicketEvent.class))).thenReturn(testData);
+		if (LOG.isDebugEnabled()) LOG.debug("testData - "+testData);
+		this.mockMvc.perform(get(urlPrefix+"/{ticketId}",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
 	}
 
 	/**
@@ -189,6 +282,58 @@ public class TicketControllerTest
 		.andExpect(status().isOk())	;		
 	}
 
+	@Test
+	public void testUpdateTicketNullEventReturned() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTicket()");
+		Long id=1L;
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		String content=setupContent(dets);
+		when (ticketService.updateTicket(any(UpdateTicketEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateTicketBadContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTicket()");
+		Long id=1L;
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		TicketUpdatedEvent testData=new TicketUpdatedEvent(id, dets);
+		String content=setupInvalidContent(dets);
+		when (ticketService.updateTicket(any(UpdateTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateTicketEmptyContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTicket()");
+		Long id=1L;
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		TicketUpdatedEvent testData=new TicketUpdatedEvent(id, dets);
+		when (ticketService.updateTicket(any(UpdateTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateTicketNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTicket()");
+		Long id=1L;
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		String content=setupContent(dets);
+		when (ticketService.updateTicket(any(UpdateTicketEvent.class))).thenReturn(TicketUpdatedEvent.notFound(id));
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.TicketController#deleteTicket(java.lang.Long)}.
 	 * @throws Exception 
@@ -200,9 +345,32 @@ public class TicketControllerTest
 		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
 		TicketDeletedEvent testData=new TicketDeletedEvent(dets.getNodeId());
 		when (ticketService.deleteTicket(any(DeleteTicketEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(delete(urlPrefix+"/{positionId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(delete(urlPrefix+"/{ticketId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;
+	}
+	@Test
+	public final void testDeleteTicketNotFound() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteTicket()");
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		DeletedEvent testData=TicketDeletedEvent.notFound(dets.getNodeId());
+		when (ticketService.deleteTicket(any(DeleteTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"/{ticketId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+
+	@Test
+	public final void testDeleteTicketForbidden() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteTicket()");
+		TicketDetails dets=DatabaseDataFixture.populateTicket1().toTicketDetails();
+		DeletedEvent testData=TicketDeletedEvent.deletionForbidden(dets.getNodeId());
+		when (ticketService.deleteTicket(any(DeleteTicketEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"/{ticketId}/",dets.getNodeId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isGone())	;
 	}
 }

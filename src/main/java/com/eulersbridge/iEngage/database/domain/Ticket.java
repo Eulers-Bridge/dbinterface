@@ -5,7 +5,6 @@ import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
@@ -19,7 +18,8 @@ import java.util.LinkedList;
  */
 
 @NodeEntity
-public class Ticket {
+public class Ticket
+{
     @GraphId
     private Long ticketId;
     private String name;
@@ -27,6 +27,8 @@ public class Ticket {
     private String information;
     @RelatedTo(type = DatabaseDomainConstants.HAS_MEMBER_LABEL, direction = Direction.INCOMING)
     private Iterable <Candidate> candidates;
+    @RelatedTo(type = DatabaseDomainConstants.HAS_TICKET_LABEL, direction = Direction.INCOMING)
+    private Election election;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -38,6 +40,9 @@ public class Ticket {
         ticket.setName(ticketDetails.getName());
         ticket.setLogo(ticketDetails.getLogo());
         ticket.setInformation(ticketDetails.getInformation());
+        Election election=new Election();
+        election.setNodeId(ticketDetails.getElectionId());
+        ticket.setElection(election);
 
         if (LOG.isTraceEnabled()) LOG.trace("ticket "+ticket);
         return ticket;
@@ -51,6 +56,7 @@ public class Ticket {
         ticketDetails.setName(getName());
         ticketDetails.setLogo(getLogo());
         ticketDetails.setInformation(getInformation());
+        ticketDetails.setElectionId(getElection().getNodeId());
         
         ticketDetails.setCandidateIds(toCandidateIds(candidates));
 
@@ -96,23 +102,24 @@ public class Ticket {
         if (LOG.isTraceEnabled()) LOG.trace("Constructor");
     }
 
-    /**
+	/**
 	 * @param ticketId
 	 * @param name
 	 * @param logo
 	 * @param information
 	 * @param candidates
+	 * @param election
 	 */
 	public Ticket(Long ticketId, String name, String logo, String information,
-			Iterable<Candidate> candidates)
+			Iterable<Candidate> candidates, Election election)
 	{
 		super();
-        if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 		this.ticketId = ticketId;
 		this.name = name;
 		this.logo = logo;
 		this.information = information;
 		this.candidates = candidates;
+		this.election = election;
 	}
 
 	public Long getTicketId() {
@@ -161,5 +168,21 @@ public class Ticket {
 	public void setCandidate(Iterable<Candidate> candidates)
 	{
 		this.candidates = candidates;
+	}
+
+	/**
+	 * @return the election
+	 */
+	public Election getElection()
+	{
+		return election;
+	}
+
+	/**
+	 * @param election the election to set
+	 */
+	public void setElection(Election election)
+	{
+		this.election = election;
 	}
 }
