@@ -23,7 +23,7 @@ public class Candidate
     @RelatedTo(type = DatabaseDomainConstants.IS_CANDIDATE_LABEL, direction= Direction.BOTH)
     private User user;
 
-    @RelatedTo(type = DatabaseDomainConstants.HAS_CANDIDATE_LABE, direction= Direction.BOTH)
+    @RelatedTo(type = DatabaseDomainConstants.HAS_CANDIDATE_LABEL, direction= Direction.BOTH)
     private Position position;
 
 //    @RelatedTo(type = DatabaseDomainConstants.WAS_ASKED_LABEL, direction= Direction.BOTH)
