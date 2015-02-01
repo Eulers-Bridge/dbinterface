@@ -134,6 +134,7 @@ public class UserControllerTest
 				"\",\"nationality\":\""+dets.getNationality()+
 				"\",\"yearOfBirth\":\""+dets.getYearOfBirth()+
 				"\",\"password\":\""+dets.getPassword()+
+				"\",\"contactNumber\":\""+dets.getContactNumber()+
 				"\",\"accountVerified\":"+dets.isAccountVerified()+
 				",\"institutionId\":"+dets.getInstitutionId().intValue()+
 				",\"email\":\""+dets.getEmail()+"\"}";
@@ -147,6 +148,7 @@ public class UserControllerTest
 				"\",\"nationality\":\""+dets.getNationality()+
 				"\",\"yearOfBirth\":\""+dets.getYearOfBirth()+
 				"\",\"password\":\""+dets.getPassword()+
+				"\",\"contactNumber\":\""+dets.getContactNumber()+
 				"\",\"accountVerified\":"+dets.isAccountVerified()+
 				",\"institutionId\":"+dets.getInstitutionId().intValue()+
 				",\"email\":\""+dets.getEmail()+
@@ -446,6 +448,7 @@ public class UserControllerTest
 		String returnedContent=populateReturnedContent(dets);
 		when (userService.updateUser(any(UpdateUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))

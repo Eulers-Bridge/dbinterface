@@ -22,6 +22,7 @@ public class UserDetails extends Details
 	private String nationality;
 	private String yearOfBirth;
 	private String password;
+	private String contactNumber;
 	private boolean accountVerified=false;
 	private	Long institutionId;
 	
@@ -74,6 +75,22 @@ public class UserDetails extends Details
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	/**
+	 * @return the contactNumber
+	 */
+	public String getContactNumber()
+	{
+		return contactNumber;
+	}
+
+	/**
+	 * @param contactNumber the contactNumber to set
+	 */
+	public void setContactNumber(String contactNumber)
+	{
+		this.contactNumber = contactNumber;
 	}
 
 	public Long getInstitutionId() {
@@ -140,6 +157,8 @@ public class UserDetails extends Details
 		buff.append(getYearOfBirth());
 		buff.append(", password = ");
 		buff.append(getPassword());
+		buff.append(", contactNumber = ");
+		buff.append(getContactNumber());
 		buff.append(", accountVerified = ");
 		buff.append(isAccountVerified());
 		buff.append(" ]");
@@ -169,6 +188,8 @@ public class UserDetails extends Details
 				+ ((nationality == null) ? 0 : nationality.hashCode());
 		result = prime * result
 				+ ((password == null) ? 0 : password.hashCode());
+		result = prime * result
+				+ ((contactNumber == null) ? 0 : contactNumber.hashCode());
 		result = prime * result
 				+ ((yearOfBirth == null) ? 0 : yearOfBirth.hashCode());
 		return result;
@@ -223,6 +244,11 @@ public class UserDetails extends Details
 			if (other.password != null)
 				return false;
 		} else if (!password.equals(other.password))
+			return false;
+		if (contactNumber == null) {
+			if (other.contactNumber != null)
+				return false;
+		} else if (!contactNumber.equals(other.contactNumber))
 			return false;
 		if (yearOfBirth == null) {
 			if (other.yearOfBirth != null)

@@ -58,7 +58,7 @@ public class UserTest {
 	@Test
 	public final void testUserStringStringStringStringStringStringStringString() 
 	{
-		User userTest=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971",  "password");
+		User userTest=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971",  "password","0447304209");
 		assertTrue("userTest not of User class",(userTest instanceof User));
 		assertEquals("Emails don't match",userTest.getEmail(),"gnewitt");
 		assertEquals("First names don't match",userTest.getGivenName(),"Greg");
@@ -67,6 +67,7 @@ public class UserTest {
 		assertEquals("Nationalities don't match",userTest.getNationality(),"Australian");
 		assertEquals("Birth years names don't match",userTest.getYearOfBirth(),"1971");
 		assertEquals("Passwords don't match",userTest.getPassword(),"password");
+		assertEquals("contact numbers don't match",userTest.getContactNumber(),"0447304209");
 	}
 
 	/**
@@ -343,22 +344,22 @@ public class UserTest {
 	@Test
 	public final void testUser1EqualsUser1() 
 	{
-		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
 		assertTrue("Different objects with same details are being declared unequal.",user1.equals(user1));
 	}
 	
 	@Test
 	public final void testUser1EqualsUser2() 
 	{
-		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
-		User user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
+		User user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
 		assertTrue("Different objects with same details are being declared unequal.",user1.equals(user2));
 	}
 	
 	@Test
 	public final void testDifferentObjectsInEqual()
 	{
-		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
 		Object user2=new String("gnewitt Greg Newitt Male Australian 1971 password");
 		assertFalse("Different objects are being declared equal.",user1.equals(user2));
 	}
@@ -366,7 +367,7 @@ public class UserTest {
 	@Test
 	public final void testNullObjectUnequal()
 	{
-		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
 		User user2=null;
 		assertFalse("Null object being declared equal.",user1.equals(user2));
 	}
@@ -374,57 +375,61 @@ public class UserTest {
 	@Test
 	public final void testDifferentObjectsUnEqual()
 	{
-		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1972", "password");
-		User user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		User user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1972", "password","0447304209");
+		User user2=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
 		assertFalse("Different objects with different details are being declared unequal.",user1.equals(user2));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", null);
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password",null);
 		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
 		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password1");
-		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
-		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", null, "password");
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", null,"0447304209");
 		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
 		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Newitt","Male", "British", "1971", "password");
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password1","0447304209");
 		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Newitt","Female", "Australian", "1971", "password");
-		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
-		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Lawson","Male", "Australian", "1971", "password");
-		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
-		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Gregory","Newitt","Male", "Australian", "1971", "password");
-		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
-		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt2","Greg","Newitt","Male", "Australian", "1971", "password");
-		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
-		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Newitt","Male", null, "1971", "password");
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", null, "password","0447304209");
 		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
 		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Newitt",null, "Australian", "1971", "password");
+		user1=new User("gnewitt","Greg","Newitt","Male", "British", "1971", "password","0447304209");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Newitt","Female", "Australian", "1971", "password","0447304209");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Lawson","Male", "Australian", "1971", "password","0447304209");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Gregory","Newitt","Male", "Australian", "1971", "password","0447304209");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt2","Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Newitt","Male", null, "1971", "password","0447304209");
 		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
 		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg",null,"Male", "Australian", "1971", "password");
+		user1=new User("gnewitt","Greg","Newitt",null, "Australian", "1971", "password","0447304209");
 		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
 		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt",null,"Newitt","Male", "Australian", "1971", "password");
+		user1=new User("gnewitt","Greg",null,"Male", "Australian", "1971", "password","0447304209");
 		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
 		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User(null,"Greg","Newitt","Male", "Australian", "1971", "password");
+		user1=new User("gnewitt",null,"Newitt","Male", "Australian", "1971", "password","0447304209");
 		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
 		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
 		assertNotEquals("",user1.hashCode(),user2.hashCode());
-		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password");
+		user1=new User(null,"Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
+		assertFalse("Different objects with different details are being declared equal.",user1.equals(user2));
+		assertFalse("Different objects with different details are being declared equal.",user2.equals(user1));
+		assertNotEquals("",user1.hashCode(),user2.hashCode());
+		user1=new User("gnewitt","Greg","Newitt","Male", "Australian", "1971", "password","0447304209");
 		user1.setNodeId(1l);
 		assertFalse("Different objects with different ids declared equal.",user1.equals(user2));
 		assertFalse("Different objects with different ids declared equal.",user2.equals(user1));

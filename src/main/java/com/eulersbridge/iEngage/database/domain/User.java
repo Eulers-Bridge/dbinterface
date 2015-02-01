@@ -32,6 +32,7 @@ public class User
 	@RelatedTo(type = DatabaseDomainConstants.HAS_PERSONALITY_LABEL, direction=Direction.OUTGOING)
 	private Personality personality;
 	private String password;
+	private String contactNumber;
 	private String roles;
 	private boolean accountVerified=false;
 	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
@@ -48,7 +49,7 @@ public class User
 		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
 	
-	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String password)
+	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String password, String contactNumber)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+givenName+','+familyName+','+gender+','+
 														  nationality+','+yearOfBirth+')');
@@ -59,6 +60,7 @@ public class User
 		this.nationality=nationality;
 		this.yearOfBirth=yearOfBirth;
 		this.password=password;
+		this.contactNumber=contactNumber;
 	}
 	
 	public String getEmail()
@@ -161,6 +163,22 @@ public class User
 	public void setPassword(String password) 
 	{
 		this.password = password;
+	}
+
+	/**
+	 * @return the contactNumber
+	 */
+	public String getContactNumber()
+	{
+		return contactNumber;
+	}
+
+	/**
+	 * @param contactNumber the contactNumber to set
+	 */
+	public void setContactNumber(String contactNumber)
+	{
+		this.contactNumber = contactNumber;
 	}
 
 	/**
@@ -290,6 +308,7 @@ public class User
 		    user.familyName=userDetails.getFamilyName();
 		    user.nationality=userDetails.getNationality();
 		    user.password=userDetails.getPassword();
+		    user.contactNumber=userDetails.getContactNumber();
 		    user.yearOfBirth=userDetails.getYearOfBirth();
 		    user.accountVerified=userDetails.isAccountVerified();
 		    Institution inst=new Institution();
@@ -328,6 +347,8 @@ public class User
 					+ ((nationality == null) ? 0 : nationality.hashCode());
 			result = prime * result
 					+ ((password == null) ? 0 : password.hashCode());
+			result = prime * result
+					+ ((contactNumber == null) ? 0 : contactNumber.hashCode());
 			result = prime * result
 					+ ((personality == null) ? 0 : personality.hashCode());
 			result = prime * result + ((roles == null) ? 0 : roles.hashCode());
@@ -404,6 +425,11 @@ public class User
 				if (other.password != null)
 					return false;
 			} else if (!password.equals(other.password))
+				return false;
+			if (contactNumber == null) {
+				if (other.contactNumber != null)
+					return false;
+			} else if (!contactNumber.equals(other.contactNumber))
 				return false;
 			if (personality == null) {
 				if (other.personality != null)

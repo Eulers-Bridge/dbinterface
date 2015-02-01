@@ -47,6 +47,7 @@ public class RestDataFixture
 		user.setNationality("Australian");
 		user.setYearOfBirth("1971");
 		user.setPassword("password");
+		user.setContactNumber("0400432123");
 		user.setAccountVerified(false);
 		user.setInstitutionId(new Long(26));
 		

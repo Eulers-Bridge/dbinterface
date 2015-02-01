@@ -21,6 +21,7 @@ public class User extends ResourceSupport
 	private String nationality;
 	private String yearOfBirth;
 	private String password;
+	private String contactNumber;
 	private boolean accountVerified=false;
 	private	Long institutionId; 
 	private String email;
@@ -83,6 +84,22 @@ public class User extends ResourceSupport
 		this.password = password;
 	}
 
+	/**
+	 * @return the contactNumber
+	 */
+	public String getContactNumber()
+	{
+		return contactNumber;
+	}
+
+	/**
+	 * @param contactNumber the contactNumber to set
+	 */
+	public void setContactNumber(String contactNumber)
+	{
+		this.contactNumber = contactNumber;
+	}
+
 	public boolean isAccountVerified() {
 		return accountVerified;
 	}
@@ -109,6 +126,7 @@ public class User extends ResourceSupport
 	    details.setNationality(getNationality());
 	    details.setYearOfBirth(getYearOfBirth());
 	    details.setPassword(getPassword());
+	    details.setContactNumber(getContactNumber());
 	    details.setAccountVerified(isAccountVerified());
 	    details.setInstitutionId(getInstitutionId());
 
@@ -126,6 +144,7 @@ public class User extends ResourceSupport
 	    user.nationality = readUser.getNationality();
 	    user.yearOfBirth = readUser.getYearOfBirth();
 	    user.password = readUser.getPassword();
+	    user.contactNumber = readUser.getContactNumber();
 	    user.accountVerified = readUser.isAccountVerified();
 	    user.institutionId = readUser.getInstitutionId();
 	    
@@ -165,6 +184,8 @@ public class User extends ResourceSupport
 			buff.append(getYearOfBirth());
 			buff.append(", password = ");
 			buff.append(getPassword());
+			buff.append(", contactNumber = ");
+			buff.append(getContactNumber());
 			buff.append(", institutionId = ");
 			buff.append(getInstitutionId());
 			buff.append(", accountVerified = ");
