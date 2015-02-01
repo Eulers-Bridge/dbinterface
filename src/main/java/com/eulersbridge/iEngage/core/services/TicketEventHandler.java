@@ -1,11 +1,23 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.*;
+import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketCreatedEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketDeletedEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
+import com.eulersbridge.iEngage.core.events.ticket.TicketUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Ticket;
+import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.TicketRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,17 +29,35 @@ public class TicketEventHandler implements TicketService{
     private static Logger LOG = LoggerFactory.getLogger(TicketService.class);
 
     private TicketRepository ticketRepository;
+    private ElectionRepository electionRepository;
 
-    public TicketEventHandler(TicketRepository ticketRepository) {
+    public TicketEventHandler(TicketRepository ticketRepository, ElectionRepository electionRepository)
+    {
         this.ticketRepository = ticketRepository;
+        this.electionRepository = electionRepository;
     }
 
     @Override
-    public TicketCreatedEvent createTicket(CreateTicketEvent createTicketEvent) {
+    public CreatedEvent createTicket(CreateTicketEvent createTicketEvent) 
+    {
         TicketDetails ticketDetails = (TicketDetails) createTicketEvent.getDetails();
-        Ticket ticket = Ticket.fromTicketDetails(ticketDetails);
-        Ticket result = ticketRepository.save(ticket);
-        TicketCreatedEvent ticketCreatedEvent = new TicketCreatedEvent(result.toTicketDetails());
+    	Long electionId=ticketDetails.getElectionId();
+        
+    	if (LOG.isDebugEnabled()) LOG.debug("Finding election with nodeId = "+electionId);
+    	Election elect=electionRepository.findOne(electionId);
+
+    	TicketCreatedEvent ticketCreatedEvent;
+    	if (elect!=null)
+    	{
+            Ticket ticket = Ticket.fromTicketDetails(ticketDetails);
+            ticket.setElection(elect);
+            Ticket result = ticketRepository.save(ticket);
+            ticketCreatedEvent = new TicketCreatedEvent(result.toTicketDetails());
+    	}
+    	else
+    	{
+    		ticketCreatedEvent=TicketCreatedEvent.electionNotFound(electionId);
+    	}
         return ticketCreatedEvent;
     }
 

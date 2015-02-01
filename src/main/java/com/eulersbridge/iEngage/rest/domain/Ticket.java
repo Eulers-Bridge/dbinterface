@@ -22,6 +22,7 @@ public class Ticket extends ResourceSupport{
     private Set<String> pictures;
     private String information;
     private Iterable<Long> candidateIds;
+    private Long electionId;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -41,6 +42,7 @@ public class Ticket extends ResourceSupport{
         ticket.setPictures(ticketDetails.getPictures());
         ticket.setInformation(ticketDetails.getInformation());
         ticket.setCandidateIds(ticketDetails.getCandidateIds());
+        ticket.setElectionId(ticketDetails.getElectionId());
 
         // {!begin selfRel}
         ticket.add(linkTo(TicketController.class).slash(name)
@@ -60,6 +62,7 @@ public class Ticket extends ResourceSupport{
         ticketDetails.setLogo(getLogo());
         ticketDetails.setPictures(getPictures());
         ticketDetails.setInformation(getInformation());
+        ticketDetails.setElectionId(getElectionId());
         return ticketDetails;
     }
 
@@ -119,6 +122,22 @@ public class Ticket extends ResourceSupport{
 		this.candidateIds = candidateIds;
 	}
 
+	/**
+	 * @return the electionId
+	 */
+	public Long getElectionId()
+	{
+		return electionId;
+	}
+
+	/**
+	 * @param electionId the electionId to set
+	 */
+	public void setElectionId(Long electionId)
+	{
+		this.electionId = electionId;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -127,6 +146,6 @@ public class Ticket extends ResourceSupport{
 	{
 		return "Ticket [ticketId=" + ticketId + ", name=" + name + ", logo="
 				+ logo + ", pictures=" + pictures + ", information="
-				+ information + ", candidateIds=" + candidateIds + "]";
+				+ information + ", candidateIds=" + candidateIds + ", electionId = "+electionId+"]";
 	}
 }

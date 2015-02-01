@@ -1,11 +1,13 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.*;
 import com.eulersbridge.iEngage.core.services.TicketService;
 import com.eulersbridge.iEngage.rest.domain.Ticket;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +36,27 @@ public class TicketController {
     createTicket(@RequestBody Ticket ticket){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create ticket "+ticket);
         CreateTicketEvent createTicketEvent = new CreateTicketEvent(ticket.toTicketDetails());
-        TicketCreatedEvent ticketCreatedEvent = ticketService.createTicket(createTicketEvent);
-        if(ticketCreatedEvent.getFailedId() != null)
+        CreatedEvent ticketCreatedEvent = ticketService.createTicket(createTicketEvent);
+        ResponseEntity<Ticket> response;
+        if(null==ticketCreatedEvent)
         {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        else{
+    	else if ((ticketCreatedEvent.getClass()==TicketCreatedEvent.class)&&(!((TicketCreatedEvent)ticketCreatedEvent).isElectionFound()))
+    	{
+    		response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
+    	else if((null==ticketCreatedEvent.getNodeId())||(ticketCreatedEvent.isFailed()))
+        {
+            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        else
+        {
             Ticket result = Ticket.fromTicketDetails((TicketDetails) ticketCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("ticket"+result.toString());
-            return new ResponseEntity<>(result, HttpStatus.CREATED);
+            response = new ResponseEntity<>(result, HttpStatus.CREATED);
         }
+        return response;
     }
 
     //Get
@@ -88,8 +101,16 @@ public class TicketController {
     public @ResponseBody ResponseEntity<Boolean>
     deleteTicket(@PathVariable Long ticketId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete ticket. " + ticketId);
+        ResponseEntity<Boolean> response;
+
         DeletedEvent ticketDeletedEvent = ticketService.deleteTicket(new DeleteTicketEvent(ticketId));
         Boolean isDeletionCompleted = Boolean.valueOf(ticketDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+    	if (isDeletionCompleted)
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.OK);
+    	else if (ticketDeletedEvent.isEntityFound())
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.GONE);
+    	else
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.NOT_FOUND);
+    	return response;
     }
 }

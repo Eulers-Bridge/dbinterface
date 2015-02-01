@@ -593,7 +593,7 @@ public class DatabaseDataFixture
 	{
 		LinkedList<Candidate> candidates=new LinkedList<Candidate>();
 		candidates.add(populateCandidate1());
-		return populateTicket(234l, "Old Crew", "OC", "We are the Old Crew", candidates);
+		return populateTicket(234l, "Old Crew", "OC", "We are the Old Crew", candidates, populateElection1());
 	}
 
 	public static Ticket populateTicket2()
@@ -601,12 +601,12 @@ public class DatabaseDataFixture
 		LinkedList<Candidate> candidates=new LinkedList<Candidate>();
 		candidates.add(populateCandidate1());
 		candidates.add(populateCandidate2());
-		return populateTicket(234l, "New Start", "NS", "We are the New Start", candidates);
+		return populateTicket(234l, "New Start", "NS", "We are the New Start", candidates, populateElection2());
 	}
 
-	public static Ticket populateTicket(Long ticketId, String name, String logo, String information, Iterable<Candidate> candidates)
+	public static Ticket populateTicket(Long ticketId, String name, String logo, String information, Iterable<Candidate> candidates, Election election)
 	{
-		Ticket ticket=new Ticket(ticketId, name, logo, information, candidates);
+		Ticket ticket=new Ticket(ticketId, name, logo, information, candidates, election);
 		return ticket;
 	}
 

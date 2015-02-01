@@ -1,9 +1,11 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.*;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -12,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface TicketService {
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public TicketCreatedEvent createTicket(CreateTicketEvent createTicketEvent);
+    public CreatedEvent createTicket(CreateTicketEvent createTicketEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
     public ReadEvent requestReadTicket(RequestReadTicketEvent requestReadTicketEvent);
