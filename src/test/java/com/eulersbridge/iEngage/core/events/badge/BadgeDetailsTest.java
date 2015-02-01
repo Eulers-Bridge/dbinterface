@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class BadgeDetailsTest {
+public class  BadgeDetailsTest {
     BadgeDetails badgeDetails;
     Long badgeId = new Long(0);
     String name = "badgename";
