@@ -38,6 +38,7 @@ public class ControllerConstants
     public static final String CONFIGURATION_LABEL = "/configuration";
     public static final String CANDIDATE_LABEL = "/candidate";
     public static final String TICKET_LABEL = "/ticket";
+	public static final String TICKETS_LABEL = "/tickets";
     public static final String TASK_LABEL = "/task";
     public static final String BADGE_LABEL = "/badge";
 

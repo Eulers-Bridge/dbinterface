@@ -35,4 +35,7 @@ public class DatabaseDomainConstants
 	public static final String POLL = "Poll";
 	public static final String FORUM_QUESTION = "ForumQuestion";
 	public static final String POLL_ANSWER = "PollAnswer";
+	public static final String ELECTION = "Election";
+	public static final String TASK = "Task";
+	public static final String TICKET = "Ticket";
 }
