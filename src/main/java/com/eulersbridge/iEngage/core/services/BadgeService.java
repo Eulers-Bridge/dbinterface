@@ -6,13 +6,15 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.*;
 
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * @author Yikai Gong
  */
 
-public interface BadgeService {
+public interface BadgeService
+{
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public CreatedEvent createBadge(CreateBadgeEvent createBadgeEvent);
 
@@ -25,5 +27,7 @@ public interface BadgeService {
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public DeletedEvent deleteBadge(DeleteBadgeEvent deleteBadgeEvent);
 
-    //TODO ReadALL
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public BadgesReadEvent readBadges(ReadBadgesEvent readBadgesEvent,
+			Direction sortDirection, int pageNumber, int pageLength);
 }

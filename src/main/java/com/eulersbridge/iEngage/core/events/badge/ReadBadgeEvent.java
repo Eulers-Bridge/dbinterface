@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.core.events.badge;
 
-import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 
 /**

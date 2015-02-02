@@ -1,9 +1,14 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
 import com.eulersbridge.iEngage.rest.controller.BadgeController;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -99,4 +104,21 @@ public class Badge extends ResourceSupport{
     public void setXpValue(Long xpValue) {
         this.xpValue = xpValue;
     }
+    
+	public static Iterator<Badge> toBadgesIterator(
+			Iterator<BadgeDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <Badge> elections=new ArrayList<Badge>();
+		while(iter.hasNext())
+		{
+			BadgeDetails dets=iter.next();
+			Badge thisBadge=Badge.fromBadgeDetails(dets);
+			Link self = thisBadge.getLink("self");
+			thisBadge.removeLinks();
+			thisBadge.add(self);
+			elections.add(thisBadge);		
+		}
+		return elections.iterator();
+	}
 }

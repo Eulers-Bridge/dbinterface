@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -10,6 +13,10 @@ import com.eulersbridge.iEngage.database.repository.BadgeRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * @author Yikai Gong
@@ -52,6 +59,37 @@ public class BadgeEventHandler implements BadgeService{
         }
         return readBadgeEvent;
     }
+
+	@Override
+	public BadgesReadEvent readBadges(ReadBadgesEvent readBadgesEvent, Direction sortDirection,int pageNumber, int pageLength)
+	{
+		Page <Badge>badges=null;
+		ArrayList<BadgeDetails> dets=new ArrayList<BadgeDetails>();
+		BadgesReadEvent nare=null;
+
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"name");
+		badges=badgeRepository.findAll(pageable);
+		if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+badges.getTotalElements()+" total pages ="+badges.getTotalPages());
+		if (badges!=null)
+		{
+			Iterator<Badge> iter=badges.iterator();
+			while (iter.hasNext())
+			{
+				Badge na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getName());
+				BadgeDetails det=na.toBadgeDetails();
+				dets.add(det);
+			}
+			nare=new BadgesReadEvent(dets);
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
+			nare=(BadgesReadEvent) BadgesReadEvent.notFound(null);
+		}
+		return nare;
+	}
 
     @Override
     public UpdatedEvent updateBadge(UpdateBadgeEvent updateBadgeEvent) {
