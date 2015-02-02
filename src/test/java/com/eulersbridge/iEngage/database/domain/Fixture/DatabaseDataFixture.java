@@ -527,11 +527,20 @@ public class DatabaseDataFixture
         position.setElection(election);
         return position;
     }
+	public static HashMap<Long, Position> populatePositions()
+	{
+		HashMap<Long, Position> positions=new HashMap<Long, Position>();
+		Position initialPosition=populatePosition1();
+		positions.put(initialPosition.getNodeId(), initialPosition);
+		initialPosition=populatePosition2();
+		positions.put(initialPosition.getNodeId(), initialPosition);
+		return positions;
+	}
 
     public static Badge populateBadge(Long id, String name, boolean awarded, Long timestamp, Long xpValue)
     {
         Badge badge = new Badge();
-        badge.setBadgeId(id);
+        badge.setNodeId(id);
         badge.setName(name);
         badge.setAwarded(awarded);
         badge.setTimestamp(timestamp);
@@ -542,12 +551,30 @@ public class DatabaseDataFixture
     public static Badge populateBadge1()
     {
         Long id = 100l;
-        String name = "Badge name";
-        boolean awarede = true;
+        String name = "Badge name1";
+        boolean awarded = true;
         Long timestamp = 100000l;
-        Long xpValue = 50l;
-        return populateBadge(id, name, awarede, timestamp, xpValue);
+        Long xpValue = 150l;
+        return populateBadge(id, name, awarded, timestamp, xpValue);
     }
+    public static Badge populateBadge2()
+    {
+        Long id = 101l;
+        String name = "Badge name2";
+        boolean awarded = true;
+        Long timestamp = 100001l;
+        Long xpValue = 250l;
+        return populateBadge(id, name, awarded, timestamp, xpValue);
+    }
+	public static HashMap<Long, Badge> populateBadges()
+	{
+		HashMap<Long, Badge> badges=new HashMap<Long, Badge>();
+		Badge initialBadge=populateBadge1();
+		badges.put(initialBadge.getNodeId(), initialBadge);
+		initialBadge=populateBadge2();
+		badges.put(initialBadge.getNodeId(), initialBadge);
+		return badges;
+	}
     
 	public static Candidate populateCandidate1()
 	{
@@ -572,6 +599,15 @@ public class DatabaseDataFixture
 		Candidate candidate=new Candidate(candidateId, information, policyStatement, user, position);
 		return candidate;
 	}
+	public static HashMap<Long, Candidate> populateCandidates()
+	{
+		HashMap<Long, Candidate> candidates=new HashMap<Long, Candidate>();
+		Candidate initialCandidate=populateCandidate1();
+		candidates.put(initialCandidate.getNodeId(), initialCandidate);
+		initialCandidate=populateCandidate2();
+		candidates.put(initialCandidate.getNodeId(), initialCandidate);
+		return candidates;
+	}
 	
 	public static Task populateTask1()
 	{
@@ -587,6 +623,15 @@ public class DatabaseDataFixture
 	{
 		Task task=new Task(taskId,action,xpValue);
 		return task;
+	}
+	public static HashMap<Long, Task> populateTasks()
+	{
+		HashMap<Long, Task> tasks=new HashMap<Long, Task>();
+		Task initialTask=populateTask1();
+		tasks.put(initialTask.getNodeId(), initialTask);
+		initialTask=populateTask2();
+		tasks.put(initialTask.getNodeId(), initialTask);
+		return tasks;
 	}
 
 	public static Ticket populateTicket1()
@@ -608,6 +653,15 @@ public class DatabaseDataFixture
 	{
 		Ticket ticket=new Ticket(ticketId, name, logo, information, candidates, election);
 		return ticket;
+	}
+	public static HashMap<Long, Ticket> populateTickets()
+	{
+		HashMap<Long, Ticket> tickets=new HashMap<Long, Ticket>();
+		Ticket initialTicket=populateTicket1();
+		tickets.put(initialTicket.getNodeId(), initialTicket);
+		initialTicket=populateTicket2();
+		tickets.put(initialTicket.getNodeId(), initialTicket);
+		return tickets;
 	}
 
 }
