@@ -15,7 +15,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 public class Task
 {
     @GraphId
-    private Long taskId;
+    private Long nodeId;
     private String action;
 //    private boolean completed;
 //    private Long timestamp;
@@ -28,14 +28,14 @@ public class Task
     }
 
     /**
-	 * @param taskId
+	 * @param nodeId
 	 * @param action
 	 * @param xpValue
 	 */
 	public Task(Long taskId, String action, Integer xpValue)
 	{
 		super();
-		this.taskId = taskId;
+		this.nodeId = taskId;
 		this.action = action;
 		this.xpValue = xpValue;
 	}
@@ -44,7 +44,7 @@ public class Task
         if (LOG.isTraceEnabled()) LOG.trace("fromTaskDetails()");
         Task task = new Task();
         if (LOG.isTraceEnabled()) LOG.trace("taskDetails "+taskDetails);
-        task.setTaskId(taskDetails.getNodeId());
+        task.setNodeId(taskDetails.getNodeId());
         task.setAction(taskDetails.getAction());
         task.setXpValue(taskDetails.getXpValue());
 
@@ -56,7 +56,7 @@ public class Task
         if (LOG.isTraceEnabled()) LOG.trace("toTaskDetails()");
         TaskDetails taskDetails = new TaskDetails();
         if (LOG.isTraceEnabled()) LOG.trace("task "+this);
-        taskDetails.setNodeId(getTaskId());
+        taskDetails.setNodeId(getNodeId());
         taskDetails.setAction(getAction());
         taskDetails.setXpValue(getXpValue());
         if (LOG.isTraceEnabled()) LOG.trace("taskDetails; "+ taskDetails);
@@ -67,7 +67,7 @@ public class Task
     public String toString() {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
-        buff.append(getTaskId());
+        buff.append(getNodeId());
         buff.append(", action = ");
         buff.append(getAction());
         buff.append(", xpValue = ");
@@ -78,12 +78,12 @@ public class Task
         return retValue;
     }
 
-    public Long getTaskId() {
-        return taskId;
+    public Long getNodeId() {
+        return nodeId;
     }
 
-    public void setTaskId(Long taskId) {
-        this.taskId = taskId;
+    public void setNodeId(Long taskId) {
+        this.nodeId = taskId;
     }
 
     public String getAction() {

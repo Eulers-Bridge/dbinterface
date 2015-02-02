@@ -13,7 +13,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 @NodeEntity
 public class Badge {
     @GraphId
-    private Long badgeId;
+    private Long nodeId;
     private String name;
     private boolean awarded;
     private Long timestamp;
@@ -29,7 +29,7 @@ public class Badge {
         if (LOG.isTraceEnabled()) LOG.trace("fromBadgeDetails()");
         Badge badge = new Badge();
         if (LOG.isTraceEnabled()) LOG.trace("badgeDetails "+badgeDetails);
-        badge.setBadgeId(badgeDetails.getNodeId());
+        badge.setNodeId(badgeDetails.getNodeId());
         badge.setName(badgeDetails.getName());
         badge.setAwarded(badgeDetails.isAwarded());
         badge.setTimestamp(badgeDetails.getTimestamp());
@@ -43,7 +43,7 @@ public class Badge {
         if (LOG.isTraceEnabled()) LOG.trace("toBadgeDetails()");
         BadgeDetails badgeDetails = new BadgeDetails();
         if (LOG.isTraceEnabled()) LOG.trace("badge "+this);
-        badgeDetails.setNodeId(getBadgeId());
+        badgeDetails.setNodeId(getNodeId());
         badgeDetails.setName(getName());
         badgeDetails.setAwarded(isAwarded());
         badgeDetails.setTimestamp(getTimestamp());
@@ -57,7 +57,7 @@ public class Badge {
     public String toString() {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
-        buff.append(getBadgeId());
+        buff.append(getNodeId());
         buff.append(", name = ");
         buff.append(getName());
         buff.append(", awarded = ");
@@ -72,12 +72,12 @@ public class Badge {
         return retValue;
     }
 
-    public Long getBadgeId() {
-        return badgeId;
+    public Long getNodeId() {
+        return nodeId;
     }
 
-    public void setBadgeId(Long badgeId) {
-        this.badgeId = badgeId;
+    public void setNodeId(Long badgeId) {
+        this.nodeId = badgeId;
     }
 
     public String getName() {

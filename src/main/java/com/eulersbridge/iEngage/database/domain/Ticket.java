@@ -21,7 +21,7 @@ import java.util.LinkedList;
 public class Ticket
 {
     @GraphId
-    private Long ticketId;
+    private Long nodeId;
     private String name;
     private String logo;
     private String information;
@@ -36,7 +36,7 @@ public class Ticket
         if (LOG.isTraceEnabled()) LOG.trace("fromTicketDetails()");
         Ticket ticket = new Ticket();
         if (LOG.isTraceEnabled()) LOG.trace("ticketDetails "+ticketDetails);
-        ticket.setTicketId(ticketDetails.getNodeId());
+        ticket.setNodeId(ticketDetails.getNodeId());
         ticket.setName(ticketDetails.getName());
         ticket.setLogo(ticketDetails.getLogo());
         ticket.setInformation(ticketDetails.getInformation());
@@ -52,7 +52,7 @@ public class Ticket
         if (LOG.isTraceEnabled()) LOG.trace("toTicketDetails()");
         TicketDetails ticketDetails = new TicketDetails();
         if (LOG.isTraceEnabled()) LOG.trace("ticket "+this);
-        ticketDetails.setNodeId(getTicketId());
+        ticketDetails.setNodeId(getNodeId());
         ticketDetails.setName(getName());
         ticketDetails.setLogo(getLogo());
         ticketDetails.setInformation(getInformation());
@@ -81,7 +81,7 @@ public class Ticket
     public String toString() {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
-        buff.append(getTicketId());
+        buff.append(getNodeId());
         buff.append(", name = ");
         buff.append(getName());
         buff.append(", logo = ");
@@ -103,7 +103,7 @@ public class Ticket
     }
 
 	/**
-	 * @param ticketId
+	 * @param nodeId
 	 * @param name
 	 * @param logo
 	 * @param information
@@ -114,7 +114,7 @@ public class Ticket
 			Iterable<Candidate> candidates, Election election)
 	{
 		super();
-		this.ticketId = ticketId;
+		this.nodeId = ticketId;
 		this.name = name;
 		this.logo = logo;
 		this.information = information;
@@ -122,12 +122,12 @@ public class Ticket
 		this.election = election;
 	}
 
-	public Long getTicketId() {
-        return ticketId;
+	public Long getNodeId() {
+        return nodeId;
     }
 
-    public void setTicketId(Long ticketId) {
-        this.ticketId = ticketId;
+    public void setNodeId(Long ticketId) {
+        this.nodeId = ticketId;
     }
 
     public String getName() {

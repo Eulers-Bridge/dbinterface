@@ -45,7 +45,7 @@ public class TaskEventHandler implements TaskService {
         Task task = taskRepository.findOne(requestReadTaskEvent.getNodeId());
         ReadEvent readTaskEvent;
         if(task != null){
-            readTaskEvent = new ReadTaskEvent(task.getTaskId(), task.toTaskDetails());
+            readTaskEvent = new ReadTaskEvent(task.getNodeId(), task.toTaskDetails());
         }
         else{
             readTaskEvent = ReadTaskEvent.notFound(requestReadTaskEvent.getNodeId());
@@ -97,8 +97,8 @@ public class TaskEventHandler implements TaskService {
         }
         else{
             Task result = taskRepository.save(task);
-            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getTaskId());
-            return new TaskUpdatedEvent(result.getTaskId(), result.toTaskDetails());
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+            return new TaskUpdatedEvent(result.getNodeId(), result.toTaskDetails());
         }
     }
 

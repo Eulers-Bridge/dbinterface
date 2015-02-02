@@ -75,7 +75,7 @@ public class TicketEventHandler implements TicketService{
         Ticket ticket = ticketRepository.findOne(requestReadTicketEvent.getNodeId());
         ReadEvent readTicketEvent;
         if(ticket != null){
-            readTicketEvent = new ReadTicketEvent(ticket.getTicketId(), ticket.toTicketDetails());
+            readTicketEvent = new ReadTicketEvent(ticket.getNodeId(), ticket.toTicketDetails());
         }
         else{
             readTicketEvent = ReadTicketEvent.notFound(requestReadTicketEvent.getNodeId());
@@ -96,8 +96,8 @@ public class TicketEventHandler implements TicketService{
         }
         else{
             Ticket result = ticketRepository.save(ticket);
-            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getTicketId());
-            return new TicketUpdatedEvent(result.getTicketId(), result.toTicketDetails());
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+            return new TicketUpdatedEvent(result.getNodeId(), result.toTicketDetails());
         }
     }
 
@@ -142,7 +142,7 @@ public class TicketEventHandler implements TicketService{
 			}
 			if (0==dets.size())
 			{
-				// Need to check if we actually found instId.
+				// Need to check if we actually found parentId.
 				Election elec=electionRepository.findOne(electionId);
 				if ( (null==elec) ||
 					 ((null==elec.getTitle()) || ((null==elec.getStart()) && (null==elec.getEnd()) && (null==elec.getIntroduction()))))

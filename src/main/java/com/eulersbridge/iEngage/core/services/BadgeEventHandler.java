@@ -39,10 +39,10 @@ public class BadgeEventHandler implements BadgeService{
         
         Badge badge = Badge.fromBadgeDetails(badgeDetails);
         Badge result = badgeRepository.save(badge);
-        if ((null==result)||(null==result.getBadgeId()))
+        if ((null==result)||(null==result.getNodeId()))
         	badgeCreatedEvent = CreatedEvent.failed(badgeDetails);
         else
-        	badgeCreatedEvent = new BadgeCreatedEvent(result.getBadgeId(), result.toBadgeDetails());
+        	badgeCreatedEvent = new BadgeCreatedEvent(result.getNodeId(), result.toBadgeDetails());
         return badgeCreatedEvent;
     }
     
@@ -52,7 +52,7 @@ public class BadgeEventHandler implements BadgeService{
         Badge badge = badgeRepository.findOne(requestReadBadgeEvent.getNodeId());
         ReadEvent readBadgeEvent;
         if(badge != null){
-            readBadgeEvent = new ReadBadgeEvent(badge.getBadgeId(), badge.toBadgeDetails());
+            readBadgeEvent = new ReadBadgeEvent(badge.getNodeId(), badge.toBadgeDetails());
         }
         else{
             readBadgeEvent = ReadBadgeEvent.notFound(requestReadBadgeEvent.getNodeId());
@@ -104,8 +104,8 @@ public class BadgeEventHandler implements BadgeService{
         }
         else{
             Badge result = badgeRepository.save(badge);
-            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getBadgeId());
-            return new BadgeUpdatedEvent(result.getBadgeId(), result.toBadgeDetails());
+            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+            return new BadgeUpdatedEvent(result.getNodeId(), result.toBadgeDetails());
         }
     }
 
