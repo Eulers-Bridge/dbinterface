@@ -2,10 +2,14 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.rest.controller.CandidateController;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -115,4 +119,22 @@ public class Candidate extends ResourceSupport{
     {
         this.positionId = positionId;
     }
+    
+	public static Iterator<Candidate> toCandidatesIterator(
+			Iterator<CandidateDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <Candidate> elections=new ArrayList<Candidate>();
+		while(iter.hasNext())
+		{
+			CandidateDetails dets=iter.next();
+			Candidate thisCandidate=Candidate.fromCandidateDetails(dets);
+			Link self = thisCandidate.getLink("self");
+			thisCandidate.removeLinks();
+			thisCandidate.add(self);
+			elections.add(thisCandidate);		
+		}
+		return elections.iterator();
+	}
+
 }
