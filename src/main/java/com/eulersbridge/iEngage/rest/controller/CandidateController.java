@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +88,51 @@ public class CandidateController {
         }
     }
 	
+	/**
+	 * Is passed all the necessary data to read candidates from the database. The
+	 * request must be a GET with the electionId presented as the final
+	 * portion of the URL.
+	 * <p/>
+	 * This method will return the candidates read from the database.
+	 * 
+	 * @param electionId
+	 *            the electionId of the candidate objects to be read.
+	 * @return the candidates.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CANDIDATES_LABEL
+			+ "/{electionId}")
+	public @ResponseBody ResponseEntity<Iterator<Candidate>> findCandidates(
+			@PathVariable(value = "") Long electionId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve candidates from institution "
+					+ electionId + '.');
+
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		CandidatesReadEvent articleEvent = candidateService.readCandidates(
+				new ReadCandidatesEvent(electionId), sortDirection,
+				pageNumber, pageLength);
+
+		if (!articleEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<Candidate>>(HttpStatus.NOT_FOUND);
+		}
+
+		Iterator<Candidate> candidates = Candidate
+				.toCandidatesIterator(articleEvent.getCandidates().iterator());
+
+		return new ResponseEntity<Iterator<Candidate>>(candidates, HttpStatus.OK);
+	}
+
     //Update
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL+"/{candidateId}")
     public @ResponseBody ResponseEntity<Candidate>

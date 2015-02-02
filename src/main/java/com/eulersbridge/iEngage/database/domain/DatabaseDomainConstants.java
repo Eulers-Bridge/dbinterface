@@ -28,6 +28,7 @@ public class DatabaseDomainConstants
     public static final String IS_ON_TICKET_LABEL = "IS_ON_TICKET";
 	
 	
+	public static final String CANDIDATE = "Candidate";
 	public static final String ELECTION = "Election";
 	public static final String FORUM_QUESTION = "ForumQuestion";
 	public static final String INSTITUTION = "Institution";
