@@ -17,6 +17,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,6 +43,8 @@ import com.eulersbridge.iEngage.core.events.positions.PositionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.positions.PositionDetails;
 import com.eulersbridge.iEngage.core.events.positions.PositionReadEvent;
 import com.eulersbridge.iEngage.core.events.positions.PositionUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.positions.PositionsReadEvent;
+import com.eulersbridge.iEngage.core.events.positions.ReadPositionsEvent;
 import com.eulersbridge.iEngage.core.events.positions.RequestReadPositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent;
 import com.eulersbridge.iEngage.core.services.ElectionService;
@@ -253,6 +260,61 @@ public class PositionControllerTest
 		when (positionService.readPosition(any(RequestReadPositionEvent.class))).thenReturn(testData);
 		if (LOG.isDebugEnabled()) LOG.debug("testData - "+testData);
 		this.mockMvc.perform(get(urlPrefix+"/{positionId}",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+
+	@Test
+	public final void testFindPositions() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPositions()");
+		Long electionId=1l;
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Position> dets=DatabaseDataFixture.populatePositions();
+		Iterable<com.eulersbridge.iEngage.database.domain.Position> positions=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Position> iter=positions.iterator();
+		ArrayList<PositionDetails> positionDets=new ArrayList<PositionDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Position article=iter.next();
+			positionDets.add(article.toPositionDetails());
+		}
+		PositionsReadEvent testData=new PositionsReadEvent(electionId,positionDets);
+		when (positionService.readPositions(any(ReadPositionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$[0].name",is(positionDets.get(0).getName())))
+		.andExpect(jsonPath("$[0].description",is(positionDets.get(0).getDescription())))
+		.andExpect(jsonPath("$[0].electionId",is(positionDets.get(0).getElectionId().intValue())))
+		.andExpect(jsonPath("$[0].positionId",is(positionDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$[1].name",is(positionDets.get(1).getName())))
+		.andExpect(jsonPath("$[1].description",is(positionDets.get(1).getDescription())))
+		.andExpect(jsonPath("$[1].electionId",is(positionDets.get(1).getElectionId().intValue())))
+		.andExpect(jsonPath("$[1].positionId",is(positionDets.get(1).getNodeId().intValue())))
+//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindPositionsZeroArticles() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPositions()");
+		Long electionId=11l;
+		ArrayList<PositionDetails> eleDets=new ArrayList<PositionDetails>(); 
+		PositionsReadEvent testData=new PositionsReadEvent(electionId,eleDets);
+		when (positionService.readPositions(any(ReadPositionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindPositionsNoElection() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindPositions()");
+		Long electionId=11l;
+		PositionsReadEvent testData=PositionsReadEvent.electionNotFound();
+		when (positionService.readPositions(any(ReadPositionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
