@@ -147,7 +147,7 @@ public class EventEventHandler implements EventService
 	public EventsReadEvent readEvents(ReadAllEvent readAllEvent,
 			Direction sortDirection, int pageNumber, int pageLength)
 	{
-		Long institutionId = readAllEvent.getInstId();
+		Long institutionId = readAllEvent.getParentId();
 		Page<Event> events = null;
 		ArrayList<EventDetails> dets = new ArrayList<EventDetails>();
 		EventsReadEvent nare = null;
@@ -172,7 +172,7 @@ public class EventEventHandler implements EventService
 			}
 			if (0 == dets.size())
 			{
-				// Need to check if we actually found instId.
+				// Need to check if we actually found parentId.
 				Institution inst = institutionRepository.findOne(institutionId);
 				if ((null == inst)
 						|| ((null == inst.getName()) || ((null == inst
