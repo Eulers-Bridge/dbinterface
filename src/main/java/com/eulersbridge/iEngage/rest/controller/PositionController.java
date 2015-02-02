@@ -7,11 +7,8 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
-import com.eulersbridge.iEngage.core.events.ticket.ReadTicketsEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketsReadEvent;
 import com.eulersbridge.iEngage.core.services.PositionService;
 import com.eulersbridge.iEngage.rest.domain.Position;
-import com.eulersbridge.iEngage.rest.domain.Ticket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
