@@ -15,14 +15,14 @@ import org.junit.Test;
 public class ReadAllEventTest
 {
 	ReadAllEvent testEvt;
-	Long institutionId=26l;
+	Long parentId=26l;
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception
 	{
-		testEvt=new ReadAllEvent(institutionId);
+		testEvt=new ReadAllEvent(parentId);
 	}
 
 	/**
@@ -35,23 +35,23 @@ public class ReadAllEventTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.events.ReadAllEvent#getInstId()}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.ReadAllEvent#getParentId()}.
 	 */
 	@Test
-	public final void testGetInstId()
+	public final void testGetParentId()
 	{
-		assertEquals(institutionId,testEvt.getInstId());
+		assertEquals(parentId,testEvt.getParentId());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.events.ReadAllEvent#setInstId(java.lang.Long)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.ReadAllEvent#setParentId(java.lang.Long)}.
 	 */
 	@Test
-	public final void testSetInstId()
+	public final void testSetParentId()
 	{
-		Long instId=34l;
-		testEvt.setInstId(instId);
-		assertEquals(instId,testEvt.getInstId());
+		Long parentId=34l;
+		testEvt.setParentId(parentId);
+		assertEquals(parentId,testEvt.getParentId());
 	}
 
 }
