@@ -10,31 +10,31 @@ package com.eulersbridge.iEngage.core.events;
  */
 public class ReadAllEvent
 {
-	Long instId;
+	Long parentId;
 	
 	private ReadAllEvent()
 	{
 		super();
 	}
 	
-	public ReadAllEvent(Long institutionId)
+	public ReadAllEvent(Long parentId)
 	{
 		this();
-		this.instId=institutionId;
+		this.parentId=parentId;
 	}
 
 	/**
-	 * @return the instId
+	 * @return the parentId
 	 */
-	public Long getInstId() {
-		return instId;
+	public Long getParentId() {
+		return parentId;
 	}
 
 	/**
-	 * @param instId the instId to set
+	 * @param parentId the parentId to set
 	 */
-	public void setInstId(Long instId) {
-		this.instId = instId;
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 }
