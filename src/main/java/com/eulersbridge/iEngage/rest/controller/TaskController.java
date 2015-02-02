@@ -1,14 +1,18 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.*;
 import com.eulersbridge.iEngage.core.services.TaskService;
 import com.eulersbridge.iEngage.rest.domain.Task;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +64,48 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+	/**
+	 * Is passed all the necessary data to read tasks from the database. The
+	 * request must be a GET with the electionId presented as the final
+	 * portion of the URL.
+	 * <p/>
+	 * This method will return the tasks read from the database.
+	 * 
+	 * @param electionId
+	 *            the electionId of the task objects to be read.
+	 * @return the tasks.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.TASKS_LABEL)
+	public @ResponseBody ResponseEntity<Iterator<Task>> findTasks(
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve tasks.");
+
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		TasksReadEvent articleEvent = taskService.readTasks(
+				new ReadTasksEvent(), sortDirection,
+				pageNumber, pageLength);
+
+		if (!articleEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<Task>>(HttpStatus.NOT_FOUND);
+		}
+
+		Iterator<Task> tasks = Task
+				.toTasksIterator(articleEvent.getTasks().iterator());
+
+		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
+	}
 
     //Update
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.TASK_LABEL+"/{taskId}")

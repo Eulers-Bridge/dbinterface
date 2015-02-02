@@ -1,13 +1,21 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.*;
 import com.eulersbridge.iEngage.database.domain.Task;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 /**
  * @author Yikai Gong
@@ -44,6 +52,37 @@ public class TaskEventHandler implements TaskService {
         }
         return readTaskEvent;
     }
+
+	@Override
+	public TasksReadEvent readTasks(ReadTasksEvent readTasksEvent, Direction sortDirection,int pageNumber, int pageLength)
+	{
+		Page <Task>tasks=null;
+		ArrayList<TaskDetails> dets=new ArrayList<TaskDetails>();
+		TasksReadEvent nare=null;
+
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"action");
+		tasks=taskRepository.findAll(pageable);
+		if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+tasks.getTotalElements()+" total pages ="+tasks.getTotalPages());
+		if (tasks!=null)
+		{
+			Iterator<Task> iter=tasks.iterator();
+			while (iter.hasNext())
+			{
+				Task na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getAction());
+				TaskDetails det=na.toTaskDetails();
+				dets.add(det);
+			}
+			nare=new TasksReadEvent(dets);
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
+			nare=(TasksReadEvent) TasksReadEvent.notFound(null);
+		}
+		return nare;
+	}
 
     @Override
     public UpdatedEvent updateTask(UpdateTaskEvent updateTaskEvent) {

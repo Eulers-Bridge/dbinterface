@@ -7,5 +7,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  * @author Yikai Gong
  */
 
-public interface TaskRepository extends GraphRepository<Task> {
+public interface TaskRepository extends GraphRepository<Task>
+{
 }
