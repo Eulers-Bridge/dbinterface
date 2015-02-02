@@ -6,6 +6,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
 
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -23,4 +24,8 @@ public interface PositionService {
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public DeletedEvent deletePosition(DeletePositionEvent deletePositionEvent);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public PositionsReadEvent readPositions(ReadPositionsEvent readPositionsEvent,
+			Direction sortDirection, int pageNumber, int pageLength);
 }

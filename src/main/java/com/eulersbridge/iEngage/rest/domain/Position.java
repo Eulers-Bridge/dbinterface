@@ -1,9 +1,14 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.positions.PositionDetails;
 import com.eulersbridge.iEngage.rest.controller.PositionController;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -109,5 +114,22 @@ public class Position extends ResourceSupport
 	public void setElectionId(Long electionId)
 	{
 		this.electionId = electionId;
+	}
+
+	public static Iterator<Position> toPositionsIterator(
+			Iterator<PositionDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <Position> elections=new ArrayList<Position>();
+		while(iter.hasNext())
+		{
+			PositionDetails dets=iter.next();
+			Position thisPosition=Position.fromPositionDetails(dets);
+			Link self = thisPosition.getLink("self");
+			thisPosition.removeLinks();
+			thisPosition.add(self);
+			elections.add(thisPosition);		
+		}
+		return elections.iterator();
 	}
 }

@@ -28,14 +28,15 @@ public class DatabaseDomainConstants
     public static final String IS_ON_TICKET_LABEL = "IS_ON_TICKET";
 	
 	
+	public static final String ELECTION = "Election";
+	public static final String FORUM_QUESTION = "ForumQuestion";
 	public static final String INSTITUTION = "Institution";
 	public static final String NEWS_FEED = "NewsFeed";
 	public static final String PHOTO = "Photo";
 	public static final String PHOTO_ALBUM = "PhotoAlbum";
 	public static final String POLL = "Poll";
-	public static final String FORUM_QUESTION = "ForumQuestion";
 	public static final String POLL_ANSWER = "PollAnswer";
-	public static final String ELECTION = "Election";
+	public static final String POSITION = "Position";
 	public static final String TASK = "Task";
 	public static final String TICKET = "Ticket";
 }
