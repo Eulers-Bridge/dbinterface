@@ -80,7 +80,7 @@ public class TaskEventHandlerTest
 		TaskCreatedEvent evtData = service.createTask(createTaskEvent);
 		Details returnedDets = evtData.getDetails();
 		assertEquals(testData.toTaskDetails(),returnedDets);
-		assertEquals(testData.getTaskId(),returnedDets.getNodeId());
+		assertEquals(testData.getNodeId(),returnedDets.getNodeId());
 		assertNotNull(evtData.getNodeId());
 	}
 
@@ -93,7 +93,7 @@ public class TaskEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("ReadingTask()");
 		Task testData=DatabaseDataFixture.populateTask1();
 		when(taskRepository.findOne(any(Long.class))).thenReturn(testData);
-		RequestReadTaskEvent requestReadTaskEvent=new RequestReadTaskEvent(testData.getTaskId());
+		RequestReadTaskEvent requestReadTaskEvent=new RequestReadTaskEvent(testData.getNodeId());
 		ReadTaskEvent evtData = (ReadTaskEvent) service.requestReadTask(requestReadTaskEvent);
 		TaskDetails returnedDets = (TaskDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toTaskDetails());
@@ -131,10 +131,10 @@ public class TaskEventHandlerTest
 		Task testData=DatabaseDataFixture.populateTask1();
 		when(taskRepository.findOne(any(Long.class))).thenReturn(testData);
 		doNothing().when(taskRepository).delete((any(Long.class)));
-		DeleteTaskEvent deleteTaskEvent=new DeleteTaskEvent(testData.getTaskId());
+		DeleteTaskEvent deleteTaskEvent=new DeleteTaskEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteTask(deleteTaskEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
-		assertEquals(testData.getTaskId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 }

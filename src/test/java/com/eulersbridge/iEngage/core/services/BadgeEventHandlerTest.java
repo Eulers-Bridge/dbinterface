@@ -108,7 +108,7 @@ public class BadgeEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("ReadingBadge()");
 		Badge testData=DatabaseDataFixture.populateBadge1();
 		when(badgeRepository.findOne(any(Long.class))).thenReturn(testData);
-		RequestReadBadgeEvent requestReadBadgeEvent=new RequestReadBadgeEvent(testData.getBadgeId());
+		RequestReadBadgeEvent requestReadBadgeEvent=new RequestReadBadgeEvent(testData.getNodeId());
 		ReadBadgeEvent evtData = (ReadBadgeEvent) service.requestReadBadge(requestReadBadgeEvent);
 		BadgeDetails returnedDets = (BadgeDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toBadgeDetails());
@@ -168,7 +168,7 @@ public class BadgeEventHandlerTest
 		UpdateBadgeEvent createBadgeEvent=new UpdateBadgeEvent(dets.getNodeId(), dets);
 		UpdatedEvent evtData = service.updateBadge(createBadgeEvent);
 		assertNull(evtData.getDetails());
-		assertEquals(evtData.getNodeId(),testData.getBadgeId());
+		assertEquals(evtData.getNodeId(),testData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
 	}
@@ -183,11 +183,11 @@ public class BadgeEventHandlerTest
 		Badge testData=DatabaseDataFixture.populateBadge1();
 		when(badgeRepository.findOne(any(Long.class))).thenReturn(testData);
 		doNothing().when(badgeRepository).delete((any(Long.class)));
-		DeleteBadgeEvent deleteBadgeEvent=new DeleteBadgeEvent(testData.getBadgeId());
+		DeleteBadgeEvent deleteBadgeEvent=new DeleteBadgeEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteBadge(deleteBadgeEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
-		assertEquals(testData.getBadgeId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 
 	/**
@@ -200,10 +200,10 @@ public class BadgeEventHandlerTest
 		Badge testData=DatabaseDataFixture.populateBadge1();
 		when(badgeRepository.findOne(any(Long.class))).thenReturn(null);
 		doNothing().when(badgeRepository).delete((any(Long.class)));
-		DeleteBadgeEvent deleteBadgeEvent=new DeleteBadgeEvent(testData.getBadgeId());
+		DeleteBadgeEvent deleteBadgeEvent=new DeleteBadgeEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteBadge(deleteBadgeEvent);
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isDeletionCompleted());
-		assertEquals(testData.getBadgeId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 }

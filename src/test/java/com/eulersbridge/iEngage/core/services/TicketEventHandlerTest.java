@@ -89,7 +89,7 @@ public class TicketEventHandlerTest
 		CreatedEvent evtData = service.createTicket(createTicketEvent);
 		Details returnedDets = evtData.getDetails();
 		assertEquals(testData.toTicketDetails(),returnedDets);
-		assertEquals(testData.getTicketId(),returnedDets.getNodeId());
+		assertEquals(testData.getNodeId(),returnedDets.getNodeId());
 		assertNotNull(evtData.getNodeId());
 	}
 
@@ -120,7 +120,7 @@ public class TicketEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("ReadingTicket()");
 		Ticket testData=DatabaseDataFixture.populateTicket1();
 		when(ticketRepository.findOne(any(Long.class))).thenReturn(testData);
-		RequestReadTicketEvent requestReadTicketEvent=new RequestReadTicketEvent(testData.getTicketId());
+		RequestReadTicketEvent requestReadTicketEvent=new RequestReadTicketEvent(testData.getNodeId());
 		ReadTicketEvent evtData = (ReadTicketEvent) service.requestReadTicket(requestReadTicketEvent);
 		TicketDetails returnedDets = (TicketDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toTicketDetails());
@@ -177,7 +177,7 @@ public class TicketEventHandlerTest
 		UpdateTicketEvent createTicketEvent=new UpdateTicketEvent(dets.getNodeId(), dets);
 		UpdatedEvent evtData = service.updateTicket(createTicketEvent);
 		assertNull(evtData.getDetails());
-		assertEquals(evtData.getNodeId(),testData.getTicketId());
+		assertEquals(evtData.getNodeId(),testData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
 	}
@@ -192,11 +192,11 @@ public class TicketEventHandlerTest
 		Ticket testData=DatabaseDataFixture.populateTicket1();
 		when(ticketRepository.findOne(any(Long.class))).thenReturn(testData);
 		doNothing().when(ticketRepository).delete((any(Long.class)));
-		DeleteTicketEvent deleteTicketEvent=new DeleteTicketEvent(testData.getTicketId());
+		DeleteTicketEvent deleteTicketEvent=new DeleteTicketEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteTicket(deleteTicketEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
-		assertEquals(testData.getTicketId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.TicketEventHandler#deleteTicket(com.eulersbridge.iEngage.core.events.tickets.DeleteTicketEvent)}.
@@ -208,11 +208,11 @@ public class TicketEventHandlerTest
 		Ticket testData=DatabaseDataFixture.populateTicket1();
 		when(ticketRepository.findOne(any(Long.class))).thenReturn(null);
 		doNothing().when(ticketRepository).delete((any(Long.class)));
-		DeleteTicketEvent deleteTicketEvent=new DeleteTicketEvent(testData.getTicketId());
+		DeleteTicketEvent deleteTicketEvent=new DeleteTicketEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteTicket(deleteTicketEvent);
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isDeletionCompleted());
-		assertEquals(testData.getTicketId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 
 }
