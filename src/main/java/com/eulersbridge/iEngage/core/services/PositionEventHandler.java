@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
@@ -74,21 +75,21 @@ public class PositionEventHandler implements PositionService{
     }
 
 	@Override
-	public PositionsReadEvent readPositions(ReadPositionsEvent readPositionsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public PositionsReadEvent readPositions(ReadAllEvent evt, Direction sortDirection,int pageNumber, int pageLength)
 	{
-		Long electionId=readPositionsEvent.getElectionId();
-		Page <Position>elections=null;
+		Long electionId=evt.getParentId();
+		Page <Position>positions=null;
 		ArrayList<PositionDetails> dets=new ArrayList<PositionDetails>();
 		PositionsReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("ElectionId "+electionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.name");
-		elections=positionRepository.findByElectionId(electionId, pageable);
-		if (LOG.isDebugEnabled())
-				LOG.debug("Total elements = "+elections.getTotalElements()+" total pages ="+elections.getTotalPages());
-		if (elections!=null)
+		positions=positionRepository.findByElectionId(electionId, pageable);
+		if (positions!=null)
 		{
-			Iterator<Position> iter=elections.iterator();
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+positions.getTotalElements()+" total pages ="+positions.getTotalPages());
+			Iterator<Position> iter=positions.iterator();
 			while (iter.hasNext())
 			{
 				Position na=iter.next();
@@ -98,7 +99,7 @@ public class PositionEventHandler implements PositionService{
 			}
 			if (0==dets.size())
 			{
-				// Need to check if we actually found instId.
+				// Need to check if we actually found parentId.
 				Election elec=electionRepository.findOne(electionId);
 				if ( (null==elec) ||
 					 ((null==elec.getTitle()) || ((null==elec.getStart()) && (null==elec.getEnd()) && (null==elec.getIntroduction()))))
@@ -108,12 +109,12 @@ public class PositionEventHandler implements PositionService{
 				}
 				else
 				{	
-					nare=new PositionsReadEvent(electionId,dets);
+					nare=new PositionsReadEvent(electionId,dets,positions.getTotalElements(), positions.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new PositionsReadEvent(electionId,dets);
+				nare=new PositionsReadEvent(electionId,dets,positions.getTotalElements(), positions.getTotalPages());
 			}
 		}
 		else

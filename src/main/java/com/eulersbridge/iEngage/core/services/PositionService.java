@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
@@ -26,6 +27,6 @@ public interface PositionService {
     public DeletedEvent deletePosition(DeletePositionEvent deletePositionEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public PositionsReadEvent readPositions(ReadPositionsEvent readPositionsEvent,
+	public PositionsReadEvent readPositions(ReadAllEvent readPositionsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 }

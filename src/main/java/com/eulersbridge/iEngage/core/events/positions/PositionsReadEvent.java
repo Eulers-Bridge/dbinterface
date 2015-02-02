@@ -14,7 +14,18 @@ public class PositionsReadEvent extends ReadEvent
 	Iterable<PositionDetails> positions;
 	Long electionId=null;
 	private boolean electionFound=true;
+	private Long totalItems;
+	private Integer totalPages;
 	
+	public PositionsReadEvent(Long electionId, Iterable<PositionDetails> elections, long totalElements, int totalPages)
+	{
+		super(1l);
+		this.positions=elections;
+		this.electionId=electionId;
+		this.totalItems=totalElements;
+		this.totalPages=totalPages;
+	}
+
 	public PositionsReadEvent(Long electionId, Iterable<PositionDetails> elections)
 	{
 		super(1l);
@@ -47,6 +58,38 @@ public class PositionsReadEvent extends ReadEvent
 	public void setPositions(Iterable<PositionDetails> positions) 
 	{
 		this.positions = positions;
+	}
+
+	/**
+	 * @return the totalItems
+	 */
+	public Long getTotalItems()
+	{
+		return totalItems;
+	}
+
+	/**
+	 * @param totalItems the totalItems to set
+	 */
+	public void setTotalItems(Long totalEvents)
+	{
+		this.totalItems = totalEvents;
+	}
+
+	/**
+	 * @return the totalPages
+	 */
+	public Integer getTotalPages()
+	{
+		return totalPages;
+	}
+
+	/**
+	 * @param totalPages the totalPages to set
+	 */
+	public void setTotalPages(Integer totalPages)
+	{
+		this.totalPages = totalPages;
 	}
 
 	/**

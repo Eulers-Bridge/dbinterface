@@ -3,16 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.positions;
 
-import com.eulersbridge.iEngage.core.events.RequestReadEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class ReadPositionsEvent extends RequestReadEvent
+public class ReadPositionsEvent extends ReadAllEvent
 {
-	Long electionId=null;
-	
 	public ReadPositionsEvent()
 	{
 		super(null);
@@ -20,25 +18,6 @@ public class ReadPositionsEvent extends RequestReadEvent
 
 	public ReadPositionsEvent(Long electionId)
 	{
-		super(null);
-		this.electionId=electionId;
+		super(electionId);
 	}
-
-	/**
-	 * @return the electionId
-	 */
-	public Long getElectionId()
-	{
-		return electionId;
-	}
-
-	/**
-	 * @param electionId the electionId to set
-	 */
-	public void setInstitutionId(Long electionId)
-	{
-		this.electionId = electionId;
-	}
-
-
 }
