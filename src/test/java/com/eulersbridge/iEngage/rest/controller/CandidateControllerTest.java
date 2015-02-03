@@ -17,6 +17,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,8 +42,10 @@ import com.eulersbridge.iEngage.core.events.candidate.CandidateDeletedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateReadEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.candidate.CandidatesReadEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CreateCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.DeleteCandidateEvent;
+import com.eulersbridge.iEngage.core.events.candidate.ReadCandidatesEvent;
 import com.eulersbridge.iEngage.core.events.candidate.RequestReadCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent;
 import com.eulersbridge.iEngage.core.services.CandidateService;
@@ -275,6 +282,61 @@ public class CandidateControllerTest
 		when (candidateService.requestReadCandidate(any(RequestReadCandidateEvent.class))).thenReturn(testData);
 		if (LOG.isDebugEnabled()) LOG.debug("testData - "+testData);
 		this.mockMvc.perform(get(urlPrefix+"/{candidateId}",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+
+	@Test
+	public final void testFindCandidates() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindCandidates()");
+		Long electionId=1l;
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Candidate> dets=DatabaseDataFixture.populateCandidates();
+		Iterable<com.eulersbridge.iEngage.database.domain.Candidate> candidates=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Candidate> iter=candidates.iterator();
+		ArrayList<CandidateDetails> candidateDets=new ArrayList<CandidateDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Candidate article=iter.next();
+			candidateDets.add(article.toCandidateDetails());
+		}
+		CandidatesReadEvent testData=new CandidatesReadEvent(electionId,candidateDets);
+		when (candidateService.readCandidates(any(ReadCandidatesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$[0].information",is(candidateDets.get(0).getInformation())))
+		.andExpect(jsonPath("$[0].policyStatement",is(candidateDets.get(0).getPolicyStatement())))
+		.andExpect(jsonPath("$[0].positionId",is(candidateDets.get(0).getPositionId().intValue())))
+		.andExpect(jsonPath("$[0].candidateId",is(candidateDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$[1].information",is(candidateDets.get(1).getInformation())))
+		.andExpect(jsonPath("$[1].policyStatement",is(candidateDets.get(1).getPolicyStatement())))
+		.andExpect(jsonPath("$[1].positionId",is(candidateDets.get(1).getPositionId().intValue())))
+		.andExpect(jsonPath("$[1].candidateId",is(candidateDets.get(1).getNodeId().intValue())))
+//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindCandidatesZeroArticles() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindCandidates()");
+		Long electionId=11l;
+		ArrayList<CandidateDetails> eleDets=new ArrayList<CandidateDetails>(); 
+		CandidatesReadEvent testData=new CandidatesReadEvent(electionId,eleDets);
+		when (candidateService.readCandidates(any(ReadCandidatesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindCandidatesNoElection() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindCandidates()");
+		Long electionId=11l;
+		CandidatesReadEvent testData=CandidatesReadEvent.electionNotFound();
+		when (candidateService.readCandidates(any(ReadCandidatesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
