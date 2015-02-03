@@ -5,12 +5,12 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.ReadTicketsEvent;
 import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketCreatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDeletedEvent;
@@ -118,7 +118,7 @@ public class TicketEventHandler implements TicketService{
     }
     
 	@Override
-	public TicketsReadEvent readTickets(ReadTicketsEvent readTicketsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public TicketsReadEvent readTickets(ReadAllEvent readTicketsEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Long electionId=readTicketsEvent.getParentId();
 		Page <Ticket>elections=null;
@@ -128,10 +128,10 @@ public class TicketEventHandler implements TicketService{
 		if (LOG.isDebugEnabled()) LOG.debug("ElectionId "+electionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.name");
 		elections=ticketRepository.findByElectionId(electionId, pageable);
-		if (LOG.isDebugEnabled())
-				LOG.debug("Total elements = "+elections.getTotalElements()+" total pages ="+elections.getTotalPages());
 		if (elections!=null)
 		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+elections.getTotalElements()+" total pages ="+elections.getTotalPages());
 			Iterator<Ticket> iter=elections.iterator();
 			while (iter.hasNext())
 			{
@@ -152,12 +152,12 @@ public class TicketEventHandler implements TicketService{
 				}
 				else
 				{	
-					nare=new TicketsReadEvent(electionId,dets);
+					nare=new TicketsReadEvent(electionId,dets,elections.getTotalElements(),elections.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new TicketsReadEvent(electionId,dets);
+				nare=new TicketsReadEvent(electionId,dets,elections.getTotalElements(),elections.getTotalPages());
 			}
 		}
 		else

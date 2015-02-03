@@ -3,7 +3,9 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.*;
@@ -31,12 +33,16 @@ public class TaskEventHandler implements TaskService {
     }
 
     @Override
-    public TaskCreatedEvent createTask(CreateTaskEvent createTaskEvent)
+    public CreatedEvent createTask(CreateTaskEvent createTaskEvent)
     {
         TaskDetails taskDetails = (TaskDetails) createTaskEvent.getDetails();
+        CreatedEvent taskCreatedEvent;
         Task task = Task.fromTaskDetails(taskDetails);
         Task result = taskRepository.save(task);
-        TaskCreatedEvent taskCreatedEvent = new TaskCreatedEvent(result.toTaskDetails());
+        if ((null==result)||(null==result.getNodeId()))
+        	taskCreatedEvent = CreatedEvent.failed(taskDetails);
+        else
+        	taskCreatedEvent = new TaskCreatedEvent(result.toTaskDetails());
         return taskCreatedEvent;
     }
 
@@ -54,7 +60,7 @@ public class TaskEventHandler implements TaskService {
     }
 
 	@Override
-	public TasksReadEvent readTasks(ReadTasksEvent readTasksEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public TasksReadEvent readTasks(ReadAllEvent readTasksEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Page <Task>tasks=null;
 		ArrayList<TaskDetails> dets=new ArrayList<TaskDetails>();
@@ -62,10 +68,10 @@ public class TaskEventHandler implements TaskService {
 
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"action");
 		tasks=taskRepository.findAll(pageable);
-		if (LOG.isDebugEnabled())
-				LOG.debug("Total elements = "+tasks.getTotalElements()+" total pages ="+tasks.getTotalPages());
 		if (tasks!=null)
 		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+tasks.getTotalElements()+" total pages ="+tasks.getTotalPages());
 			Iterator<Task> iter=tasks.iterator();
 			while (iter.hasNext())
 			{
@@ -74,7 +80,7 @@ public class TaskEventHandler implements TaskService {
 				TaskDetails det=na.toTaskDetails();
 				dets.add(det);
 			}
-			nare=new TasksReadEvent(dets);
+			nare=new TasksReadEvent(dets,tasks.getTotalElements(),tasks.getTotalPages());
 		}
 		else
 		{

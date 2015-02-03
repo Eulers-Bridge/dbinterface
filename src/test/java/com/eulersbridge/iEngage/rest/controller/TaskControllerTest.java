@@ -17,6 +17,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,18 +28,24 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.ReadTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.ReadTasksEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskCreatedEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskDeletedEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
 import com.eulersbridge.iEngage.core.events.task.TaskUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 import com.eulersbridge.iEngage.core.services.TaskService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -133,6 +143,70 @@ public class TaskControllerTest
 		.andExpect(status().isCreated())	;		
 	}
 
+	@Test
+	public final void testCreateTaskNullEvt() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTask()");
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		String content=setupContent(dets);
+		when (taskService.createTask(any(CreateTaskEvent.class))).thenReturn(null);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateTaskInvalidContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTask()");
+		TaskCreatedEvent testData=null;
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		String content=setupInvalidContent(dets);
+		when (taskService.createTask(any(CreateTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateEventNoContent() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTask()");
+		TaskCreatedEvent testData=null;
+		when (taskService.createTask(any(CreateTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateTaskNullNodeId() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTask()");
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		String content=setupContent(dets);
+		TaskCreatedEvent testData=new TaskCreatedEvent(dets);
+		testData.setNodeId(null);
+		when (taskService.createTask(any(CreateTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public final void testCreateTaskFailed() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTask()");
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		String content=setupContent(dets);
+		CreatedEvent testData=TaskCreatedEvent.failed(dets);
+		testData.setNodeId(null);
+		when (taskService.createTask(any(CreateTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.TaskController#findTask(java.lang.Long)}.
 	 * @throws Exception 
@@ -155,6 +229,56 @@ public class TaskControllerTest
 //		.andExpect(jsonPath("$.links[2].rel",is("Next")))
 //		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
 		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;
+	}
+
+    @Test
+    public void testFindTaskNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingFindTask()");
+        TaskDetails dets = DatabaseDataFixture.populateTask1().toTaskDetails();
+        ReadEvent testData = ReadTaskEvent.notFound(dets.getNodeId());
+        when (taskService.requestReadTask(any(RequestReadTaskEvent.class))).thenReturn(testData);
+        this.mockMvc.perform(get(urlPrefix + "/{badgeId}", dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+	@Test
+	public final void testFindTasks() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindTasks()");
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Task> dets=DatabaseDataFixture.populateTasks();
+		Iterable<com.eulersbridge.iEngage.database.domain.Task> tasks=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Task> iter=tasks.iterator();
+		ArrayList<TaskDetails> taskDets=new ArrayList<TaskDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Task article=iter.next();
+			taskDets.add(article.toTaskDetails());
+		}
+		TasksReadEvent testData=new TasksReadEvent(taskDets);
+		when (taskService.readTasks(any(ReadTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$[0].action",is(taskDets.get(0).getAction())))
+		.andExpect(jsonPath("$[0].xpValue",is(taskDets.get(0).getXpValue())))
+		.andExpect(jsonPath("$[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$[1].action",is(taskDets.get(1).getAction())))
+		.andExpect(jsonPath("$[1].xpValue",is(taskDets.get(1).getXpValue())))
+		.andExpect(jsonPath("$[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
+//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindTasksZeroArticles() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindTasks()");
+		ArrayList<TaskDetails> eleDets=new ArrayList<TaskDetails>(); 
+		TasksReadEvent testData=new TasksReadEvent(eleDets);
+		when (taskService.readTasks(any(ReadTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
 
@@ -186,6 +310,59 @@ public class TaskControllerTest
 		.andExpect(status().isOk())	;		
 	}
 
+	@Test
+	public void testUpdateTaskNullEventReturned() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTask()");
+		Long id=1L;
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		String content=setupContent(dets);
+		when (taskService.updateTask(any(UpdateTaskEvent.class))).thenReturn(null);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateTaskBadContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTask()");
+		Long id=1L;
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		TaskUpdatedEvent testData=new TaskUpdatedEvent(id, dets);
+		String content=setupInvalidContent(dets);
+		when (taskService.updateTask(any(UpdateTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateTaskEmptyContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTask()");
+		Long id=1L;
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		TaskUpdatedEvent testData=new TaskUpdatedEvent(id, dets);
+		when (taskService.updateTask(any(UpdateTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
+	public void testUpdateTaskNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTask()");
+		Long id=1L;
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		String content=setupContent(dets);
+		when (taskService.updateTask(any(UpdateTaskEvent.class))).thenReturn(TaskUpdatedEvent.notFound(id));
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.TaskController#deleteTask(java.lang.Long)}.
 	 * @throws Exception 
@@ -202,5 +379,37 @@ public class TaskControllerTest
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;
 	}
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.TaskController#deleteTask(java.lang.Long)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testDeleteTaskNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteTask()");
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		DeletedEvent testData=TaskDeletedEvent.notFound(dets.getNodeId());
+		when (taskService.deleteTask(any(DeleteTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"/{taskId}",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.TaskController#deleteTask(java.lang.Long)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testDeleteTaskForbidden() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteTask()");
+		TaskDetails dets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		DeletedEvent testData=TaskDeletedEvent.deletionForbidden(dets.getNodeId());
+		when (taskService.deleteTask(any(DeleteTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"/{taskId}",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isGone())	;
+	}
+
 
 }

@@ -3,38 +3,42 @@
  */
 package com.eulersbridge.iEngage.core.events.ticket;
 
-import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class TicketsReadEvent extends ReadEvent
+public class TicketsReadEvent extends AllReadEvent
 {
 	Iterable<TicketDetails> tickets;
-	Long electionId=null;
 	private boolean electionFound=true;
 	
-	public TicketsReadEvent(Long electionId, Iterable<TicketDetails> elections)
+	public TicketsReadEvent(Long electionId, Iterable<TicketDetails> tickets, Long totalItems, Integer totalPages)
 	{
-		super(1l);
-		this.tickets=elections;
-		this.electionId=electionId;
+		super(electionId,totalItems,totalPages);
+		this.tickets=tickets;
 	}
 
-	public TicketsReadEvent(Iterable<TicketDetails> elections)
+	public TicketsReadEvent(Long electionId, Iterable<TicketDetails> tickets)
 	{
-		super(1l);
-		this.tickets=elections;
+		super(electionId);
+		this.tickets=tickets;
+	}
+
+	public TicketsReadEvent(Iterable<TicketDetails> tickets)
+	{
+		super(null);
+		this.tickets=tickets;
 	}
 
 	public TicketsReadEvent()
 	{
-		super(1l);
+		super(null);
 	}
 	
 	/**
-	 * @return the elections
+	 * @return the tickets
 	 */
 	public Iterable<TicketDetails> getTickets() 
 	{
@@ -42,25 +46,11 @@ public class TicketsReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @param elections the elections to set
+	 * @param tickets the tickets to set
 	 */
 	public void setTickets(Iterable<TicketDetails> tickets) 
 	{
 		this.tickets = tickets;
-	}
-
-	/**
-	 * @return the electionId
-	 */
-	public Long getElectionId() {
-		return electionId;
-	}
-
-	/**
-	 * @param electionId the electionId to set
-	 */
-	public void setElectionId(Long electionId) {
-		this.electionId = electionId;
 	}
 
 	/**

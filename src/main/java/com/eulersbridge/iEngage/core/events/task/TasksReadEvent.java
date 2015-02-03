@@ -3,38 +3,35 @@
  */
 package com.eulersbridge.iEngage.core.events.task;
 
-import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class TasksReadEvent extends ReadEvent
+public class TasksReadEvent extends AllReadEvent
 {
 	Iterable<TaskDetails> tasks;
-	Long electionId=null;
-	private boolean electionFound=true;
 	
-	public TasksReadEvent(Long electionId, Iterable<TaskDetails> elections)
+	public TasksReadEvent(Iterable<TaskDetails> tasks, Long totalItems, Integer totalPages)
 	{
-		super(1l);
-		this.tasks=elections;
-		this.electionId=electionId;
+		super(null,totalItems,totalPages);
+		this.tasks=tasks;
 	}
 
-	public TasksReadEvent(Iterable<TaskDetails> elections)
+	public TasksReadEvent(Iterable<TaskDetails> tasks)
 	{
-		super(1l);
-		this.tasks=elections;
+		super(null);
+		this.tasks=tasks;
 	}
 
 	public TasksReadEvent()
 	{
-		super(1l);
+		super(null);
 	}
 	
 	/**
-	 * @return the elections
+	 * @return the tasks
 	 */
 	public Iterable<TaskDetails> getTasks() 
 	{
@@ -42,40 +39,17 @@ public class TasksReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @param elections the elections to set
+	 * @param tasks the tasks to set
 	 */
 	public void setTasks(Iterable<TaskDetails> tasks) 
 	{
 		this.tasks = tasks;
 	}
-
-	/**
-	 * @return the electionId
-	 */
-	public Long getElectionId() {
-		return electionId;
-	}
-
-	/**
-	 * @param electionId the electionId to set
-	 */
-	public void setElectionId(Long electionId) {
-		this.electionId = electionId;
-	}
-
-	/**
-	 * @return the electionFound
-	 */
-	public boolean isElectionFound() {
-		return electionFound;
-	}
-
-	public static TasksReadEvent electionNotFound() 
+	
+	public static TasksReadEvent notFound(Long id)
 	{
-		TasksReadEvent nare=new TasksReadEvent();
-		nare.electionFound=false;
-		nare.entityFound=false;
-		return nare;
+		TasksReadEvent ev = new TasksReadEvent();
+		ev.entityFound = false;
+		return ev;
 	}
-
 }

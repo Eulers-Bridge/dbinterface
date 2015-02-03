@@ -8,16 +8,26 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
@@ -26,6 +36,7 @@ import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketCreatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
+import com.eulersbridge.iEngage.core.events.ticket.TicketsReadEvent;
 import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Ticket;
@@ -142,6 +153,102 @@ public class TicketEventHandlerTest
 		assertFalse(evtData.isEntityFound());
 	}
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.TicketTicketHandler#readTickets(com.eulersbridge.iEngage.core.events.events.ReadAllTicket,Direction,int,int)}.
+	 */
+	@Test
+	public final void testReadTickets()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingTickets()");
+		HashMap<Long, Ticket> events = DatabaseDataFixture.populateTickets();
+		ArrayList<Ticket> evts=new ArrayList<Ticket>();
+		Iterator<Ticket> iter=events.values().iterator();
+		while (iter.hasNext())
+		{
+			Ticket na=iter.next();
+			evts.add(na);
+		}
+
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Ticket> testData=new PageImpl<Ticket>(evts,pageable,evts.size());
+		when(ticketRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		TicketsReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
+	}
+
+	@Test
+	public final void testReadTicketsNoneAvailable()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingTickets()");
+		ArrayList<Ticket> evts=new ArrayList<Ticket>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Ticket> testData=new PageImpl<Ticket>(evts,pageable,evts.size());
+		when(ticketRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		Election inst=DatabaseDataFixture.populateElection1();
+		when(electionRepository.findOne(any(Long.class))).thenReturn(inst);
+				
+		TicketsReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalItems().longValue(),0);
+	}
+
+	@Test
+	public final void testReadTicketsNoValidInst()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingTickets()");
+		ArrayList<Ticket> evts=new ArrayList<Ticket>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Ticket> testData=new PageImpl<Ticket>(evts,pageable,evts.size());
+		when(ticketRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(electionRepository.findOne(any(Long.class))).thenReturn(null);
+				
+		TicketsReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isElectionFound());
+		assertEquals(evtData.getTotalPages(),null);
+		assertEquals(evtData.getTotalItems(),null);
+	}
+
+	@Test
+	public final void testReadTicketsNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingTickets()");
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		
+		Page<Ticket> testData=null;
+		when(ticketRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		int pageLength=10;
+		int pageNumber=0;
+		TicketsReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isElectionFound());
+	}
+	
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.TicketEventHandler#updateTicket(com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent)}.

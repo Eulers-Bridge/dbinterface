@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.*;
@@ -61,7 +62,7 @@ public class BadgeEventHandler implements BadgeService{
     }
 
 	@Override
-	public BadgesReadEvent readBadges(ReadBadgesEvent readBadgesEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public BadgesReadEvent readBadges(ReadAllEvent readBadgesEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Page <Badge>badges=null;
 		ArrayList<BadgeDetails> dets=new ArrayList<BadgeDetails>();
@@ -69,10 +70,10 @@ public class BadgeEventHandler implements BadgeService{
 
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"name");
 		badges=badgeRepository.findAll(pageable);
-		if (LOG.isDebugEnabled())
-				LOG.debug("Total elements = "+badges.getTotalElements()+" total pages ="+badges.getTotalPages());
 		if (badges!=null)
 		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+badges.getTotalElements()+" total pages ="+badges.getTotalPages());
 			Iterator<Badge> iter=badges.iterator();
 			while (iter.hasNext())
 			{
@@ -81,7 +82,7 @@ public class BadgeEventHandler implements BadgeService{
 				BadgeDetails det=na.toBadgeDetails();
 				dets.add(det);
 			}
-			nare=new BadgesReadEvent(dets);
+			nare=new BadgesReadEvent(dets,badges.getTotalElements(),badges.getTotalPages());
 		}
 		else
 		{

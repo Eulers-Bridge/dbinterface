@@ -1,9 +1,15 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.task.*;
+import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
+import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface TaskService {
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public TaskCreatedEvent createTask(CreateTaskEvent createTaskEvent);
+    public CreatedEvent createTask(CreateTaskEvent createTaskEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
     public ReadEvent requestReadTask(RequestReadTaskEvent requestReadTaskEvent);
@@ -26,6 +32,6 @@ public interface TaskService {
     public DeletedEvent deleteTask(DeleteTaskEvent deleteTaskEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public TasksReadEvent readTasks(ReadTasksEvent readTasksEvent,
+	public TasksReadEvent readTasks(ReadAllEvent readTasksEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 }

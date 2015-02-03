@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -38,8 +39,8 @@ public class TaskController {
     createTask(@RequestBody Task task){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create task "+task);
         CreateTaskEvent createTaskEvent = new CreateTaskEvent(task.toTaskDetails());
-        TaskCreatedEvent taskCreatedEvent = taskService.createTask(createTaskEvent);
-        if(taskCreatedEvent.getNodeId() == null)
+        CreatedEvent taskCreatedEvent = taskService.createTask(createTaskEvent);
+        if((null==taskCreatedEvent)||(null == taskCreatedEvent.getNodeId()))
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -134,8 +135,19 @@ public class TaskController {
     public @ResponseBody ResponseEntity<Boolean>
     deleteTask(@PathVariable Long taskId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete task. " + taskId);
+        ResponseEntity<Boolean> response;
+
         DeletedEvent taskDeletedEvent = taskService.deleteTask(new DeleteTaskEvent(taskId));
         Boolean isDeletionCompleted = Boolean.valueOf(taskDeletedEvent.isDeletionCompleted());
-        return new ResponseEntity<Boolean>(isDeletionCompleted, HttpStatus.OK);
+        
+    	if (isDeletionCompleted)
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.OK);
+    	else if (taskDeletedEvent.isEntityFound())
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.GONE);
+    	else
+    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.NOT_FOUND);
+    	return response;
     }
+
+	
 }

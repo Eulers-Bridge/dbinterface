@@ -1,14 +1,20 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeCreatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDeletedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
 import com.eulersbridge.iEngage.core.events.badge.BadgeUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.badge.BadgesReadEvent;
 import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.DeleteBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
+import com.eulersbridge.iEngage.core.events.badge.ReadBadgesEvent;
 import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
 import com.eulersbridge.iEngage.core.services.BadgeService;
@@ -37,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -193,6 +200,49 @@ public class BadgeControllerTest {
             .andExpect(status().isNotFound());
     }
 
+
+	@Test
+	public final void testFindBadges() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindBadges()");
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Badge> dets=DatabaseDataFixture.populateBadges();
+		Iterable<com.eulersbridge.iEngage.database.domain.Badge> badges=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Badge> iter=badges.iterator();
+		ArrayList<BadgeDetails> badgeDets=new ArrayList<BadgeDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Badge article=iter.next();
+			badgeDets.add(article.toBadgeDetails());
+		}
+		BadgesReadEvent testData=new BadgesReadEvent(badgeDets);
+		when (badgeService.readBadges(any(ReadBadgesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$[0].badgeId",is(badgeDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$[0].name",is(badgeDets.get(0).getName())))
+		.andExpect(jsonPath("$[0].xpValue",is(badgeDets.get(0).getXpValue().intValue())))
+		.andExpect(jsonPath("$[0].timestamp",is(badgeDets.get(0).getTimestamp().intValue())))
+		.andExpect(jsonPath("$[0].awarded",is(badgeDets.get(0).isAwarded())))
+		.andExpect(jsonPath("$[1].badgeId",is(badgeDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$[1].name",is(badgeDets.get(1).getName())))
+		.andExpect(jsonPath("$[1].xpValue",is(badgeDets.get(1).getXpValue().intValue())))
+		.andExpect(jsonPath("$[1].timestamp",is(badgeDets.get(1).getTimestamp().intValue())))
+		.andExpect(jsonPath("$[1].awarded",is(badgeDets.get(1).isAwarded())))
+//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindBadgesZeroArticles() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindBadges()");
+		ArrayList<BadgeDetails> eleDets=new ArrayList<BadgeDetails>(); 
+		BadgesReadEvent testData=new BadgesReadEvent(eleDets);
+		when (badgeService.readBadges(any(ReadBadgesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())	;
+	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.UpdateBadgeController#updateBadge(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Badge)}.

@@ -8,18 +8,30 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
+import com.eulersbridge.iEngage.core.events.badge.BadgesReadEvent;
 import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.DeleteBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
@@ -134,6 +146,77 @@ public class BadgeEventHandlerTest
 		assertFalse(evtData.isEntityFound());
 	}
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.BadgeBadgeHandler#readBadges(com.eulersbridge.iEngage.core.events.events.ReadAllBadge,Direction,int,int)}.
+	 */
+	@Test
+	public final void testReadBadges()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingBadges()");
+		HashMap<Long, Badge> events = DatabaseDataFixture.populateBadges();
+		ArrayList<Badge> evts=new ArrayList<Badge>();
+		Iterator<Badge> iter=events.values().iterator();
+		while (iter.hasNext())
+		{
+			Badge na=iter.next();
+			evts.add(na);
+		}
+
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Badge> testData=new PageImpl<Badge>(evts,pageable,evts.size());
+		when(badgeRepository.findAll(any(Pageable.class))).thenReturn(testData);
+
+		BadgesReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
+	}
+
+	@Test
+	public final void testReadBadgesNoneAvailable()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingBadges()");
+		ArrayList<Badge> evts=new ArrayList<Badge>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Badge> testData=new PageImpl<Badge>(evts,pageable,evts.size());
+		when(badgeRepository.findAll(any(Pageable.class))).thenReturn(testData);
+				
+		BadgesReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalItems().longValue(),0);
+	}
+
+	@Test
+	public final void testReadBadgesNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingBadges()");
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		
+		Page<Badge> testData=null;
+		when(badgeRepository.findAll(any(Pageable.class))).thenReturn(testData);
+
+		int pageLength=10;
+		int pageNumber=0;
+		BadgesReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(((AllReadEvent)evtData).isEntityFound());
+	}
+	
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.BadgeEventHandler#updateBadge(com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent)}.
 	 */
