@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateCreatedEvent;
@@ -15,7 +16,6 @@ import com.eulersbridge.iEngage.core.events.candidate.CandidateUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidatesReadEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CreateCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.DeleteCandidateEvent;
-import com.eulersbridge.iEngage.core.events.candidate.ReadCandidatesEvent;
 import com.eulersbridge.iEngage.core.events.candidate.RequestReadCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent;
 import com.eulersbridge.iEngage.database.domain.Candidate;
@@ -109,21 +109,21 @@ public class CandidateEventHandler implements CandidateService {
     }
 
 	@Override
-	public CandidatesReadEvent readCandidates(ReadCandidatesEvent readCandidatesEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public CandidatesReadEvent readCandidates(ReadAllEvent readCandidatesEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Long electionId=readCandidatesEvent.getParentId();
-		Page <Candidate>elections=null;
+		Page <Candidate>candidates=null;
 		ArrayList<CandidateDetails> dets=new ArrayList<CandidateDetails>();
 		CandidatesReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("ElectionId "+electionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.name");
-		elections=candidateRepository.findByElectionId(electionId, pageable);
-		if (LOG.isDebugEnabled())
-				LOG.debug("Total elements = "+elections.getTotalElements()+" total pages ="+elections.getTotalPages());
-		if (elections!=null)
+		candidates=candidateRepository.findByElectionId(electionId, pageable);
+		if (candidates!=null)
 		{
-			Iterator<Candidate> iter=elections.iterator();
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+candidates.getTotalElements()+" total pages ="+candidates.getTotalPages());
+			Iterator<Candidate> iter=candidates.iterator();
 			while (iter.hasNext())
 			{
 				Candidate na=iter.next();
@@ -143,12 +143,12 @@ public class CandidateEventHandler implements CandidateService {
 				}
 				else
 				{	
-					nare=new CandidatesReadEvent(electionId,dets);
+					nare=new CandidatesReadEvent(electionId,dets,candidates.getTotalElements(),candidates.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new CandidatesReadEvent(electionId,dets);
+				nare=new CandidatesReadEvent(electionId,dets,candidates.getTotalElements(),candidates.getTotalPages());
 			}
 		}
 		else

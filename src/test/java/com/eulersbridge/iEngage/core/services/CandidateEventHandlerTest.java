@@ -8,25 +8,37 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateCreatedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateReadEvent;
+import com.eulersbridge.iEngage.core.events.candidate.CandidatesReadEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CreateCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.DeleteCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.RequestReadCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent;
 import com.eulersbridge.iEngage.database.domain.Candidate;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -233,6 +245,102 @@ public class CandidateEventHandlerTest
 	}
 
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.CandidateCandidateHandler#readCandidates(com.eulersbridge.iEngage.core.events.events.ReadAllCandidate,Direction,int,int)}.
+	 */
+	@Test
+	public final void testReadCandidates()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingCandidates()");
+		HashMap<Long, Candidate> events = DatabaseDataFixture.populateCandidates();
+		ArrayList<Candidate> evts=new ArrayList<Candidate>();
+		Iterator<Candidate> iter=events.values().iterator();
+		while (iter.hasNext())
+		{
+			Candidate na=iter.next();
+			evts.add(na);
+		}
+
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Candidate> testData=new PageImpl<Candidate>(evts,pageable,evts.size());
+		when(candidateRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
+	}
+
+	@Test
+	public final void testReadCandidatesNoneAvailable()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingCandidates()");
+		ArrayList<Candidate> evts=new ArrayList<Candidate>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Candidate> testData=new PageImpl<Candidate>(evts,pageable,evts.size());
+		when(candidateRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		Election inst=DatabaseDataFixture.populateElection1();
+		when(electionRepository.findOne(any(Long.class))).thenReturn(inst);
+				
+		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalItems().longValue(),0);
+	}
+
+	@Test
+	public final void testReadCandidatesNoValidInst()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingCandidates()");
+		ArrayList<Candidate> evts=new ArrayList<Candidate>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Candidate> testData=new PageImpl<Candidate>(evts,pageable,evts.size());
+		when(candidateRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(electionRepository.findOne(any(Long.class))).thenReturn(null);
+				
+		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isElectionFound());
+		assertEquals(evtData.getTotalPages(),null);
+		assertEquals(evtData.getTotalItems(),null);
+	}
+
+	@Test
+	public final void testReadCandidatesNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingCandidates()");
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		
+		Page<Candidate> testData=null;
+		when(candidateRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		int pageLength=10;
+		int pageNumber=0;
+		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isElectionFound());
+	}
+	
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.CandidateEventHandler#updateCandidate(com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent)}.
 	 */
