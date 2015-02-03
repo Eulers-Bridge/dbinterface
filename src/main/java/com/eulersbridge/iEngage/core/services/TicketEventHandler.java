@@ -120,7 +120,7 @@ public class TicketEventHandler implements TicketService{
 	@Override
 	public TicketsReadEvent readTickets(ReadTicketsEvent readTicketsEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
-		Long electionId=readTicketsEvent.getElectionId();
+		Long electionId=readTicketsEvent.getParentId();
 		Page <Ticket>elections=null;
 		ArrayList<TicketDetails> dets=new ArrayList<TicketDetails>();
 		TicketsReadEvent nare=null;

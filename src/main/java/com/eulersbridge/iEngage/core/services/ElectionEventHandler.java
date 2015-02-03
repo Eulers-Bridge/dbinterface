@@ -146,7 +146,7 @@ public class ElectionEventHandler implements ElectionService
 	@Override
 	public ElectionsReadEvent readElections(ReadElectionsEvent readElectionsEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
-		Long institutionId=readElectionsEvent.getInstitutionId();
+		Long institutionId=readElectionsEvent.getParentId();
 		Page <Election>elections=null;
 		ArrayList<ElectionDetails> dets=new ArrayList<ElectionDetails>();
 		ElectionsReadEvent nare=null;

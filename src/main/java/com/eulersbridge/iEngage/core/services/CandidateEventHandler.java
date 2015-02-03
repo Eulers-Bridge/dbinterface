@@ -111,7 +111,7 @@ public class CandidateEventHandler implements CandidateService {
 	@Override
 	public CandidatesReadEvent readCandidates(ReadCandidatesEvent readCandidatesEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
-		Long electionId=readCandidatesEvent.getElectionId();
+		Long electionId=readCandidatesEvent.getParentId();
 		Page <Candidate>elections=null;
 		ArrayList<CandidateDetails> dets=new ArrayList<CandidateDetails>();
 		CandidatesReadEvent nare=null;

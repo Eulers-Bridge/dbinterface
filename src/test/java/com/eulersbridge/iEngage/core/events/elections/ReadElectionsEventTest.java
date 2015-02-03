@@ -42,7 +42,7 @@ public class ReadElectionsEventTest {
 	public final void testReadElectionsEventLong() 
 	{
         assertNotNull("readElectionsEvent is null", readElectionsEvent);
-        assertEquals(institutionId, readElectionsEvent.getInstitutionId());
+        assertEquals(institutionId, readElectionsEvent.getParentId());
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class ReadElectionsEventTest {
 	 */
 	@Test
 	public final void testGetInstitutionId() {
-        assertEquals("institutionId does not match", institutionId, readElectionsEvent.getInstitutionId());
+        assertEquals("institutionId does not match", institutionId, readElectionsEvent.getParentId());
 	}
 
 	/**
@@ -59,8 +59,8 @@ public class ReadElectionsEventTest {
 	@Test
 	public final void testSetInstitutionId() {
         Long insitutionId2 = new Long(2);
-        readElectionsEvent.setInstitutionId(insitutionId2);
-        assertEquals("countryId does not match", insitutionId2, readElectionsEvent.getInstitutionId());
+        readElectionsEvent.setParentId(insitutionId2);
+        assertEquals("countryId does not match", insitutionId2, readElectionsEvent.getParentId());
 	}
 
 }

@@ -34,15 +34,15 @@ public class ReadNewsArticlesEventTest {
     @Test
     public void testGetInstId() throws Exception 
     {
-    	Long instId2=readNewsArticlesEvent.getInstId();
+    	Long instId2=readNewsArticlesEvent.getParentId();
         assertEquals("instId does not match", instId, instId2);
     }
 
     @Test
     public void testSetInstId() throws Exception {
         Long instId1 = new Long(3);
-        readNewsArticlesEvent.setInstId(instId1);
-        assertEquals("instId does not match", instId1, readNewsArticlesEvent.getInstId());
+        readNewsArticlesEvent.setParentId(instId1);
+        assertEquals("instId does not match", instId1, readNewsArticlesEvent.getParentId());
     }
 
     @Test

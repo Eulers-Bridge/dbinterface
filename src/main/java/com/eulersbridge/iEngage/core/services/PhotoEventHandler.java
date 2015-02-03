@@ -168,7 +168,7 @@ public class PhotoEventHandler implements PhotoService
 	public PhotosReadEvent findPhotos(ReadPhotosEvent findPhotoEvent,Direction dir,int pageNumber,int pageLength)
 	{
         if (LOG.isDebugEnabled()) LOG.debug("Entered findPhotos findPhotoEvent = "+findPhotoEvent);
-        Long ownerId = findPhotoEvent.getOwnerId();
+        Long ownerId = findPhotoEvent.getParentId();
 		Page <Photo>photos=null;
 		ArrayList<PhotoDetails> dets=new ArrayList<PhotoDetails>();
         
@@ -323,7 +323,7 @@ public class PhotoEventHandler implements PhotoService
 			int pageNumber, int pageLength)
 	{
         if (LOG.isDebugEnabled()) LOG.debug("Entered findPhotoAlbums findPhotoAlbumsEvent = "+findPhotoAlbumsEvent);
-        Long ownerId = findPhotoAlbumsEvent.getOwnerId();
+        Long ownerId = findPhotoAlbumsEvent.getParentId();
 		Page <PhotoAlbum>photoAlbums=null;
 		ArrayList<PhotoAlbumDetails> dets=new ArrayList<PhotoAlbumDetails>();
         

@@ -3,16 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.photo;
 
-import com.eulersbridge.iEngage.core.events.RequestReadEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class ReadPhotosEvent extends RequestReadEvent
+public class ReadPhotosEvent extends ReadAllEvent
 {
-	Long ownerId=null;
-	
 	public ReadPhotosEvent()
 	{
 		super(null);
@@ -20,22 +18,6 @@ public class ReadPhotosEvent extends RequestReadEvent
 
 	public ReadPhotosEvent(Long ownerId)
 	{
-		super(null);
-		this.ownerId=ownerId;
+		super(ownerId);
 	}
-
-	/**
-	 * @return the ownerId
-	 */
-	public Long getOwnerId() {
-		return ownerId;
-	}
-
-	/**
-	 * @param ownerId the ownerId to set
-	 */
-	public void setOwnerId(Long ownerId) {
-		this.ownerId = ownerId;
-	}
-
 }

@@ -3,16 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.photoAlbums;
 
-import com.eulersbridge.iEngage.core.events.RequestReadEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class ReadPhotoAlbumsEvent extends RequestReadEvent
+public class ReadPhotoAlbumsEvent extends ReadAllEvent
 {
-	Long ownerId = null;
-
 	public ReadPhotoAlbumsEvent()
 	{
 		super(null);
@@ -20,25 +18,6 @@ public class ReadPhotoAlbumsEvent extends RequestReadEvent
 
 	public ReadPhotoAlbumsEvent(Long ownerId)
 	{
-		super(null);
-		this.ownerId = ownerId;
+		super(ownerId);
 	}
-
-	/**
-	 * @return the ownerId
-	 */
-	public Long getOwnerId()
-	{
-		return ownerId;
-	}
-
-	/**
-	 * @param ownerId
-	 *            the ownerId to set
-	 */
-	public void setOwnerId(Long ownerId)
-	{
-		this.ownerId = ownerId;
-	}
-
 }

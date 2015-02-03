@@ -3,15 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
-import com.eulersbridge.iEngage.core.events.RequestReadEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class ReadNewsArticlesEvent extends RequestReadEvent 
+public class ReadNewsArticlesEvent extends ReadAllEvent 
 {
-	Long instId;
 	Long nfId;
 	
 	private ReadNewsArticlesEvent()
@@ -21,28 +20,15 @@ public class ReadNewsArticlesEvent extends RequestReadEvent
 	
 	public ReadNewsArticlesEvent(Long institutionId)
 	{
-		this();
-		this.instId=institutionId;
+		super(institutionId);
 	}
 
 /*	public ReadNewsArticlesEvent(Long instId,Long nfId)
 	{
-		this(nfId);
+		super(nfId);
 		this.instId=instId;
 	}
 */
-	/**
-	 * @return the instId
-	 */
-	public Long getInstId() {
-		return instId;
-	}
-	/**
-	 * @param instId the instId to set
-	 */
-	public void setInstId(Long instId) {
-		this.instId = instId;
-	}
 	/**
 	 * @return the nfId
 	 */

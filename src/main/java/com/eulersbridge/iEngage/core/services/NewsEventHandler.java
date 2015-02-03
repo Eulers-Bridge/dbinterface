@@ -131,7 +131,7 @@ public class NewsEventHandler implements NewsService
 	public NewsArticlesReadEvent readNewsArticles(
 			ReadNewsArticlesEvent readNewsArticlesEvent, Direction sortDirection,int pageNumber, int pageSize) 
 	{
-		Long institutionId=readNewsArticlesEvent.getInstId();
+		Long institutionId=readNewsArticlesEvent.getParentId();
 		Page <NewsArticle>articles=null;
 		ArrayList<NewsArticleDetails> dets=new ArrayList<NewsArticleDetails>();
 		NewsArticlesReadEvent nare=null;
