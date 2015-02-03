@@ -3,34 +3,38 @@
  */
 package com.eulersbridge.iEngage.core.events.candidate;
 
-import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class CandidatesReadEvent extends ReadEvent
+public class CandidatesReadEvent extends AllReadEvent
 {
 	Iterable<CandidateDetails> candidates;
-	Long electionId=null;
 	private boolean electionFound=true;
 	
-	public CandidatesReadEvent(Long electionId, Iterable<CandidateDetails> elections)
+	public CandidatesReadEvent(Long electionId, Iterable<CandidateDetails> candidates, Long totalItems, Integer totalPages)
 	{
-		super(1l);
-		this.candidates=elections;
-		this.electionId=electionId;
+		super(electionId,totalItems,totalPages);
+		this.candidates=candidates;
 	}
 
-	public CandidatesReadEvent(Iterable<CandidateDetails> elections)
+	public CandidatesReadEvent(Long electionId, Iterable<CandidateDetails> candidates)
 	{
-		super(1l);
-		this.candidates=elections;
+		super(electionId);
+		this.candidates=candidates;
+	}
+
+	public CandidatesReadEvent(Iterable<CandidateDetails> candidates)
+	{
+		super(null);
+		this.candidates=candidates;
 	}
 
 	public CandidatesReadEvent()
 	{
-		super(1l);
+		super(null);
 	}
 	
 	/**
@@ -47,20 +51,6 @@ public class CandidatesReadEvent extends ReadEvent
 	public void setCandidates(Iterable<CandidateDetails> candidates) 
 	{
 		this.candidates = candidates;
-	}
-
-	/**
-	 * @return the electionId
-	 */
-	public Long getElectionId() {
-		return electionId;
-	}
-
-	/**
-	 * @param electionId the electionId to set
-	 */
-	public void setElectionId(Long electionId) {
-		this.electionId = electionId;
 	}
 
 	/**
