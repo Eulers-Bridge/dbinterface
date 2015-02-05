@@ -646,7 +646,7 @@ public class DatabaseDataFixture
 		LinkedList<Candidate> candidates=new LinkedList<Candidate>();
 		candidates.add(populateCandidate1());
 		candidates.add(populateCandidate2());
-		return populateTicket(234l, "New Start", "NS", "We are the New Start", candidates, populateElection2());
+		return populateTicket(235l, "New Start", "NS", "We are the New Start", candidates, populateElection2());
 	}
 
 	public static Ticket populateTicket(Long ticketId, String name, String logo, String information, Iterable<Candidate> candidates, Election election)

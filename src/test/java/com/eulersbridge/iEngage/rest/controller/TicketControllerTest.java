@@ -17,6 +17,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,11 +39,13 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.ReadTicketsEvent;
 import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketCreatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDeletedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.ticket.TicketUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketsReadEvent;
 import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
 import com.eulersbridge.iEngage.core.services.TicketService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -250,6 +257,63 @@ public class TicketControllerTest
 		when (ticketService.requestReadTicket(any(RequestReadTicketEvent.class))).thenReturn(testData);
 		if (LOG.isDebugEnabled()) LOG.debug("testData - "+testData);
 		this.mockMvc.perform(get(urlPrefix+"/{ticketId}",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+
+	@Test
+	public final void testFindTickets() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindTickets()");
+		Long electionId=1l;
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Ticket> dets=DatabaseDataFixture.populateTickets();
+		Iterable<com.eulersbridge.iEngage.database.domain.Ticket> tickets=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Ticket> iter=tickets.iterator();
+		ArrayList<TicketDetails> ticketDets=new ArrayList<TicketDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Ticket article=iter.next();
+			ticketDets.add(article.toTicketDetails());
+		}
+		TicketsReadEvent testData=new TicketsReadEvent(electionId,ticketDets);
+		when (ticketService.readTickets(any(ReadTicketsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$[0].name",is(ticketDets.get(0).getName())))
+		.andExpect(jsonPath("$[0].information",is(ticketDets.get(0).getInformation())))
+		.andExpect(jsonPath("$[0].ticketId",is(ticketDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$[0].logo",is(ticketDets.get(0).getLogo())))
+		.andExpect(jsonPath("$[0].links[0].rel",is("self")))
+		.andExpect(jsonPath("$[1].name",is(ticketDets.get(1).getName())))
+		.andExpect(jsonPath("$[1].information",is(ticketDets.get(1).getInformation())))
+		.andExpect(jsonPath("$[1].ticketId",is(ticketDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$[1].logo",is(ticketDets.get(1).getLogo())))
+		.andExpect(jsonPath("$[1].links[0].rel",is("self")))
+//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindTicketsZeroArticles() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindTickets()");
+		Long electionId=11l;
+		ArrayList<TicketDetails> eleDets=new ArrayList<TicketDetails>(); 
+		TicketsReadEvent testData=new TicketsReadEvent(electionId,eleDets);
+		when (ticketService.readTickets(any(ReadTicketsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindTicketsNoElection() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindTickets()");
+		Long electionId=11l;
+		TicketsReadEvent testData=TicketsReadEvent.electionNotFound();
+		when (ticketService.readTickets(any(ReadTicketsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;
 	}
