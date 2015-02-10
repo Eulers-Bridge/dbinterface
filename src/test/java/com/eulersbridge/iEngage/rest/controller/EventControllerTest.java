@@ -21,7 +21,7 @@ import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.LikesService;
-import com.eulersbridge.iEngage.rest.domain.LikeInfo;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -30,6 +30,7 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
@@ -44,16 +46,19 @@ import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDeletedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
 import com.eulersbridge.iEngage.core.events.events.EventUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.events.EventsReadEvent;
 import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
 import com.eulersbridge.iEngage.core.services.EventService;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -276,6 +281,61 @@ public class EventControllerTest
 		.andExpect(status().isNotFound())	;
 	}
 
+
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.EventController#findEvents(java.lang.Long)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testFindEvents() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindEvents()");
+		Long instId=1l;
+		HashMap<Long,Event> dets=DatabaseDataFixture.populateEvents();
+		
+		Iterable<com.eulersbridge.iEngage.database.domain.Event> events=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Event> iter=events.iterator();
+		ArrayList<EventDetails> eventDets=new ArrayList<EventDetails>(); 
+		while (iter.hasNext())
+		{
+			Event article=iter.next();
+			eventDets.add(article.toEventDetails());
+		}
+		EventsReadEvent testData=new EventsReadEvent(instId,eventDets);
+		when (eventService.readEvents(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$events[0].eventId",is(eventDets.get(0).getEventId().intValue())))
+		.andExpect(jsonPath("$events[0].name",is(eventDets.get(0).getName())))
+		.andExpect(jsonPath("$events[0].location",is(eventDets.get(0).getLocation())))
+		.andExpect(jsonPath("$events[0].starts",is(eventDets.get(0).getStarts().intValue())))
+		.andExpect(jsonPath("$events[0].ends",is(eventDets.get(0).getEnds().intValue())))
+		.andExpect(jsonPath("$events[0].description",is(eventDets.get(0).getDescription())))
+		.andExpect(jsonPath("$events[0].picture",is(eventDets.get(0).getPicture())))
+		.andExpect(jsonPath("$events[0].volunteerPositions",is(eventDets.get(0).getVolunteerPositions())))
+		.andExpect(jsonPath("$events[0].created",is(eventDets.get(0).getCreated().intValue())))
+		.andExpect(jsonPath("$events[0].modified",is(eventDets.get(0).getModified().intValue())))
+		.andExpect(jsonPath("$events[0].organizer",is(eventDets.get(0).getOrganizer())))
+		.andExpect(jsonPath("$events[0].organizerEmail",is(eventDets.get(0).getOrganizerEmail())))
+		.andExpect(jsonPath("$events[0].institutionId",is(eventDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$events[1].eventId",is(eventDets.get(1).getEventId().intValue())))
+		.andExpect(jsonPath("$events[1].name",is(eventDets.get(1).getName())))
+		.andExpect(jsonPath("$events[1].location",is(eventDets.get(1).getLocation())))
+		.andExpect(jsonPath("$events[1].starts",is(eventDets.get(1).getStarts().intValue())))
+		.andExpect(jsonPath("$events[1].ends",is(eventDets.get(1).getEnds().intValue())))
+		.andExpect(jsonPath("$events[1].description",is(eventDets.get(1).getDescription())))
+		.andExpect(jsonPath("$events[1].picture",is(eventDets.get(1).getPicture())))
+		.andExpect(jsonPath("$events[1].volunteerPositions",is(eventDets.get(1).getVolunteerPositions())))
+		.andExpect(jsonPath("$events[1].created",is(eventDets.get(1).getCreated().intValue())))
+		.andExpect(jsonPath("$events[1].modified",is(eventDets.get(1).getModified().intValue())))
+		.andExpect(jsonPath("$events[1].organizer",is(eventDets.get(1).getOrganizer())))
+		.andExpect(jsonPath("$events[1].organizerEmail",is(eventDets.get(1).getOrganizerEmail())))
+		.andExpect(jsonPath("$events[1].institutionId",is(eventDets.get(1).getInstitutionId().intValue())))
+//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.EventController#updateEvent(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Event)}.
