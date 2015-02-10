@@ -17,6 +17,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,6 +52,10 @@ import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * @author Greg Newitt
  *
@@ -65,6 +75,8 @@ public class EventControllerTest
 	EventService eventService;
 	@Mock
 	InstitutionService instService;
+    @Mock
+    LikesService likesService;
 	
 
 	/**
@@ -485,6 +497,42 @@ public class EventControllerTest
         this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isGone())	;
+    }
+
+    @Test
+    public final void testFindLikes() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingFindLikes()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        Collection<UserDetails> userDetails = new ArrayList<>();
+        userDetails.add(user.toUserDetails());
+
+        LikeableObjectLikesEvent likeableObjectLikesEvent = new LikeableObjectLikesEvent(id, userDetails);
+
+
+        when (likesService.likes(any(LikesLikeableObjectEvent.class), any(Sort.Direction.class), any(int.class), any(int.class))).thenReturn(likeableObjectLikesEvent);
+        this.mockMvc.perform(get(urlPrefix+"/{id}/likes/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())	;
+    }
+    
+    @Test
+    public final void testFindLikesNotFound() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingFindLikes()");
+        Long id=1L;
+        Collection<UserDetails> userDetails = new ArrayList<>();
+        ReadEvent readPollEvent = ReadEvent.notFound(id);
+
+        LikeableObjectLikesEvent likeableObjectLikesEvent = new LikeableObjectLikesEvent(id, userDetails);
+
+
+        when (likesService.likes(any(LikesLikeableObjectEvent.class), any(Sort.Direction.class), any(int.class), any(int.class))).thenReturn(likeableObjectLikesEvent);
+        when (eventService.readEvent(any(RequestReadEventEvent.class))).thenReturn(readPollEvent);
+        this.mockMvc.perform(get(urlPrefix+"/{id}/likes/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
 }
