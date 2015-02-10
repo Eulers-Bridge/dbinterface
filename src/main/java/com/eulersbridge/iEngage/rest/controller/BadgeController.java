@@ -146,7 +146,4 @@ public class BadgeController {
     		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.NOT_FOUND);
     	return response;
     }
-
-
-    //TODO ReadAll
 }

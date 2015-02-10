@@ -444,5 +444,47 @@ public class EventControllerTest
 		.andExpect(status().isGone())	;		
 	}
 
+    @Test
+    public final void testUnlikedBy() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt= new LikedEvent(id, user.getEmail(), true);
+
+        when (eventService.unlikeEvent(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string("true"))
+                .andExpect(status().isOk())	;
+    }
+
+    @Test
+    public final void testUnLikedByEventNotFound() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
+
+        when (eventService.unlikeEvent(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())	;
+    }
+
+    @Test
+    public final void testUnLikedByEventGone() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
+
+        when (eventService.unlikeEvent(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isGone())	;
+    }
 
 }
