@@ -29,6 +29,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
@@ -41,6 +43,7 @@ import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
 import com.eulersbridge.iEngage.core.services.EventService;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -393,6 +396,24 @@ public class EventControllerTest
 		this.mockMvc.perform(delete(urlPrefix+"/{eventId}/",dets.getEventId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isGone())	;
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.EventController#updateEvent(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Event)}.
+	 */
+	@Test
+	public final void testLikedByEvent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=new LikedEvent(id, user.getEmail(), true);
+		
+		when (eventService.likeEvent(any(LikeEvent.class))).thenReturn(evt);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(content().string("true"))
+		.andExpect(status().isOk())	;		
 	}
 
 
