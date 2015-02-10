@@ -296,7 +296,7 @@ public class EventController
 	}
 
 	// likes
-	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.NEWS_ARTICLE_LABEL
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.EVENT_LABEL
 			+ "/{eventId}" + ControllerConstants.LIKES_LABEL)
 	public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
 			@PathVariable Long eventId,
