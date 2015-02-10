@@ -18,7 +18,7 @@ import java.util.LinkedList;
  */
 
 @NodeEntity
-public class Ticket
+public class Ticket extends Likeable
 {
     @GraphId
     private Long nodeId;

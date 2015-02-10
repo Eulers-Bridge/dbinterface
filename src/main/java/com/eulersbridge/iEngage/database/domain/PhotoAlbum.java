@@ -21,7 +21,7 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
  *
  */
 @NodeEntity
-public class PhotoAlbum
+public class PhotoAlbum extends Likeable
 {
     @GraphId private Long nodeId;
     private String name;

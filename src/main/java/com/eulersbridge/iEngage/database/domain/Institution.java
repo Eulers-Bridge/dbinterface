@@ -14,7 +14,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 
 @NodeEntity
-public class Institution 
+public class Institution extends Likeable
 {
 	@GraphId Long nodeId;
 	String name;

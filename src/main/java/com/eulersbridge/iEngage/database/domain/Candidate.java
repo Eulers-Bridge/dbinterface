@@ -14,7 +14,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
  */
 
 @NodeEntity
-public class Candidate
+public class Candidate extends Likeable
 {
     @GraphId
     private Long nodeId;

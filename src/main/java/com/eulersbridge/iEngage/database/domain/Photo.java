@@ -17,7 +17,7 @@ import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
  *
  */
 @NodeEntity
-public class Photo
+public class Photo extends Likeable
 {
 	@GraphId
 	Long nodeId;
