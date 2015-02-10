@@ -399,7 +399,7 @@ public class EventControllerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.EventController#updateEvent(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Event)}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.EventController#likedByEvent(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Event)}.
 	 */
 	@Test
 	public final void testLikedByEvent() throws Exception
@@ -414,6 +414,34 @@ public class EventControllerTest
 		.andDo(print())
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;		
+	}
+	
+	@Test
+	public final void testLikedByEventNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
+		
+		when (eventService.likeEvent(any(LikeEvent.class))).thenReturn(evt);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
+
+	@Test
+	public final void testLikedByEventGone() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
+		
+		when (eventService.likeEvent(any(LikeEvent.class))).thenReturn(evt);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isGone())	;		
 	}
 
 
