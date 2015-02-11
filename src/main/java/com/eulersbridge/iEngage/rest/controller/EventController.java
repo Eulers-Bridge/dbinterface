@@ -146,7 +146,7 @@ public class EventController
 			Iterator<Event> evts = Event.toEventsIterator(evtEvent.getEvents()
 					.iterator());
 			Events events = Events.fromEventsIterator(evts,
-					evtEvent.getTotalEvents(), evtEvent.getTotalPages());
+					evtEvent.getTotalItems(), evtEvent.getTotalPages());
 			response = new ResponseEntity<Events>(events, HttpStatus.OK);
 		}
 
