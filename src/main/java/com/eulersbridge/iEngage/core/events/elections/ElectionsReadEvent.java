@@ -3,35 +3,42 @@
  */
 package com.eulersbridge.iEngage.core.events.elections;
 
-import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 
 /**
  * @author Greg Newitt
  *
  */
-public class ElectionsReadEvent extends ReadEvent 
+public class ElectionsReadEvent extends AllReadEvent 
 {
 	Iterable<ElectionDetails> elections;
 	Long institutionId=null;
 	private boolean institutionFound=true;
 	
+	public ElectionsReadEvent(Long institutionId,
+			Iterable<ElectionDetails> dets, Long totalItems, Integer totalPages)
+	{
+		super(institutionId, totalItems, totalPages);
+		this.elections=dets;
+		
+	}
+
 	public ElectionsReadEvent(Long institutionId, Iterable<ElectionDetails> elections)
 	{
-		super(1l);
+		super(institutionId);
 		this.elections=elections;
-		this.institutionId=institutionId;
 	}
 
 	public ElectionsReadEvent(Iterable<ElectionDetails> elections)
 	{
-		super(1l);
+		super(null);
 		this.elections=elections;
 	}
 
 	public ElectionsReadEvent()
 	{
-		super(1l);
+		super(null);
 	}
 	
 	/**
@@ -54,14 +61,14 @@ public class ElectionsReadEvent extends ReadEvent
 	 * @return the institutionId
 	 */
 	public Long getInstitutionId() {
-		return institutionId;
+		return getParentId();
 	}
 
 	/**
 	 * @param institutionId the institutionId to set
 	 */
 	public void setInstitutionId(Long institutionId) {
-		this.institutionId = institutionId;
+		setParentId(institutionId);
 	}
 
 	/**

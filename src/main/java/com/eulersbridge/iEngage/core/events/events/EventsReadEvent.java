@@ -6,22 +6,19 @@ package com.eulersbridge.iEngage.core.events.events;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class EventsReadEvent extends ReadEvent
+public class EventsReadEvent extends AllReadEvent
 {
-	private Long instId;
 	private boolean newsFeedFound=true;
 	private boolean institutionFound=true;
 	private boolean eventsFound=true;
-	private Long totalEvents;
-	private Integer totalPages;
 	
-	private Collection<EventDetails> events;
+	private Iterable<EventDetails> events;
 
 	public EventsReadEvent()
 	{
@@ -30,8 +27,7 @@ public class EventsReadEvent extends ReadEvent
 	
 	public EventsReadEvent(Long instId,Collection<EventDetails>articles)
 	{
-		super(1l);
-		this.instId=instId;
+		super(instId);
 		this.events=articles;
 	}
 	
@@ -39,23 +35,22 @@ public class EventsReadEvent extends ReadEvent
 			ArrayList<EventDetails> dets, long totalElements,
 			int totalPages) 
 	{
-		this(institutionId,dets);
-		this.totalEvents=totalElements;
-		this.totalPages=totalPages;
+		super(institutionId,totalElements,totalPages);
+		this.events=dets;
 	}
 
 	/**
 	 * @return the instId
 	 */
 	public Long getInstId() {
-		return instId;
+		return getParentId();
 	}
 
 	/**
 	 * @param instId the instId to set
 	 */
 	public void setInstId(Long instId) {
-		this.instId = instId;
+		setParentId(instId);
 	}
 
 	/**
@@ -101,37 +96,9 @@ public class EventsReadEvent extends ReadEvent
 	}
 
 	/**
-	 * @return the totalEvents
-	 */
-	public Long getTotalEvents() {
-		return totalEvents;
-	}
-
-	/**
-	 * @param totalEvents the totalEvents to set
-	 */
-	public void setTotalEvents(Long totalEvents) {
-		this.totalEvents = totalEvents;
-	}
-
-	/**
-	 * @return the totalPages
-	 */
-	public Integer getTotalPages() {
-		return totalPages;
-	}
-
-	/**
-	 * @param totalPages the totalPages to set
-	 */
-	public void setTotalPages(Integer totalPages) {
-		this.totalPages = totalPages;
-	}
-
-	/**
 	 * @return the events
 	 */
-	public Collection<EventDetails> getEvents() {
+	public Iterable<EventDetails> getEvents() {
 		return events;
 	}
 
