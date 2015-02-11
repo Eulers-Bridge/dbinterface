@@ -8,20 +8,31 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
+import com.eulersbridge.iEngage.core.events.elections.ElectionsReadEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
@@ -96,6 +107,102 @@ public class ElectionEventHandlerTest
 		assertFalse(evtData.isEntityFound());
 	}
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionPositionHandler#readElections(com.eulersbridge.iEngage.core.events.events.ReadAllPosition,Direction,int,int)}.
+	 */
+	@Test
+	public final void testReadElections()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingElections()");
+		HashMap<Long, Election> events = DatabaseDataFixture.populateElections();
+		ArrayList<Election> evts=new ArrayList<Election>();
+		Iterator<Election> iter=events.values().iterator();
+		while (iter.hasNext())
+		{
+			Election na=iter.next();
+			evts.add(na);
+		}
+
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Election> testData=new PageImpl<Election>(evts,pageable,evts.size());
+		when(electionRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		ElectionsReadEvent evtData = service.readElections(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
+	}
+
+	@Test
+	public final void testReadElectionsNoneAvailable()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingElections()");
+		ArrayList<Election> evts=new ArrayList<Election>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Election> testData=new PageImpl<Election>(evts,pageable,evts.size());
+		when(electionRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		Institution inst=DatabaseDataFixture.populateInstUniMelb();
+		when(institutionRepository.findOne(any(Long.class))).thenReturn(inst);
+				
+		ElectionsReadEvent evtData = service.readElections(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalItems().longValue(),0);
+	}
+
+	@Test
+	public final void testReadElectionsNoValidInst()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingElections()");
+		ArrayList<Election> evts=new ArrayList<Election>();
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Election> testData=new PageImpl<Election>(evts,pageable,evts.size());
+		when(electionRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(electionRepository.findOne(any(Long.class))).thenReturn(null);
+				
+		ElectionsReadEvent evtData = service.readElections(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isInstitutionFound());
+		assertEquals(evtData.getTotalPages(),null);
+		assertEquals(evtData.getTotalItems(),null);
+	}
+
+	@Test
+	public final void testReadElectionsNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingElections()");
+		
+		Long institutionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(institutionId);
+		
+		Page<Election> testData=null;
+		when(electionRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		int pageLength=10;
+		int pageNumber=0;
+		ElectionsReadEvent evtData = service.readElections(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isInstitutionFound());
+	}
+	
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#createElection(com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent)}.
 	 */
