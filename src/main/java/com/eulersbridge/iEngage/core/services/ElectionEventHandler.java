@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
@@ -144,7 +145,7 @@ public class ElectionEventHandler implements ElectionService
     }
 
 	@Override
-	public ElectionsReadEvent readElections(ReadElectionsEvent readElectionsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public ElectionsReadEvent readElections(ReadAllEvent readElectionsEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Long institutionId=readElectionsEvent.getParentId();
 		Page <Election>elections=null;
@@ -154,10 +155,12 @@ public class ElectionEventHandler implements ElectionService
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.start");
 		elections=eleRepository.findByInstitutionId(institutionId, pageable);
-		if (LOG.isDebugEnabled())
-				LOG.debug("Total elements = "+elections.getTotalElements()+" total pages ="+elections.getTotalPages());
 		if (elections!=null)
 		{
+			Long numElements=elections.getTotalElements();
+			Integer numPages=elections.getTotalPages();
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+numElements+" total pages ="+numPages);
 			Iterator<Election> iter=elections.iterator();
 			while (iter.hasNext())
 			{
@@ -178,12 +181,12 @@ public class ElectionEventHandler implements ElectionService
 				}
 				else
 				{	
-					nare=new ElectionsReadEvent(institutionId,dets);
+					nare=new ElectionsReadEvent(institutionId,dets,numElements,numPages);
 				}
 			}
 			else
 			{	
-				nare=new ElectionsReadEvent(institutionId,dets);
+				nare=new ElectionsReadEvent(institutionId,dets,numElements,numPages);
 			}
 		}
 		else
