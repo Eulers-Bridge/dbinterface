@@ -25,6 +25,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -38,7 +40,9 @@ import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
@@ -241,7 +245,7 @@ public class EventEventHandlerTest
 		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
-		assertEquals(evtData.getTotalEvents(),new Long(evts.size()));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
 	}
 
 	@Test
@@ -264,7 +268,7 @@ public class EventEventHandlerTest
 		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
-		assertEquals(evtData.getTotalEvents().longValue(),0);
+		assertEquals(evtData.getTotalItems().longValue(),0);
 	}
 
 	@Test
@@ -287,7 +291,7 @@ public class EventEventHandlerTest
 		assertNotNull(evtData);
 		assertFalse(evtData.isInstitutionFound());
 		assertEquals(evtData.getTotalPages(),null);
-		assertEquals(evtData.getTotalEvents(),null);
+		assertEquals(evtData.getTotalItems(),null);
 	}
 
 	@Test
@@ -307,4 +311,63 @@ public class EventEventHandlerTest
 		assertNotNull(evtData);
 		assertFalse(evtData.isInstitutionFound());
 	}
+	
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#likeEvent(com.eulersbridge.iEngage.core.events.events.LikeEvent)}.
+	 */
+	@Test
+	public final void testLikeEvent()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("LikingEvent()");
+		User liker=DatabaseDataFixture.populateUserGnewitt();
+		Event liked=DatabaseDataFixture.populateEvent1();
+		Like testData=new Like(liker, liked);
+		LikeEvent evt=new LikeEvent(liked.getEventId(), liker.getEmail());
+		when(eventRepository.likeEvent(any(String.class),any(Long.class))).thenReturn(testData);
+		
+		LikedEvent evtData = service.likeEvent(evt);
+		assertEquals(evtData.getNodeId(),liked.getEventId());
+		assertEquals(evtData.getUserEmail(),liker.getEmail());
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isUserFound());
+		assertTrue(evtData.isResultSuccess());
+	}
+	@Test
+	public final void testLikeEventNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("LikingEvent()");
+		User liker=DatabaseDataFixture.populateUserGnewitt();
+		Event liked=DatabaseDataFixture.populateEvent1();
+		Like testData=null;
+		LikeEvent evt=new LikeEvent(liked.getEventId(), liker.getEmail());
+		when(eventRepository.likeEvent(any(String.class),any(Long.class))).thenReturn(testData);
+		
+		LikedEvent evtData = service.likeEvent(evt);
+		assertEquals(evtData.getNodeId(),liked.getEventId());
+		assertEquals(evtData.getUserEmail(),liker.getEmail());
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isUserFound());
+		assertFalse(evtData.isResultSuccess());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#unLikeEvent(com.eulersbridge.iEngage.core.events.events.LikeEvent)}.
+	 */
+	@Test
+	public final void testUnlikeEvent()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UnlikingEvent()");
+		User liker=DatabaseDataFixture.populateUserGnewitt();
+		Event liked=DatabaseDataFixture.populateEvent1();
+		LikeEvent evt=new LikeEvent(liked.getEventId(), liker.getEmail());
+		doNothing().when(eventRepository).unlikeEvent(any(String.class),any(Long.class));
+		
+		LikedEvent evtData = service.unlikeEvent(evt);
+		assertEquals(evtData.getNodeId(),liked.getEventId());
+		assertEquals(evtData.getUserEmail(),liker.getEmail());
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isUserFound());
+		assertTrue(evtData.isResultSuccess());
+	}
+
 }
