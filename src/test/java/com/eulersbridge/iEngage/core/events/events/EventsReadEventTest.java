@@ -103,15 +103,15 @@ public class EventsReadEventTest
 	@Test
 	public final void testGetTotalEvents()
 	{
-		assertEquals(totalElements,evtTest.getTotalEvents());
+		assertEquals(totalElements,evtTest.getTotalItems());
 	}
 
 	@Test
 	public final void testSetTotalEvents()
 	{
 		Long tot=453l;
-		evtTest.setTotalEvents(tot);
-		assertEquals(tot,evtTest.getTotalEvents());
+		evtTest.setTotalItems(tot);
+		assertEquals(tot,evtTest.getTotalItems());
 	}
 
 	@Test
