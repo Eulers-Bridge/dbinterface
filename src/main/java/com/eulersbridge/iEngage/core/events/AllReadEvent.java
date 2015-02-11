@@ -3,7 +3,7 @@ package com.eulersbridge.iEngage.core.events;
 public class AllReadEvent
 {
 	Long parentId;
-	Iterable<Details> details;
+	Iterable<? extends Details> details;
 	private Long totalItems;
 	private Integer totalPages;
 
@@ -77,7 +77,7 @@ public class AllReadEvent
 	/**
 	 * @return the details
 	 */
-	public Iterable<Details> getDetails()
+	public Iterable<? extends Details> getDetails()
 	{
 		return details;
 	}
