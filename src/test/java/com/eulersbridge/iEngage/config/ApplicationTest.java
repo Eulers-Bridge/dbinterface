@@ -76,7 +76,7 @@ public class ApplicationTest extends Neo4jConfiguration
     @Autowired
     ForumQuestionRepository forumQuestionRepository;
     @Autowired
-    PositionRepository positionRepository;
+    PositionRepository candidateRepository;
 
 
 	public static void main(String[] args) 
