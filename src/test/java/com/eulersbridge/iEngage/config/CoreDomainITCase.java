@@ -36,6 +36,7 @@ public class CoreDomainITCase
 	public static void tearDownAfterClass() throws Exception {
 	}
 
+	@Ignore
 	@Test
 	public final void shouldAddNewUserToSystem() 
 	{
