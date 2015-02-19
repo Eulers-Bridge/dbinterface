@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 public class TaskDetails extends Details
 {
     private String action;
+    private String description;
     private Integer xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(TaskDetails.class);
@@ -22,6 +23,8 @@ public class TaskDetails extends Details
         buff.append(getNodeId());
         buff.append(", action = ");
         buff.append(getAction());
+        buff.append(", description = ");
+        buff.append(getDescription());
         buff.append(", xpValue = ");
         buff.append(getXpValue());
         buff.append(" ]");
@@ -41,6 +44,7 @@ public class TaskDetails extends Details
         else
         {
             result = prime * result	+ ((action == null) ? 0 : action.hashCode());
+            result = prime * result	+ ((description == null) ? 0 : description.hashCode());
             result = prime * result + ((xpValue == null) ? 0 : xpValue.hashCode());
         }
         return result;
@@ -70,6 +74,11 @@ public class TaskDetails extends Details
                     return false;
             } else if (!action.equals(other.action))
                 return false;
+            if (description == null) {
+                if (other.description != null)
+                    return false;
+            } else if (!description.equals(other.description))
+                return false;
             if (xpValue == null) {
                 if (other.xpValue != null)
                     return false;
@@ -87,7 +96,23 @@ public class TaskDetails extends Details
         this.action = action;
     }
 
-    public Integer getXpValue() {
+    /**
+	 * @return the description
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public Integer getXpValue() {
         return xpValue;
     }
 

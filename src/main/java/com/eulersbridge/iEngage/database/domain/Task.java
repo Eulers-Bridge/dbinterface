@@ -17,7 +17,7 @@ public class Task
     @GraphId
     private Long nodeId;
     private String action;
-//    private boolean completed;
+    private String description;
 //    private Long timestamp;
     private Integer xpValue;
 
@@ -32,11 +32,12 @@ public class Task
 	 * @param action
 	 * @param xpValue
 	 */
-	public Task(Long taskId, String action, Integer xpValue)
+	public Task(Long taskId, String action, String description, Integer xpValue)
 	{
 		super();
 		this.nodeId = taskId;
 		this.action = action;
+		this.description = description;
 		this.xpValue = xpValue;
 	}
 
@@ -46,6 +47,7 @@ public class Task
         if (LOG.isTraceEnabled()) LOG.trace("taskDetails "+taskDetails);
         task.setNodeId(taskDetails.getNodeId());
         task.setAction(taskDetails.getAction());
+        task.setDescription(taskDetails.getDescription());
         task.setXpValue(taskDetails.getXpValue());
 
         if (LOG.isTraceEnabled()) LOG.trace("task "+task);
@@ -58,6 +60,7 @@ public class Task
         if (LOG.isTraceEnabled()) LOG.trace("task "+this);
         taskDetails.setNodeId(getNodeId());
         taskDetails.setAction(getAction());
+        taskDetails.setDescription(getDescription());
         taskDetails.setXpValue(getXpValue());
         if (LOG.isTraceEnabled()) LOG.trace("taskDetails; "+ taskDetails);
         return taskDetails;
@@ -94,11 +97,87 @@ public class Task
         this.action = action;
     }
 
-    public Integer getXpValue() {
+    /**
+	 * @return the description
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public Integer getXpValue()
+	{
         return xpValue;
     }
 
-    public void setXpValue(Integer xpValue) {
+    public void setXpValue(Integer xpValue)
+    {
         this.xpValue = xpValue;
     }
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        if (getNodeId()!=null)
+        {
+            result = prime * result	+ getNodeId().hashCode();
+        }
+        else
+        {
+            result = prime * result	+ ((action == null) ? 0 : action.hashCode());
+            result = prime * result	+ ((description == null) ? 0 : description.hashCode());
+            result = prime * result + ((xpValue == null) ? 0 : xpValue.hashCode());
+        }
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Task other = (Task) obj;
+        if (nodeId != null)
+        {
+            if (nodeId.equals(other.nodeId))
+                return true;
+            else return false;
+        }
+        else
+        {
+            if (other.nodeId != null)
+                return false;
+            if (action == null) {
+                if (other.action != null)
+                    return false;
+            } else if (!action.equals(other.action))
+                return false;
+            if (description == null) {
+                if (other.description != null)
+                    return false;
+            } else if (!description.equals(other.description))
+                return false;
+            if (xpValue == null) {
+                if (other.xpValue != null)
+                    return false;
+            } else if (!xpValue.equals(other.xpValue))
+                return false;
+        }
+        return true;
+    }
+
+
 }

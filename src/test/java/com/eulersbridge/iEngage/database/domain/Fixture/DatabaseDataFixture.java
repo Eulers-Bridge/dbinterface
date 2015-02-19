@@ -611,17 +611,17 @@ public class DatabaseDataFixture
 	
 	public static Task populateTask1()
 	{
-		return populateTask(453l,"Read an article.",500);
+		return populateTask(453l,"Read an article.","This task involves reading an article from the newsfeed.",500);
 	}
 
 	public static Task populateTask2()
 	{
-		return populateTask(45l,"Respond to a poll.",1500);
+		return populateTask(45l,"Respond to a poll.","This task involves responding to a poll.",1500);
 	}
 
-	public static Task populateTask(Long taskId, String action, Integer xpValue)
+	public static Task populateTask(Long taskId, String action, String description, Integer xpValue)
 	{
-		Task task=new Task(taskId,action,xpValue);
+		Task task=new Task(taskId,action,description,xpValue);
 		return task;
 	}
 	public static HashMap<Long, Task> populateTasks()
