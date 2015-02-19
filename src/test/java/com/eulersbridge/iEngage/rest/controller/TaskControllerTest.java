@@ -84,21 +84,21 @@ public class TaskControllerTest
 	String setupContent(TaskDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"taskId\":"+evtId+",\"action\":\""+dets.getAction()+"\",\"xpValue\":"+dets.getXpValue()+"}";
+		String content="{\"taskId\":"+evtId+",\"action\":\""+dets.getAction()+"\",\"description\":\""+dets.getDescription()+"\",\"xpValue\":"+dets.getXpValue()+"}";
 		return content;
 	}
 	
 	String setupInvalidContent(TaskDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"taskId1\":"+evtId+",\"action\":\""+dets.getAction()+"\",\"xpValue\":"+dets.getXpValue()+"}";
+		String content="{\"taskId1\":"+evtId+",\"action\":\""+dets.getAction()+"\",\"description\":\""+dets.getDescription()+"\",\"xpValue\":"+dets.getXpValue()+"}";
 		return content;
 	}
 	
 	String setupReturnedContent(TaskDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"taskId\":"+evtId+",\"action\":\""+dets.getAction()+"\",\"xpValue\":"+dets.getXpValue()+
+		String content="{\"taskId\":"+evtId+",\"action\":\""+dets.getAction()+"\",\"description\":\""+dets.getDescription()+"\",\"xpValue\":"+dets.getXpValue()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"}"+
 //				",{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
 //				"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
@@ -134,6 +134,7 @@ public class TaskControllerTest
 		.andDo(print())
 		.andExpect(jsonPath("$.taskId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.action",is(dets.getAction())))
+		.andExpect(jsonPath("$.description",is(dets.getDescription())))
 		.andExpect(jsonPath("$.xpValue",is(dets.getXpValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 //		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
@@ -223,6 +224,7 @@ public class TaskControllerTest
 		.andDo(print())
 		.andExpect(jsonPath("$.taskId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.action",is(dets.getAction())))
+		.andExpect(jsonPath("$.description",is(dets.getDescription())))
 		.andExpect(jsonPath("$.xpValue",is(dets.getXpValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 //		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
@@ -261,12 +263,14 @@ public class TaskControllerTest
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$[0].action",is(taskDets.get(0).getAction())))
+		.andExpect(jsonPath("$[0].description",is(taskDets.get(0).getDescription())))
 		.andExpect(jsonPath("$[0].xpValue",is(taskDets.get(0).getXpValue())))
 		.andExpect(jsonPath("$[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
 		.andExpect(jsonPath("$[1].action",is(taskDets.get(1).getAction())))
+		.andExpect(jsonPath("$[1].description",is(taskDets.get(1).getDescription())))
 		.andExpect(jsonPath("$[1].xpValue",is(taskDets.get(1).getXpValue())))
 		.andExpect(jsonPath("$[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
-//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$[0].links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
 
@@ -301,6 +305,7 @@ public class TaskControllerTest
 		.andDo(print())
 		.andExpect(jsonPath("$.taskId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.action",is(dets.getAction())))
+		.andExpect(jsonPath("$.description",is(dets.getDescription())))
 		.andExpect(jsonPath("$.xpValue",is(dets.getXpValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 //		.andExpect(jsonPath("$.links[1].rel",is("Previous")))

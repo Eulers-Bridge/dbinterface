@@ -18,9 +18,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * @author Yikai Gong
  */
 
-public class Task extends ResourceSupport{
+public class Task extends ResourceSupport
+{
     private Long taskId;
     private String action;
+    private String description;
     private Integer xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(Task.class);
@@ -33,6 +35,7 @@ public class Task extends ResourceSupport{
 
         task.setTaskId(taskDetails.getNodeId());
         task.setAction(taskDetails.getAction());
+        task.setDescription(taskDetails.getDescription());
         task.setXpValue(taskDetails.getXpValue());
 
         // {!begin selfRel}
@@ -47,6 +50,7 @@ public class Task extends ResourceSupport{
         TaskDetails taskDetails = new TaskDetails();
         taskDetails.setNodeId(getTaskId());
         taskDetails.setAction(getAction());
+        taskDetails.setDescription(getDescription());
         taskDetails.setXpValue(getXpValue());
         return taskDetails;
     }
@@ -71,7 +75,23 @@ public class Task extends ResourceSupport{
         this.action = action;
     }
 
-    public Integer getXpValue() {
+    /**
+	 * @return the description
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public Integer getXpValue() {
         return xpValue;
     }
 
