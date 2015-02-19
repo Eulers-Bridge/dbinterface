@@ -13,6 +13,8 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.*;
 
+import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.commons.validator.routines.LongValidator;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -386,7 +388,57 @@ public class UserController {
 	public @ResponseBody ResponseEntity<User> findUser(@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. "+email);
-		ReadUserEvent userEvent=userService.requestReadUser(new RequestReadUserEvent(email));
+		LongValidator longValidator=LongValidator.getInstance() ;
+		EmailValidator emailValidator=EmailValidator.getInstance() ;
+		ReadUserEvent userEvent;
+		ResponseEntity<User> response;
+		
+		if (longValidator.isValid(email))
+		{
+			Long id=longValidator.validate(email);
+			if (LOG.isDebugEnabled()) LOG.debug("UserId supplied. - "+id);
+			RequestReadUserEvent evt=new RequestReadUserEvent(id);
+			userEvent=userService.readUserById(evt);
+		}
+		else if (emailValidator.isValid(email))
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
+			 userEvent=userService.requestReadUser(new RequestReadUserEvent(email));
+		}
+		else
+			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+			
+  	
+		if (!userEvent.isEntityFound())
+		{
+			response = new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			User restUser=User.fromUserDetails((UserDetails) userEvent.getDetails());
+			response = new ResponseEntity<User>(restUser,HttpStatus.OK);
+		}
+		return response;
+	}
+    
+    /**
+     * Is passed all the necessary data to read a user from the database.
+     * The request must be a GET with the user email presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return the user object read from the database.
+     * 
+     * @param email the email address of the user object to be read.
+     * @return the user object.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/contact/{contactInfo}")
+	public @ResponseBody ResponseEntity<User> findFriend(@PathVariable String contactInfo) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. "+contactInfo);
+		
+		ReadUserEvent userEvent=userService.requestReadUser(new RequestReadUserEvent(contactInfo));
   	
 		if (!userEvent.isEntityFound())
 		{

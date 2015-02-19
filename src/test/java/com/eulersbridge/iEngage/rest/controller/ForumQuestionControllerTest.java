@@ -18,23 +18,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.CreateForumQuestionEvent;
@@ -48,7 +51,13 @@ import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionsReadEve
 import com.eulersbridge.iEngage.core.events.forumQuestions.ReadForumQuestionEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.ReadForumQuestionsEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.UpdateForumQuestionEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.ForumQuestionService;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -69,6 +78,12 @@ public class ForumQuestionControllerTest
 	
 	@Mock
 	ForumQuestionService service;
+	
+	@Mock
+	UserService userService;
+	
+	@Mock
+	LikesService likesService;
 	
 
 	/**
@@ -377,32 +392,137 @@ public class ForumQuestionControllerTest
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ForumQuestionController#like(java.lang.Long, java.lang.String)}.
+	 * @throws Exception 
 	 */
-	@Ignore
 	@Test
-	public final void testLike()
+	public final void testLike() throws Exception
 	{
-		fail("Not yet implemented"); // TODO
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=new LikedEvent(id, user.getEmail(), true);
+		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
+
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(content().string("true"))
+		.andExpect(status().isOk())	;		
+	}
+
+	@Test
+	public final void testLikedByForumQuestionNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
+		
+		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
+
+	@Test
+	public final void testLikedByForumQuestionGone() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
+		
+		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isGone())	;		
 	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ForumQuestionController#unlike(java.lang.Long, java.lang.String)}.
+	 * @throws Exception 
 	 */
-	@Ignore
 	@Test
-	public final void testUnlike()
+	public final void testUnlike() throws Exception
 	{
-		fail("Not yet implemented"); // TODO
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt= new LikedEvent(id, user.getEmail(), true);
+
+		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string("true"))
+                .andExpect(status().isOk())	;
 	}
+
+    @Test
+    public final void testUnLikedByForumQuestionNotFound() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
+
+        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())	;
+    }
+
+    @Test
+    public final void testUnLikedByForumQuestionGone() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
+
+        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isGone())	;
+    }
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ForumQuestionController#findLikes(java.lang.Long, java.lang.String, java.lang.String, java.lang.String)}.
+	 * @throws Exception 
 	 */
-	@Ignore
 	@Test
-	public final void testFindLikes()
+	public final void testFindLikes() throws Exception
 	{
-		fail("Not yet implemented"); // TODO
+        if (LOG.isDebugEnabled()) LOG.debug("performingFindLikes()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        Collection<UserDetails> userDetails = new ArrayList<>();
+        userDetails.add(user.toUserDetails());
+
+        LikeableObjectLikesEvent likeableObjectLikesEvent = new LikeableObjectLikesEvent(id, userDetails);
+
+
+        when (likesService.likes(any(LikesLikeableObjectEvent.class), any(Sort.Direction.class), any(int.class), any(int.class))).thenReturn(likeableObjectLikesEvent);
+        this.mockMvc.perform(get(urlPrefix+"/{id}/likes/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())	;
 	}
+
+    @Test
+    public final void testFindLikesNotFound() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingFindLikes()");
+        Long id=1L;
+        Collection<UserDetails> userDetails = new ArrayList<>();
+        ReadEvent readPollEvent = ReadEvent.notFound(id);
+
+        LikeableObjectLikesEvent likeableObjectLikesEvent = new LikeableObjectLikesEvent(id, userDetails);
+
+
+        when (likesService.likes(any(LikesLikeableObjectEvent.class), any(Sort.Direction.class), any(int.class), any(int.class))).thenReturn(likeableObjectLikesEvent);
+        when (service.readForumQuestion(any(ReadForumQuestionEvent.class))).thenReturn(readPollEvent);
+        this.mockMvc.perform(get(urlPrefix+"/{id}/likes/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
 
 }

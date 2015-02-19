@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -178,60 +176,7 @@ public class NewsEventHandler implements NewsService
 		}
 		return nare;
 	}
-
-	@Override
-	public NewsArticleLikedEvent likeNewsArticle(
-			LikeEvent likeNewsArticleEvent) 
-	{
-		boolean result=true;
-		NewsArticleLikedEvent retValue;
-		String email=likeNewsArticleEvent.getEmailAddress();
-		Long newsArticleId=likeNewsArticleEvent.getNodeId();
-/*		User user=userRepository.findByEmail(email);
-		if (null==user)
-		{
-			return NewsArticleLikedEvent.userNotFound(email);
-		}
-		
-		NewsArticle article=newsRepo.findOne(newsArticleId);
-		if (null==article)
-		{
-			return NewsArticleLikedEvent.articleNotFound(newsArticleId, email);
-		}
-*/		Like like=newsRepo.likeArticle(email, newsArticleId);
-		
-/*		Like like=new Like(user,article);
-		
-		boolean userResult=user.addLike(like);
-		if ((!userResult)&&(LOG.isWarnEnabled())) LOG.warn("Unable to add like to user, already exists.");
-		User returnedUser=userRepository.save(user);
-		if ((userResult)&&(LOG.isDebugEnabled())) LOG.debug("Like id = "+like.getId());
-		Set<Like> likes=returnedUser.getLikes();
-		boolean articleResult=article.addLike(like);
-		if ((!articleResult)&&(LOG.isWarnEnabled())) LOG.warn("Unable to add like to article, already exists.");
-		newsRepo.save(article);
-		if ((userResult)&&(LOG.isDebugEnabled())) LOG.debug("Like id = "+like.getId());
-		result=articleResult&&userResult;
-		
-*/		if (like!=null) result=true; else result=false;
-		retValue=new NewsArticleLikedEvent(newsArticleId,email,result);
-		return retValue;
-	}
-	@Override
-	public NewsArticleUnlikedEvent unlikeNewsArticle(
-			LikeEvent unlikeNewsArticleEvent) 
-	{
-		boolean result=true;
-		NewsArticleUnlikedEvent retValue;
-		String email=unlikeNewsArticleEvent.getEmailAddress();
-		Long newsArticleId=unlikeNewsArticleEvent.getNodeId();
-		
-		newsRepo.unlikeArticle(email, newsArticleId);
-		
-		retValue=new NewsArticleUnlikedEvent(newsArticleId,email,result);
-		return retValue;
-	}
-
+//TODO Remove these and use generic.
     @Override
     public NewsArticleLikesEvent likesNewsArticle(LikesNewsArticleEvent likesNewsArticleEvent, Direction sortDirection, int pageNumber, int pageSize)
     {

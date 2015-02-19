@@ -1,10 +1,16 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.database.domain.Like;
+import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,15 +25,71 @@ import java.util.Iterator;
  * @author Yikai Gong
  */
 
-public class LikesEventHandler implements LikesService {
+public class LikesEventHandler implements LikesService
+{
 
     UserRepository userRepository;
+    OwnerRepository ownerRepository;
 
     private static Logger LOG = LoggerFactory.getLogger(LikesEventHandler.class);
 
-    public LikesEventHandler(UserRepository userRepository) {
+    public LikesEventHandler(UserRepository userRepository, OwnerRepository ownerRepository)
+    {
         this.userRepository = userRepository;
+        this.ownerRepository = ownerRepository;
     }
+    
+	@Override
+	public LikedEvent like(LikeEvent likeEvent)
+	{
+		boolean result = true;
+		LikedEvent retValue;
+		String email = likeEvent.getEmailAddress();
+		Long nodeId = likeEvent.getNodeId();
+		
+		retValue=checkParams(email,nodeId);
+		if (null!=retValue)
+		{
+			Like like = userRepository.like(email, nodeId);
+			if (like != null)
+				result = true;
+			else result = false;
+			retValue = new LikedEvent(nodeId, email, result);
+		}
+		return retValue;
+	}
+	
+	@Override
+	public LikedEvent unlike(LikeEvent unlikeEvent)
+	{
+		boolean result = true;
+		LikedEvent retValue=null;
+		String email = unlikeEvent.getEmailAddress();
+		Long nodeId = unlikeEvent.getNodeId();
+		
+		retValue=checkParams(email,nodeId);
+		if (null!=retValue)
+		{
+			userRepository.unlike(email, nodeId);
+			retValue = new LikedEvent(nodeId, email, result);
+		}
+		return retValue;
+	}
+	
+	private LikedEvent checkParams(String email,Long nodeId)
+	{
+		User user=userRepository.findByEmail(email);
+		if (null==user)
+		{
+			return LikedEvent.userNotFound(nodeId, email);
+		}
+		Owner item=ownerRepository.findOne(nodeId);
+		if (null==item)
+		{
+			return LikedEvent.entityNotFound(nodeId, email);
+		}
+		return null;
+	}
 
     @Override
     public LikeableObjectLikesEvent likes(LikesLikeableObjectEvent likesLikeableObjectEvent, Sort.Direction sortDirection, int pageNumber, int pageSize) {

@@ -1,8 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 
@@ -37,6 +35,9 @@ public interface UserService
 	public UserCreatedEvent signUpNewUser(CreateUserEvent createUserEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public ReadUserEvent requestReadUser(RequestReadUserEvent requestReadUserEvent);
+//TODO Need to secure this better.
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public ReadUserEvent readUserById(RequestReadUserEvent requestReadUserEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public UpdatedEvent updateUser(UpdateUserEvent updateUserEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
@@ -59,9 +60,4 @@ public interface UserService
 	public DeletedEvent deleteVoteReminder(DeleteVoteReminderEvent deleteVoteReminderEvent);
 	
 	public Long findUserId(String emailAddress);
-
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public LikedEvent like(LikeEvent likeEvent);
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public LikedEvent unlike(LikeEvent likeEvent);
 }

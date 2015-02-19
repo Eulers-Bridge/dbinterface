@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
@@ -9,11 +11,9 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.NewsService;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import org.junit.After;
@@ -36,6 +36,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -129,29 +130,106 @@ public class NewsControllerTest
 		.andExpect(status().isNotFound())	;
 	}
 
-	@Ignore
 	@Test
 	public void testAlterNewsArticle() throws Exception
 	{
 
 	}
 
-	@Ignore
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ArticleController#likeArticle(java.lang.Long, java.lang.String)}.
+	 */
 	@Test
 	public void testLikeArticle() throws Exception
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=new LikedEvent(id, user.getEmail(), true);
+		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
 
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(content().string("true"))
+		.andExpect(status().isOk())	;		
 	}
 
-	@Ignore
 	@Test
-	public void testUnlikeArticle() throws Exception
+	public final void testLikedByArticleNotFound() throws Exception
 	{
-
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
+		
+		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
 	}
 
 	@Test
-	public void testDeleteNewsArticle() throws Exception
+	public final void testLikedByArticleGone() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
+		
+		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
+		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isGone())	;		
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ArticleController#unlikeArticle(java.lang.Long, java.lang.String)}.
+	 */
+	@Test
+	public final void testUnlikeArticle() throws Exception
+	{
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt= new LikedEvent(id, user.getEmail(), true);
+
+		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string("true"))
+                .andExpect(status().isOk())	;
+	}
+
+    @Test
+    public final void testUnLikedByArticleNotFound() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
+
+        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())	;
+    }
+
+    @Test
+    public final void testUnLikedByArticleGone() throws Exception
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
+
+        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isGone())	;
+    }
+
+	@Test
+	public final void testDeleteNewsArticle() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteNewsArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
@@ -162,7 +240,7 @@ public class NewsControllerTest
 		.andExpect(status().isOk())	;
 	}
 	@Test
-	public void testDeleteNewsArticleNotFound() throws Exception
+	public final void testDeleteNewsArticleNotFound() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteNewsArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
@@ -173,7 +251,7 @@ public class NewsControllerTest
 		.andExpect(status().isNotFound());
 	}
 	@Test
-	public void testDeleteNewsArticleForbidden() throws Exception
+	public final void testDeleteNewsArticleForbidden() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteNewsArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
@@ -185,7 +263,7 @@ public class NewsControllerTest
 	}
 
 	@Test
-	public void testCreateNewsArticle() throws Exception
+	public final void testCreateNewsArticle() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
@@ -221,7 +299,7 @@ public class NewsControllerTest
 
 	@Ignore
 	@Test
-	public void testFindArticles() throws Exception
+	public final void testFindArticles() throws Exception
 	{
 
 	}

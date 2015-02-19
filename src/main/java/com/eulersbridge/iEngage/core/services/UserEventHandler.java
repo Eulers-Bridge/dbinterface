@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.database.domain.*;
@@ -156,26 +154,62 @@ public class UserEventHandler implements UserService, UserDetailsService
 	public ReadUserEvent requestReadUser(
 			RequestReadUserEvent requestReadUserEvent)
 	{
-		if (LOG.isDebugEnabled())
-			LOG.debug("requestReadUser(" + requestReadUserEvent.getEmail()
-					+ ")");
-		User user = userRepository.findByEmail(requestReadUserEvent.getEmail());
 		ReadUserEvent response;
-		if (user == null)
+		if (requestReadUserEvent!=null)
 		{
-			response = ReadUserEvent.notFound(requestReadUserEvent.getEmail());
+			if (LOG.isDebugEnabled())
+				LOG.debug("requestReadUser(" + requestReadUserEvent.getEmail()
+						+ ")");
+			User user = userRepository.findByEmail(requestReadUserEvent.getEmail());
+			if (user == null)
+			{
+				response = ReadUserEvent.notFound(requestReadUserEvent.getEmail());
+			}
+			else
+			{
+				// template.fetch(user.getInstitution());
+				UserDetails result = user.toUserDetails();
+				if (LOG.isDebugEnabled()) LOG.debug("Result - " + result);
+				response = new ReadUserEvent(requestReadUserEvent.getEmail(),
+						result);
+			}
 		}
 		else
 		{
-			// template.fetch(user.getInstitution());
-			UserDetails result = user.toUserDetails();
-			if (LOG.isDebugEnabled()) LOG.debug("Result - " + result);
-			response = new ReadUserEvent(requestReadUserEvent.getEmail(),
-					result);
+			response = ReadUserEvent.notFound("");
 		}
 		return response;
 	}
 
+	@Override
+	public ReadUserEvent readUserById(RequestReadUserEvent requestReadUserEvent)
+	{
+		ReadUserEvent response;
+		if (requestReadUserEvent!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("requestReadUser(" + requestReadUserEvent.getNodeId()
+						+ ")");
+			User user = userRepository.findOne(requestReadUserEvent.getNodeId());
+			if (user == null)
+			{
+				response = ReadUserEvent.notFound(requestReadUserEvent.getEmail());
+			}
+			else
+			{
+				UserDetails result = user.toUserDetails();
+				if (LOG.isDebugEnabled()) LOG.debug("Result - " + result);
+				response = new ReadUserEvent(requestReadUserEvent.getEmail(),
+						result);
+			}
+		}
+		else
+		{
+			response = ReadUserEvent.notFound("");
+		}
+		return response;
+	}
+	
 	@Override
 	@Transactional
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent)
@@ -651,33 +685,6 @@ public class UserEventHandler implements UserService, UserDetailsService
 		return response;
 	}
 
-	@Override
-	public LikedEvent like(LikeEvent likeEvent)
-	{
-		boolean result = true;
-		LikedEvent retValue;
-		String email = likeEvent.getEmailAddress();
-		Long pollId = likeEvent.getNodeId();
-		Like like = userRepository.like(email, pollId);
-		if (like != null)
-			result = true;
-		else result = false;
-		retValue = new LikedEvent(pollId, email, result);
-		return retValue;
-	}
-
-	@Override
-	public LikedEvent unlike(LikeEvent unlikeEvent)
-	{
-		boolean result = true;
-		LikedEvent retValue;
-		String email = unlikeEvent.getEmailAddress();
-		Long pollId = unlikeEvent.getNodeId();
-		userRepository.unlike(email, pollId);
-		retValue = new LikedEvent(pollId, email, result);
-		return retValue;
-	}
-
 	public Long findUserId(String emailAddress)
 	{
 		if (LOG.isDebugEnabled())
@@ -695,5 +702,4 @@ public class UserEventHandler implements UserService, UserDetailsService
 		return response;
 
 	}
-
 }

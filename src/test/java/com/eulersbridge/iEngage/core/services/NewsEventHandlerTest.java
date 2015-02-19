@@ -22,14 +22,12 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
@@ -254,38 +252,4 @@ public class NewsEventHandlerTest
 		assertFalse(iter.hasNext());
 	}
 		
-	@Test
-	public void testShouldAddLikeForArticle()
-	{
-		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
-		User user=DatabaseDataFixture.populateUserGnewitt();
-		LikeEvent likeNewsArticlesEvent=new LikeEvent(newsArticle.getNodeId(),user);
-		NewsArticleLikedEvent res = newsService.likeNewsArticle(likeNewsArticlesEvent);
-		assertNotNull(res);
-	}
-	
-	@Test
-	public void testShouldReturnFalseForSecondLikeForArticle()
-	{
-		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
-		User user=DatabaseDataFixture.populateUserGnewitt();
-		LikeEvent likeNewsArticlesEvent=new LikeEvent(newsArticle.getNodeId(),user);
-		when(newsRepos.likeArticle(any(String.class),any(Long.class))).thenReturn(null);
-		
-		NewsArticleLikedEvent res = mockedNewsService.likeNewsArticle(likeNewsArticlesEvent);
-		assertNotNull(res);
-		assertEquals(false,res.isResultSuccess());
-	}
-	
-	@Test
-	public void testShouldReturnUserNotFound()
-	{
-		NewsArticle newsArticle=DatabaseDataFixture.populateNewsArticle1();
-		LikeEvent likeNewsArticlesEvent=new LikeEvent(newsArticle.getNodeId(),"test@hotmail.com");
-		when(newsRepos.likeArticle(any(String.class),any(Long.class))).thenReturn(null);
-		NewsArticleLikedEvent res = mockedNewsService.likeNewsArticle(likeNewsArticlesEvent);
-		assertNotNull(res);
-		assertEquals(false, res.isResultSuccess());
-	}
-	
 }

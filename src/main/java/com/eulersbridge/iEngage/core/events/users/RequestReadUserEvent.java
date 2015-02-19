@@ -12,6 +12,12 @@ public class RequestReadUserEvent extends RequestReadEvent
 		this.email = email;
 	}
 
+	public RequestReadUserEvent(Long id)
+	{
+		super(id);
+		this.email = null;
+	}
+
 	public String getEmail()
 	{
 		return email;

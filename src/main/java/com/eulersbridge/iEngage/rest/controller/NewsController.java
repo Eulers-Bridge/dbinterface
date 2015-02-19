@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
@@ -98,7 +99,7 @@ public class NewsController
 	public @ResponseBody ResponseEntity<Boolean> likeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
-		NewsArticleLikedEvent articleEvent=newsService.likeNewsArticle(new LikeEvent(articleId,email));
+		LikedEvent articleEvent=likesService.like(new LikeEvent(articleId,email));
 		
 		ResponseEntity<Boolean> response;
 		
@@ -134,7 +135,7 @@ public class NewsController
 	public @ResponseBody ResponseEntity<Boolean> unlikeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike news article. "+articleId);
-		NewsArticleUnlikedEvent articleEvent=newsService.unlikeNewsArticle(new LikeEvent(articleId,email));
+		LikedEvent articleEvent=likesService.unlike(new LikeEvent(articleId,email));
   	
 		ResponseEntity<Boolean> response;
 		

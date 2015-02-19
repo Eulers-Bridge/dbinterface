@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
@@ -39,14 +40,13 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUnlikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UnlikeNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
+import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -64,6 +64,8 @@ public class ViewNewsIntegrationTest {
 	
 	@Mock
 	NewsService newsService;
+	@Mock
+	LikesService likesService;
 	
 	@Before
 	public void setUp() throws Exception 
@@ -145,7 +147,7 @@ public class ViewNewsIntegrationTest {
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
 		NewsArticleLikedEvent testData=new NewsArticleLikedEvent(id, email,true);
-		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
+		when (likesService.like(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;		
@@ -157,8 +159,8 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingLikeNewsArticle()");
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
-		NewsArticleLikedEvent testData=NewsArticleLikedEvent.articleNotFound(id, email);
-		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
+		LikedEvent testData=LikedEvent.entityNotFound(id, email);
+		when (likesService.like(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isGone())	;		
 	}
@@ -169,8 +171,8 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingLikeNewsArticle()");
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
-		NewsArticleLikedEvent testData=NewsArticleLikedEvent.userNotFound(id, email);
-		when (newsService.likeNewsArticle(any(LikeEvent.class))).thenReturn(testData);
+		LikedEvent testData=LikedEvent.userNotFound(id, email);
+		when (likesService.like(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;		
 	}
@@ -181,8 +183,8 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingUnLikeNewsArticle()");
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
-		NewsArticleUnlikedEvent testData=new NewsArticleUnlikedEvent(id, email,true);
-		when (newsService.unlikeNewsArticle(any(UnlikeNewsArticleEvent.class))).thenReturn(testData);
+		LikedEvent testData=new LikedEvent(id, email,true);
+		when (likesService.unlike(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(content().string("true"))
 		.andExpect(status().isOk())	;		
@@ -194,8 +196,8 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingUnLikeNewsArticle()");
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
-		NewsArticleUnlikedEvent testData=NewsArticleUnlikedEvent.articleNotFound(id, email);
-		when (newsService.unlikeNewsArticle(any(UnlikeNewsArticleEvent.class))).thenReturn(testData);
+		LikedEvent testData=LikedEvent.entityNotFound(id, email);
+		when (likesService.unlike(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isGone())	;		
 	}
@@ -206,8 +208,8 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingUnLikeNewsArticle()");
 		Long id=1L;
 		String email="gnewitt@hotmail.com";
-		NewsArticleUnlikedEvent testData=NewsArticleUnlikedEvent.userNotFound(id, email);
-		when (newsService.unlikeNewsArticle(any(UnlikeNewsArticleEvent.class))).thenReturn(testData);
+		LikedEvent testData=LikedEvent.userNotFound(id, email);
+		when (likesService.unlike(any(LikeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{email}/",id.intValue(),email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;		
 	}

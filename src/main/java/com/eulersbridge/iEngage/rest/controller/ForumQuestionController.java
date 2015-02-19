@@ -177,11 +177,11 @@ public class ForumQuestionController {
     }
 
     //like
-    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{forumQuestionId}/likedBy/{email}/")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}/likedBy/{email}/")
     public @ResponseBody ResponseEntity<Boolean> like(@PathVariable Long forumQuestionId,@PathVariable String email)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like forumQuestion. "+forumQuestionId);
-        LikedEvent likedEvent = userService.like(new LikeEvent(forumQuestionId, email));
+        LikedEvent likedEvent = likesService.like(new LikeEvent(forumQuestionId, email));
         ResponseEntity<Boolean> response;
         if (!likedEvent.isEntityFound())
         {
@@ -200,11 +200,11 @@ public class ForumQuestionController {
     }
 
     //unlike
-    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{forumQuestionId}/unlikedBy/{email}/")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}/unlikedBy/{email}/")
     public @ResponseBody ResponseEntity<Boolean> unlike(@PathVariable Long forumQuestionId,@PathVariable String email)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike forumQuestion. "+forumQuestionId);
-        LikedEvent unlikedEvent = userService.unlike(new LikeEvent(forumQuestionId, email));
+        LikedEvent unlikedEvent = likesService.unlike(new LikeEvent(forumQuestionId, email));
         ResponseEntity<Boolean> response;
         if (!unlikedEvent.isEntityFound())
         {
@@ -223,7 +223,7 @@ public class ForumQuestionController {
     }
 
     //likes
-    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{forumQuestionId}" + ControllerConstants.LIKES_LABEL)
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}" + ControllerConstants.LIKES_LABEL)
     public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
             @PathVariable Long forumQuestionId,
             @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,

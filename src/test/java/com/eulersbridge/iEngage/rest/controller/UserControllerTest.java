@@ -51,6 +51,7 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
@@ -415,6 +416,29 @@ public class UserControllerTest
 		UserDetails dets=(UserDetails) testData.getDetails();
 		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
+		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
+		.andExpect(jsonPath("$.gender",is(dets.getGender())))
+		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
+		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
+		.andExpect(jsonPath("$.password",is(dets.getPassword())))
+		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.email",is(dets.getEmail())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+	
+	@Test
+	public void testFindUserWithUserId() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		UserDetails dets=user.toUserDetails();
+		ReadUserEvent testData=new ReadUserEvent(dets.getEmail(), dets);
+		Long id=user.getNodeId();
+		when (userService.readUserById(any(RequestReadUserEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get("/api/user/{id}/",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))

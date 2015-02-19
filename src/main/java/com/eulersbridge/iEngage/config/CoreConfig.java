@@ -154,7 +154,7 @@ public class CoreConfig
     public LikesService createLikesService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createLikesService()");
-        return new LikesEventHandler(userRepo);
+        return new LikesEventHandler(userRepo,ownerRepository);
     }
 
     @Bean
