@@ -231,7 +231,7 @@ public class EventController
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to have " + email + " unlike news article. "
 					+ eventId);
-		LikedEvent event = eventService.unlikeEvent(new LikeEvent(eventId,
+		LikedEvent event = likesService.unlike(new LikeEvent(eventId,
 				email));
 
 		ResponseEntity<Boolean> response;
@@ -274,8 +274,8 @@ public class EventController
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to have " + email + " like news article. "
 					+ eventId);
-		LikedEvent event = eventService
-				.likeEvent(new LikeEvent(eventId, email));
+		LikedEvent event = likesService
+				.like(new LikeEvent(eventId, email));
 
 		ResponseEntity<Boolean> response;
 

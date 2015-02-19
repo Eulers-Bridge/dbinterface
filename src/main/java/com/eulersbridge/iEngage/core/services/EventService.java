@@ -31,10 +31,4 @@ public interface EventService {
 
     @PreAuthorize("hasRole('ROLE_USER')")
 	public EventsReadEvent readEvents(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
-
-	@PreAuthorize("hasRole('ROLE_USER')")
-	public LikedEvent likeEvent(LikeEvent likeEvent);
-	
-	@PreAuthorize("hasRole('ROLE_USER')")
-	public LikedEvent unlikeEvent(LikeEvent unlikeEvent);
 }

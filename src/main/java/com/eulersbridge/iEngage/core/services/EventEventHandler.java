@@ -204,34 +204,4 @@ public class EventEventHandler implements EventService
 		return nare;
 	}
 
-	@Override
-	public LikedEvent likeEvent(LikeEvent likeEvent)
-	{
-		boolean result = true;
-		LikedEvent retValue;
-		String email = likeEvent.getEmailAddress();
-		Long eventId = likeEvent.getNodeId();
-		Like like = eventRepository.likeEvent(email, eventId);
-
-		if (like != null)
-			result = true;
-		else result = false;
-		retValue = new LikedEvent(eventId, email, result);
-		return retValue;
-	}
-
-	@Override
-	public LikedEvent unlikeEvent(LikeEvent unlikeEventEvent)
-	{
-		boolean result = true;
-		LikedEvent retValue;
-		String email = unlikeEventEvent.getEmailAddress();
-		Long eventId = unlikeEventEvent.getNodeId();
-
-		eventRepository.unlikeEvent(email, eventId);
-
-		retValue = new LikedEvent(eventId, email, result);
-		return retValue;
-	}
-
 }

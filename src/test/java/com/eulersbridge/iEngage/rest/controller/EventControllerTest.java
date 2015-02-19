@@ -481,7 +481,7 @@ public class EventControllerTest
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		LikedEvent evt=new LikedEvent(id, user.getEmail(), true);
 		
-		when (eventService.likeEvent(any(LikeEvent.class))).thenReturn(evt);
+		when (likesService.like(any(LikeEvent.class))).thenReturn(evt);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(content().string("true"))
@@ -496,7 +496,7 @@ public class EventControllerTest
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
 		
-		when (eventService.likeEvent(any(LikeEvent.class))).thenReturn(evt);
+		when (likesService.like(any(LikeEvent.class))).thenReturn(evt);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;		
@@ -510,7 +510,7 @@ public class EventControllerTest
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
 		
-		when (eventService.likeEvent(any(LikeEvent.class))).thenReturn(evt);
+		when (likesService.like(any(LikeEvent.class))).thenReturn(evt);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isGone())	;		
@@ -524,7 +524,7 @@ public class EventControllerTest
         User user=DatabaseDataFixture.populateUserGnewitt();
         LikedEvent evt= new LikedEvent(id, user.getEmail(), true);
 
-        when (eventService.unlikeEvent(any(LikeEvent.class))).thenReturn(evt);
+        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(content().string("true"))
@@ -539,7 +539,7 @@ public class EventControllerTest
         User user=DatabaseDataFixture.populateUserGnewitt();
         LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
 
-        when (eventService.unlikeEvent(any(LikeEvent.class))).thenReturn(evt);
+        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())	;
@@ -553,7 +553,7 @@ public class EventControllerTest
         User user=DatabaseDataFixture.populateUserGnewitt();
         LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
 
-        when (eventService.unlikeEvent(any(LikeEvent.class))).thenReturn(evt);
+        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isGone())	;

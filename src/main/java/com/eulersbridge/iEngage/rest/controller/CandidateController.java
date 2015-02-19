@@ -186,7 +186,7 @@ public class CandidateController {
     {
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to have " + email + " like candidate. " + candidateId);
-        LikedEvent likedPollEvent = userService.like(new LikeEvent(candidateId,
+        LikedEvent likedPollEvent = likesService.like(new LikeEvent(candidateId,
                 email));
         ResponseEntity<Boolean> response;
         if (!likedPollEvent.isEntityFound())
@@ -213,7 +213,7 @@ public class CandidateController {
     {
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to have " + email + " unlike candidate. " + candidateId);
-        LikedEvent unlikedPollEvent = userService.unlike(new LikeEvent(candidateId,
+        LikedEvent unlikedPollEvent = likesService.unlike(new LikeEvent(candidateId,
                 email));
         ResponseEntity<Boolean> response;
         if (!unlikedPollEvent.isEntityFound())
