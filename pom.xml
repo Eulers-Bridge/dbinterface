@@ -120,6 +120,21 @@
 	    <type>test-jar</type>
 	    <scope>test</scope>
 	</dependency>
+		<dependency>
+			<groupId>net.thucydides</groupId>
+			<artifactId>thucydides-core</artifactId>
+			<version>0.9.275</version>
+		</dependency>
+		<dependency>
+			<groupId>net.thucydides</groupId>
+			<artifactId>thucydides-jbehave-plugin</artifactId>
+			<version>0.9.275</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>1.4.1</version>
+		</dependency>
     </dependencies>
 
 
@@ -157,6 +172,28 @@
 		          </execution>
 		        </executions>
 		      </plugin>
+		    <plugin>
+		        <artifactId>maven-failsafe-plugin</artifactId>
+		        <version>2.6</version>
+		        <executions>
+		          <execution>
+		            <goals>
+		              <goal>integration-test</goal>
+		              <goal>verify</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>
+			<plugin>
+			   <groupId>org.codehaus.mojo</groupId>
+			   <artifactId>findbugs-maven-plugin</artifactId>
+			   <version>2.5.5</version>
+			   <configuration>
+			      <findbugsXmlOutput>true</findbugsXmlOutput>
+			      <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+			      <xmlOutput>true</xmlOutput>
+			   </configuration>
+			</plugin>
         </plugins>
     </build>
 
@@ -175,4 +212,14 @@
         </pluginRepository>
     </pluginRepositories>
     <packaging>war</packaging>
-</project>
+    
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.5.5</version>
+      </plugin>
+    </plugins>
+  </reporting>
+  </project>
