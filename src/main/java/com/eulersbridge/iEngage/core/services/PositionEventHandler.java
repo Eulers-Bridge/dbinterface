@@ -26,7 +26,7 @@ import org.springframework.data.domain.Sort.Direction;
  */
 
 public class PositionEventHandler implements PositionService{
-    private static Logger LOG = LoggerFactory.getLogger(PositionService.class);
+    private static Logger LOG = LoggerFactory.getLogger(PositionEventHandler.class);
 
     private PositionRepository positionRepository;
     private ElectionRepository electionRepository;
