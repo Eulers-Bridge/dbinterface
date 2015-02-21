@@ -31,6 +31,7 @@ import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.domain.VotingLocation;
 import com.eulersbridge.iEngage.database.repository.ResultImpl;
 import com.eulersbridge.iEngage.database.domain.Ticket;
 import com.eulersbridge.iEngage.security.SecurityConstants;
@@ -662,6 +663,37 @@ public class DatabaseDataFixture
 		initialTicket=populateTicket2();
 		tickets.put(initialTicket.getNodeId(), initialTicket);
 		return tickets;
+	}
+	public static VotingLocation populateVotingLocation1()
+	{
+		Owner owner = new Owner(populateInstUniMelb().getNodeId());
+		return populateVotingLocation(237l, "Union Building", "Ground Floor of the Union Building", owner);
+	}
+	public static VotingLocation populateVotingLocation2()
+	{
+		Owner owner = new Owner(populateInstUniMelb().getNodeId());
+		return populateVotingLocation(238l, "Baillieu Library", "Ground Floor of the Baillieu Library", owner);
+	}
+	public static VotingLocation populateVotingLocation3()
+	{
+		Owner owner = new Owner(populateInstUniMelb().getNodeId());
+		return populateVotingLocation(239l, "ERC Library", "Ground Floor of the ERC Library", owner);
+	}
+	public static VotingLocation populateVotingLocation(Long locationId, String name, String description, Owner owner)
+	{
+		VotingLocation votingLocation=new VotingLocation(locationId, name, description, owner);
+		return votingLocation;
+	}
+	public static HashMap<Long, VotingLocation> populateVotingLocations()
+	{
+		HashMap<Long, VotingLocation> votingLocations=new HashMap<Long, VotingLocation>();
+		VotingLocation initialVotingLocation=populateVotingLocation1();
+		votingLocations.put(initialVotingLocation.getNodeId(), initialVotingLocation);
+		initialVotingLocation=populateVotingLocation2();
+		votingLocations.put(initialVotingLocation.getNodeId(), initialVotingLocation);
+		initialVotingLocation=populateVotingLocation3();
+		votingLocations.put(initialVotingLocation.getNodeId(), initialVotingLocation);
+		return votingLocations;
 	}
 
 }

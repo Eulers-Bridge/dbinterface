@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -13,6 +14,8 @@ import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
 import com.eulersbridge.iEngage.core.events.newsFeed.ReadNewsFeedEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedCreatedEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.CreateVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.core.services.VotingLocationService;
+import com.eulersbridge.iEngage.rest.domain.VotingLocation;
 import com.eulersbridge.iEngage.rest.domain.GeneralInfo;
 import com.eulersbridge.iEngage.rest.domain.NewsFeed;
 import com.eulersbridge.iEngage.rest.domain.Institution;
@@ -36,6 +41,7 @@ import com.eulersbridge.iEngage.rest.domain.Institution;
 public class InstitutionController 
 {
 @Autowired InstitutionService instService;
+@Autowired VotingLocationService locationService;
 
     private static Logger LOG = LoggerFactory.getLogger(InstitutionController.class);
 
@@ -234,6 +240,47 @@ public class InstitutionController
     	{
     		restNewsFeed=NewsFeed.fromNewsFeedDetails((NewsFeedDetails)nfEvent.getDetails());
     		result=new ResponseEntity<NewsFeed>(restNewsFeed,HttpStatus.CREATED);
+    	}
+		return result;
+    }
+    
+    /**
+     * Is passed all the necessary data to create a new voting location.
+     * The request must be a POST with the necessary parameters in the
+     * attached data.
+     * <p/>
+     * This method will return the resulting voting location object.
+     * There will also be a relationship set up with the 
+     * institution the voting location belongs to.
+     * 
+     * @param votingLocation the voting location object passed across as JSON.
+     * @return the votingLocation object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.INSTITUTION_LABEL+"/{institutionId}"+ControllerConstants.VOTING_LOCATION_LABEL)
+    public @ResponseBody ResponseEntity<VotingLocation> createVotingLocation(@PathVariable Long institutionId, @RequestBody VotingLocation votingLocation) 
+    {
+    	if (LOG.isInfoEnabled()) LOG.info("attempting to save votingLocation "+votingLocation);
+    	VotingLocation restVotingLocation=null;
+    	ResponseEntity<VotingLocation> result;
+    	// Make sure institutionId in URL matches ownerId in object.
+    	votingLocation.setOwnerId(institutionId);
+    	CreatedEvent vlEvent=locationService.createVotingLocation(new CreateVotingLocationEvent(votingLocation.toVotingLocationDetails()));
+
+    	if (vlEvent.getNodeId()==null)
+    	{
+    		result=new ResponseEntity<VotingLocation>(HttpStatus.BAD_REQUEST);
+    	}
+    	else if (vlEvent.isFailed())
+    	{
+    		result=new ResponseEntity<VotingLocation>(HttpStatus.FAILED_DEPENDENCY);
+    	}
+    	else
+    	{
+    		restVotingLocation=VotingLocation.fromVotingLocationDetails((VotingLocationDetails)vlEvent.getDetails());
+    		result=new ResponseEntity<VotingLocation>(restVotingLocation,HttpStatus.CREATED);
     	}
 		return result;
     }
