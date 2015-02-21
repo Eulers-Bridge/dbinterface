@@ -84,6 +84,33 @@ public class CandidateTest
 		assertEquals("",candidate.getPosition().getNodeId(),dets.getPositionId());
 		assertEquals("",candidate.getUser().getNodeId(),dets.getUserId());
 	}
+	@Test
+	public final void testToCandidateDetailsPositionNull()
+	{
+		Position position=null;
+		candidate.setPosition(position);
+		CandidateDetails dets=candidate.toCandidateDetails();
+		assertEquals("electionDetails not of ElectionDetails class",dets.getClass(),CandidateDetails.class);
+		assertEquals("",candidate.getNodeId(),dets.getNodeId());
+		assertEquals("",candidate.getInformation(),dets.getInformation());
+		assertEquals("",candidate.getPolicyStatement(),dets.getPolicyStatement());
+		assertEquals("",position,dets.getPositionId());
+		assertEquals("",candidate.getUser().getNodeId(),dets.getUserId());
+	}
+
+	@Test
+	public final void testToCandidateDetailsUserNull()
+	{
+		User user=null;
+		candidate.setUser(user);
+		CandidateDetails dets=candidate.toCandidateDetails();
+		assertEquals("electionDetails not of ElectionDetails class",dets.getClass(),CandidateDetails.class);
+		assertEquals("",candidate.getNodeId(),dets.getNodeId());
+		assertEquals("",candidate.getInformation(),dets.getInformation());
+		assertEquals("",candidate.getPolicyStatement(),dets.getPolicyStatement());
+		assertEquals("",candidate.getPosition().getNodeId(),dets.getPositionId());
+		assertEquals("",user,dets.getUserId());
+	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Candidate#toString()}.
@@ -200,5 +227,92 @@ public class CandidateTest
 		candidate.setPolicyStatement(policy);
 		assertEquals("",policy,candidate.getPolicyStatement());
 	}
+	
+	private void checkHashCode(Candidate test1,Candidate test2)
+	{
+		assertNotEquals(test1.hashCode(), test2.hashCode());
+		assertNotEquals(test2.hashCode(), test1.hashCode());
+	}
+	
+	private void checkNotEquals(Candidate test1,Candidate test2)
+	{
+		assertNotEquals(test1, test2);
+		assertNotEquals(test2, test1);
+	}
+	
+	/**
+	 * Test method for {@link java.lang.Object#hashCode()}.
+	 */
+	@Test
+	public final void testHashCode()
+	{
+		Candidate candidateTest=DatabaseDataFixture.populateCandidate1();
+		assertEquals(candidateTest.hashCode(),candidateTest.hashCode());
+		assertEquals(candidateTest.hashCode(),candidate.hashCode());
+		candidateTest.setNodeId(null);
+		checkHashCode(candidate,candidateTest);
+		candidate.setNodeId(null);
+		
+		candidateTest.setPolicyStatement(null);
+		checkHashCode(candidate,candidateTest);
+		candidateTest.setPolicyStatement(candidate.getPolicyStatement());
+		
+		candidateTest.setInformation(null);
+		checkHashCode(candidate,candidateTest);
+		candidateTest.setInformation(candidate.getInformation());
+		
+		candidateTest.setPosition(null);;
+		checkHashCode(candidate,candidateTest);
+		candidateTest.setPosition(candidate.getPosition());
+		
+		candidateTest.setUser(null);;
+		checkHashCode(candidate,candidateTest);
+		candidateTest.setUser(candidate.getUser());
 
+	}
+
+	/**
+	 * Test method for {@link java.lang.Object#equals(java.lang.Object)}.
+	 */
+	@Test
+	public final void testEquals()
+	{
+		Candidate candidateTest=null;
+		assertNotEquals(candidateTest,candidate);
+		assertNotEquals(candidate,candidateTest);
+		String notElection="";
+		assertNotEquals(candidate,notElection);
+		candidateTest=DatabaseDataFixture.populateCandidate1();
+		assertEquals(candidateTest,candidateTest);
+		assertEquals(candidateTest,candidate);
+		
+		candidateTest.setNodeId(54l);
+		checkNotEquals(candidate,candidateTest);
+		candidate.setNodeId(null);
+		checkNotEquals(candidate,candidateTest);
+		candidateTest.setNodeId(null);
+		
+		assertEquals(candidate, candidateTest);
+		assertEquals(candidateTest, candidate);
+		
+		candidateTest.setInformation("Some description");
+		assertNotEquals(candidate, candidateTest);
+		candidateTest.setInformation(null);
+		checkNotEquals(candidateTest, candidate);
+		candidateTest.setInformation(candidate.getInformation());
+		
+		candidateTest.setPolicyStatement("title");
+		assertNotEquals(candidate, candidateTest);
+		candidateTest.setPolicyStatement(null);
+		checkNotEquals(candidate, candidateTest);
+		candidateTest.setPolicyStatement(candidate.getPolicyStatement());
+		
+		candidateTest.setUser(null);
+		checkNotEquals(candidate, candidateTest);
+		candidateTest.setUser(candidate.getUser());
+		
+		candidateTest.setPosition(null);
+		checkNotEquals(candidate, candidateTest);
+		candidateTest.setPosition(candidate.getPosition());
+	}
 }

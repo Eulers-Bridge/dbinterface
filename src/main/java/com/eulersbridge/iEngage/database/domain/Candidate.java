@@ -82,10 +82,14 @@ public class Candidate extends Likeable
         CandidateDetails candidateDetails = new CandidateDetails();
         if (LOG.isTraceEnabled()) LOG.trace("candidate "+this);
         candidateDetails.setNodeId(getNodeId());
-        candidateDetails.setUserId(getUser().getNodeId());
+        if (null==getUser())
+        	candidateDetails.setUserId(null);
+        else candidateDetails.setUserId(getUser().getNodeId());
         candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());
-        candidateDetails.setPositionId(getPosition().getNodeId());
+        if (null==getPosition())
+        	candidateDetails.setPositionId(null);
+        else candidateDetails.setPositionId(getPosition().getNodeId());
 
         if (LOG.isTraceEnabled()) LOG.trace("candidateDetails; "+ candidateDetails);
         return candidateDetails;
@@ -162,4 +166,77 @@ public class Candidate extends Likeable
         this.policyStatement = policyStatement;
     }
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		if (this.nodeId != null)
+		{
+			result = prime * result + nodeId.hashCode();
+		}
+		else
+		{
+			result = prime * result + ((policyStatement == null) ? 0 : policyStatement.hashCode());
+			result = prime * result
+					+ ((information == null) ? 0 : information.hashCode());
+			result = prime * result + ((user == null) ? 0 : user.hashCode());
+			result = prime * result + ((position == null) ? 0 : position.hashCode());
+		}
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Candidate other = (Candidate) obj;
+		if (nodeId != null)
+		{
+			if (nodeId.equals(other.nodeId))
+				return true;
+			else return false;
+		}
+		else
+		{
+			if (other.nodeId != null) return false;
+			
+			if (policyStatement == null)
+			{
+				if (other.policyStatement != null) return false;
+			}
+			else if (!policyStatement.equals(other.policyStatement)) return false;
+			
+			if (information == null)
+			{
+				if (other.information != null) return false;
+			}
+			else if (!information.equals(other.information)) return false;
+			
+			if (user == null)
+			{
+				if (other.user != null) return false;
+			}
+			else if (!user.equals(other.user)) return false;
+
+			if (position == null)
+			{
+				if (other.position != null) return false;
+			}
+			else if (!position.equals(other.position)) return false;
+}
+		return true;
+	}
 }
