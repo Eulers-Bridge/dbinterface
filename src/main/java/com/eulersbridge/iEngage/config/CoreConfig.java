@@ -57,6 +57,8 @@ public class CoreConfig
     TaskRepository taskRepository;
     @Autowired
     BadgeRepository badgeRepository;
+    @Autowired
+    VotingLocationRepository votingLocationRepository;
 
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -179,8 +181,16 @@ public class CoreConfig
     }
 
     @Bean
-    public BadgeService createBadgeService(){
+    public BadgeService createBadgeService()
+    {
         if (LOG.isDebugEnabled()) LOG.debug("createBadgeService()");
         return new BadgeEventHandler(badgeRepository);
+    }
+
+    @Bean
+    public VotingLocationService createVotingLocationService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createVotingLocationService()");
+        return new VotingLocationEventHandler(votingLocationRepository,ownerRepository);
     }
 }
