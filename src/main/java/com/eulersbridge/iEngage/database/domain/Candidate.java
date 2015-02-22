@@ -29,8 +29,8 @@ public class Candidate extends Likeable
 //    @RelatedTo(type = DatabaseDomainConstants.WAS_ASKED_LABEL, direction= Direction.BOTH)
 //    private ForumQuestion forumQuestion;
 
-//    @RelatedTo(type = DatabaseDomainConstants.IS_ON_TICKET_LABEL, direction= Direction.BOTH)
-    
+    @RelatedTo(type = DatabaseDomainConstants.IS_ON_TICKET_LABEL, direction= Direction.BOTH)
+    private Ticket ticket;
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
@@ -48,7 +48,7 @@ public class Candidate extends Likeable
 	 * @param position
 	 */
 	public Candidate(Long candidateId, String information,
-			String policyStatement, User user, Position position)
+			String policyStatement, User user, Position position, Ticket ticket)
 	{
 		super();
 		this.nodeId = candidateId;
@@ -56,6 +56,7 @@ public class Candidate extends Likeable
 		this.policyStatement = policyStatement;
 		this.user = user;
 		this.position = position;
+        this.ticket = ticket;
 	}
 
 	public static Candidate fromCandidateDetails(CandidateDetails candidateDetails)
@@ -72,6 +73,8 @@ public class Candidate extends Likeable
         Position position=new Position();
         position.setNodeId(candidateDetails.getPositionId());
         candidate.setPosition(position);
+
+        candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
 
         if (LOG.isTraceEnabled()) LOG.trace("candidate "+candidate);
         return candidate;
@@ -166,11 +169,19 @@ public class Candidate extends Likeable
         this.policyStatement = policyStatement;
     }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
+    /*
+         * (non-Javadoc)
+         *
+         * @see java.lang.Object#hashCode()
+         */
 	@Override
 	public int hashCode()
 	{

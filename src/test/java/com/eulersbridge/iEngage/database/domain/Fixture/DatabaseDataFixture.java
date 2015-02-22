@@ -582,7 +582,7 @@ public class DatabaseDataFixture
 		Long candidateId=43234l;
 		String information="I am a 3rd year Law student looking to pad out my CV.";
 		String policyStatement="I will do anything that benefits me.";
-		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt(),populatePosition1());
+		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt(),populatePosition1(), null);
 		return candidate;
 	}
 
@@ -591,13 +591,13 @@ public class DatabaseDataFixture
 		Long candidateId=43235l;
 		String information="I am a 2nd year Law student looking to pad out my CV.";
 		String policyStatement="I will do anything that benefits my family.";
-		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt2(),populatePosition2());
+		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt2(),populatePosition2(), null);
 		return candidate;
 	}
 
 	public static Candidate populateCandidate(Long candidateId, String information, String policyStatement, User user, Position position)
 	{
-		Candidate candidate=new Candidate(candidateId, information, policyStatement, user, position);
+		Candidate candidate=new Candidate(candidateId, information, policyStatement, user, position, null);
 		return candidate;
 	}
 	public static HashMap<Long, Candidate> populateCandidates()

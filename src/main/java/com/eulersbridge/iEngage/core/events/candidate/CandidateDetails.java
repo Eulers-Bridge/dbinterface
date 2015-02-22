@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.events.candidate;
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ public class CandidateDetails extends Details {
     private Set<String> pictures;
     private Long userId;
     private Long positionId;
+    private TicketDetails ticketDetails;
 
     private static Logger LOG = LoggerFactory.getLogger(CandidateDetails.class);
 
@@ -33,6 +35,8 @@ public class CandidateDetails extends Details {
         buff.append(getUserId());
         buff.append(", positionId = ");
         buff.append(getPositionId());
+        buff.append(", ticket = ");
+        buff.append(getTicketDetails().toString());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -157,4 +161,11 @@ public class CandidateDetails extends Details {
 		this.positionId = positionId;
 	}
 
+    public TicketDetails getTicketDetails() {
+        return ticketDetails;
+    }
+
+    public void setTicketDetails(TicketDetails ticketDetails) {
+        this.ticketDetails = ticketDetails;
+    }
 }

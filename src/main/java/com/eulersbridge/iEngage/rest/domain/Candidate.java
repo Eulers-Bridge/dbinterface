@@ -25,6 +25,7 @@ public class Candidate extends ResourceSupport{
     private Set<String> pictures;
     private Long userId;
     private Long positionId;
+    private Ticket ticket;
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
@@ -44,6 +45,7 @@ public class Candidate extends ResourceSupport{
         candidate.setPictures(candidateDetails.getPictures());
         candidate.setUserId(candidateDetails.getUserId());
         candidate.setPositionId(candidateDetails.getPositionId());
+        candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
 
         // {!begin selfRel}
         candidate.add(linkTo(CandidateController.class).slash(name)
@@ -65,7 +67,16 @@ public class Candidate extends ResourceSupport{
         candidateDetails.setPictures(getPictures());
         candidateDetails.setUserId(getUserId());
         candidateDetails.setPositionId(getPositionId());
+        candidateDetails.setTicketDetails(ticket.toTicketDetails());
         return candidateDetails;
+    }
+
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
 
     public Long getCandidateId() {

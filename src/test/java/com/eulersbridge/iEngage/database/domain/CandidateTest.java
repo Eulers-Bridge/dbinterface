@@ -46,7 +46,7 @@ public class CandidateTest
 	@Test
 	public final void testCandidateLongStringStringUserPosition()
 	{
-		Candidate candidateTest=new Candidate(candidate.getNodeId(),candidate.getInformation(),candidate.getPolicyStatement(),candidate.getUser(),candidate.getPosition());
+		Candidate candidateTest=new Candidate(candidate.getNodeId(),candidate.getInformation(),candidate.getPolicyStatement(),candidate.getUser(),candidate.getPosition(), null);
 		assertEquals("electionTest not of Election class",candidateTest.getClass(),Candidate.class);
 		assertEquals("",candidate.getNodeId(),candidateTest.getNodeId());
 		assertEquals("",candidate.getInformation(),candidateTest.getInformation());
