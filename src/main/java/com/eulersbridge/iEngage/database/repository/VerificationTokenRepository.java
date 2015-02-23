@@ -9,6 +9,6 @@ import com.eulersbridge.iEngage.database.domain.VerificationToken;
 public interface VerificationTokenRepository extends GraphRepository<VerificationToken> 
 {
 static Logger LOG = LoggerFactory.getLogger(VerificationTokenRepository.class);
-	
+//TODO Fix this.	
  	VerificationToken findByToken(String token);
 }
