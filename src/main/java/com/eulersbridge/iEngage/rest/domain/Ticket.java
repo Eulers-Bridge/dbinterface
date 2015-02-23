@@ -25,6 +25,7 @@ public class Ticket extends ResourceSupport{
     private String logo;
     private Set<String> pictures;
     private String information;
+    private Long colour;
     private Iterable<Long> candidateIds;
     private Long electionId;
 
@@ -45,6 +46,7 @@ public class Ticket extends ResourceSupport{
         ticket.setLogo(ticketDetails.getLogo());
         ticket.setPictures(ticketDetails.getPictures());
         ticket.setInformation(ticketDetails.getInformation());
+        ticket.setColour(ticketDetails.getColour());
         ticket.setCandidateIds(ticketDetails.getCandidateIds());
         ticket.setElectionId(ticketDetails.getElectionId());
 
@@ -66,6 +68,7 @@ public class Ticket extends ResourceSupport{
         ticketDetails.setLogo(getLogo());
         ticketDetails.setPictures(getPictures());
         ticketDetails.setInformation(getInformation());
+        ticketDetails.setColour(getColour());
         ticketDetails.setElectionId(getElectionId());
         return ticketDetails;
     }
@@ -111,6 +114,22 @@ public class Ticket extends ResourceSupport{
     }
 
     /**
+	 * @return the colour
+	 */
+	public Long getColour()
+	{
+		return colour;
+	}
+
+	/**
+	 * @param colour the colour to set
+	 */
+	public void setColour(Long colour)
+	{
+		this.colour = colour;
+	}
+
+	/**
 	 * @return the candidateIds
 	 */
 	public Iterable<Long> getCandidateIds()
