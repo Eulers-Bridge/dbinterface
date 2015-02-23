@@ -84,14 +84,14 @@ public class TicketControllerTest
 	String setupContent(TicketDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"logo\":\""+dets.getLogo()+"\",\"electionId\":"+dets.getElectionId()+"}";
+		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"colour\":"+dets.getColour()+",\"logo\":\""+dets.getLogo()+"\",\"electionId\":"+dets.getElectionId()+"}";
 		return content;
 	}
 	
 	String setupInvalidContent(TicketDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"ticketId1\":"+evtId+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"logo\":\""+dets.getLogo()+"\",\"electionId\":"+dets.getElectionId()+"}";
+		String content="{\"ticketId1\":"+evtId+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"colour\":"+dets.getColour()+",\"logo\":\""+dets.getLogo()+"\",\"electionId\":"+dets.getElectionId()+"}";
 		return content;
 	}
 	
@@ -99,8 +99,8 @@ public class TicketControllerTest
 	{
 		int evtId=dets.getNodeId().intValue();
 		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"logo\":\""+dets.getLogo()+
-						"\",\"pictures\":null,\"information\":\""+dets.getInformation()+
-						"\",\"candidateIds\":"+dets.getCandidateIds()+",\"electionId\":"+dets.getElectionId()+
+						"\",\"pictures\":null,\"information\":\""+dets.getInformation()+"\",\"colour\":"+dets.getColour()+
+						",\"candidateIds\":"+dets.getCandidateIds()+",\"electionId\":"+dets.getElectionId()+
 						",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
 //						"{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
 //						"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
@@ -135,6 +135,7 @@ public class TicketControllerTest
 		.andDo(print())
 		.andExpect(jsonPath("$.name",is(dets.getName())))
 		.andExpect(jsonPath("$.information",is(dets.getInformation())))
+		.andExpect(jsonPath("$.colour",is(dets.getColour())))
 		.andExpect(jsonPath("$.ticketId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.logo",is(dets.getLogo())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))

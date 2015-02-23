@@ -100,22 +100,46 @@ public class CandidateControllerTest
 	String setupContent(CandidateDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
+		String tName=null;
+		String tColour=null;
+		if (null!=dets.getTicketDetails())
+		{
+			tName='\"'+dets.getTicketDetails().getName()+'\"';
+			tColour=Long.toHexString(dets.getTicketDetails().getColour());
+		}
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
-				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+"}";
+				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
+				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+"}";
 	}
 	
 	String setupInvalidContent(CandidateDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
+		String tName=null;
+		String tColour=null;
+		if (null!=dets.getTicketDetails())
+		{
+			tName='\"'+dets.getTicketDetails().getName()+'\"';
+			tColour=Long.toHexString(dets.getTicketDetails().getColour());
+		}
 		return "{\"candidateId1\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
-				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+"}";
+				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
+				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+"}";
 	}
 	
 	String setupReturnedContent(CandidateDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
+		String tName=null;
+		String tColour=null;
+		if (null!=dets.getTicketDetails())
+		{
+			tName='\"'+dets.getTicketDetails().getName()+'\"';
+			tColour=Long.toHexString(dets.getTicketDetails().getColour());
+		}
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
 				"\",\"pictures\":"+dets.getPictures()+",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
+				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+evtId+"\"},"+
 //				"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+evtId+"/previous\"},"+
 //				"{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+evtId+"/next\"},"+
