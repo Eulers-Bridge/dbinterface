@@ -372,13 +372,13 @@ public class UserEventHandlerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#requestReadUser(com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#readUser(com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent)}.
 	 */
 	@Test
 	public void testRequestReadUserNullUser() {
 		RequestReadUserEvent rnae=new RequestReadUserEvent("gnewitt2@hotmail.com");
 		assertEquals("1 == 1",rnae.getEmail(),"gnewitt2@hotmail.com");
-		ReadUserEvent rane=userService.requestReadUser(rnae);
+		ReadUserEvent rane=userService.readUser(rnae);
 		assertNotNull("Not yet implemented",rane);
 	}
 
@@ -389,7 +389,7 @@ public class UserEventHandlerTest
 		User userData=DatabaseDataFixture.populateUserGnewitt();
 		RequestReadUserEvent rnae=new RequestReadUserEvent(userData.getEmail());
 		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
-		ReadUserEvent rane=userServiceMocked.requestReadUser(rnae);
+		ReadUserEvent rane=userServiceMocked.readUser(rnae);
 
 		assertNotNull(rane);
 		assertEquals(rane.getEmail(),userData.getEmail());

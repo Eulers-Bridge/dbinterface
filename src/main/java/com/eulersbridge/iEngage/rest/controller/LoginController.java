@@ -55,7 +55,7 @@ public class LoginController
     	if (LOG.isDebugEnabled()) LOG.debug("auth - "+authentication+" username - "+username+" credentails - "+password+" roles - "+roles);
     	
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. "+username);
-		ReadUserEvent userEvent=userService.requestReadUser(new RequestReadUserEvent(username));
+		ReadUserEvent userEvent=userService.readUser(new RequestReadUserEvent(username));
 		if (!userEvent.isEntityFound())
 		{
 			return new ResponseEntity<LogIn>(HttpStatus.NOT_FOUND);

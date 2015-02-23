@@ -105,7 +105,7 @@ public class ViewLoginIntegrationTest {
 		Long instId = 1l;
 		ArrayList<NewsArticleDetails> coll = initNewsArticles(instId, DatabaseDataFixture.populateNewsArticles());
 		NewsArticlesReadEvent value=new NewsArticlesReadEvent(instId,coll);
-		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(testData);
+		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -143,7 +143,7 @@ public class ViewLoginIntegrationTest {
 		Collection<NewsArticleDetails> coll = initNewsArticles(instId, DatabaseDataFixture.populateNewsArticles());
 
 		NewsArticlesReadEvent value=new NewsArticlesReadEvent(instId,coll);
-		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(testData);
+		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
@@ -155,7 +155,7 @@ public class ViewLoginIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingLogin()");
 		ReadUserEvent testData=new ReadUserEvent(userDets.getEmail(), userDets);
 		NewsArticlesReadEvent value=NewsArticlesReadEvent.newsFeedNotFound();
-		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(testData);
+		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;

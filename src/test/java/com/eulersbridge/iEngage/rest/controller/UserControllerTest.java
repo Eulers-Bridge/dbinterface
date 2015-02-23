@@ -414,7 +414,7 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		ReadUserEvent testData=RestDataFixture.customEmailUser2(email);
 		UserDetails dets=(UserDetails) testData.getDetails();
-		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(testData);
+		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
@@ -453,10 +453,33 @@ public class UserControllerTest
 	}
 	
 	@Test
+	public void testFindContactWithEmail() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		UserDetails dets=user.toUserDetails();
+		String email=dets.getEmail();
+		ReadUserEvent testData=new ReadUserEvent(email, dets);
+		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(get("/api/user/contact/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
+		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
+		.andExpect(jsonPath("$.gender",is(dets.getGender())))
+		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
+		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
+		.andExpect(jsonPath("$.password",is(dets.getPassword())))
+		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.email",is(dets.getEmail())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+	
+	@Test
 	public void getShouldReturnUserNotFoundFromRead() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
-		when (userService.requestReadUser(any(RequestReadUserEvent.class))).thenReturn(ReadUserEvent.notFound(email2));
+		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(ReadUserEvent.notFound(email2));
 		this.mockMvc.perform(get("/api/user/{email}/",email2).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 	}
