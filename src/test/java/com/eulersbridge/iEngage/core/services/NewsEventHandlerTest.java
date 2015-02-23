@@ -143,7 +143,7 @@ public class NewsEventHandlerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.NewsEventHandler#requestReadUser(com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.NewsEventHandler#requestReadNewsArticle(com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent)}.
 	 */
 	@Test
 	public void testRequestReadNewsArticle() 
