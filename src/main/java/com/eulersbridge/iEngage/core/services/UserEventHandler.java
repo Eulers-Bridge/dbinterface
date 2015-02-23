@@ -151,7 +151,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 	}
 
 	@Override
-	public ReadUserEvent requestReadUser(
+	public ReadUserEvent readUser(
 			RequestReadUserEvent requestReadUserEvent)
 	{
 		ReadUserEvent response;
@@ -191,6 +191,35 @@ public class UserEventHandler implements UserService, UserDetailsService
 				LOG.debug("requestReadUser(" + requestReadUserEvent.getNodeId()
 						+ ")");
 			User user = userRepository.findOne(requestReadUserEvent.getNodeId());
+			if (user == null)
+			{
+				response = ReadUserEvent.notFound(requestReadUserEvent.getEmail());
+			}
+			else
+			{
+				UserDetails result = user.toUserDetails();
+				if (LOG.isDebugEnabled()) LOG.debug("Result - " + result);
+				response = new ReadUserEvent(requestReadUserEvent.getEmail(),
+						result);
+			}
+		}
+		else
+		{
+			response = ReadUserEvent.notFound("");
+		}
+		return response;
+	}
+	
+	@Override
+	public ReadUserEvent readUserByContactNumber(RequestReadUserEvent requestReadUserEvent)
+	{
+		ReadUserEvent response;
+		if (requestReadUserEvent!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("requestReadUser(" + requestReadUserEvent.getNodeId()
+						+ ")");
+			User user = userRepository.findByContactNumber(requestReadUserEvent.getEmail());
 			if (user == null)
 			{
 				response = ReadUserEvent.notFound(requestReadUserEvent.getEmail());

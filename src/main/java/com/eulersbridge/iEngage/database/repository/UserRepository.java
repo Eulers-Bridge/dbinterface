@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.repository;
 
 import com.eulersbridge.iEngage.database.domain.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -53,4 +54,6 @@ public interface UserRepository extends GraphRepository<User>
 
     @Query("Match (a:`User`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
     void unlike(@Param("email")String email,@Param("likedId")Long likedId);
+
+    User findByContactNumber(String contactNumber);
 }
