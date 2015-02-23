@@ -403,7 +403,7 @@ public class UserController {
 		else if (emailValidator.isValid(email))
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
-			 userEvent=userService.requestReadUser(new RequestReadUserEvent(email));
+			 userEvent=userService.readUser(new RequestReadUserEvent(email));
 		}
 		else
 			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
@@ -436,10 +436,24 @@ public class UserController {
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/contact/{contactInfo}")
 	public @ResponseBody ResponseEntity<User> findFriend(@PathVariable String contactInfo) 
 	{
-		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. "+contactInfo);
-		
-		ReadUserEvent userEvent=userService.requestReadUser(new RequestReadUserEvent(contactInfo));
-  	
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to find contact. "+contactInfo);
+
+		ReadUserEvent userEvent;
+		EmailValidator emailValidator=EmailValidator.getInstance();
+		String email;
+		if (emailValidator.isValid(contactInfo))
+		{
+			email=contactInfo;
+			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
+			 userEvent=userService.readUser(new RequestReadUserEvent(email));
+		}
+		else
+		{
+			// Try for phone number
+			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+		}
+		//	return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+			 	
 		if (!userEvent.isEntityFound())
 		{
 			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
