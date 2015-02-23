@@ -4,8 +4,6 @@
 package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.Iterator;

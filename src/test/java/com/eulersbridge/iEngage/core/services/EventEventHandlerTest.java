@@ -25,8 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -40,9 +38,7 @@ import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
-import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
