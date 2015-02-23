@@ -50,7 +50,7 @@ public class CoreDomainITCase
 			CreateUserEvent crusev=new CreateUserEvent((UserDetails) ev.getDetails());
 			userService.signUpNewUser(crusev);
 			
-			ReadUserEvent foundUser=userService.requestReadUser(new RequestReadUserEvent(((UserDetails)ev.getDetails()).getEmail()));
+			ReadUserEvent foundUser=userService.readUser(new RequestReadUserEvent(((UserDetails)ev.getDetails()).getEmail()));
 			assertTrue(foundUser.isEntityFound());
 //			userService.deleteUser(ev.getUserDetails().getEmail())
 			UserDeletedEvent udev=userService.deleteUser(new DeleteUserEvent(((UserDetails)ev.getDetails()).getEmail()));
