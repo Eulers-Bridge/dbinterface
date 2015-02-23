@@ -36,7 +36,9 @@ public class CandidateDetails extends Details {
         buff.append(", positionId = ");
         buff.append(getPositionId());
         buff.append(", ticket = ");
-        buff.append(getTicketDetails().toString());
+        if (null==getTicketDetails())
+        	buff.append("null");
+        else buff.append(getTicketDetails().toString());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
