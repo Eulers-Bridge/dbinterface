@@ -25,7 +25,8 @@ public class Candidate extends ResourceSupport{
     private Set<String> pictures;
     private Long userId;
     private Long positionId;
-    private Ticket ticket;
+    private String ticketName;
+    private Long ticketColour;
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
@@ -45,7 +46,16 @@ public class Candidate extends ResourceSupport{
         candidate.setPictures(candidateDetails.getPictures());
         candidate.setUserId(candidateDetails.getUserId());
         candidate.setPositionId(candidateDetails.getPositionId());
-        candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
+        if (candidateDetails.getTicketDetails()!=null)
+        {
+        	candidate.setTicketName(candidateDetails.getTicketDetails().getName());
+        	candidate.setTicketColour(candidateDetails.getTicketDetails().getColour());
+        }
+        else
+        {
+        	candidate.setTicketName(null);
+        	candidate.setTicketColour(null);
+        }
 
         // {!begin selfRel}
         candidate.add(linkTo(CandidateController.class).slash(name)
@@ -67,16 +77,25 @@ public class Candidate extends ResourceSupport{
         candidateDetails.setPictures(getPictures());
         candidateDetails.setUserId(getUserId());
         candidateDetails.setPositionId(getPositionId());
-        candidateDetails.setTicketDetails(ticket.toTicketDetails());
         return candidateDetails;
     }
 
-    public Ticket getTicket() {
-        return ticket;
+    public String getTicketName()
+    {
+        return ticketName;
     }
 
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+    public void setTicketName(String ticketName) {
+        this.ticketName = ticketName;
+    }
+
+    public Long getTicketColour()
+    {
+        return ticketColour;
+    }
+
+    public void setTicketColour(Long ticketColour) {
+        this.ticketColour = ticketColour;
     }
 
     public Long getCandidateId() {
