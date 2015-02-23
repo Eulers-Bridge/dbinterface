@@ -271,4 +271,11 @@ public VoteReminder deleteVoteReminder(Long id) {
 
     }
 
+	@Override
+	public User findByContactNumber(String contactNumber)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
