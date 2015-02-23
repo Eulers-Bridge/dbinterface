@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
@@ -20,6 +21,7 @@ public class Candidate extends Likeable
     private Long nodeId;
     private String information;
     private String policyStatement;
+    @Fetch
     @RelatedTo(type = DatabaseDomainConstants.IS_CANDIDATE_LABEL, direction= Direction.BOTH)
     private User user;
 
@@ -29,6 +31,7 @@ public class Candidate extends Likeable
 //    @RelatedTo(type = DatabaseDomainConstants.WAS_ASKED_LABEL, direction= Direction.BOTH)
 //    private ForumQuestion forumQuestion;
 
+    @Fetch
     @RelatedTo(type = DatabaseDomainConstants.IS_ON_TICKET_LABEL, direction= Direction.BOTH)
     private Ticket ticket;
 
@@ -74,7 +77,7 @@ public class Candidate extends Likeable
         position.setNodeId(candidateDetails.getPositionId());
         candidate.setPosition(position);
 
-        candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
+//        candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
 
         if (LOG.isTraceEnabled()) LOG.trace("candidate "+candidate);
         return candidate;
@@ -93,6 +96,10 @@ public class Candidate extends Likeable
         if (null==getPosition())
         	candidateDetails.setPositionId(null);
         else candidateDetails.setPositionId(getPosition().getNodeId());
+        
+        if (null==getTicket())
+        	candidateDetails.setTicketDetails(null);
+        else candidateDetails.setTicketDetails(getTicket().toTicketDetails());
 
         if (LOG.isTraceEnabled()) LOG.trace("candidateDetails; "+ candidateDetails);
         return candidateDetails;
@@ -107,6 +114,8 @@ public class Candidate extends Likeable
         buff.append(getInformation());
         buff.append(", policyStatement = ");
         buff.append(getPolicyStatement());
+        buff.append(", ticket = ");
+        buff.append(getTicket());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -198,6 +207,7 @@ public class Candidate extends Likeable
 					+ ((information == null) ? 0 : information.hashCode());
 			result = prime * result + ((user == null) ? 0 : user.hashCode());
 			result = prime * result + ((position == null) ? 0 : position.hashCode());
+			result = prime * result + ((ticket == null) ? 0 : ticket.hashCode());
 		}
 		return result;
 	}
@@ -247,6 +257,12 @@ public class Candidate extends Likeable
 				if (other.position != null) return false;
 			}
 			else if (!position.equals(other.position)) return false;
+			
+			if (ticket == null)
+			{
+				if (other.ticket != null) return false;
+			}
+			else if (!ticket.equals(other.ticket)) return false;
 }
 		return true;
 	}
