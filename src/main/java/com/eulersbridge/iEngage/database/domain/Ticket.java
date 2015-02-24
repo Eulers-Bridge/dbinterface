@@ -65,14 +65,17 @@ public class Ticket extends Likeable
         return ticketDetails;
     }
 
-    static private Iterable<Long> toCandidateIds(Iterable<Candidate> candidates)
+    static protected Iterable<Long> toCandidateIds(Iterable<Candidate> candidates)
 	{
     	LinkedList<Long> candidateIds=new LinkedList<Long>();
-    	Iterator <Candidate> iter=candidates.iterator();
-    	while (iter.hasNext())
+    	if (candidates!=null)
     	{
-    		Candidate candidate=iter.next();
-    		candidateIds.add(candidate.getNodeId());
+	    	Iterator <Candidate> iter=candidates.iterator();
+	    	while (iter.hasNext())
+	    	{
+	    		Candidate candidate=iter.next();
+	    		candidateIds.add(candidate.getNodeId());
+	    	}
     	}
 		return candidateIds;
 	}
@@ -185,4 +188,86 @@ public class Ticket extends Likeable
 	{
 		this.election = election;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        if (getNodeId()!=null)
+        {
+            result = prime * result	+ getNodeId().hashCode();
+        }
+        else
+        {
+    		result = prime * result
+    				+ ((candidates == null) ? 0 : candidates.hashCode());
+    		result = prime * result
+    				+ ((election == null) ? 0 : election.hashCode());
+    		result = prime * result
+    				+ ((information == null) ? 0 : information.hashCode());
+    		result = prime * result + ((logo == null) ? 0 : logo.hashCode());
+    		result = prime * result + ((name == null) ? 0 : name.hashCode());
+        }
+        return result;
+    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Ticket other = (Ticket) obj;
+        if (nodeId != null)
+        {
+            if (nodeId.equals(other.nodeId))
+                return true;
+            else return false;
+        }
+        else
+        {
+            if (other.nodeId != null)
+                return false;
+			if (candidates == null)
+			{
+				if (other.candidates != null) return false;
+			}
+			else if (!candidates.equals(other.candidates)) return false;
+			if (election == null)
+			{
+				if (other.election != null) return false;
+			}
+			else if (!election.equals(other.election)) return false;
+			if (information == null)
+			{
+				if (other.information != null) return false;
+			}
+			else if (!information.equals(other.information)) return false;
+			if (logo == null)
+			{
+				if (other.logo != null) return false;
+			}
+			else if (!logo.equals(other.logo)) return false;
+			if (name == null)
+			{
+				if (other.name != null) return false;
+			}
+			else if (!name.equals(other.name)) return false;
+			if (nodeId == null)
+			{
+				if (other.nodeId != null) return false;
+			}
+			else if (!nodeId.equals(other.nodeId)) return false;
+        }
+		return true;
+	}
+	
+	
 }
