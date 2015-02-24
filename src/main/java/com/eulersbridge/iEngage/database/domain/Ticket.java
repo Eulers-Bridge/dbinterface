@@ -32,26 +32,29 @@ public class Ticket extends Likeable
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
-    public static Ticket fromTicketDetails(TicketDetails ticketDetails){
-        if (LOG.isTraceEnabled()) LOG.trace("fromTicketDetails()");
-        Ticket ticket = new Ticket();
-        if (LOG.isTraceEnabled()) LOG.trace("ticketDetails "+ticketDetails);
-        ticket.setNodeId(ticketDetails.getNodeId());
-        ticket.setName(ticketDetails.getName());
-        ticket.setLogo(ticketDetails.getLogo());
-        ticket.setInformation(ticketDetails.getInformation());
-        Election election=new Election();
-        election.setNodeId(ticketDetails.getElectionId());
-        ticket.setElection(election);
-
-        if (LOG.isTraceEnabled()) LOG.trace("ticket "+ticket);
+    public static Ticket fromTicketDetails(TicketDetails ticketDetails)
+    {
+        Ticket ticket = null;
+    	if (ticketDetails!=null)
+    	{
+	        if (LOG.isTraceEnabled()) LOG.trace("fromTicketDetails("+ticketDetails+")");
+	        ticket = new Ticket();
+	        ticket.setNodeId(ticketDetails.getNodeId());
+	        ticket.setName(ticketDetails.getName());
+	        ticket.setLogo(ticketDetails.getLogo());
+	        ticket.setInformation(ticketDetails.getInformation());
+	        Election election=new Election();
+	        election.setNodeId(ticketDetails.getElectionId());
+	        ticket.setElection(election);
+	
+	        if (LOG.isTraceEnabled()) LOG.trace("ticket "+ticket);
+    	}
         return ticket;
     }
 
     public TicketDetails toTicketDetails(){
-        if (LOG.isTraceEnabled()) LOG.trace("toTicketDetails()");
+        if (LOG.isTraceEnabled()) LOG.trace("toTicketDetails("+this+")");
         TicketDetails ticketDetails = new TicketDetails();
-        if (LOG.isTraceEnabled()) LOG.trace("ticket "+this);
         ticketDetails.setNodeId(getNodeId());
         ticketDetails.setName(getName());
         ticketDetails.setLogo(getLogo());

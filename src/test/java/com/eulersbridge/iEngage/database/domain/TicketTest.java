@@ -76,6 +76,16 @@ public class TicketTest
 //		assertTrue(checkCandidateIdsEqual(dets.getCandidateIds(),Ticket.toCandidateIds(evt2.getCandidates())));
 	}
 
+	@Test
+	public final void testFromNullTicketDetails()
+	{
+		Ticket evt2=Ticket.fromTicketDetails(null);
+		assertNull(evt2);
+// Following test unnecessary because we are not interested in setting candidates from a create.  Will be done individually. At candidate creation
+// Time
+//		assertTrue(checkCandidateIdsEqual(dets.getCandidateIds(),Ticket.toCandidateIds(evt2.getCandidates())));
+	}
+
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Ticket#toTicketDetails()}.
 	 */
