@@ -28,7 +28,7 @@ public class CoreConfig
 	@Autowired
 	NewsFeedRepository syRepo;
     @Autowired
-    ElectionRepository eleRepo;
+    ElectionRepository electionRepo;
     @Autowired
     PersonalityRepository personRepo;
     @Autowired
@@ -107,7 +107,7 @@ public class CoreConfig
     public ElectionService createElectionService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createElectionService()");
-        return new ElectionEventHandler(eleRepo,instRepo);
+        return new ElectionEventHandler(electionRepo,instRepo);
     }
 
     @Bean
@@ -142,7 +142,7 @@ public class CoreConfig
     public PositionService createPositionService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPositionService()");
-        return new PositionEventHandler(positionRepository,eleRepo);
+        return new PositionEventHandler(positionRepository,electionRepo);
     }
 
     @Bean
@@ -163,14 +163,14 @@ public class CoreConfig
     public CandidateService createCandidateService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createCandidateService()");
-        return new CandidateEventHandler(candidateRepository,userRepo,positionRepository,eleRepo);
+        return new CandidateEventHandler(candidateRepository,userRepo,positionRepository,electionRepo);
     }
 
     @Bean
     public TicketService createTicketService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createTicketService()");
-        return new TicketEventHandler(ticketRepository,eleRepo);
+        return new TicketEventHandler(ticketRepository,electionRepo);
     }
 
     @Bean
@@ -191,6 +191,6 @@ public class CoreConfig
     public VotingLocationService createVotingLocationService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createVotingLocationService()");
-        return new VotingLocationEventHandler(votingLocationRepository,ownerRepository);
+        return new VotingLocationEventHandler(votingLocationRepository,electionRepo,ownerRepository);
     }
 }
