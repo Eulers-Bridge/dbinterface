@@ -18,18 +18,24 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.CreateVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.DeleteVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationAddedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationCreatedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDeletedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationReadEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationRemovedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationsReadEvent;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.VotingLocation;
+import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.VotingLocationRepository;
 
@@ -45,13 +51,15 @@ public class VotingLocationEventHandler implements VotingLocationService
 
 	private VotingLocationRepository votingLocationRepository;
 	private OwnerRepository ownerRepository;
+	private ElectionRepository electionRepository;
 
 	public VotingLocationEventHandler(
-			VotingLocationRepository locationRepository,
+			VotingLocationRepository locationRepository,ElectionRepository electionRepository,
 			OwnerRepository ownerRepository)
 	{
 		this.votingLocationRepository = locationRepository;
 		this.ownerRepository = ownerRepository;
+		this.electionRepository=electionRepository;
 	}
 
 	/*
@@ -260,4 +268,98 @@ public class VotingLocationEventHandler implements VotingLocationService
 		return nare;
 	}
 
+
+	@Override
+	public CreatedEvent addVotingLocationToElection(
+			AddVotingLocationEvent addVotingLocationEvent)
+	{
+		CreatedEvent evt;
+
+		if (addVotingLocationEvent!=null)
+		{	
+			Long votingLocationId = addVotingLocationEvent.getVotingLocationId();
+			Long electionId = addVotingLocationEvent.getElectionId();
+			
+			if (LOG.isDebugEnabled()) LOG.debug("votingLocationId - " + votingLocationId+", electionId - "+electionId);
+	
+			VotingLocation votingLocation = votingLocationRepository.findOne(votingLocationId);
+			if (votingLocation != null)
+			{ // Valid VotingLocation
+				Election election = electionRepository.findOne(electionId);
+				if (election!=null)
+				{
+					Long relNodeId = votingLocationRepository.addElection(votingLocationId, electionId);
+					if (relNodeId != null)
+					{
+						evt = new VotingLocationAddedEvent();
+					}
+					else
+						evt = VotingLocationAddedEvent.failed(null);
+
+				}
+				else
+				{
+					evt = VotingLocationAddedEvent.electionNotFound();
+				}
+			}
+			else
+			{
+				if (LOG.isDebugEnabled()) LOG.debug("No such account.");
+				evt = VotingLocationAddedEvent.votingLocationNotFound();
+			}
+		}
+		else
+		{
+			evt = VotingLocationAddedEvent.failed(null);
+		}
+		return evt;
+	}
+
+	@Override
+	public DeletedEvent removeVotingLocationFromElection(
+			RemoveVotingLocationEvent removeVotingLocationEvent)
+	{
+		DeletedEvent response;
+		if (removeVotingLocationEvent!=null)
+		{	
+			Long votingLocationId = removeVotingLocationEvent.getVotingLocationId();
+			Long electionId = removeVotingLocationEvent.getElectionId();
+			
+			if (LOG.isDebugEnabled())
+				LOG.debug("removeVotingLocation(" + removeVotingLocationEvent.getVotingLocationId()
+						+ ','+removeVotingLocationEvent.getElectionId()+")");
+			
+			
+			VotingLocation votingLocation = votingLocationRepository.findOne(votingLocationId);
+			if (votingLocation != null)
+			{ // Valid VotingLocation
+				Election election = electionRepository.findOne(electionId);
+				if (election!=null)
+				{
+					VotingLocation vl = votingLocationRepository.deleteElection(votingLocationId, electionId);
+					if (vl != null)
+					{
+						response = new VotingLocationRemovedEvent(electionId);
+					}
+					else
+						response = DeletedEvent.deletionForbidden(votingLocationId);
+
+				}
+				else
+				{
+					response = VotingLocationRemovedEvent.electionNotFound();
+				}
+			}
+			else
+			{
+				if (LOG.isDebugEnabled()) LOG.debug("No such account.");
+				response = VotingLocationRemovedEvent.votingLocationNotFound();
+			}
+		}
+		else
+		{
+			response = DeletedEvent.notFound(null);
+		}
+		return response;
+	}
 }

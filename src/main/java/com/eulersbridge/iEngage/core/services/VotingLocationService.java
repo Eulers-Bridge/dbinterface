@@ -11,9 +11,11 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.CreateVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.DeleteVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationsReadEvent;
 
@@ -38,5 +40,12 @@ public interface VotingLocationService
     @PreAuthorize("hasRole('ROLE_USER')")
 	public VotingLocationsReadEvent findVotingLocations(ReadAllEvent readVotingLocationsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
+
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public CreatedEvent addVotingLocationToElection(AddVotingLocationEvent addVotingLocationEvent);
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public DeletedEvent removeVotingLocationFromElection(RemoveVotingLocationEvent removeVotingLocationEvent);
 
 }

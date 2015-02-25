@@ -23,4 +23,11 @@ public interface VotingLocationRepository extends
 	@Query ("MATCH (p:`"+DatabaseDomainConstants.VOTING_LOCATION+"`)-[r:`"+DatabaseDomainConstants.HAS_VOTING_LOCATION_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
 	Page<VotingLocation> findByOwnerId(@Param("ownerId")Long ownerId, Pageable pageable);
 
+	@Query("Match (a:`Election`),(b:`VotingLocation`) where id(a)={electionId} and id(b)={votingLocationId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.HAS_VOTING_LOCATION_LABEL+
+			"]-b return id(r)")
+	Long addElection(@Param("votingLocationId")Long votingLocationId, @Param("electionId")Long electionId);
+	
+	@Query("Match (v:`VotingLocation`)-[r:"+DatabaseDomainConstants.HAS_VOTING_LOCATION_LABEL+"]-(e:`Election`) where id(v)={votingLocationId} and id(e)=electionId delete r return v")
+	VotingLocation deleteElection(@Param("votingLocationId")Long votingLocationId, @Param("electionId")Long electionId);
+
 }

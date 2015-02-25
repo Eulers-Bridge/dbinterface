@@ -29,17 +29,24 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
+import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.CreateVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.DeleteVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationAddedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationCreatedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationReadEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationRemovedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationsReadEvent;
+import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.VotingLocation;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.VotingLocationRepository;
 
@@ -55,6 +62,8 @@ public class VotingLocationEventHandlerTest
 	VotingLocationRepository votingLocationRepository;
     @Mock
 	OwnerRepository ownerRepository;
+    @Mock
+	ElectionRepository electionRepository;
 
     VotingLocationEventHandler service;
 
@@ -67,7 +76,7 @@ public class VotingLocationEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new VotingLocationEventHandler(votingLocationRepository, ownerRepository);
+		service=new VotingLocationEventHandler(votingLocationRepository, electionRepository, ownerRepository);
 	}
 
 	/**
@@ -358,6 +367,51 @@ public class VotingLocationEventHandlerTest
 		VotingLocationsReadEvent evtData = service.findVotingLocations(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertFalse(evtData.isEntityFound());
+	}
+	
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#addVotingLocationToElection(com.eulersbridge.iEngage.core.events.votingLocations.AddVotingLocationEvent)}.
+	 */
+	@Test
+	public final void testAddVotingLocationToElection()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("AddingVotingLocationToElection()");
+		VotingLocation testData=DatabaseDataFixture.populateVotingLocation1();
+		Election electionData=DatabaseDataFixture.populateElection1();
+		Long id=23423l;
+		when(electionRepository.findOne(any(Long.class))).thenReturn(electionData);
+		when(votingLocationRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(votingLocationRepository.addElection(any(Long.class),any(Long.class))).thenReturn(id);
+		ElectionDetails dets=electionData.toElectionDetails();
+		AddVotingLocationEvent createElectionEvent=new AddVotingLocationEvent(testData.getNodeId(), dets.getElectionId());
+		CreatedEvent evtData = service.addVotingLocationToElection(createElectionEvent);
+		assertNull(evtData.getDetails());
+		assertFalse(evtData.isFailed());
+		assertTrue(((VotingLocationAddedEvent)evtData).isElectionFound());
+		assertTrue(((VotingLocationAddedEvent)evtData).isVotingLocationFound());
+		assertNull(evtData.getNodeId());
+	}
+	
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#removeVotingLocationFromElection(com.eulersbridge.iEngage.core.events.votingLocations.RemoveVotingLocationEvent)}.
+	 */
+	@Test
+	public final void testRemoveVotingLocationFromElection()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("RemovingVotingLocationToElection()");
+		VotingLocation testData=DatabaseDataFixture.populateVotingLocation1();
+		Election electionData=DatabaseDataFixture.populateElection1();
+		Long id=23423l;
+		when(electionRepository.findOne(any(Long.class))).thenReturn(electionData);
+		when(votingLocationRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(votingLocationRepository.deleteElection(any(Long.class),any(Long.class))).thenReturn(testData);
+		ElectionDetails dets=electionData.toElectionDetails();
+		RemoveVotingLocationEvent createElectionEvent=new RemoveVotingLocationEvent(testData.getNodeId(), dets.getElectionId());
+		DeletedEvent evtData = service.removeVotingLocationFromElection(createElectionEvent);
+		assertNull(evtData.getDetails());
+		assertTrue(((VotingLocationRemovedEvent)evtData).isElectionFound());
+		assertTrue(((VotingLocationRemovedEvent)evtData).isVotingLocationFound());
+		assertEquals(evtData.getNodeId(),electionData.getNodeId());
 	}
 	
 }
