@@ -35,4 +35,5 @@ public interface ElectionService {
     @PreAuthorize("hasRole('ROLE_USER')")
 	public ElectionsReadEvent readElections(ReadAllEvent readElectionsEvent,
 				Direction sortDirection,int pageNumber, int pageLength);
+
 }
