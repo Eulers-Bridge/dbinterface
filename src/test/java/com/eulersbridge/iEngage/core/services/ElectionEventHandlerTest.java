@@ -377,5 +377,4 @@ public class ElectionEventHandlerTest
 		assertFalse(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
 	}
-
 }
