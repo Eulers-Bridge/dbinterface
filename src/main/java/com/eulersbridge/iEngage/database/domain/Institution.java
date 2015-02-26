@@ -155,12 +155,14 @@ public class Institution extends Likeable
 	    return details;
 	}
 
-	  public static Institution fromInstDetails(InstitutionDetails instDetails) 
-	  {
-		    if (LOG.isTraceEnabled()) LOG.trace("fromInstDetails()");
-
-		    Institution inst = new Institution();
-		    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+instDetails);
+	public static Institution fromInstDetails(InstitutionDetails instDetails) 
+	{
+		Institution inst = null;
+		if (instDetails!=null)
+		{
+			if (LOG.isTraceEnabled()) LOG.trace("fromInstDetails("+instDetails+")");
+		
+		    inst = new Institution();
 		    inst.nodeId=instDetails.getNodeId();
 		    inst.name=instDetails.getName();
 		    inst.campus=instDetails.getCampus();
@@ -168,9 +170,9 @@ public class Institution extends Likeable
 		    inst.country.setCountryName(instDetails.getCountryName());
 		    inst.state=instDetails.getState();
 		    if (LOG.isTraceEnabled()) LOG.trace("inst "+inst);
-
-		    return inst;
-		  }
+		}
+		return inst;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
