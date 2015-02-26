@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -49,6 +50,39 @@ public class VoteReminderTest
 	{
 		VoteReminder vr1=new VoteReminder(34453434l,"Union Building");
 		assertNotNull("Not yet implemented",vr1);
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.VoteReminder#fromVoteReminderDetails(java.lang.Long, java.lang.String)}.
+	 */
+	@Test
+	public final void testToVoteReminderDetails()
+	{
+		VoteReminderDetails vr1=vr.toVoteReminderDetails();
+		assertNotNull("Not yet implemented",vr1);
+		assertEquals(vr1.getDate(),vr.getDate());
+		assertEquals(vr1.getElectionId(),vr.getElection().getNodeId());
+		assertEquals(vr1.getLocation(),vr.getLocation());
+		assertEquals(vr1.getNodeId(),vr.getNodeId());
+		assertEquals(vr1.getTimestamp(),vr.getTimestamp());
+		assertEquals(vr1.getUserId(),vr.getVoter().getEmail());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.VoteReminder#toVoteReminderDetails(java.lang.Long, java.lang.String)}.
+	 */
+	@Test
+	public final void testFromVoteReminderDetails()
+	{
+		VoteReminderDetails vr1=vr.toVoteReminderDetails();
+		VoteReminder vr2=VoteReminder.fromVoteReminderDetails(vr1);
+		assertNotNull("Not yet implemented",vr1);
+		assertEquals(vr1.getDate(),vr2.getDate());
+		assertEquals(vr1.getElectionId(),vr2.getElection().getNodeId());
+		assertEquals(vr1.getLocation(),vr2.getLocation());
+		assertEquals(vr1.getNodeId(),vr2.getNodeId());
+		assertEquals(vr1.getTimestamp(),vr2.getTimestamp());
+		assertEquals(vr1.getUserId(),vr2.getVoter().getEmail());
 	}
 
 	/**

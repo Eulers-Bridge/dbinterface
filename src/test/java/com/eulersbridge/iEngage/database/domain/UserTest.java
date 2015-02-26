@@ -165,6 +165,28 @@ public class UserTest {
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getNationality()}.
+	 */
+	@Test
+	public final void testGetContactNumber() {
+		userDetails.setContactNumber("Something else");
+		assertNotEquals("getNationality() returns incorrect  value",user.getContactNumber(),userDetails.getContactNumber());
+		userDetails.setContactNumber(user.getContactNumber());
+		assertEquals("getNationality() returns expected value",user.getContactNumber(),userDetails.getContactNumber());
+	}
+
+	@Test
+	public final void testSetContactNumber()
+	{
+		String contactNumber="Australian";
+		user.setContactNumber(contactNumber);
+		assertEquals("setNationality not working.",user.getContactNumber(),contactNumber);
+		contactNumber="British";
+		user.setContactNumber(contactNumber);
+		assertEquals("setNationality not working.",user.getContactNumber(),contactNumber);
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getYearOfBirth()}.
 	 */
 	@Test

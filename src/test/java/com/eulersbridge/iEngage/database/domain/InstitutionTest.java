@@ -5,54 +5,30 @@ package com.eulersbridge.iEngage.database.domain;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 
 /**
  * @author Greg Newitt
  *
  */
-public class InstitutionTest {
-
+public class InstitutionTest 
+{
+	private Institution institution;
     private static Logger LOG = LoggerFactory.getLogger(InstitutionTest.class);
-
-    /**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
+	public void setUp() throws Exception 
+	{
+		institution=DatabaseDataFixture.populateInstUniMelb();
 	}
 
 	/**
@@ -63,8 +39,7 @@ public class InstitutionTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Test Instituion Constructor");
 		Institution testObj=new Institution();
-		if (testObj.getClass()!=Institution.class)
-			fail("University constructor does not return a class of type institution."); 
+		assertEquals(testObj.getClass(),Institution.class);
 	}
 
 	/**
@@ -217,18 +192,9 @@ public class InstitutionTest {
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Institution#toString()}.
 	 */
 	@Test
-	public final void testToString() {
-	}
-	
-	@Autowired InstitutionRepository repo;
-	@Test @Transactional public void persistedInstitutionShouldBeRetrievableFromGraphDb()
+	public final void testToString()
 	{
-		Country country=new Country();
-		country.setCountryName("Australia");
-		Institution uniMelb = DatabaseDataFixture.populateInstUniMelb();
-		// repo.findByPropertyValue("Name", "University of Melbourne");
-//				template.save(new Institution("University of Melbourne","Parkville","VIC","Australia"));
-		if (LOG.isDebugEnabled()) LOG.debug("uniMelb = "+uniMelb);
+		assertNotNull(institution.toString());
 	}
 	
 	@Test
@@ -253,4 +219,98 @@ public class InstitutionTest {
 		assertEquals("Countrys don't match.",inst2.getCountry().getCountryName(),inst.getCountry().getCountryName());
 	}
 
+	@Test
+	public final void testFromDetailsNullDetails()
+	{
+		Institution inst2 = Institution.fromInstDetails(null);
+		assertNull(inst2);
+	}
+
+	private void checkHashCode(Institution test1,Institution test2)
+	{
+		assertNotEquals(test1.hashCode(), test2.hashCode());
+		assertNotEquals(test2.hashCode(), test1.hashCode());
+	}
+	
+	private void checkNotEquals(Institution test1,Institution test2)
+	{
+		assertNotEquals(test1, test2);
+		assertNotEquals(test2, test1);
+	}
+	
+	/**
+	 * Test method for {@link java.lang.Object#hashCode()}.
+	 */
+	@Test
+	public final void testHashCode()
+	{
+		Institution institutionTest=DatabaseDataFixture.populateInstUniMelb();
+		assertEquals(institutionTest.hashCode(),institutionTest.hashCode());
+		assertEquals(institutionTest.hashCode(),institution.hashCode());
+		institutionTest.setNodeId(null);
+		checkHashCode(institution,institutionTest);
+		institution.setNodeId(null);
+		
+		institutionTest.setName(null);
+		checkHashCode(institution,institutionTest);
+		institutionTest.setName(institution.getName());
+		
+		institutionTest.setCampus(null);
+		checkHashCode(institution,institutionTest);
+		institutionTest.setCampus(institution.getCampus());
+		
+		institutionTest.setState(null);
+		checkHashCode(institution,institutionTest);
+		institutionTest.setState(institution.getState());
+		
+		institutionTest.setCountry(null);
+		checkHashCode(institution,institutionTest);
+		institutionTest.setCountry(institution.getCountry());
+
+	}
+
+	/**
+	 * Test method for {@link java.lang.Object#equals(java.lang.Object)}.
+	 */
+	@Test
+	public final void testEquals()
+	{
+		Institution institutionTest=null;
+		assertNotEquals(institutionTest,institution);
+		assertNotEquals(institution,institutionTest);
+		String notElection="";
+		assertNotEquals(institution,notElection);
+		institutionTest=DatabaseDataFixture.populateInstUniMelb();
+		assertEquals(institutionTest,institutionTest);
+		assertEquals(institutionTest,institution);
+		
+		institutionTest.setNodeId(54l);
+		checkNotEquals(institution,institutionTest);
+		institution.setNodeId(null);
+		checkNotEquals(institution,institutionTest);
+		institutionTest.setNodeId(null);
+		
+		assertEquals(institution, institutionTest);
+		assertEquals(institutionTest, institution);
+		
+		institutionTest.setName("Some description");
+		assertNotEquals(institution, institutionTest);
+		institutionTest.setName(null);
+		checkNotEquals(institutionTest, institution);
+		institutionTest.setName(institution.getName());
+		
+		institutionTest.setCampus("title");
+		assertNotEquals(institution, institutionTest);
+		institutionTest.setCampus(null);
+		checkNotEquals(institution, institutionTest);
+		institutionTest.setCampus(institution.getCampus());
+		
+		institutionTest.setState(null);;
+		checkNotEquals(institution, institutionTest);
+		institutionTest.setState(institution.getState());
+		
+		institutionTest.setCountry(null);
+		checkNotEquals(institution, institutionTest);
+		institutionTest.setCountry(institution.getCountry());
+	}
 }

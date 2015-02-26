@@ -107,14 +107,16 @@ public class DatabaseDataFixture
 	
 	public static Country populateCountryAust()
 	{
-		return populateCountry((long)1,"Australia");
+		ArrayList<Institution> institutions=new ArrayList<Institution>();
+		return populateCountry((long)1,"Australia",institutions);
 	}
 	
-	public static Country populateCountry(Long nodeId,String countryName)
+	public static Country populateCountry(Long nodeId,String countryName, Iterable<Institution> institutions)
 	{
 		Country country=new Country();
 		country.setCountryName(countryName);
 		country.setNodeId(nodeId);
+		country.setInstitutions(institutions);
 		return country;
 	}
 	public static NewsFeed populateNewsFeed1()
