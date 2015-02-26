@@ -263,7 +263,7 @@ public class Candidate extends Likeable
 				if (other.ticket != null) return false;
 			}
 			else if (!ticket.equals(other.ticket)) return false;
-}
+		}
 		return true;
 	}
 }
