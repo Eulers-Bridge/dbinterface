@@ -49,7 +49,9 @@ public class Position {
         positionDetails.setNodeId(getNodeId());
         positionDetails.setName(getName());
         positionDetails.setDescription(getDescription());
-        positionDetails.setElectionId(election.getNodeId());
+        if (election!=null)
+        	positionDetails.setElectionId(election.getNodeId());
+        else positionDetails.setElectionId(null);
 
         if (LOG.isTraceEnabled()) LOG.trace("positionDetails; "+ positionDetails);
         return positionDetails;
@@ -164,11 +166,6 @@ public class Position {
 				if (other.name != null) return false;
 			}
 			else if (!name.equals(other.name)) return false;
-			if (nodeId == null)
-			{
-				if (other.nodeId != null) return false;
-			}
-			else if (!nodeId.equals(other.nodeId)) return false;
 		}
 		return true;
 	}
