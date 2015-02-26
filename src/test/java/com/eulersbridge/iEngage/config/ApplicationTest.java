@@ -66,7 +66,7 @@ public class ApplicationTest extends Neo4jConfiguration
 	@Autowired
 	NewsFeedRepository syRepo;
     @Autowired
-    ElectionRepository eleRepo;
+    ElectionRepository electionRepo;
     @Autowired
     PersonalityRepository personRepo;
     @Autowired
