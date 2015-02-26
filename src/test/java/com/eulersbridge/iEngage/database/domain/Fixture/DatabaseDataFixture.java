@@ -19,6 +19,7 @@ import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Personality;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.database.domain.Poll;
@@ -695,5 +696,33 @@ public class DatabaseDataFixture
 		votingLocations.put(initialVotingLocation.getNodeId(), initialVotingLocation);
 		return votingLocations;
 	}
+	
+	public static Personality populatePersonality1()
+	{
+		Long nodeId=45l;
+		float emotionalStability=3.4F;
+		float agreeableness=4.3F;
+		float openess=4.1F;
+		float conscientiousness=3.8F;
+		float extroversion=2.5F;
+		return populatePersonality(nodeId,extroversion, agreeableness, conscientiousness, emotionalStability, openess);
+	}
 
+	public static Personality populatePersonality2()
+	{
+		Long nodeId=45l;
+		float emotionalStability=2.4F;
+		float agreeableness=3.3F;
+		float openess=1.1F;
+		float conscientiousness=2.8F;
+		float extroversion=4.5F;
+		return populatePersonality(nodeId,extroversion, agreeableness, conscientiousness, emotionalStability, openess);
+	}
+
+	public static Personality populatePersonality(Long nodeId,Float extroversion, Float agreeableness, Float conscientiousness, Float emotionalStability, Float openess)
+	{
+		Personality personality=new Personality(extroversion, agreeableness, conscientiousness, emotionalStability, openess);
+		personality.setNodeId(nodeId);
+		return personality;
+	}
 }

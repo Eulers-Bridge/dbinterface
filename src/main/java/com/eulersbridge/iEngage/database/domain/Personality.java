@@ -18,6 +18,7 @@ public class Personality
 	private Float conscientiousness;
 	private Float emotionalStability;
 	private Float openess;
+	private final Float delta = 0.001F; 
 
     private static Logger LOG = LoggerFactory.getLogger(Personality.class);
     
@@ -142,11 +143,11 @@ public class Personality
 			return nodeId.hashCode();
 		else
 		{
-			result = prime * result + Float.floatToIntBits(agreeableness);
-			result = prime * result + Float.floatToIntBits(conscientiousness);
-			result = prime * result + Float.floatToIntBits(emotionalStability);
-			result = prime * result + Float.floatToIntBits(extroversion);
-			result = prime * result + Float.floatToIntBits(openess);
+			result = prime * result + ((agreeableness == null) ? 0 : agreeableness.hashCode());
+			result = prime * result + ((conscientiousness == null) ? 0 : conscientiousness.hashCode());
+			result = prime * result + ((emotionalStability == null) ? 0 : emotionalStability.hashCode());
+			result = prime * result + ((extroversion == null) ? 0 : extroversion.hashCode());
+			result = prime * result + ((openess == null) ? 0 : openess.hashCode());
 		}
 		return result;
 	}
@@ -175,20 +176,42 @@ public class Personality
 				return false;
 			else
 			{
-				if (Float.floatToIntBits(agreeableness) != Float
-						.floatToIntBits(other.agreeableness))
+				if ((agreeableness!=null)&&(other.agreeableness!=null))
+				{
+					if (Math.abs(agreeableness - other.agreeableness) > delta)
+						return false;
+				}
+				else if ((agreeableness!=null)||(other.agreeableness!=null))
 					return false;
-				if (Float.floatToIntBits(conscientiousness) != Float
-						.floatToIntBits(other.conscientiousness))
+				if ((conscientiousness!=null)&&(other.conscientiousness!=null))
+				{
+					if (Math.abs(conscientiousness - other.conscientiousness) > delta)
+						return false;
+				}
+				else if ((conscientiousness!=null)||(other.conscientiousness!=null))
 					return false;
-				if (Float.floatToIntBits(emotionalStability) != Float
-						.floatToIntBits(other.emotionalStability))
+				if ((emotionalStability!=null)&&(other.emotionalStability!=null))
+				{
+					if (Math.abs(emotionalStability - other.emotionalStability) > delta)
+						return false;
+				}
+				else if ((emotionalStability!=null)||(other.emotionalStability!=null))
 					return false;
-				if (Float.floatToIntBits(extroversion) != Float
-						.floatToIntBits(other.extroversion))
+					
+				if ((extroversion!=null)&&(other.extroversion!=null))
+				{
+					if (Math.abs(extroversion - other.extroversion) > delta)
+						return false;
+				}
+				else if ((extroversion!=null)||(other.extroversion!=null))
 					return false;
-				if (Float.floatToIntBits(openess) != Float
-						.floatToIntBits(other.openess))
+
+				if ((openess!=null)&&(other.openess!=null))
+				{
+					if (Math.abs(openess - other.openess) > delta)
+						return false;
+				}
+				else if ((openess!=null)||(other.openess!=null))
 					return false;
 			}
 		}
