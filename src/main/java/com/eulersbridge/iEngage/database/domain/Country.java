@@ -36,6 +36,11 @@ public class Country
 		return nodeId;
 	}
 
+	public void setNodeId(Long id) 
+	{
+		this.nodeId=id;
+	}
+
 	public String getCountryName() {
 		return countryName;
 	}
@@ -44,6 +49,22 @@ public class Country
 		this.countryName = countryName;
 	}
 	
+	/**
+	 * @return the institutions
+	 */
+	public Iterable<Institution> getInstitutions()
+	{
+		return institutions;
+	}
+
+	/**
+	 * @param institutions the institutions to set
+	 */
+	public void setInstitutions(Iterable<Institution> institutions)
+	{
+		this.institutions = institutions;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -54,16 +75,14 @@ public class Country
 		buff.append(getCountryName());
 		buff.append(" ]");
 		retValue=buff.toString();
-		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
 		return retValue;
 	}
 	
 	public CountryDetails toCountryDetails() 
 	{
-	    if (LOG.isTraceEnabled()) LOG.trace("toCountryDetails()");
+	    if (LOG.isTraceEnabled()) LOG.trace("toCountryDetails("+this+")");
 	    
 	    CountryDetails details = new CountryDetails(getNodeId());
-	    if (LOG.isTraceEnabled()) LOG.trace("country "+this);
 
 	    BeanUtils.copyProperties(this, details);
 	    if (LOG.isTraceEnabled()) LOG.trace("countryDetails "+details);
@@ -84,11 +103,6 @@ public class Country
 		    return country;
 	}
 	  
-	public void setNodeId(Long id) 
-	{
-		this.nodeId=id;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
