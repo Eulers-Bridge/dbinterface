@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+
 import static org.junit.Assert.*;
 
 /**
@@ -57,16 +59,143 @@ public class EventDetailsTest {
         assertNotNull("toString() returns null", str);
     }
 
+	private void checkHashCode(EventDetails test1,EventDetails test2)
+	{
+		assertNotEquals(test1.hashCode(), test2.hashCode());
+		assertNotEquals(test2.hashCode(), test1.hashCode());
+	}
+	
+	private void checkNotEquals(EventDetails test1,EventDetails test2)
+	{
+		assertNotEquals(test1, test2);
+		assertNotEquals(test2, test1);
+	}
+	
+	/**
+	 * Test method for {@link java.lang.Object#hashCode()}.
+	 */
     @Test
-    public void testHashCode() throws Exception {
-
+    public void testHashCode() throws Exception
+    {
+		EventDetails eventTest=DatabaseDataFixture.populateEvent1().toEventDetails(),event=DatabaseDataFixture.populateEvent1().toEventDetails();
+		assertEquals(eventTest.hashCode(),eventTest.hashCode());
+		assertEquals(eventTest.hashCode(),event.hashCode());
+		eventTest.setEventId(null);
+		checkHashCode(event,eventTest);
+		event.setEventId(null);
+		eventTest.setStarts(null);
+		checkHashCode(event,eventTest);
+		eventTest.setStarts(event.getStarts());
+		eventTest.setEnds(null);
+		checkHashCode(event,eventTest);
+		eventTest.setEnds(event.getEnds());
+		eventTest.setCreated(null);
+		checkHashCode(event,eventTest);
+		eventTest.setCreated(event.getCreated());
+		eventTest.setDescription(null);
+		checkHashCode(event,eventTest);
+		eventTest.setDescription(event.getDescription());
+		eventTest.setLocation(null);
+		checkHashCode(event,eventTest);
+		eventTest.setLocation(event.getLocation());
+		eventTest.setModified(null);
+		checkHashCode(event,eventTest);
+		eventTest.setModified(event.getModified());
+		eventTest.setName(null);
+		checkHashCode(event,eventTest);
+		eventTest.setName(event.getName());
+		eventTest.setOrganizer(null);
+		checkHashCode(event,eventTest);
+		eventTest.setOrganizer(event.getOrganizer());
+		eventTest.setOrganizerEmail(null);
+		checkHashCode(event, eventTest);
+		eventTest.setOrganizerEmail(event.getOrganizerEmail());
     }
 
+	/**
+	 * Test method for {@link java.lang.Object#equals(java.lang.Object)}.
+	 */
     @Test
     public void testEquals() throws Exception {
-        EventDetails eventDetails1 = new EventDetails();
-        eventDetails1.setEventId(eventId);
-        assertEquals("eventDetail does not match", eventDetails1, eventDetails);
+        EventDetails event = DatabaseDataFixture.populateEvent1().toEventDetails();
+
+		EventDetails eventTest=null;
+		assertNotEquals(eventTest,event);
+		assertNotEquals(event,eventTest);
+		String notElection="";
+		assertNotEquals(event,notElection);
+		eventTest=DatabaseDataFixture.populateEvent1().toEventDetails();
+		assertEquals(eventTest,eventTest);
+		assertEquals(eventTest,event);
+		eventTest.setEventId(54l);
+		checkNotEquals(event,eventTest);
+		event.setEventId(null);
+		checkNotEquals(event,eventTest);
+		eventTest.setEventId(null);
+		assertEquals(event, eventTest);
+		assertEquals(eventTest, event);
+		eventTest.setCreated(4321l);
+		assertNotEquals(event, eventTest);
+		eventTest.setCreated(null);
+		checkNotEquals(event, eventTest);
+		eventTest.setCreated(event.getCreated());
+		eventTest.setDescription("Some description");
+		assertNotEquals(event, eventTest);
+		eventTest.setDescription(null);
+		checkNotEquals(eventTest, event);
+		eventTest.setDescription(event.getDescription());
+		
+		eventTest.setEnds(54l);
+		assertNotEquals(event, eventTest);
+		eventTest.setEnds(null);
+		checkNotEquals(event, eventTest);
+		eventTest.setEnds(event.getEnds());
+		
+		eventTest.setStarts(54l);
+		assertNotEquals(event, eventTest);
+		eventTest.setStarts(null);
+		checkNotEquals(event, eventTest);
+		eventTest.setStarts(event.getStarts());
+		
+		eventTest.setModified(54l);
+		assertNotEquals(event, eventTest);
+		eventTest.setModified(null);
+		checkNotEquals(event, eventTest);
+		eventTest.setModified(event.getModified());
+		
+		eventTest.setLocation("some location");
+		assertNotEquals(event, eventTest);
+		eventTest.setLocation(null);
+		checkNotEquals(event, eventTest);
+		eventTest.setLocation(event.getLocation());
+		
+		event.setName("some name");
+		assertNotEquals(event, eventTest);
+		eventTest.setName(null);
+		checkNotEquals(event, eventTest);
+		eventTest.setName(event.getName());
+		
+		eventTest.setOrganizer("some Organizer");
+		assertNotEquals(event, eventTest);
+		eventTest.setOrganizer(null);
+		checkNotEquals(event, eventTest);
+		eventTest.setOrganizer(event.getOrganizer());
+		eventTest.setOrganizerEmail("some OrganizerEmail");
+		assertNotEquals(event, eventTest);
+		eventTest.setOrganizerEmail(null);
+		checkNotEquals(event, eventTest);
+		eventTest.setOrganizerEmail(event.getOrganizerEmail());
+		
+		String[] picture={"picture1","picture2"};
+		eventTest.setPicture(picture);
+		checkNotEquals(event, eventTest);
+		eventTest.setPicture(event.getPicture());
+		
+		String[] volunteerPositions = {"position 1","position 2"};
+		eventTest.setVolunteerPositions(volunteerPositions);
+		checkNotEquals(event, eventTest);
+		eventTest.setVolunteerPositions(event.getVolunteerPositions());
+    
     }
 
     @Test
