@@ -18,7 +18,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * @author Yikai Gong
  */
 
-public class Badge extends ResourceSupport{
+public class Badge extends ResourceSupport
+{
     private Long badgeId;
     private String name;
     private boolean awarded;
@@ -27,7 +28,8 @@ public class Badge extends ResourceSupport{
 
     private static Logger LOG = LoggerFactory.getLogger(Badge.class);
 
-    public Badge() {
+    public Badge()
+    {
         if (LOG.isDebugEnabled()) LOG.debug("constructor()");
     }
 
