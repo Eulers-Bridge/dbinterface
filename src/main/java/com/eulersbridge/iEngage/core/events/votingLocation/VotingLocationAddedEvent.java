@@ -3,13 +3,13 @@
  */
 package com.eulersbridge.iEngage.core.events.votingLocation;
 
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class VotingLocationAddedEvent extends CreatedEvent
+public class VotingLocationAddedEvent extends UpdatedEvent
 {
 	private boolean votingLocationFound =true; 
 	private boolean electionFound = true;
@@ -19,17 +19,9 @@ public class VotingLocationAddedEvent extends CreatedEvent
 	 */
 	public VotingLocationAddedEvent()
 	{
-		super();
+		super(null);
 	}
 
-	/**
-	 * @param details
-	 */
-	public VotingLocationAddedEvent(VotingLocationDetails votingLocationDetails)
-	{
-		super(votingLocationDetails);
-	}
-	
 	/**
 	 * @return the votingLocationFound
 	 */

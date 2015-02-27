@@ -43,7 +43,7 @@ public interface VotingLocationService
 
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public CreatedEvent addVotingLocationToElection(AddVotingLocationEvent addVotingLocationEvent);
+    public UpdatedEvent addVotingLocationToElection(AddVotingLocationEvent addVotingLocationEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public DeletedEvent removeVotingLocationFromElection(RemoveVotingLocationEvent removeVotingLocationEvent);

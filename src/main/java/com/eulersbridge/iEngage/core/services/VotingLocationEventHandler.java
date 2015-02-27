@@ -270,10 +270,10 @@ public class VotingLocationEventHandler implements VotingLocationService
 
 
 	@Override
-	public CreatedEvent addVotingLocationToElection(
+	public UpdatedEvent addVotingLocationToElection(
 			AddVotingLocationEvent addVotingLocationEvent)
 	{
-		CreatedEvent evt;
+		UpdatedEvent evt;
 
 		if (addVotingLocationEvent!=null)
 		{	
@@ -294,7 +294,7 @@ public class VotingLocationEventHandler implements VotingLocationService
 						evt = new VotingLocationAddedEvent();
 					}
 					else
-						evt = VotingLocationAddedEvent.failed(null);
+						evt = VotingLocationAddedEvent.electionNotFound();
 
 				}
 				else
@@ -310,7 +310,7 @@ public class VotingLocationEventHandler implements VotingLocationService
 		}
 		else
 		{
-			evt = VotingLocationAddedEvent.failed(null);
+			evt = VotingLocationAddedEvent.notFound(null);
 		}
 		return evt;
 	}

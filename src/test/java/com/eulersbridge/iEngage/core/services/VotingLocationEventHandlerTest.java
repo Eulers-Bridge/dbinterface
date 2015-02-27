@@ -384,9 +384,9 @@ public class VotingLocationEventHandlerTest
 		when(votingLocationRepository.addElection(any(Long.class),any(Long.class))).thenReturn(id);
 		ElectionDetails dets=electionData.toElectionDetails();
 		AddVotingLocationEvent createElectionEvent=new AddVotingLocationEvent(testData.getNodeId(), dets.getElectionId());
-		CreatedEvent evtData = service.addVotingLocationToElection(createElectionEvent);
+		UpdatedEvent evtData = service.addVotingLocationToElection(createElectionEvent);
 		assertNull(evtData.getDetails());
-		assertFalse(evtData.isFailed());
+		assertTrue(evtData.isEntityFound());
 		assertTrue(((VotingLocationAddedEvent)evtData).isElectionFound());
 		assertTrue(((VotingLocationAddedEvent)evtData).isVotingLocationFound());
 		assertNull(evtData.getNodeId());
