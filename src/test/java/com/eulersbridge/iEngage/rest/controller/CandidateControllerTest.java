@@ -105,7 +105,7 @@ public class CandidateControllerTest
 		if (null!=dets.getTicketDetails())
 		{
 			tName='\"'+dets.getTicketDetails().getName()+'\"';
-			tColour=Long.toHexString(dets.getTicketDetails().getColour());
+			tColour=dets.getTicketDetails().getColour();
 		}
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
 				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
@@ -120,7 +120,7 @@ public class CandidateControllerTest
 		if (null!=dets.getTicketDetails())
 		{
 			tName='\"'+dets.getTicketDetails().getName()+'\"';
-			tColour=Long.toHexString(dets.getTicketDetails().getColour());
+			tColour=dets.getTicketDetails().getColour();
 		}
 		return "{\"candidateId1\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
 				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
@@ -135,7 +135,7 @@ public class CandidateControllerTest
 		if (null!=dets.getTicketDetails())
 		{
 			tName='\"'+dets.getTicketDetails().getName()+'\"';
-			tColour=Long.toHexString(dets.getTicketDetails().getColour());
+			tColour=dets.getTicketDetails().getColour();
 		}
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
 				"\",\"pictures\":"+dets.getPictures()+",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+

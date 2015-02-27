@@ -26,7 +26,7 @@ public class Candidate extends ResourceSupport{
     private Long userId;
     private Long positionId;
     private String ticketName;
-    private Long ticketColour;
+    private String ticketColour;
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
@@ -89,12 +89,12 @@ public class Candidate extends ResourceSupport{
         this.ticketName = ticketName;
     }
 
-    public Long getTicketColour()
+    public String getTicketColour()
     {
         return ticketColour;
     }
 
-    public void setTicketColour(Long ticketColour) {
+    public void setTicketColour(String ticketColour) {
         this.ticketColour = ticketColour;
     }
 

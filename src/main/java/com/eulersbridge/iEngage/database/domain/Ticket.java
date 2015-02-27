@@ -29,6 +29,7 @@ public class Ticket extends Likeable
     private Iterable <Candidate> candidates;
     @RelatedTo(type = DatabaseDomainConstants.HAS_TICKET_LABEL, direction = Direction.INCOMING)
     private Election election;
+    private String colour;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -46,6 +47,7 @@ public class Ticket extends Likeable
 	        Election election=new Election();
 	        election.setNodeId(ticketDetails.getElectionId());
 	        ticket.setElection(election);
+            ticket.setColour(ticketDetails.getColour());
 	
 	        if (LOG.isTraceEnabled()) LOG.trace("ticket "+ticket);
     	}
@@ -60,6 +62,7 @@ public class Ticket extends Likeable
         ticketDetails.setLogo(getLogo());
         ticketDetails.setInformation(getInformation());
         ticketDetails.setElectionId(getElection().getNodeId());
+        ticketDetails.setColour(getColour());
         
         ticketDetails.setCandidateIds(toCandidateIds(candidates));
 
@@ -96,6 +99,8 @@ public class Ticket extends Likeable
         buff.append(getInformation());
         buff.append(", candidates = ");
         buff.append(getCandidates());
+        buff.append(", colour = ");
+        buff.append(getColour());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -160,7 +165,15 @@ public class Ticket extends Likeable
         this.information = information;
     }
 
-	/**
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour;
+    }
+
+    /**
 	 * @return the candidate
 	 */
 	public Iterable<Candidate> getCandidates()

@@ -17,7 +17,7 @@ public class TicketDetails extends Details
 	private String logo;
 	private Set<String> pictures;
 	private String information;
-	private Long colour;
+	private String colour;
 	private Iterable<Long> candidateIds;
 	private Long electionId;
 
@@ -164,7 +164,7 @@ public class TicketDetails extends Details
 	/**
 	 * @return the colour
 	 */
-	public Long getColour()
+	public String getColour()
 	{
 		return colour;
 	}
@@ -173,7 +173,7 @@ public class TicketDetails extends Details
 	 * @param colour
 	 *            the colour to set
 	 */
-	public void setColour(Long colour)
+	public void setColour(String colour)
 	{
 		this.colour = colour;
 	}
