@@ -10,57 +10,57 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
 
-import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
+import com.eulersbridge.iEngage.core.events.badge.BadgeCompleteDetails;
 
 
-@RelationshipEntity(type=DatabaseDomainConstants.TASK_COMPLETE_LABEL)
-public class TaskComplete 
+@RelationshipEntity(type=DatabaseDomainConstants.BADGE_COMPLETE_LABEL)
+public class BadgeComplete 
 {
 	@GraphId private Long nodeId;
 	@StartNode private User user;
-	@EndNode private Task task;
+	@EndNode private Badge badge;
 	private Long date;
 	
-    private static Logger LOG = LoggerFactory.getLogger(TaskComplete.class);
+    private static Logger LOG = LoggerFactory.getLogger(BadgeComplete.class);
 
-	public TaskComplete()
+	public BadgeComplete()
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor()");
 		date=Calendar.getInstance().getTimeInMillis();
 	}
 
-	public TaskCompleteDetails toTaskCompleteDetails()
+	public BadgeCompleteDetails toTaskCompleteDetails()
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toTaskCompleteDetails()");
 	    
-	    TaskCompleteDetails details = new TaskCompleteDetails(getNodeId(),this.getUser().getNodeId(),getTask().getNodeId(),getDate());
+	    BadgeCompleteDetails details = new BadgeCompleteDetails(getNodeId(),this.getUser().getNodeId(),getBadge().getNodeId(),getDate());
 	    details.setNodeId(getNodeId());
 	    if (LOG.isTraceEnabled()) LOG.trace("taskComplete "+this);
 
 	    BeanUtils.copyProperties(this, details);
-	    details.setTaskId(this.getTask().getNodeId());
+	    details.setBadgeId(this.getBadge().getNodeId());
 	    details.setUserId(this.getUser().getNodeId());
 	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
 
 	    return details;
 	}
 	
-	public static TaskComplete fromTaskCompleteDetails(TaskCompleteDetails details)
+	public static BadgeComplete fromBadgeCompleteDetails(BadgeCompleteDetails details)
 	{
-	    if (LOG.isTraceEnabled()) LOG.trace("fromTaskCompleteDetails()");
+	    if (LOG.isTraceEnabled()) LOG.trace("fromBadgeCompleteDetails()");
 	    
-	    TaskComplete taskComplete = new TaskComplete();
-	    taskComplete.setNodeId(details.getNodeId());
-	    taskComplete.setDate(details.getDate());
-	    Task task=new Task();
-	    task.setNodeId(details.getTaskId());
-	    taskComplete.setTask(task);
+	    BadgeComplete badgeComplete = new BadgeComplete();
+	    badgeComplete.setNodeId(details.getNodeId());
+	    badgeComplete.setDate(details.getDate());
+	    Badge badge=new Badge();
+	    badge.setNodeId(details.getBadgeId());
+	    badgeComplete.setBadge(badge);
 	    User user=new User();
 	    user.setNodeId(details.getUserId());
-	    taskComplete.setUser(user);
+	    badgeComplete.setUser(user);
 
-	    if (LOG.isTraceEnabled()) LOG.trace("taskComplete "+taskComplete+" taskCompleteDetails "+details);
-	    return taskComplete;
+	    if (LOG.isTraceEnabled()) LOG.trace("taskComplete "+badgeComplete+" taskCompleteDetails "+details);
+	    return badgeComplete;
 	}
 	
 	public Long getNodeId()
@@ -92,30 +92,33 @@ public class TaskComplete
 	/**
 	 * @return the user
 	 */
-	public User getUser() {
+	public User getUser()
+	{
 		return user;
 	}
 
 	/**
 	 * @param user the user to set
 	 */
-	public void setUser(User user) {
+	public void setUser(User user)
+	{
 		this.user = user;
 	}
 
 	/**
-	 * @return the task
+	 * @return the badge
 	 */
-	public Task getTask()
+	public Badge getBadge()
 	{
-		return task;
+		return badge;
 	}
 
 	/**
-	 * @param task the task to set
+	 * @param badge the badge to set
 	 */
-	public void setTask(Task task) {
-		this.task = task;
+	public void setBadge(Badge badge)
+	{
+		this.badge = badge;
 	}
 
 	/* (non-Javadoc)
@@ -123,8 +126,8 @@ public class TaskComplete
 	 */
 	@Override
 	public String toString() {
-		return "TaskComplete [nodeId=" + nodeId + ", user=" + user
-				+ ", task=" + task + ", date=" + date
+		return "BadgeComplete [nodeId=" + nodeId + ", user=" + user
+				+ ", badge=" + badge + ", date=" + date
 				+ "]";
 	}
 
@@ -139,7 +142,7 @@ public class TaskComplete
 		{
 		result = prime * result + ((date == null) ? 0 : date.hashCode());
 		result = prime * result
-				+ ((task == null) ? 0 : task.hashCode());
+				+ ((badge == null) ? 0 : badge.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		}
 		else
@@ -160,7 +163,7 @@ public class TaskComplete
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TaskComplete other = (TaskComplete) obj;
+		BadgeComplete other = (BadgeComplete) obj;
 		if (nodeId != null)
 		{
 			if (nodeId.equals(other.nodeId))
@@ -176,10 +179,10 @@ public class TaskComplete
 					return false;
 			} else if (!date.equals(other.date))
 				return false;
-			if (task == null) {
-				if (other.task != null)
+			if (badge == null) {
+				if (other.badge != null)
 					return false;
-			} else if (!task.equals(other.task))
+			} else if (!badge.equals(other.badge))
 				return false;
 			if (user == null) {
 				if (other.user != null)

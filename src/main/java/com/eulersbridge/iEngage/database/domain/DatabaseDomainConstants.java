@@ -5,6 +5,8 @@ public class DatabaseDomainConstants
 	public static final String APQ_LABEL = "hasAnsweredPollQuestion";
 	public static final String VRECORD_LABEL = "hasVoted";
 	public static final String VREMINDER_LABEL = "hasVoteReminder";
+	public static final String BADGE_COMPLETE_LABEL = "hasCompletedBadge";
+	public static final String TASK_COMPLETE_LABEL = "hasCompletedTask";
 	public static final String LIKES_LABEL = "LIKES";
 	public static final String INSTITUTIONS_LABEL = "HAS_INSTITUTIONS";
 	public static final String CREATED_BY_LABEL = "CREATED_BY";
