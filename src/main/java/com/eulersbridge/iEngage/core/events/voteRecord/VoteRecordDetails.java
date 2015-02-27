@@ -41,20 +41,6 @@ public class VoteRecordDetails extends Details
 	}
 
 	/**
-	 * @return the nodeId
-	 */
-	public Long getNodeId() {
-		return nodeId;
-	}
-
-	/**
-	 * @param nodeId the nodeId to set
-	 */
-	public void setNodeId(Long nodeId) {
-		this.nodeId = nodeId;
-	}
-
-	/**
 	 * @return the voterId
 	 */
 	public String getVoterId() {
