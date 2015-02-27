@@ -109,6 +109,51 @@ public class VotingLocationController
 	
 	/**
 	 * Is passed all the necessary data to read votingLocations from the database. The
+	 * request must be a GET with the institutionId presented as the final
+	 * portion of the URL.
+	 * <p/>
+	 * This method will return the votingLocations read from the database.
+	 * 
+	 * @param institutionId
+	 *            the institutionId of the votingLocation objects to be read.
+	 * @return the votingLocations.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.VOTING_LOCATIONS_LABEL
+			+ "/{institutionId}")
+	public @ResponseBody ResponseEntity<Iterator<VotingLocation>> findVotingLocations(
+			@PathVariable(value = "") Long institutionId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve votingLocations from institution "
+					+ institutionId + '.');
+
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		VotingLocationsReadEvent articleEvent = votingLocationService.findVotingLocations(
+				new ReadAllEvent(institutionId), sortDirection,
+				pageNumber, pageLength);
+
+		if (!articleEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<VotingLocation>>(HttpStatus.NOT_FOUND);
+		}
+
+		Iterator<VotingLocation> votingLocations = VotingLocation
+				.toVotingLocationsIterator(articleEvent.getVotingLocations().iterator());
+
+		return new ResponseEntity<Iterator<VotingLocation>>(votingLocations, HttpStatus.OK);
+	}
+
+	/**
+	 * Is passed all the necessary data to read votingLocations from the database. The
 	 * request must be a GET with the electionId presented as the final
 	 * portion of the URL.
 	 * <p/>
@@ -119,9 +164,9 @@ public class VotingLocationController
 	 * @return the votingLocations.
 	 * 
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.VOTING_LOCATIONS_LABEL
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.VOTING_BOOTHS_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<Iterator<VotingLocation>> findVotingLocations(
+	public @ResponseBody ResponseEntity<Iterator<VotingLocation>> findVotingBooths(
 			@PathVariable(value = "") Long electionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -137,7 +182,7 @@ public class VotingLocationController
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		VotingLocationsReadEvent articleEvent = votingLocationService.findVotingLocations(
+		VotingLocationsReadEvent articleEvent = votingLocationService.findVotingBooths(
 				new ReadAllEvent(electionId), sortDirection,
 				pageNumber, pageLength);
 

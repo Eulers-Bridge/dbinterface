@@ -297,7 +297,7 @@ public class VotingLocationEventHandlerTest
 		
 		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
 		Page<VotingLocation> testData=new PageImpl<VotingLocation>(evts,pageable,evts.size());
-		when(votingLocationRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(votingLocationRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
 		VotingLocationsReadEvent evtData = service.findVotingLocations(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
@@ -318,7 +318,7 @@ public class VotingLocationEventHandlerTest
 		
 		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
 		Page<VotingLocation> testData=new PageImpl<VotingLocation>(evts,pageable,evts.size());
-		when(votingLocationRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(votingLocationRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 		Owner inst=new Owner(DatabaseDataFixture.populateElection1().getNodeId());
 		when(ownerRepository.findOne(any(Long.class))).thenReturn(inst);
 				
@@ -341,7 +341,7 @@ public class VotingLocationEventHandlerTest
 		
 		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
 		Page<VotingLocation> testData=new PageImpl<VotingLocation>(evts,pageable,evts.size());
-		when(votingLocationRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(votingLocationRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 		when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
 				
 		VotingLocationsReadEvent evtData = service.findVotingLocations(evt, Direction.ASC, pageNumber, pageLength);
@@ -360,7 +360,7 @@ public class VotingLocationEventHandlerTest
 		ReadAllEvent evt=new ReadAllEvent(institutionId);
 		
 		Page<VotingLocation> testData=null;
-		when(votingLocationRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(votingLocationRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
 		int pageLength=10;
 		int pageNumber=0;

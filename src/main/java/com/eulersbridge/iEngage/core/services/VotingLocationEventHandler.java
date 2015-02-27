@@ -218,10 +218,10 @@ public class VotingLocationEventHandler implements VotingLocationService
 		ArrayList<VotingLocationDetails> dets = new ArrayList<VotingLocationDetails>();
 		VotingLocationsReadEvent nare = null;
 
-		if (LOG.isDebugEnabled()) LOG.debug("ElectionId " + ownerId);
+		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + ownerId);
 		Pageable pageable = new PageRequest(pageNumber, pageLength,
 				sortDirection, "p.name");
-		votingLocations = votingLocationRepository.findByOwnerId(ownerId, pageable);
+		votingLocations = votingLocationRepository.findByInstitutionId(ownerId, pageable);
 		if (votingLocations != null)
 		{
 			if (LOG.isDebugEnabled())
@@ -263,6 +263,74 @@ public class VotingLocationEventHandler implements VotingLocationService
 		{
 			if (LOG.isDebugEnabled())
 				LOG.debug("Null returned by findByInstitutionId");
+			nare = VotingLocationsReadEvent.notFound(ownerId);
+		}
+		return nare;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.eulersbridge.iEngage.core.services.VotingLocationService#
+	 * findVotingBooths
+	 * (com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationsEvent
+	 * , org.springframework.data.domain.Sort.Direction, int, int)
+	 */
+	@Override
+	public VotingLocationsReadEvent findVotingBooths(
+			ReadAllEvent readVotingLocationsEvent,
+			Direction sortDirection, int pageNumber, int pageLength)
+	{
+		Long ownerId = readVotingLocationsEvent.getParentId();
+		Page<VotingLocation> votingLocations = null;
+		ArrayList<VotingLocationDetails> dets = new ArrayList<VotingLocationDetails>();
+		VotingLocationsReadEvent nare = null;
+
+		if (LOG.isDebugEnabled()) LOG.debug("ElectionId " + ownerId);
+		Pageable pageable = new PageRequest(pageNumber, pageLength,
+				sortDirection, "p.name");
+		votingLocations = votingLocationRepository.findByElectionId(ownerId, pageable);
+		if (votingLocations != null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = " + votingLocations.getTotalElements()
+						+ " total pages =" + votingLocations.getTotalPages());
+			Iterator<VotingLocation> iter = votingLocations.iterator();
+			while (iter.hasNext())
+			{
+				VotingLocation na = iter.next();
+				if (LOG.isTraceEnabled())
+					LOG.trace("Converting to details - " + na.getName());
+				VotingLocationDetails det = na.toVotingLocationDetails();
+				dets.add(det);
+			}
+			if (0 == dets.size())
+			{
+				// Need to check if we actually found parentId.
+				Owner elec = ownerRepository.findOne(ownerId);
+				if (null == elec)
+				{
+					if (LOG.isDebugEnabled())
+						LOG.debug("Null or null properties returned by findOne(ownerId)");
+					nare = VotingLocationsReadEvent.notFound(ownerId);
+				}
+				else
+				{
+					nare = new VotingLocationsReadEvent(dets,
+							votingLocations.getTotalElements(),
+							votingLocations.getTotalPages());
+				}
+			}
+			else
+			{
+				nare = new VotingLocationsReadEvent(dets,
+						votingLocations.getTotalElements(), votingLocations.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Null returned by findByElectionId");
 			nare = VotingLocationsReadEvent.notFound(ownerId);
 		}
 		return nare;

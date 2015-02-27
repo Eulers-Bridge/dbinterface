@@ -41,6 +41,10 @@ public interface VotingLocationService
 	public VotingLocationsReadEvent findVotingLocations(ReadAllEvent readVotingLocationsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public VotingLocationsReadEvent findVotingBooths(ReadAllEvent readVotingLocationsEvent,
+			Direction sortDirection, int pageNumber, int pageLength);
+
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public UpdatedEvent addVotingLocationToElection(AddVotingLocationEvent addVotingLocationEvent);
