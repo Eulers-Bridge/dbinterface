@@ -6,7 +6,10 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
+import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
 import com.eulersbridge.iEngage.core.services.ElectionService;
+import com.eulersbridge.iEngage.core.services.VotingLocationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
@@ -25,6 +28,8 @@ public class ElectionController
 
 	@Autowired
 	ElectionService electionService;
+	@Autowired
+	VotingLocationService votingLocationService;
 
 	public ElectionController()
 	{
@@ -131,6 +136,69 @@ public class ElectionController
 			response = new ResponseEntity<Election>(result, HttpStatus.CREATED);
 		}
 		return response;
+	}
+
+	// Add Voting Location
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.ELECTION_LABEL
+			+"/{electionId}"+ ControllerConstants.VOTING_LOCATION_LABEL+"/{votingLocationId}")
+	public @ResponseBody ResponseEntity<Election> addVotingLocation(
+			@PathVariable Long electionId, @PathVariable Long votingLocationId)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to add voting location "+votingLocationId+" to election " + electionId+".");
+
+		UpdatedEvent electionUpdatedEvent = votingLocationService.addVotingLocationToElection(new AddVotingLocationEvent(electionId, votingLocationId));
+		if ((null != electionUpdatedEvent))
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("electionUpdatedEvent - " + electionUpdatedEvent);
+			if (electionUpdatedEvent.isEntityFound())
+			{
+				Election restElection = Election
+						.fromElectionDetails((ElectionDetails) electionUpdatedEvent
+								.getDetails());
+				if (LOG.isDebugEnabled())
+					LOG.debug("restElection = " + restElection);
+				return new ResponseEntity<Election>(restElection, HttpStatus.OK);
+			}
+			else
+			{
+				return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+			}
+		}
+		else
+		{
+			return new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	// Add Voting Location
+	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.ELECTION_LABEL
+			+"/{electionId}"+ ControllerConstants.VOTING_LOCATION_LABEL+"/{votingLocationId}")
+	public @ResponseBody ResponseEntity<Boolean> removeVotingLocation(
+			@PathVariable Long electionId, @PathVariable Long votingLocationId)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to remove voting location "+votingLocationId+" from election " + electionId+".");
+
+		DeletedEvent locationRemovedEvent = votingLocationService.removeVotingLocationFromElection(new RemoveVotingLocationEvent(electionId, votingLocationId));
+		if ((null != locationRemovedEvent))
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("locationRemovedEvent - " + locationRemovedEvent);
+			if (locationRemovedEvent.isEntityFound())
+			{
+				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+			}
+			else
+			{
+				return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			}
+		}
+		else
+		{
+			return new ResponseEntity<Boolean>(HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	// Get Previous
