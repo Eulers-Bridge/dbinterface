@@ -53,16 +53,18 @@ public class VotingLocation extends ResourceSupport
 		this.ownerId = ownerId;
 	}
 
-	public static VotingLocation fromVotingLocationDetails(VotingLocationDetails photoDetails)
+	public static VotingLocation fromVotingLocationDetails(VotingLocationDetails votingLocationDetails)
     {
     	VotingLocation votingLocation = new VotingLocation();
         String simpleName=VotingLocation.class.getSimpleName();
         String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
-        votingLocation.setVotingLocationId(photoDetails.getNodeId());
-        votingLocation.setName(photoDetails.getName());
-        votingLocation.setInformation(photoDetails.getInformation());
-        votingLocation.setOwnerId(photoDetails.getOwnerId());
-
+        if (votingLocationDetails!=null)
+        {
+	        votingLocation.setVotingLocationId(votingLocationDetails.getNodeId());
+	        votingLocation.setName(votingLocationDetails.getName());
+	        votingLocation.setInformation(votingLocationDetails.getInformation());
+	        votingLocation.setOwnerId(votingLocationDetails.getOwnerId());
+        }
 	    // {!begin selfRel}
         votingLocation.add(linkTo(VotingLocationController.class).slash(name).slash(votingLocation.votingLocationId).withSelfRel());
 	    // {!end selfRel}

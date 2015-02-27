@@ -378,18 +378,17 @@ public class VotingLocationEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("AddingVotingLocationToElection()");
 		VotingLocation testData=DatabaseDataFixture.populateVotingLocation1();
 		Election electionData=DatabaseDataFixture.populateElection1();
-		Long id=23423l;
 		when(electionRepository.findOne(any(Long.class))).thenReturn(electionData);
 		when(votingLocationRepository.findOne(any(Long.class))).thenReturn(testData);
-		when(votingLocationRepository.addElection(any(Long.class),any(Long.class))).thenReturn(id);
+		when(votingLocationRepository.addElection(any(Long.class),any(Long.class))).thenReturn(testData);
 		ElectionDetails dets=electionData.toElectionDetails();
 		AddVotingLocationEvent createElectionEvent=new AddVotingLocationEvent(testData.getNodeId(), dets.getElectionId());
 		UpdatedEvent evtData = service.addVotingLocationToElection(createElectionEvent);
-		assertNull(evtData.getDetails());
+		assertEquals(evtData.getDetails(),testData.toVotingLocationDetails());
 		assertTrue(evtData.isEntityFound());
 		assertTrue(((VotingLocationAddedEvent)evtData).isElectionFound());
 		assertTrue(((VotingLocationAddedEvent)evtData).isVotingLocationFound());
-		assertNull(evtData.getNodeId());
+		assertEquals(evtData.getNodeId(),testData.getNodeId());
 	}
 	
 	/**
@@ -401,7 +400,6 @@ public class VotingLocationEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("RemovingVotingLocationToElection()");
 		VotingLocation testData=DatabaseDataFixture.populateVotingLocation1();
 		Election electionData=DatabaseDataFixture.populateElection1();
-		Long id=23423l;
 		when(electionRepository.findOne(any(Long.class))).thenReturn(electionData);
 		when(votingLocationRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(votingLocationRepository.deleteElection(any(Long.class),any(Long.class))).thenReturn(testData);

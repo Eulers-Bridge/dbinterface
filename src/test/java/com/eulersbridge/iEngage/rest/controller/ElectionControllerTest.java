@@ -35,6 +35,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
@@ -46,8 +47,11 @@ import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionsEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.core.services.VotingLocationService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -69,6 +73,8 @@ public class ElectionControllerTest
 	ElectionService electionService;
 	@Mock
 	InstitutionService instService;
+	@Mock
+	VotingLocationService votingLocationService;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -483,5 +489,30 @@ public class ElectionControllerTest
 		.andExpect(status().isNotFound())	;
 	}
 
-
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#updateElection(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Election)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testAddLocationToElection() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingAddLocationToElection()");
+		VotingLocationDetails dets=DatabaseDataFixture.populateVotingLocation1().toVotingLocationDetails();
+		Long electionId=3l,votingLocationId=dets.getNodeId();
+		
+		UpdatedEvent testData=new UpdatedEvent(votingLocationId, dets);
+		String returnedContent="{\"votingLocationId\":"+dets.getNodeId().intValue()+",\"name\":\""+dets.getName()+"\",\"information\":\""+dets.getInformation()+"\",\"ownerId\":"+dets.getOwnerId().intValue()+
+								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/votingLocation/237\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/votingLocations\"}]}";
+		when (votingLocationService.addVotingLocationToElection(any(AddVotingLocationEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{electionId}/votingLocation/{votingLocationId}",electionId.intValue(),votingLocationId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.name",is(dets.getName())))
+		.andExpect(jsonPath("$.information",is(dets.getInformation())))
+		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
+		.andExpect(jsonPath("$.votingLocationId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(jsonPath("$.links[1].rel",is("Read all")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;		
+	}
 }

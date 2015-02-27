@@ -280,21 +280,24 @@ public class VotingLocationEventHandler implements VotingLocationService
 			Long votingLocationId = addVotingLocationEvent.getVotingLocationId();
 			Long electionId = addVotingLocationEvent.getElectionId();
 			
-			if (LOG.isDebugEnabled()) LOG.debug("votingLocationId - " + votingLocationId+", electionId - "+electionId);
-	
 			VotingLocation votingLocation = votingLocationRepository.findOne(votingLocationId);
 			if (votingLocation != null)
 			{ // Valid VotingLocation
+				if (LOG.isDebugEnabled()) LOG.debug("Found votingLocation - " + votingLocation);
 				Election election = electionRepository.findOne(electionId);
 				if (election!=null)
 				{
-					Long relNodeId = votingLocationRepository.addElection(votingLocationId, electionId);
+					if (LOG.isDebugEnabled()) LOG.debug("votingLocationRepository.addElection("+votingLocationId+", " + electionId+')');
+					VotingLocation relNodeId = votingLocationRepository.addElection(votingLocationId, electionId);
 					if (relNodeId != null)
 					{
-						evt = new VotingLocationAddedEvent();
+						evt = new VotingLocationAddedEvent(votingLocationId,relNodeId.toVotingLocationDetails());
 					}
 					else
+					{
+						if (LOG.isDebugEnabled()) LOG.debug("Failed");
 						evt = VotingLocationAddedEvent.electionNotFound();
+					}
 
 				}
 				else

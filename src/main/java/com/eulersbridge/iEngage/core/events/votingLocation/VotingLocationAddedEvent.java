@@ -22,6 +22,11 @@ public class VotingLocationAddedEvent extends UpdatedEvent
 		super(null);
 	}
 
+	public VotingLocationAddedEvent(Long nodeId,VotingLocationDetails dets)
+	{
+		super(nodeId,dets);
+	}
+
 	/**
 	 * @return the votingLocationFound
 	 */
@@ -40,6 +45,7 @@ public class VotingLocationAddedEvent extends UpdatedEvent
 	{
 		VotingLocationAddedEvent evt=new VotingLocationAddedEvent();
 		evt.electionFound=false;
+		evt.entityFound=false;
 		
 		return evt;
 	}
@@ -48,6 +54,7 @@ public class VotingLocationAddedEvent extends UpdatedEvent
 	{
 		VotingLocationAddedEvent evt=new VotingLocationAddedEvent();
 		evt.votingLocationFound=false;
+		evt.entityFound=false;
 		
 		return evt;
 	}

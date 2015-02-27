@@ -8,6 +8,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import com.eulersbridge.iEngage.core.services.VotingLocationService;
 
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.rest.domain.Election;
+import com.eulersbridge.iEngage.rest.domain.VotingLocation;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
@@ -141,34 +143,34 @@ public class ElectionController
 	// Add Voting Location
 	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.ELECTION_LABEL
 			+"/{electionId}"+ ControllerConstants.VOTING_LOCATION_LABEL+"/{votingLocationId}")
-	public @ResponseBody ResponseEntity<Election> addVotingLocation(
+	public @ResponseBody ResponseEntity<VotingLocation> addVotingLocation(
 			@PathVariable Long electionId, @PathVariable Long votingLocationId)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to add voting location "+votingLocationId+" to election " + electionId+".");
 
-		UpdatedEvent electionUpdatedEvent = votingLocationService.addVotingLocationToElection(new AddVotingLocationEvent(electionId, votingLocationId));
+		UpdatedEvent electionUpdatedEvent = votingLocationService.addVotingLocationToElection(new AddVotingLocationEvent(votingLocationId, electionId));
 		if ((null != electionUpdatedEvent))
 		{
 			if (LOG.isDebugEnabled())
 				LOG.debug("electionUpdatedEvent - " + electionUpdatedEvent);
 			if (electionUpdatedEvent.isEntityFound())
 			{
-				Election restElection = Election
-						.fromElectionDetails((ElectionDetails) electionUpdatedEvent
+				VotingLocation restElection = VotingLocation
+						.fromVotingLocationDetails((VotingLocationDetails) electionUpdatedEvent
 								.getDetails());
 				if (LOG.isDebugEnabled())
 					LOG.debug("restElection = " + restElection);
-				return new ResponseEntity<Election>(restElection, HttpStatus.OK);
+				return new ResponseEntity<VotingLocation>(restElection, HttpStatus.OK);
 			}
 			else
 			{
-				return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<VotingLocation>(HttpStatus.NOT_FOUND);
 			}
 		}
 		else
 		{
-			return new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<VotingLocation>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
