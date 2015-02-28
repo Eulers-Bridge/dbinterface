@@ -8,24 +8,9 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateCreatedEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateDeletedEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateReadEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidatesReadEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CreateCandidateEvent;
-import com.eulersbridge.iEngage.core.events.candidate.DeleteCandidateEvent;
-import com.eulersbridge.iEngage.core.events.candidate.RequestReadCandidateEvent;
-import com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent;
-import com.eulersbridge.iEngage.database.domain.Candidate;
-import com.eulersbridge.iEngage.database.domain.Election;
-import com.eulersbridge.iEngage.database.domain.Position;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.repository.CandidateRepository;
-import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-import com.eulersbridge.iEngage.database.repository.PositionRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.core.events.candidate.*;
+import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.repository.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,13 +30,19 @@ public class CandidateEventHandler implements CandidateService {
     private UserRepository userRepository;
     private PositionRepository positionRepository;
     private ElectionRepository electionRepository;
+    private TicketRepository ticketRepository;
 
-    public CandidateEventHandler(CandidateRepository candidateRepository,UserRepository userRepository,PositionRepository positionRepository, ElectionRepository electionRepository)
+    public CandidateEventHandler(CandidateRepository candidateRepository,
+                                 UserRepository userRepository,
+                                 PositionRepository positionRepository,
+                                 ElectionRepository electionRepository,
+                                 TicketRepository ticketRepository)
     {
         this.candidateRepository = candidateRepository;
         this.userRepository = userRepository;
         this.positionRepository = positionRepository;
         this.electionRepository = electionRepository;
+        this.ticketRepository = ticketRepository;
     }
 
     @Override
@@ -190,6 +181,29 @@ public class CandidateEventHandler implements CandidateService {
             candidateRepository.delete(candidate);
             CandidateDeletedEvent candidateDeletedEvent = new CandidateDeletedEvent(candidateId);
             return candidateDeletedEvent;
+        }
+    }
+
+    @Override
+    public TicketAddedEvent addTicket(AddTicketEvent addTicketEvent) {
+        TicketAddedEvent ticketAddedEvent = new TicketAddedEvent(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
+        Candidate candidate = candidateRepository.findOne(ticketAddedEvent.getCandidateId());
+        Ticket ticket = ticketRepository.findOne(ticketAddedEvent.getTicketId());
+        if(candidate == null)
+            ticketAddedEvent.setCandidateFound(false);
+        if(ticket == null)
+            ticketAddedEvent.setTicketFound(false);
+        if(candidate == null || ticket ==null){
+            ticketAddedEvent.setResult(false);
+            return ticketAddedEvent;
+        }else{
+            IsOnTicket isOnTicket = candidateRepository.createIsOnTicketRelationship(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
+            if(isOnTicket == null){
+                ticketAddedEvent.setResult(false);
+                return ticketAddedEvent;
+            }else{
+                return ticketAddedEvent;
+            }
         }
     }
 }

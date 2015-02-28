@@ -269,4 +269,23 @@ public class CandidateController {
         else return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
     }
 
+    // Add ticket to candidate
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL
+            + "/{candidateId}" + ControllerConstants.ADD_TICKET_LABEL + "/{ticketId}")
+    public @ResponseBody ResponseEntity<Boolean> addTicket(
+            @PathVariable Long candidateId, @PathVariable Long ticketId){
+        if (LOG.isInfoEnabled())
+            LOG.info("Attempting to add ticket " + ticketId + " to candidate " + candidateId);
+        TicketAddedEvent ticketAddedEvent = candidateService.addTicket(new AddTicketEvent(candidateId, ticketId));
+        if (!ticketAddedEvent.isCandidateFound()){
+            return new ResponseEntity<Boolean>(HttpStatus.GONE);
+        } else if(!ticketAddedEvent.isTicketFound()){
+            return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        } else if (!ticketAddedEvent.isResult()){
+            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<Boolean>(HttpStatus.OK);
+        }
+    }
+
 }

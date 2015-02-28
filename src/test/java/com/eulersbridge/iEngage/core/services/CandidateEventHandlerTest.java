@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.database.repository.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -42,10 +43,6 @@ import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.CandidateRepository;
-import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-import com.eulersbridge.iEngage.database.repository.PositionRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 /**
  * @author Greg Newitt
@@ -63,6 +60,8 @@ public class CandidateEventHandlerTest
 	CandidateRepository candidateRepository;
     @Mock
 	ElectionRepository electionRepository;
+    @Mock
+    TicketRepository ticketRepository;
 
     CandidateEventHandler service;
 
@@ -75,7 +74,7 @@ public class CandidateEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new CandidateEventHandler(candidateRepository, userRepository, positionRepository, electionRepository);
+		service=new CandidateEventHandler(candidateRepository, userRepository, positionRepository, electionRepository, ticketRepository);
 	}
 
 	/**

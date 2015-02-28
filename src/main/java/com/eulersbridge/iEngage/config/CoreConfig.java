@@ -163,7 +163,7 @@ public class CoreConfig
     public CandidateService createCandidateService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createCandidateService()");
-        return new CandidateEventHandler(candidateRepository,userRepo,positionRepository,electionRepo);
+        return new CandidateEventHandler(candidateRepository,userRepo,positionRepository,electionRepo, ticketRepository);
     }
 
     @Bean
