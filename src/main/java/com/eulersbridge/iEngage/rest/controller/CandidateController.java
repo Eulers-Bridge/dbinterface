@@ -271,7 +271,7 @@ public class CandidateController {
 
     // Add ticket to candidate
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL
-            + "/{candidateId}" + ControllerConstants.ADD_TICKET_LABEL + "/{ticketId}")
+            + "/{candidateId}" + ControllerConstants.TICKET_LABEL + "/{ticketId}")
     public @ResponseBody ResponseEntity<Boolean> addTicket(
             @PathVariable Long candidateId, @PathVariable Long ticketId){
         if (LOG.isInfoEnabled())
