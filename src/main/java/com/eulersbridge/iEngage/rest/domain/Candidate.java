@@ -18,12 +18,15 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * @author Yikai Gong
  */
 
-public class Candidate extends ResourceSupport{
+public class Candidate extends ResourceSupport
+{
     private Long candidateId;
     private String information;
     private String policyStatement;
     private Set<String> pictures;
     private Long userId;
+    private String givenName;
+    private String familyName;
     private Long positionId;
     private String ticketName;
     private String ticketColour;
@@ -45,6 +48,8 @@ public class Candidate extends ResourceSupport{
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
         candidate.setPictures(candidateDetails.getPictures());
         candidate.setUserId(candidateDetails.getUserId());
+        candidate.setGivenName(candidateDetails.getGivenName());
+        candidate.setFamilyName(candidateDetails.getFamilyName());
         candidate.setPositionId(candidateDetails.getPositionId());
         if (candidateDetails.getTicketDetails()!=null)
         {
@@ -140,7 +145,39 @@ public class Candidate extends ResourceSupport{
         this.userId = userId;
     }
 
-    public Long getPositionId()
+    /**
+	 * @return the givenName
+	 */
+	public String getGivenName()
+	{
+		return givenName;
+	}
+
+	/**
+	 * @param givenName the givenName to set
+	 */
+	public void setGivenName(String givenName)
+	{
+		this.givenName = givenName;
+	}
+
+	/**
+	 * @return the familyName
+	 */
+	public String getFamilyName()
+	{
+		return familyName;
+	}
+
+	/**
+	 * @param familyName the familyName to set
+	 */
+	public void setFamilyName(String familyName)
+	{
+		this.familyName = familyName;
+	}
+
+	public Long getPositionId()
     {
         return positionId;
     }

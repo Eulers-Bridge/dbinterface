@@ -89,8 +89,17 @@ public class Candidate extends Likeable
         if (LOG.isTraceEnabled()) LOG.trace("candidate "+this);
         candidateDetails.setNodeId(getNodeId());
         if (null==getUser())
+        {
         	candidateDetails.setUserId(null);
-        else candidateDetails.setUserId(getUser().getNodeId());
+        	candidateDetails.setFamilyName(null);
+        	candidateDetails.setGivenName(null);
+        }
+        else
+        {
+        	candidateDetails.setUserId(getUser().getNodeId());
+        	candidateDetails.setFamilyName(getUser().getFamilyName());
+        	candidateDetails.setGivenName(getUser().getGivenName());
+        }
         candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());
         if (null==getPosition())
