@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.events.candidate;
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,8 @@ public class CandidateDetails extends Details {
     private String policyStatement;
     private Set<String> pictures;
     private Long userId;
+    private String givenName;
+    private String familyName;
     private Long positionId;
     private TicketDetails ticketDetails;
 
@@ -148,6 +151,38 @@ public class CandidateDetails extends Details {
 	}
 
 	/**
+	 * @return the familyName
+	 */
+	public String getFamilyName()
+	{
+		return familyName;
+	}
+
+	/**
+	 * @param familyName the familyName to set
+	 */
+	public void setFamilyName(String familyName)
+	{
+		this.familyName = familyName;
+	}
+
+	/**
+	 * @return the givenName
+	 */
+	public String getGivenName()
+	{
+		return givenName;
+	}
+
+	/**
+	 * @param givenName the givenName to set
+	 */
+	public void setGivenName(String givenName)
+	{
+		this.givenName = givenName;
+	}
+
+	/**
 	 * @return the positionId
 	 */
 	public Long getPositionId()
@@ -170,4 +205,5 @@ public class CandidateDetails extends Details {
     public void setTicketDetails(TicketDetails ticketDetails) {
         this.ticketDetails = ticketDetails;
     }
+
 }

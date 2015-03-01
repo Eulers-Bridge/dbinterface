@@ -138,7 +138,8 @@ public class CandidateControllerTest
 			tColour=dets.getTicketDetails().getColour();
 		}
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
-				"\",\"pictures\":"+dets.getPictures()+",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
+				"\",\"pictures\":"+dets.getPictures()+",\"userId\":"+dets.getUserId().intValue()+",\"givenName\":\""+dets.getGivenName()+
+				"\",\"familyName\":\""+dets.getFamilyName()+"\",\"positionId\":"+dets.getPositionId().intValue()+
 				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+evtId+"\"},"+
 //				"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+evtId+"/previous\"},"+
