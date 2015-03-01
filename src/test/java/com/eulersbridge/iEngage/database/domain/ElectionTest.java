@@ -263,6 +263,20 @@ public class ElectionTest {
 		assertEquals("",election.getVotingEnd(),dets.getEndVoting());
 		assertEquals("",election.getInstitution().getNodeId(),dets.getInstitutionId());
 	}
+	@Test
+	public final void testToElectionDetailsNullInstitution() 
+	{
+		election.setInstitution(null);
+		ElectionDetails dets=election.toElectionDetails();
+		assertEquals("electionDetails not of ElectionDetails class",dets.getClass(),ElectionDetails.class);
+		assertEquals("",election.getNodeId(),dets.getElectionId());
+		assertEquals("",election.getTitle(),dets.getTitle());
+		assertEquals("",election.getStart(),dets.getStart());
+		assertEquals("",election.getEnd(),dets.getEnd());
+		assertEquals("",election.getVotingStart(),dets.getStartVoting());
+		assertEquals("",election.getVotingEnd(),dets.getEndVoting());
+		assertNull("",dets.getInstitutionId());
+	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Election#fromElectionDetails(com.eulersbridge.iEngage.core.events.elections.ElectionDetails)}.

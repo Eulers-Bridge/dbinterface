@@ -188,7 +188,9 @@ public class Election extends Likeable
         electionDetails.setEnd(this.getEnd());
         electionDetails.setStartVoting(this.getVotingStart());
         electionDetails.setEndVoting(this.getVotingEnd());
-        electionDetails.setInstitutionId(this.getInstitution().getNodeId());
+        if (getInstitution()!=null)
+        	electionDetails.setInstitutionId(this.getInstitution().getNodeId());
+        else electionDetails.setInstitutionId(null);
         electionDetails.setIntroduction(getIntroduction());
         electionDetails.setProcess(this.getProcess());
         if (LOG.isTraceEnabled()) LOG.trace("electionDetail; "+ electionDetails);
