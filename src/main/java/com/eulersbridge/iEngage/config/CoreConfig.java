@@ -177,7 +177,7 @@ public class CoreConfig
     public TaskService createTaskService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createTaskService()");
-        return new TaskEventHandler(taskRepository);
+        return new TaskEventHandler(taskRepository,userRepo);
     }
 
     @Bean
