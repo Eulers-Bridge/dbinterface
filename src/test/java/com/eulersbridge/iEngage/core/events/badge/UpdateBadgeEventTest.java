@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+
 import static org.junit.Assert.*;
 
 /**
@@ -13,20 +15,18 @@ import static org.junit.Assert.*;
 public class UpdateBadgeEventTest {
     UpdateBadgeEvent updateBadgeEvent = null;
     BadgeDetails badgeDetails;
-    Long badgeId = new Long(0);
-    String name = "badgename";
-    boolean awarded = false;
-    Long timestamp = new Long(0);
-    Long xpValue = new Long(10);
+    Long badgeId;
+    String name;
+    String description;
+    Long xpValue;
 
     @Before
     public void setUp() throws Exception {
-        badgeDetails = new BadgeDetails();
-        badgeDetails.setNodeId(badgeId);
-        badgeDetails.setName(name);
-        badgeDetails.setAwarded(awarded);
-        badgeDetails.setTimestamp(timestamp);
-        badgeDetails.setXpValue(xpValue);
+        badgeDetails = DatabaseDataFixture.populateBadge1().toBadgeDetails();
+        badgeId=badgeDetails.getNodeId();
+        name=badgeDetails.getName();
+        description=badgeDetails.getDescription();
+        xpValue=badgeDetails.getXpValue();
     }
 
     @After

@@ -10,8 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class BadgeDetails extends Details{
     private String name;
-    private boolean awarded;
-    private Long timestamp;
+    private String description;
     private Long xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(BadgeDetails.class);
@@ -23,10 +22,8 @@ public class BadgeDetails extends Details{
         buff.append(getNodeId());
         buff.append(", name = ");
         buff.append(getName());
-        buff.append(", awarded = ");
-        buff.append(isAwarded());
-        buff.append(", timestamp = ");
-        buff.append(getTimestamp());
+        buff.append(", description = ");
+        buff.append(getDescription());
         buff.append(", xpValue = ");
         buff.append(getXpValue());;
         buff.append(" ]");
@@ -46,8 +43,7 @@ public class BadgeDetails extends Details{
         else
         {
             result = prime * result	+ ((name == null) ? 0 : name.hashCode());
-            result = prime * result	+ (new Boolean(awarded).hashCode());
-            result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+            result = prime * result + ((description == null) ? 0 : description.hashCode());
             result = prime * result + ((xpValue == null) ? 0 : xpValue.hashCode());
         }
         return result;
@@ -77,12 +73,10 @@ public class BadgeDetails extends Details{
                     return false;
             } else if (!name.equals(other.name))
                 return false;
-            if (awarded != other.awarded)
-                return false;
-            if (timestamp == null) {
-                if (other.timestamp != null)
+            if (description == null) {
+                if (other.description != null)
                     return false;
-            } else if (!timestamp.equals(other.timestamp))
+            } else if (!description.equals(other.description))
                 return false;
             if (xpValue == null) {
                 if (other.xpValue != null)
@@ -101,20 +95,14 @@ public class BadgeDetails extends Details{
         this.name = name;
     }
 
-    public boolean isAwarded() {
-        return awarded;
+    public String getDescription() 
+    {
+        return description;
     }
 
-    public void setAwarded(boolean awarded) {
-        this.awarded = awarded;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setDescription(String description)
+    {
+        this.description = description;
     }
 
     public Long getXpValue() {

@@ -16,8 +16,7 @@ public class Badge {
     @GraphId
     private Long nodeId;
     private String name;
-    private boolean awarded;
-    private Long timestamp;
+    private String description;
     private Long xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(Badge.class);
@@ -32,8 +31,7 @@ public class Badge {
         if (LOG.isTraceEnabled()) LOG.trace("badgeDetails "+badgeDetails);
         badge.setNodeId(badgeDetails.getNodeId());
         badge.setName(badgeDetails.getName());
-        badge.setAwarded(badgeDetails.isAwarded());
-        badge.setTimestamp(badgeDetails.getTimestamp());
+        badge.setDescription(badgeDetails.getDescription());
         badge.setXpValue(badgeDetails.getXpValue());
 
         if (LOG.isTraceEnabled()) LOG.trace("badge "+badge);
@@ -46,8 +44,7 @@ public class Badge {
         if (LOG.isTraceEnabled()) LOG.trace("badge "+this);
         badgeDetails.setNodeId(getNodeId());
         badgeDetails.setName(getName());
-        badgeDetails.setAwarded(isAwarded());
-        badgeDetails.setTimestamp(getTimestamp());
+        badgeDetails.setDescription(getDescription());
         badgeDetails.setXpValue(getXpValue());
 
         if (LOG.isTraceEnabled()) LOG.trace("badgeDetails; "+ badgeDetails);
@@ -61,10 +58,8 @@ public class Badge {
         buff.append(getNodeId());
         buff.append(", name = ");
         buff.append(getName());
-        buff.append(", awarded = ");
-        buff.append(isAwarded());
-        buff.append(", timestamp = ");
-        buff.append(getTimestamp());
+        buff.append(", description = ");
+        buff.append(getDescription());
         buff.append(", xpValue = ");
         buff.append(getXpValue());;
         buff.append(" ]");
@@ -89,20 +84,13 @@ public class Badge {
         this.name = name;
     }
 
-    public boolean isAwarded() {
-        return awarded;
+    public String getDescription()
+    {
+        return description;
     }
 
-    public void setAwarded(boolean awarded) {
-        this.awarded = awarded;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getXpValue() {
@@ -130,6 +118,7 @@ public class Badge {
 		else
 		{
 			result = prime * result + ((name == null) ? 0 : name.hashCode());
+			result = prime * result + ((description == null) ? 0 : description.hashCode());
 			result = prime * result
 					+ ((xpValue == null) ? 0 : xpValue.hashCode());
 		}
@@ -163,6 +152,12 @@ public class Badge {
 				if (other.name != null) return false;
 			}
 			else if (!name.equals(other.name)) return false;
+			
+			if (description == null)
+			{
+				if (other.description != null) return false;
+			}
+			else if (!description.equals(other.description)) return false;
 			
 			if (xpValue == null)
 			{

@@ -78,29 +78,23 @@ public class BadgeControllerTest {
 	String setupContent(BadgeDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-//        String content = "{\"badgeId\":100,\"name\":\"Test Badge\",\"awarded\":true,\"timestamp\":100000,\"xpValue\":50}";
-		String content="{\"badgeId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"awarded\":"+dets.isAwarded()+",\"timestamp\":"+dets.getTimestamp()+",\"xpValue\":"+dets.getXpValue().intValue()+"}";
+		String content="{\"badgeId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+"\",\"xpValue\":"+dets.getXpValue().intValue()+"}";
 		return content;
 	}
 	
 	String setupInvalidContent(BadgeDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"badgeId1\":"+evtId+",\"name\":\""+dets.getName()+"\",\"awarded\":"+dets.isAwarded()+",\"timestamp\":"+dets.getTimestamp()+",\"xpValue\":"+dets.getXpValue().intValue()+"}";
+		String content="{\"badgeId1\":"+evtId+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+"\",\"xpValue\":"+dets.getXpValue().intValue()+"}";
 		return content;
 	}
 	
 	String setupReturnedContent(BadgeDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"badgeId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"awarded\":"+dets.isAwarded()+
-				",\"timestamp\":"+dets.getTimestamp()+",\"xpValue\":"+dets.getXpValue().intValue()+
+		String content="{\"badgeId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+
+				"\",\"xpValue\":"+dets.getXpValue().intValue()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
-//				"{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
-//				"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
-//				"{\"rel\":\"Liked By\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/likedBy/USERID\"},"+
-//				"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/unlikedBy/USERID\"},"+
-//				"{\"rel\":\"Likes\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/likes\"},"+
 				"{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s\"}]}";	
 		 return content;
 	}
@@ -123,8 +117,7 @@ public class BadgeControllerTest {
             .andDo(print())
             .andExpect(jsonPath("$.badgeId", is(dets.getNodeId().intValue())))
             .andExpect(jsonPath("$.name", is(dets.getName())))
-            .andExpect(jsonPath("$.awarded", is(dets.isAwarded())))
-            .andExpect(jsonPath("$.timestamp", is(dets.getTimestamp().intValue())))
+            .andExpect(jsonPath("$.description", is(dets.getDescription())))
             .andExpect(jsonPath("$.xpValue", is(dets.getXpValue().intValue())))
             .andExpect(jsonPath("$.links[0].rel",is("self")))
             .andExpect(jsonPath("$.links[1].rel",is("Read all")))
@@ -182,8 +175,7 @@ public class BadgeControllerTest {
             .andDo(print())
             .andExpect(jsonPath("$.badgeId", is(badgeDetails.getNodeId().intValue())))
             .andExpect(jsonPath("$.name", is(badgeDetails.getName())))
-            .andExpect(jsonPath("$.awarded", is(badgeDetails.isAwarded())))
-            .andExpect(jsonPath("$.timestamp", is(badgeDetails.getTimestamp().intValue())))
+            .andExpect(jsonPath("$.description", is(badgeDetails.getDescription())))
             .andExpect(jsonPath("$.xpValue", is(badgeDetails.getXpValue().intValue())))
             .andExpect(content().string(returnedContent))
             .andExpect(status().isOk());
@@ -221,13 +213,11 @@ public class BadgeControllerTest {
 		.andExpect(jsonPath("$[0].badgeId",is(badgeDets.get(0).getNodeId().intValue())))
 		.andExpect(jsonPath("$[0].name",is(badgeDets.get(0).getName())))
 		.andExpect(jsonPath("$[0].xpValue",is(badgeDets.get(0).getXpValue().intValue())))
-		.andExpect(jsonPath("$[0].timestamp",is(badgeDets.get(0).getTimestamp().intValue())))
-		.andExpect(jsonPath("$[0].awarded",is(badgeDets.get(0).isAwarded())))
+		.andExpect(jsonPath("$[0].description",is(badgeDets.get(0).getDescription())))
 		.andExpect(jsonPath("$[1].badgeId",is(badgeDets.get(1).getNodeId().intValue())))
 		.andExpect(jsonPath("$[1].name",is(badgeDets.get(1).getName())))
 		.andExpect(jsonPath("$[1].xpValue",is(badgeDets.get(1).getXpValue().intValue())))
-		.andExpect(jsonPath("$[1].timestamp",is(badgeDets.get(1).getTimestamp().intValue())))
-		.andExpect(jsonPath("$[1].awarded",is(badgeDets.get(1).isAwarded())))
+		.andExpect(jsonPath("$[1].description",is(badgeDets.get(1).getDescription())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
@@ -263,8 +253,7 @@ public class BadgeControllerTest {
 		.andDo(print())
         .andExpect(jsonPath("$.badgeId", is(dets.getNodeId().intValue())))
         .andExpect(jsonPath("$.name", is(dets.getName())))
-        .andExpect(jsonPath("$.awarded", is(dets.isAwarded())))
-        .andExpect(jsonPath("$.timestamp", is(dets.getTimestamp().intValue())))
+        .andExpect(jsonPath("$.description", is(dets.getDescription())))
         .andExpect(jsonPath("$.xpValue", is(dets.getXpValue().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Read all")))
