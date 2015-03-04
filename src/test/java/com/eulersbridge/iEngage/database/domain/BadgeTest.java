@@ -46,12 +46,12 @@ public class BadgeTest
 	@Test
 	public final void testFromBadgeDetails()
 	{
-		Badge candidateTest=Badge.fromBadgeDetails(dets);
-		assertEquals("electionTest not of Election class",candidateTest.getClass(),Badge.class);
-		assertEquals("",dets.getNodeId(),candidateTest.getNodeId());
-		assertEquals("",dets.getName(),candidateTest.getName());
-		assertEquals("",dets.getTimestamp(),candidateTest.getTimestamp());
-		assertEquals("",dets.getXpValue(),candidateTest.getXpValue());
+		Badge badgeTest=Badge.fromBadgeDetails(dets);
+		assertEquals("electionTest not of Election class",badgeTest.getClass(),Badge.class);
+		assertEquals("",dets.getNodeId(),badgeTest.getNodeId());
+		assertEquals("",dets.getName(),badgeTest.getName());
+		assertEquals("",dets.getDescription(),badgeTest.getDescription());
+		assertEquals("",dets.getXpValue(),badgeTest.getXpValue());
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class BadgeTest
 		assertEquals("electionDetails not of ElectionDetails class",dets.getClass(),BadgeDetails.class);
 		assertEquals("",badge.getNodeId(),dets.getNodeId());
 		assertEquals("",badge.getName(),dets.getName());
-		assertEquals("",badge.getTimestamp(),dets.getTimestamp());
+		assertEquals("",badge.getDescription(),dets.getDescription());
 		assertEquals("",badge.getXpValue(),dets.getXpValue());
 	}
 
@@ -169,6 +169,10 @@ public class BadgeTest
 		checkHashCode(badge,badgeTest);
 		badgeTest.setName(badge.getName());
 		
+		badgeTest.setDescription(null);
+		checkHashCode(badge,badgeTest);
+		badgeTest.setDescription(badge.getDescription());
+		
 		badgeTest.setXpValue(null);
 		checkHashCode(badge,badgeTest);
 		badgeTest.setXpValue(badge.getXpValue());
@@ -198,11 +202,17 @@ public class BadgeTest
 		assertEquals(badge, badgeTest);
 		assertEquals(badgeTest, badge);
 		
-		badgeTest.setName("Some description");
+		badgeTest.setName("Some name");
 		assertNotEquals(badge, badgeTest);
 		badgeTest.setName(null);
 		checkNotEquals(badgeTest, badge);
 		badgeTest.setName(badge.getName());
+		
+		badgeTest.setDescription("Some description");
+		assertNotEquals(badge, badgeTest);
+		badgeTest.setDescription(null);
+		checkNotEquals(badgeTest, badge);
+		badgeTest.setDescription(badge.getDescription());
 		
 		badgeTest.setXpValue(123l);
 		assertNotEquals(badge, badgeTest);

@@ -1,8 +1,9 @@
 package com.eulersbridge.iEngage.core.events.badge;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import static org.junit.Assert.*;
 
@@ -10,27 +11,22 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class  BadgeDetailsTest {
+public class  BadgeDetailsTest
+{
     BadgeDetails badgeDetails;
-    Long badgeId = new Long(0);
-    String name = "badgename";
-    boolean awarded = false;
-    Long timestamp = new Long(0);
-    Long xpValue = new Long(10);
+    Long badgeId;
+    String name;
+    String description;
+    Long xpValue;
 
     @Before
-    public void setUp() throws Exception {
-        badgeDetails = new BadgeDetails();
-        badgeDetails.setNodeId(badgeId);
-        badgeDetails.setName(name);
-        badgeDetails.setAwarded(awarded);
-        badgeDetails.setTimestamp(timestamp);
-        badgeDetails.setXpValue(xpValue);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
+    public void setUp() throws Exception
+    {
+        badgeDetails = DatabaseDataFixture.populateBadge1().toBadgeDetails();
+        badgeId=badgeDetails.getNodeId();
+        name=badgeDetails.getName();
+        description=badgeDetails.getDescription();
+        xpValue=badgeDetails.getXpValue();
     }
 
     @Test
@@ -40,23 +36,13 @@ public class  BadgeDetailsTest {
 
     @Test
     public void testEquals() throws Exception {
-        BadgeDetails badgeDetails1 = new BadgeDetails();
-        badgeDetails1.setNodeId(badgeId);
+        BadgeDetails badgeDetails1 = DatabaseDataFixture.populateBadge1().toBadgeDetails();
         assertEquals("badgeDetails does not match", badgeDetails, badgeDetails1);
-        badgeDetails1.setName(name);
-        badgeDetails1.setAwarded(awarded);
-        badgeDetails1.setTimestamp(timestamp);
-        badgeDetails1.setXpValue(xpValue);
-        assertEquals("badgeDetails does not match", badgeDetails, badgeDetails1);
-        badgeDetails1 = new BadgeDetails();
-        badgeDetails1.setName(name);
-        badgeDetails1.setAwarded(awarded);
-        badgeDetails1.setTimestamp(timestamp);
-        badgeDetails1.setXpValue(xpValue);
+        assertEquals("badgeDetails does not match", badgeDetails1, badgeDetails);
+        badgeDetails1=DatabaseDataFixture.populateBadge2().toBadgeDetails();
         assertNotEquals("different badgeDetails matchs", badgeDetails, badgeDetails1);
-        badgeDetails1 = new BadgeDetails();
-        badgeDetails1.setNodeId(new Long(10));
-        assertNotEquals("different badgeDetails matchs", badgeDetails, badgeDetails1);
+        badgeDetails=DatabaseDataFixture.populateBadge2().toBadgeDetails();
+        assertEquals(" badgeDetails do not match", badgeDetails, badgeDetails1);
     }
 
     @Test
@@ -72,27 +58,17 @@ public class  BadgeDetailsTest {
     }
 
     @Test
-    public void testIsAwarded() throws Exception {
-        assertEquals("awarded does not match", awarded, badgeDetails.isAwarded());
-    }
-
-    @Test
-    public void testSetAwarded() throws Exception {
-        BadgeDetails badgeDetails1 = new BadgeDetails();
-        badgeDetails1.setAwarded(true);
-        assertEquals("awarded does not match", true, badgeDetails1.isAwarded());
-    }
-
-    @Test
-    public void testGetTimestamp() throws Exception {
-        assertEquals("timestamp does not match", timestamp, badgeDetails.getTimestamp());
+    public void testGetDescription() throws Exception
+    {
+        assertEquals("timestamp does not match", description, badgeDetails.getDescription());
     }
 
     @Test
     public void testSetTimestamp() throws Exception {
-        BadgeDetails badgeDetails1 = new BadgeDetails();
-        badgeDetails1.setTimestamp(new Long(100));
-        assertEquals("timestamp does not match", new Long(100), badgeDetails1.getTimestamp());
+    	description="Another description";
+        assertNotEquals("description should not match but does.", description, badgeDetails.getDescription());
+        badgeDetails.setDescription(description);
+        assertEquals("description does not match", description, badgeDetails.getDescription());
     }
 
     @Test

@@ -22,8 +22,9 @@ public class Badge extends ResourceSupport
 {
     private Long badgeId;
     private String name;
-    private boolean awarded;
-    private Long timestamp;
+    private String description;
+//    private boolean awarded;
+//    private Long timestamp;
     private Long xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(Badge.class);
@@ -41,8 +42,7 @@ public class Badge extends ResourceSupport
 
         badge.setBadgeId(badgeDetails.getNodeId());
         badge.setName(badgeDetails.getName());
-        badge.setAwarded(badgeDetails.isAwarded());
-        badge.setTimestamp(badgeDetails.getTimestamp());
+        badge.setDescription(badgeDetails.getDescription());
         badge.setXpValue(badgeDetails.getXpValue());
 
         // {!begin selfRel}
@@ -61,8 +61,7 @@ public class Badge extends ResourceSupport
         BadgeDetails badgeDetails = new BadgeDetails();
         badgeDetails.setNodeId(getBadgeId());
         badgeDetails.setName(getName());
-        badgeDetails.setAwarded(isAwarded());
-        badgeDetails.setTimestamp(getTimestamp());
+        badgeDetails.setDescription(getDescription());
         badgeDetails.setXpValue(getXpValue());
         return badgeDetails;
     }
@@ -83,23 +82,23 @@ public class Badge extends ResourceSupport
         this.name = name;
     }
 
-    public boolean isAwarded() {
-        return awarded;
-    }
+    /**
+	 * @return the description
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
 
-    public void setAwarded(boolean awarded) {
-        this.awarded = awarded;
-    }
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Long getXpValue() {
+	public Long getXpValue() {
         return xpValue;
     }
 

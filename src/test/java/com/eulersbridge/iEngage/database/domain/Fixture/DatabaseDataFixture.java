@@ -541,13 +541,12 @@ public class DatabaseDataFixture
 		return positions;
 	}
 
-    public static Badge populateBadge(Long id, String name, boolean awarded, Long timestamp, Long xpValue)
+    public static Badge populateBadge(Long id, String name, String description, Long xpValue)
     {
         Badge badge = new Badge();
         badge.setNodeId(id);
         badge.setName(name);
-        badge.setAwarded(awarded);
-        badge.setTimestamp(timestamp);
+        badge.setDescription(description);
         badge.setXpValue(xpValue);
         return badge;
     }
@@ -555,20 +554,18 @@ public class DatabaseDataFixture
     public static Badge populateBadge1()
     {
         Long id = 100l;
-        String name = "Badge name1";
-        boolean awarded = true;
-        Long timestamp = 100000l;
+        String name = "Badge name 1";
+        String description = "Badge description 1";
         Long xpValue = 150l;
-        return populateBadge(id, name, awarded, timestamp, xpValue);
+        return populateBadge(id, name, description, xpValue);
     }
     public static Badge populateBadge2()
     {
         Long id = 101l;
-        String name = "Badge name2";
-        boolean awarded = true;
-        Long timestamp = 100001l;
+        String name = "Badge name 2";
+        String description = "Badge description 2";
         Long xpValue = 250l;
-        return populateBadge(id, name, awarded, timestamp, xpValue);
+        return populateBadge(id, name, description, xpValue);
     }
 	public static HashMap<Long, Badge> populateBadges()
 	{
