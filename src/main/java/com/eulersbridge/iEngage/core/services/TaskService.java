@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
@@ -28,7 +29,10 @@ public interface TaskService {
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public UpdatedEvent updateTask(UpdateTaskEvent updateTaskEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public UpdatedEvent completedTask(CompletedTaskEvent updateTaskEvent);
+
+    	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public DeletedEvent deleteTask(DeleteTaskEvent deleteTaskEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")

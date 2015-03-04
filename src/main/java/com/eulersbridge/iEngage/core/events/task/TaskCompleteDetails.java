@@ -75,5 +75,4 @@ public class TaskCompleteDetails extends Details
 	{
 		this.date = date;
 	}
-
 }

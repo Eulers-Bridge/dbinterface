@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.*;
 import com.eulersbridge.iEngage.core.services.TaskService;
 import com.eulersbridge.iEngage.rest.domain.Task;
+import com.eulersbridge.iEngage.rest.domain.TaskCompleted;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,6 +119,30 @@ public class TaskController {
             if (LOG.isDebugEnabled()) LOG.debug("taskUpdatedEvent - "+taskUpdatedEvent);
             if(taskUpdatedEvent.isEntityFound()){
                 Task result = Task.fromTaskDetails((TaskDetails) taskUpdatedEvent.getDetails());
+                if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //Completed Task
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.TASK_LABEL+"/{taskId}/complete/{userId}")
+    public @ResponseBody ResponseEntity<TaskCompleted>
+    completedTask(@PathVariable Long taskId, @PathVariable Long userId)
+    {
+        if (LOG.isInfoEnabled()) LOG.info("User "+userId+" completed task. " + taskId);
+        TaskCompleteDetails dets=new TaskCompleteDetails(null, userId, taskId, null);
+        UpdatedEvent taskCompletedEvent = taskService.completedTask(new CompletedTaskEvent(dets));
+        if(null != taskCompletedEvent){
+            if (LOG.isDebugEnabled()) LOG.debug("taskUpdatedEvent - "+taskCompletedEvent);
+            if(taskCompletedEvent.isEntityFound()){
+                TaskCompleted result = TaskCompleted.fromTaskCompletedDetails((TaskCompleteDetails) taskCompletedEvent.getDetails());
                 if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }

@@ -38,9 +38,10 @@ import com.eulersbridge.iEngage.core.events.task.TaskDetails;
 import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 import com.eulersbridge.iEngage.database.domain.Task;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.CandidateRepository;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 /**
  * @author Greg Newitt
@@ -53,7 +54,7 @@ public class TaskEventHandlerTest
     @Mock
 	TaskRepository taskRepository;
     @Mock
-	CandidateRepository candidateRepository;
+	UserRepository userRepository;
 
     TaskEventHandler service;
 
@@ -65,8 +66,7 @@ public class TaskEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-//		service=new TaskEventHandler(taskRepository,candidateRepository);
-		service=new TaskEventHandler(taskRepository);
+		service=new TaskEventHandler(taskRepository,userRepository);
 	}
 
 	/**
@@ -239,6 +239,25 @@ public class TaskEventHandlerTest
 		assertFalse(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
 	}
+
+	@Test
+	public final void testCompletedTask()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
+		Task testTask=DatabaseDataFixture.populateTask1();
+		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+/*		when(taskRepository.save(any(Task.class))).thenReturn(testData);
+		TaskDetails dets=testData.toTaskDetails();
+		UpdateTaskEvent createElectionEvent=new UpdateTaskEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updateTask(createElectionEvent);
+		TaskDetails returnedDets = (TaskDetails) evtData.getDetails();
+		assertEquals(returnedDets,testData.toTaskDetails());
+		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
+		assertTrue(evtData.isEntityFound());
+		assertNotNull(evtData.getNodeId());
+*/	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.TaskEventHandler#deleteTask(com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent)}.

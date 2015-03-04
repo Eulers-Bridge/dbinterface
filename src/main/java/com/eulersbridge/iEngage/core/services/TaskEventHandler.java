@@ -10,7 +10,10 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.*;
 import com.eulersbridge.iEngage.database.domain.Task;
+import com.eulersbridge.iEngage.database.domain.TaskComplete;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +31,12 @@ public class TaskEventHandler implements TaskService {
 
     private TaskRepository taskRepository;
 
-    public TaskEventHandler(TaskRepository taskRepository) {
+	private UserRepository userRepository;
+
+    public TaskEventHandler(TaskRepository taskRepository, UserRepository userRepository)
+    {
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -106,6 +113,39 @@ public class TaskEventHandler implements TaskService {
             if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
             return new TaskUpdatedEvent(result.getNodeId(), result.toTaskDetails());
         }
+    }
+
+    @Override
+    public UpdatedEvent completedTask(CompletedTaskEvent updateTaskEvent)
+    {
+        TaskCompleteDetails taskDetails = (TaskCompleteDetails) updateTaskEvent.getDetails();
+        Long taskId = taskDetails.getTaskId();
+        Long userId = taskDetails.getUserId();
+        UpdatedEvent response=null;
+        if(LOG.isDebugEnabled()) LOG.debug("taskId is " + taskId+" userId - "+userId);
+        Task task = taskRepository.findOne(taskId);
+        if(task == null)
+        {
+            if(LOG.isDebugEnabled()) LOG.debug("task entity not found " + taskId);
+            response = TaskUpdatedEvent.notFound(taskId );
+        }
+        else
+        {
+            User user = userRepository.findOne(userId);
+        	if (null==user)
+        	{
+                if(LOG.isDebugEnabled()) LOG.debug("user entity not found " + taskId);
+                response = TaskUpdatedEvent.notFound(userId );
+        	}
+        	else
+        	{
+        		TaskComplete tc = TaskComplete.fromTaskCompleteDetails(taskDetails);
+                TaskComplete result = taskRepository.taskCompleted(tc);
+                if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+//                response = new TaskUpdatedEvent(result.getNodeId(), result.toTaskCompleteDetails());
+        	}
+        }
+        return response;
     }
 
     @Override
