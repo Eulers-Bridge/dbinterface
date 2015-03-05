@@ -30,14 +30,17 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.ReadTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
 import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 import com.eulersbridge.iEngage.database.domain.Task;
+import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
@@ -248,16 +251,108 @@ public class TaskEventHandlerTest
 		User testUser=DatabaseDataFixture.populateUserGnewitt();
 		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
 		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
-/*		when(taskRepository.save(any(Task.class))).thenReturn(testData);
-		TaskDetails dets=testData.toTaskDetails();
-		UpdateTaskEvent createElectionEvent=new UpdateTaskEvent(dets.getNodeId(), dets);
-		UpdatedEvent evtData = service.updateTask(createElectionEvent);
-		TaskDetails returnedDets = (TaskDetails) evtData.getDetails();
-		assertEquals(returnedDets,testData.toTaskDetails());
+		TaskComplete testData=new TaskComplete();
+		testData.setNodeId(44l);
+		testData.setTask(testTask);
+		testData.setUser(testUser);
+		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
+		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
+		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
+		TaskCompleteDetails returnedDets = (TaskCompleteDetails) evtData.getDetails();
+		assertEquals(returnedDets,testData.toTaskCompleteDetails());
 		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
 		assertTrue(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
-*/	}
+	}
+
+	@Test
+	public final void testCompletedTaskNullUser()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
+		Task testTask=DatabaseDataFixture.populateTask1();
+		User testUser=null;
+		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+		TaskComplete testData=new TaskComplete();
+		testData.setNodeId(44l);
+		testData.setTask(testTask);
+		testData.setUser(testUser);
+		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
+		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
+		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
+		TaskCompleteDetails returnedDets = (TaskCompleteDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isEntityFound());
+		assertNull(evtData.getNodeId());
+	}
+
+	@Test
+	public final void testCompletedTaskInvalidUser()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
+		Task testTask=DatabaseDataFixture.populateTask1();
+		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
+		when(userRepository.findOne(any(Long.class))).thenReturn(null);
+		TaskComplete testData=new TaskComplete();
+		testData.setNodeId(44l);
+		testData.setTask(testTask);
+		testData.setUser(testUser);
+		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
+		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
+		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
+		TaskCompleteDetails returnedDets = (TaskCompleteDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isEntityFound());
+		assertEquals(evtData.getNodeId(),testUser.getNodeId());
+	}
+
+	@Test
+	public final void testCompletedTaskNullTask()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
+		Task testTask=null;
+		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+		TaskComplete testData=new TaskComplete();
+		testData.setNodeId(44l);
+		testData.setTask(testTask);
+		testData.setUser(testUser);
+		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
+		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
+		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
+		TaskCompleteDetails returnedDets = (TaskCompleteDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isEntityFound());
+		assertNull(evtData.getNodeId());
+	}
+
+	@Test
+	public final void testCompletedTaskInvalidTask()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
+		Task testTask=DatabaseDataFixture.populateTask1();
+		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		when(taskRepository.findOne(any(Long.class))).thenReturn(null);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+		TaskComplete testData=new TaskComplete();
+		testData.setNodeId(44l);
+		testData.setTask(testTask);
+		testData.setUser(testUser);
+		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
+		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
+		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
+		TaskCompleteDetails returnedDets = (TaskCompleteDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isEntityFound());
+		assertEquals(evtData.getNodeId(),testTask.getNodeId());
+	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.TaskEventHandler#deleteTask(com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent)}.

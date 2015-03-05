@@ -27,7 +27,7 @@ import org.springframework.data.domain.Sort.Direction;
  */
 
 public class TaskEventHandler implements TaskService {
-    private static Logger LOG = LoggerFactory.getLogger(TaskService.class);
+    private static Logger LOG = LoggerFactory.getLogger(TaskEventHandler.class);
 
     private TaskRepository taskRepository;
 
@@ -142,7 +142,7 @@ public class TaskEventHandler implements TaskService {
         		TaskComplete tc = TaskComplete.fromTaskCompleteDetails(taskDetails);
                 TaskComplete result = taskRepository.taskCompleted(tc);
                 if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
-//                response = new TaskUpdatedEvent(result.getNodeId(), result.toTaskCompleteDetails());
+                response = new UpdatedEvent(result.getNodeId(), result.toTaskCompleteDetails());
         	}
         }
         return response;

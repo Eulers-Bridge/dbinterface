@@ -33,13 +33,16 @@ public class TaskComplete
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toTaskCompleteDetails()");
 	    
-	    TaskCompleteDetails details = new TaskCompleteDetails(getNodeId(),this.getUser().getNodeId(),getTask().getNodeId(),getDate());
+	    Long userId=((getUser() == null) ? null : getUser().getNodeId());
+	    Long taskId=((getTask() == null) ? null : getTask().getNodeId());
+	    TaskCompleteDetails details = new TaskCompleteDetails(getNodeId(),userId,taskId,getDate());
 	    details.setNodeId(getNodeId());
 	    if (LOG.isTraceEnabled()) LOG.trace("taskComplete "+this);
 
 	    BeanUtils.copyProperties(this, details);
-	    details.setTaskId(this.getTask().getNodeId());
-	    details.setUserId(this.getUser().getNodeId());
+	    
+	    details.setTaskId(taskId);
+	    details.setUserId(userId);
 	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
 
 	    return details;
@@ -78,7 +81,7 @@ public class TaskComplete
 
 	public Long getDate()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getYear() = "+date);
+		if (LOG.isDebugEnabled()) LOG.debug("getDate() = "+date);
 		return date;
 	}
 
