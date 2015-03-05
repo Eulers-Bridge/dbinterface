@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -36,17 +37,21 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.ReadTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.ReadTasksEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
 import com.eulersbridge.iEngage.core.events.task.TaskCreatedEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskDeletedEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
 import com.eulersbridge.iEngage.core.events.task.TaskUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.TaskService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
@@ -100,6 +105,20 @@ public class TaskControllerTest
 		int evtId=dets.getNodeId().intValue();
 		String content="{\"taskId\":"+evtId+",\"action\":\""+dets.getAction()+"\",\"description\":\""+dets.getDescription()+"\",\"xpValue\":"+dets.getXpValue()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"}"+
+//				",{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
+//				"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
+//				"{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s\"}"+
+				"]}";	
+		 return content;
+	}
+
+	String setupReturnedCompletedContent(TaskCompleteDetails dets)
+	{
+		int nodeId=dets.getNodeId().intValue();
+		int taskId=dets.getTaskId().intValue();
+		int userId=dets.getUserId().intValue();
+		String content="{\"nodeId\":"+nodeId+",\"taskId\":"+taskId+",\"timestamp\":"+dets.getDate()+",\"userId\":"+userId+
+				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+taskId+"/complete/"+userId+"\"}"+
 //				",{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
 //				"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
 //				"{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s\"}"+
@@ -414,6 +433,65 @@ public class TaskControllerTest
 		this.mockMvc.perform(delete(urlPrefix+"/{taskId}",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isGone())	;
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.TaskController#completedTask(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Task)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testCompletedTask() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTask()");
+		TaskDetails taskDets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		UserDetails userDets=DatabaseDataFixture.populateUserGnewitt().toUserDetails();
+		Long taskId=taskDets.getNodeId();
+		Long userId=userDets.getNodeId();
+		Long id=1453l;
+		Long now=Calendar.getInstance().getTimeInMillis();
+        TaskCompleteDetails dets=new TaskCompleteDetails(id, userId, taskId, now);
+		UpdatedEvent testData=new UpdatedEvent(453l,dets);
+		String returnedContent=setupReturnedCompletedContent(dets);
+		when (taskService.completedTask(any(CompletedTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{taskId}/complete/{userId}",taskId.intValue(),userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.taskId",is(dets.getTaskId().intValue())))
+		.andExpect(jsonPath("$.userId",is(dets.getUserId().intValue())))
+		.andExpect(jsonPath("$.timestamp",is(dets.getDate())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;		
+	}
+
+	@Test
+	public final void testCompletedTaskTaskNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTask()");
+		TaskDetails taskDets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		UserDetails userDets=DatabaseDataFixture.populateUserGnewitt().toUserDetails();
+		Long taskId=taskDets.getNodeId();
+		Long userId=userDets.getNodeId();
+		UpdatedEvent testData=UpdatedEvent.notFound(taskId);
+		when (taskService.completedTask(any(CompletedTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{taskId}/complete/{userId}",taskId.intValue(),userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
+
+	@Test
+	public final void testCompletedTaskNullEvtReturned() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateTask()");
+		TaskDetails taskDets=DatabaseDataFixture.populateTask1().toTaskDetails();
+		UserDetails userDets=DatabaseDataFixture.populateUserGnewitt().toUserDetails();
+		Long taskId=taskDets.getNodeId();
+		Long userId=userDets.getNodeId();
+		UpdatedEvent testData=null;
+		when (taskService.completedTask(any(CompletedTaskEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{taskId}/complete/{userId}",taskId.intValue(),userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
 	}
 
 

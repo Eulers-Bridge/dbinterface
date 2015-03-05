@@ -139,7 +139,8 @@ public class TaskController {
         if (LOG.isInfoEnabled()) LOG.info("User "+userId+" completed task. " + taskId);
         TaskCompleteDetails dets=new TaskCompleteDetails(null, userId, taskId, null);
         UpdatedEvent taskCompletedEvent = taskService.completedTask(new CompletedTaskEvent(dets));
-        if(null != taskCompletedEvent){
+        if(null != taskCompletedEvent)
+        {
             if (LOG.isDebugEnabled()) LOG.debug("taskUpdatedEvent - "+taskCompletedEvent);
             if(taskCompletedEvent.isEntityFound()){
                 TaskCompleted result = TaskCompleted.fromTaskCompletedDetails((TaskCompleteDetails) taskCompletedEvent.getDetails());

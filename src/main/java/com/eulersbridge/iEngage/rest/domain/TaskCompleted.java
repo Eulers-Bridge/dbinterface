@@ -43,7 +43,7 @@ public class TaskCompleted extends ResourceSupport
 
         // {!begin selfRel}
         task.add(linkTo(TaskController.class).slash(name)
-                .slash(task.taskId).withSelfRel());
+                .slash(task.taskId).slash("complete").slash(task.getUserId()).withSelfRel());
         // {!end selfRel}
 
         return task;
