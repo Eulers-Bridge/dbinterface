@@ -17,5 +17,4 @@ public interface TaskRepository extends GraphRepository<Task>
 	@Query("Match (a:`User`),(b:`Task`) where id(a)={userId} and id(b)={taskId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
 			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"' return r")
 	TaskComplete taskCompleted(@Param("taskId") Long taskId, @Param("userId") Long userId);
-//	TaskComplete taskCompleted(@Param("tc") TaskComplete tc);
 }

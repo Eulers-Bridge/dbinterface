@@ -247,14 +247,11 @@ public class TaskEventHandlerTest
 	public final void testCompletedTask()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
-		Task testTask=DatabaseDataFixture.populateTask1();
-		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		TaskComplete testData=DatabaseDataFixture.populateTaskComplete1();
+		Task testTask=testData.getTask();
+		User testUser=testData.getUser();
 		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
 		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
-		TaskComplete testData=new TaskComplete();
-		testData.setNodeId(44l);
-		testData.setTask(testTask);
-		testData.setUser(testUser);
 		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
@@ -270,14 +267,12 @@ public class TaskEventHandlerTest
 	public final void testCompletedTaskNullUser()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
-		Task testTask=DatabaseDataFixture.populateTask1();
 		User testUser=null;
+		TaskComplete testData=DatabaseDataFixture.populateTaskComplete1();
+		testData.setUser(testUser);
+		Task testTask=testData.getTask();
 		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
 		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
-		TaskComplete testData=new TaskComplete();
-		testData.setNodeId(44l);
-		testData.setTask(testTask);
-		testData.setUser(testUser);
 		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
@@ -292,14 +287,11 @@ public class TaskEventHandlerTest
 	public final void testCompletedTaskInvalidUser()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
-		Task testTask=DatabaseDataFixture.populateTask1();
-		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		TaskComplete testData=DatabaseDataFixture.populateTaskComplete1();
+		Task testTask=testData.getTask();
+		User testUser=testData.getUser();
 		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
 		when(userRepository.findOne(any(Long.class))).thenReturn(null);
-		TaskComplete testData=new TaskComplete();
-		testData.setNodeId(44l);
-		testData.setTask(testTask);
-		testData.setUser(testUser);
 		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
@@ -315,13 +307,11 @@ public class TaskEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
 		Task testTask=null;
-		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		TaskComplete testData=DatabaseDataFixture.populateTaskComplete1();
+		testData.setTask(testTask);
+		User testUser=testData.getUser();
 		when(taskRepository.findOne(any(Long.class))).thenReturn(testTask);
 		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
-		TaskComplete testData=new TaskComplete();
-		testData.setNodeId(44l);
-		testData.setTask(testTask);
-		testData.setUser(testUser);
 		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
@@ -336,14 +326,11 @@ public class TaskEventHandlerTest
 	public final void testCompletedTaskInvalidTask()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CompletingTask()");
-		Task testTask=DatabaseDataFixture.populateTask1();
-		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		TaskComplete testData=DatabaseDataFixture.populateTaskComplete1();
+		Task testTask=testData.getTask();
+		User testUser=testData.getUser();
 		when(taskRepository.findOne(any(Long.class))).thenReturn(null);
 		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
-		TaskComplete testData=new TaskComplete();
-		testData.setNodeId(44l);
-		testData.setTask(testTask);
-		testData.setUser(testUser);
 		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);

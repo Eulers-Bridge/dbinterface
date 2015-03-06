@@ -28,6 +28,7 @@ import com.eulersbridge.iEngage.database.domain.PollResultImpl;
 import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.domain.Task;
+import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
@@ -723,5 +724,30 @@ public class DatabaseDataFixture
 		Personality personality=new Personality(extroversion, agreeableness, conscientiousness, emotionalStability, openess);
 		personality.setNodeId(nodeId);
 		return personality;
+	}
+	public static TaskComplete populateTaskComplete1()
+	{		
+		Long nodeId=1467l;
+		User user=populateUserGnewitt();
+		Task task=populateTask1();
+		Long date=1425609701874l;
+		return populateTaskComplete(nodeId, user, task, date);
+	}
+	public static TaskComplete populateTaskComplete2()
+	{
+		Long nodeId=1468l;
+		User user=populateUserGnewitt2();
+		Task task=populateTask2();
+		Long date=1425609701878l;
+		return populateTaskComplete(nodeId, user, task, date);
+	}
+	public static TaskComplete populateTaskComplete(Long nodeId, User user, Task task, Long date)
+	{
+		TaskComplete tc=new TaskComplete();
+		tc.setNodeId(nodeId);
+		tc.setUser(user);
+		tc.setTask(task);
+		tc.setDate(date);
+		return tc;
 	}
 }
