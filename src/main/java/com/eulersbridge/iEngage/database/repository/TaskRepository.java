@@ -20,6 +20,6 @@ public interface TaskRepository extends GraphRepository<Task>
 			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"' return r")
 	TaskComplete taskCompleted(@Param("taskId") Long taskId, @Param("userId") Long userId);
 
-	@Query("Match (a:`User`)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"]-(b:`Task`) where id(a)={userId} return b")
-	Page<Task> findCompletedTasks(Long userId, Pageable pageable);
+	@Query("Match (a:`User`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where id(a)={userId} return b")
+	Page<Task> findCompletedTasks(@Param("userId") Long userId, Pageable pageable);
 }
