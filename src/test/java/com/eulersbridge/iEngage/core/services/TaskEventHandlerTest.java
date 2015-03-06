@@ -283,6 +283,77 @@ public class TaskEventHandlerTest
 		assertNull(evtData.getNodeId());
 	}
 
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.TaskTaskHandler#readTasks(com.eulersbridge.iEngage.core.events.events.ReadAllTask,Direction,int,int)}.
+	 */
+	@Test
+	public final void testFindCompletedTasks()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingCompletedTasks()");
+		HashMap<Long, Task> events = DatabaseDataFixture.populateTasks();
+		ArrayList<Task> evts=new ArrayList<Task>();
+		Iterator<Task> iter=events.values().iterator();
+		while (iter.hasNext())
+		{
+			Task na=iter.next();
+			evts.add(na);
+		}
+
+		
+		Long userId=1l;
+		ReadAllEvent evt=new ReadAllEvent(userId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Task> testData=new PageImpl<Task>(evts,pageable,evts.size());
+		when(taskRepository.findCompletedTasks(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		TasksReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
+	}
+
+	@Test
+	public final void testFindCompletedTasksNoneAvailable()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingCompletedTasks()");
+		ArrayList<Task> evts=new ArrayList<Task>();
+		
+		Long userId=1l;
+		ReadAllEvent evt=new ReadAllEvent(userId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Task> testData=new PageImpl<Task>(evts,pageable,evts.size());
+		when(taskRepository.findCompletedTasks(any(Long.class),any(Pageable.class))).thenReturn(testData);
+				
+		TasksReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalItems().longValue(),0);
+	}
+
+	@Test
+	public final void testFindCompletedTasksNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingCompletedTasks()");
+		
+		Long userId=1l;
+		ReadAllEvent evt=new ReadAllEvent(userId);
+		
+		Page<Task> testData=null;
+		when(taskRepository.findAll(any(Pageable.class))).thenReturn(testData);
+
+		int pageLength=10;
+		int pageNumber=0;
+		TasksReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(((AllReadEvent)evtData).isEntityFound());
+	}
+	
 	@Test
 	public final void testCompletedTaskInvalidUser()
 	{

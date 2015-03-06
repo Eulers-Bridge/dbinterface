@@ -38,4 +38,8 @@ public interface TaskService {
     @PreAuthorize("hasRole('ROLE_USER')")
 	public TasksReadEvent readTasks(ReadAllEvent readTasksEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public TasksReadEvent readCompletedTasks(ReadAllEvent readCompletedTasksEvent,
+			Direction sortDirection, int pageNumber, int pageLength);
 }

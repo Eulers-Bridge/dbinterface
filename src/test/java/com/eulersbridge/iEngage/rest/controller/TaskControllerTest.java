@@ -41,6 +41,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.ReadCompletedTasksEvent;
 import com.eulersbridge.iEngage.core.events.task.ReadTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.ReadTasksEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
@@ -301,6 +302,49 @@ public class TaskControllerTest
 		TasksReadEvent testData=new TasksReadEvent(eleDets);
 		when (taskService.readTasks(any(ReadTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindCompletedTasks() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindCompletedTasks()");
+		Long userId=345l;
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Task> dets=DatabaseDataFixture.populateTasks();
+		Iterable<com.eulersbridge.iEngage.database.domain.Task> tasks=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Task> iter=tasks.iterator();
+		ArrayList<TaskDetails> taskDets=new ArrayList<TaskDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Task article=iter.next();
+			taskDets.add(article.toTaskDetails());
+		}
+		TasksReadEvent testData=new TasksReadEvent(taskDets);
+		when (taskService.readCompletedTasks(any(ReadCompletedTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/complete/{userId}",userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$[0].action",is(taskDets.get(0).getAction())))
+		.andExpect(jsonPath("$[0].description",is(taskDets.get(0).getDescription())))
+		.andExpect(jsonPath("$[0].xpValue",is(taskDets.get(0).getXpValue())))
+		.andExpect(jsonPath("$[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$[1].action",is(taskDets.get(1).getAction())))
+		.andExpect(jsonPath("$[1].description",is(taskDets.get(1).getDescription())))
+		.andExpect(jsonPath("$[1].xpValue",is(taskDets.get(1).getXpValue())))
+		.andExpect(jsonPath("$[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$[0].links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindCompletedTasksZeroArticles() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindCompletedTasks()");
+		Long userId=345l;
+		ArrayList<TaskDetails> eleDets=new ArrayList<TaskDetails>(); 
+		TasksReadEvent testData=new TasksReadEvent(eleDets);
+		when (taskService.readCompletedTasks(any(ReadCompletedTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/complete/{userId}",userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
