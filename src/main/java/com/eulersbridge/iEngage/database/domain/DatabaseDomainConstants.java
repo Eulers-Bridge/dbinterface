@@ -45,4 +45,5 @@ public class DatabaseDomainConstants
 	public static final String TASK = "Task";
 	public static final String TICKET = "Ticket";
 	public static final String VOTING_LOCATION = "VotingLocation";
+	public static final String HAS_COMPLETED_TASK_LABEL = "HAS_COMPLETED_TASK";
 }

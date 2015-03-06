@@ -6,6 +6,7 @@ import com.eulersbridge.iEngage.database.domain.TaskComplete;
 
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * @author Yikai Gong
@@ -13,7 +14,8 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 
 public interface TaskRepository extends GraphRepository<Task>
 {
-	@Query("Match (a:`User`),(b:`Task`) where id(a)={tc.getUser().getNodeId()} and id(b)={tc.getTask().getNodeId()} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.VRECORD_LABEL+
-			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
-	TaskComplete taskCompleted(TaskComplete tc);
+	@Query("Match (a:`User`),(b:`Task`) where id(a)={userId} and id(b)={taskId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
+			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"' return r")
+	TaskComplete taskCompleted(@Param("taskId") Long taskId, @Param("userId") Long userId);
+//	TaskComplete taskCompleted(@Param("tc") TaskComplete tc);
 }

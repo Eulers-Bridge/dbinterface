@@ -255,7 +255,7 @@ public class TaskEventHandlerTest
 		testData.setNodeId(44l);
 		testData.setTask(testTask);
 		testData.setUser(testUser);
-		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
 		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
@@ -278,7 +278,7 @@ public class TaskEventHandlerTest
 		testData.setNodeId(44l);
 		testData.setTask(testTask);
 		testData.setUser(testUser);
-		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
 		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
@@ -300,7 +300,7 @@ public class TaskEventHandlerTest
 		testData.setNodeId(44l);
 		testData.setTask(testTask);
 		testData.setUser(testUser);
-		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
 		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
@@ -322,7 +322,7 @@ public class TaskEventHandlerTest
 		testData.setNodeId(44l);
 		testData.setTask(testTask);
 		testData.setUser(testUser);
-		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
 		UpdatedEvent evtData = service.completedTask(completeTaskEvent);
@@ -344,7 +344,7 @@ public class TaskEventHandlerTest
 		testData.setNodeId(44l);
 		testData.setTask(testTask);
 		testData.setUser(testUser);
-		when(taskRepository.taskCompleted(any(TaskComplete.class))).thenReturn(testData);
+		when(taskRepository.taskCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
 		TaskCompleteDetails dets=testData.toTaskCompleteDetails();
 		CompletedTaskEvent completeTaskEvent=new CompletedTaskEvent(dets);
 		UpdatedEvent evtData = service.completedTask(completeTaskEvent);

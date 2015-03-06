@@ -140,7 +140,7 @@ public class TaskEventHandler implements TaskService {
         	else
         	{
         		TaskComplete tc = TaskComplete.fromTaskCompleteDetails(taskDetails);
-                TaskComplete result = taskRepository.taskCompleted(tc);
+                TaskComplete result = taskRepository.taskCompleted(tc.getTask().getNodeId(),tc.getUser().getNodeId());
                 if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
                 response = new UpdatedEvent(result.getNodeId(), result.toTaskCompleteDetails());
         	}
