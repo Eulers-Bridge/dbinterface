@@ -370,6 +370,102 @@ public class VotingLocationEventHandlerTest
 	}
 	
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#findVotingLocations(com.eulersbridge.iEngage.core.events.ReadAllEvent, org.springframework.data.domain.Sort.Direction, int, int)}.
+	 */
+	@Test
+	public final void testFindVotingBooths()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingVotingBooths()");
+		HashMap<Long, VotingLocation> events = DatabaseDataFixture.populateVotingLocations();
+		ArrayList<VotingLocation> evts=new ArrayList<VotingLocation>();
+		Iterator<VotingLocation> iter=events.values().iterator();
+		while (iter.hasNext())
+		{
+			VotingLocation na=iter.next();
+			evts.add(na);
+		}
+
+		
+		Long electionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(electionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<VotingLocation> testData=new PageImpl<VotingLocation>(evts,pageable,evts.size());
+		when(votingLocationRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		VotingLocationsReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
+	}
+
+	@Test
+	public final void testFindVotingBoothsNoneAvailable()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingVotingBooths()");
+		ArrayList<VotingLocation> evts=new ArrayList<VotingLocation>();
+		
+		Long electionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(electionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<VotingLocation> testData=new PageImpl<VotingLocation>(evts,pageable,evts.size());
+		when(votingLocationRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		Owner inst=new Owner(DatabaseDataFixture.populateElection1().getNodeId());
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(inst);
+				
+		VotingLocationsReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalItems().longValue(),0);
+	}
+
+	@Test
+	public final void testFindVotingBoothsNoValidInst()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingVotingLocations()");
+		ArrayList<VotingLocation> evts=new ArrayList<VotingLocation>();
+		
+		Long electionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(electionId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<VotingLocation> testData=new PageImpl<VotingLocation>(evts,pageable,evts.size());
+		when(votingLocationRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
+				
+		VotingLocationsReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isEntityFound());
+		assertEquals(evtData.getTotalPages(),null);
+		assertEquals(evtData.getTotalItems(),null);
+	}
+
+	@Test
+	public final void testFindVotingBoothsNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("ReadingVotingLocations()");
+		
+		Long electionId=1l;
+		ReadAllEvent evt=new ReadAllEvent(electionId);
+		
+		Page<VotingLocation> testData=null;
+		when(votingLocationRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		int pageLength=10;
+		int pageNumber=0;
+		VotingLocationsReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(evtData.isEntityFound());
+	}
+	
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#addVotingLocationToElection(com.eulersbridge.iEngage.core.events.votingLocations.AddVotingLocationEvent)}.
 	 */
 	@Test
