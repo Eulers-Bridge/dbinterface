@@ -206,4 +206,20 @@ public class CandidateEventHandler implements CandidateService {
             }
         }
     }
+
+    @Override
+    public TicketRemovedEvent removeTicket(RemoveTicketEvent removeTicketEvent) {
+        TicketRemovedEvent ticketRemovedEvent = null;
+        Candidate candidate = candidateRepository.findOne(removeTicketEvent.getCandidateId());
+        Ticket ticket = ticketRepository.findOne(removeTicketEvent.getTicketId());
+        if(candidate == null)
+            ticketRemovedEvent = TicketRemovedEvent.candidateNotFound(removeTicketEvent.getCandidateId(), removeTicketEvent.getCandidateId());
+        else if(ticket == null)
+            ticketRemovedEvent = TicketRemovedEvent.ticketNotFound(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
+        else{
+            candidateRepository.deleteIsOnTicketRelationship(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
+            ticketRemovedEvent = new TicketRemovedEvent(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
+        }
+        return ticketRemovedEvent;
+    }
 }

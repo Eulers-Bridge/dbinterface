@@ -288,4 +288,20 @@ public class CandidateController {
         }
     }
 
+    // remove ticket from candidate
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL
+            + "/{candidateId}" + ControllerConstants.TICKET_LABEL + "/{ticketId}" +"/remove")
+    public @ResponseBody ResponseEntity<Boolean> removeTicket(
+            @PathVariable Long candidateId, @PathVariable Long ticketId){
+        if (LOG.isInfoEnabled())
+            LOG.info("Attempting to remove ticket " + ticketId + " from candidate " + candidateId);
+        TicketRemovedEvent ticketRemovedEvent = candidateService.removeTicket(new RemoveTicketEvent(candidateId, ticketId));
+        if (!ticketRemovedEvent.isCandidateFound()){
+            return new ResponseEntity<Boolean>(HttpStatus.GONE);
+        } else if(!ticketRemovedEvent.isTicketFound()){
+            return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<Boolean>(HttpStatus.OK);
+        }
+    }
 }
