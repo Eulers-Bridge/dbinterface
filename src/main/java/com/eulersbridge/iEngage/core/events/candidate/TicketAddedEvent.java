@@ -19,12 +19,14 @@ public class TicketAddedEvent {
     public static TicketAddedEvent candidateNotFound(Long candidateId, Long ticketId){
         TicketAddedEvent ticketAddedEvent = new TicketAddedEvent(candidateId, ticketId);
         ticketAddedEvent.setCandidateFound(false);
+        ticketAddedEvent.setResult(false);
         return ticketAddedEvent;
     }
 
     public static TicketAddedEvent ticketNotFound(Long candidateId, Long ticketId){
         TicketAddedEvent ticketAddedEvent = new TicketAddedEvent(candidateId, ticketId);
         ticketAddedEvent.setTicketFound(false);
+        ticketAddedEvent.setResult(false);
         return ticketAddedEvent;
     }
 

@@ -186,25 +186,20 @@ public class CandidateEventHandler implements CandidateService {
 
     @Override
     public TicketAddedEvent addTicket(AddTicketEvent addTicketEvent) {
-        TicketAddedEvent ticketAddedEvent = new TicketAddedEvent(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
-        Candidate candidate = candidateRepository.findOne(ticketAddedEvent.getCandidateId());
-        Ticket ticket = ticketRepository.findOne(ticketAddedEvent.getTicketId());
+        TicketAddedEvent ticketAddedEvent = null;
+        Candidate candidate = candidateRepository.findOne(addTicketEvent.getCandidateId());
+        Ticket ticket = ticketRepository.findOne(addTicketEvent.getTicketId());
         if(candidate == null)
-            ticketAddedEvent.setCandidateFound(false);
-        if(ticket == null)
-            ticketAddedEvent.setTicketFound(false);
-        if(candidate == null || ticket ==null){
-            ticketAddedEvent.setResult(false);
-            return ticketAddedEvent;
-        }else{
+            ticketAddedEvent = TicketAddedEvent.candidateNotFound(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
+        else if(ticket == null)
+            ticketAddedEvent = TicketAddedEvent.ticketNotFound(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
+        else {
+            ticketAddedEvent = new TicketAddedEvent(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
             IsOnTicket isOnTicket = candidateRepository.createIsOnTicketRelationship(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
-            if(isOnTicket == null){
+            if (isOnTicket == null)
                 ticketAddedEvent.setResult(false);
-                return ticketAddedEvent;
-            }else{
-                return ticketAddedEvent;
-            }
         }
+        return ticketAddedEvent;
     }
 
     @Override
