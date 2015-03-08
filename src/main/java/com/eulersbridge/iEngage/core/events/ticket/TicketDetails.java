@@ -20,6 +20,7 @@ public class TicketDetails extends Details
 	private String colour;
 	private Iterable<Long> candidateIds;
 	private Long electionId;
+    private String chararcterCode;
 
 	private static Logger LOG = LoggerFactory.getLogger(TicketDetails.class);
 
@@ -43,6 +44,8 @@ public class TicketDetails extends Details
 		buff.append(getCandidateIds());
 		buff.append(", electionId = ");
 		buff.append(getElectionId());
+        buff.append(", chararcterCode = ");
+        buff.append(getChararcterCode());
 		buff.append(" ]");
 		retValue = buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
@@ -161,7 +164,16 @@ public class TicketDetails extends Details
 		this.information = information;
 	}
 
-	/**
+    public String getChararcterCode() {
+        return chararcterCode;
+    }
+
+    public void setChararcterCode(String chararcterCode) {
+        this.chararcterCode = chararcterCode;
+    }
+
+
+    /**
 	 * @return the colour
 	 */
 	public String getColour()

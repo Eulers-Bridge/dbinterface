@@ -28,6 +28,7 @@ public class Ticket extends ResourceSupport{
     private String colour;
     private Iterable<Long> candidateIds;
     private Long electionId;
+    private String chararcterCode = "";
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -49,6 +50,7 @@ public class Ticket extends ResourceSupport{
         ticket.setColour(ticketDetails.getColour());
         ticket.setCandidateIds(ticketDetails.getCandidateIds());
         ticket.setElectionId(ticketDetails.getElectionId());
+        ticket.setChararcterCode(ticket.getChararcterCode());
 
         // {!begin selfRel}
         ticket.add(linkTo(TicketController.class).slash(name)
@@ -70,6 +72,7 @@ public class Ticket extends ResourceSupport{
         ticketDetails.setInformation(getInformation());
         ticketDetails.setColour(getColour());
         ticketDetails.setElectionId(getElectionId());
+        ticketDetails.setChararcterCode(getChararcterCode());
         return ticketDetails;
     }
 
@@ -161,9 +164,17 @@ public class Ticket extends ResourceSupport{
 		this.electionId = electionId;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+    public String getChararcterCode() {
+        return chararcterCode;
+    }
+
+    public void setChararcterCode(String chararcterCode) {
+        this.chararcterCode = chararcterCode;
+    }
+
+    /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
 	@Override
 	public String toString()
 	{

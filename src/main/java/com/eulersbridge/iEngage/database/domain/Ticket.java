@@ -30,6 +30,7 @@ public class Ticket extends Likeable
     @RelatedTo(type = DatabaseDomainConstants.HAS_TICKET_LABEL, direction = Direction.INCOMING)
     private Election election;
     private String colour;
+    private String chararcterCode;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -48,6 +49,7 @@ public class Ticket extends Likeable
 	        election.setNodeId(ticketDetails.getElectionId());
 	        ticket.setElection(election);
             ticket.setColour(ticketDetails.getColour());
+            ticket.setChararcterCode(ticketDetails.getChararcterCode());
 	
 	        if (LOG.isTraceEnabled()) LOG.trace("ticket "+ticket);
     	}
@@ -63,6 +65,7 @@ public class Ticket extends Likeable
         ticketDetails.setInformation(getInformation());
         ticketDetails.setElectionId(getElection().getNodeId());
         ticketDetails.setColour(getColour());
+        ticketDetails.setChararcterCode(getChararcterCode());
         
         ticketDetails.setCandidateIds(toCandidateIds(candidates));
 
@@ -171,6 +174,14 @@ public class Ticket extends Likeable
 
     public void setColour(String colour) {
         this.colour = colour;
+    }
+
+    public String getChararcterCode() {
+        return chararcterCode;
+    }
+
+    public void setChararcterCode(String chararcterCode) {
+        this.chararcterCode = chararcterCode;
     }
 
     /**
