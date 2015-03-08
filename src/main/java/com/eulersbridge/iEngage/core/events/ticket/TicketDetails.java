@@ -44,7 +44,7 @@ public class TicketDetails extends Details
 		buff.append(getCandidateNames());
 		buff.append(", electionId = ");
 		buff.append(getElectionId());
-        buff.append(", chararcterCode = ");
+        buff.append(", characterCode = ");
         buff.append(getChararcterCode());
 		buff.append(" ]");
 		retValue = buff.toString();

@@ -127,12 +127,13 @@ public class TicketTest
 	{
 		Election election=new Election();
 		election.setNodeId(dets.getElectionId());
-		Ticket taskTest=new Ticket(dets.getNodeId(),dets.getName(),dets.getLogo(),dets.getInformation(),null,election);
+		Ticket taskTest=new Ticket(dets.getNodeId(),dets.getName(),dets.getLogo(),dets.getInformation(),null,election,"GRN");
 		assertEquals("taskTest not of Ticket class",taskTest.getClass(),Ticket.class);
 		assertEquals(dets.getName(),taskTest.getName());
 		assertEquals(dets.getNodeId(),taskTest.getNodeId());
 		assertEquals(dets.getLogo(),taskTest.getLogo());
 		assertEquals(dets.getInformation(),taskTest.getInformation());
+        assertEquals(dets.getChararcterCode(), taskTest.getCharacterCode());
 		assertNull(taskTest.getCandidates());
 		assertEquals(election, taskTest.getElection());
 	}
