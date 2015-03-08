@@ -18,8 +18,9 @@ public class TicketDetails extends Details
 	private Set<String> pictures;
 	private String information;
 	private String colour;
-	private Iterable<Long> candidateIds;
+    private Iterable<String> candidateNames;
 	private Long electionId;
+    private String chararcterCode;
 
 	private static Logger LOG = LoggerFactory.getLogger(TicketDetails.class);
 
@@ -39,10 +40,12 @@ public class TicketDetails extends Details
 		buff.append(getInformation());
 		buff.append(", colour = ");
 		buff.append(getColour());
-		buff.append(", candidateIds = ");
-		buff.append(getCandidateIds());
+		buff.append(", candidateNames = ");
+		buff.append(getCandidateNames());
 		buff.append(", electionId = ");
 		buff.append(getElectionId());
+        buff.append(", chararcterCode = ");
+        buff.append(getChararcterCode());
 		buff.append(" ]");
 		retValue = buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
@@ -69,7 +72,7 @@ public class TicketDetails extends Details
 			result = prime * result
 					+ ((colour == null) ? 0 : colour.hashCode());
 			result = prime * result
-					+ ((candidateIds == null) ? 0 : candidateIds.hashCode());
+					+ ((candidateNames == null) ? 0 : candidateNames.hashCode());
 			result = prime * result
 					+ ((electionId == null) ? 0 : electionId.hashCode());
 		}
@@ -112,11 +115,11 @@ public class TicketDetails extends Details
 					if (other.colour != null) return false;
 				}
 			else if (!colour.equals(other.colour)) return false;
-			if (candidateIds == null)
+			if (candidateNames == null)
 			{
-				if (other.candidateIds != null) return false;
+				if (other.candidateNames != null) return false;
 			}
-			else if (!candidateIds.equals(other.candidateIds)) return false;
+			else if (!candidateNames.equals(other.candidateNames)) return false;
 		}
 		return true;
 	}
@@ -161,7 +164,23 @@ public class TicketDetails extends Details
 		this.information = information;
 	}
 
-	/**
+    public String getChararcterCode() {
+        return chararcterCode;
+    }
+
+    public void setChararcterCode(String chararcterCode) {
+        this.chararcterCode = chararcterCode;
+    }
+
+    public Iterable<String> getCandidateNames() {
+        return candidateNames;
+    }
+
+    public void setCandidateNames(Iterable<String> candidateNames) {
+        this.candidateNames = candidateNames;
+    }
+
+    /**
 	 * @return the colour
 	 */
 	public String getColour()
@@ -176,23 +195,6 @@ public class TicketDetails extends Details
 	public void setColour(String colour)
 	{
 		this.colour = colour;
-	}
-
-	/**
-	 * @return the candidateIds
-	 */
-	public Iterable<Long> getCandidateIds()
-	{
-		return candidateIds;
-	}
-
-	/**
-	 * @param candidateIds
-	 *            the candidateIds to set
-	 */
-	public void setCandidateIds(Iterable<Long> candidateIds)
-	{
-		this.candidateIds = candidateIds;
 	}
 
 	/**

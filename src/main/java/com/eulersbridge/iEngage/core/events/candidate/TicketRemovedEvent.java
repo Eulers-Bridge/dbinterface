@@ -4,30 +4,30 @@ package com.eulersbridge.iEngage.core.events.candidate;
  * @author Yikai Gong
  */
 
-public class TicketAddedEvent {
+public class TicketRemovedEvent {
     private Long candidateId;
     private Long ticketId;
     private boolean candidateFound = true;
     private boolean TicketFound = true;
     private boolean result = true;
 
-    public TicketAddedEvent(Long candidateId, Long ticketId) {
+    public TicketRemovedEvent(Long candidateId, Long ticketId) {
         this.candidateId = candidateId;
         this.ticketId = ticketId;
     }
 
-    public static TicketAddedEvent candidateNotFound(Long candidateId, Long ticketId){
-        TicketAddedEvent ticketAddedEvent = new TicketAddedEvent(candidateId, ticketId);
-        ticketAddedEvent.setCandidateFound(false);
-        ticketAddedEvent.setResult(false);
-        return ticketAddedEvent;
+    public static TicketRemovedEvent candidateNotFound(Long candidateId, Long ticketId){
+        TicketRemovedEvent ticketRemovedEvent = new TicketRemovedEvent(candidateId, ticketId);
+        ticketRemovedEvent.setCandidateFound(false);
+        ticketRemovedEvent.setResult(false);
+        return ticketRemovedEvent;
     }
 
-    public static TicketAddedEvent ticketNotFound(Long candidateId, Long ticketId){
-        TicketAddedEvent ticketAddedEvent = new TicketAddedEvent(candidateId, ticketId);
-        ticketAddedEvent.setTicketFound(false);
-        ticketAddedEvent.setResult(false);
-        return ticketAddedEvent;
+    public static TicketRemovedEvent ticketNotFound(Long candidateId, Long ticketId){
+        TicketRemovedEvent ticketRemovedEvent = new TicketRemovedEvent(candidateId, ticketId);
+        ticketRemovedEvent.setTicketFound(false);
+        ticketRemovedEvent.setResult(false);
+        return ticketRemovedEvent;
     }
 
     public Long getCandidateId() {

@@ -186,24 +186,35 @@ public class CandidateEventHandler implements CandidateService {
 
     @Override
     public TicketAddedEvent addTicket(AddTicketEvent addTicketEvent) {
-        TicketAddedEvent ticketAddedEvent = new TicketAddedEvent(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
-        Candidate candidate = candidateRepository.findOne(ticketAddedEvent.getCandidateId());
-        Ticket ticket = ticketRepository.findOne(ticketAddedEvent.getTicketId());
+        TicketAddedEvent ticketAddedEvent = null;
+        Candidate candidate = candidateRepository.findOne(addTicketEvent.getCandidateId());
+        Ticket ticket = ticketRepository.findOne(addTicketEvent.getTicketId());
         if(candidate == null)
-            ticketAddedEvent.setCandidateFound(false);
-        if(ticket == null)
-            ticketAddedEvent.setTicketFound(false);
-        if(candidate == null || ticket ==null){
-            ticketAddedEvent.setResult(false);
-            return ticketAddedEvent;
-        }else{
+            ticketAddedEvent = TicketAddedEvent.candidateNotFound(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
+        else if(ticket == null)
+            ticketAddedEvent = TicketAddedEvent.ticketNotFound(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
+        else {
+            ticketAddedEvent = new TicketAddedEvent(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
             IsOnTicket isOnTicket = candidateRepository.createIsOnTicketRelationship(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
-            if(isOnTicket == null){
+            if (isOnTicket == null)
                 ticketAddedEvent.setResult(false);
-                return ticketAddedEvent;
-            }else{
-                return ticketAddedEvent;
-            }
         }
+        return ticketAddedEvent;
+    }
+
+    @Override
+    public TicketRemovedEvent removeTicket(RemoveTicketEvent removeTicketEvent) {
+        TicketRemovedEvent ticketRemovedEvent = null;
+        Candidate candidate = candidateRepository.findOne(removeTicketEvent.getCandidateId());
+        Ticket ticket = ticketRepository.findOne(removeTicketEvent.getTicketId());
+        if(candidate == null)
+            ticketRemovedEvent = TicketRemovedEvent.candidateNotFound(removeTicketEvent.getCandidateId(), removeTicketEvent.getCandidateId());
+        else if(ticket == null)
+            ticketRemovedEvent = TicketRemovedEvent.ticketNotFound(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
+        else{
+            candidateRepository.deleteIsOnTicketRelationship(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
+            ticketRemovedEvent = new TicketRemovedEvent(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
+        }
+        return ticketRemovedEvent;
     }
 }

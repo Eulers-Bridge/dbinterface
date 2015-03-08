@@ -26,8 +26,9 @@ public class Ticket extends ResourceSupport{
     private Set<String> pictures;
     private String information;
     private String colour;
-    private Iterable<Long> candidateIds;
+    private Iterable<String> candidateNames;
     private Long electionId;
+    private String chararcterCode = "";
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -47,8 +48,9 @@ public class Ticket extends ResourceSupport{
         ticket.setPictures(ticketDetails.getPictures());
         ticket.setInformation(ticketDetails.getInformation());
         ticket.setColour(ticketDetails.getColour());
-        ticket.setCandidateIds(ticketDetails.getCandidateIds());
+        ticket.setCandidateNames(ticketDetails.getCandidateNames());
         ticket.setElectionId(ticketDetails.getElectionId());
+        ticket.setChararcterCode(ticket.getChararcterCode());
 
         // {!begin selfRel}
         ticket.add(linkTo(TicketController.class).slash(name)
@@ -70,6 +72,7 @@ public class Ticket extends ResourceSupport{
         ticketDetails.setInformation(getInformation());
         ticketDetails.setColour(getColour());
         ticketDetails.setElectionId(getElectionId());
+        ticketDetails.setChararcterCode(getChararcterCode());
         return ticketDetails;
     }
 
@@ -113,6 +116,14 @@ public class Ticket extends ResourceSupport{
         this.information = information;
     }
 
+    public Iterable<String> getCandidateNames() {
+        return candidateNames;
+    }
+
+    public void setCandidateNames(Iterable<String> candidateNames) {
+        this.candidateNames = candidateNames;
+    }
+
     /**
 	 * @return the colour
 	 */
@@ -127,22 +138,6 @@ public class Ticket extends ResourceSupport{
 	public void setColour(String colour)
 	{
 		this.colour = colour;
-	}
-
-	/**
-	 * @return the candidateIds
-	 */
-	public Iterable<Long> getCandidateIds()
-	{
-		return candidateIds;
-	}
-
-	/**
-	 * @param candidateIds the candidateIds to set
-	 */
-	public void setCandidateIds(Iterable<Long> candidateIds)
-	{
-		this.candidateIds = candidateIds;
 	}
 
 	/**
@@ -161,15 +156,23 @@ public class Ticket extends ResourceSupport{
 		this.electionId = electionId;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+    public String getChararcterCode() {
+        return chararcterCode;
+    }
+
+    public void setChararcterCode(String chararcterCode) {
+        this.chararcterCode = chararcterCode;
+    }
+
+    /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
 	@Override
 	public String toString()
 	{
 		return "Ticket [ticketId=" + ticketId + ", name=" + name + ", logo="
 				+ logo + ", pictures=" + pictures + ", information="
-				+ information + ", candidateIds=" + candidateIds + ", electionId = "+electionId+"]";
+				+ information + ", candidateIds=" + candidateNames + ", electionId = "+electionId+"]";
 	}
 
 	public static Iterator<Ticket> toTicketsIterator(

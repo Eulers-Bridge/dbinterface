@@ -33,4 +33,7 @@ public interface CandidateService {
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public TicketAddedEvent addTicket(AddTicketEvent addTicketEvent);
+
+    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    public TicketRemovedEvent removeTicket(RemoveTicketEvent removeTicketEvent);
 }

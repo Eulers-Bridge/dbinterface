@@ -40,7 +40,7 @@ public class CreateTicketEventTest {
         ticketDetails.setLogo(logo);
         ticketDetails.setPictures(pictures);
         ticketDetails.setInformation(information);
-        ticketDetails.setCandidateIds(candidateIds);
+//        ticketDetails.setCandidateIds(candidateIds);
     }
 
     @After

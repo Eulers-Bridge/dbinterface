@@ -100,7 +100,7 @@ public class TicketControllerTest
 		int evtId=dets.getNodeId().intValue();
 		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"logo\":\""+dets.getLogo()+
 						"\",\"pictures\":null,\"information\":\""+dets.getInformation()+"\",\"colour\":"+dets.getColour()+
-						",\"candidateIds\":"+dets.getCandidateIds()+",\"electionId\":"+dets.getElectionId()+
+						",\"candidateNames\":"+dets.getCandidateNames()+",\"electionId\":"+dets.getElectionId()+
 						",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
 //						"{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
 //						"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
