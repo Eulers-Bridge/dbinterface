@@ -67,7 +67,7 @@ public class Ticket extends Likeable
         ticketDetails.setColour(getColour());
         ticketDetails.setChararcterCode(getChararcterCode());
         
-        ticketDetails.setCandidateIds(toCandidateIds(candidates));
+        ticketDetails.setCandidateNames(toCandidateNames(candidates));
 
 
         if (LOG.isTraceEnabled()) LOG.trace("ticketDetails; "+ ticketDetails);
@@ -88,6 +88,21 @@ public class Ticket extends Likeable
     	}
 		return candidateIds;
 	}
+
+    static protected Iterable<String> toCandidateNames(Iterable<Candidate> candidates)
+    {
+        LinkedList<String> candidateNames=new LinkedList<String>();
+        if (candidates!=null)
+        {
+            Iterator <Candidate> iter=candidates.iterator();
+            while (iter.hasNext())
+            {
+                Candidate candidate=iter.next();
+                candidateNames.add(candidate.getUser().getEmail());
+            }
+        }
+        return candidateNames;
+    }
 
 	@Override
     public String toString() {

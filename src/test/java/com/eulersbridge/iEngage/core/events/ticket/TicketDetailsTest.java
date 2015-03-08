@@ -39,7 +39,7 @@ public class TicketDetailsTest {
         ticketDetails.setLogo(logo);
         ticketDetails.setPictures(pictures);
         ticketDetails.setInformation(information);
-        ticketDetails.setCandidateIds(candidateIds);
+//        ticketDetails.setCandidateIds(candidateIds);
 
         assertNotNull("ticketDetails is null", ticketDetails);
     }
@@ -110,15 +110,15 @@ public class TicketDetailsTest {
         assertEquals("information does not match", information, ticketDetails1.getInformation());
     }
 
-    @Test
-    public void testGetCandidateIds() throws Exception {
-        assertEquals("CandidateIds does not match", candidateIds, ticketDetails.getCandidateIds());
-    }
-
-    @Test
-    public void testSetCandidateIds() throws Exception {
-        TicketDetails ticketDetails1 = new TicketDetails();
-        ticketDetails1.setCandidateIds(candidateIds);
-        assertEquals("CandidateIds does not match", candidateIds, ticketDetails1.getCandidateIds());
-    }
+//    @Test
+//    public void testGetCandidateIds() throws Exception {
+//        assertEquals("CandidateIds does not match", candidateIds, ticketDetails.getCandidateIds());
+//    }
+//
+//    @Test
+//    public void testSetCandidateIds() throws Exception {
+//        TicketDetails ticketDetails1 = new TicketDetails();
+//        ticketDetails1.setCandidateIds(candidateIds);
+//        assertEquals("CandidateIds does not match", candidateIds, ticketDetails1.getCandidateIds());
+//    }
 }

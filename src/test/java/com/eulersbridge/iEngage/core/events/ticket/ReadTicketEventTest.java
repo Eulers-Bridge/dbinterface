@@ -20,7 +20,7 @@ public class ReadTicketEventTest {
     String logo = "logo";
     Set<String> pictures;
     String information = "informations";
-    ArrayList<Long> candidateIds;
+    ArrayList<String> candidateNames;
 
     TicketDetails ticketDetails;
     ReadTicketEvent readTicketEvent;
@@ -30,9 +30,9 @@ public class ReadTicketEventTest {
         pictures = new HashSet<>();
         pictures.add("pic1");
         pictures.add("pic2");
-        candidateIds = new ArrayList<>();
-        candidateIds.add(new Long(0));
-        candidateIds.add(new Long(1));
+        candidateNames = new ArrayList<>();
+        candidateNames.add("Yikai");
+        candidateNames.add("Greg");
 
         ticketDetails = new TicketDetails();
         ticketDetails.setNodeId(ticketId);
@@ -40,7 +40,7 @@ public class ReadTicketEventTest {
         ticketDetails.setLogo(logo);
         ticketDetails.setPictures(pictures);
         ticketDetails.setInformation(information);
-        ticketDetails.setCandidateIds(candidateIds);
+        ticketDetails.setCandidateNames(candidateNames);
     }
 
     @After

@@ -26,7 +26,7 @@ public class Ticket extends ResourceSupport{
     private Set<String> pictures;
     private String information;
     private String colour;
-    private Iterable<Long> candidateIds;
+    private Iterable<String> candidateNames;
     private Long electionId;
     private String chararcterCode = "";
 
@@ -48,7 +48,7 @@ public class Ticket extends ResourceSupport{
         ticket.setPictures(ticketDetails.getPictures());
         ticket.setInformation(ticketDetails.getInformation());
         ticket.setColour(ticketDetails.getColour());
-        ticket.setCandidateIds(ticketDetails.getCandidateIds());
+        ticket.setCandidateNames(ticketDetails.getCandidateNames());
         ticket.setElectionId(ticketDetails.getElectionId());
         ticket.setChararcterCode(ticket.getChararcterCode());
 
@@ -116,6 +116,14 @@ public class Ticket extends ResourceSupport{
         this.information = information;
     }
 
+    public Iterable<String> getCandidateNames() {
+        return candidateNames;
+    }
+
+    public void setCandidateNames(Iterable<String> candidateNames) {
+        this.candidateNames = candidateNames;
+    }
+
     /**
 	 * @return the colour
 	 */
@@ -130,22 +138,6 @@ public class Ticket extends ResourceSupport{
 	public void setColour(String colour)
 	{
 		this.colour = colour;
-	}
-
-	/**
-	 * @return the candidateIds
-	 */
-	public Iterable<Long> getCandidateIds()
-	{
-		return candidateIds;
-	}
-
-	/**
-	 * @param candidateIds the candidateIds to set
-	 */
-	public void setCandidateIds(Iterable<Long> candidateIds)
-	{
-		this.candidateIds = candidateIds;
 	}
 
 	/**
@@ -180,7 +172,7 @@ public class Ticket extends ResourceSupport{
 	{
 		return "Ticket [ticketId=" + ticketId + ", name=" + name + ", logo="
 				+ logo + ", pictures=" + pictures + ", information="
-				+ information + ", candidateIds=" + candidateIds + ", electionId = "+electionId+"]";
+				+ information + ", candidateIds=" + candidateNames + ", electionId = "+electionId+"]";
 	}
 
 	public static Iterator<Ticket> toTicketsIterator(
