@@ -48,9 +48,9 @@ public interface UserService
 	public UserAuthenticatedEvent authenticateUser(AuthenticateUserEvent authUserEvent) throws AuthenticationException;
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteReminderEvent.getVoteReminderDetails().getUserId()==authentication.name)")
 	public VoteReminderAddedEvent addVoteReminder(AddVoteReminderEvent addVoteReminderEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteRecordEvent.getEmail()==authentication.name)")
 	public VoteRecordAddedEvent addVoteRecord(AddVoteRecordEvent addVoteRecordEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public ReadEvent readVoteRecord(ReadVoteRecordEvent readVoteRecordEvent);
