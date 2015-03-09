@@ -116,14 +116,15 @@ public class UserControllerTest
 	{
 		return "{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getVoterId()+
 				"\",\"electionId\":"+dets.getElectionId().intValue()+",\"date\":"+dets.getDate().intValue()+
-				",\"location\":\""+dets.getLocation()+"\"}";
+				",\"location\":\""+dets.getLocation()+"\",\"qrCode\":\""+dets.getQrCode()+"\"}";
 	}
 	
 	private String populateVoteRecordReturnedContent(VoteRecordDetails dets)
 	{
 		return "{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getVoterId()+
 				"\",\"electionId\":"+dets.getElectionId().intValue()+",\"date\":"+dets.getDate().intValue()+
-				",\"location\":\""+dets.getLocation()+"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/"+
+				",\"location\":\""+dets.getLocation()+"\",\"qrCode\":\""+dets.getQrCode()+
+				"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/"+
 				dets.getVoterId()+"/voteRecord\"}]}";
 	}
 

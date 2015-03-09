@@ -21,10 +21,11 @@ public class VoteRecord extends ResourceSupport
 	private Long electionId;
 	private Long date;
 	private String location;
+	private String qrCode;
 
 	public VoteRecordDetails toVoteRecordDetails()
 	{
-		VoteRecordDetails vrd=new VoteRecordDetails(nodeId, userEmail, electionId, date, location);
+		VoteRecordDetails vrd=new VoteRecordDetails(nodeId, userEmail, electionId, date, location,qrCode);
 		return vrd;
 	}
 
@@ -35,6 +36,7 @@ public class VoteRecord extends ResourceSupport
 		vr.setUserEmail(voteRecordDetails.getVoterId());
 		vr.setDate(voteRecordDetails.getDate());
 		vr.setLocation(voteRecordDetails.getLocation());
+		vr.setQrCode(voteRecordDetails.getQrCode());
 		vr.setNodeId(voteRecordDetails.getNodeId());
 		vr.setElectionId(voteRecordDetails.getElectionId());
 
@@ -121,5 +123,21 @@ public class VoteRecord extends ResourceSupport
 	public void setLocation(String location)
 	{
 		this.location = location;
+	}
+
+	/**
+	 * @return the qrCode
+	 */
+	public String getQrCode()
+	{
+		return qrCode;
+	}
+
+	/**
+	 * @param qrCode the qrCode to set
+	 */
+	public void setQrCode(String qrCode)
+	{
+		this.qrCode = qrCode;
 	}
 }

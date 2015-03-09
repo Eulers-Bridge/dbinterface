@@ -15,6 +15,7 @@ public class VoteRecordDetails extends Details
 	private Long electionId;
 	private Long date;
 	private String location;
+	private String qrCode;
 	
 	/**
 	 * 
@@ -30,27 +31,32 @@ public class VoteRecordDetails extends Details
 	 * @param electionId
 	 * @param date
 	 * @param location
+	 * @param qrCode
 	 */
 	public VoteRecordDetails(Long nodeId, String voterEmail, Long electionId,
-			Long date, String location) {
+			Long date, String location, String qrCode)
+	{
 		super(nodeId);
 		this.voterEmail = voterEmail;
 		this.electionId = electionId;
 		this.date = date;
 		this.location = location;
+		this.qrCode = qrCode;
 	}
 
 	/**
 	 * @return the voterId
 	 */
-	public String getVoterId() {
+	public String getVoterId()
+	{
 		return voterEmail;
 	}
 
 	/**
 	 * @param voterId the voterId to set
 	 */
-	public void setVoterId(String voterId) {
+	public void setVoterId(String voterId)
+	{
 		this.voterEmail = voterId;
 	}
 
@@ -64,7 +70,8 @@ public class VoteRecordDetails extends Details
 	/**
 	 * @param electionId the electionId to set
 	 */
-	public void setElectionId(Long electionId) {
+	public void setElectionId(Long electionId)
+	{
 		this.electionId = electionId;
 	}
 
@@ -78,32 +85,52 @@ public class VoteRecordDetails extends Details
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(Long date) {
+	public void setDate(Long date)
+	{
 		this.date = date;
 	}
 
 	/**
 	 * @return the location
 	 */
-	public String getLocation() {
+	public String getLocation()
+	{
 		return location;
 	}
 
 	/**
 	 * @param location the location to set
 	 */
-	public void setLocation(String location) {
+	public void setLocation(String location)
+	{
 		this.location = location;
+	}
+
+	/**
+	 * @return the qrCode
+	 */
+	public String getQrCode()
+	{
+		return qrCode;
+	}
+
+	/**
+	 * @param qrCode the qrCode to set
+	 */
+	public void setQrCode(String qrCode)
+	{
+		this.qrCode = qrCode;
 	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "VoteRecordDetails [nodeId=" + nodeId + ", voterId=" + voterEmail
 				+ ", electionId=" + electionId + ", date=" + date
-				+ ", location=" + location + "]";
+				+ ", location=" + location + ", qrCode=" + qrCode + "]";
 	}
 
 	/* (non-Javadoc)
@@ -124,6 +151,8 @@ public class VoteRecordDetails extends Details
 					+ ((electionId == null) ? 0 : electionId.hashCode());
 			result = prime * result
 					+ ((location == null) ? 0 : location.hashCode());
+			result = prime * result
+					+ ((qrCode == null) ? 0 : qrCode.hashCode());
 			result = prime * result + ((voterEmail == null) ? 0 : voterEmail.hashCode());
 		}
 		return result;
@@ -165,6 +194,11 @@ public class VoteRecordDetails extends Details
 				if (other.location != null)
 					return false;
 			} else if (!location.equals(other.location))
+				return false;
+			if (qrCode == null) {
+				if (other.qrCode != null)
+					return false;
+			} else if (!qrCode.equals(other.qrCode))
 				return false;
 			if (voterEmail == null) {
 				if (other.voterEmail != null)

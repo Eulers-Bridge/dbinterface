@@ -374,22 +374,23 @@ public class DatabaseDataFixture
 		Long nodeId=(long)1;
 		Election elec=populateElection1();
 		User voter=populateUserGnewitt();
-		return populateVoteRecord(nodeId, 123458l, elec, "Union House", voter);
+		return populateVoteRecord(nodeId, 123458l, elec, "Union House", voter,"qrCode1");
 	}
 	public static VoteRecord populateVoteRecord2()
 	{
 		Long nodeId=(long)2;
 		Election elec=populateElection2();
 		User voter=populateUserGnewitt2();
-		return populateVoteRecord(nodeId, 123559l, elec, "Union House", voter);
+		return populateVoteRecord(nodeId, 123559l, elec, "Union House", voter,"qrCode2");
 	}
-	public static VoteRecord populateVoteRecord(Long id, Long date, Election election, String location, User voter)
+	public static VoteRecord populateVoteRecord(Long id, Long date, Election election, String location, User voter, String qrCode)
 	{
 		VoteRecord voteRecord=new VoteRecord();
 		voteRecord.setNodeId(id);
 		voteRecord.setDate(date);
 		voteRecord.setElection(election);
 		voteRecord.setLocation(location);
+		voteRecord.setQrCode(qrCode);
 		voteRecord.setVoter(voter);
 		return voteRecord;
 	}

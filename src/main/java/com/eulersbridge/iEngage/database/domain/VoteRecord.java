@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.neo4j.annotation.EndNode;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
@@ -16,10 +17,12 @@ import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
 public class VoteRecord 
 {
 	@GraphId private Long nodeId;
+	@Fetch
 	@StartNode private User voter;
 	@EndNode private Election election;
 	private Long date;
 	private String location;
+	private String qrCode;
 	
     private static Logger LOG = LoggerFactory.getLogger(VoteRecord.class);
 
@@ -38,16 +41,23 @@ public class VoteRecord
 	public VoteRecordDetails toVoteRecordDetails()
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toVoteRecordDetails()");
-	    
-	    VoteRecordDetails details = new VoteRecordDetails();
+	    	    
+	    String email=null;
+		Long electionId=null;
+		
+		if (getVoter()!=null)
+			email=getVoter().getEmail();
+		if (getElection()!=null)
+			electionId=getElection().getNodeId();
+		VoteRecordDetails details = new VoteRecordDetails(getNodeId(),email, electionId, getDate(), getLocation(), getQrCode());
 	    details.setNodeId(getNodeId());
 	    if (LOG.isTraceEnabled()) LOG.trace("voteRecord "+this);
 
 	    BeanUtils.copyProperties(this, details);
-	    details.setElectionId(this.getElection().getNodeId());
+/*	    details.setElectionId(this.getElection().getNodeId());
 	    details.setVoterId(this.getVoter().getEmail());
 	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
-
+*/
 	    return details;
 	}
 	
@@ -83,6 +93,22 @@ public class VoteRecord
 		return location;
 	}
 	
+	/**
+	 * @return the qrCode
+	 */
+	public String getQrCode()
+	{
+		return qrCode;
+	}
+
+	/**
+	 * @param qrCode the qrCode to set
+	 */
+	public void setQrCode(String qrCode)
+	{
+		this.qrCode = qrCode;
+	}
+
 	/**
 	 * @param location the location to set
 	 */
@@ -125,7 +151,7 @@ public class VoteRecord
 	public String toString() {
 		return "VoteReminder [nodeId=" + nodeId + ", voter=" + voter
 				+ ", election=" + election + ", date=" + date
-				+  ", location=" + location 
+				+  ", location=" + location +  ", qrCode=" + qrCode 
 				+ "]";
 	}
 
@@ -143,6 +169,8 @@ public class VoteRecord
 				+ ((election == null) ? 0 : election.hashCode());
 		result = prime * result
 				+ ((location == null) ? 0 : location.hashCode());
+		result = prime * result
+				+ ((qrCode == null) ? 0 : qrCode.hashCode());
 		result = prime * result + ((voter == null) ? 0 : voter.hashCode());
 		}
 		else
@@ -188,6 +216,11 @@ public class VoteRecord
 				if (other.location != null)
 					return false;
 			} else if (!location.equals(other.location))
+				return false;
+			if (qrCode == null) {
+				if (other.qrCode != null)
+					return false;
+			} else if (!qrCode.equals(other.qrCode))
 				return false;
 			if (voter == null) {
 				if (other.voter != null)

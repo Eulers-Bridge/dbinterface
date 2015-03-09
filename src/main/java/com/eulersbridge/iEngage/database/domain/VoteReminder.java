@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.neo4j.annotation.EndNode;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
@@ -16,6 +17,7 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 public class VoteReminder {
 
 	@GraphId private Long nodeId;
+	@Fetch
 	@StartNode private User voter;
 	@EndNode private Election election;
 	private Long date;

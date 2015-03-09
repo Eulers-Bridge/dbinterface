@@ -39,7 +39,7 @@ public class VoteRecordTest
 	public final void testGetNodeId() 
 	{
 		Long id=1l;
-		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(id, 1234l, null, "Union Building", null);
+		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(id, 1234l, null, "Union Building", null,null);
 		assertEquals(id,vr1.getNodeId());
 	}
 
@@ -56,7 +56,7 @@ public class VoteRecordTest
 	public final void testGetDate()
 	{
 		Long date=1234l;
-		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, date, null, "Union Building", null);
+		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, date, null, "Union Building", null,null);
 		assertEquals(date,vr1.getDate());
 	}
 
@@ -73,7 +73,7 @@ public class VoteRecordTest
 	public final void testGetLocation()
 	{
 		String location="Union House";
-		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, 123456l, null, location, null);
+		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, 123456l, null, location, null,null);
 		assertEquals(location,vr1.getLocation());
 	}
 
@@ -87,10 +87,27 @@ public class VoteRecordTest
 	}
 
 	@Test
+	public final void testGetQrCode()
+	{
+		String qrCode="a qrCode";
+		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, 123456l, null, null, null,qrCode);
+		assertEquals(qrCode,vr1.getQrCode());
+	}
+
+	@Test
+	public final void testSetQrCode()
+	{
+		String qrCode="Union House";
+		VoteRecord vr1=new VoteRecord();
+		vr1.setQrCode(qrCode);
+		assertEquals(qrCode,vr1.getQrCode());
+	}
+
+	@Test
 	public final void testGetVoter()
 	{
 		User voter=DatabaseDataFixture.populateUserGnewitt();
-		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, 123456l, null, "Union House", voter);
+		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, 123456l, null, "Union House", voter,null);
 		assertEquals(voter,vr1.getVoter());
 	}
 
@@ -107,7 +124,7 @@ public class VoteRecordTest
 	public final void testGetElection()
 	{
 		Election election=DatabaseDataFixture.populateElection1();
-		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, 123456l, election, "Union House", null);
+		VoteRecord vr1=DatabaseDataFixture.populateVoteRecord(1l, 123456l, election, "Union House", null,null);
 		assertEquals(election,vr1.getElection());
 	}
 

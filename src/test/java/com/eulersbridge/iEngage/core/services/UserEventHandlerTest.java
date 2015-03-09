@@ -48,6 +48,7 @@ import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
+import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
@@ -776,7 +777,8 @@ public class UserEventHandlerTest
 
 		ReadEvent nace = userServiceMocked.readVoteRecord(readVoteRecordEvent);
 		assertNotNull(nace);
-		assertEquals(nace.getDetails(),vrd);
+		assertEquals((VoteRecordDetails)nace.getDetails(),vrd);
+		assertEquals(((VoteRecordDetails)((VoteRecordReadEvent)nace).getDetails()).getVoterId(),vrd.getVoterId());
 		assertTrue(nace.isEntityFound());
 		assertEquals(nace.getNodeId(),id);
 	}

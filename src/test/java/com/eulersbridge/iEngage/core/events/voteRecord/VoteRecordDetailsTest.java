@@ -49,7 +49,7 @@ public class VoteRecordDetailsTest
 	public final void testVoteRecordDetailsLongLongLongLongString() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Test constructor,");
-		VoteRecordDetails vr1=new VoteRecordDetails(null, null, null, null, null);
+		VoteRecordDetails vr1=new VoteRecordDetails(null, null, null, null, null,null);
 		assertNotNull("Not yet implemented",vr1);
 	}
 
@@ -163,6 +163,29 @@ public class VoteRecordDetailsTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails#getQrCode()}.
+	 */
+	@Test
+	public final void testGetQrCode() 
+	{
+		VoteRecordDetails vr1=DatabaseDataFixture.populateVoteRecord1().toVoteRecordDetails();
+		assertEquals(vrd.getQrCode(),vr1.getQrCode());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails#setQrCode(java.lang.String)}.
+	 */
+	@Test
+	public final void testSetQrCode() 
+	{
+		String qrCode="other qrCode";
+		VoteRecordDetails vr1=new VoteRecordDetails();
+		assertNotEquals(qrCode,vr1.getQrCode());
+		vr1.setQrCode(qrCode);
+		assertEquals(qrCode,vr1.getQrCode());
+	}
+
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails#toString()}.
 	 */
 	@Test
@@ -194,12 +217,21 @@ public class VoteRecordDetailsTest
 		vrTest.setNodeId(null);
 		assertEquals(vrd, vrTest);
 		assertEquals(vrTest, vrd);
+
 		vrTest.setLocation("Something else");
 		assertNotEquals(vrd, vrTest);
 		vrTest.setLocation(null);
 		assertNotEquals(vrd, vrTest);
 		assertNotEquals(vrTest, vrd);
 		vrTest.setLocation(vrd.getLocation());
+
+		vrTest.setQrCode("another QrCode");
+		assertNotEquals(vrd, vrTest);
+		vrTest.setQrCode(null);
+		assertNotEquals(vrd, vrTest);
+		assertNotEquals(vrTest, vrd);
+		vrTest.setQrCode(vrd.getQrCode());
+
 		vrTest.setDate(54l);
 		assertNotEquals(vrd, vrTest);
 		vrTest.setDate(null);
@@ -241,6 +273,12 @@ public class VoteRecordDetailsTest
 		assertNotEquals(vrd.hashCode(), voteRecordDetailsTest.hashCode());
 		assertNotEquals(voteRecordDetailsTest.hashCode(), vrd.hashCode());
 		voteRecordDetailsTest.setLocation(vrd.getLocation());
+
+		voteRecordDetailsTest.setQrCode(null);
+		assertNotEquals(vrd.hashCode(), voteRecordDetailsTest.hashCode());
+		assertNotEquals(voteRecordDetailsTest.hashCode(), vrd.hashCode());
+		voteRecordDetailsTest.setQrCode(vrd.getQrCode());
+
 		voteRecordDetailsTest.setVoterId(null);
 		assertNotEquals(vrd.hashCode(), voteRecordDetailsTest.hashCode());
 		assertNotEquals(voteRecordDetailsTest.hashCode(), vrd.hashCode());
