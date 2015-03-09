@@ -750,4 +750,12 @@ public class DatabaseDataFixture
 		tc.setDate(date);
 		return tc;
 	}
+	public static HashMap<Long, TaskComplete> populateCompleteTasks()
+	{
+		HashMap<Long, TaskComplete> tasks=new HashMap<Long, TaskComplete>();
+		TaskComplete initialTask=populateTaskComplete1();
+		tasks.put(initialTask.getNodeId(), initialTask);
+		return tasks;
+	}
+
 }
