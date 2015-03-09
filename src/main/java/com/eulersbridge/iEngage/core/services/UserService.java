@@ -40,9 +40,9 @@ public interface UserService
 //TODO Need to secure this better.
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public ReadUserEvent readUserById(RequestReadUserEvent requestReadUserEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #updateUserEvent.getEmail()==authentication.name)")
 	public UpdatedEvent updateUser(UpdateUserEvent updateUserEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #deleteUserEvent.getEmail()==authentication.name)")
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent);
 	public UserAccountVerifiedEvent validateUserAccount(VerifyUserAccountEvent verifyUserAccountEvent);
 	public UserAuthenticatedEvent authenticateUser(AuthenticateUserEvent authUserEvent) throws AuthenticationException;
@@ -50,7 +50,7 @@ public interface UserService
 	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteReminderEvent.getVoteReminderDetails().getUserId()==authentication.name)")
 	public VoteReminderAddedEvent addVoteReminder(AddVoteReminderEvent addVoteReminderEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteRecordEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteRecordEvent.getVoteRecordDetails().getVoterId()==authentication.name)")
 	public VoteRecordAddedEvent addVoteRecord(AddVoteRecordEvent addVoteRecordEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public ReadEvent readVoteRecord(ReadVoteRecordEvent readVoteRecordEvent);
