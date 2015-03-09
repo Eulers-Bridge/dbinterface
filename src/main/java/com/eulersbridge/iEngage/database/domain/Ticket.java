@@ -30,7 +30,7 @@ public class Ticket extends Likeable
     @RelatedTo(type = DatabaseDomainConstants.HAS_TICKET_LABEL, direction = Direction.INCOMING)
     private Election election;
     private String colour;
-    private String chararcterCode;
+    private String characterCode;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -49,7 +49,7 @@ public class Ticket extends Likeable
 	        election.setNodeId(ticketDetails.getElectionId());
 	        ticket.setElection(election);
             ticket.setColour(ticketDetails.getColour());
-            ticket.setChararcterCode(ticketDetails.getChararcterCode());
+            ticket.setCharacterCode(ticketDetails.getChararcterCode());
 	
 	        if (LOG.isTraceEnabled()) LOG.trace("ticket "+ticket);
     	}
@@ -65,7 +65,7 @@ public class Ticket extends Likeable
         ticketDetails.setInformation(getInformation());
         ticketDetails.setElectionId(getElection().getNodeId());
         ticketDetails.setColour(getColour());
-        ticketDetails.setChararcterCode(getChararcterCode());
+        ticketDetails.setChararcterCode(getCharacterCode());
         
         ticketDetails.setCandidateNames(toCandidateNames(candidates));
 
@@ -140,7 +140,7 @@ public class Ticket extends Likeable
 	 * @param election
 	 */
 	public Ticket(Long ticketId, String name, String logo, String information,
-			Iterable<Candidate> candidates, Election election)
+			Iterable<Candidate> candidates, Election election, String characterCode)
 	{
 		super();
 		this.nodeId = ticketId;
@@ -149,6 +149,7 @@ public class Ticket extends Likeable
 		this.information = information;
 		this.candidates = candidates;
 		this.election = election;
+        this.characterCode = characterCode;
 	}
 
 	public Long getNodeId() {
@@ -191,12 +192,12 @@ public class Ticket extends Likeable
         this.colour = colour;
     }
 
-    public String getChararcterCode() {
-        return chararcterCode;
+    public String getCharacterCode() {
+        return characterCode;
     }
 
-    public void setChararcterCode(String chararcterCode) {
-        this.chararcterCode = chararcterCode;
+    public void setCharacterCode(String characterCode) {
+        this.characterCode = characterCode;
     }
 
     /**

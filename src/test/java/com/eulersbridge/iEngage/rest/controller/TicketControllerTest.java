@@ -100,8 +100,8 @@ public class TicketControllerTest
 		int evtId=dets.getNodeId().intValue();
 		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"logo\":\""+dets.getLogo()+
 						"\",\"pictures\":null,\"information\":\""+dets.getInformation()+"\",\"colour\":"+dets.getColour()+
-						",\"candidateNames\":"+dets.getCandidateNames()+",\"electionId\":"+dets.getElectionId()+
-						",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
+						",\"candidateNames\":[\"gnewitt@hotmail.com\"]"+",\"electionId\":"+dets.getElectionId()+ ",\"characterCode\":\""+dets.getChararcterCode() +
+						"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
 //						"{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
 //						"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
 						"{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s\"}]}";	
@@ -130,20 +130,21 @@ public class TicketControllerTest
 		TicketCreatedEvent testData=new TicketCreatedEvent(dets);
 		String content=setupContent(dets);
 		String returnedContent=setupReturnedContent(dets);
-		when (ticketService.createTicket(any(CreateTicketEvent.class))).thenReturn(testData);
+        when (ticketService.createTicket(any(CreateTicketEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
-		.andExpect(jsonPath("$.name",is(dets.getName())))
-		.andExpect(jsonPath("$.information",is(dets.getInformation())))
+                .andDo(print())
+                .andExpect(jsonPath("$.name", is(dets.getName())))
+                .andExpect(jsonPath("$.information",is(dets.getInformation())))
 		.andExpect(jsonPath("$.colour",is(dets.getColour())))
 		.andExpect(jsonPath("$.ticketId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.logo",is(dets.getLogo())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 //		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 //		.andExpect(jsonPath("$.links[2].rel",is("Next")))
-		.andExpect(jsonPath("$.links[1].rel",is("Read all")))
-		.andExpect(content().string(returnedContent))
-		.andExpect(status().isCreated())	;		
+                .andExpect(jsonPath("$.links[1].rel", is("Read all")))
+                .andExpect(content().string(returnedContent))
+		.andExpect(status().isCreated());
+//        .andExpect(jsonPath("$.characterCode",is(dets.getChararcterCode())));
 	}
 
 	@Test
