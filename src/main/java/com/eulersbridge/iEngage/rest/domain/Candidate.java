@@ -28,8 +28,8 @@ public class Candidate extends ResourceSupport
     private String givenName;
     private String familyName;
     private Long positionId;
-    private String ticketName;
-    private String ticketColour;
+    private Long ticketId;
+//    private Ticket ticket;
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
@@ -51,16 +51,8 @@ public class Candidate extends ResourceSupport
         candidate.setGivenName(candidateDetails.getGivenName());
         candidate.setFamilyName(candidateDetails.getFamilyName());
         candidate.setPositionId(candidateDetails.getPositionId());
-        if (candidateDetails.getTicketDetails()!=null)
-        {
-        	candidate.setTicketName(candidateDetails.getTicketDetails().getName());
-        	candidate.setTicketColour(candidateDetails.getTicketDetails().getColour());
-        }
-        else
-        {
-        	candidate.setTicketName(null);
-        	candidate.setTicketColour(null);
-        }
+//    	candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
+    	candidate.setTicketId(candidateDetails.getTicketDetails().getNodeId());
 
         // {!begin selfRel}
         candidate.add(linkTo(CandidateController.class).slash(name)
@@ -85,25 +77,32 @@ public class Candidate extends ResourceSupport
         return candidateDetails;
     }
 
-    public String getTicketName()
+/*    public Ticket getTicket()
     {
-        return ticketName;
+        return ticket;
     }
 
-    public void setTicketName(String ticketName) {
-        this.ticketName = ticketName;
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
+*/
+    /**
+	 * @return the ticketId
+	 */
+	public Long getTicketId()
+	{
+		return ticketId;
+	}
 
-    public String getTicketColour()
-    {
-        return ticketColour;
-    }
+	/**
+	 * @param ticketId the ticketId to set
+	 */
+	public void setTicketId(Long ticketId)
+	{
+		this.ticketId = ticketId;
+	}
 
-    public void setTicketColour(String ticketColour) {
-        this.ticketColour = ticketColour;
-    }
-
-    public Long getCandidateId() {
+	public Long getCandidateId() {
         return candidateId;
     }
 

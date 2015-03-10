@@ -102,14 +102,17 @@ public class CandidateControllerTest
 		int evtId=dets.getNodeId().intValue();
 		String tName=null;
 		String tColour=null;
+		Long tNodeId=null;
 		if (null!=dets.getTicketDetails())
 		{
 			tName='\"'+dets.getTicketDetails().getName()+'\"';
 			tColour=dets.getTicketDetails().getColour();
+			tNodeId=dets.getTicketDetails().getNodeId();
 		}
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
 				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
-				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+"}";
+				",\"ticketId\":"+tNodeId+"}";
+//				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+"}";
 	}
 	
 	String setupInvalidContent(CandidateDetails dets)
@@ -117,14 +120,17 @@ public class CandidateControllerTest
 		int evtId=dets.getNodeId().intValue();
 		String tName=null;
 		String tColour=null;
+		Long tNodeId=null;
 		if (null!=dets.getTicketDetails())
 		{
 			tName='\"'+dets.getTicketDetails().getName()+'\"';
 			tColour=dets.getTicketDetails().getColour();
+			tNodeId=dets.getTicketDetails().getNodeId();
 		}
 		return "{\"candidateId1\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
 				"\",\"userId\":"+dets.getUserId().intValue()+",\"positionId\":"+dets.getPositionId().intValue()+
-				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+"}";
+				",\"ticketId\":"+tNodeId+"}";
+//				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+"}";
 	}
 	
 	String setupReturnedContent(CandidateDetails dets)
@@ -132,15 +138,18 @@ public class CandidateControllerTest
 		int evtId=dets.getNodeId().intValue();
 		String tName=null;
 		String tColour=null;
+		Long tNodeId=null;
 		if (null!=dets.getTicketDetails())
 		{
 			tName='\"'+dets.getTicketDetails().getName()+'\"';
 			tColour=dets.getTicketDetails().getColour();
+			tNodeId=dets.getTicketDetails().getNodeId();
 		}
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
 				"\",\"pictures\":"+dets.getPictures()+",\"userId\":"+dets.getUserId().intValue()+",\"givenName\":\""+dets.getGivenName()+
 				"\",\"familyName\":\""+dets.getFamilyName()+"\",\"positionId\":"+dets.getPositionId().intValue()+
-				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+
+				",\"ticketId\":"+tNodeId+
+//				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+evtId+"\"},"+
 //				"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+evtId+"/previous\"},"+
 //				"{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+evtId+"/next\"},"+
@@ -298,6 +307,7 @@ public class CandidateControllerTest
 		.andExpect(jsonPath("$.information",is(dets.getInformation())))
 		.andExpect(jsonPath("$.policyStatement",is(dets.getPolicyStatement())))
 		.andExpect(jsonPath("$.userId",is(dets.getUserId().intValue())))
+		.andExpect(jsonPath("$.ticketId",is(dets.getTicketDetails().getNodeId().intValue())))
 		.andExpect(jsonPath("$.positionId",is(dets.getPositionId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Read all")))

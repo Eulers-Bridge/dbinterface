@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -663,6 +664,73 @@ public class PhotoControllerTest
 		PhotosReadEvent testData=PhotosReadEvent.ownerNotFound();
 		when (photoService.findPhotos(any(ReadPhotosEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isNotFound())	;
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#deletePhotos(java.lang.Long, java.lang.String, java.lang.String, java.lang.String)}.
+	 * @throws Exception 
+	 */
+@Ignore
+@Test
+	public final void testDeletePhotos() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeletePhotos()");
+		Long instId=1l;
+		HashMap<Long, com.eulersbridge.iEngage.database.domain.Photo> dets=DatabaseDataFixture.populatePhotos();
+		Iterable<com.eulersbridge.iEngage.database.domain.Photo> photos=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Photo> iter=photos.iterator();
+		ArrayList<PhotoDetails> photoDets=new ArrayList<PhotoDetails>(); 
+		while (iter.hasNext())
+		{
+			com.eulersbridge.iEngage.database.domain.Photo article=iter.next();
+			photoDets.add(article.toPhotoDetails());
+		}
+		PhotosReadEvent testData=new PhotosReadEvent(instId,photoDets);
+		testData.setTotalPages(1);
+		testData.setTotalPhotos(new Long(photoDets.size()));
+		when (photoService.deletePhotos(any(ReadPhotosEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$totalPhotos",is(testData.getTotalPhotos().intValue())))
+		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("$photos[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$photos[0].url",is(photoDets.get(0).getUrl())))
+		.andExpect(jsonPath("$photos[0].title",is(photoDets.get(0).getTitle())))
+		.andExpect(jsonPath("$photos[0].description",is(photoDets.get(0).getDescription())))
+		.andExpect(jsonPath("$photos[0].date",is(photoDets.get(0).getDate())))
+		.andExpect(jsonPath("$photos[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("$photos[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$photos[1].url",is(photoDets.get(1).getUrl())))
+		.andExpect(jsonPath("$photos[1].title",is(photoDets.get(1).getTitle())))
+		.andExpect(jsonPath("$photos[1].description",is(photoDets.get(1).getDescription())))
+		.andExpect(jsonPath("$photos[1].date",is(photoDets.get(1).getDate())))
+		.andExpect(jsonPath("$photos[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
+		.andExpect(status().isOk())	;
+	}
+
+@Ignore
+@Test
+	public final void testDeletePhotosZeroPhotos() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeletePhotos()");
+		Long instId=11l;
+		ArrayList<PhotoDetails> eleDets=new ArrayList<PhotoDetails>(); 
+		PhotosReadEvent testData=new PhotosReadEvent(instId,eleDets);
+		when (photoService.deletePhotos(any(ReadPhotosEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())	;
+	}
+
+@Ignore
+@Test
+	public final void testDeletePhotosNoOwner() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingDeletePhotos()");
+		Long instId=11l;
+		PhotosReadEvent testData=PhotosReadEvent.ownerNotFound();
+		when (photoService.deletePhotos(any(ReadPhotosEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(delete(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
 	}
 

@@ -584,7 +584,8 @@ public class DatabaseDataFixture
 		Long candidateId=43234l;
 		String information="I am a 3rd year Law student looking to pad out my CV.";
 		String policyStatement="I will do anything that benefits me.";
-		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt(),populatePosition1(), null);
+		Ticket ticket=populateTicket(34l, "New Ticket1", "logo1", "information1", null, populateElection1(), "NT1");
+		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt(),populatePosition1(), ticket);
 		return candidate;
 	}
 
@@ -593,7 +594,8 @@ public class DatabaseDataFixture
 		Long candidateId=43235l;
 		String information="I am a 2nd year Law student looking to pad out my CV.";
 		String policyStatement="I will do anything that benefits my family.";
-		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt2(),populatePosition2(), null);
+		Ticket ticket=populateTicket(35l, "New Ticket2", "logo2", "information2", null, populateElection2(), "NT2");
+		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt2(),populatePosition2(), ticket);
 		return candidate;
 	}
 

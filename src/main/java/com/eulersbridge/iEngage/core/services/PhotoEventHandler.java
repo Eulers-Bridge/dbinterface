@@ -218,6 +218,25 @@ public class PhotoEventHandler implements PhotoService
 	}
 
 	@Override
+	public PhotosReadEvent deletePhotos(ReadPhotosEvent deletePhotosEvent)
+	{
+        if (LOG.isDebugEnabled()) LOG.debug("Entered deletePhotos deletePhotosEvent = "+deletePhotosEvent);
+        Long ownerId = deletePhotosEvent.getParentId();
+		Page <Photo>photos=null;
+		ArrayList<PhotoDetails> dets=new ArrayList<PhotoDetails>();
+        
+		Pageable pageable=new PageRequest(0,100,Direction.DESC,"p.date");
+		PhotosReadEvent result=null;
+		
+		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
+		photos=photoRepository.deletePhotosByOwnerId(ownerId,pageable);
+
+		result=new PhotosReadEvent(ownerId,dets,photos.getTotalElements(),photos.getTotalPages());
+		
+		return result;
+	}
+
+	@Override
 	public PhotoAlbumCreatedEvent createPhotoAlbum(
 			CreatePhotoAlbumEvent createPhotoAlbumEvent)
 	{

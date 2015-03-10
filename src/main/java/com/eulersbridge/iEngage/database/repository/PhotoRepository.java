@@ -20,4 +20,7 @@ public interface PhotoRepository extends GraphRepository<Photo>
 {
 	@Query ("MATCH (p:`"+DatabaseDomainConstants.PHOTO+"`)-[r:`"+DatabaseDomainConstants.HAS_PHOTO_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
 	Page<Photo> findByOwnerId(@Param("ownerId")Long ownerId,Pageable p);
+
+	@Query ("MATCH (p:`"+DatabaseDomainConstants.PHOTO+"`)-[r:`"+DatabaseDomainConstants.HAS_PHOTO_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
+	Page<Photo> deletePhotosByOwnerId(Long ownerId,Pageable p);
 }

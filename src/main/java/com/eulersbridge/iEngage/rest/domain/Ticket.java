@@ -20,15 +20,15 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  */
 
 public class Ticket extends ResourceSupport{
-    private Long ticketId;
-    private String name;
-    private String logo;
-    private Set<String> pictures;
-    private String information;
-    private String colour;
-    private Iterable<String> candidateNames;
-    private Long electionId;
-    private String characterCode = "";
+    private Long ticketId=null;
+    private String name=null;
+    private String logo=null;
+    private Set<String> pictures=null;
+    private String information=null;
+    private String colour=null;
+    private Iterable<String> candidateNames=null;
+    private Long electionId=null;
+    private String characterCode = null;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -42,16 +42,18 @@ public class Ticket extends ResourceSupport{
         String name = simpleName.substring(0, 1).toLowerCase()
                 + simpleName.substring(1);
 
-        ticket.setTicketId(ticketDetails.getNodeId());
-        ticket.setName(ticketDetails.getName());
-        ticket.setLogo(ticketDetails.getLogo());
-        ticket.setPictures(ticketDetails.getPictures());
-        ticket.setInformation(ticketDetails.getInformation());
-        ticket.setColour(ticketDetails.getColour());
-        ticket.setCandidateNames(ticketDetails.getCandidateNames());
-        ticket.setElectionId(ticketDetails.getElectionId());
-        ticket.setCharacterCode(ticketDetails.getChararcterCode());
-
+        if (ticketDetails!=null)
+        {	
+	        ticket.setTicketId(ticketDetails.getNodeId());
+	        ticket.setName(ticketDetails.getName());
+	        ticket.setLogo(ticketDetails.getLogo());
+	        ticket.setPictures(ticketDetails.getPictures());
+	        ticket.setInformation(ticketDetails.getInformation());
+	        ticket.setColour(ticketDetails.getColour());
+	        ticket.setCandidateNames(ticketDetails.getCandidateNames());
+	        ticket.setElectionId(ticketDetails.getElectionId());
+	        ticket.setCharacterCode(ticketDetails.getChararcterCode());
+        }
         // {!begin selfRel}
         ticket.add(linkTo(TicketController.class).slash(name)
                 .slash(ticket.ticketId).withSelfRel());

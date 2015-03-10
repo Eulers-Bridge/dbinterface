@@ -48,4 +48,6 @@ public interface PhotoService
 	public DeletedEvent deletePhotoAlbum(DeletePhotoAlbumEvent deletePhotoAlbumEvent);
 	public PhotosReadEvent findPhotos(ReadPhotosEvent findPhotoEvent,Direction dir,int pageNumber,int pageLength);
 	public PhotoAlbumsReadEvent findPhotoAlbums(ReadPhotoAlbumsEvent findPhotoAlbumsEvent,Direction dir,int pageNumber,int pageLength);
+	
+	public PhotosReadEvent deletePhotos(ReadPhotosEvent any);
 }
