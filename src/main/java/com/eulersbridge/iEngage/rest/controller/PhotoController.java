@@ -360,6 +360,46 @@ public class PhotoController
 	}
 
 	/**
+	 * Is passed all the necessary data to delete photos from the database. The
+	 * request must be a DELETE with the ownerId presented as the final portion of
+	 * the URL.
+	 * <p/>
+	 * This method will return the photos read from the database.
+	 * 
+	 * @param ownerId
+	 *            the ownerId of the photo objects to be deleted.
+	 * @return the photos.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.PHOTOS_LABEL
+			+ "/{ownerId}")
+	public @ResponseBody ResponseEntity<Photos> deleteItems(
+			@PathVariable(value = "") Long ownerId)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to delete photos for owner " + ownerId + '.');
+
+		ResponseEntity<Photos> response;
+
+		PhotosReadEvent photoEvent = photoService.deletePhotos(
+				new ReadPhotosEvent(ownerId));
+
+		if (!photoEvent.isEntityFound())
+		{
+			response = new ResponseEntity<Photos>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Iterator<Photo> photoIter = Photo.toPhotosIterator(photoEvent
+					.getPhotos().iterator());
+			Photos photos = Photos.fromPhotosIterator(photoIter,
+					photoEvent.getTotalPhotos(), photoEvent.getTotalPages());
+			response = new ResponseEntity<Photos>(photos, HttpStatus.OK);
+		}
+		return response;
+	}
+
+	/**
 	 * Is passed all the necessary data to read photos from the database. The
 	 * request must be a GET with the ownerId presented as the final portion of
 	 * the URL.
