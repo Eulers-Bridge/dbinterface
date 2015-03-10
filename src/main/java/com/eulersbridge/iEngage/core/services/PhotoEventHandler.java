@@ -367,8 +367,8 @@ public class PhotoEventHandler implements PhotoService
 			if (0==dets.size())
 			{
 				// Need to check if we actually found ownerId.
-				PhotoAlbum inst=photoAlbumRepository.findOne(ownerId);
-				if ( (null==inst) || (null==inst.getNodeId()) )
+				Owner owner=ownerRepository.findOne(ownerId);
+				if ( (null==owner) || (null==owner.getNodeId()) )
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ownerId)");
 					result=PhotoAlbumsReadEvent.institutionNotFound();
