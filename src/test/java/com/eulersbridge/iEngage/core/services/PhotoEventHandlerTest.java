@@ -40,7 +40,9 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
@@ -494,6 +496,114 @@ public class PhotoEventHandlerTest
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isOwnerFound());
 		assertFalse(evtData.isPhotosFound());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#findPhotoAlbums(com.eulersbridge.iEngage.core.events.photo.findPhotoAlbumsEvent)}.
+	 */
+	@Test
+	public final void testFindPhotoAlbums()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotoAlbums()");
+		
+		ArrayList<PhotoAlbum> evts=new ArrayList<PhotoAlbum>();
+		evts.add(DatabaseDataFixture.populatePhotoAlbum1());
+		evts.add(DatabaseDataFixture.populatePhotoAlbum2());
+
+		
+		Long ownerId=1l;
+		ReadPhotoAlbumsEvent evt=new ReadPhotoAlbumsEvent(ownerId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.created");
+		Page<PhotoAlbum> testData=new PageImpl<PhotoAlbum>(evts,pageable,evts.size());
+		when(photoAlbumRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		PhotoAlbumsReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalEvents(),new Long(evts.size()));
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isInstitutionFound());
+		assertTrue(evtData.isEventsFound());
+	}
+
+	@Test
+	public final void testFindPhotoAlbumsNoneReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotoAlbums()");
+		
+		ArrayList<PhotoAlbum> evts=new ArrayList<PhotoAlbum>();
+
+		
+		Long ownerId=1l;
+		ReadPhotoAlbumsEvent evt=new ReadPhotoAlbumsEvent(ownerId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<PhotoAlbum> testData=new PageImpl<PhotoAlbum>(evts,pageable,evts.size());
+		when(photoAlbumRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		Owner inst=new Owner(DatabaseDataFixture.populatePhotoAlbum1().getNodeId());
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(inst);
+
+		PhotoAlbumsReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalEvents().longValue(),evts.size());
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isInstitutionFound());
+		assertTrue(evtData.isEventsFound());
+	}
+
+	@Test
+	public final void testFindPhotoAlbumsNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotoAlbums()");
+		
+		Long ownerId=1l;
+		ReadPhotoAlbumsEvent evt=new ReadPhotoAlbumsEvent(ownerId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Page<PhotoAlbum> testData=null;
+		when(photoAlbumRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		PhotoAlbumsReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertNull(evtData.getTotalPages());
+		assertNull(evtData.getTotalEvents());
+		assertFalse(evtData.isEntityFound());
+		assertFalse(evtData.isInstitutionFound());
+		assertFalse(evtData.isEventsFound());
+	}
+
+	@Test
+	public final void testFindPhotoAlbumsInstNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotoAlbums()");
+		
+		ArrayList<PhotoAlbum> evts=new ArrayList<PhotoAlbum>();
+
+		
+		Long ownerId=1l;
+		ReadPhotoAlbumsEvent evt=new ReadPhotoAlbumsEvent(ownerId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<PhotoAlbum> testData=new PageImpl<PhotoAlbum>(evts,pageable,evts.size());
+		when(photoAlbumRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
+
+		PhotoAlbumsReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertNull(evtData.getTotalPages());
+		assertNull(evtData.getTotalEvents());
+		assertFalse(evtData.isEntityFound());
+		assertFalse(evtData.isInstitutionFound());
+		assertFalse(evtData.isEventsFound());
 	}
 
 

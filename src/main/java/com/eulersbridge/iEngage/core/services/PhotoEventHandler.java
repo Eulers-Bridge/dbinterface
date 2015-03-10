@@ -349,7 +349,7 @@ public class PhotoEventHandler implements PhotoService
 		PhotoAlbumsReadEvent result=null;
 		
 		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
-		Pageable pageable=new PageRequest(pageNumber,pageLength,dir,"p.date");
+		Pageable pageable=new PageRequest(pageNumber,pageLength,dir,"p.created");
 		photoAlbums=photoAlbumRepository.findByOwnerId(ownerId, pageable);
 
 		if (photoAlbums!=null)
