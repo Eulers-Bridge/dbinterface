@@ -222,16 +222,14 @@ public class PhotoEventHandler implements PhotoService
 	{
         if (LOG.isDebugEnabled()) LOG.debug("Entered deletePhotos deletePhotosEvent = "+deletePhotosEvent);
         Long ownerId = deletePhotosEvent.getParentId();
-		Page <Photo>photos=null;
 		ArrayList<PhotoDetails> dets=new ArrayList<PhotoDetails>();
         
-		Pageable pageable=new PageRequest(0,100,Direction.DESC,"p.date");
 		PhotosReadEvent result=null;
 		
 		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
-		photos=photoRepository.deletePhotosByOwnerId(ownerId,pageable);
+		Long numPhotos=photoRepository.deletePhotosByOwnerId(ownerId);
 
-		result=new PhotosReadEvent(ownerId,dets,photos.getTotalElements(),photos.getTotalPages());
+		result=new PhotosReadEvent(ownerId,dets,numPhotos,numPhotos.intValue());
 		
 		return result;
 	}

@@ -709,7 +709,6 @@ public class PhotoControllerTest
 */		.andExpect(status().isOk())	;
 	}
 
-@Ignore
 @Test
 	public final void testDeletePhotosZeroPhotos() throws Exception 
 	{
@@ -722,7 +721,6 @@ public class PhotoControllerTest
 		.andExpect(status().isOk())	;
 	}
 
-@Ignore
 @Test
 	public final void testDeletePhotosNoOwner() throws Exception 
 	{

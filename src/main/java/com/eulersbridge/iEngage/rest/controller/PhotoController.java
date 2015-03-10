@@ -373,28 +373,26 @@ public class PhotoController
 	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.PHOTOS_LABEL
 			+ "/{ownerId}")
-	public @ResponseBody ResponseEntity<Photos> deleteItems(
+	public @ResponseBody ResponseEntity<Long> deleteItems(
 			@PathVariable(value = "") Long ownerId)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to delete photos for owner " + ownerId + '.');
 
-		ResponseEntity<Photos> response;
+		ResponseEntity<Long> response;
 
 		PhotosReadEvent photoEvent = photoService.deletePhotos(
 				new ReadPhotosEvent(ownerId));
 
 		if (!photoEvent.isEntityFound())
 		{
-			response = new ResponseEntity<Photos>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Iterator<Photo> photoIter = Photo.toPhotosIterator(photoEvent
-					.getPhotos().iterator());
-			Photos photos = Photos.fromPhotosIterator(photoIter,
-					photoEvent.getTotalPhotos(), photoEvent.getTotalPages());
-			response = new ResponseEntity<Photos>(photos, HttpStatus.OK);
+			Long numPhotos=photoEvent.getTotalPhotos();
+			if (LOG.isDebugEnabled()) LOG.debug("Total photos = "+numPhotos);
+			response = new ResponseEntity<Long>(numPhotos, HttpStatus.OK);
 		}
 		return response;
 	}
