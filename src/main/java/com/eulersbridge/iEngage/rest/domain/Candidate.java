@@ -23,7 +23,7 @@ public class Candidate extends ResourceSupport
     private Long candidateId;
     private String information;
     private String policyStatement;
-    private Set<String> pictures;
+    private Set<String> profilePicture;
     private Long userId;
     private String givenName;
     private String familyName;
@@ -46,7 +46,7 @@ public class Candidate extends ResourceSupport
         candidate.setCandidateId(candidateDetails.getNodeId());
         candidate.setInformation(candidateDetails.getInformation());
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
-        candidate.setPictures(candidateDetails.getPictures());
+        candidate.setProfilePicture(candidateDetails.getPictures());
         candidate.setUserId(candidateDetails.getUserId());
         candidate.setGivenName(candidateDetails.getGivenName());
         candidate.setFamilyName(candidateDetails.getFamilyName());
@@ -71,7 +71,6 @@ public class Candidate extends ResourceSupport
         candidateDetails.setNodeId(getCandidateId());
          candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());
-        candidateDetails.setPictures(getPictures());
         candidateDetails.setUserId(getUserId());
         candidateDetails.setPositionId(getPositionId());
         return candidateDetails;
@@ -126,12 +125,12 @@ public class Candidate extends ResourceSupport
         this.policyStatement = policyStatement;
     }
 
-    public Set<String> getPictures() {
-        return pictures;
+    public Set<String> getProfilePicture() {
+        return profilePicture;
     }
 
-    public void setPictures(Set<String> pictures) {
-        this.pictures = pictures;
+    public void setProfilePicture(Set<String> pictures) {
+        this.profilePicture = pictures;
     }
 
     public Long getUserId()
