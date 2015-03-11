@@ -29,6 +29,7 @@ public class Ticket extends ResourceSupport{
     private Iterable<String> candidateNames=null;
     private Long electionId=null;
     private String characterCode = null;
+    private Integer numberOfSupporters = null;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -53,6 +54,7 @@ public class Ticket extends ResourceSupport{
 	        ticket.setCandidateNames(ticketDetails.getCandidateNames());
 	        ticket.setElectionId(ticketDetails.getElectionId());
 	        ticket.setCharacterCode(ticketDetails.getChararcterCode());
+            ticket.setNumberOfSupporters(ticketDetails.getNumberOfSupporters());
         }
         // {!begin selfRel}
         ticket.add(linkTo(TicketController.class).slash(name)
@@ -124,6 +126,14 @@ public class Ticket extends ResourceSupport{
 
     public void setCandidateNames(Iterable<String> candidateNames) {
         this.candidateNames = candidateNames;
+    }
+
+    public Integer getNumberOfSupporters() {
+        return numberOfSupporters;
+    }
+
+    public void setNumberOfSupporters(Integer numberOfSupporters) {
+        this.numberOfSupporters = numberOfSupporters;
     }
 
     /**

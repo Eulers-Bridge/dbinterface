@@ -9,6 +9,7 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -31,6 +32,8 @@ public class Ticket extends Likeable
     private Election election;
     private String colour;
     private String characterCode;
+    @RelatedTo(type = DatabaseDomainConstants.SUPPORT, direction = Direction.INCOMING)
+    private Collection<User> supporters;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -66,6 +69,10 @@ public class Ticket extends Likeable
         ticketDetails.setElectionId(getElection().getNodeId());
         ticketDetails.setColour(getColour());
         ticketDetails.setChararcterCode(getCharacterCode());
+        if(supporters!=null)
+            ticketDetails.setNumberOfSupporters(supporters.size());
+        else
+            ticketDetails.setNumberOfSupporters(0);
         
         ticketDetails.setCandidateNames(toCandidateNames(candidates));
 
