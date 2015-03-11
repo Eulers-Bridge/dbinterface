@@ -434,13 +434,14 @@ public class UserController {
 
 	*/
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/contact/{contactInfo}")
-	public @ResponseBody ResponseEntity<User> findFriend(@PathVariable String contactInfo) 
+	public @ResponseBody ResponseEntity<UserProfile> findFriend(@PathVariable String contactInfo) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to find contact. "+contactInfo);
 
 		ReadUserEvent userEvent;
+		ResponseEntity<UserProfile> result;
 		EmailValidator emailValidator=EmailValidator.getInstance();
-		String email;
+		String email=null;
 		if (emailValidator.isValid(contactInfo))
 		{
 			email=contactInfo;
@@ -456,10 +457,20 @@ public class UserController {
 			 	
 		if (!userEvent.isEntityFound())
 		{
-			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+			result = new ResponseEntity<UserProfile>(HttpStatus.NOT_FOUND);
 		}
-		User restUser=User.fromUserDetails((UserDetails) userEvent.getDetails());
-		return new ResponseEntity<User>(restUser,HttpStatus.OK);
+		else
+		{
+			UserDetails dets=(UserDetails) userEvent.getDetails();
+			// Only send back the contact information used to find this user.
+			if (email!=null)
+				dets.setContactNumber(null);
+			else
+				dets.setEmail(null);
+			UserProfile restUser=UserProfile.fromUserDetails(dets);
+			result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
+		}
+		return result;
 	}
     
     /**
