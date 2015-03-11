@@ -158,7 +158,7 @@ public class User extends ResourceSupport
 	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
 	    //We have explicitly avoided that.
 	    // {!begin selfRel}
-		user.add(new Link(linkTo(UserController.class).slash(name).slash("contact").slash(user.email).toUriComponentsBuilder().build().toUriString() + "/","self"));
+		user.add(new Link(linkTo(UserController.class).slash(name).slash(user.email).toUriComponentsBuilder().build().toUriString() + "/","self"));
 	    // {!end selfRel}
 	    return user;
 	  }
