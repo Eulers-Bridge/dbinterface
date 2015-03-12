@@ -59,4 +59,5 @@ public class ControllerConstants
     public static final String LIKES_LABEL = "/likes";
 	public static final String GENERALINFO_LABEL = "/general-info";
 	public static final String EMAILVERIFY_LABEL = "/emailVerification";
+    public static final String SUPPOERT_BY = "/supportBy";
 }

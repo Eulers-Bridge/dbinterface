@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -60,6 +61,8 @@ public class TicketEventHandlerTest
 	ElectionRepository electionRepository;
     @Mock
 	CandidateRepository candidateRepository;
+    @Mock
+    UserRepository userRepository;
 
     TicketEventHandler service;
 
@@ -72,7 +75,7 @@ public class TicketEventHandlerTest
 		MockitoAnnotations.initMocks(this);
 
 //		service=new TicketEventHandler(ticketRepository,candidateRepository);
-		service=new TicketEventHandler(ticketRepository,electionRepository);
+		service=new TicketEventHandler(ticketRepository,electionRepository, userRepository);
 	}
 
 	/**
