@@ -10,6 +10,7 @@ package com.eulersbridge.iEngage.rest.controller;
 public class ControllerConstants 
 {
 	public static final String API_PREFIX="/api";
+	public static final String CONTACT_LABEL = "/contact";
 	public static final String COUNTRY_LABEL = "/country";
 	public static final String COUNTRYS_LABEL = COUNTRY_LABEL+'s';
 	public static final String DBINTERFACE_PREFIX = "/dbInterface";

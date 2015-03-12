@@ -439,7 +439,7 @@ public class UserController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/contact/{contactInfo}")
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.CONTACT_LABEL+"/{contactInfo}")
 	public @ResponseBody ResponseEntity<UserProfile> findFriend(@PathVariable String contactInfo) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to find contact. "+contactInfo);

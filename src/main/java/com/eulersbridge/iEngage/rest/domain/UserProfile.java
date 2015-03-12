@@ -7,6 +7,7 @@ package com.eulersbridge.iEngage.rest.domain;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import com.eulersbridge.iEngage.rest.controller.UserController;
 
 import org.slf4j.Logger;
@@ -133,10 +134,6 @@ public class UserProfile extends ResourceSupport
 		user.contactNumber = readUser.getContactNumber();
 		user.institutionId = readUser.getInstitutionId();
 
-		String simpleName = User.class.getSimpleName();
-		String name = simpleName.substring(0, 1).toLowerCase()
-				+ simpleName.substring(1);
-
 		// TODOCUMENT. Adding the library, the above extends ResourceSupport and
 		// this section is all that is actually needed in our model to add
 		// hateoas support.
@@ -149,7 +146,7 @@ public class UserProfile extends ResourceSupport
 		if (user.email!=null)
 			details=user.email;
 		else details=user.contactNumber;
-		user.add(new Link(linkTo(UserController.class).slash(name).slash("contact").slash(details).toUriComponentsBuilder().build().toUriString() + "/","self"));
+		user.add(new Link(linkTo(UserController.class).slash(ControllerConstants.CONTACT_LABEL).slash(details).toUriComponentsBuilder().build().toUriString() + "/","self"));
 		// {!end selfRel}
 		return user;
 	}
