@@ -21,6 +21,7 @@ public class TicketDetails extends Details
     private Iterable<String> candidateNames;
 	private Long electionId;
     private String chararcterCode;
+    private Integer NumberOfSupporters;
 
 	private static Logger LOG = LoggerFactory.getLogger(TicketDetails.class);
 
@@ -46,6 +47,8 @@ public class TicketDetails extends Details
 		buff.append(getElectionId());
         buff.append(", characterCode = ");
         buff.append(getChararcterCode());
+        buff.append(", numberOfSupporters = ");
+        buff.append(getNumberOfSupporters());
 		buff.append(" ]");
 		retValue = buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
@@ -178,6 +181,14 @@ public class TicketDetails extends Details
 
     public void setCandidateNames(Iterable<String> candidateNames) {
         this.candidateNames = candidateNames;
+    }
+
+    public Integer getNumberOfSupporters() {
+        return NumberOfSupporters;
+    }
+
+    public void setNumberOfSupporters(Integer numberOfSupporters) {
+        NumberOfSupporters = numberOfSupporters;
     }
 
     /**

@@ -8,21 +8,15 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketCreatedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketDeletedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
-import com.eulersbridge.iEngage.core.events.ticket.TicketUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketsReadEvent;
-import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.*;
 import com.eulersbridge.iEngage.database.domain.Election;
+import com.eulersbridge.iEngage.database.domain.Support;
 import com.eulersbridge.iEngage.database.domain.Ticket;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.TicketRepository;
 
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -39,11 +33,13 @@ public class TicketEventHandler implements TicketService{
 
     private TicketRepository ticketRepository;
     private ElectionRepository electionRepository;
+    private UserRepository userRepository;
 
-    public TicketEventHandler(TicketRepository ticketRepository, ElectionRepository electionRepository)
+    public TicketEventHandler(TicketRepository ticketRepository, ElectionRepository electionRepository, UserRepository userRepository)
     {
         this.ticketRepository = ticketRepository;
         this.electionRepository = electionRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -168,4 +164,21 @@ public class TicketEventHandler implements TicketService{
 		return nare;
 	}
 
+    @Override
+    public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent) {
+        TicketSupportedEvent ticketSupportedEvent;
+        Ticket ticket = ticketRepository.findOne(supportTicketEvent.getTicketId());
+        User user = userRepository.findByEmail(supportTicketEvent.getEmailAddress());
+        if (ticket == null)
+            ticketSupportedEvent = TicketSupportedEvent.entityNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+        else if (user == null)
+            ticketSupportedEvent = TicketSupportedEvent.userNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+        else{
+            ticketSupportedEvent = new TicketSupportedEvent(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress(), true);
+            Support supportEntity = ticketRepository.supportTicket(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+            if(supportEntity==null)
+                ticketSupportedEvent.setResult(false);
+        }
+        return ticketSupportedEvent;
+    }
 }

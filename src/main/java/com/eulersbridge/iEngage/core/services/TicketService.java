@@ -30,4 +30,7 @@ public interface TicketService {
     @PreAuthorize("hasRole('ROLE_USER')")
 	public TicketsReadEvent readTickets(ReadAllEvent readTicketsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
+
+    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent);
 }
