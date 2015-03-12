@@ -155,9 +155,7 @@ public class UserControllerTest
 				",\"institutionId\":"+dets.getInstitutionId().intValue()+
 				",\"email\":\""+dets.getEmail()+
 				"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/"+dets.getEmail()+
-				"\"},{\"rel\":\"User Status\",\"href\":\"http://localhost/api/user/"+dets.getEmail()+
-				"/status\"},{\"rel\":\"User Details\",\"href\":\"http://localhost/api/user/"+dets.getEmail()+
-				"/details\"}]}";
+				"/\"}]}";
 	}
 	
 	@Test
@@ -463,13 +461,32 @@ public class UserControllerTest
 		ReadUserEvent testData=new ReadUserEvent(email, dets);
 		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/user/contact/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
-		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.password",is(dets.getPassword())))
-		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.email",is(dets.getEmail())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isOk())	;
+	}
+	
+	@Test
+	public void testFindContactWithNumber() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		UserDetails dets=user.toUserDetails();
+		String contactNumber=dets.getContactNumber();
+		ReadUserEvent testData=new ReadUserEvent(email, dets);
+		when (userService.readUserByContactNumber((any(RequestReadUserEvent.class)))).thenReturn(testData);
+		this.mockMvc.perform(get("/api/user/contact/{contactNumber}/",contactNumber).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
+		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
+		.andExpect(jsonPath("$.gender",is(dets.getGender())))
+		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))

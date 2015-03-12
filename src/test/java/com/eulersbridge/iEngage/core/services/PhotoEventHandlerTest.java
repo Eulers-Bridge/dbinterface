@@ -499,6 +499,33 @@ public class PhotoEventHandlerTest
 	}
 
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#deletePhotos(com.eulersbridge.iEngage.core.events.photo.deletePhotosEvent)}.
+	 */
+	@Test
+	public final void testDeletePhotos()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("DeletingPhotos()");
+		
+		ArrayList<Photo> evts=new ArrayList<Photo>();
+		evts.add(DatabaseDataFixture.populatePhoto1());
+		evts.add(DatabaseDataFixture.populatePhoto2());
+
+		
+		Long ownerId=1l;
+		ReadPhotosEvent evt=new ReadPhotosEvent(ownerId);
+		
+		when(photoRepository.deletePhotosByOwnerId(any(Long.class))).thenReturn(ownerId);
+
+		PhotosReadEvent evtData = service.deletePhotos(evt);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),ownerId.intValue());
+		assertEquals(evtData.getTotalPhotos(),ownerId);
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isOwnerFound());
+		assertTrue(evtData.isPhotosFound());
+	}
+	
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#findPhotoAlbums(com.eulersbridge.iEngage.core.events.photo.findPhotoAlbumsEvent)}.
 	 */
 	@Test

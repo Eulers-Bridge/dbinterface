@@ -15,6 +15,8 @@ public class DatabaseDomainConstants
 	public static final String USERS_LABEL = "USER_OF";
 	public static final String VERIFIED_BY_LABEL = "verifiedBy";
     public static final String HAS_CANDIDATE_LABEL = "HAS_CANDIDATE";
+	public static final String CONTACT_LABEL = "HAS_CONTACT";
+	public static final String CONTACT_REQUEST_LABEL = "HAS_CONTACT_REQUEST";
 	public static final String HAS_ELECTION_LABEL = "HAS_ELECTION";
 	public static final String HAS_FORUM_QUESTION_LABEL = "HAS_FORUM_QUESTION";
 	public static final String HAS_MEMBER_LABEL = "HAS_MEMBER";
@@ -34,6 +36,7 @@ public class DatabaseDomainConstants
     public static final String SUPPORT_LABEL = "SUPPORTS";
 	
 	public static final String CANDIDATE = "Candidate";
+	public static final String CONTACT_REQUEST = "ContactRequest";
 	public static final String ELECTION = "Election";
 	public static final String FORUM_QUESTION = "ForumQuestion";
 	public static final String INSTITUTION = "Institution";
@@ -45,6 +48,7 @@ public class DatabaseDomainConstants
 	public static final String POSITION = "Position";
 	public static final String TASK = "Task";
 	public static final String TICKET = "Ticket";
+	public static final String USER = "User";
 	public static final String VOTING_LOCATION = "VotingLocation";
 	public static final String HAS_COMPLETED_TASK_LABEL = "HAS_COMPLETED_TASK";
 }

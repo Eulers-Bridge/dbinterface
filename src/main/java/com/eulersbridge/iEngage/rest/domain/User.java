@@ -7,6 +7,7 @@ import com.eulersbridge.iEngage.rest.controller.UserController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import java.util.ArrayList;
@@ -157,13 +158,8 @@ public class User extends ResourceSupport
 	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
 	    //We have explicitly avoided that.
 	    // {!begin selfRel}
-	    user.add(linkTo(UserController.class).slash(name).slash(user.email).withSelfRel());
+		user.add(new Link(linkTo(UserController.class).slash(name).slash(user.email).toUriComponentsBuilder().build().toUriString() + "/","self"));
 	    // {!end selfRel}
-	    // {!begin status}
-	    user.add(linkTo(UserController.class).slash(name).slash(user.email).slash("status").withRel("User Status"));
-	    // {!end status}
-	    user.add(linkTo(UserController.class).slash(name).slash(user.email).slash("details").withRel("User Details"));
-
 	    return user;
 	  }
 

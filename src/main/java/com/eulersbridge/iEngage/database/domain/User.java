@@ -39,6 +39,8 @@ public class User
 	@Fetch private Institution institution;
 	@RelatedTo(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction=Direction.BOTH)
 	private Iterable<VerificationToken> verificationToken;
+	@RelatedTo(type = DatabaseDomainConstants.CONTACT_LABEL, direction=Direction.BOTH)
+	private Iterable<User> contacts;
 	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
 	private Set<Like> likes;
 	
