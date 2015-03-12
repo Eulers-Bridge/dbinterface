@@ -20,6 +20,8 @@ public class CoreConfig
 	@Autowired
 	InstitutionRepository instRepo;
 	@Autowired
+	ContactRequestRepository contactRequestRepository;
+	@Autowired
 	CountryRepository countryRepo;
 	@Autowired
 	VerificationTokenRepository tokenRepo;
@@ -79,6 +81,13 @@ public class CoreConfig
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createInstitutionService()");
 		return new InstitutionEventHandler(instRepo,countryRepo,syRepo);
+	}
+
+	@Bean
+	public ContactRequestService createContactRequestService()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("createContactRequestService()");
+		return new ContactRequestEventHandler(contactRequestRepository);
 	}
 
 	@Bean

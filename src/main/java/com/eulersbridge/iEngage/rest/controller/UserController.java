@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -29,6 +30,9 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
+import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
+import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
@@ -52,18 +56,20 @@ import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
+import com.eulersbridge.iEngage.core.services.ContactRequestService;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.email.EmailConstants;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
-public class UserController {
+public class UserController
+{
 
     @Autowired UserService userService;
     @Autowired EmailService emailService;
-    @Autowired
-    LikesService likesService;
+    @Autowired LikesService likesService;
+    @Autowired ContactRequestService contactRequestService;
     @Autowired ServletContext servletContext;
     @Autowired VelocityEngine velocityEngine;
 	@Autowired JavaMailSender emailSender;
@@ -469,6 +475,91 @@ public class UserController {
 				dets.setEmail(null);
 			UserProfile restUser=UserProfile.fromUserDetails(dets);
 			result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
+		}
+		return result;
+	}
+    
+    /**
+     * Is passed all the necessary data to add a contact from the database.
+     * The request must be a PUT with the contact email or phone number presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return a 200 ok if nothing has gone wrong.
+     * 
+     * @param contactInfo the email address or phone number of the contact to be added.
+     * @return userProfile.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{userId}/contact/{contactInfo}")
+	public @ResponseBody ResponseEntity<UserProfile> addFriend(@PathVariable Long userId,@PathVariable String contactInfo) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to add contact "+contactInfo+" for "+userId);
+
+		ReadUserEvent userEvent;
+		ResponseEntity<UserProfile> result;
+		EmailValidator emailValidator=EmailValidator.getInstance();
+		String email=null;
+		if (emailValidator.isValid(contactInfo))
+		{
+			email=contactInfo;
+			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
+			 userEvent=userService.readUser(new RequestReadUserEvent(email));
+		}
+		else
+		{
+			// Try for phone number
+			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+		}
+		//	return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+			 	
+		// Look for existing contact request.
+		ContactRequestDetails fr=new ContactRequestDetails(contactInfo,userId);
+		
+		ReadContactRequestEvent readContactRequestEvent=new ReadContactRequestEvent(fr);
+		ReadEvent crEvt=contactRequestService.readContactRequestByUserIdContactNumber(readContactRequestEvent);
+		if (crEvt.isEntityFound())
+		{
+			// Request already exists, bounce out of here.
+			// Has it been denied?  TODO
+			result = new ResponseEntity<UserProfile>(HttpStatus.NOT_MODIFIED);
+		}
+		else
+		{
+			UserDetails dets=(UserDetails) userEvent.getDetails();
+			// Only send back the contact information used to find this user.
+			if (email!=null)
+				dets.setContactNumber(null);
+			else
+				dets.setEmail(null);
+			UserProfile restUser=UserProfile.fromUserDetails(dets);
+
+			
+			CreateContactRequestEvent createEvt=new CreateContactRequestEvent(fr);
+			CreatedEvent evt=contactRequestService.createContactRequest(createEvt);
+			if (!evt.isFailed())
+			{	
+	
+				if (!userEvent.isEntityFound())
+				{
+					// They are not already users.  Need to deal with that.
+					// Create a ContactRequest.
+					result = new ResponseEntity<UserProfile>(restUser,HttpStatus.NOT_FOUND);
+				}
+				else
+				{
+					
+					// Create a new request.
+					result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
+					
+				}
+			}
+			else
+			{
+				result = new ResponseEntity<UserProfile>(HttpStatus.BAD_REQUEST);
+			}
+			
+			
 		}
 		return result;
 	}
