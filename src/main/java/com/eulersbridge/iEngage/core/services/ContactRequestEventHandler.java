@@ -15,9 +15,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.task.TaskCreatedEvent;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
-import com.eulersbridge.iEngage.database.domain.Task;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
@@ -93,12 +91,17 @@ public class ContactRequestEventHandler implements ContactRequestService
 	{
 		String contactInfo=readContactRequestEvent.getDetails().getContactDetails();
 		Long userId = readContactRequestEvent.getDetails().getUserId();		
+       	if (LOG.isDebugEnabled()) LOG.debug("Looking for Contact "+userId+" contactInfo "+contactInfo);
         ContactRequest contactRequest = contactRequestRepository.findContactRequestByUserIdContactInfo(userId, contactInfo);
         ReadEvent contactRequestReadEvent;
-        if(contactRequest != null){
+        if(contactRequest != null)
+        {
+        	if (LOG.isDebugEnabled()) LOG.debug("Contact found."+contactRequest.getNodeId());
             contactRequestReadEvent = new ContactRequestReadEvent(contactRequest.getNodeId(), contactRequest.toContactRequestDetails());
         }
-        else{
+        else
+        {
+        	if (LOG.isDebugEnabled()) LOG.debug("Contact not found.");
             contactRequestReadEvent = ContactRequestReadEvent.notFound(readContactRequestEvent.getNodeId());
         }
         return contactRequestReadEvent;
