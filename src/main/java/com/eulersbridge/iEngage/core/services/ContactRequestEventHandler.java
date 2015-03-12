@@ -3,6 +3,8 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
+import java.util.Calendar;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +55,7 @@ public class ContactRequestEventHandler implements ContactRequestService
 		ContactRequestDetails dets=(ContactRequestDetails)createContactRequestEvent.getDetails();
         CreatedEvent contactRequestCreatedEvent;
 		ContactRequest cr=ContactRequest.fromContactRequestDetails(dets);
+		cr.setRequestDate(Calendar.getInstance().getTimeInMillis());
 		ContactRequest result = contactRequestRepository.save(cr);
         if ((null==result)||(null==result.getNodeId()))
         	contactRequestCreatedEvent = CreatedEvent.failed(dets);
