@@ -75,6 +75,8 @@ public class UserControllerTest
 	
 	String email = "greg.newitt@unimelb.edu.au";
 	String email2 = "graeme.newitt@unimelb.edu.au";
+	String urlPrefix = ControllerConstants.API_PREFIX+ControllerConstants.USER_LABEL;
+	String urlPrefix2 = ControllerConstants.API_PREFIX+ControllerConstants.CONTACT_LABEL;
 	
 	@Before
 	public void setup() throws Exception
@@ -168,7 +170,7 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(resEvt);
 		String content=populatePersonalityContent(dets);
-		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(jsonPath("$.personalityId",is(dets.getPersonalityId().intValue())))
 		.andExpect(jsonPath("$.agreeableness",is((dets.getAgreeableness().doubleValue()))))
 		.andExpect(jsonPath("$.conscientiousness",is(dets.getConscientiousness().doubleValue())))
@@ -187,7 +189,7 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(resEvt);
 		String content=populatePersonalityContent(dets);
-		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isFailedDependency());
 	}
 	
@@ -198,7 +200,7 @@ public class UserControllerTest
 		PersonalityDetails dets=new PersonalityDetails(3L,4.0F,3.0F,2.0F,4.0F,5.0F);
 		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(null);
 		String content=populatePersonalityContent(dets);
-		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest());
 	}
 	
@@ -207,7 +209,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingPersonality()");
 		when(userService.addPersonality(any(AddPersonalityEvent.class))).thenReturn(null);
-		this.mockMvc.perform(put("/api/user/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/personality",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest());
 	}
 	
@@ -222,7 +224,7 @@ public class UserControllerTest
 		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(resEvt);
 		String content=populateVoteReminderContent(dets);
 		String returnedContent=populateVoteReminderReturnedContent(dets);
-		this.mockMvc.perform(put("/api/user/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
@@ -244,7 +246,7 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(resEvt);
 		String content=populateVoteReminderContent(dets);
-		this.mockMvc.perform(put("/api/user/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isFailedDependency());
 	}
 	
@@ -255,7 +257,7 @@ public class UserControllerTest
 		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
 		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(null);
 		String content=populateVoteReminderContent(dets);
-		this.mockMvc.perform(put("/api/user/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest());
 	}
 	
@@ -264,7 +266,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
 		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(null);
-		this.mockMvc.perform(put("/api/user/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest());
 	}
 	
@@ -279,7 +281,7 @@ public class UserControllerTest
 		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(resEvt);
 		String content=populateVoteRecordContent(dets);
 		String returnedContent=populateVoteRecordReturnedContent(dets);
-		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
 		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
@@ -301,7 +303,7 @@ public class UserControllerTest
 		String content="{\"nodeId\":"+dets.getNodeId().intValue()+",\"userEmail\":\""+dets.getVoterId()+
 						"\",\"electionId\":"+dets.getElectionId().intValue()+",\"date\":"+dets.getDate().intValue()+
 						",\"location\":\""+dets.getLocation()+"\"}";
-		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isFailedDependency());
 	}
 	
@@ -312,7 +314,7 @@ public class UserControllerTest
 		VoteRecordDetails dets=DatabaseDataFixture.populateVoteRecord1().toVoteRecordDetails();
 		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(null);
 		String content=populateVoteRecordContent(dets);
-		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest());
 	}
 	
@@ -321,7 +323,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingVoteRecord()");	
 		when(userService.addVoteRecord(any(AddVoteRecordEvent.class))).thenReturn(null);
-		this.mockMvc.perform(put("/api/user/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/voteRecord",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest());
 	}
 	
@@ -336,7 +338,7 @@ public class UserControllerTest
 		when(userService.readVoteRecord(any(ReadVoteRecordEvent.class))).thenReturn(resEvt);
 		String content=populateVoteRecordContent(dets);
 		String returnedContent=populateVoteRecordReturnedContent(dets);
-		this.mockMvc.perform(get("/api/user/voteRecord/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(get(urlPrefix+"/voteRecord/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
 		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
@@ -357,7 +359,7 @@ public class UserControllerTest
 		when(userService.readVoteReminder(any(ReadVoteReminderEvent.class))).thenReturn(resEvt);
 		String content=populateVoteReminderContent(dets);
 		String returnedContent=populateVoteReminderReturnedContent(dets);
-		this.mockMvc.perform(get("/api/user/voteReminder/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(get(urlPrefix+"/voteReminder/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
@@ -377,7 +379,7 @@ public class UserControllerTest
 		VoteRecordDeletedEvent resEvt=new VoteRecordDeletedEvent(id);
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.deleteVoteRecord(any(DeleteVoteRecordEvent.class))).thenReturn(resEvt);
-		this.mockMvc.perform(delete("/api/user/voteRecord/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(delete(urlPrefix+"/voteRecord/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(id.intValue())))
 /*		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
@@ -395,7 +397,7 @@ public class UserControllerTest
 		VoteReminderDeletedEvent resEvt=new VoteReminderDeletedEvent(id);
 		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
 		when(userService.deleteVoteReminder(any(DeleteVoteReminderEvent.class))).thenReturn(resEvt);
-		this.mockMvc.perform(delete("/api/user/voteReminder/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(delete(urlPrefix+"/voteReminder/{id}",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(id.intValue())))
 /*		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
@@ -414,7 +416,7 @@ public class UserControllerTest
 		ReadUserEvent testData=RestDataFixture.customEmailUser2(email);
 		UserDetails dets=(UserDetails) testData.getDetails();
 		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(get(urlPrefix+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
@@ -437,7 +439,7 @@ public class UserControllerTest
 		ReadUserEvent testData=new ReadUserEvent(dets.getEmail(), dets);
 		Long id=user.getNodeId();
 		when (userService.readUserById(any(RequestReadUserEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get("/api/user/{id}/",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(get(urlPrefix+"/{id}/",id).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
@@ -460,7 +462,7 @@ public class UserControllerTest
 		String email=dets.getEmail();
 		ReadUserEvent testData=new ReadUserEvent(email, dets);
 		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get("/api/user/contact/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(get(urlPrefix2+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
@@ -481,7 +483,7 @@ public class UserControllerTest
 		String contactNumber=dets.getContactNumber();
 		ReadUserEvent testData=new ReadUserEvent(email, dets);
 		when (userService.readUserByContactNumber((any(RequestReadUserEvent.class)))).thenReturn(testData);
-		this.mockMvc.perform(get("/api/user/contact/{contactNumber}/",contactNumber).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(get(urlPrefix2+"/{contactNumber}/",contactNumber).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
@@ -498,7 +500,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
 		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(ReadUserEvent.notFound(email2));
-		this.mockMvc.perform(get("/api/user/{email}/",email2).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(get(urlPrefix+"/{email}/",email2).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 	}
 	
@@ -512,7 +514,7 @@ public class UserControllerTest
 		String content=populateContent(dets);
 		String returnedContent=populateReturnedContent(dets);
 		when (userService.updateUser(any(UpdateUserEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(put("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
@@ -536,7 +538,7 @@ public class UserControllerTest
 		UserUpdatedEvent testData=UserUpdatedEvent.instituteNotFound(email);
 		String content=populateContent(dets);
 		when (userService.updateUser(any(UpdateUserEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(put("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		this.mockMvc.perform(put(urlPrefix+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isFailedDependency())	;
 	}
 	
@@ -623,7 +625,7 @@ public class UserControllerTest
 		UserDetails dets=(UserDetails) readData.getDetails();
 		UserDeletedEvent testData=new UserDeletedEvent(email, dets);
 		when (userService.deleteUser(any(DeleteUserEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(delete("/api/user/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))		
+		this.mockMvc.perform(delete(urlPrefix+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))		
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
 		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
@@ -642,7 +644,7 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDelete()");
 		when (userService.deleteUser(any(DeleteUserEvent.class))).thenReturn(UserDeletedEvent.notFound(email2));
-		this.mockMvc.perform(delete("/api/user/{email}/",email2).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(delete(urlPrefix+"/{email}/",email2).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 	}
 }
