@@ -427,6 +427,26 @@ public class UserController
 		return response;
 	}
     
+	private ReadUserEvent getPublicDetails(String contactInfo)
+	{
+		ReadUserEvent userEvent;
+		
+		EmailValidator emailValidator=EmailValidator.getInstance();
+		String email=null;
+		if (emailValidator.isValid(contactInfo))
+		{
+			email=contactInfo;
+			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
+			 userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
+		}
+		else
+		{
+			// Try for phone number
+			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+		}
+		return userEvent;
+	}
+
     /**
      * Is passed all the necessary data to read a user from the database.
      * The request must be a GET with the user email presented
@@ -446,20 +466,8 @@ public class UserController
 
 		ReadUserEvent userEvent;
 		ResponseEntity<UserProfile> result;
-		EmailValidator emailValidator=EmailValidator.getInstance();
-		String email=null;
-		if (emailValidator.isValid(contactInfo))
-		{
-			email=contactInfo;
-			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
-			 userEvent=userService.readUser(new RequestReadUserEvent(email));
-		}
-		else
-		{
-			// Try for phone number
-			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
-		}
-		//	return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+
+		userEvent=getPublicDetails(contactInfo);
 			 	
 		if (!userEvent.isEntityFound())
 		{
@@ -468,17 +476,12 @@ public class UserController
 		else
 		{
 			UserDetails dets=(UserDetails) userEvent.getDetails();
-			// Only send back the contact information used to find this user.
-			if (email!=null)
-				dets.setContactNumber(null);
-			else
-				dets.setEmail(null);
 			UserProfile restUser=UserProfile.fromUserDetails(dets);
 			result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
 		}
 		return result;
 	}
-    
+    	
     /**
      * Is passed all the necessary data to add a contact from the database.
      * The request must be a PUT with the contact email or phone number presented
@@ -498,20 +501,8 @@ public class UserController
 
 		ReadUserEvent userEvent;
 		ResponseEntity<UserProfile> result;
-		EmailValidator emailValidator=EmailValidator.getInstance();
-		String email=null;
-		if (emailValidator.isValid(contactInfo))
-		{
-			email=contactInfo;
-			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
-			 userEvent=userService.readUser(new RequestReadUserEvent(email));
-		}
-		else
-		{
-			// Try for phone number
-			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
-		}
-		//	return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+
+		userEvent=getPublicDetails(contactInfo);
 			 	
 		// Look for existing contact request.
 		ContactRequestDetails fr=new ContactRequestDetails(contactInfo,userId);
@@ -527,11 +518,6 @@ public class UserController
 		else
 		{
 			UserDetails dets=(UserDetails) userEvent.getDetails();
-			// Only send back the contact information used to find this user.
-			if (email!=null)
-				dets.setContactNumber(null);
-			else
-				dets.setEmail(null);
 			UserProfile restUser=UserProfile.fromUserDetails(dets);
 
 			
@@ -539,7 +525,6 @@ public class UserController
 			CreatedEvent evt=contactRequestService.createContactRequest(createEvt);
 			if (!evt.isFailed())
 			{	
-	
 				if (!userEvent.isEntityFound())
 				{
 					// They are not already users.  Need to deal with that.
@@ -548,18 +533,14 @@ public class UserController
 				}
 				else
 				{
-					
 					// Create a new request.
 					result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
-					
 				}
 			}
 			else
 			{
 				result = new ResponseEntity<UserProfile>(HttpStatus.BAD_REQUEST);
 			}
-			
-			
 		}
 		return result;
 	}

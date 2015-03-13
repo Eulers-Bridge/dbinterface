@@ -461,7 +461,7 @@ public class UserControllerTest
 		UserDetails dets=user.toUserDetails();
 		String email=dets.getEmail();
 		ReadUserEvent testData=new ReadUserEvent(email, dets);
-		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
+		when (userService.readUserByContactEmail(any(RequestReadUserEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))

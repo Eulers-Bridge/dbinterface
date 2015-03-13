@@ -210,6 +210,34 @@ public class UserEventHandler implements UserService, UserDetailsService
 		return response;
 	}
 	
+	private UserDetails removeConfidentialDetails(UserDetails userDetails)
+	{
+		UserDetails publicDetails=new UserDetails();
+		publicDetails.setContactNumber(userDetails.getContactNumber());
+		publicDetails.setEmail(userDetails.getEmail());
+		publicDetails.setFamilyName(userDetails.getFamilyName());
+		publicDetails.setGivenName(userDetails.getGivenName());
+		publicDetails.setGender(userDetails.getGender());
+		publicDetails.setNationality(userDetails.getNationality());
+		publicDetails.setInstitutionId(userDetails.getInstitutionId());
+
+		return publicDetails;
+	}
+
+	@Override
+	public ReadUserEvent readUserByContactEmail(
+			RequestReadUserEvent requestReadUserEvent)
+	{
+		ReadUserEvent readEvt=readUser(requestReadUserEvent),publicReadEvt=readEvt;
+		if (readEvt.isEntityFound())
+		{
+			UserDetails publicDetails=removeConfidentialDetails((UserDetails)readEvt.getDetails());
+			publicDetails.setContactNumber(null);
+			publicReadEvt=new ReadUserEvent(requestReadUserEvent.getEmail(),publicDetails);
+		}
+		return publicReadEvt;
+	}
+	
 	@Override
 	public ReadUserEvent readUserByContactNumber(RequestReadUserEvent requestReadUserEvent)
 	{
@@ -226,7 +254,8 @@ public class UserEventHandler implements UserService, UserDetailsService
 			}
 			else
 			{
-				UserDetails result = user.toUserDetails();
+				UserDetails result = removeConfidentialDetails(user.toUserDetails());
+				result.setEmail(null);
 				if (LOG.isDebugEnabled()) LOG.debug("Result - " + result);
 				response = new ReadUserEvent(requestReadUserEvent.getEmail(),
 						result);

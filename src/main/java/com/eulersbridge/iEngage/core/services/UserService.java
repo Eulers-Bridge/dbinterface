@@ -37,6 +37,8 @@ public interface UserService
 	public ReadUserEvent readUser(RequestReadUserEvent requestReadUserEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public ReadUserEvent readUserByContactNumber(RequestReadUserEvent requestReadUserEvent);
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public ReadUserEvent readUserByContactEmail(RequestReadUserEvent requestReadUserEvent);
 //TODO Need to secure this better.
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public ReadUserEvent readUserById(RequestReadUserEvent requestReadUserEvent);
