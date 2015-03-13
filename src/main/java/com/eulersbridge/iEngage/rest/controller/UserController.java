@@ -73,10 +73,13 @@ public class UserController
     @Autowired ServletContext servletContext;
     @Autowired VelocityEngine velocityEngine;
 	@Autowired JavaMailSender emailSender;
+	
+	EmailValidator emailValidator;
     
 	public UserController() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UserController()");
+		emailValidator=EmailValidator.getInstance();
 	}
 
     private static Logger LOG = LoggerFactory.getLogger(UserController.class);
@@ -427,26 +430,6 @@ public class UserController
 		return response;
 	}
     
-	private ReadUserEvent getPublicDetails(String contactInfo)
-	{
-		ReadUserEvent userEvent;
-		
-		EmailValidator emailValidator=EmailValidator.getInstance();
-		String email=null;
-		if (emailValidator.isValid(contactInfo))
-		{
-			email=contactInfo;
-			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
-			 userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
-		}
-		else
-		{
-			// Try for phone number
-			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
-		}
-		return userEvent;
-	}
-
     /**
      * Is passed all the necessary data to read a user from the database.
      * The request must be a GET with the user email presented
@@ -466,8 +449,16 @@ public class UserController
 
 		ReadUserEvent userEvent;
 		ResponseEntity<UserProfile> result;
-
-		userEvent=getPublicDetails(contactInfo);
+		boolean isEmail=emailValidator.isValid(contactInfo);
+		String email=null;
+		
+		if (isEmail)
+		{
+			email=contactInfo;
+			userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
+		}
+		else
+			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
 			 	
 		if (!userEvent.isEntityFound())
 		{
@@ -495,32 +486,41 @@ public class UserController
 
 	*/
 	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{userId}/contact/{contactInfo}")
-	public @ResponseBody ResponseEntity<UserProfile> addFriend(@PathVariable Long userId,@PathVariable String contactInfo) 
+	public @ResponseBody ResponseEntity<ContactRequest> addFriend(@PathVariable Long userId,@PathVariable String contactInfo) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to add contact "+contactInfo+" for "+userId);
 
 		ReadUserEvent userEvent;
-		ResponseEntity<UserProfile> result;
-
-		userEvent=getPublicDetails(contactInfo);
+		ResponseEntity<ContactRequest> result;
+		boolean isEmail=emailValidator.isValid(contactInfo);
+		String email=null;
+	
+		if (isEmail)
+		{
+			email=contactInfo;
+			userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
+		}
+		else
+			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
 			 	
 		// Look for existing contact request.
 		ContactRequestDetails fr=new ContactRequestDetails(contactInfo,userId);
 		
 		ReadContactRequestEvent readContactRequestEvent=new ReadContactRequestEvent(fr);
 		ReadEvent crEvt=contactRequestService.readContactRequestByUserIdContactNumber(readContactRequestEvent);
+		ContactRequest restContactRequest;
+
 		if (crEvt.isEntityFound())
 		{
+			if (LOG.isDebugEnabled()) LOG.debug("Contact Request details returned - "+(crEvt.getDetails()));
+			restContactRequest=ContactRequest.fromContactRequestDetails((ContactRequestDetails)(crEvt.getDetails()));
 			// Request already exists, bounce out of here.
+			if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContactRequest);
 			// Has it been denied?  TODO
-			result = new ResponseEntity<UserProfile>(HttpStatus.NOT_MODIFIED);
+			result = new ResponseEntity<ContactRequest>(restContactRequest,HttpStatus.ACCEPTED);
 		}
 		else
 		{
-			UserDetails dets=(UserDetails) userEvent.getDetails();
-			UserProfile restUser=UserProfile.fromUserDetails(dets);
-
-			
 			CreateContactRequestEvent createEvt=new CreateContactRequestEvent(fr);
 			CreatedEvent evt=contactRequestService.createContactRequest(createEvt);
 			if (!evt.isFailed())
@@ -528,18 +528,24 @@ public class UserController
 				if (!userEvent.isEntityFound())
 				{
 					// They are not already users.  Need to deal with that.
+					ContactRequestDetails dets=(ContactRequestDetails) evt.getDetails();
+					restContactRequest=ContactRequest.fromContactRequestDetails(dets);
+					
 					// Create a ContactRequest.
-					result = new ResponseEntity<UserProfile>(restUser,HttpStatus.NOT_FOUND);
+					result = new ResponseEntity<ContactRequest>(restContactRequest,HttpStatus.CREATED);
 				}
 				else
 				{
+					ContactRequestDetails dets=(ContactRequestDetails) evt.getDetails();
+					
+					restContactRequest=ContactRequest.fromContactRequestDetails(dets);
 					// Create a new request.
-					result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
+					result = new ResponseEntity<ContactRequest>(restContactRequest,HttpStatus.OK);
 				}
 			}
 			else
 			{
-				result = new ResponseEntity<UserProfile>(HttpStatus.BAD_REQUEST);
+				result = new ResponseEntity<ContactRequest>(HttpStatus.BAD_REQUEST);
 			}
 		}
 		return result;

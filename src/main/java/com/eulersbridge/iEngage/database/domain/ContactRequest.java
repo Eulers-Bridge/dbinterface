@@ -161,6 +161,18 @@ public class ContactRequest
 		this.user = user;
 	}
 	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "ContactRequest [nodeId=" + nodeId + ", contactDetails="
+				+ contactDetails + ", requestDate=" + requestDate
+				+ ", responseDate=" + responseDate + ", accepted=" + accepted
+				+ ", rejected=" + rejected + ", user=" + user + "]";
+	}
+
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

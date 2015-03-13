@@ -59,6 +59,7 @@ public class ContactRequestEventHandler implements ContactRequestService
         	contactRequestCreatedEvent = CreatedEvent.failed(dets);
         else
         {
+        	if (LOG.isDebugEnabled()) LOG.debug("ContactRequest created "+result);
 			contactRequestCreatedEvent = new ContactRequestCreatedEvent(result.toContactRequestDetails());
         }
         return contactRequestCreatedEvent;
