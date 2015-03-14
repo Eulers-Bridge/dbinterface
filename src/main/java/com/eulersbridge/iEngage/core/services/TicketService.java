@@ -33,4 +33,7 @@ public interface TicketService {
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
     public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent);
+
+    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    public TicketSupportedEvent withdrawSupportTicket(SupportTicketEvent supportTicketEvent);
 }
