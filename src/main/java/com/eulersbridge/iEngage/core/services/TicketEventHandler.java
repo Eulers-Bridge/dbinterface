@@ -181,4 +181,20 @@ public class TicketEventHandler implements TicketService{
         }
         return ticketSupportedEvent;
     }
+
+    @Override
+    public TicketSupportedEvent withdrawSupportTicket(SupportTicketEvent supportTicketEvent) {
+        TicketSupportedEvent ticketSupportedEvent;
+        Ticket ticket = ticketRepository.findOne(supportTicketEvent.getTicketId());
+        User user = userRepository.findByEmail(supportTicketEvent.getEmailAddress());
+        if (ticket == null)
+            ticketSupportedEvent = TicketSupportedEvent.entityNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+        else if (user == null)
+            ticketSupportedEvent = TicketSupportedEvent.userNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+        else{
+           ticketRepository.withdrawSupportTicket(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+            ticketSupportedEvent = new TicketSupportedEvent(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress(), true);
+        }
+        return ticketSupportedEvent;
+    }
 }

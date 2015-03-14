@@ -23,4 +23,6 @@ public interface TicketRepository extends GraphRepository<Ticket>
     @Query("Match (a:`User`),(b:`Ticket`) where a.email={email} and id(b)={ticketId} CREATE UNIQUE a-[r:SUPPORTS]-b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Support' return r")
     Support supportTicket(@Param("ticketId")Long ticketId, @Param("email")String email);
 
+    @Query("Match (a:`User`)-[r:SUPPORTS]-(b:`Ticket`) where a.email={email} and id(b)={ticketId} delete r")
+    void withdrawSupportTicket(@Param("ticketId")Long ticketId, @Param("email")String email);
 }

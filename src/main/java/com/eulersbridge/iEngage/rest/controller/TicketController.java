@@ -168,9 +168,30 @@ public class TicketController {
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to have " + email + " support ticket: " + ticketId);
         TicketSupportedEvent ticketSupportedEvent = ticketService.supportTicket(new SupportTicketEvent(ticketId, email));
-
         ResponseEntity<Boolean> response;
+        if (!ticketSupportedEvent.isEntityFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+        }
+        else if (!ticketSupportedEvent.isUserFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
+        else
+        {
+            Boolean restEvent = ticketSupportedEvent.isResult();
+            response = new ResponseEntity<Boolean>(restEvent, HttpStatus.OK);
+        }
+        return response;
+    }
 
+    //Withdraw Support
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.TICKET_LABEL+"/{ticketId}"+ ControllerConstants.WITHDRAW_SUPPORT_BY +"/{email}")
+    public @ResponseBody ResponseEntity<Boolean> withdrawSupportTicket(@PathVariable Long ticketId, @PathVariable String email){
+        if (LOG.isInfoEnabled())
+            LOG.info("Attempting to have " + email + "withdraw support ticket: " + ticketId);
+        TicketSupportedEvent ticketSupportedEvent = ticketService.withdrawSupportTicket(new SupportTicketEvent(ticketId, email));
+        ResponseEntity<Boolean> response;
         if (!ticketSupportedEvent.isEntityFound())
         {
             response = new ResponseEntity<Boolean>(HttpStatus.GONE);
