@@ -278,4 +278,11 @@ public VoteReminder deleteVoteReminder(Long id) {
 		return null;
 	}
 
+	@Override
+	public Contact addContact(Long contactorId, Long contacteeId)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

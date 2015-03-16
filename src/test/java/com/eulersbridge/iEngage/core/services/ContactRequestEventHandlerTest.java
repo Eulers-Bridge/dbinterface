@@ -25,6 +25,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
+import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -195,6 +196,9 @@ public class ContactRequestEventHandlerTest
 		User userData=DatabaseDataFixture.populateUserGnewitt();
 		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(userRepository.findByContactNumber(any(String.class))).thenReturn(userData);
+		Contact value=new Contact();
+		value.setNodeId(444l);
+		when(userRepository.addContact(any(Long.class), any(Long.class))).thenReturn(value);
 		when(contactRequestRepository.save(any(ContactRequest.class))).thenReturn(respData);
 		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId(), testData.toContactRequestDetails());
 		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);
@@ -216,6 +220,9 @@ public class ContactRequestEventHandlerTest
 		User userData=DatabaseDataFixture.populateUserGnewitt2();
 		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(userRepository.findByEmail(any(String.class))).thenReturn(userData);
+		Contact value=new Contact();
+		value.setNodeId(444l);
+		when(userRepository.addContact(any(Long.class), any(Long.class))).thenReturn(value);
 		when(contactRequestRepository.save(any(ContactRequest.class))).thenReturn(respData);
 		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId(), testData.toContactRequestDetails());
 		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);

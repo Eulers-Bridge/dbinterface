@@ -17,6 +17,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
+import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
@@ -131,12 +132,20 @@ public class ContactRequestEventHandler implements ContactRequestService
 	       		cr.setAccepted(true);
 	       		cr.setRejected(false);
 	       		cr.setResponseDate(Calendar.getInstance().getTimeInMillis());
-	//       		userRepository.addContact(contactor,contactee);
-	           	ContactRequest result=contactRequestRepository.save(cr);
-	           	if (result!=null)
-	           		uEvt=new UpdatedEvent(contactRequestId, result.toContactRequestDetails());
-	           	//TODO Should really be failed.
-	           	else uEvt=UpdatedEvent.notFound(null);
+	       		Contact contact=userRepository.addContact(contactor.getNodeId(),contactee.getNodeId());
+	       		if ((contact!=null)&(contact.getNodeId()!=null))
+	       		{	
+		           	ContactRequest result=contactRequestRepository.save(cr);
+		           	if (result!=null)
+		           		uEvt=new UpdatedEvent(contactRequestId, result.toContactRequestDetails());
+		           	//TODO Should really be failed.
+		           	else uEvt=UpdatedEvent.notFound(null);
+	       		}
+	       		else
+	       		{
+		           	//TODO Should really be failed.
+		           	uEvt=UpdatedEvent.notFound(null);
+	       		}
     		}
     		else
     		{
