@@ -57,7 +57,7 @@ public interface UserRepository extends GraphRepository<User>
 
     User findByContactNumber(String contactNumber);
     
-	@Query("Match (a),(b) where id(a)={contactorId} and id(b)={contacteeId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.VREMINDER_LABEL+
+	@Query("Match (a),(b) where id(a)={contactorId} and id(b)={contacteeId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.CONTACT_LABEL+
 			"]-b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Contact' return r")
 	Contact addContact(@Param("contactorId")Long contactorId,@Param("contacteeId")Long contacteeId);
 

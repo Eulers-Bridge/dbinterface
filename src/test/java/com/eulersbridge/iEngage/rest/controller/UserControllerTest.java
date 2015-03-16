@@ -23,6 +23,10 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
+import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
+import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
@@ -49,8 +53,10 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
+import com.eulersbridge.iEngage.core.services.ContactRequestService;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.email.EmailVerification;
@@ -72,6 +78,9 @@ public class UserControllerTest
 	
 	@Mock
 	EmailService emailService;
+	
+	@Mock
+	ContactRequestService contactRequestService;
 	
 	String email = "greg.newitt@unimelb.edu.au";
 	String email2 = "graeme.newitt@unimelb.edu.au";
@@ -477,7 +486,7 @@ public class UserControllerTest
 	@Test
 	public void testFindContactWithNumber() throws Exception
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingRead()");
+		if (LOG.isDebugEnabled()) LOG.debug("findingContact()");
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		UserDetails dets=user.toUserDetails();
 		String contactNumber=dets.getContactNumber();
@@ -493,6 +502,29 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
+	}
+	
+	@Test
+	public void testAcceptContact() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("acceptingContact()");
+		ContactRequest cr = DatabaseDataFixture.populateContactRequest1();
+		Long contactRequestId=cr.getNodeId();
+		ContactRequestDetails crDets = cr.toContactRequestDetails();
+		String contactNumber=crDets.getContactDetails();
+		
+		ReadEvent value=new ContactRequestReadEvent(contactRequestId,crDets);
+		when(contactRequestService.readContactRequest(any(ReadContactRequestEvent.class))).thenReturn(value);
+		this.mockMvc.perform(put(urlPrefix2+"/{contactRequestId}/",contactRequestId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+/*		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
+		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
+		.andExpect(jsonPath("$.gender",is(dets.getGender())))
+		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
+		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("$.email",is(dets.getEmail())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+*/		.andExpect(status().isCreated())	;
 	}
 	
 	@Test

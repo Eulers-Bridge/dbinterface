@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
+import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
@@ -59,6 +60,7 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.services.ContactRequestService;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.domain.Contact;
 import com.eulersbridge.iEngage.email.EmailConstants;
 
 @RestController
@@ -443,7 +445,7 @@ public class UserController
 
 	*/
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.CONTACT_LABEL+"/{contactInfo}")
-	public @ResponseBody ResponseEntity<UserProfile> findFriend(@PathVariable String contactInfo) 
+	public @ResponseBody ResponseEntity<UserProfile> findContact(@PathVariable String contactInfo) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to find contact. "+contactInfo);
 
@@ -485,8 +487,8 @@ public class UserController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{userId}/contact/{contactInfo}")
-	public @ResponseBody ResponseEntity<ContactRequest> addFriend(@PathVariable Long userId,@PathVariable String contactInfo) 
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{userId}"+ControllerConstants.CONTACT_LABEL+"/{contactInfo}")
+	public @ResponseBody ResponseEntity<ContactRequest> addContact(@PathVariable Long userId,@PathVariable String contactInfo) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to add contact "+contactInfo+" for "+userId);
 
@@ -547,6 +549,47 @@ public class UserController
 			{
 				result = new ResponseEntity<ContactRequest>(HttpStatus.BAD_REQUEST);
 			}
+		}
+		return result;
+	}
+    
+    /**
+     * Is passed all the necessary data to add a contact from the database.
+     * The request must be a PUT with the contact email or phone number presented
+     * as the final portion of the URL.
+     * <p/>
+     * This method will return a 200 ok if nothing has gone wrong.
+     * 
+     * @param contactInfo the email address or phone number of the contact to be added.
+     * @return userProfile.
+     * 
+
+	*/
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.CONTACT_LABEL+"/{contactRequestId}")
+	public @ResponseBody ResponseEntity<Contact> acceptContact(@PathVariable Long contactRequestId) 
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to add contact from "+contactRequestId);
+
+		ResponseEntity<Contact> result;
+		Contact restContact;
+
+		ReadContactRequestEvent readContactRequestEvent=new ReadContactRequestEvent(contactRequestId);
+		ReadEvent rEvt=contactRequestService.readContactRequest(readContactRequestEvent);
+		
+		if (rEvt.isEntityFound())
+		{
+			ContactRequestDetails crDets=(ContactRequestDetails)rEvt.getDetails();
+			if (LOG.isDebugEnabled()) LOG.debug("Contact Request details returned - "+crDets);
+			ContactDetails cDets=new ContactDetails(null, crDets.getUserId(), crDets.getNodeId(), crDets.getResponseDate());
+			restContact=Contact.fromContactDetails(cDets);
+
+			if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
+
+			result = new ResponseEntity<Contact>(restContact,HttpStatus.CREATED);
+		}
+		else
+		{
+			result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
 		}
 		return result;
 	}
