@@ -7,6 +7,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
 
@@ -24,5 +26,8 @@ public interface ContactRequestService
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public ReadEvent readContactRequestByUserIdContactNumber(ReadContactRequestEvent readContactRequestEvent);
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	public UpdatedEvent acceptContactRequest(AcceptContactRequestEvent acceptContactRequestEvent);
 
 }

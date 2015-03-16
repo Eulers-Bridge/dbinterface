@@ -11,6 +11,7 @@ import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.Candidate;
+import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.ForumQuestion;
@@ -759,6 +760,33 @@ public class DatabaseDataFixture
 		TaskComplete initialTask=populateTaskComplete1();
 		tasks.put(initialTask.getNodeId(), initialTask);
 		return tasks;
+	}
+	
+	public static ContactRequest populateContactRequest1()
+	{
+		Long nodeId=123l;
+		String contactDetails=populateUserGnewitt().getContactNumber();
+		User user=populateUserGnewitt2();
+		return populateContactRequest(nodeId,contactDetails,user);
+	}
+	public static ContactRequest populateContactRequest2()
+	{
+		Long nodeId=123l;
+		String contactDetails=populateUserGnewitt2().getEmail();
+		User user=populateUserGnewitt();
+		return populateContactRequest(nodeId,contactDetails,user);
+	}
+	public static ContactRequest populateContactRequest(Long nodeId, String contactDetails, User user)
+	{
+		ContactRequest tc=new ContactRequest();
+		tc.setContactDetails(contactDetails);
+		tc.setNodeId(nodeId);
+		tc.setRejected(null);
+		tc.setAccepted(null);
+		tc.setRequestDate(Calendar.getInstance().getTimeInMillis());
+		tc.setResponseDate(null);
+		tc.setUser(user);
+		return tc;
 	}
 
 }

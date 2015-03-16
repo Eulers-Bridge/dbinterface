@@ -87,7 +87,7 @@ public class CoreConfig
 	public ContactRequestService createContactRequestService()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createContactRequestService()");
-		return new ContactRequestEventHandler(contactRequestRepository);
+		return new ContactRequestEventHandler(contactRequestRepository,userRepo);
 	}
 
 	@Bean

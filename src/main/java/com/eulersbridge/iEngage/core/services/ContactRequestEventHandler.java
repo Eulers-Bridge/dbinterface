@@ -10,14 +10,19 @@ import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestCreatedEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+
+import org.apache.commons.validator.routines.EmailValidator;
 
 /**
  * @author Greg Newitt
@@ -30,17 +35,12 @@ public class ContactRequestEventHandler implements ContactRequestService
 
     private ContactRequestRepository contactRequestRepository;
 
-//	private UserRepository userRepository;
-
-    public ContactRequestEventHandler(ContactRequestRepository contactRequestRepository)
-    {
-        this.contactRequestRepository = contactRequestRepository;
-    }
+	private UserRepository userRepository;
 
     public ContactRequestEventHandler(ContactRequestRepository contactRequestRepository, UserRepository userRepository)
     {
         this.contactRequestRepository = contactRequestRepository;
-//        this.userRepository = userRepository;
+        this.userRepository = userRepository;
     }
 
 	/* (non-Javadoc)
@@ -106,6 +106,48 @@ public class ContactRequestEventHandler implements ContactRequestService
             contactRequestReadEvent = ContactRequestReadEvent.notFound(readContactRequestEvent.getNodeId());
         }
         return contactRequestReadEvent;
+	}
+
+	@Override
+	public UpdatedEvent acceptContactRequest(
+			AcceptContactRequestEvent acceptContactRequestEvent)
+	{
+		Long contactRequestId=acceptContactRequestEvent.getNodeId();
+       	if (LOG.isDebugEnabled()) LOG.debug("Looking for ContactRequest "+contactRequestId);
+       	ContactRequest cr=contactRequestRepository.findOne(contactRequestId);
+       	UpdatedEvent uEvt;
+       	if (cr!=null)
+       	{
+    		EmailValidator emailValidator=EmailValidator.getInstance();
+			boolean isEmail=emailValidator.isValid(cr.getContactDetails());
+    		User contactee,contactor;
+    		if (isEmail)
+    			contactee=userRepository.findByEmail(cr.getContactDetails());
+    		else
+           		contactee=userRepository.findByContactNumber(cr.getContactDetails());
+    		if (contactee!=null)
+    		{
+	    		contactor=cr.getUser();
+	       		cr.setAccepted(true);
+	       		cr.setRejected(false);
+	       		cr.setResponseDate(Calendar.getInstance().getTimeInMillis());
+	//       		userRepository.addContact(contactor,contactee);
+	           	ContactRequest result=contactRequestRepository.save(cr);
+	           	if (result!=null)
+	           		uEvt=new UpdatedEvent(contactRequestId, result.toContactRequestDetails());
+	           	//TODO Should really be failed.
+	           	else uEvt=UpdatedEvent.notFound(null);
+    		}
+    		else
+    		{
+           		uEvt=UpdatedEvent.notFound(contactRequestId);
+    		}
+       	}
+       	else
+       	{
+       		uEvt=UpdatedEvent.notFound(contactRequestId);
+       	}
+		return uEvt;
 	}
 
 }
