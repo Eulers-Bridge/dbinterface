@@ -31,7 +31,7 @@ public class Ticket extends Likeable
     @RelatedTo(type = DatabaseDomainConstants.HAS_TICKET_LABEL, direction = Direction.INCOMING)
     private Election election;
     private String colour;
-    private String characterCode;
+    private String code;
     @RelatedTo(type = DatabaseDomainConstants.SUPPORT, direction = Direction.INCOMING)
     private Collection<User> supporters;
 
@@ -52,7 +52,7 @@ public class Ticket extends Likeable
 	        election.setNodeId(ticketDetails.getElectionId());
 	        ticket.setElection(election);
             ticket.setColour(ticketDetails.getColour());
-            ticket.setCharacterCode(ticketDetails.getChararcterCode());
+            ticket.setCode(ticketDetails.getChararcterCode());
 	
 	        if (LOG.isTraceEnabled()) LOG.trace("ticket "+ticket);
     	}
@@ -68,7 +68,7 @@ public class Ticket extends Likeable
         ticketDetails.setInformation(getInformation());
         ticketDetails.setElectionId(getElection().getNodeId());
         ticketDetails.setColour(getColour());
-        ticketDetails.setChararcterCode(getCharacterCode());
+        ticketDetails.setChararcterCode(getCode());
         if(supporters!=null)
             ticketDetails.setNumberOfSupporters(supporters.size());
         else
@@ -156,7 +156,7 @@ public class Ticket extends Likeable
 		this.information = information;
 		this.candidates = candidates;
 		this.election = election;
-        this.characterCode = characterCode;
+        this.code = characterCode;
 	}
 
 	public Long getNodeId() {
@@ -199,12 +199,12 @@ public class Ticket extends Likeable
         this.colour = colour;
     }
 
-    public String getCharacterCode() {
-        return characterCode;
+    public String getCode() {
+        return code;
     }
 
-    public void setCharacterCode(String characterCode) {
-        this.characterCode = characterCode;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /**

@@ -133,7 +133,7 @@ public class TicketTest
 		assertEquals(dets.getNodeId(),taskTest.getNodeId());
 		assertEquals(dets.getLogo(),taskTest.getLogo());
 		assertEquals(dets.getInformation(),taskTest.getInformation());
-        assertEquals(dets.getChararcterCode(), taskTest.getCharacterCode());
+        assertEquals(dets.getChararcterCode(), taskTest.getCode());
 		assertNull(taskTest.getCandidates());
 		assertEquals(election, taskTest.getElection());
 	}
