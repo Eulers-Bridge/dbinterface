@@ -225,4 +225,30 @@ public class ContactRequestEventHandlerTest
 		assertFalse(((ContactRequestDetails)(uEvt.getDetails())).getRejected());
 	}
 
+	@Test
+	public final void testAcceptContactRequestByEmailContacteeNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("AcceptingContactRequest()");
+		ContactRequest testData=DatabaseDataFixture.populateContactRequest2();
+		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId(), testData.toContactRequestDetails());
+		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);
+		assertEquals(testData.getNodeId(),uEvt.getNodeId());
+		assertFalse(uEvt.isEntityFound());
+		assertNull(uEvt.getDetails());
+	}
+	@Test
+	public final void testAcceptContactRequestByEmailContactRequestNotFound()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("AcceptingContactRequest()");
+		ContactRequest testData=DatabaseDataFixture.populateContactRequest2();
+		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(null);
+		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId(), testData.toContactRequestDetails());
+		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);
+		assertEquals(testData.getNodeId(),uEvt.getNodeId());
+		assertFalse(uEvt.isEntityFound());
+		assertNull(uEvt.getDetails());
+	}
+
 }
