@@ -5,9 +5,9 @@ package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,13 +62,10 @@ import com.eulersbridge.iEngage.database.domain.VerificationToken;
 import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
 import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.domain.VoteReminder;
-import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.PersonalityMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
-import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
-import com.eulersbridge.iEngage.database.repository.VerificationTokenMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
@@ -78,14 +75,8 @@ import com.eulersbridge.iEngage.security.SecurityConstants;
  */
 public class UserEventHandlerTest 
 {
-	UserService userService;
-	private VerificationTokenMemoryRepository tokenRepo;
-	private UserRepository userRepo;
-	private InstitutionRepository instRepo;
-	private PersonalityRepository personRepo;
-	
     @Mock
-    VerificationTokenMemoryRepository tRepo;
+    VerificationTokenRepository tRepo;
     @Mock
 	InstitutionRepository iRepo;
     @Mock
@@ -118,15 +109,6 @@ public class UserEventHandlerTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		HashMap<Long, User> users=DatabaseDataFixture.populateUsers();
-		userRepo=new UserMemoryRepository(users);
-		personRepo=new PersonalityMemoryRepository();
-		HashMap<Long, Institution> institutions=DatabaseDataFixture.populateInstitutions();
-		instRepo=new InstitutionMemoryRepository(institutions);
-		
-		HashMap<Long,VerificationToken> tokens= new HashMap<Long,VerificationToken>();
-		tokenRepo=new VerificationTokenMemoryRepository(tokens);
-		userService=new UserEventHandler(userRepo, personRepo, instRepo, tokenRepo);
 		MockitoAnnotations.initMocks(this);
 
 		userServiceMocked=new UserEventHandler(uRepo,pRepo,iRepo,tRepo);
@@ -145,7 +127,7 @@ public class UserEventHandlerTest
 	@Test
 	public void testUserEventHandler() 
 	{
-		UserEventHandler userService2=new UserEventHandler(userRepo, personRepo, instRepo, tokenRepo);
+		UserEventHandler userService2=new UserEventHandler(uRepo, pRepo, iRepo, tRepo);
 		assertNotNull("newsService not being created by constructor.",userService2);
 	}
 
@@ -164,11 +146,26 @@ public class UserEventHandlerTest
 		nADs.setPassword("pass");
 		nADs.setInstitutionId((long)1);
 		createUserEvent=new CreateUserEvent(nADs);
-		UserCreatedEvent nace = userService.signUpNewUser(createUserEvent);
+		Institution inst=DatabaseDataFixture.populateInstUniMelb();
+		User user=User.fromUserDetails(nADs);
+		User user2=User.fromUserDetails(nADs);
+		user2.setNodeId(543l);
+		
+		when(iRepo.findOne(any(Long.class))).thenReturn(inst);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+		when(uRepo.save(any(User.class))).thenReturn(user2);
+		when(uRepo.findOne(any(Long.class))).thenReturn(user2);
+		when(tRepo.save(any(VerificationToken.class))).thenReturn(null);
+		
+		UserCreatedEvent nace = userServiceMocked.signUpNewUser(createUserEvent);
 		assertNotNull("Not yet implemented",nace);
-		VerificationToken token=tokenRepo.findToken();
+
+		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
+		int expirationTimeInMinutes=20;
+		VerificationToken token=new VerificationToken(tokenType, user2, expirationTimeInMinutes);
+		when(tRepo.findByToken(any(String.class))).thenReturn(token);
 		VerifyUserAccountEvent verifyUserAccountEvent=new VerifyUserAccountEvent("gnewitt@hotmail.com", token.getEncodedTokenString());
-		UserAccountVerifiedEvent test = userService.validateUserAccount(verifyUserAccountEvent);
+		UserAccountVerifiedEvent test = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
 		assertNotNull("account verified event returned.",test);
 	}
 
@@ -376,11 +373,15 @@ public class UserEventHandlerTest
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#readUser(com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent)}.
 	 */
 	@Test
-	public void testRequestReadUserNullUser() {
+	public void testRequestReadUserNullUser()
+	{
 		RequestReadUserEvent rnae=new RequestReadUserEvent("gnewitt2@hotmail.com");
 		assertEquals("1 == 1",rnae.getEmail(),"gnewitt2@hotmail.com");
-		ReadUserEvent rane=userService.readUser(rnae);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(null);
+		ReadUserEvent rane=userServiceMocked.readUser(rnae);
 		assertNotNull("Not yet implemented",rane);
+		assertFalse(rane.isEntityFound());
+		assertEquals(rane.getEmail(),rnae.getEmail());
 	}
 
 	@Test
@@ -403,9 +404,17 @@ public class UserEventHandlerTest
 	@Test
 	public void testDeleteUser() 
 	{
-		DeleteUserEvent deleteUserEvent=new DeleteUserEvent("gnewitt@hotmail.com");
-		UserDeletedEvent nUDe = userService.deleteUser(deleteUserEvent);
-		assertNotNull("Not yet implemented",nUDe);
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		DeleteUserEvent deleteUserEvent=new DeleteUserEvent(userData.getEmail());
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		doNothing().when(uRepo).delete(any(Long.class));
+		UserDeletedEvent nUDe = userServiceMocked.deleteUser(deleteUserEvent);
+
+		assertNotNull(nUDe);
+		assertTrue(nUDe.isEntityFound());
+		assertTrue(nUDe.isDeletionCompleted());
+		assertEquals(nUDe.getEmail(),userData.getEmail());
+
 	}
 
 	@Test
@@ -429,6 +438,8 @@ public class UserEventHandlerTest
 	@Test
 	public void shouldUpdateUser() 
 	{
+		User user=DatabaseDataFixture.populateUserGnewitt2();
+		Institution inst=DatabaseDataFixture.populateInstUniMelb();
 		UserDetails nADs;
 		nADs=new UserDetails("gnewitt@hotmail.com");
 		nADs.setGivenName("Gregory");
@@ -440,7 +451,11 @@ public class UserEventHandlerTest
 		nADs.setPassword("123");
 		
 		UpdateUserEvent updateUserEvent=new UpdateUserEvent(nADs.getEmail(), nADs);
-		UserUpdatedEvent nude = (UserUpdatedEvent) userService.updateUser(updateUserEvent);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+		when(iRepo.findOne(any(Long.class))).thenReturn(inst);
+		when(uRepo.save(any(User.class))).thenReturn(User.fromUserDetails(nADs));
+		
+		UserUpdatedEvent nude = (UserUpdatedEvent) userServiceMocked.updateUser(updateUserEvent);
 		assertNotNull("UserUpdatedEvent returned null",nude);
 		assertNotNull("UserDetails returned null",nude.getDetails());
 		assertEquals("Email address not updated.",nude.getEmail(),nADs.getEmail());
@@ -457,7 +472,8 @@ public class UserEventHandlerTest
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
-		UserAuthenticatedEvent authEvt=userService.authenticateUser(evt);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+		UserAuthenticatedEvent authEvt=userServiceMocked.authenticateUser(evt);
 		assertTrue("User did not authenticate.",authEvt.isAuthenticated());
 	}
 	
@@ -465,9 +481,10 @@ public class UserEventHandlerTest
 	public void shouldAuthenticateUserRole()
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt();
-		userRepo.save(user);
+		uRepo.save(user);
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
-		UserAuthenticatedEvent authEvt=userService.authenticateUser(evt);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+		UserAuthenticatedEvent authEvt=userServiceMocked.authenticateUser(evt);
 
 		List<GrantedAuthority> auths=authEvt.getGrantedAuths();
 		Iterator<GrantedAuthority> iter=auths.iterator();
@@ -488,10 +505,11 @@ public class UserEventHandlerTest
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt2();
 		user.setAccountVerified(true);
-		userRepo.save(user);
+		uRepo.save(user);
 		LOG.debug("Roles - "+user.getRoles());
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword());
-		UserAuthenticatedEvent authEvt=userService.authenticateUser(evt);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+		UserAuthenticatedEvent authEvt=userServiceMocked.authenticateUser(evt);
 
 		List<GrantedAuthority> auths=authEvt.getGrantedAuths();
 		Iterator<GrantedAuthority> iter=auths.iterator();
@@ -525,10 +543,12 @@ public class UserEventHandlerTest
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail(), user.getPassword()+'2');
+		when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+
 		boolean exception=false;
 		try
 		{
-			userService.authenticateUser(evt);
+			userServiceMocked.authenticateUser(evt);
 		}
 		catch (BadCredentialsException e)
 		{
@@ -544,10 +564,12 @@ public class UserEventHandlerTest
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt();
 		AuthenticateUserEvent evt=new AuthenticateUserEvent(user.getEmail()+'3', user.getPassword());
+		when(uRepo.findByEmail(any(String.class))).thenReturn(null);
+
 		boolean exception=false;
 		try
 		{
-			userService.authenticateUser(evt);
+			userServiceMocked.authenticateUser(evt);
 		}
 		catch (UsernameNotFoundException e)
 		{

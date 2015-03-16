@@ -18,6 +18,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Sort.Direction;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -33,13 +35,11 @@ import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleE
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
-import com.eulersbridge.iEngage.database.repository.UserMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 /**
@@ -49,7 +49,6 @@ import com.eulersbridge.iEngage.database.repository.UserRepository;
 public class NewsEventHandlerTest 
 {
 	NewsArticleMemoryRepository testRepo;
-	UserMemoryRepository userRepo;
 	NewsEventHandler newsService;
 	InstitutionMemoryRepository instRepo;
 	
@@ -90,12 +89,10 @@ public class NewsEventHandlerTest
 		mockedNewsService=new NewsEventHandler(newsRepos,userRepos,institutionRepos);
 		
 		Map<Long, NewsArticle> newsArticles=DatabaseDataFixture.populateNewsArticles();
-		Map<Long, User> users=DatabaseDataFixture.populateUsers();
-		userRepo=new UserMemoryRepository(users);
 		Map<Long,Institution> institutions=DatabaseDataFixture.populateInstitutions();
 		instRepo=new InstitutionMemoryRepository(institutions);
 		testRepo=new NewsArticleMemoryRepository(newsArticles);
-		newsService=new NewsEventHandler(testRepo,userRepo,instRepo);
+		newsService=new NewsEventHandler(testRepo,userRepos,instRepo);
 	}
 
 	/**
@@ -111,7 +108,7 @@ public class NewsEventHandlerTest
 	@Test
 	public void testNewsEventHandler() 
 	{
-		NewsService newsService=new NewsEventHandler(testRepo,userRepo,instRepo);
+		NewsService newsService=new NewsEventHandler(testRepo,userRepos,instRepo);
 		assertNotNull("newsService not being created by constructor.",newsService);
 	}
 
@@ -130,6 +127,7 @@ public class NewsEventHandlerTest
 		nADs.setTitle("Per ardua ad astra.");
 		nADs.setInstitutionId((long)1);
 		createNewsArticleEvent=new CreateNewsArticleEvent(nADs);
+		when(userRepos.findByEmail(any(String.class))).thenReturn(DatabaseDataFixture.populateUserGnewitt());
 		NewsArticleCreatedEvent nace = newsService.createNewsArticle(createNewsArticleEvent);
 		assertNotNull("News article created event null.",nace);
 		ReadNewsArticleEvent rane=(ReadNewsArticleEvent) newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(nace.getNewsArticleId()));
