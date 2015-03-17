@@ -133,7 +133,7 @@ public class ContactRequestEventHandler implements ContactRequestService
 	       		cr.setRejected(false);
 	       		cr.setResponseDate(Calendar.getInstance().getTimeInMillis());
 	       		Contact contact=userRepository.addContact(contactor.getNodeId(),contactee.getNodeId());
-	       		if ((contact!=null)&(contact.getNodeId()!=null))
+	       		if ((contact!=null)&&(contact.getNodeId()!=null))
 	       		{	
 		           	ContactRequest result=contactRequestRepository.save(cr);
 		           	if (result!=null)
@@ -141,6 +141,7 @@ public class ContactRequestEventHandler implements ContactRequestService
 		           	//TODO Should really be failed.
 //		           	else uEvt=UpdatedEvent.notFound(null);
 		           	else uEvt=new UpdatedEvent(contactRequestId, contact.toContactDetails());
+		           	// Probably should remove the other contactRequest, if there is one.
 	       		}
 	       		else
 	       		{
@@ -161,9 +162,11 @@ public class ContactRequestEventHandler implements ContactRequestService
        	//	if (cr.getResponseDate()!=null)
        	{
        		// TODO Should be something else to indicate CR has already been responded too.
-       		if (cr.getRejected())
+       		Boolean rejected=cr.getRejected();
+       		Boolean accepted=cr.getAccepted();
+       		if ((rejected!=null)&&(true==rejected))
        			uEvt=UpdatedEvent.notFound(null);
-       		else if (cr.getAccepted())
+       		else if ((accepted!=null)&&(true==accepted))
        			uEvt=UpdatedEvent.notFound(null);
        		else
        			uEvt=UpdatedEvent.notFound(null);
