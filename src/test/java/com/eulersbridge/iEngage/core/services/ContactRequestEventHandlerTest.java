@@ -25,6 +25,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
+import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -196,16 +197,16 @@ public class ContactRequestEventHandlerTest
 		User userData=DatabaseDataFixture.populateUserGnewitt();
 		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(userRepository.findByContactNumber(any(String.class))).thenReturn(userData);
-		Contact value=new Contact();
-		value.setNodeId(444l);
+		Contact value=DatabaseDataFixture.populateContact1();
 		when(userRepository.addContact(any(Long.class), any(Long.class))).thenReturn(value);
 		when(contactRequestRepository.save(any(ContactRequest.class))).thenReturn(respData);
-		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId(), testData.toContactRequestDetails());
+		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId());
 		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);
 		assertEquals(testData.getNodeId(),uEvt.getNodeId());
-		assertNotNull(((ContactRequestDetails)(uEvt.getDetails())).getResponseDate());
-		assertTrue(((ContactRequestDetails)(uEvt.getDetails())).getAccepted());
-		assertFalse(((ContactRequestDetails)(uEvt.getDetails())).getRejected());
+		assertEquals(((ContactDetails)(uEvt.getDetails())).getNodeId(),value.getNodeId());
+		assertEquals(((ContactDetails)(uEvt.getDetails())).getTimestamp(),value.getTimestamp());
+		assertEquals(((ContactDetails)(uEvt.getDetails())).getContacteeId(),value.getContactee().getNodeId());
+		assertEquals(((ContactDetails)(uEvt.getDetails())).getContactorId(),value.getContactor().getNodeId());
 	}
 	@Test
 	public final void testAcceptContactRequestByEmail()
@@ -220,16 +221,16 @@ public class ContactRequestEventHandlerTest
 		User userData=DatabaseDataFixture.populateUserGnewitt2();
 		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(userRepository.findByEmail(any(String.class))).thenReturn(userData);
-		Contact value=new Contact();
-		value.setNodeId(444l);
+		Contact value=DatabaseDataFixture.populateContact1();
 		when(userRepository.addContact(any(Long.class), any(Long.class))).thenReturn(value);
 		when(contactRequestRepository.save(any(ContactRequest.class))).thenReturn(respData);
-		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId(), testData.toContactRequestDetails());
+		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId());
 		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);
 		assertEquals(testData.getNodeId(),uEvt.getNodeId());
-		assertNotNull(((ContactRequestDetails)(uEvt.getDetails())).getResponseDate());
-		assertTrue(((ContactRequestDetails)(uEvt.getDetails())).getAccepted());
-		assertFalse(((ContactRequestDetails)(uEvt.getDetails())).getRejected());
+		assertEquals(((ContactDetails)(uEvt.getDetails())).getNodeId(),value.getNodeId());
+		assertEquals(((ContactDetails)(uEvt.getDetails())).getTimestamp(),value.getTimestamp());
+		assertEquals(((ContactDetails)(uEvt.getDetails())).getContacteeId(),value.getContactee().getNodeId());
+		assertEquals(((ContactDetails)(uEvt.getDetails())).getContactorId(),value.getContactor().getNodeId());
 	}
 
 	@Test
@@ -239,7 +240,7 @@ public class ContactRequestEventHandlerTest
 		ContactRequest testData=DatabaseDataFixture.populateContactRequest2();
 		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
-		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId(), testData.toContactRequestDetails());
+		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId());
 		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);
 		assertEquals(testData.getNodeId(),uEvt.getNodeId());
 		assertFalse(uEvt.isEntityFound());
@@ -251,7 +252,7 @@ public class ContactRequestEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("AcceptingContactRequest()");
 		ContactRequest testData=DatabaseDataFixture.populateContactRequest2();
 		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(null);
-		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId(), testData.toContactRequestDetails());
+		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId());
 		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);
 		assertEquals(testData.getNodeId(),uEvt.getNodeId());
 		assertFalse(uEvt.isEntityFound());

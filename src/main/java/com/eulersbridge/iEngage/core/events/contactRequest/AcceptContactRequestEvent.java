@@ -3,19 +3,18 @@
  */
 package com.eulersbridge.iEngage.core.events.contactRequest;
 
-import com.eulersbridge.iEngage.core.events.Details;
-import com.eulersbridge.iEngage.core.events.UpdateEvent;
+import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 
 /**
  * @author Greg Newitt
  *
  */
-public class AcceptContactRequestEvent extends UpdateEvent
+public class AcceptContactRequestEvent extends RequestReadEvent
 {
 
-	public AcceptContactRequestEvent(Long nodeId, Details details)
+	public AcceptContactRequestEvent(Long nodeId)
 	{
-		super(nodeId, details);
+		super(nodeId);
 	}
 
 }

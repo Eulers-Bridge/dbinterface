@@ -117,7 +117,7 @@ public class ContactRequestEventHandler implements ContactRequestService
        	if (LOG.isDebugEnabled()) LOG.debug("Looking for ContactRequest "+contactRequestId);
        	ContactRequest cr=contactRequestRepository.findOne(contactRequestId);
        	UpdatedEvent uEvt;
-       	if (cr!=null)
+       	if ((cr!=null)&&(cr.getNodeId()!=null)&&(null==cr.getResponseDate()))
        	{
     		EmailValidator emailValidator=EmailValidator.getInstance();
 			boolean isEmail=emailValidator.isValid(cr.getContactDetails());
@@ -137,9 +137,10 @@ public class ContactRequestEventHandler implements ContactRequestService
 	       		{	
 		           	ContactRequest result=contactRequestRepository.save(cr);
 		           	if (result!=null)
-		           		uEvt=new UpdatedEvent(contactRequestId, result.toContactRequestDetails());
+		           		uEvt=new UpdatedEvent(contactRequestId, contact.toContactDetails());
 		           	//TODO Should really be failed.
-		           	else uEvt=UpdatedEvent.notFound(null);
+//		           	else uEvt=UpdatedEvent.notFound(null);
+		           	else uEvt=new UpdatedEvent(contactRequestId, contact.toContactDetails());
 	       		}
 	       		else
 	       		{
@@ -152,9 +153,21 @@ public class ContactRequestEventHandler implements ContactRequestService
            		uEvt=UpdatedEvent.notFound(contactRequestId);
     		}
        	}
-       	else
+       	else if ((null==cr)||(null==cr.getNodeId()))
        	{
        		uEvt=UpdatedEvent.notFound(contactRequestId);
+       	}
+       	else
+       	//	if (cr.getResponseDate()!=null)
+       	{
+       		// TODO Should be something else to indicate CR has already been responded too.
+       		if (cr.getRejected())
+       			uEvt=UpdatedEvent.notFound(null);
+       		else if (cr.getAccepted())
+       			uEvt=UpdatedEvent.notFound(null);
+       		else
+       			uEvt=UpdatedEvent.notFound(null);
+
        	}
 		return uEvt;
 	}

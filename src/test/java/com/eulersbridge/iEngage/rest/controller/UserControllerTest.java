@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.Calendar;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -24,9 +26,12 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
 
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
+import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
@@ -509,22 +514,23 @@ public class UserControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("acceptingContact()");
 		ContactRequest cr = DatabaseDataFixture.populateContactRequest1();
+		Long timeStamp=Calendar.getInstance().getTimeInMillis();
+		ContactDetails cDets = new ContactDetails(453l, cr.getUser().getNodeId(), 432l, timeStamp);
 		Long contactRequestId=cr.getNodeId();
 		ContactRequestDetails crDets = cr.toContactRequestDetails();
-		String contactNumber=crDets.getContactDetails();
 		
 		ReadEvent value=new ContactRequestReadEvent(contactRequestId,crDets);
 		when(contactRequestService.readContactRequest(any(ReadContactRequestEvent.class))).thenReturn(value);
+		UpdatedEvent updEvt=new UpdatedEvent(crDets.getNodeId(),cDets);
+		when(contactRequestService.acceptContactRequest(any(AcceptContactRequestEvent.class))).thenReturn(updEvt);
 		this.mockMvc.perform(put(urlPrefix2+"/{contactRequestId}/",contactRequestId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-/*		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
-		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
-		.andExpect(jsonPath("$.gender",is(dets.getGender())))
-		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
-		.andExpect(jsonPath("$.email",is(dets.getEmail())))
-		.andExpect(jsonPath("$.links[0].rel",is("self")))
-*/		.andExpect(status().isCreated())	;
+		.andExpect(jsonPath("$.nodeId",is(cDets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.contactorId",is(cDets.getContactorId().intValue())))
+		.andExpect(jsonPath("$.contacteeId",is(cDets.getContacteeId().intValue())))
+		.andExpect(jsonPath("$.timestamp",is(cDets.getTimestamp())))
+//		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(status().isCreated())	;
 	}
 	
 	@Test

@@ -11,6 +11,7 @@ import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.Candidate;
+import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Election;
@@ -771,22 +772,45 @@ public class DatabaseDataFixture
 	}
 	public static ContactRequest populateContactRequest2()
 	{
-		Long nodeId=123l;
+		Long nodeId=128l;
 		String contactDetails=populateUserGnewitt2().getEmail();
 		User user=populateUserGnewitt();
 		return populateContactRequest(nodeId,contactDetails,user);
 	}
 	public static ContactRequest populateContactRequest(Long nodeId, String contactDetails, User user)
 	{
-		ContactRequest tc=new ContactRequest();
-		tc.setContactDetails(contactDetails);
-		tc.setNodeId(nodeId);
-		tc.setRejected(null);
-		tc.setAccepted(null);
-		tc.setRequestDate(Calendar.getInstance().getTimeInMillis());
-		tc.setResponseDate(null);
-		tc.setUser(user);
-		return tc;
+		ContactRequest contactRequest=new ContactRequest();
+		contactRequest.setContactDetails(contactDetails);
+		contactRequest.setNodeId(nodeId);
+		contactRequest.setRejected(null);
+		contactRequest.setAccepted(null);
+		contactRequest.setRequestDate(Calendar.getInstance().getTimeInMillis());
+		contactRequest.setResponseDate(null);
+		contactRequest.setUser(user);
+		return contactRequest;
+	}
+	public static Contact populateContact1()
+	{
+		Long nodeId=7123l;
+		User contactor=populateUserGnewitt();
+		User contactee=populateUserGnewitt2();
+		return populateContact(nodeId,contactor,contactee);
+	}
+	public static Contact populateContact2()
+	{
+		Long nodeId=7128l;
+		User contactor=populateUserGnewitt2();
+		User contactee=populateUserGnewitt();
+		return populateContact(nodeId,contactor,contactee);
+	}
+	public static Contact populateContact(Long nodeId, User contactor, User contactee)
+	{
+		Contact contact=new Contact();
+		contact.setNodeId(nodeId);
+		contact.setContactor(contactor);
+		contact.setContactee(contactee);
+		contact.setTimestamp(Calendar.getInstance().getTimeInMillis());
+		return contact;
 	}
 
 }

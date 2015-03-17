@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
@@ -580,12 +581,21 @@ public class UserController
 		{
 			ContactRequestDetails crDets=(ContactRequestDetails)rEvt.getDetails();
 			if (LOG.isDebugEnabled()) LOG.debug("Contact Request details returned - "+crDets);
-			ContactDetails cDets=new ContactDetails(null, crDets.getUserId(), crDets.getNodeId(), crDets.getResponseDate());
-			restContact=Contact.fromContactDetails(cDets);
 
-			if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
-
-			result = new ResponseEntity<Contact>(restContact,HttpStatus.CREATED);
+			
+			AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(contactRequestId);
+			UpdatedEvent uEvt=contactRequestService.acceptContactRequest(acceptContactRequestEvent);
+			if (uEvt.isEntityFound())
+			{
+				ContactDetails cDets=(ContactDetails)uEvt.getDetails();
+				restContact=Contact.fromContactDetails(cDets);
+				result = new ResponseEntity<Contact>(restContact,HttpStatus.CREATED);
+				if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
+			}
+			else
+			{
+				result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
+			}
 		}
 		else
 		{
