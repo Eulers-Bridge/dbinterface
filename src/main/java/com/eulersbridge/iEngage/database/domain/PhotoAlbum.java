@@ -252,7 +252,12 @@ public class PhotoAlbum extends Likeable
     public PhotoAlbumDetails toPhotoAlbumDetails()
     {
         if (LOG.isTraceEnabled()) LOG.trace("toPhotoAlbumDetails()");
-        PhotoAlbumDetails photoAlbumDetails = new PhotoAlbumDetails(getNodeId(),getName(),getLocation(),getDescription(),getThumbNailUrl(),getCreator().getNodeId(),getCreated(),getOwner().getNodeId(),getModified());
+        Long creatorId=null,ownerId=null;
+        if (getCreator()!=null)
+        	creatorId=getCreator().getNodeId();
+        if (getOwner()!=null)
+        	ownerId=getOwner().getNodeId();
+        PhotoAlbumDetails photoAlbumDetails = new PhotoAlbumDetails(getNodeId(),getName(),getLocation(),getDescription(),getThumbNailUrl(),creatorId,getCreated(),ownerId,getModified());
         if (LOG.isTraceEnabled()) LOG.trace("photoAlbum "+this);
 
         if (LOG.isTraceEnabled()) LOG.trace("photoAlbumDetails; "+ photoAlbumDetails);

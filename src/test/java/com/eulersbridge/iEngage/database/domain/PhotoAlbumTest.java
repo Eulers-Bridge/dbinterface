@@ -241,6 +241,32 @@ public class PhotoAlbumTest
 		assertEquals(photoAlbum.getOwner().getNodeId(), dets.getOwnerId());
 		assertEquals(photoAlbum.getCreator().getNodeId(), dets.getCreatorId());
 	}
+	@Test
+	public final void testToPhotoAlbumDetailsCreatorNull()
+	{
+		photoAlbum.setCreator(null);
+		PhotoAlbumDetails dets=photoAlbum.toPhotoAlbumDetails();
+		assertEquals(photoAlbum.getNodeId(), dets.getNodeId());
+		assertEquals(photoAlbum.getName(), dets.getName());
+		assertEquals(photoAlbum.getDescription(), dets.getDescription());
+		assertEquals(photoAlbum.getCreated(), dets.getCreated());
+		assertEquals(photoAlbum.getModified(), dets.getModified());
+		assertEquals(photoAlbum.getOwner().getNodeId(), dets.getOwnerId());
+		assertNull(dets.getCreatorId());
+	}
+	@Test
+	public final void testToPhotoAlbumDetailsOwnerNull()
+	{
+		photoAlbum.setOwner(null);
+		PhotoAlbumDetails dets=photoAlbum.toPhotoAlbumDetails();
+		assertEquals(photoAlbum.getNodeId(), dets.getNodeId());
+		assertEquals(photoAlbum.getName(), dets.getName());
+		assertEquals(photoAlbum.getDescription(), dets.getDescription());
+		assertEquals(photoAlbum.getCreated(), dets.getCreated());
+		assertEquals(photoAlbum.getModified(), dets.getModified());
+		assertNull(dets.getOwnerId());
+		assertEquals(photoAlbum.getCreator().getNodeId(), dets.getCreatorId());
+	}
 
 	private void checkHashCode(PhotoAlbum test1,PhotoAlbum test2)
 	{
