@@ -270,6 +270,25 @@ public class PhotoTest
 		assertEquals(dets.getUrl(),testPhoto.getUrl());
 		assertEquals(dets.getThumbNailUrl(),testPhoto.getThumbNailUrl());
 		assertEquals(dets.getSequence(),testPhoto.getSequence());
+		assertEquals(dets.getOwnerId(),testPhoto.getOwner().getNodeId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#toPhotoDetails()}.
+	 */
+	@Test
+	public final void testToPhotoDetailsOwnerNull()
+	{
+		testPhoto.setOwner(null);
+		PhotoDetails dets=testPhoto.toPhotoDetails();
+		assertEquals(dets.getDate(),testPhoto.getDate());
+		assertEquals(dets.getDescription(),testPhoto.getDescription());
+		assertEquals(dets.getNodeId(),testPhoto.getNodeId());
+		assertEquals(dets.getTitle(),testPhoto.getTitle());
+		assertEquals(dets.getUrl(),testPhoto.getUrl());
+		assertEquals(dets.getThumbNailUrl(),testPhoto.getThumbNailUrl());
+		assertEquals(dets.getSequence(),testPhoto.getSequence());
+		assertNull(dets.getOwnerId());
 	}
 
 	/**

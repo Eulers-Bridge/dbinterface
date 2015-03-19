@@ -207,9 +207,11 @@ public class Photo extends Likeable
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("toPhotoDetails()");
 
+        Long ownerId=null;
+        if (getOwner()!=null)
+        	ownerId=getOwner().getNodeId();
 		PhotoDetails photoDetails = new PhotoDetails(getNodeId(), getUrl(), getThumbNailUrl(),
-				getTitle(), getDescription(), getDate(), getSequence(),
-				getOwner().getNodeId());
+				getTitle(), getDescription(), getDate(), getSequence(),ownerId);
 		if (LOG.isTraceEnabled()) LOG.trace("photoDetails; " + photoDetails);
 		return photoDetails;
 	}
