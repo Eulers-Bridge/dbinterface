@@ -1,9 +1,12 @@
 package com.eulersbridge.iEngage.core.services;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.database.domain.*;
@@ -12,6 +15,10 @@ import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 
+import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -176,7 +184,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 		}
 		else
 		{
-			response = ReadUserEvent.notFound("");
+			response = ReadUserEvent.notFound((String)null);
 		}
 		return response;
 	}
@@ -193,7 +201,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 			User user = userRepository.findOne(requestReadUserEvent.getNodeId());
 			if (user == null)
 			{
-				response = ReadUserEvent.notFound(requestReadUserEvent.getEmail());
+				response = ReadUserEvent.notFound((String)null);
 			}
 			else
 			{
@@ -205,7 +213,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 		}
 		else
 		{
-			response = ReadUserEvent.notFound("");
+			response = ReadUserEvent.notFound((String)null);
 		}
 		return response;
 	}
@@ -228,7 +236,8 @@ public class UserEventHandler implements UserService, UserDetailsService
 	public ReadUserEvent readUserByContactEmail(
 			RequestReadUserEvent requestReadUserEvent)
 	{
-		ReadUserEvent readEvt=readUser(requestReadUserEvent),publicReadEvt=readEvt;
+		ReadUserEvent readEvt=readUser(requestReadUserEvent);
+		ReadUserEvent publicReadEvt=readEvt;
 		if (readEvt.isEntityFound())
 		{
 			UserDetails publicDetails=removeConfidentialDetails((UserDetails)readEvt.getDetails());
@@ -263,11 +272,62 @@ public class UserEventHandler implements UserService, UserDetailsService
 		}
 		else
 		{
-			response = ReadUserEvent.notFound("");
+			response = ReadUserEvent.notFound((String)null);
 		}
 		return response;
 	}
 	
+	@Override
+	public AllReadEvent readExistingContacts(ReadAllEvent readContactsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	{
+		Long userId=readContactsEvent.getParentId();
+		Page <User>contacts=null;
+		ArrayList<UserDetails> dets=new ArrayList<UserDetails>();
+		ContactsReadEvent nare=null;
+
+		if (LOG.isDebugEnabled()) LOG.debug("UserId "+userId);
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"b.familyName");
+		contacts=userRepository.findContacts(userId, pageable);
+		if (contacts!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+contacts.getTotalElements()+" total pages ="+contacts.getTotalPages());
+			Iterator<User> iter=contacts.iterator();
+			while (iter.hasNext())
+			{
+				User na=iter.next();
+				if (LOG.isDebugEnabled()) LOG.debug("Converting to details - "+na.getEmail());
+				UserDetails det=na.toUserDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found parentId.
+				User user=userRepository.findOne(userId);
+				if ( (null==user) ||
+					 ((null==user.getEmail()) || ((null==user.getGivenName()) && (null==user.getFamilyName()) && (null==user.getGender()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(UserId)");
+					nare=ContactsReadEvent.userNotFound();
+				}
+				else
+				{	
+					nare=new ContactsReadEvent(userId,dets,contacts.getTotalElements(),contacts.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new ContactsReadEvent(userId,dets,contacts.getTotalElements(),contacts.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
+			nare=ContactsReadEvent.userNotFound();
+		}
+		return nare;
+	}
+
 	@Override
 	@Transactional
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent)

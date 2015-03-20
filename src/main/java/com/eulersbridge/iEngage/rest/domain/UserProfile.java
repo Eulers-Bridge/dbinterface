@@ -186,5 +186,22 @@ public class UserProfile extends ResourceSupport
 		}
 		return likes.iterator();
 	}
+	
+	public static Iterator<UserProfile> toUserProfilesIterator(
+			Iterator<UserDetails> iter)
+	{
+		if (null==iter) return null;
+		ArrayList <UserProfile> userProfiles=new ArrayList<UserProfile>();
+		while(iter.hasNext())
+		{
+			UserDetails dets=iter.next();
+			UserProfile thisUserProfile=UserProfile.fromUserDetails(dets);
+			Link self = thisUserProfile.getLink("self");
+			thisUserProfile.removeLinks();
+			thisUserProfile.add(self);
+			userProfiles.add(thisUserProfile);		
+		}
+		return userProfiles.iterator();
+	}
 
 }

@@ -2,13 +2,16 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletContext;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.services.LikesService;
@@ -22,6 +25,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.VelocityException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -35,6 +39,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
+import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
@@ -78,11 +83,13 @@ public class UserController
 	@Autowired JavaMailSender emailSender;
 	
 	EmailValidator emailValidator;
+	LongValidator longValidator;
     
 	public UserController() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UserController()");
 		emailValidator=EmailValidator.getInstance();
+		longValidator=LongValidator.getInstance();
 	}
 
     private static Logger LOG = LoggerFactory.getLogger(UserController.class);
@@ -400,8 +407,6 @@ public class UserController
 	public @ResponseBody ResponseEntity<User> findUser(@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. "+email);
-		LongValidator longValidator=LongValidator.getInstance() ;
-		EmailValidator emailValidator=EmailValidator.getInstance() ;
 		ReadUserEvent userEvent;
 		ResponseEntity<User> response;
 		
@@ -470,9 +475,72 @@ public class UserController
 		else
 		{
 			UserDetails dets=(UserDetails) userEvent.getDetails();
+			if (LOG.isDebugEnabled()) LOG.debug("dets - "+dets);
 			UserProfile restUser=UserProfile.fromUserDetails(dets);
 			result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
+			if (LOG.isDebugEnabled()) LOG.debug("result - "+result);
 		}
+		return result;
+	}
+    	
+	/**
+	 * Is passed all the necessary data to read contacts from the database. The
+	 * request must be a GET with the userId presented as the final
+	 * portion of the URL.
+	 * <p/>
+	 * This method will return the contacts read from the database.
+	 * 
+	 * @param userId
+	 *            the userId who has the contact objects to be read.
+	 * @return the contacts.
+	 * 
+	 */
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.CONTACTS_LABEL+"/{contactInfo}")
+	public @ResponseBody ResponseEntity<Iterator<UserProfile>> findExistingContacts(@PathVariable String contactInfo,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
+			) 
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to find existing contacts. "+contactInfo);
+
+		ReadAllEvent userEvent;
+		AllReadEvent contactEvent;
+		ResponseEntity<Iterator<UserProfile>> result;
+		boolean isEmail=emailValidator.isValid(contactInfo);
+		String email=null;
+		
+		if (longValidator.isValid(contactInfo))
+		{
+			Long id=longValidator.validate(contactInfo);
+			if (LOG.isDebugEnabled()) LOG.debug("UserId supplied. - "+id);
+			userEvent =new ReadAllEvent(id);
+			contactEvent=userService.readExistingContacts(userEvent, sortDirection, pageNumber, pageLength);
+		}
+/*		else if (emailValidator.isValid(email))
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
+			 userEvent=userService.readContactsByEmail(new RequestReadUserEvent(contactInfo));
+		}
+*/		else
+			return new ResponseEntity<Iterator<UserProfile>>(HttpStatus.BAD_REQUEST);
+			
+
+		if (!contactEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<UserProfile>>(HttpStatus.NOT_FOUND);
+		}
+		Iterator<UserProfile> contactProfiles = UserProfile
+				.toUserProfilesIterator(((ContactsReadEvent)contactEvent).getContacts().iterator());
+
+		result = new ResponseEntity<Iterator<UserProfile>>(contactProfiles, HttpStatus.OK);
+		
 		return result;
 	}
     	

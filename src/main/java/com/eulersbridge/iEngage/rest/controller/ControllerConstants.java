@@ -10,7 +10,13 @@ package com.eulersbridge.iEngage.rest.controller;
 public class ControllerConstants 
 {
 	public static final String API_PREFIX="/api";
+    public static final String BADGE_LABEL = "/badge";
+    public static final String BADGES_LABEL = BADGE_LABEL+'s';
+    public static final String CANDIDATE_LABEL = "/candidate";
+    public static final String CANDIDATES_LABEL = CANDIDATE_LABEL+'s';
+    public static final String CONFIGURATION_LABEL = "/configuration";
 	public static final String CONTACT_LABEL = "/contact";
+	public static final String CONTACTS_LABEL = CONTACT_LABEL+'s';
 	public static final String COUNTRY_LABEL = "/country";
 	public static final String COUNTRYS_LABEL = COUNTRY_LABEL+'s';
 	public static final String DBINTERFACE_PREFIX = "/dbInterface";
@@ -29,23 +35,18 @@ public class ControllerConstants
 	public static final String NEWS_ARTICLES_LABEL = NEWS_ARTICLE_LABEL+'s';
 	public static final String POLL_LABEL = "/poll";
 	public static final String POLLS_LABEL = POLL_LABEL+'s';
-	public static final String SIGNUP_LABEL = "/signUp";
-	public static final String USER_LABEL = "/user";
 	public static final String PHOTO_LABEL = "/photo";
 	public static final String PHOTOS_LABEL = PHOTO_LABEL+'s';
 	public static final String PHOTO_ALBUM_LABEL = "/photoAlbum";
 	public static final String PHOTO_ALBUMS_LABEL = PHOTO_ALBUM_LABEL+'s';
     public static final String POSITION_LABEL = "/position";
 	public static final String POSITIONS_LABEL = POSITION_LABEL+'s';
-    public static final String CONFIGURATION_LABEL = "/configuration";
-    public static final String CANDIDATE_LABEL = "/candidate";
-    public static final String CANDIDATES_LABEL = CANDIDATE_LABEL+'s';
+	public static final String SIGNUP_LABEL = "/signUp";
     public static final String TICKET_LABEL = "/ticket";
 	public static final String TICKETS_LABEL = TICKET_LABEL+'s';
     public static final String TASK_LABEL = "/task";
     public static final String TASKS_LABEL = TASK_LABEL+'s';
-    public static final String BADGE_LABEL = "/badge";
-    public static final String BADGES_LABEL = BADGE_LABEL+'s';
+	public static final String USER_LABEL = "/user";
 	public static final String VOTING_LOCATION_LABEL = "/votingLocation";
 	public static final String VOTING_LOCATIONS_LABEL = VOTING_LOCATION_LABEL+'s';
 	public static final String VOTING_BOOTHS_LABEL = "/votingBooths";
@@ -62,4 +63,5 @@ public class ControllerConstants
 	public static final String EMAILVERIFY_LABEL = "/emailVerification";
     public static final String SUPPOERT_BY = "/supportBy";
     public static final String WITHDRAW_SUPPORT_BY = "/withdrawSupportBy";
+	public static final String NOTIFICATION_LABEL = "/notification";
 }
