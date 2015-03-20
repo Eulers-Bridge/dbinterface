@@ -9,13 +9,13 @@ public class ReadUserEvent extends ReadEvent
 
 	public ReadUserEvent(String email)
 	{
-		super(1l);
+		super(null);
 		this.email = email;
 	}
 
 	public ReadUserEvent(String email, UserDetails readUserDetails)
 	{
-		super(1l,readUserDetails);
+		super(null,readUserDetails);
 		this.email = email;
 	}
 

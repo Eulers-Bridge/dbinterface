@@ -8,13 +8,13 @@ public class UserUpdatedEvent extends UpdatedEvent
 
 	public UserUpdatedEvent(String email, UserDetails userDetails) 
 	{
-	    super(1l,userDetails);
+	    super(null,userDetails);
 	    this.email = email;
 	}
 
 	public UserUpdatedEvent(String email)
 	{
-		super(1l);
+		super(null);
 	    this.email = email;
 	}
 

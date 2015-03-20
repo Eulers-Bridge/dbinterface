@@ -8,7 +8,7 @@ public class UpdateUserEvent extends UpdateEvent
 
 	public UpdateUserEvent(String email, UserDetails userDetails)
 	{
-		super(1l,userDetails);
+		super(null,userDetails);
 		this.email = email;
 	}
 
