@@ -43,21 +43,21 @@ public class TicketController {
         ResponseEntity<Ticket> response;
         if(null==ticketCreatedEvent)
         {
-            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<Ticket>(HttpStatus.BAD_REQUEST);
         }
     	else if ((ticketCreatedEvent.getClass()==TicketCreatedEvent.class)&&(!((TicketCreatedEvent)ticketCreatedEvent).isElectionFound()))
     	{
-    		response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    		response = new ResponseEntity<Ticket>(HttpStatus.NOT_FOUND);
     	}
     	else if((null==ticketCreatedEvent.getNodeId())||(ticketCreatedEvent.isFailed()))
         {
-            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            response = new ResponseEntity<Ticket>(HttpStatus.BAD_REQUEST);
         }
         else
         {
             Ticket result = Ticket.fromTicketDetails((TicketDetails) ticketCreatedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug("ticket"+result.toString());
-            response = new ResponseEntity<>(result, HttpStatus.CREATED);
+            response = new ResponseEntity<Ticket>(result, HttpStatus.CREATED);
         }
         return response;
     }
