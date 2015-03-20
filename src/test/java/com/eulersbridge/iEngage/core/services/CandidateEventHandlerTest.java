@@ -252,12 +252,12 @@ public class CandidateEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("ReadingCandidates()");
 		HashMap<Long, Candidate> events = DatabaseDataFixture.populateCandidates();
-		ArrayList<Candidate> evts=new ArrayList<Candidate>();
+		ArrayList<Candidate> candidates=new ArrayList<Candidate>();
 		Iterator<Candidate> iter=events.values().iterator();
 		while (iter.hasNext())
 		{
 			Candidate na=iter.next();
-			evts.add(na);
+			candidates.add(na);
 		}
 
 		
@@ -267,13 +267,13 @@ public class CandidateEventHandlerTest
 		int pageNumber=0;
 		
 		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
-		Page<Candidate> testData=new PageImpl<Candidate>(evts,pageable,evts.size());
+		Page<Candidate> testData=new PageImpl<Candidate>(candidates,pageable,candidates.size());
 		when(candidateRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
 		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
-		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
+		assertEquals(evtData.getTotalItems(),new Long(candidates.size()));
 	}
 
 	@Test
