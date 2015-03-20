@@ -510,6 +510,61 @@ public class UserControllerTest
 	}
 	
 	@Test
+	public void testAddContactWithEmail() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingContact()");
+		User friendor=DatabaseDataFixture.populateUserGnewitt();
+		User friendee=DatabaseDataFixture.populateUserGnewitt2();
+		Long userId=friendor.getNodeId();
+		String contactInfo=friendee.getEmail();
+		ReadUserEvent value=new ReadUserEvent(friendee.getEmail(), friendee.toUserDetails());
+		when(userService.readUserByContactEmail(any(RequestReadUserEvent.class))).thenReturn(value);
+
+		ContactRequest crd=DatabaseDataFixture.populateContactRequest1();
+		ReadEvent value1=new ReadEvent(crd.getNodeId(), crd.toContactRequestDetails());
+		when(contactRequestService.readContactRequestByUserIdContactNumber(any(ReadContactRequestEvent.class))).thenReturn(value1);
+
+		this.mockMvc.perform(put(urlPrefix+"/{userId}"+ControllerConstants.CONTACT_LABEL+"/{contactInfo}/",userId,contactInfo).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(crd.getNodeId().intValue())))
+		.andExpect(jsonPath("$.contactDetails",is(crd.getContactDetails())))
+		.andExpect(jsonPath("$.requestDate",is(crd.getRequestDate())))
+		.andExpect(jsonPath("$.responseDate",is(crd.getResponseDate())))
+		.andExpect(jsonPath("$.accepted",is(crd.getAccepted())))
+		.andExpect(jsonPath("$.rejected",is(crd.getRejected())))
+		.andExpect(jsonPath("$.userId",is(crd.getUser().getNodeId().intValue())))
+		.andExpect(status().isAccepted());
+	}
+	
+	@Test
+	public void testAddContactWithPhoneNumber() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("addingContact()");
+		User friendor=DatabaseDataFixture.populateUserGnewitt();
+		User friendee=DatabaseDataFixture.populateUserGnewitt2();
+		Long userId=friendor.getNodeId();
+		String contactInfo=friendee.getContactNumber();
+		ReadUserEvent value=new ReadUserEvent(friendee.getContactNumber(), friendee.toUserDetails());
+		when(userService.readUserByContactNumber(any(RequestReadUserEvent.class))).thenReturn(value);
+
+		ContactRequest crd=DatabaseDataFixture.populateContactRequest1();
+		crd.setContactDetails(contactInfo);
+		ReadEvent value1=new ReadEvent(crd.getNodeId(), crd.toContactRequestDetails());
+		when(contactRequestService.readContactRequestByUserIdContactNumber(any(ReadContactRequestEvent.class))).thenReturn(value1);
+
+		this.mockMvc.perform(put(urlPrefix+"/{userId}"+ControllerConstants.CONTACT_LABEL+"/{contactInfo}/",userId,contactInfo).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(crd.getNodeId().intValue())))
+		.andExpect(jsonPath("$.contactDetails",is(crd.getContactDetails())))
+		.andExpect(jsonPath("$.requestDate",is(crd.getRequestDate())))
+		.andExpect(jsonPath("$.responseDate",is(crd.getResponseDate())))
+		.andExpect(jsonPath("$.accepted",is(crd.getAccepted())))
+		.andExpect(jsonPath("$.rejected",is(crd.getRejected())))
+		.andExpect(jsonPath("$.userId",is(crd.getUser().getNodeId().intValue())))
+		.andExpect(status().isAccepted());
+	}
+	
+	@Test
 	public void testAcceptContact() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("acceptingContact()");
@@ -531,6 +586,37 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.timestamp",is(cDets.getTimestamp())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isCreated())	;
+	}
+	
+	@Test
+	public void testAcceptContactAcceptNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("acceptingContact()");
+		ContactRequest cr = DatabaseDataFixture.populateContactRequest1();
+		Long contactRequestId=cr.getNodeId();
+		ContactRequestDetails crDets = cr.toContactRequestDetails();
+		
+		ReadEvent value=new ContactRequestReadEvent(contactRequestId,crDets);
+		when(contactRequestService.readContactRequest(any(ReadContactRequestEvent.class))).thenReturn(value);
+		UpdatedEvent updEvt=UpdatedEvent.notFound(crDets.getNodeId());
+		when(contactRequestService.acceptContactRequest(any(AcceptContactRequestEvent.class))).thenReturn(updEvt);
+		this.mockMvc.perform(put(urlPrefix2+"/{contactRequestId}/",contactRequestId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
+	}
+	
+	@Test
+	public void testAcceptContactCRNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("acceptingContact()");
+		ContactRequest cr = DatabaseDataFixture.populateContactRequest1();
+		Long contactRequestId=cr.getNodeId();
+		
+		ReadEvent value=ContactRequestReadEvent.notFound(contactRequestId);
+		when(contactRequestService.readContactRequest(any(ReadContactRequestEvent.class))).thenReturn(value);
+		this.mockMvc.perform(put(urlPrefix2+"/{contactRequestId}/",contactRequestId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;
 	}
 	
 	@Test
