@@ -21,7 +21,7 @@ public class TicketDetails extends Details
     private Iterable<String> candidateNames;
 	private Long electionId;
     private String chararcterCode;
-    private Integer NumberOfSupporters;
+    private Long NumberOfSupporters;
 
 	private static Logger LOG = LoggerFactory.getLogger(TicketDetails.class);
 
@@ -183,11 +183,11 @@ public class TicketDetails extends Details
         this.candidateNames = candidateNames;
     }
 
-    public Integer getNumberOfSupporters() {
+    public Long getNumberOfSupporters() {
         return NumberOfSupporters;
     }
 
-    public void setNumberOfSupporters(Integer numberOfSupporters) {
+    public void setNumberOfSupporters(Long numberOfSupporters) {
         NumberOfSupporters = numberOfSupporters;
     }
 

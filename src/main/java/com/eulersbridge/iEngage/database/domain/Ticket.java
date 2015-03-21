@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import java.util.Collection;
@@ -32,8 +33,9 @@ public class Ticket extends Likeable
     private Election election;
     private String colour;
     private String code;
-    @RelatedTo(type = DatabaseDomainConstants.SUPPORT, direction = Direction.INCOMING)
-    private Collection<User> supporters;
+
+    @Query("START n = node({self}) match (a:`User`)-[r:SUPPORTS]-(n) RETURN count(DISTINCT a) ")
+    private Long numberOfSupporters = 0l;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -69,10 +71,9 @@ public class Ticket extends Likeable
         ticketDetails.setElectionId(getElection().getNodeId());
         ticketDetails.setColour(getColour());
         ticketDetails.setChararcterCode(getCode());
-        if(supporters!=null)
-            ticketDetails.setNumberOfSupporters(supporters.size());
-        else
-            ticketDetails.setNumberOfSupporters(0);
+
+        ticketDetails.setNumberOfSupporters(numberOfSupporters);
+
         
         ticketDetails.setCandidateNames(toCandidateNames(candidates));
 
@@ -205,6 +206,14 @@ public class Ticket extends Likeable
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Long getNumberOfSupporters() {
+        return numberOfSupporters;
+    }
+
+    public void setNumberOfSupporters(Long numberOfSupporters) {
+        this.numberOfSupporters = numberOfSupporters;
     }
 
     /**

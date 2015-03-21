@@ -29,7 +29,7 @@ public class Ticket extends ResourceSupport{
     private Iterable<String> candidateNames=null;
     private Long electionId=null;
     private String code = null;
-    private Integer numberOfSupporters = null;
+    private Long numberOfSupporters = null;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -128,11 +128,11 @@ public class Ticket extends ResourceSupport{
         this.candidateNames = candidateNames;
     }
 
-    public Integer getNumberOfSupporters() {
+    public Long getNumberOfSupporters() {
         return numberOfSupporters;
     }
 
-    public void setNumberOfSupporters(Integer numberOfSupporters) {
+    public void setNumberOfSupporters(Long numberOfSupporters) {
         this.numberOfSupporters = numberOfSupporters;
     }
 
