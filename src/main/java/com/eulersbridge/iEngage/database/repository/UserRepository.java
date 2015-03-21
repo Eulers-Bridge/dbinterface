@@ -65,5 +65,4 @@ public interface UserRepository extends GraphRepository<User>
 			"`) where id(a)={userId} return b")
 	Page<User> findContacts(@Param("userId")Long userId, Pageable pageable);
 
-
 }
