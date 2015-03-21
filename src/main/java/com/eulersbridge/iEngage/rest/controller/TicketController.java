@@ -186,7 +186,7 @@ public class TicketController {
     }
 
     //Withdraw Support
-    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.TICKET_LABEL+"/{ticketId}"+ ControllerConstants.WITHDRAW_SUPPORT_BY +"/{email}")
+    @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.TICKET_LABEL+"/{ticketId}"+ ControllerConstants.SUPPOERT_BY +"/{email}")
     public @ResponseBody ResponseEntity<Boolean> withdrawSupportTicket(@PathVariable Long ticketId, @PathVariable String email){
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to have " + email + "withdraw support ticket: " + ticketId);
