@@ -220,7 +220,9 @@ public class UserController
     	if (vrEvent!=null)
     	{
     		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+vrEvent);
-	    	if (((VoteReminderAddedEvent)vrEvent).isUserFound())
+    		if (vrEvent.isFailed())
+    			result=new ResponseEntity<VoteReminder>(HttpStatus.BAD_REQUEST);
+    		else if (((VoteReminderAddedEvent)vrEvent).isUserFound())
 	       	{
 	    		VoteReminder restVoteReminder=VoteReminder.fromVoteReminderDetails((VoteReminderDetails) vrEvent.getDetails());
 		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restVoteReminder);
