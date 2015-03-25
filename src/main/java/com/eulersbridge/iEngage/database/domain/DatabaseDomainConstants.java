@@ -21,6 +21,7 @@ public class DatabaseDomainConstants
 	public static final String HAS_FORUM_QUESTION_LABEL = "HAS_FORUM_QUESTION";
 	public static final String HAS_MEMBER_LABEL = "HAS_MEMBER";
 	public static final String HAS_NEWS_FEED_LABEL = "HAS_NEWS_FEED";
+	public static final String HAS_NOTIFICATION_LABEL = "HAS_NOTIFICATION";
 	public static final String HAS_PHOTO_LABEL = "HAS_PHOTO";
 	public static final String HAS_PHOTO_ALBUM_LABEL = "HAS_PHOTO_ALBUM";
 	public static final String HAS_POLL_LABEL = "HAS_POLL";
