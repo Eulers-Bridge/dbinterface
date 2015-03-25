@@ -92,4 +92,15 @@ public class DeletedEvent
 	{
 		this.details = details;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "DeletedEvent [nodeId=" + nodeId + ", details=" + details
+				+ ", deletionCompleted=" + deletionCompleted + ", entityFound="
+				+ entityFound + "]";
+	}
 }

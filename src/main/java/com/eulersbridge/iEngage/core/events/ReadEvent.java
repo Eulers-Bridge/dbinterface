@@ -54,4 +54,13 @@ public class ReadEvent
 		ev.entityFound = false;
 		return ev;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "ReadEvent [nodeId=" + nodeId + ", details=" + details
+				+ ", entityFound=" + entityFound + "]";
+	}
 }

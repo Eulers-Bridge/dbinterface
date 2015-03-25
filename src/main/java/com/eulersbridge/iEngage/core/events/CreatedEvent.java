@@ -73,4 +73,13 @@ public class CreatedEvent
 		failedEvent.setFailed(true);
 		return failedEvent;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "CreatedEvent [details=" + details + ", failed=" + failed + "]";
+	}
 }
