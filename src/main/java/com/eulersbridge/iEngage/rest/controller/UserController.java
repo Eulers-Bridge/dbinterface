@@ -211,7 +211,9 @@ public class UserController
     	if (LOG.isInfoEnabled()) LOG.info("Attempting to add vote reminder to user. ");
     	if (LOG.isDebugEnabled()) LOG.debug("VoteReminder - "+voteReminder);
     	
-    	AddVoteReminderEvent addEvt=new AddVoteReminderEvent(voteReminder.toVoteReminderDetails());
+    	VoteReminderDetails remDetails = voteReminder.toVoteReminderDetails();
+    	remDetails.setUserId(email);
+    	AddVoteReminderEvent addEvt=new AddVoteReminderEvent(remDetails);
     	if (LOG.isDebugEnabled()) LOG.debug("AddPersonalityEvent - "+addEvt);
     	
     	VoteReminderAddedEvent vrEvent=userService.addVoteReminder(addEvt);
@@ -259,7 +261,9 @@ public class UserController
     	if (LOG.isInfoEnabled()) LOG.info("Attempting to add vote record to user. ");
     	if (LOG.isDebugEnabled()) LOG.debug("VoteReminder - "+voteRecord);
     	
-    	AddVoteRecordEvent addEvt=new AddVoteRecordEvent(voteRecord.toVoteRecordDetails());
+    	VoteRecordDetails recDetails = voteRecord.toVoteRecordDetails();
+    	recDetails.setVoterId(email);
+    	AddVoteRecordEvent addEvt=new AddVoteRecordEvent(recDetails);
     	if (LOG.isDebugEnabled()) LOG.debug("AddVoteRecordEvent - "+addEvt);
     	
     	VoteRecordAddedEvent vrEvent=userService.addVoteRecord(addEvt);
@@ -521,14 +525,14 @@ public class UserController
 			Long id=longValidator.validate(contactInfo);
 			if (LOG.isDebugEnabled()) LOG.debug("UserId supplied. - "+id);
 			userEvent =new ReadAllEvent(id);
-			contactEvent=userService.readExistingContacts(userEvent, sortDirection, pageNumber, pageLength);
+			contactEvent=userService.readExistingContactsById(userEvent, sortDirection, pageNumber, pageLength);
 		}
-/*		else if (emailValidator.isValid(email))
+		else if (emailValidator.isValid(email))
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
-			 userEvent=userService.readContactsByEmail(new RequestReadUserEvent(contactInfo));
+			contactEvent=userService.readExistingContactsByEmail(new RequestReadUserEvent(contactInfo), sortDirection, pageNumber, pageLength);
 		}
-*/		else
+		else
 			return new ResponseEntity<Iterator<UserProfile>>(HttpStatus.BAD_REQUEST);
 			
 

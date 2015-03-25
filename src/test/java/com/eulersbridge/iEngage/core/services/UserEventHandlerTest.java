@@ -828,6 +828,40 @@ public class UserEventHandlerTest
 	}
 	
 	@Test
+	public void shouldAddVoteReminderToUserEmptyRequest() 
+	{
+		AddVoteReminderEvent addVoteReminderEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
+		VoteReminderDetails vrd=vr.toVoteReminderDetails();
+		addVoteReminderEvent=new AddVoteReminderEvent();
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
+
+		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		assertNotNull(nace);
+		assertNull(nace.getDetails());
+		assertFalse(nace.isUserFound());
+	}
+	
+	@Test
+	public void shouldAddVoteReminderToUserEmptyDetails() 
+	{
+		AddVoteReminderEvent addVoteReminderEvent;
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
+		VoteReminderDetails vrd=new VoteReminderDetails();
+		addVoteReminderEvent=new AddVoteReminderEvent(vrd);
+		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
+
+		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		assertNotNull(nace);
+		assertNull(nace.getDetails());
+		assertFalse(nace.isUserFound());
+	}
+	
+	@Test
 	public void shouldAddVoteReminderToUserUserNotFound() 
 	{
 		AddVoteReminderEvent addVoteReminderEvent;
@@ -1220,7 +1254,7 @@ public class UserEventHandlerTest
 		Page<User> value=new PageImpl<User>(users, pageable, users.size());
 		when(uRepo.findContacts(any(Long.class), any(Pageable.class))).thenReturn(value);
 
-		AllReadEvent uEvt=userServiceMocked.readExistingContacts(readAllEvent, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent uEvt=userServiceMocked.readExistingContactsById(readAllEvent, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(uEvt);
 		assertEquals(uEvt.getTotalPages(),new Integer(1));
 		assertEquals(uEvt.getTotalItems(),new Long(users.size()));
@@ -1243,7 +1277,7 @@ public class UserEventHandlerTest
 		when(uRepo.findContacts(any(Long.class), any(Pageable.class))).thenReturn(value);
 		when(uRepo.findOne(any(Long.class))).thenReturn(user);
 
-		AllReadEvent uEvt=userServiceMocked.readExistingContacts(readAllEvent, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent uEvt=userServiceMocked.readExistingContactsById(readAllEvent, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(uEvt);
 		assertEquals(uEvt.getTotalPages().intValue(),0);
 		assertEquals(uEvt.getTotalItems().intValue(),users.size());
@@ -1264,7 +1298,7 @@ public class UserEventHandlerTest
 		when(uRepo.findContacts(any(Long.class), any(Pageable.class))).thenReturn(value);
 		when(uRepo.findOne(any(Long.class))).thenReturn(null);
 
-		AllReadEvent uEvt=userServiceMocked.readExistingContacts(readAllEvent, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent uEvt=userServiceMocked.readExistingContactsById(readAllEvent, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(uEvt);
 		ContactsReadEvent cre=(ContactsReadEvent)uEvt;
 		assertFalse(cre.isEntityFound());
