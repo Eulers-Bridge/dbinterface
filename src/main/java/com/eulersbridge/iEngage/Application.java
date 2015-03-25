@@ -30,10 +30,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.access.PermissionEvaluator;
 
 import com.eulersbridge.iEngage.core.domain.Login;
-import com.eulersbridge.iEngage.core.events.notifications.NotificationDeserializer;
-import com.eulersbridge.iEngage.core.events.notifications.NotificationSerializer;
 import com.eulersbridge.iEngage.database.domain.converters.NewsArticleToOwnerConverter;
-import com.eulersbridge.iEngage.rest.domain.Notification;
 import com.eulersbridge.iEngage.security.UserPermissionEvaluator;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
