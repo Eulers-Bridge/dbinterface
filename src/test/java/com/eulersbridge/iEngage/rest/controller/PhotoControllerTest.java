@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -97,6 +96,21 @@ public class PhotoControllerTest
 		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
 	}
 
+	static String setupContent(PhotoDetails dets)
+	{
+		String content=	"{\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+"\",\"description\":\""+dets.getDescription()+
+						"\",\"sequence\":"+dets.getSequence()+",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+"}";
+		if (LOG.isDebugEnabled()) LOG.debug(content);
+		return content;
+	}
+	
+	String setupReturnedContent(PhotoDetails dets)
+	{
+		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+
+			"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"sequence\":"+dets.getSequence()+
+			",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photos\"}]}";
+		return returnedContent;
+	}
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#PhotoController()}.
 	 */
@@ -192,12 +206,11 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(dets.getNodeId(), dets);
-		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
-		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+
-				"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"sequence\":"+dets.getSequence()+
-				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photo/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photo/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photo/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photos\"}]}";
+		String content=setupContent(dets);
+		String returnedContent=setupReturnedContent(dets);
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.url",is(dets.getUrl())))
 		.andExpect(jsonPath("$.thumbNailUrl",is(dets.getThumbNailUrl())))
@@ -220,7 +233,7 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(dets.getNodeId(), dets);
-		String content="{\"url1\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
+		String content=setupContent(dets).replace("\"url\"", "\"url1\"");
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		
@@ -255,7 +268,7 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=PhotoCreatedEvent.ownerNotFound(dets.getOwnerId());
-		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214}";
+		String content=setupContent(dets);
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isNotFound())	;		
@@ -267,7 +280,7 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(null, dets);
-		String content="{\"url\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456}";
+		String content=setupContent(dets);
 		when (photoService.createPhoto(any(CreatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		
@@ -474,10 +487,8 @@ public class PhotoControllerTest
 		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
 		dets.setTitle("Test Photo2");
 		PhotoUpdatedEvent testData=new PhotoUpdatedEvent(id, dets);
-		String content="{\"nodeId\":1234,\"url\":\"http://localhost:8080/\",\"thumbNailUrl\":\"http://localhost:8080/\",\"title\":\"Test Photo\",\"description\":\"description\",\"date\":123456,\"ownerId\":3214,\"sequence\":3}";
-		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+
-								"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"sequence\":"+dets.getSequence()+
-								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photo/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photo/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photo/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photos\"}]}";
+		String content=setupContent(dets);
+		String returnedContent=setupReturnedContent(dets);
 		when (photoService.updatePhoto(any(UpdatePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
