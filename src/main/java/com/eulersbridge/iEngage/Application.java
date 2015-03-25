@@ -30,7 +30,10 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.access.PermissionEvaluator;
 
 import com.eulersbridge.iEngage.core.domain.Login;
+import com.eulersbridge.iEngage.database.domain.converters.EventToOwnerConverter;
 import com.eulersbridge.iEngage.database.domain.converters.NewsArticleToOwnerConverter;
+import com.eulersbridge.iEngage.database.domain.converters.PhotoAlbumToOwnerConverter;
+import com.eulersbridge.iEngage.database.domain.converters.UserToOwnerConverter;
 import com.eulersbridge.iEngage.security.UserPermissionEvaluator;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,7 +107,11 @@ public class Application extends Neo4jConfiguration
 	{
 		ConversionService conversionService = super.neo4jConversionService();
 		ConverterRegistry registry = (ConverterRegistry) conversionService;
+		registry.addConverter(new EventToOwnerConverter());
 		registry.addConverter(new NewsArticleToOwnerConverter());
+		registry.addConverter(new PhotoAlbumToOwnerConverter());
+		registry.addConverter(new UserToOwnerConverter());
+		
 		return conversionService;
 	}
 
