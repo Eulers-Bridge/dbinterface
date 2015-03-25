@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -12,17 +14,34 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.core.env.PropertyResolver;
 import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.support.MappingInfrastructureFactoryBean;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.PermissionEvaluator;
 
 import com.eulersbridge.iEngage.core.domain.Login;
+import com.eulersbridge.iEngage.core.events.notifications.NotificationDeserializer;
+import com.eulersbridge.iEngage.core.events.notifications.NotificationSerializer;
+import com.eulersbridge.iEngage.database.domain.converters.NewsArticleToOwnerConverter;
+import com.eulersbridge.iEngage.rest.domain.Notification;
 import com.eulersbridge.iEngage.security.UserPermissionEvaluator;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.Deserializers;
+import com.fasterxml.jackson.databind.module.SimpleDeserializers;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.module.SimpleSerializers;
+import com.google.common.collect.Sets;
 
 @PropertySource("classpath:application.properties")
 @Configuration
@@ -83,4 +102,55 @@ public class Application extends Neo4jConfiguration
 		return bean;
 		
 	}
+	
+	@Bean protected ConversionService neo4jConversionService() throws Exception
+	{
+		ConversionService conversionService = super.neo4jConversionService();
+		ConverterRegistry registry = (ConverterRegistry) conversionService;
+		registry.addConverter(new NewsArticleToOwnerConverter());
+		return conversionService;
+	}
+
+/*	@Primary
+	@Bean
+	public ObjectMapper objectMapper()
+	{
+		ObjectMapper om=new ObjectMapper();
+	    om.registerModule(new SimpleModule("CustomSerializerModule")
+	    {
+	        @Override public void setupModule(SetupContext context)
+	        {
+	            context.addSerializers(serializers);
+	        }
+	    });
+		return om;
+	}
+*/	
+/*	@Bean
+	public Module  module1()
+	{
+	    final SimpleSerializers serializers = new SimpleSerializers();
+	    final SimpleDeserializers deserializers = new SimpleDeserializers();
+	    deserializers.addDeserializer(Notification.class, new NotificationDeserializer());
+	    serializers.addSerializer(Notification.class, new NotificationSerializer());
+		Module mod=new SimpleModule("CustomSerializerModule")
+		{
+	        @Override public void setupModule(SetupContext context)
+	        {
+				context.addDeserializers(deserializers);
+	            context.addSerializers(serializers);
+	        }
+			
+		};
+		return mod;
+	}
+*/	
+/*	@Bean 
+	public MappingJackson2HttpMessageConverter messageConverter()
+	{
+		MappingJackson2HttpMessageConverter converter=new MappingJackson2HttpMessageConverter();
+		return converter;
+	}
+	*/
+	
 }
