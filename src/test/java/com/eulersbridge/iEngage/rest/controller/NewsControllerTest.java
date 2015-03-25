@@ -1,5 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
@@ -11,6 +13,7 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -74,6 +77,63 @@ public class NewsControllerTest
 
 		this.mockMvc = standaloneSetup(newsController).setMessageConverters(
 				new MappingJackson2HttpMessageConverter()).build();
+	}
+	
+	String createPhotosString(Iterator <PhotoDetails> iter)
+	{
+		StringBuffer photoString=new StringBuffer("[");
+		while (iter.hasNext())
+		{
+			PhotoDetails picDets=iter.next();
+			String photoDets=PhotoControllerTest.setupContent(picDets).replace("{","{\"nodeId\":"+picDets.getNodeId()+',');
+			photoString.append(photoDets+',');
+		}
+		int length=photoString.length();
+		if (photoString.charAt(length-1)==',')
+			photoString.setLength(length-1);
+		photoString.append(']');
+		return photoString.toString();
+	}
+
+	String setupContent(NewsArticleDetails dets)
+	{
+		String content= "{\"institutionId\":"+dets.getInstitutionId()+",\"title\":\""+dets.getTitle()+"\",\"content\":\""+dets.getContent()+
+						"\",\"photos\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\""+dets.getCreatorEmail()+"\"}";
+		return content;
+	}
+	
+	String setupReturnedContent(NewsArticleDetails dets)
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("Pictures -"+dets.getPhotos());
+		StringBuffer returnedContent= new StringBuffer("{\"articleId\":");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append(",\"institutionId\":");
+		returnedContent.append(dets.getInstitutionId());
+		returnedContent.append(",\"title\":\"");
+		returnedContent.append(dets.getTitle());
+		returnedContent.append("\",\"content\":\"");
+		returnedContent.append(dets.getContent());
+		returnedContent.append("\",\"photos\":");
+		returnedContent.append(createPhotosString(dets.getPhotos().iterator()));
+
+		returnedContent.append(",\"likes\":0,\"date\":");
+		returnedContent.append(dets.getDate());
+		returnedContent.append(",\"creatorEmail\":\"");
+		returnedContent.append(dets.getCreatorEmail());
+		returnedContent.append("\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/likedBy/USERID\"},{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/likes\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/newsArticles\"}]}");
+		return returnedContent.toString();
 	}
 
 	@After
@@ -268,20 +328,18 @@ public class NewsControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
 		NewsArticleCreatedEvent testData=new NewsArticleCreatedEvent(dets.getNodeId(), dets);
-		String content="{\"institutionId\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":[\"http://localhost:8080/testPictures/picture2.jpg\",\"http://localhost:8080/testPictures/picture.jpg\"],\"likes\":0,\"date\":1418382150369,\"creatorEmail\":\"gnewitt@hotmail.com\"}";
+		String content=setupContent(dets);
 		if (LOG.isDebugEnabled()) LOG.debug("content = "+content);
-		String returnedContent="{\"articleId\":"+dets.getNodeId().intValue()+",\"institutionId\":"+dets.getNodeId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"content\":\""+dets.getContent()+
-								"\",\"picture\":"+dets.getPicture()+",\"likes\":"+dets.getLikes()+",\"date\":"+dets.getDate()+",\"creatorEmail\":\""+dets.getCreatorEmail()+
-								"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/newsArticle/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/newsArticles\"}]}";
+		String returnedContent=setupReturnedContent(dets);
 		if (LOG.isDebugEnabled()) LOG.debug("returnedContent = "+returnedContent);
-		if (LOG.isDebugEnabled()) LOG.debug("picture - "+dets.getPicture());
+		if (LOG.isDebugEnabled()) LOG.debug("picture - "+dets.getPhotos());
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
 		.andExpect(jsonPath("$.articleId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.title",is(dets.getTitle())))
 		.andExpect(jsonPath("$.content",is(dets.getContent())))
-//TODO		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
+//TODO		.andExpect(jsonPath("$.photos",is(dets.getPhotos())))
 		.andExpect(jsonPath("$.likes",is(dets.getLikes())))
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
 		.andExpect(jsonPath("$.creatorEmail",is(dets.getCreatorEmail())))
@@ -292,9 +350,9 @@ public class NewsControllerTest
 		.andExpect(jsonPath("$.links[4].rel",is("UnLiked By")))
 		.andExpect(jsonPath("$.links[5].rel",is("Likes")))
 		.andExpect(jsonPath("$.links[6].rel",is("Read all")))
-//TODO		.andExpect(content().string(returnedContent))
+		.andExpect(content().string(returnedContent))
 		.andExpect(status().isCreated());		
-
+if (LOG.isDebugEnabled()) LOG.debug("dets.getPhotos = "+dets.getPhotos());
 	}
 
 	@Ignore

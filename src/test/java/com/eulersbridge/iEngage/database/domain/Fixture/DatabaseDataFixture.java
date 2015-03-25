@@ -144,9 +144,9 @@ public class DatabaseDataFixture
 	public static NewsArticle populateNewsArticle1()
 	{
 		Long nodeId=(long)1;
-		ArrayList<String> pictures=new ArrayList<String>();
-		pictures.add("http://localhost:8080/testPictures/picture2.jpg");
-		pictures.add("http://localhost:8080/testPictures/picture.jpg");
+		ArrayList<Photo> pictures=new ArrayList<Photo>();
+		pictures.add(populatePhoto1());
+		pictures.add(populatePhoto2());
 		NewsArticle initialArticle=populateNewsArticle("Test Article", "Contents of the Test Article", pictures, populateUserGnewitt(), Calendar.getInstance(), nodeId, populateNewsFeed2());
 		initialArticle.setNewsFeed(DatabaseDataFixture.populateNewsFeed2());
 		return initialArticle;
@@ -158,13 +158,14 @@ public class DatabaseDataFixture
 		initialArticle.setNewsFeed(DatabaseDataFixture.populateNewsFeed2());
 		return initialArticle;
 	}
-	public static NewsArticle populateNewsArticle(String title, String content, Iterable<String> picture, User creator, Calendar date, Long id, NewsFeed studentYear)
+	public static NewsArticle populateNewsArticle(String title, String content, Iterable<Photo> picture, User creator, Calendar date, Long id, NewsFeed studentYear)
 	{
-		NewsArticle article=new NewsArticle(title, content, picture, date, creator);
+		NewsArticle article=new NewsArticle(title, content, date, creator);
 		Long nodeId=id;
 		article.setNodeId(nodeId);
 		article.setNewsFeed(studentYear);
 		article.setLikes(new HashSet<Like>());
+		article.setPhotos(picture);
 		return article;
 	}
 	public static Map<Long,NewsArticle> populateNewsArticles()

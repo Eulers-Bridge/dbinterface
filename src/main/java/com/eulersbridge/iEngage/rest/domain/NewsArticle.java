@@ -4,7 +4,6 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.NewsController;
 
 public class NewsArticle extends ResourceSupport
@@ -20,7 +20,7 @@ public class NewsArticle extends ResourceSupport
 	private Long institutionId;
 	private String title;
 	private String content;
-	private Set<String> picture;
+	private Iterable<PhotoDetails> photos;
 	private Integer likes;
 	private Long date;
 	private String creatorEmail;
@@ -38,7 +38,7 @@ public class NewsArticle extends ResourceSupport
 	    news.creatorEmail = readNews.getCreatorEmail();
 	    news.date = readNews.getDate();
 	    news.likes = readNews.getLikes();
-	    news.picture = readNews.getPicture();
+	    news.photos = readNews.getPhotos();
 	    news.title = readNews.getTitle();
 	    news.institutionId = readNews.getInstitutionId();
 	    
@@ -79,7 +79,6 @@ public class NewsArticle extends ResourceSupport
 	    details.setNewsArticleId(getArticleId());
 	    details.setTitle(getTitle());
 	    details.setContent(getContent());
-	    details.setPicture(getPicture());
 	    details.setLikes(getLikes());
 	    details.setDate(getDate());
 	    details.setCreatorEmail(creatorEmail);
@@ -131,17 +130,17 @@ public class NewsArticle extends ResourceSupport
 	}
 
 	/**
-	 * @return the picture
+	 * @return the photos
 	 */
-	public Set<String> getPicture() {
-		return picture;
+	public Iterable<PhotoDetails> getPhotos() {
+		return photos;
 	}
 
 	/**
-	 * @param picture the picture to set
+	 * @param photos the photos to set
 	 */
-	public void setPicture(Set<String> picture) {
-		this.picture = picture;
+	public void setPhotos(Iterable<PhotoDetails> photos) {
+		this.photos = photos;
 	}
 
 	/**
@@ -226,8 +225,8 @@ public class NewsArticle extends ResourceSupport
 		buff.append(getTitle());
 		buff.append(", content = ");
 		buff.append(getContent());
-		buff.append(", picture = ");
-		buff.append(getPicture());
+		buff.append(", photos = ");
+		buff.append(getPhotos());
 		buff.append(", likers = ");
 		buff.append(getLikes());
 		buff.append(", date = ");
@@ -237,7 +236,7 @@ public class NewsArticle extends ResourceSupport
 		buff.append(", institutionId = ");
 		buff.append(getInstitutionId());
 		buff.append(", pictures = ");
-		buff.append(getPicture());
+		buff.append(getPhotos());
 		buff.append(", likes = ");
 		buff.append(getLikes());
 		buff.append(" ]");

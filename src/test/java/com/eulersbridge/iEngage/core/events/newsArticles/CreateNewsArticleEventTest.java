@@ -4,8 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+
 import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +18,7 @@ public class CreateNewsArticleEventTest {
     final Long newsArticleId = new Long(0);
     final String title = new String("title");
     final String content = new String("content");
-    final Set<String> picture = new HashSet<>();
+    final Iterable<PhotoDetails> picture = new HashSet<PhotoDetails>();
     final Integer likes = 15;
     final Long date = new Long(0);
     final String creatorEmail = new String("yikaig@gmail.com");
@@ -34,7 +35,7 @@ public class CreateNewsArticleEventTest {
         newsArticleDetails.setDate(date);
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
-        newsArticleDetails.setPicture(picture);
+        newsArticleDetails.setPhotos(picture);
         newsArticleDetails.setLikes(likes);
 
         createNewsArticleEvent = new CreateNewsArticleEvent(newsArticleDetails);
@@ -66,7 +67,7 @@ public class CreateNewsArticleEventTest {
         newsArticleDetails1.setDate(date);
         newsArticleDetails1.setNewsArticleId(newsArticleId);
         newsArticleDetails1.setTitle(title);
-        newsArticleDetails1.setPicture(picture);
+        newsArticleDetails1.setPhotos(picture);
         newsArticleDetails1.setLikes(likes);
         CreateNewsArticleEvent createNewsArticleEvent1 = new CreateNewsArticleEvent(newsArticleDetails1);
         assertEquals("NewsArticleDetails does not match", newsArticleDetails1, createNewsArticleEvent1.getDetails());

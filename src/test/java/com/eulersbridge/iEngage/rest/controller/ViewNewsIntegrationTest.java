@@ -46,6 +46,7 @@ import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
@@ -76,6 +77,63 @@ public class ViewNewsIntegrationTest {
 		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
 	}
 
+	String createPhotosString(Iterator <PhotoDetails> iter)
+	{
+		StringBuffer photoString=new StringBuffer("\"photos\":[");
+		while (iter.hasNext())
+		{
+			PhotoDetails picDets=iter.next();
+			String photoDets=PhotoControllerTest.setupContent(picDets).replace("{","{\"nodeId\":"+picDets.getNodeId()+',');
+			photoString.append(photoDets+',');
+		}
+		int length=photoString.length();
+		if (photoString.charAt(length-1)==',')
+			photoString.setLength(length-1);
+		photoString.append(']');
+		return photoString.toString();
+	}
+
+	String setupContent(NewsArticleDetails dets)
+	{
+		String content= "{\"institutionId\":"+dets.getInstitutionId()+",\"title\":\""+dets.getTitle()+"\",\"content\":\""+dets.getContent()+
+						"\",\"photos\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\""+dets.getCreatorEmail()+"\"}";
+		return content;
+	}
+	
+	String setupReturnedContent(NewsArticleDetails dets)
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("Pictures -"+dets.getPhotos());
+		StringBuffer returnedContent= new StringBuffer("{\"articleId\":");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append(",\"institutionId\":");
+		returnedContent.append(dets.getInstitutionId());
+		returnedContent.append(",\"title\":\"");
+		returnedContent.append(dets.getTitle());
+		returnedContent.append("\",\"content\":\"");
+		returnedContent.append(dets.getContent());
+		returnedContent.append("\",");
+		returnedContent.append(createPhotosString(dets.getPhotos().iterator()));
+
+		returnedContent.append(",\"likes\":0,\"date\":");
+		returnedContent.append(dets.getDate());
+		returnedContent.append(",\"creatorEmail\":\"");
+		returnedContent.append(dets.getCreatorEmail());
+		returnedContent.append("\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/likedBy/USERID\"},{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append(dets.getNodeId());
+		returnedContent.append("/likes\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/newsArticles\"}]}");
+		return returnedContent.toString();
+	}
+
 	@Test
 	public final void testAlterNewsArticle() throws Exception 
 	{
@@ -85,8 +143,8 @@ public class ViewNewsIntegrationTest {
 		dets.setTitle("Test Article2");
 		dets.setDate(123456l);
 		NewsArticleUpdatedEvent testData=new NewsArticleUpdatedEvent(id, dets);
-		String content="{\"articleId\":1,\"institutionId\":1,\"title\":\"Test Article2\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewitt@hotmail.com\"}";
-		String returnedContent="{\"articleId\":1,\"institutionId\":1,\"title\":\"Test Article2\",\"content\":\"Contents of the Test Article\",\"picture\":[\"http://localhost:8080/testPictures/picture2.jpg\",\"http://localhost:8080/testPictures/picture.jpg\"],\"likes\":0,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewitt@hotmail.com\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/newsArticle/1/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/newsArticle/1/likedBy/USERID\"},{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/newsArticle/1/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/newsArticle/1/likes\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/newsArticles\"}]}";
+		String content=setupContent(dets);
+		String returnedContent=setupReturnedContent(dets);
 		when (newsService.updateNewsArticle(any(UpdateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(jsonPath("$.articleId",is(dets.getNewsArticleId().intValue())))
@@ -112,7 +170,8 @@ public class ViewNewsIntegrationTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingAlterNewsArticle()");
 		Long id=1L;
-		String content="{\"articleId\":1,\"institutionId\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":1234567,\"creatorEmail\":\"gnewitt@hotmail.com\"}";
+		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
+		String content=setupContent(dets);
 		when (newsService.updateNewsArticle(any(UpdateNewsArticleEvent.class))).thenReturn(null);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		
@@ -123,7 +182,8 @@ public class ViewNewsIntegrationTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingAlterNewsArticle()");
 		Long id=1L;
-		String content="{\"articleId\":1,\"institutionId1\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likers\":null,\"date\":1234567,\"creatorEmail\":\"gnewitt@hotmail.com\"}";
+		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
+		String content=setupContent(dets).replace("institutionId", "institutionId1");
 		when (newsService.updateNewsArticle(any(UpdateNewsArticleEvent.class))).thenReturn(null);
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		
@@ -230,7 +290,7 @@ public class ViewNewsIntegrationTest {
 		.andExpect(jsonPath("$.articleId",is(dets.getNewsArticleId().intValue())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 //TODO
-/*		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
+/*		.andExpect(jsonPath("$.photos",is(dets.getPhotos())))
 		.andExpect(jsonPath("$.likers",is(dets.getLikers())))
 */		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
@@ -299,10 +359,11 @@ public class ViewNewsIntegrationTest {
 		Long id=1L;
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
 		NewsArticleCreatedEvent testData=new NewsArticleCreatedEvent(id, dets);
-		String content="{\"institutionId\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewitt@hotmail.com\"}";
-		String returnedContent="{\"articleId\":1,\"institutionId\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":[\"http://localhost:8080/testPictures/picture2.jpg\",\"http://localhost:8080/testPictures/picture.jpg\"],\"likes\":0,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewitt@hotmail.com\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/newsArticle/1/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/newsArticle/1/likedBy/USERID\"},{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/newsArticle/1/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/newsArticle/1/likes\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/newsArticles\"}]}";
+		String content=setupContent(dets);
+		String returnedContent=setupReturnedContent(dets);
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
 		.andExpect(jsonPath("$.articleId",is(dets.getNewsArticleId().intValue())))
 		.andExpect(jsonPath("$.title",is(dets.getTitle())))
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
@@ -310,7 +371,7 @@ public class ViewNewsIntegrationTest {
 		.andExpect(jsonPath("$.content",is(dets.getContent())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 //TODO
-//		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
+//		.andExpect(jsonPath("$.photos",is(dets.getPhotos())))
 		.andExpect(jsonPath("$.likes",is(dets.getLikes())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
@@ -328,7 +389,8 @@ public class ViewNewsIntegrationTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
 		NewsArticleCreatedEvent testData=null;
-		String content="{\"institutionId1\":1,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":12345678,\"creatorEmail\":\"gnewitt@hotmail.com\"}";
+		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
+		String content=setupContent(dets).replace("institutionId", "institutionId1");
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		
@@ -350,7 +412,7 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
 		NewsArticleCreatedEvent testData=NewsArticleCreatedEvent.institutionNotFound();
-		String content="{\"institutionId\":56,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewitt@hotmail.com\"}";
+		String content=setupContent(dets);
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		
@@ -362,7 +424,7 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
 		NewsArticleCreatedEvent testData=NewsArticleCreatedEvent.creatorNotFound();
-		String content="{\"institutionId\":56,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewittt@hotmail.com\"}";
+		String content=setupContent(dets);
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		
@@ -374,7 +436,7 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
 		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
 		NewsArticleCreatedEvent testData=new NewsArticleCreatedEvent(null, dets);
-		String content="{\"institutionId\":56,\"title\":\"Test Article\",\"content\":\"Contents of the Test Article\",\"picture\":null,\"likes\":null,\"date\":"+dets.getDate()+",\"creatorEmail\":\"gnewittt@hotmail.com\"}";
+		String content=setupContent(dets);
 		when (newsService.createNewsArticle(any(CreateNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;		

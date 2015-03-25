@@ -52,8 +52,7 @@ public class NewsArticleTest
 	@Before
 	public void setUp() throws Exception 
 	{
-		Iterable<String> picture=null;
-		news=new NewsArticle(title, content, picture, date, creator);
+		news=new NewsArticle(title, content, date, creator);
 		news.setNodeId(node1);
 		news.setNewsFeed(year);
 		Set<Like> likes1=new HashSet<Like>();
@@ -83,8 +82,7 @@ public class NewsArticleTest
 	@Test
 	public void testNewsArticleStringStringIterableOfStringCalendarUser() 
 	{
-		Iterable<String> picture=null;
-		NewsArticle news2=new NewsArticle(title, content, picture, date, creator);
+		NewsArticle news2=new NewsArticle(title, content, date, creator);
 		assertNotNull("Loaded Constructor did not create object.",news2);
 	}
 
@@ -148,12 +146,12 @@ public class NewsArticleTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#getPicture()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#getPhotos()}.
 	 */
 	@Test
 	public void testGetPicture() 
 	{
-		assertNull("pictures don't match.",news.getPicture());
+		assertNull("pictures don't match.",news.getPhotos());
 	}
 
 	/**
@@ -217,7 +215,7 @@ public class NewsArticleTest
 		assertEquals("Dates don't match.",dets.getDate(),news.getDate());
 		assertEquals("Creator emails don't match.",dets.getCreatorEmail(),news.getCreator().getEmail());
 		assertEquals("IDs don't match.",dets.getNewsArticleId(),news.getNodeId());
-		assertEquals("Pictures don't match.",dets.getPicture().size(),0);
+//TODO		assertEquals("Pictures don't match.",dets.getPicture().size(),0);
 		assertEquals("Likes don't match.",dets.getLikes().intValue(),news.getLikes().size());
 	}
 
@@ -234,7 +232,7 @@ public class NewsArticleTest
 		assertEquals("Dates don't match.",news2.getDate(),news.getDate());
 		assertEquals("Creator emails don't match.",news2.getCreator().getEmail(),news.getCreator().getEmail());
 		assertEquals("IDs don't match.",news2.getNodeId(),news.getNodeId());
-		assertEquals("Pictures don't match.",news2.getPicture(),dets.getPicture());
+//TODO		assertEquals("Pictures don't match.",news2.getPicture(),dets.getPicture());
 		assertNull("Likers don't match.",news2.getLikes());
 	}
 

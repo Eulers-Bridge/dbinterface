@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +21,7 @@ public class NewsArticleDetailsTest {
     final Long newsArticleId = new Long(0);
     final String title = new String("title");
     final String content = new String("content");
-    final Set<String> picture = new HashSet<>();
+    final Iterable<PhotoDetails> picture = new HashSet<>();
     final Integer likes = 25;
     final Long date = new Long(0);
     final String creatorEmail = new String("yikaig@gmail.com");
@@ -34,7 +37,7 @@ public class NewsArticleDetailsTest {
         newsArticleDetails.setDate(date);
         newsArticleDetails.setNewsArticleId(newsArticleId);
         newsArticleDetails.setTitle(title);
-        newsArticleDetails.setPicture(picture);
+        newsArticleDetails.setPhotos(picture);
         newsArticleDetails.setLikes(likes);
     }
 
@@ -85,15 +88,15 @@ public class NewsArticleDetailsTest {
 
     @Test
     public void testGetPicture() throws Exception {
-        assertEquals("picture does not match", picture, newsArticleDetails.getPicture());
+        assertEquals("picture does not match", picture, newsArticleDetails.getPhotos());
     }
 
     @Test
     public void testSetPicture() throws Exception {
-        Set<String> newPicture = new HashSet<>();
-        newPicture.add("pic1");
-        newsArticleDetails.setPicture(newPicture);
-        assertEquals("picture does not match", newPicture, newsArticleDetails.getPicture());
+        Set<PhotoDetails> newPicture = new HashSet<>();
+        newPicture.add(DatabaseDataFixture.populatePhoto1().toPhotoDetails());
+        newsArticleDetails.setPhotos(newPicture);
+        assertEquals("picture does not match", newPicture, newsArticleDetails.getPhotos());
     }
 
     @Test
@@ -159,7 +162,7 @@ public class NewsArticleDetailsTest {
         newsArticleDetails1.setDate(date);
         newsArticleDetails1.setNewsArticleId(newsArticleId);
         newsArticleDetails1.setTitle(title);
-        newsArticleDetails1.setPicture(picture);
+        newsArticleDetails1.setPhotos(picture);
         newsArticleDetails1.setLikes(likes);
         assertNotNull("toString() return null", newsArticleDetails.toString());
         assertEquals("toString() does not match", newsArticleDetails.toString(), newsArticleDetails1.toString());

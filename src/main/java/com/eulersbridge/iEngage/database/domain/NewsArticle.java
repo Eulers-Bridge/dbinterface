@@ -19,6 +19,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 @NodeEntity
 public class NewsArticle extends Likeable
@@ -26,7 +27,8 @@ public class NewsArticle extends Likeable
 	@GraphId Long nodeId;
 	private String title;
 	private String content;
-	private Iterable<String> picture;
+	@RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.BOTH) @Fetch
+	private Iterable<Photo> photos;
 	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
 	private Set<Like> likes;
 	@Indexed @NotNull private Long date;
@@ -42,12 +44,11 @@ public class NewsArticle extends Likeable
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
 	}
 	
-	public NewsArticle(String title,String content,Iterable<String> picture, Calendar date, User creator)
+	public NewsArticle(String title,String content, Calendar date, User creator)
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+title+','+content+','+picture+','+date.toString()+','+creator+')');
+		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+title+','+content+','+photos+','+date.toString()+','+creator+')');
 		this.title=title;
 		this.content=content;
-		this.picture=picture;
 		this.date=date.getTimeInMillis();
 		this.creator=creator;
 	}
@@ -93,10 +94,16 @@ public class NewsArticle extends Likeable
 		this.content = content;
 	}
 
-	public Iterable<String> getPicture()
+	public Iterable<Photo> getPhotos()
 	{
-		if (LOG.isDebugEnabled()) LOG.debug("getPicture() = "+picture);
-		return picture;
+		if (LOG.isDebugEnabled()) LOG.debug("getPhotos() = "+photos);
+		return photos;
+	}
+	
+	public void setPhotos(Iterable<Photo> picture)
+	{
+		this.photos=picture;
+		
 	}
 	
 	/**
@@ -167,8 +174,8 @@ public class NewsArticle extends Likeable
 		buff.append(getTitle());
 		buff.append(", content = ");
 		buff.append(getContent());
-		buff.append(", picture = ");
-		buff.append(getPicture());
+		buff.append(", photos = ");
+		buff.append(getPhotos());
 		buff.append(", date = ");
 		buff.append(getDate());
 		buff.append(", creator = ");
@@ -176,7 +183,7 @@ public class NewsArticle extends Likeable
 		buff.append(", studentYear = ");
 		buff.append(getNewsFeed());
 		buff.append(", pictures = ");
-		buff.append(getPicture());
+		buff.append(getPhotos());
 		buff.append(", likers = ");
 		buff.append(getLikes());
 		buff.append(" ]");
@@ -203,17 +210,17 @@ public class NewsArticle extends Likeable
 	    if (likes==null)
 	       	details.setLikes(0);
 	    else details.setLikes(likes.size());
-	    HashSet<String> pictures=new HashSet<String>();
-	    if (getPicture()!=null)
+	    HashSet<PhotoDetails> pictures=new HashSet<PhotoDetails>();
+	    if (getPhotos()!=null)
 	    {
-		    Iterator<String> iter=getPicture().iterator();
+		    Iterator<Photo> iter=getPhotos().iterator();
 		    while(iter.hasNext())
 		    {
-		    	String url=iter.next();
-		    	pictures.add(url);
+		    	Photo url=iter.next();
+		    	pictures.add(url.toPhotoDetails());
 		    }
 	    }
-	    details.setPicture(pictures);	
+	    details.setPhotos(pictures);	
 	    	
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
 
@@ -229,7 +236,6 @@ public class NewsArticle extends Likeable
 		    newsArt.nodeId=newsArtDetails.getNewsArticleId();
 		    newsArt.title=newsArtDetails.getTitle();
 		    newsArt.content=newsArtDetails.getContent();
-		    newsArt.picture=newsArtDetails.getPicture();
 		    newsArt.date=newsArtDetails.getDate();
 		    User creator=new User(newsArtDetails.getCreatorEmail(),null,null,null, null, null, null,null);
 		    newsArt.creator=creator;
@@ -259,7 +265,7 @@ public class NewsArticle extends Likeable
 			result = prime * result + ((likes == null) ? 0 : likes.hashCode());
 			result = prime * result
 					+ ((newsFeed == null) ? 0 : newsFeed.hashCode());
-			result = prime * result + ((picture == null) ? 0 : picture.hashCode());
+			result = prime * result + ((photos == null) ? 0 : photos.hashCode());
 			result = prime * result + ((title == null) ? 0 : title.hashCode());
 		}
 		return result;
@@ -312,10 +318,10 @@ public class NewsArticle extends Likeable
 					return false;
 			} else if (!newsFeed.equals(other.newsFeed))
 				return false;
-			if (picture == null) {
-				if (other.picture != null)
+			if (photos == null) {
+				if (other.photos != null)
 					return false;
-			} else if (!picture.equals(other.picture))
+			} else if (!photos.equals(other.photos))
 				return false;
 			if (title == null) {
 				if (other.title != null)
@@ -325,5 +331,5 @@ public class NewsArticle extends Likeable
 		}
 		return true;
 	}
-	
+
 }

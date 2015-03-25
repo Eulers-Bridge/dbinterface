@@ -1,18 +1,18 @@
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
 import java.util.Calendar;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 public class NewsArticleDetails extends Details
 {
 	private String title;
 	private String content;
-	private Set<String> picture;
+	private Iterable<PhotoDetails> photos;
 	private Integer likes;
 	private Long date;
 	private String creatorEmail;
@@ -47,13 +47,13 @@ public class NewsArticleDetails extends Details
 	{
 		this.content = content;
 	}
-	public Set<String> getPicture()
+	public Iterable<PhotoDetails> getPhotos()
 	{
-		return this.picture;
+		return this.photos;
 	}
-	public void setPicture(Set<String> picture)
+	public void setPhotos(Iterable<PhotoDetails> picture)
 	{
-		this.picture = picture;
+		this.photos = picture;
 	}
 	public Long getDate()
 	{
@@ -111,8 +111,8 @@ public class NewsArticleDetails extends Details
 		buff.append(getTitle());
 		buff.append(", content = ");
 		buff.append(getContent());
-		buff.append(", picture = ");
-		buff.append(getPicture());
+		buff.append(", photos = ");
+		buff.append(getPhotos());
 		buff.append(", date = ");
 		buff.append(getDate().toString());
 		buff.append(", creator = ");
@@ -120,7 +120,7 @@ public class NewsArticleDetails extends Details
 		buff.append(", institutionId = ");
 		buff.append(getInstitutionId());
 		buff.append(", pictures = ");
-		buff.append(getPicture());
+		buff.append(getPhotos());
 		buff.append(", likers = ");
 		buff.append(getLikes());
 		buff.append(" ]");
@@ -148,7 +148,7 @@ public class NewsArticleDetails extends Details
 			result = prime * result
 					+ ((institutionId == null) ? 0 : institutionId.hashCode());
 			result = prime * result + ((likes == null) ? 0 : likes.hashCode());
-			result = prime * result + ((picture == null) ? 0 : picture.hashCode());
+			result = prime * result + ((photos == null) ? 0 : photos.hashCode());
 			result = prime * result + ((title == null) ? 0 : title.hashCode());
 		}
 		return result;
@@ -201,10 +201,10 @@ public class NewsArticleDetails extends Details
 					return false;
 			} else if (!likes.equals(other.likes))
 				return false;
-			if (picture == null) {
-				if (other.picture != null)
+			if (photos == null) {
+				if (other.photos != null)
 					return false;
-			} else if (!picture.equals(other.picture))
+			} else if (!photos.equals(other.photos))
 				return false;
 			if (title == null) {
 				if (other.title != null)
