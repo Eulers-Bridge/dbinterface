@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -641,13 +642,19 @@ public class UserEventHandler implements UserService, UserDetailsService
 	}
 
 	@Override
-	public VoteReminderAddedEvent addVoteReminder(
+	public CreatedEvent addVoteReminder(
 			AddVoteReminderEvent addVoteReminderEvent)
 	{
 		VoteReminderAddedEvent evt;
+		VoteReminderDetails details;
 
-		if ((null==addVoteReminderEvent)||(null==addVoteReminderEvent.getVoteReminderDetails())||(null==addVoteReminderEvent.getVoteReminderDetails().getUserId()))
+		if (null==addVoteReminderEvent)
 			return VoteReminderAddedEvent.userNotFound();
+		details=addVoteReminderEvent.getVoteReminderDetails();
+		if ((null==details)||(null==details.getUserId()))
+			return VoteReminderAddedEvent.userNotFound();
+		if (null==addVoteReminderEvent.getVoteReminderDetails().getDate())
+			return VoteReminderAddedEvent.failed(details);
 		String emailAddress = addVoteReminderEvent.getVoteReminderDetails()
 				.getUserId();
 		if (LOG.isDebugEnabled()) LOG.debug("Email address - " + emailAddress);

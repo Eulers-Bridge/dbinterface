@@ -33,6 +33,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -820,11 +821,11 @@ public class UserEventHandlerTest
 		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
 		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
 
-		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		CreatedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
 		assertNotNull(nace);
 		assertEquals(nace.getDetails(),vrd);
-		assertTrue(nace.isElectionFound());
-		assertTrue(nace.isUserFound());
+		assertTrue(((VoteReminderAddedEvent)nace).isElectionFound());
+		assertTrue(((VoteReminderAddedEvent)nace).isUserFound());
 	}
 	
 	@Test
@@ -833,15 +834,14 @@ public class UserEventHandlerTest
 		AddVoteReminderEvent addVoteReminderEvent;
 		User userData=DatabaseDataFixture.populateUserGnewitt();
 		VoteReminder vr=DatabaseDataFixture.populateVoteReminder1();
-		VoteReminderDetails vrd=vr.toVoteReminderDetails();
 		addVoteReminderEvent=new AddVoteReminderEvent();
 		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
 		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
 
-		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		CreatedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
 		assertNotNull(nace);
-		assertNull(nace.getDetails());
-		assertFalse(nace.isUserFound());
+		assertNull(((VoteReminderAddedEvent)nace).getDetails());
+		assertFalse(((VoteReminderAddedEvent)nace).isUserFound());
 	}
 	
 	@Test
@@ -855,10 +855,10 @@ public class UserEventHandlerTest
 		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
 		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
 
-		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		CreatedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
 		assertNotNull(nace);
-		assertNull(nace.getDetails());
-		assertFalse(nace.isUserFound());
+		assertNull(((VoteReminderAddedEvent)nace).getDetails());
+		assertFalse(((VoteReminderAddedEvent)nace).isUserFound());
 	}
 	
 	@Test
@@ -871,10 +871,10 @@ public class UserEventHandlerTest
 		when(uRepo.findByEmail(any(String.class))).thenReturn(null);
 		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(vr);
 
-		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		CreatedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
 		assertNotNull(nace);
-		assertTrue(nace.isElectionFound());
-		assertFalse(nace.isUserFound());
+		assertTrue(((VoteReminderAddedEvent)nace).isElectionFound());
+		assertFalse(((VoteReminderAddedEvent)nace).isUserFound());
 	}
 
 	@Test
@@ -888,10 +888,10 @@ public class UserEventHandlerTest
 		when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
 		when(uRepo.addVoteReminder(any(Long.class), any(Long.class), any(Long.class), any(String.class))).thenReturn(null);
 
-		VoteReminderAddedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
+		CreatedEvent nace = userServiceMocked.addVoteReminder(addVoteReminderEvent);
 		assertNotNull(nace);
-		assertFalse(nace.isElectionFound());
-		assertTrue(nace.isUserFound());
+		assertFalse(((VoteReminderAddedEvent)nace).isElectionFound());
+		assertTrue(((VoteReminderAddedEvent)nace).isUserFound());
 	}
 	@Test
 	public void shouldAddVoteRecordToUser() 

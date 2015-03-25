@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -54,7 +55,7 @@ public interface UserService
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteReminderEvent.getVoteReminderDetails().getUserId()==authentication.name)")
-	public VoteReminderAddedEvent addVoteReminder(AddVoteReminderEvent addVoteReminderEvent);
+	public CreatedEvent addVoteReminder(AddVoteReminderEvent addVoteReminderEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteRecordEvent.getVoteRecordDetails().getVoterId()==authentication.name)")
 	public VoteRecordAddedEvent addVoteRecord(AddVoteRecordEvent addVoteRecordEvent);
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")

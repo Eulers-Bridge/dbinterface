@@ -216,11 +216,11 @@ public class UserController
     	AddVoteReminderEvent addEvt=new AddVoteReminderEvent(remDetails);
     	if (LOG.isDebugEnabled()) LOG.debug("AddPersonalityEvent - "+addEvt);
     	
-    	VoteReminderAddedEvent vrEvent=userService.addVoteReminder(addEvt);
+    	CreatedEvent vrEvent=userService.addVoteReminder(addEvt);
     	if (vrEvent!=null)
     	{
     		if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - "+vrEvent);
-	    	if (vrEvent.isUserFound())
+	    	if (((VoteReminderAddedEvent)vrEvent).isUserFound())
 	       	{
 	    		VoteReminder restVoteReminder=VoteReminder.fromVoteReminderDetails((VoteReminderDetails) vrEvent.getDetails());
 		    	if (LOG.isDebugEnabled()) LOG.debug("restUser = "+restVoteReminder);

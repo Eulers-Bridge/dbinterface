@@ -59,5 +59,15 @@ public class VoteReminderAddedEvent extends CreatedEvent
 		
 		return evt;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "VoteReminderAddedEvent [userFound=" + userFound
+				+ ", electionFound=" + electionFound + ", details=" + getDetails()
+				+ ", failed=" + isFailed() + "]";
+	}
 }
