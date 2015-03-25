@@ -277,16 +277,13 @@ public class UserEventHandler implements UserService, UserDetailsService
 		return response;
 	}
 	
-	@Override
-	public AllReadEvent readExistingContacts(ReadAllEvent readContactsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public AllReadEvent readExistingContacts(Long userId, Pageable pageable)
 	{
-		Long userId=readContactsEvent.getParentId();
 		Page <User>contacts=null;
 		ArrayList<UserDetails> dets=new ArrayList<UserDetails>();
 		ContactsReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("UserId "+userId);
-		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"b.familyName");
 		contacts=userRepository.findContacts(userId, pageable);
 		if (contacts!=null)
 		{
@@ -328,6 +325,37 @@ public class UserEventHandler implements UserService, UserDetailsService
 		return nare;
 	}
 
+	@Override
+	public AllReadEvent readExistingContactsById(ReadAllEvent readContactsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	{
+		Long userId=readContactsEvent.getParentId();
+		AllReadEvent nare=null;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"b.familyName");
+		nare=readExistingContacts(userId, pageable);
+
+		
+		return nare;
+	}
+
+	@Override
+	public AllReadEvent readExistingContactsByEmail(
+			RequestReadUserEvent readUserProfilesEvent, Direction sortDirection,
+			int pageNumber, int pageLength)
+	{
+		String email=readUserProfilesEvent.getEmail();
+		Long userId=findUserId(email);
+		AllReadEvent nare=null;
+		if (userId!=null)
+		{
+			Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"b.familyName");
+			nare=readExistingContacts(userId, pageable);
+		}
+		else
+			nare=ContactsReadEvent.userNotFound();
+		
+		return nare;
+	}
 	@Override
 	@Transactional
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent)
@@ -618,6 +646,8 @@ public class UserEventHandler implements UserService, UserDetailsService
 	{
 		VoteReminderAddedEvent evt;
 
+		if ((null==addVoteReminderEvent)||(null==addVoteReminderEvent.getVoteReminderDetails())||(null==addVoteReminderEvent.getVoteReminderDetails().getUserId()))
+			return VoteReminderAddedEvent.userNotFound();
 		String emailAddress = addVoteReminderEvent.getVoteReminderDetails()
 				.getUserId();
 		if (LOG.isDebugEnabled()) LOG.debug("Email address - " + emailAddress);
@@ -820,4 +850,5 @@ public class UserEventHandler implements UserService, UserDetailsService
 		return response;
 
 	}
+
 }

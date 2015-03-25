@@ -67,5 +67,7 @@ public interface UserService
 	public DeletedEvent deleteVoteReminder(DeleteVoteReminderEvent deleteVoteReminderEvent);
 	
 	public Long findUserId(String emailAddress);
-	AllReadEvent readExistingContacts(ReadAllEvent readUserProfilesEvent,Direction sortDirection, int pageNumber, int pageLength);
+	public AllReadEvent readExistingContactsById(ReadAllEvent readUserProfilesEvent,Direction sortDirection, int pageNumber, int pageLength);
+	public AllReadEvent readExistingContactsByEmail(RequestReadUserEvent readUserProfilesEvent,Direction sortDirection, int pageNumber, int pageLength);	
 }
+
