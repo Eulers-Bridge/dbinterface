@@ -15,7 +15,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
  */
 
 @NodeEntity
-public class Poll extends Likeable
+public class Poll extends Likeable implements Commentable
 {
 	@GraphId
 	private Long nodeId;
@@ -93,7 +93,7 @@ public class Poll extends Likeable
 		this.nodeId = pollId;
 	}
 
-	public String getQuestion()
+    public String getQuestion()
 	{
 		return question;
 	}

@@ -61,6 +61,8 @@ public class CoreConfig
     BadgeRepository badgeRepository;
     @Autowired
     VotingLocationRepository votingLocationRepository;
+    @Autowired
+    CommentReposotory commentReposotory;
 
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -201,5 +203,12 @@ public class CoreConfig
     {
         if (LOG.isDebugEnabled()) LOG.debug("createVotingLocationService()");
         return new VotingLocationEventHandler(votingLocationRepository,electionRepo,ownerRepository);
+    }
+
+    @Bean
+    public CommentService createCommentService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createCommentService()");
+        return new CommentEventHandler(userRepo, commentReposotory);
     }
 }
