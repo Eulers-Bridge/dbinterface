@@ -3,7 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.*;
 import com.eulersbridge.iEngage.database.domain.*;
-import com.eulersbridge.iEngage.database.repository.CommentReposotory;
+import com.eulersbridge.iEngage.database.repository.CommentRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +25,11 @@ public class CommentEventHandler implements CommentService {
     private static Logger LOG = LoggerFactory.getLogger(CommentService.class);
 
     private UserRepository userRepository;
-    private CommentReposotory commentReposotory;
+    private CommentRepository commentRepository;
 
-    public CommentEventHandler(UserRepository userRepository, CommentReposotory commentReposotory) {
+    public CommentEventHandler(UserRepository userRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
-        this.commentReposotory = commentReposotory;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CommentEventHandler implements CommentService {
             commentCreatedEvent = CommentCreatedEvent.userNotFound();
         }
         else{
-            NodeObject object = commentReposotory.findCommentTarget(targetId);
+            NodeObject object = commentRepository.findCommentTarget(targetId);
             if(object == null || !(object instanceof Commentable)){
                 commentCreatedEvent = CommentCreatedEvent.targetNotFound(targetId);
             }
@@ -53,7 +53,7 @@ public class CommentEventHandler implements CommentService {
                 comment.setTimestamp(new Date().getTime());
                 comment.setUser(user);
                 comment.setTarget(target);
-                Comment result = commentReposotory.save(comment);
+                Comment result = commentRepository.save(comment);
                 if((result==null)||result.getId() == null)
                     commentCreatedEvent = CommentCreatedEvent.failed(commentDetails);
                 else
@@ -73,12 +73,12 @@ public class CommentEventHandler implements CommentService {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteCommentEvent= "+deleteCommentEvent);
         Long commentId = deleteCommentEvent.getNodeId();
         if (LOG.isDebugEnabled()) LOG.debug("deleteComment("+commentId+")");
-        Comment comment = commentReposotory.findOne(commentId);
+        Comment comment = commentRepository.findOne(commentId);
         if(comment == null){
             return CommentDeletedEvent.notFound(commentId);
         }
         else{
-            commentReposotory.delete(comment);
+            commentRepository.delete(comment);
             CommentDeletedEvent commentDeletedEvent = new CommentDeletedEvent(commentId);
             return commentDeletedEvent;
         }
@@ -93,7 +93,7 @@ public class CommentEventHandler implements CommentService {
 
         if (LOG.isDebugEnabled()) LOG.debug("targetId "+targetId);
         Pageable pageable= new PageRequest(pageNumber, pageLength, sortDirection, "r.timestamp");
-        comments = commentReposotory.findByTargetId(targetId, pageable);
+        comments = commentRepository.findByTargetId(targetId, pageable);
         if(comments != null) {
             if (LOG.isDebugEnabled())
                 LOG.debug("Total elements = " + comments.getTotalElements() + " total pages =" + comments.getTotalPages());
@@ -106,7 +106,7 @@ public class CommentEventHandler implements CommentService {
             }
             if (0 == dets.size()) {
                 // Need to check if we actually found instId.
-                NodeObject nodeObject = commentReposotory.findCommentTarget(targetId);
+                NodeObject nodeObject = commentRepository.findCommentTarget(targetId);
                 if ((null == nodeObject) || null == nodeObject.getNodeId() || !(nodeObject instanceof Commentable)) {
                     if (LOG.isDebugEnabled()) LOG.debug("Comment-able Object not found");
                     commentsReadEvent = CommentsReadEvent.targetNotFound(targetId);
