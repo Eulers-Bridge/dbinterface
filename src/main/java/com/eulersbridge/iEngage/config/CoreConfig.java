@@ -15,22 +15,34 @@ import com.eulersbridge.iEngage.rest.domain.stubCountryFactory;
 @Configuration
 public class CoreConfig 
 {
-	@Autowired
-	UserRepository userRepo;
-	@Autowired
-	InstitutionRepository instRepo;
+    @Autowired
+    BadgeRepository badgeRepository;
+    @Autowired
+    CandidateRepository candidateRepository;
+    @Autowired
+    CommentRepository commentRepository;
 	@Autowired
 	ContactRequestRepository contactRequestRepository;
+    @Autowired
+    ConfigurationRepository configurationRepository;
 	@Autowired
 	CountryRepository countryRepo;
+    @Autowired
+    ElectionRepository electionRepo;
+    @Autowired
+    EventRepository eventRepository;
+    @Autowired
+    ForumQuestionRepository forumQuestionRepository;
 	@Autowired
-	VerificationTokenRepository tokenRepo;
+	InstitutionRepository instRepo;
 	@Autowired
 	NewsArticleRepository newsRepo;
 	@Autowired
 	NewsFeedRepository syRepo;
     @Autowired
-    ElectionRepository electionRepo;
+    NotificationRepository notificationRepository;
+    @Autowired
+    OwnerRepository ownerRepository;
     @Autowired
     PersonalityRepository personRepo;
     @Autowired
@@ -38,31 +50,21 @@ public class CoreConfig
     @Autowired
     PollAnswerRepository pollAnswerRepository;
     @Autowired
-    EventRepository eventRepository;
-    @Autowired
-    OwnerRepository ownerRepository;
-    @Autowired
     PhotoRepository photoRepository;
     @Autowired
     PhotoAlbumRepository photoAlbumRepository;
-    @Autowired
-    ForumQuestionRepository forumQuestionRepository;
-    @Autowired
+   @Autowired
     PositionRepository positionRepository;
-    @Autowired
-    ConfigurationRepository configurationRepository;
-    @Autowired
-    CandidateRepository candidateRepository;
     @Autowired
     TicketRepository ticketRepository;
     @Autowired
     TaskRepository taskRepository;
-    @Autowired
-    BadgeRepository badgeRepository;
+	@Autowired
+	UserRepository userRepo;
+	@Autowired
+	VerificationTokenRepository tokenRepo;
     @Autowired
     VotingLocationRepository votingLocationRepository;
-    @Autowired
-    CommentReposotory commentReposotory;
 
     private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -206,9 +208,16 @@ public class CoreConfig
     }
 
     @Bean
+    public NotificationService createNotificationService()
+    {
+        if (LOG.isDebugEnabled()) LOG.debug("createNotificationService()");
+        return new NotificationEventHandler(notificationRepository);
+    }
+
+    @Bean
     public CommentService createCommentService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createCommentService()");
-        return new CommentEventHandler(userRepo, commentReposotory);
+        return new CommentEventHandler(userRepo, commentRepository);
     }
 }
