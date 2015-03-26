@@ -101,7 +101,7 @@ public class EventControllerTest
 		int evtId=dets.getEventId().intValue();
 		return "{\"eventId\":"+evtId+",\"name\":\""+dets.getName()+
 				"\",\"location\":\""+dets.getLocation()+"\",\"starts\":"+dets.getStarts().intValue()+",\"ends\":"+dets.getEnds().intValue()+
-				",\"description\":\""+dets.getDescription()+"\",\"picture\":"+dets.getPicture()+",\"volunteerPositions\":"+dets.getVolunteerPositions()+
+				",\"description\":\""+dets.getDescription()+"\",\"volunteerPositions\":"+dets.getVolunteerPositions()+
 				",\"created\":"+dets.getCreated()+",\"organizer\":\""+dets.getOrganizer()+"\",\"organizerEmail\":\""+dets.getOrganizerEmail()+
 				"\",\"institutionId\":"+dets.getInstitutionId()+",\"modified\":"+dets.getModified()+'}';
 	}
@@ -111,7 +111,7 @@ public class EventControllerTest
 		int evtId=dets.getEventId().intValue();
 		return "{\"eventId1\":"+evtId+",\"name\":\""+dets.getName()+
 				"\",\"location\":\""+dets.getLocation()+"\",\"starts\":"+dets.getStarts().intValue()+",\"ends\":"+dets.getEnds().intValue()+
-				",\"description\":\""+dets.getDescription()+"\",\"picture\":"+dets.getPicture()+",\"volunteerPositions\":"+dets.getVolunteerPositions()+
+				",\"description\":\""+dets.getDescription()+"\",\"volunteerPositions\":"+dets.getVolunteerPositions()+
 				",\"created\":"+dets.getCreated()+",\"organizer\":\""+dets.getOrganizer()+"\",\"organizerEmail\":\""+dets.getOrganizerEmail()+
 				"\",\"institutionId\":"+dets.getInstitutionId()+",\"modified\":"+dets.getModified()+'}';
 	}
@@ -119,18 +119,24 @@ public class EventControllerTest
 	String setupReturnedContent(EventDetails dets)
 	{
 		int evtId=dets.getEventId().intValue();
-		return "{\"eventId\":"+evtId+",\"name\":\""+dets.getName()+
-				"\",\"location\":\""+dets.getLocation()+"\",\"starts\":"+dets.getStarts().intValue()+",\"ends\":"+dets.getEnds().intValue()+
-				",\"description\":\""+dets.getDescription()+"\",\"picture\":"+dets.getPicture()+",\"volunteerPositions\":"+dets.getVolunteerPositions()+
-				",\"created\":"+dets.getCreated()+",\"organizer\":\""+dets.getOrganizer()+"\",\"organizerEmail\":\""+dets.getOrganizerEmail()+
-				"\",\"institutionId\":"+dets.getInstitutionId()+",\"modified\":"+dets.getModified()+
-				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/event/"+evtId+"\"},"+
-				"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/event/"+evtId+"/previous\"},"+
-				"{\"rel\":\"Next\",\"href\":\"http://localhost/api/event/"+evtId+"/next\"},"+
-				"{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/event/"+evtId+"/likedBy/USERID\"},"+
-				"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/event/"+evtId+"/unlikedBy/USERID\"},"+
-				"{\"rel\":\"Likes\",\"href\":\"http://localhost/api/event/"+evtId+"/likes\"},"+
-				"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/events\"}]}";	
+		StringBuffer returnedContent=new StringBuffer(	"{\"eventId\":"+evtId+",\"name\":\""+dets.getName()+
+														"\",\"location\":\""+dets.getLocation()+"\",\"starts\":"+
+														dets.getStarts().intValue()+",\"ends\":"+dets.getEnds().intValue()+
+														",\"description\":\""+dets.getDescription());
+		returnedContent.append("\",\"photos\":");
+		returnedContent.append(NewsControllerTest.createPhotosString(dets.getPhotos().iterator()));
+
+		returnedContent.append(	",\"volunteerPositions\":"+dets.getVolunteerPositions()+",\"created\":"+dets.getCreated()+
+								",\"organizer\":\""+dets.getOrganizer()+"\",\"organizerEmail\":\""+dets.getOrganizerEmail()+
+								"\",\"institutionId\":"+dets.getInstitutionId()+",\"modified\":"+dets.getModified()+
+								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/event/"+evtId+"\"},"+
+								"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/event/"+evtId+"/previous\"},"+
+								"{\"rel\":\"Next\",\"href\":\"http://localhost/api/event/"+evtId+"/next\"},"+
+								"{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/event/"+evtId+"/likedBy/USERID\"},"+
+								"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/event/"+evtId+"/unlikedBy/USERID\"},"+
+								"{\"rel\":\"Likes\",\"href\":\"http://localhost/api/event/"+evtId+"/likes\"},"+
+								"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/events\"}]}");
+		return returnedContent.toString();
 	}
 
 	/**
@@ -164,7 +170,7 @@ public class EventControllerTest
 		.andExpect(jsonPath("$.starts",is(dets.getStarts().intValue())))
 		.andExpect(jsonPath("$.ends",is(dets.getEnds().intValue())))
 		.andExpect(jsonPath("$.description",is(dets.getDescription())))
-		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
+//		.andExpect(jsonPath("$.picture",is(dets.getPhotos())))
 		.andExpect(jsonPath("$.volunteerPositions",is(dets.getVolunteerPositions())))
 		.andExpect(jsonPath("$.created",is(dets.getCreated().intValue())))
 		.andExpect(jsonPath("$.modified",is(dets.getModified().intValue())))
@@ -252,7 +258,7 @@ public class EventControllerTest
 		.andExpect(jsonPath("$.starts",is(dets.getStarts().intValue())))
 		.andExpect(jsonPath("$.ends",is(dets.getEnds().intValue())))
 		.andExpect(jsonPath("$.description",is(dets.getDescription())))
-		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
+//TODO		.andExpect(jsonPath("$.photos",is(dets.getPhotos())))
 		.andExpect(jsonPath("$.volunteerPositions",is(dets.getVolunteerPositions())))
 		.andExpect(jsonPath("$.created",is(dets.getCreated().intValue())))
 		.andExpect(jsonPath("$.modified",is(dets.getModified().intValue())))
@@ -313,7 +319,7 @@ public class EventControllerTest
 		.andExpect(jsonPath("$events[0].starts",is(eventDets.get(0).getStarts().intValue())))
 		.andExpect(jsonPath("$events[0].ends",is(eventDets.get(0).getEnds().intValue())))
 		.andExpect(jsonPath("$events[0].description",is(eventDets.get(0).getDescription())))
-		.andExpect(jsonPath("$events[0].picture",is(eventDets.get(0).getPicture())))
+//		.andExpect(jsonPath("$events[0].photos",is(eventDets.get(0).getPhotos())))
 		.andExpect(jsonPath("$events[0].volunteerPositions",is(eventDets.get(0).getVolunteerPositions())))
 		.andExpect(jsonPath("$events[0].created",is(eventDets.get(0).getCreated().intValue())))
 		.andExpect(jsonPath("$events[0].modified",is(eventDets.get(0).getModified().intValue())))
@@ -326,7 +332,7 @@ public class EventControllerTest
 		.andExpect(jsonPath("$events[1].starts",is(eventDets.get(1).getStarts().intValue())))
 		.andExpect(jsonPath("$events[1].ends",is(eventDets.get(1).getEnds().intValue())))
 		.andExpect(jsonPath("$events[1].description",is(eventDets.get(1).getDescription())))
-		.andExpect(jsonPath("$events[1].picture",is(eventDets.get(1).getPicture())))
+//		.andExpect(jsonPath("$events[1].photos",is(eventDets.get(1).getPhotos())))
 		.andExpect(jsonPath("$events[1].volunteerPositions",is(eventDets.get(1).getVolunteerPositions())))
 		.andExpect(jsonPath("$events[1].created",is(eventDets.get(1).getCreated().intValue())))
 		.andExpect(jsonPath("$events[1].modified",is(eventDets.get(1).getModified().intValue())))
@@ -360,7 +366,7 @@ public class EventControllerTest
 		.andExpect(jsonPath("$.starts",is(dets.getStarts().intValue())))
 		.andExpect(jsonPath("$.ends",is(dets.getEnds().intValue())))
 		.andExpect(jsonPath("$.description",is(dets.getDescription())))
-		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
+//		.andExpect(jsonPath("$.picture",is(dets.getPhotos())))
 		.andExpect(jsonPath("$.volunteerPositions",is(dets.getVolunteerPositions())))
 		.andExpect(jsonPath("$.created",is(dets.getCreated().intValue())))
 		.andExpect(jsonPath("$.modified",is(dets.getModified().intValue())))

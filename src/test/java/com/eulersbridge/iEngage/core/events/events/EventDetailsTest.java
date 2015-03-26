@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import static org.junit.Assert.*;
@@ -19,7 +20,7 @@ public class EventDetailsTest {
     private Long date = 1000000l;
 	private Long ends =1000000l;
     private String description = "An event";
-    private String picture[] = new String[]{"./path"};
+    private Iterable<PhotoDetails> photos = null;
     private String volunteerPositions[] = new String[]{"positon"};
     private Long created = new Long(0);
     private String organizer = "Unimelb";
@@ -38,7 +39,7 @@ public class EventDetailsTest {
         eventDetails.setStarts(date);
         eventDetails.setEnds(ends);
         eventDetails.setDescription(description);
-        eventDetails.setPicture(picture);
+        eventDetails.setPhotos(photos);
         eventDetails.setVolunteerPositions(volunteerPositions);
         eventDetails.setCreated(created);
         eventDetails.setOrganizer(organizer);
@@ -186,10 +187,10 @@ public class EventDetailsTest {
 		checkNotEquals(event, eventTest);
 		eventTest.setOrganizerEmail(event.getOrganizerEmail());
 		
-		String[] picture={"picture1","picture2"};
-		eventTest.setPicture(picture);
+		Iterable<PhotoDetails> picture=null;
+		eventTest.setPhotos(picture);
 		checkNotEquals(event, eventTest);
-		eventTest.setPicture(event.getPicture());
+		eventTest.setPhotos(event.getPhotos());
 		
 		String[] volunteerPositions = {"position 1","position 2"};
 		eventTest.setVolunteerPositions(volunteerPositions);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.EventController;
 
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class Event extends ResourceSupport{
     private Long starts;
     private Long ends;
     private String description;
-    private String picture[];
+	private Iterable<PhotoDetails> photos;
     private String volunteerPositions[];
     private Long created;
     private String organizer;
@@ -50,7 +51,7 @@ public class Event extends ResourceSupport{
         event.setStarts(eventDetails.getStarts());
         event.setEnds(eventDetails.getEnds());
         event.setDescription(eventDetails.getDescription());
-        event.setPicture(eventDetails.getPicture());
+        event.setPhotos(eventDetails.getPhotos());
         event.setVolunteerPositions(eventDetails.getVolunteerPositions());
         event.setCreated(eventDetails.getCreated());
         event.setOrganizer(eventDetails.getOrganizer());
@@ -91,7 +92,7 @@ public class Event extends ResourceSupport{
         eventDetails.setStarts(getStarts());
         eventDetails.setEnds(getEnds());
         eventDetails.setDescription(getDescription());
-        eventDetails.setPicture(getPicture());
+        eventDetails.setPhotos(getPhotos());
         eventDetails.setVolunteerPositions(getVolunteerPositions());
         eventDetails.setCreated(getCreated());
         eventDetails.setOrganizer(getOrganizer());
@@ -142,13 +143,21 @@ public class Event extends ResourceSupport{
         this.description = description;
     }
 
-    public String[] getPicture() {
-        return picture;
-    }
+	/**
+	 * @return the photos
+	 */
+	public Iterable<PhotoDetails> getPhotos()
+	{
+		return photos;
+	}
 
-    public void setPicture(String[] picture) {
-        this.picture = picture;
-    }
+	/**
+	 * @param photos the photos to set
+	 */
+	public void setPhotos(Iterable<PhotoDetails> photos)
+	{
+		this.photos = photos;
+	}
 
     public String[] getVolunteerPositions() {
         return volunteerPositions;

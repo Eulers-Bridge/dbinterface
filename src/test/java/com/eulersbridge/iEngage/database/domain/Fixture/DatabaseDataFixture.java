@@ -306,16 +306,25 @@ public class DatabaseDataFixture
 		return elections;
 	}
 
-	public static Event populateEvent1() {
+	public static Event populateEvent1()
+	{
 		Long nodeId=(long)2;
-		return populateEvent(nodeId, "That event", "That event where that thing happened.", "Union Building", "Greg Newitt", "gnewitt@hotmail.com", 123666l, 123666l, 124666l, 124766l, populateNewsFeed2());
+		ArrayList<Photo> pictures=new ArrayList<Photo>();
+		pictures.add(populatePhoto1());
+		pictures.add(populatePhoto2());
+
+		return populateEvent(nodeId, "That event", "That event where that thing happened.", "Union Building", "Greg Newitt", "gnewitt@hotmail.com", pictures, 123666l, 123666l, 124666l, 124766l, populateNewsFeed2());
 	}
 	public static Event populateEvent2()
 	{
-		Long nodeId=(long)2;
-		return populateEvent(nodeId, "That other event", "That other event where that other thing happened.", "Clyde Hotel", "Greg Newitt", "gnewitt@hotmail.com", 123766l, 123766l, 124766l, 124866l, populateNewsFeed2());
+		Long nodeId=(long)3;
+		ArrayList<Photo> pictures=new ArrayList<Photo>();
+		pictures.add(populatePhoto2());
+		pictures.add(populatePhoto1());
+
+		return populateEvent(nodeId, "That other event", "That other event where that other thing happened.", "Clyde Hotel", "Greg Newitt", "gnewitt@hotmail.com", pictures, 123766l, 123766l, 124766l, 124866l, populateNewsFeed2());
 	}
-	public static Event populateEvent(Long id, String name, String description, String location,String organizer, String organizerEmail, Long created, Long modified, Long starts, Long ends, NewsFeed newsFeed)
+	public static Event populateEvent(Long id, String name, String description, String location,String organizer, String organizerEmail, Iterable<Photo> photos,Long created, Long modified, Long starts, Long ends, NewsFeed newsFeed)
 	{
 		Event event=new Event();
 		event.setEventId(id);
@@ -329,6 +338,7 @@ public class DatabaseDataFixture
 		event.setCreated(created);
 		event.setModified(modified);
 		event.setNewsFeed(newsFeed);
+		event.setPhotos(photos);
 		return event;
 	}
 	public static HashMap<Long,Event> populateEvents()
@@ -588,7 +598,7 @@ public class DatabaseDataFixture
 		String information="I am a 3rd year Law student looking to pad out my CV.";
 		String policyStatement="I will do anything that benefits me.";
 		Ticket ticket=populateTicket(34l, "New Ticket1", "logo1", "information1", null, populateElection1(), "NT1");
-		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt(),populatePosition1(), ticket);
+		Candidate candidate=populateCandidate(candidateId,information,policyStatement,populateUserGnewitt(),populatePosition1(), ticket);
 		return candidate;
 	}
 
@@ -598,13 +608,13 @@ public class DatabaseDataFixture
 		String information="I am a 2nd year Law student looking to pad out my CV.";
 		String policyStatement="I will do anything that benefits my family.";
 		Ticket ticket=populateTicket(35l, "New Ticket2", "logo2", "information2", null, populateElection2(), "NT2");
-		Candidate candidate=new Candidate(candidateId,information,policyStatement,populateUserGnewitt2(),populatePosition2(), ticket);
+		Candidate candidate=populateCandidate(candidateId,information,policyStatement,populateUserGnewitt2(),populatePosition2(), ticket);
 		return candidate;
 	}
 
-	public static Candidate populateCandidate(Long candidateId, String information, String policyStatement, User user, Position position)
+	public static Candidate populateCandidate(Long candidateId, String information, String policyStatement, User user, Position position, Ticket ticket)
 	{
-		Candidate candidate=new Candidate(candidateId, information, policyStatement, user, position, null);
+		Candidate candidate=new Candidate(candidateId, information, policyStatement, user, position, ticket);
 		return candidate;
 	}
 	public static HashMap<Long, Candidate> populateCandidates()

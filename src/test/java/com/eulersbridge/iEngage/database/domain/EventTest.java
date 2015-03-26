@@ -57,7 +57,7 @@ public class EventTest
 		assertEquals(dets.getModified(),evt2.getModified());
 		assertEquals(dets.getOrganizer(),evt2.getOrganizer());
 		assertEquals(dets.getOrganizerEmail(),evt2.getOrganizerEmail());
-		assertArrayEquals(dets.getPicture(),evt2.getPicture());
+		assertNull(evt2.getPhotos());
 		assertEquals(dets.getStarts(),evt2.getStarts());
 		assertArrayEquals(dets.getVolunteerPositions(),evt2.getVolunteerPositions());
 		
@@ -80,7 +80,7 @@ public class EventTest
 		assertEquals(dets2.getModified(),event.getModified());
 		assertEquals(dets2.getOrganizer(),event.getOrganizer());
 		assertEquals(dets2.getOrganizerEmail(),event.getOrganizerEmail());
-		assertArrayEquals(dets2.getPicture(),event.getPicture());
+//TODO		assertEquals(dets2.getPhotos(),event.getPhotos());
 		assertEquals(dets2.getStarts(),event.getStarts());
 		assertArrayEquals(dets2.getVolunteerPositions(),event.getVolunteerPositions());
 		
@@ -211,26 +211,30 @@ public class EventTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#getPicture()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#getPhotos()}.
 	 */
+//TODO
+	/*
 	@Test
-	public final void testGetPicture()
+	public final void testGetPhotos()
 	{
-		String[] expecteds = dets.getPicture();
-		String[] actuals = event.getPicture();
+		String[] expecteds = dets.getPhotos();
+		String[] actuals = event.getPhotos();
 		assertArrayEquals(expecteds, actuals);
 	}
-
+*/
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#setPicture(java.lang.String[])}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#setPhotos(java.lang.String[])}.
 	 */
+	//TODO
+	/*
 	@Test
-	public final void testSetPicture() {
+	public final void testSetPhotos() {
 		String[] actuals = {"Picture1.jpg","Picture2.jpg"};
-		event.setPicture(actuals);
-		assertArrayEquals(actuals, event.getPicture());
+		event.setPhotos(actuals);
+		assertArrayEquals(actuals, event.getPhotos());
 	}
-
+*/
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#getVolunteerPositions()}.
 	 */
@@ -475,12 +479,12 @@ public class EventTest
 		eventTest.setOrganizerEmail(null);
 		checkNotEquals(event, eventTest);
 		eventTest.setOrganizerEmail(event.getOrganizerEmail());
-		
-		String[] picture={"picture1","picture2"};
-		eventTest.setPicture(picture);
+//TODO		
+/*		Iterable<Photos> picture={"picture1","picture2"};
+		eventTest.setPhotos(picture);
 		checkNotEquals(event, eventTest);
-		eventTest.setPicture(event.getPicture());
-		
+		eventTest.setPhotos(event.getPhotos());
+*/		
 		String[] volunteerPositions = {"position 1","position 2"};
 		eventTest.setVolunteerPositions(volunteerPositions);
 		checkNotEquals(event, eventTest);

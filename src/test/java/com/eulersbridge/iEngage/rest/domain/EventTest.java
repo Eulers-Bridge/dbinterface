@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,7 @@ public class EventTest {
     private Long starts = 1000000l;
     private Long ends = 1000200l;
     private String description = "An event";
-    private String picture[] = new String[]{"./path"};
+    private Iterable<PhotoDetails> photos = null;
     private String volunteerPositions[] = new String[]{"positon"};
     private Long created = new Long(0);
     private String organizer = "Unimelb";
@@ -51,7 +52,7 @@ public class EventTest {
         eventDetails.setStarts(starts);
         eventDetails.setEnds(ends);
         eventDetails.setDescription(description);
-        eventDetails.setPicture(picture);
+        eventDetails.setPhotos(photos);
         eventDetails.setVolunteerPositions(volunteerPositions);
         eventDetails.setCreated(created);
         eventDetails.setOrganizer(organizer);
@@ -124,10 +125,10 @@ public class EventTest {
     }
 
     @Test
-    public void testGetPicture() throws Exception {
-        event.setPicture(picture);
-        String pic[] = event.getPicture();
-        assertEquals("picture does not match", pic, picture);
+    public void testGetPhotos() throws Exception {
+        event.setPhotos(photos);
+        Iterable<PhotoDetails> pic = event.getPhotos();
+        assertEquals("picture does not match", pic, photos);
     }
 
     @Test

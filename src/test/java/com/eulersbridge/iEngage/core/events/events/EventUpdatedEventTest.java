@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+
 import static org.junit.Assert.*;
 
 /**
@@ -17,7 +19,7 @@ public class EventUpdatedEventTest {
     private Long date = 1000000l;
     private Long ends =1000000l;
     private String description = "An event";
-    private String picture[] = new String[]{"./path"};
+    private Iterable<PhotoDetails> photos = null;
     private String volunteerPositions[] = new String[]{"positon"};
     private Long created = new Long(0);
     private String organizer = "Unimelb";
@@ -37,7 +39,7 @@ public class EventUpdatedEventTest {
         eventDetails.setStarts(date);
         eventDetails.setEnds(ends);
         eventDetails.setDescription(description);
-        eventDetails.setPicture(picture);
+        eventDetails.setPhotos(photos);
         eventDetails.setVolunteerPositions(volunteerPositions);
         eventDetails.setCreated(created);
         eventDetails.setOrganizer(organizer);

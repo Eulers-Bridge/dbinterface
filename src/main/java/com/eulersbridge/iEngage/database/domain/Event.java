@@ -1,11 +1,14 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
@@ -30,10 +33,11 @@ public class Event extends Likeable
     @Indexed @NotNull private Long starts;
     private Long ends;
     private String description;
-    private String picture[];
     private String volunteerPositions[];
     private Long created;
     private String organizer;
+	@RelatedTo(type=DatabaseDomainConstants.HAS_PHOTO_LABEL,direction=Direction.BOTH) @Fetch
+	private Iterable<Photo> photos;
 //	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction=Direction.BOTH) @Fetch
 //	private User creator;
     private String organizerEmail;
@@ -61,7 +65,6 @@ public class Event extends Likeable
         event.setStarts(eventDetails.getStarts());
         event.setEnds(eventDetails.getEnds());
         event.setDescription(eventDetails.getDescription());
-        event.setPicture(eventDetails.getPicture());
         event.setVolunteerPositions(eventDetails.getVolunteerPositions());
         event.setCreated(eventDetails.getCreated());
         event.setOrganizer(eventDetails.getOrganizer());
@@ -93,7 +96,17 @@ public class Event extends Likeable
 	    		eventDetails.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
 	    }
         eventDetails.setDescription(getDescription());
-        eventDetails.setPicture(getPicture());
+	    HashSet<PhotoDetails> pictures=new HashSet<PhotoDetails>();
+	    if (getPhotos()!=null)
+	    {
+		    Iterator<Photo> iter=getPhotos().iterator();
+		    while(iter.hasNext())
+		    {
+		    	Photo url=iter.next();
+		    	pictures.add(url.toPhotoDetails());
+		    }
+	    }
+	    eventDetails.setPhotos(pictures);	
         eventDetails.setVolunteerPositions(getVolunteerPositions());
         eventDetails.setCreated(getCreated());
         eventDetails.setOrganizer(getOrganizer());
@@ -120,8 +133,8 @@ public class Event extends Likeable
         buff.append(getEnds());
         buff.append(", description = ");
         buff.append(getDescription());
-        buff.append(", picture = ");
-        buff.append(getPicture());
+        buff.append(", photos = ");
+        buff.append(getPhotos());
         buff.append(", volunteerPositions = ");
         buff.append(getVolunteerPositions());
         buff.append(", created = ");
@@ -192,14 +205,17 @@ public class Event extends Likeable
         this.description = description;
     }
 
-    public String[] getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String[] picture) {
-        this.picture = picture;
-    }
-
+	public Iterable<Photo> getPhotos()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("getPhotos() = "+photos);
+		return photos;
+	}
+	
+	public void setPhotos(Iterable<Photo> picture)
+	{
+		this.photos=picture;
+		
+	}
     public String[] getVolunteerPositions() {
         return volunteerPositions;
     }
@@ -283,7 +299,8 @@ public class Event extends Likeable
 					+ ((organizer == null) ? 0 : organizer.hashCode());
 			result = prime * result
 					+ ((organizerEmail == null) ? 0 : organizerEmail.hashCode());
-			result = prime * result + Arrays.hashCode(picture);
+			result = prime * result
+					+ ((getPhotos() == null) ? 0 : getPhotos().hashCode());
 			result = prime * result + ((starts == null) ? 0 : starts.hashCode());
 			result = prime * result + Arrays.hashCode(volunteerPositions);
 		}
@@ -357,7 +374,10 @@ public class Event extends Likeable
 					return false;
 			} else if (!organizerEmail.equals(other.organizerEmail))
 				return false;
-			if (!Arrays.equals(picture, other.picture))
+			if (getPhotos() == null) {
+				if (other.getPhotos() != null)
+					return false;
+			} else if (!getPhotos().equals(other.getPhotos()))
 				return false;
 			if (starts == null) {
 				if (other.starts != null)

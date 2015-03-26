@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 /**
  * @author Yikai Gong
@@ -15,10 +16,10 @@ public class EventDetails extends Details
 {
     private String name;
     private String location;
+	private Iterable<PhotoDetails> photos;
     private Long starts;
     private Long ends;
     private String description;
-    private String picture[];
     private String volunteerPositions[];
     private Long created;
     private String organizer;
@@ -45,8 +46,8 @@ public class EventDetails extends Details
         buff.append(getEnds());
         buff.append(", description = ");
         buff.append(getDescription());
-        buff.append(", picture = ");
-        buff.append(getPicture());
+        buff.append(", photos = ");
+        buff.append(getPhotos());
         buff.append(", volunteerPositions = ");
         buff.append(getVolunteerPositions());
         buff.append(", created = ");
@@ -94,7 +95,8 @@ public class EventDetails extends Details
 					+ ((organizer == null) ? 0 : organizer.hashCode());
 			result = prime * result
 					+ ((organizerEmail == null) ? 0 : organizerEmail.hashCode());
-			result = prime * result + Arrays.hashCode(picture);
+			result = prime * result
+					+ ((getPhotos() == null) ? 0 : getPhotos().hashCode());
 			result = prime * result + Arrays.hashCode(volunteerPositions);
 		}
 		return result;
@@ -172,7 +174,10 @@ public class EventDetails extends Details
 					return false;
 			} else if (!organizerEmail.equals(other.organizerEmail))
 				return false;
-			if (!Arrays.equals(picture, other.picture))
+			if (getPhotos() == null) {
+				if (other.getPhotos() != null)
+					return false;
+			} else if (!getPhotos().equals(other.getPhotos()))
 				return false;
 			if (!Arrays.equals(volunteerPositions, other.volunteerPositions))
 				return false;
@@ -233,13 +238,15 @@ public class EventDetails extends Details
         this.description = description;
     }
 
-    public String[] getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String[] picture) {
-        this.picture = picture;
-    }
+	public Iterable<PhotoDetails> getPhotos()
+	{
+		return this.photos;
+	}
+	
+	public void setPhotos(Iterable<PhotoDetails> picture)
+	{
+		this.photos = picture;
+	}
 
     public String[] getVolunteerPositions() {
         return volunteerPositions;
