@@ -35,7 +35,7 @@ public class Ticket extends Likeable
     private String code;
 
     @Query("START n = node({self}) match (a:`User`)-[r:SUPPORTS]-(n) RETURN count(DISTINCT a) ")
-    private Long numberOfSupporters = 0l;
+    private Long numberOfSupporters;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
