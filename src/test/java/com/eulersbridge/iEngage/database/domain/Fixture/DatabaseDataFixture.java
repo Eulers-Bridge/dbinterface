@@ -597,7 +597,7 @@ public class DatabaseDataFixture
 		Long candidateId=43234l;
 		String information="I am a 3rd year Law student looking to pad out my CV.";
 		String policyStatement="I will do anything that benefits me.";
-		Ticket ticket=populateTicket(34l, "New Ticket1", "logo1", "information1", null, populateElection1(), "NT1");
+		Ticket ticket=populateTicket(34l, "New Ticket1", "logo1", "information1", null, populateElection1(), "NT1",12l);
 		Candidate candidate=populateCandidate(candidateId,information,policyStatement,populateUserGnewitt(),populatePosition1(), ticket);
 		return candidate;
 	}
@@ -607,7 +607,7 @@ public class DatabaseDataFixture
 		Long candidateId=43235l;
 		String information="I am a 2nd year Law student looking to pad out my CV.";
 		String policyStatement="I will do anything that benefits my family.";
-		Ticket ticket=populateTicket(35l, "New Ticket2", "logo2", "information2", null, populateElection2(), "NT2");
+		Ticket ticket=populateTicket(35l, "New Ticket2", "logo2", "information2", null, populateElection2(), "NT2",12l);
 		Candidate candidate=populateCandidate(candidateId,information,policyStatement,populateUserGnewitt2(),populatePosition2(), ticket);
 		return candidate;
 	}
@@ -656,7 +656,8 @@ public class DatabaseDataFixture
 	{
 		LinkedList<Candidate> candidates=new LinkedList<Candidate>();
 		candidates.add(populateCandidate1());
-		return populateTicket(234l, "Old Crew", "OC", "We are the Old Crew", candidates, populateElection1(), "GRN");
+		Long numberOfSupporters=18l;
+		return populateTicket(234l, "Old Crew", "OC", "We are the Old Crew", candidates, populateElection1(), "GRN", numberOfSupporters);
 	}
 
 	public static Ticket populateTicket2()
@@ -664,12 +665,14 @@ public class DatabaseDataFixture
 		LinkedList<Candidate> candidates=new LinkedList<Candidate>();
 		candidates.add(populateCandidate1());
 		candidates.add(populateCandidate2());
-		return populateTicket(235l, "New Start", "NS", "We are the New Start", candidates, populateElection2(), "GRN");
+		Long numberOfSupporters=15l;
+		return populateTicket(235l, "New Start", "NS", "We are the New Start", candidates, populateElection2(), "GRN", numberOfSupporters);
 	}
 
-	public static Ticket populateTicket(Long ticketId, String name, String logo, String information, Iterable<Candidate> candidates, Election election, String characterCode)
+	public static Ticket populateTicket(Long ticketId, String name, String logo, String information, Iterable<Candidate> candidates, Election election, String characterCode, Long numberOfSupporters)
 	{
 		Ticket ticket=new Ticket(ticketId, name, logo, information, candidates, election, characterCode);
+		ticket.setNumberOfSupporters(numberOfSupporters);
 		return ticket;
 	}
 	public static HashMap<Long, Ticket> populateTickets()

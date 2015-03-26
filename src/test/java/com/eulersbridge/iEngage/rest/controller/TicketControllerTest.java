@@ -101,7 +101,7 @@ public class TicketControllerTest
 		String content="{\"ticketId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"logo\":\""+dets.getLogo()+
 						"\",\"pictures\":null,\"information\":\""+dets.getInformation()+"\",\"colour\":"+dets.getColour()+
 						",\"candidateNames\":[\"gnewitt@hotmail.com\"]"+",\"electionId\":"+dets.getElectionId()+ ",\"code\":\""+dets.getChararcterCode() +
-						"\",\"numberOfSupporters\":0,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
+						"\",\"numberOfSupporters\":"+dets.getNumberOfSupporters()+",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
 //						"{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
 //						"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
 						"{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s\"}]}";	
