@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
  * @author Yikai Gong
  */
 
-public interface CommentReposotory extends GraphRepository<Comment> {
+public interface CommentRepository extends GraphRepository<Comment> {
 
     @Query("Match (a) where id(a)={targetId} Return a")
     NodeObject findCommentTarget(@Param("targetId")Long targetId);
