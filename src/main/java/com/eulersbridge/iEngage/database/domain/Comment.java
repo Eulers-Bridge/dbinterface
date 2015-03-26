@@ -9,7 +9,7 @@ import org.springframework.data.neo4j.annotation.*;
  * @author Yikai Gong
  */
 
-@RelationshipEntity(type=DatabaseDomainConstants.POST_COMMENT)
+@RelationshipEntity(type=DatabaseDomainConstants.HAS_COMMENT)
 public class Comment {
     @GraphId
     private Long id;

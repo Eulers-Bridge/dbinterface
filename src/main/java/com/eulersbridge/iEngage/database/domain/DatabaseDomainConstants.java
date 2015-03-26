@@ -35,7 +35,7 @@ public class DatabaseDomainConstants
     public static final String IS_ON_TICKET_LABEL = "IS_ON_TICKET";
 	public static final String SUPPORT = "SUPPORT";
     public static final String SUPPORT_LABEL = "SUPPORTS";
-    public static final String POST_COMMENT = "POST_COMMENT";
+    public static final String HAS_COMMENT = "HAS_COMMENT";
 	
 	public static final String CANDIDATE = "Candidate";
 	public static final String CONTACT_REQUEST = "ContactRequest";

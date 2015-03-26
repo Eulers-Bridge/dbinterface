@@ -18,7 +18,7 @@ public interface CommentReposotory extends GraphRepository<Comment> {
     @Query("Match (a) where id(a)={targetId} Return a")
     NodeObject findCommentTarget(@Param("targetId")Long targetId);
 
-    @Query("Start t=node({targetId}) Match (n:`"+ DatabaseDomainConstants.USER +"`)-[r:"+ DatabaseDomainConstants.POST_COMMENT +"]-" +
+    @Query("Start t=node({targetId}) Match (n:`"+ DatabaseDomainConstants.USER +"`)-[r:"+ DatabaseDomainConstants.HAS_COMMENT +"]-" +
             "(t) return r")
     Page<Comment> findByTargetId(@Param("targetId")Long targetId, Pageable pageable);
 }
