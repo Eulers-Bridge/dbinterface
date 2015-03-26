@@ -10,7 +10,6 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
