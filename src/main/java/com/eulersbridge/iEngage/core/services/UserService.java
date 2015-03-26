@@ -31,7 +31,6 @@ import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 
 //All methods are guaranteed to return something, null will never be returned.
 public interface UserService 
