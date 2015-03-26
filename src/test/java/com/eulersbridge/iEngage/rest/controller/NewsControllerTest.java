@@ -79,7 +79,7 @@ public class NewsControllerTest
 				new MappingJackson2HttpMessageConverter()).build();
 	}
 	
-	String createPhotosString(Iterator <PhotoDetails> iter)
+	static String createPhotosString(Iterator <PhotoDetails> iter)
 	{
 		StringBuffer photoString=new StringBuffer("[");
 		while (iter.hasNext())
