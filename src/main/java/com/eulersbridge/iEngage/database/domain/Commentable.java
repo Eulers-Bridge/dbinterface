@@ -1,7 +1,5 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import org.springframework.data.neo4j.annotation.GraphId;
-
 /**
  * @author Yikai Gong
  */
