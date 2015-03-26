@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.core.events.comments;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.Details;
 
 /**
  * @author Yikai Gong
