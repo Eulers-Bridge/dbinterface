@@ -268,7 +268,7 @@ public class PollEventHandler implements PollService
 			if (0==dets.size())
 			{
 				// Need to check if we actually found ownerId.
-				Poll inst=pollRepository.findOne(ownerId);
+				Owner inst=ownerRepository.findOne(ownerId);
 				if ( (null==inst) || (null==inst.getNodeId()) )
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ownerId)");
