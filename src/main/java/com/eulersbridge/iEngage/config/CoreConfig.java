@@ -39,9 +39,9 @@ public class CoreConfig
 	NewsArticleRepository newsRepo;
 	@Autowired
 	NewsFeedRepository syRepo;
-    @Autowired
+/*    @Autowired
     NotificationRepository notificationRepository;
-    @Autowired
+*/    @Autowired
     OwnerRepository ownerRepository;
     @Autowired
     PersonalityRepository personRepo;
@@ -207,13 +207,13 @@ public class CoreConfig
         return new VotingLocationEventHandler(votingLocationRepository,electionRepo,ownerRepository);
     }
 
-    @Bean
+/*    @Bean
     public NotificationService createNotificationService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createNotificationService()");
         return new NotificationEventHandler(notificationRepository);
     }
-
+*/
     @Bean
     public CommentService createCommentService()
     {
