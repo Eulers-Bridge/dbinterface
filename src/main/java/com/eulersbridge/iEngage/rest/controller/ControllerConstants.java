@@ -33,6 +33,8 @@ public class ControllerConstants
 	public static final String LOGOUT_LABEL = "/logout";
 	public static final String NEWS_ARTICLE_LABEL = "/newsArticle";
 	public static final String NEWS_ARTICLES_LABEL = NEWS_ARTICLE_LABEL+'s';
+	public static final String NOTIFICATION_LABEL = "/notification";
+	public static final String NOTIFICATIONS_LABEL = NOTIFICATION_LABEL+'s';
 	public static final String POLL_LABEL = "/poll";
 	public static final String POLLS_LABEL = POLL_LABEL+'s';
 	public static final String PHOTO_LABEL = "/photo";
@@ -63,5 +65,4 @@ public class ControllerConstants
 	public static final String GENERALINFO_LABEL = "/general-info";
 	public static final String EMAILVERIFY_LABEL = "/emailVerification";
     public static final String SUPPORT = "/support";
-	public static final String NOTIFICATION_LABEL = "/notification";
 }
