@@ -50,6 +50,9 @@ public class ContactRequestDetails extends Details
 		this.userId = userId;
 	}
 
+	public ContactRequestDetails()
+	{
+	}
 	/**
 	 * @return the contactDetails
 	 */
