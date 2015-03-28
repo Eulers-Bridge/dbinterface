@@ -558,11 +558,12 @@ public final void testFindPollsNoPolls()
 	int pageLength=10;
 	int pageNumber=0;
 	Poll testPoll=DatabaseDataFixture.populatePoll1();
+	Owner testOwner=new Owner(testPoll.getNodeId());
 	
 	Pageable p=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
 	Page<Poll> testData=new PageImpl<Poll>(evts,p,evts.size());
 	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(testData);
-	when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
 	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
 	assertNotNull(evtData);
 	assertEquals(evtData.getTotalPages(),new Integer(0));
