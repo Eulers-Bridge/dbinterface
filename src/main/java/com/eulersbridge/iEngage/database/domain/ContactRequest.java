@@ -37,7 +37,9 @@ public class ContactRequest
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toContactRequestDetails()");
 	    
-		ContactRequestDetails details = new ContactRequestDetails(getNodeId(),getContactDetails(), getRequestDate(), getResponseDate(), getAccepted(), getRejected(),getUser().getNodeId());
+	    Long userId=null;
+	    if (getUser()!=null) userId=getUser().getNodeId();
+		ContactRequestDetails details = new ContactRequestDetails(getNodeId(),getContactDetails(), getRequestDate(), getResponseDate(), getAccepted(), getRejected(),userId);
 	    if (LOG.isTraceEnabled()) LOG.trace("contactRequest "+this);
 
 	    BeanUtils.copyProperties(this, details);
