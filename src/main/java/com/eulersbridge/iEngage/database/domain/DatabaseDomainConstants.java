@@ -37,6 +37,7 @@ public class DatabaseDomainConstants
 	public static final String SUPPORT = "SUPPORT";
     public static final String SUPPORT_LABEL = "SUPPORTS";
     public static final String HAS_COMMENT = "HAS_COMMENT";
+    public static final String POST_COMMENT = "POST_COMMENT";
 	
 	public static final String CANDIDATE = "Candidate";
 	public static final String CONTACT_REQUEST = "ContactRequest";
@@ -52,6 +53,7 @@ public class DatabaseDomainConstants
 	public static final String TASK = "Task";
 	public static final String TICKET = "Ticket";
 	public static final String USER = "User";
+    public static final String COMMENT = "Comment";
 	public static final String VOTING_LOCATION = "VotingLocation";
 	public static final String HAS_COMPLETED_TASK_LABEL = "HAS_COMPLETED_TASK";
 }
