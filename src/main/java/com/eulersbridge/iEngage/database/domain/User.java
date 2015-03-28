@@ -51,6 +51,11 @@ public class User
 		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
 	
+	public User(Long userId)
+	{
+		this.nodeId=userId;
+	}
+
 	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String password, String contactNumber)
 	{
 		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+givenName+','+familyName+','+gender+','+nationality+','+yearOfBirth+')');
