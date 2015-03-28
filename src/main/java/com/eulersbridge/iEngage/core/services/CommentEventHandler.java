@@ -44,15 +44,14 @@ public class CommentEventHandler implements CommentService {
         }
         else{
             NodeObject object = commentRepository.findCommentTarget(targetId);
-            if(object == null || !(object instanceof Commentable)){
+            if(object == null){
                 commentCreatedEvent = CommentCreatedEvent.targetNotFound(targetId);
             }
             else{
-                Commentable target = (Commentable) object;
                 Comment comment = Comment.fromCommentDetails(commentDetails);
                 comment.setTimestamp(new Date().getTime());
                 comment.setUser(user);
-                comment.setTarget(target);
+                comment.setTarget(object);
                 Comment result = commentRepository.save(comment);
                 if((result==null)||result.getNodeId() == null)
                     commentCreatedEvent = CommentCreatedEvent.failed(commentDetails);
