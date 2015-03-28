@@ -7,9 +7,9 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
  * @author Yikai Gong
  */
 
-//@NodeEntity
+@NodeEntity
 public class NodeObject {
-//    @GraphId
+    @GraphId
     private Long nodeId;
 
     public Long getNodeId() {
