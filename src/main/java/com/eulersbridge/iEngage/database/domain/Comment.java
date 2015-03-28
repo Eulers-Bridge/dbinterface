@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.*;
@@ -9,14 +11,14 @@ import org.springframework.data.neo4j.annotation.*;
  * @author Yikai Gong
  */
 
-@RelationshipEntity(type=DatabaseDomainConstants.HAS_COMMENT)
+@NodeEntity
 public class Comment {
     @GraphId
-    private Long id;
-    @StartNode
+    private Long nodeId;
+    @RelatedTo(type = DatabaseDomainConstants.POST_COMMENT, direction = Direction.INCOMING)
     private User user;
-    @EndNode
-    private Commentable target;
+    @RelatedTo(type = DatabaseDomainConstants.HAS_COMMENT, direction = Direction.INCOMING)
+    private NodeObject target;
 
     private Long timestamp;
     private String content;
@@ -29,7 +31,7 @@ public class Comment {
         if(commentDetails != null){
             if (LOG.isTraceEnabled()) LOG.trace("fromCommentDetails("+commentDetails+")");
             comment = new Comment();
-            comment.setId(commentDetails.getNodeId());
+            comment.setNodeId(commentDetails.getNodeId());
             comment.setContent(commentDetails.getContent());
 
             if (LOG.isTraceEnabled()) LOG.trace("comment "+comment);
@@ -40,7 +42,7 @@ public class Comment {
     public CommentDetails toCommentDetails(){
         if (LOG.isTraceEnabled()) LOG.trace("toCommentDetails("+this+")");
         CommentDetails commentDetails = new CommentDetails();
-        commentDetails.setNodeId(getId());
+        commentDetails.setNodeId(getNodeId());
         commentDetails.setUserName(user.getGivenName());
         commentDetails.setUserEmail(user.getEmail());
         commentDetails.setTargetId(target.getNodeId());
@@ -50,19 +52,19 @@ public class Comment {
         return commentDetails;
     }
 
-    public Long getId() {
-        return id;
+    public Long getNodeId() {
+        return nodeId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setNodeId(Long nodeId) {
+        this.nodeId = nodeId;
     }
 
-    public Commentable getTarget() {
+    public NodeObject getTarget() {
         return target;
     }
 
-    public void setTarget(Commentable target) {
+    public void setTarget(NodeObject target) {
         this.target = target;
     }
 

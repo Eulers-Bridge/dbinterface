@@ -54,7 +54,7 @@ public class CommentEventHandler implements CommentService {
                 comment.setUser(user);
                 comment.setTarget(target);
                 Comment result = commentRepository.save(comment);
-                if((result==null)||result.getId() == null)
+                if((result==null)||result.getNodeId() == null)
                     commentCreatedEvent = CommentCreatedEvent.failed(commentDetails);
                 else
                     commentCreatedEvent = new CommentCreatedEvent(result.toCommentDetails());
@@ -100,7 +100,7 @@ public class CommentEventHandler implements CommentService {
             Iterator<Comment> iter = comments.iterator();
             while (iter.hasNext()) {
                 Comment na = iter.next();
-                if (LOG.isTraceEnabled()) LOG.trace("Converting to details - " + na.getId());
+                if (LOG.isTraceEnabled()) LOG.trace("Converting to details - " + na.getNodeId());
                 CommentDetails det = na.toCommentDetails();
                 dets.add(det);
             }
