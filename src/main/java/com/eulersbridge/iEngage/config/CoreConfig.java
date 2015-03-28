@@ -218,6 +218,6 @@ public class CoreConfig
     public CommentService createCommentService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createCommentService()");
-        return new CommentEventHandler(userRepo, commentRepository);
+        return new CommentEventHandler(userRepo, commentRepository, ownerRepository);
     }
 }

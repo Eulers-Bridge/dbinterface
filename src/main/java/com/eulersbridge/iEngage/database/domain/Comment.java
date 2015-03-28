@@ -18,7 +18,7 @@ public class Comment {
     @RelatedTo(type = DatabaseDomainConstants.POST_COMMENT, direction = Direction.INCOMING)
     private User user;
     @RelatedTo(type = DatabaseDomainConstants.HAS_COMMENT, direction = Direction.INCOMING)
-    private NodeObject target;
+    private Owner target;
 
     private Long timestamp;
     private String content;
@@ -60,11 +60,11 @@ public class Comment {
         this.nodeId = nodeId;
     }
 
-    public NodeObject getTarget() {
+    public Owner getTarget() {
         return target;
     }
 
-    public void setTarget(NodeObject target) {
+    public void setTarget(Owner target) {
         this.target = target;
     }
 

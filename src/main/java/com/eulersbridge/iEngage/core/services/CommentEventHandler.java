@@ -4,7 +4,9 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.*;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.CommentRepository;
+import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,10 +28,13 @@ public class CommentEventHandler implements CommentService {
 
     private UserRepository userRepository;
     private CommentRepository commentRepository;
+    private OwnerRepository ownerRepository;
 
-    public CommentEventHandler(UserRepository userRepository, CommentRepository commentRepository) {
+    public CommentEventHandler(UserRepository userRepository, CommentRepository commentRepository, OwnerRepository ownerRepository)
+    {
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
+        this.ownerRepository = ownerRepository;
     }
 
     @Override
@@ -43,7 +48,7 @@ public class CommentEventHandler implements CommentService {
             commentCreatedEvent = CommentCreatedEvent.userNotFound();
         }
         else{
-            NodeObject object = commentRepository.findCommentTarget(targetId);
+            Owner object = ownerRepository.findOne(targetId);
             if(object == null){
                 commentCreatedEvent = CommentCreatedEvent.targetNotFound(targetId);
             }
@@ -105,10 +110,9 @@ public class CommentEventHandler implements CommentService {
             }
             if (0 == dets.size()) {
                 // Need to check if we actually found instId.
-                NodeObject nodeObject = commentRepository.findCommentTarget(targetId);
+                Owner nodeObject = ownerRepository.findOne(targetId);
                 if ((null == nodeObject) 
-                		|| null == nodeObject.getNodeId() 
-                		|| !(nodeObject instanceof Commentable)) {
+                		|| null == nodeObject.getNodeId()) {
                     if (LOG.isDebugEnabled()) LOG.debug("Comment-able Object not found");
                     commentsReadEvent = CommentsReadEvent.targetNotFound(targetId);
                 } else {
