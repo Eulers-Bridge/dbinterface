@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.core.events;
 
-public abstract class UpdateEvent
+public class UpdateEvent
 {
 	private Long nodeId;
 	private Details details;
