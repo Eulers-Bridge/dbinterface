@@ -5,6 +5,5 @@ package com.eulersbridge.iEngage.database.domain;
  */
 
 public interface Commentable {
-    public Long getNodeId();
-    public void setNodeId(Long nodeId);
+
 }
