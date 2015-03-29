@@ -110,9 +110,9 @@ public class CommentEventHandler implements CommentService {
             }
             if (0 == dets.size()) {
                 // Need to check if we actually found instId.
-                Owner nodeObject = ownerRepository.findOne(targetId);
-                if ((null == nodeObject) 
-                		|| null == nodeObject.getNodeId()) {
+                Owner owner = ownerRepository.findOne(targetId);
+                if ((null == owner) 
+                		|| null == owner.getNodeId()) {
                     if (LOG.isDebugEnabled()) LOG.debug("Comment-able Object not found");
                     commentsReadEvent = CommentsReadEvent.targetNotFound(targetId);
                 } else {
