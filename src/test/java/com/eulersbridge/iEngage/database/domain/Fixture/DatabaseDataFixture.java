@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.domain.notifications.Notification;
+
 import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.database.repository.ResultImpl;
@@ -755,24 +757,30 @@ public class DatabaseDataFixture
 		Long nodeId=123l;
 		String contactDetails=populateUserGnewitt().getContactNumber();
 		User user=populateUserGnewitt2();
-		return populateContactRequest(nodeId,contactDetails,user);
+		Long requestDate=Calendar.getInstance().getTimeInMillis();
+		Boolean accepted=false,rejected=false;
+		Long responseDate=requestDate+32324;
+		return populateContactRequest(nodeId,contactDetails,user,accepted,rejected,requestDate,responseDate);
 	}
 	public static ContactRequest populateContactRequest2()
 	{
 		Long nodeId=128l;
 		String contactDetails=populateUserGnewitt2().getEmail();
 		User user=populateUserGnewitt();
-		return populateContactRequest(nodeId,contactDetails,user);
+		Long requestDate=Calendar.getInstance().getTimeInMillis();
+		Boolean accepted=false,rejected=false;
+		Long responseDate=requestDate+323324;
+		return populateContactRequest(nodeId,contactDetails,user,accepted,rejected,requestDate,responseDate);
 	}
-	public static ContactRequest populateContactRequest(Long nodeId, String contactDetails, User user)
+	public static ContactRequest populateContactRequest(Long nodeId, String contactDetails, User user, Boolean accepted, Boolean rejected, Long requestDate, Long responseDate)
 	{
 		ContactRequest contactRequest=new ContactRequest();
 		contactRequest.setContactDetails(contactDetails);
 		contactRequest.setNodeId(nodeId);
-		contactRequest.setRejected(null);
-		contactRequest.setAccepted(null);
-		contactRequest.setRequestDate(Calendar.getInstance().getTimeInMillis());
-		contactRequest.setResponseDate(null);
+		contactRequest.setRejected(rejected);
+		contactRequest.setAccepted(accepted);
+		contactRequest.setRequestDate(requestDate);
+		contactRequest.setResponseDate(responseDate);
 		contactRequest.setUser(user);
 		return contactRequest;
 	}
@@ -808,5 +816,23 @@ public class DatabaseDataFixture
         support.setTimeStamp(0l);
         return support;
     }
+    
+	public static Notification populateNotification1()
+	{
+		// TODO Auto-generated method stub
+		return populateNotification();
+	}
+
+	public static Notification populateNotification2()
+	{
+		// TODO Auto-generated method stub
+		return populateNotification();
+	}
+
+	public static Notification populateNotification()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
