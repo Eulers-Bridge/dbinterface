@@ -189,6 +189,7 @@ public class ContactRequestEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("AcceptingContactRequest()");
 		ContactRequest testData=DatabaseDataFixture.populateContactRequest1();
+		testData.setResponseDate(null);
 		ContactRequest respData=DatabaseDataFixture.populateContactRequest1();
    		respData.setAccepted(true);
    		respData.setRejected(false);
@@ -213,6 +214,7 @@ public class ContactRequestEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("AcceptingContactRequest()");
 		ContactRequest testData=DatabaseDataFixture.populateContactRequest2();
+		testData.setResponseDate(null);
 		ContactRequest respData=DatabaseDataFixture.populateContactRequest2();
    		respData.setAccepted(true);
    		respData.setRejected(false);
@@ -282,6 +284,7 @@ public class ContactRequestEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("AcceptingContactRequest()");
 		ContactRequest testData=DatabaseDataFixture.populateContactRequest2();
+		testData.setResponseDate(null);
 		ContactRequest respData=DatabaseDataFixture.populateContactRequest2();
    		respData.setAccepted(true);
    		respData.setRejected(false);
@@ -307,10 +310,13 @@ public class ContactRequestEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("AcceptingContactRequest()");
 		ContactRequest testData=DatabaseDataFixture.populateContactRequest2();
+		testData.setResponseDate(null);
 		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
 		AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(testData.getNodeId());
 		UpdatedEvent uEvt=service.acceptContactRequest(acceptContactRequestEvent);
+		if (LOG.isDebugEnabled()) LOG.debug("Test Data -"+testData);
+		if (LOG.isDebugEnabled()) LOG.debug("uEvt -"+uEvt);
 		assertEquals(testData.getNodeId(),uEvt.getNodeId());
 		assertFalse(uEvt.isEntityFound());
 		assertNull(uEvt.getDetails());
