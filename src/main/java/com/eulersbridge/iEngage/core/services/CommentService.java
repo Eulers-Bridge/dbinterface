@@ -1,10 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.*;
-import com.eulersbridge.iEngage.core.events.comments.CommentsReadEvent;
-import com.eulersbridge.iEngage.core.events.comments.CreateCommentEvent;
-import com.eulersbridge.iEngage.core.events.comments.DeleteCommentEvent;
-import com.eulersbridge.iEngage.core.events.comments.RequestReadCommentEvent;
+import com.eulersbridge.iEngage.core.events.comments.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -26,4 +23,6 @@ public interface CommentService {
     public CommentsReadEvent readComments(ReadAllEvent readCommentsEvent,
                                               Sort.Direction sortDirection, int pageNumber, int pageLength);
 
+    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    public UpdatedEvent updateComment(UpdateCommentEvent updateCommentEvent);
 }

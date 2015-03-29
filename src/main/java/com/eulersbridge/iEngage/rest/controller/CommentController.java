@@ -2,9 +2,15 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.comments.*;
+import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
+import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
 import com.eulersbridge.iEngage.core.services.CommentService;
 import com.eulersbridge.iEngage.rest.domain.Comment;
+import com.eulersbridge.iEngage.rest.domain.Ticket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +84,7 @@ public class CommentController {
     }
 
     //Read All
-    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.COMMENT_LABEL
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.COMMENTS_LABEL
             + "/{targetId}")
     public @ResponseBody ResponseEntity<Iterator<Comment>> findComments(
             @PathVariable Long targetId,
@@ -104,5 +110,42 @@ public class CommentController {
         }
         Iterator<Comment> candidates = Comment.toCommentIterator(commentsReadEvent.getCommentDetailses().iterator());
         return new ResponseEntity<Iterator<Comment>>(candidates, HttpStatus.OK);
+    }
+
+    //Update
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.COMMENT_LABEL+"/{commentId}")
+    public @ResponseBody ResponseEntity<Comment>
+    updateComment(@PathVariable Long commentId, @RequestBody Comment comment){
+        if (LOG.isInfoEnabled()) LOG.info("Attempting to update comment. " + commentId);
+        UpdatedEvent commentUpdatedEvent = commentService.updateComment(new UpdateCommentEvent(commentId, comment.toCommentDetails()));
+        if(null != commentUpdatedEvent){
+            if (LOG.isDebugEnabled()) LOG.debug("commentUpdatedEvent - "+commentUpdatedEvent);
+            if(commentUpdatedEvent.isEntityFound()){
+                Comment result = Comment.fromCommentDetails((CommentDetails) commentUpdatedEvent.getDetails());
+                if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //Get
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.COMMENT_LABEL + "/{commentId}")
+    public @ResponseBody ResponseEntity<Comment>
+    findComment(@PathVariable Long commentId){
+        if (LOG.isInfoEnabled()) LOG.info(commentId+" attempting to get comment. ");
+        RequestReadCommentEvent requestReadCommentEvent = new RequestReadCommentEvent(commentId);
+        ReadEvent commentReadEvent = commentService.requestReadComment(requestReadCommentEvent);
+        if(commentReadEvent.isEntityFound()){
+            Comment comment = Comment.fromCommentDetails((CommentDetails) commentReadEvent.getDetails());
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

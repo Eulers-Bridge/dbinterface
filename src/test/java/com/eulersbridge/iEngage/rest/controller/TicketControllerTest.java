@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.ticket.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -36,17 +37,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.ReadTicketsEvent;
-import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketCreatedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketDeletedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
-import com.eulersbridge.iEngage.core.events.ticket.TicketUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketsReadEvent;
-import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
 import com.eulersbridge.iEngage.core.services.TicketService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
@@ -437,6 +427,100 @@ public class TicketControllerTest
 		when (ticketService.deleteTicket(any(DeleteTicketEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{ticketId}/",dets.getNodeId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(status().isGone())	;
+		.andExpect(status().isGone());
 	}
+
+    @Test
+    public final void testSupportTicket() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = new TicketSupportedEvent(testTicketId, testUserEmail, true);
+        when(ticketService.supportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(put(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string("true"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public final void testSupportTicketNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = TicketSupportedEvent.entityNotFound(testTicketId, testUserEmail);
+        when(ticketService.supportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(put(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isGone());
+    }
+
+    @Test
+    public final void testSupportTicketUserNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = TicketSupportedEvent.userNotFound(testTicketId, testUserEmail);
+        when(ticketService.supportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(put(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public final void testSupportTicketFailed() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = new TicketSupportedEvent(testTicketId, testUserEmail, false);
+        when(ticketService.supportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(put(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string("false"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public final void testWithdrawSupportTicket() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingWithdrawSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = new TicketSupportedEvent(testTicketId, testUserEmail, true);
+        when(ticketService.withdrawSupportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(delete(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string("true"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public final void testWithdrawSupportTicketNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingWithdrawSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = TicketSupportedEvent.entityNotFound(testTicketId, testUserEmail);
+        when(ticketService.withdrawSupportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(delete(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isGone());
+    }
+
+    @Test
+    public final void testWithdrawSupportTicketUserNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingWithdrawSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = TicketSupportedEvent.userNotFound(testTicketId, testUserEmail);
+        when(ticketService.withdrawSupportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(delete(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }

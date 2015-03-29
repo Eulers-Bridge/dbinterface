@@ -53,6 +53,7 @@ public class ControllerConstants
 	public static final String VOTING_LOCATIONS_LABEL = VOTING_LOCATION_LABEL+'s';
 	public static final String VOTING_BOOTHS_LABEL = "/votingBooths";
     public static final String COMMENT_LABEL="/comment";
+    public static final String COMMENTS_LABEL="/comments";
 
 	public static final String PAGE_NUMBER = "0";
 	public static final String PAGE_LENGTH = "10";

@@ -7,37 +7,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
+import com.eulersbridge.iEngage.database.domain.*;
 import org.springframework.data.neo4j.conversion.Result;
 
-import com.eulersbridge.iEngage.database.domain.Badge;
-import com.eulersbridge.iEngage.database.domain.Candidate;
-import com.eulersbridge.iEngage.database.domain.Contact;
-import com.eulersbridge.iEngage.database.domain.ContactRequest;
-import com.eulersbridge.iEngage.database.domain.Country;
-import com.eulersbridge.iEngage.database.domain.Election;
-import com.eulersbridge.iEngage.database.domain.ForumQuestion;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Like;
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Personality;
-import com.eulersbridge.iEngage.database.domain.Photo;
-import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.database.domain.Poll;
-import com.eulersbridge.iEngage.database.domain.PollAnswer;
-import com.eulersbridge.iEngage.database.domain.PollResultImpl;
-import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
-import com.eulersbridge.iEngage.database.domain.Position;
-import com.eulersbridge.iEngage.database.domain.Task;
-import com.eulersbridge.iEngage.database.domain.TaskComplete;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.VoteRecord;
-import com.eulersbridge.iEngage.database.domain.VoteReminder;
-import com.eulersbridge.iEngage.database.domain.Event;
-import com.eulersbridge.iEngage.database.domain.VotingLocation;
 import com.eulersbridge.iEngage.database.repository.ResultImpl;
-import com.eulersbridge.iEngage.database.domain.Ticket;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class DatabaseDataFixture 
@@ -826,5 +799,14 @@ public class DatabaseDataFixture
 		contact.setTimestamp(Calendar.getInstance().getTimeInMillis());
 		return contact;
 	}
+
+    public static Support populateSupport(User user, Ticket ticket){
+        Support support = new Support();
+        support.setId(0l);
+        support.setSupporter(user);
+        support.setTicket(ticket);
+        support.setTimeStamp(0l);
+        return support;
+    }
 
 }
