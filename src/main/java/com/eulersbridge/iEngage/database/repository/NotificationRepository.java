@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
-import com.eulersbridge.iEngage.database.domain.Notification;
+import com.eulersbridge.iEngage.database.domain.notifications.Notification;
 
 /**
  * @author Greg Newitt

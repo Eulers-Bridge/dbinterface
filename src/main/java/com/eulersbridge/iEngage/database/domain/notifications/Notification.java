@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.eulersbridge.iEngage.database.domain;
+package com.eulersbridge.iEngage.database.domain.notifications;
 
 import java.util.HashMap;
 
@@ -14,6 +14,8 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
+import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 /**
