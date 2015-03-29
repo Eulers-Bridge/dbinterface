@@ -483,4 +483,44 @@ public class TicketControllerTest
                 .andExpect(content().string("false"))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public final void testWithdrawSupportTicket() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingWithdrawSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = new TicketSupportedEvent(testTicketId, testUserEmail, true);
+        when(ticketService.withdrawSupportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(delete(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(content().string("true"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public final void testWithdrawSupportTicketNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingWithdrawSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = TicketSupportedEvent.entityNotFound(testTicketId, testUserEmail);
+        when(ticketService.withdrawSupportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(delete(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isGone());
+    }
+
+    @Test
+    public final void testWithdrawSupportTicketUserNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("performingWithdrawSupportTicket()");
+        Long testTicketId = DatabaseDataFixture.populateTicket2().getNodeId();
+        String testUserEmail = DatabaseDataFixture.populateUserGnewitt().getEmail();
+        TicketSupportedEvent ticketSupportedEvent = TicketSupportedEvent.userNotFound(testTicketId, testUserEmail);
+        when(ticketService.withdrawSupportTicket(any(SupportTicketEvent.class))).thenReturn(ticketSupportedEvent);
+        this.mockMvc.perform(delete(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }

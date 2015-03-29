@@ -370,4 +370,49 @@ public class TicketEventHandlerTest
         assertFalse(ticketSupportedEvent.isUserFound());
         assertFalse(ticketSupportedEvent.isResult());
     }
+
+    @Test
+    public void testWithdrawSupportTicket() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("WithdrawSupportTicket()");
+        Ticket testTicket = DatabaseDataFixture.populateTicket1();
+        User testUser = DatabaseDataFixture.populateUserGnewitt();
+        SupportTicketEvent supportTicketEvent = new SupportTicketEvent(testTicket.getNodeId(), testUser.getEmail());
+        when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
+        when(ticketRepository.findOne(any(Long.class))).thenReturn(testTicket);
+
+        TicketSupportedEvent ticketSupportedEvent = service.withdrawSupportTicket(supportTicketEvent);
+        assertTrue(ticketSupportedEvent.isEntityFound());
+        assertTrue(ticketSupportedEvent.isUserFound());
+        assertTrue(ticketSupportedEvent.isResult());
+    }
+
+    @Test
+    public void testWithdrawSupportTicketNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("WithdrawSupportTicket()");
+        Ticket testTicket = DatabaseDataFixture.populateTicket1();
+        User testUser = DatabaseDataFixture.populateUserGnewitt();
+        SupportTicketEvent supportTicketEvent = new SupportTicketEvent(testTicket.getNodeId(), testUser.getEmail());
+        when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
+        when(ticketRepository.findOne(any(Long.class))).thenReturn(null);
+
+        TicketSupportedEvent ticketSupportedEvent = service.withdrawSupportTicket(supportTicketEvent);
+        assertFalse(ticketSupportedEvent.isEntityFound());
+        assertTrue(ticketSupportedEvent.isUserFound());
+        assertFalse(ticketSupportedEvent.isResult());
+    }
+
+    @Test
+    public void testWithdrawSupportTicketUserNotFound() throws Exception {
+        if (LOG.isDebugEnabled()) LOG.debug("WithdrawSupportTicket()");
+        Ticket testTicket = DatabaseDataFixture.populateTicket1();
+        User testUser = DatabaseDataFixture.populateUserGnewitt();
+        SupportTicketEvent supportTicketEvent = new SupportTicketEvent(testTicket.getNodeId(), testUser.getEmail());
+        when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+        when(ticketRepository.findOne(any(Long.class))).thenReturn(testTicket);
+
+        TicketSupportedEvent ticketSupportedEvent = service.withdrawSupportTicket(supportTicketEvent);
+        assertTrue(ticketSupportedEvent.isEntityFound());
+        assertFalse(ticketSupportedEvent.isUserFound());
+        assertFalse(ticketSupportedEvent.isResult());
+    }
 }

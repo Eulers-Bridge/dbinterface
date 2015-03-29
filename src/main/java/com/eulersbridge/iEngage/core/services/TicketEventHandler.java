@@ -192,7 +192,7 @@ public class TicketEventHandler implements TicketService{
         else if (user == null)
             ticketSupportedEvent = TicketSupportedEvent.userNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
         else{
-           ticketRepository.withdrawSupportTicket(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+            ticketRepository.withdrawSupportTicket(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
             ticketSupportedEvent = new TicketSupportedEvent(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress(), true);
         }
         return ticketSupportedEvent;
