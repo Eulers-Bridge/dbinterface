@@ -69,7 +69,15 @@ public class CommentEventHandler implements CommentService {
 
     @Override
     public ReadEvent requestReadComment(RequestReadCommentEvent requestReadCommentEvent) {
-        return null;
+        Comment comment = commentRepository.findOne(requestReadCommentEvent.getNodeId());
+        ReadEvent commentReadEvent;
+        if(comment != null){
+            commentReadEvent = new CommentReadEvent(comment.getNodeId(), comment.toCommentDetails());
+        }
+        else{
+            commentReadEvent = CommentReadEvent.notFound(requestReadCommentEvent.getNodeId());
+        }
+        return commentReadEvent;
     }
 
     @Override

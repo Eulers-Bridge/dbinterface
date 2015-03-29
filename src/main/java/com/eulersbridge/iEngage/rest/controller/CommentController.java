@@ -2,8 +2,10 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.comments.*;
+import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
 import com.eulersbridge.iEngage.core.services.CommentService;
@@ -82,7 +84,7 @@ public class CommentController {
     }
 
     //Read All
-    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.COMMENT_LABEL
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.COMMENTS_LABEL
             + "/{targetId}")
     public @ResponseBody ResponseEntity<Iterator<Comment>> findComments(
             @PathVariable Long targetId,
@@ -129,6 +131,21 @@ public class CommentController {
         }
         else{
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //Get
+    @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.COMMENT_LABEL + "/{commentId}")
+    public @ResponseBody ResponseEntity<Comment>
+    findComment(@PathVariable Long commentId){
+        if (LOG.isInfoEnabled()) LOG.info(commentId+" attempting to get comment. ");
+        RequestReadCommentEvent requestReadCommentEvent = new RequestReadCommentEvent(commentId);
+        ReadEvent commentReadEvent = commentService.requestReadComment(requestReadCommentEvent);
+        if(commentReadEvent.isEntityFound()){
+            Comment comment = Comment.fromCommentDetails((CommentDetails) commentReadEvent.getDetails());
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

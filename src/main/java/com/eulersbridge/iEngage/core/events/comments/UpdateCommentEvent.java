@@ -7,7 +7,7 @@ import com.eulersbridge.iEngage.core.events.UpdateEvent;
  */
 
 public class UpdateCommentEvent extends UpdateEvent {
-    public UpdateCommentEvent(Long commnetId, CommentDetails commentDetails) {
-        super(commnetId, commentDetails);
+    public UpdateCommentEvent(Long commentId, CommentDetails commentDetails) {
+        super(commentId, commentDetails);
     }
 }
