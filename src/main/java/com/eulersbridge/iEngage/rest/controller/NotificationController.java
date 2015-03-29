@@ -165,6 +165,7 @@ public class NotificationController
         if((notificationDeletedEvent!=null)&&(notificationDeletedEvent.isEntityFound()))
         {
             Notification notification = Notification.fromNotificationDetails((NotificationDetails) notificationDeletedEvent.getDetails());
+            if (LOG.isDebugEnabled()) LOG.debug(notification.getNodeId()+" deleted.");
             response = true;
         }
         else
@@ -181,25 +182,31 @@ public class NotificationController
     updateNotification(@PathVariable Long notificationId, @RequestBody Notification notification)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update notification. " + notificationId);
-        UpdateEvent updateEvent = new UpdateEvent(notificationId, notification.toNotificationDetails());
-        UpdatedEvent notificationUpdatedEvent = notificationService.updateNotification(updateEvent);
-        if(null != notificationUpdatedEvent)
+        ResponseEntity<Notification> response;
+        if (notification!=null)
         {
-            if (LOG.isDebugEnabled()) LOG.debug("notificationUpdatedEvent - "+notificationUpdatedEvent);
-            if(notificationUpdatedEvent.isEntityFound())
-            {
-                Notification result = Notification.fromNotificationDetails((NotificationDetails) notificationUpdatedEvent.getDetails());
-                if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
-                return new ResponseEntity<>(result, HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+	        UpdateEvent updateEvent = new UpdateEvent(notificationId, notification.toNotificationDetails());
+	        UpdatedEvent notificationUpdatedEvent = notificationService.updateNotification(updateEvent);
+	        if(null != notificationUpdatedEvent)
+	        {
+	            if (LOG.isDebugEnabled()) LOG.debug("notificationUpdatedEvent - "+notificationUpdatedEvent);
+	            if(notificationUpdatedEvent.isEntityFound())
+	            {
+	                Notification result = Notification.fromNotificationDetails((NotificationDetails) notificationUpdatedEvent.getDetails());
+	                if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
+	                response = new ResponseEntity<>(result, HttpStatus.OK);
+	            }
+	            else{
+	                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	            }
+	        }
+	        else
+	        {
+	            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	        }
         }
-        else
-        {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        else response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return response;
     }
 
 
