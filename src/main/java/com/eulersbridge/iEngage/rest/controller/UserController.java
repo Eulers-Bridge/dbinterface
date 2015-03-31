@@ -519,8 +519,6 @@ public class UserController
 		ReadAllEvent userEvent;
 		AllReadEvent contactEvent;
 		ResponseEntity<Iterator<UserProfile>> result;
-		boolean isEmail=emailValidator.isValid(contactInfo);
-		String email=null;
 		
 		if (longValidator.isValid(contactInfo))
 		{
@@ -529,7 +527,7 @@ public class UserController
 			userEvent =new ReadAllEvent(id);
 			contactEvent=userService.readExistingContactsById(userEvent, sortDirection, pageNumber, pageLength);
 		}
-		else if (emailValidator.isValid(email))
+		else if (emailValidator.isValid(contactInfo))
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
 			contactEvent=userService.readExistingContactsByEmail(new RequestReadUserEvent(contactInfo), sortDirection, pageNumber, pageLength);
