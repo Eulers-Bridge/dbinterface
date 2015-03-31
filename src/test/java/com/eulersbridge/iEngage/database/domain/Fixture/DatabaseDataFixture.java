@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.domain.notifications.Notification;
+import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactRequest;
 
 import org.springframework.data.neo4j.conversion.Result;
 
@@ -819,20 +820,56 @@ public class DatabaseDataFixture
     
 	public static Notification populateNotification1()
 	{
-		// TODO Auto-generated method stub
-		return populateNotification();
+		Boolean read=false;
+		String type="Alert";
+		User user=populateUserGnewitt2();
+		Long nodeId=23342l;
+		Long timeStamp=Calendar.getInstance().getTimeInMillis();
+		return populateNotification(nodeId, read, timeStamp, type, user);
 	}
 
 	public static Notification populateNotification2()
 	{
-		// TODO Auto-generated method stub
-		return populateNotification();
+		Boolean read=true;
+		String type="Alert";
+		User user=populateUserGnewitt();
+		Long nodeId=2342l;
+		Long timeStamp=Calendar.getInstance().getTimeInMillis();
+		return populateNotification(nodeId, read, timeStamp, type, user);
 	}
 
-	public static Notification populateNotification()
+	public static Notification populateNotification(Long nodeId, Boolean read, Long timestamp, String type, User user)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		Notification notification=new Notification();
+		notification.setNodeId(nodeId);
+		notification.setRead(read);
+		notification.setTimestamp(timestamp);
+		notification.setType(type);
+		notification.setUser(user);
+		return notification;
+	}
+	public static NotificationContactRequest populateNotificationContactRequest1()
+	{
+		Boolean read=true;
+		String type="contactRequest";
+		User user=populateUserGnewitt();
+		Long nodeId=2342l;
+		Long timeStamp=Calendar.getInstance().getTimeInMillis();
+		ContactRequest contactRequest=populateContactRequest1();
+		return populateNotificationContactRequest(nodeId, read, timeStamp, type, user,contactRequest);
+	}
+
+	public static NotificationContactRequest populateNotificationContactRequest(Long nodeId, Boolean read, Long timestamp, String type, User user, ContactRequest contactRequest)
+	{
+		NotificationContactRequest ncr=new NotificationContactRequest();
+		ncr.setContactRequest(contactRequest);
+		ncr.setNodeId(nodeId);
+		ncr.setRead(read);
+		ncr.setTimestamp(timestamp);
+		ncr.setType(type);
+		ncr.setUser(user);
+
+		return ncr;
 	}
 
 }
