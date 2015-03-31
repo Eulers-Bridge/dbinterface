@@ -80,8 +80,25 @@ public class NotificationContactRequestTest
 		
 		when(userRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(crRepository.findOne(any(long.class))).thenReturn(testCr);
+
+		Boolean response=notification.setupForSave(repos);
+		assertTrue(response);
+		assertEquals(notification.getUser(),testData);
+		assertEquals(notification.getContactRequest(),testCr);
+	}
+
+	@Test
+	public final void testSetupForSaveNodeIdNull()
+	{
+		User testData=DatabaseDataFixture.populateUserGnewitt();
+		ContactRequest testCr=DatabaseDataFixture.populateContactRequest1();
+		
+		when(userRepository.findOne(any(Long.class))).thenReturn(testData);
+//		when(crRepository.findOne(any(long.class))).thenReturn(testCr);
 		when(crRepository.findContactRequestByUserIdContactInfo(any(Long.class),any(String.class))).thenReturn(testCr);
 
+		ContactRequest cr=notification.getContactRequest();
+		cr.setNodeId(null);
 		Boolean response=notification.setupForSave(repos);
 		assertTrue(response);
 		assertEquals(notification.getUser(),testData);
