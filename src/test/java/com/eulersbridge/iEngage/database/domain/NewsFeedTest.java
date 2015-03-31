@@ -5,12 +5,10 @@ package com.eulersbridge.iEngage.database.domain;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,21 +23,9 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 public class NewsFeedTest 
 {
 	NewsFeed nf;
+	Set<NewsArticle> news;
 	
     private static Logger LOG = LoggerFactory.getLogger(NewsFeedTest.class);
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -48,13 +34,10 @@ public class NewsFeedTest
 	public void setUp() throws Exception 
 	{
 		nf=DatabaseDataFixture.populateNewsFeed2();
-	}
+		news=new HashSet<NewsArticle>();
+		news.add(DatabaseDataFixture.populateNewsArticle1());
+		nf.setNews(news);
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 	/**
@@ -143,7 +126,7 @@ public class NewsFeedTest
 	{
 		Set<NewsArticle> news;
 		news=nf.getNews();
-		assertNull(news);
+		assertEquals(this.news,news);
 	}
 
 	/**
@@ -167,5 +150,77 @@ public class NewsFeedTest
 	{
 		assertNotNull(nf.toString());
 	}
+
+	private void checkHashCode(NewsFeed test1,NewsFeed test2)
+	{
+		assertNotEquals(test1.hashCode(), test2.hashCode());
+		assertNotEquals(test2.hashCode(), test1.hashCode());
+	}
+	
+	private void checkNotEquals(NewsFeed test1,NewsFeed test2)
+	{
+		assertNotEquals(test1, test2);
+		assertNotEquals(test2, test1);
+	}
+	
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#hashCode()}.
+	 */
+	@Test
+	public final void testHashCode()
+	{
+		NewsFeed nfTest=DatabaseDataFixture.populateNewsFeed2();
+		assertEquals(nfTest.hashCode(),nfTest.hashCode());
+		assertEquals(nfTest.hashCode(),nf.hashCode());
+		nfTest.setNodeId(null);
+		checkHashCode(nf,nfTest);
+		nf.setNodeId(null);
+		
+		nfTest.setInstitution(null);
+		checkHashCode(nf,nfTest);
+		nfTest.setInstitution(nf.getInstitution());
+		
+		nfTest.setNews(null);
+		checkHashCode(nf,nfTest);
+		nfTest.setNews(nf.getNews());
+		
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#equals(java.lang.Object)}.
+	 */
+	@Test
+	public final void testEqualsObject()
+	{
+		NewsFeed nfTest=null;
+		assertNotEquals(nfTest,nf);
+		assertNotEquals(nf,nfTest);
+		String notElection="";
+		assertNotEquals(nf,notElection);
+		nfTest=DatabaseDataFixture.populateNewsFeed2();
+		nfTest.setNews(news);
+		assertEquals(nfTest,nfTest);
+		assertEquals(nfTest,nf);
+		
+		nfTest.setNodeId(54l);
+		checkNotEquals(nf,nfTest);
+		nf.setNodeId(null);
+		checkNotEquals(nf,nfTest);
+		nfTest.setNodeId(null);
+		
+		assertEquals(nf, nfTest);
+		assertEquals(nfTest, nf);
+		
+		nfTest.setInstitution(DatabaseDataFixture.populateInstMonashUni());
+		assertNotEquals(nf, nfTest);
+		nfTest.setInstitution(null);
+		checkNotEquals(nfTest, nf);
+		nfTest.setInstitution(nf.getInstitution());
+		
+		nfTest.setNews(null);
+		assertNotEquals(nf, nfTest);
+		nfTest.setNews(nf.getNews());
+	}
+
 
 }
