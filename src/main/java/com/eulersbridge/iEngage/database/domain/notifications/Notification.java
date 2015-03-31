@@ -68,10 +68,10 @@ public class Notification
 	
 	public static Notification fromNotificationDetails(NotificationDetails nDets)
 	{
-		Notification notif=new NotificationContactRequest();
+		Notification notif=new Notification();
 		if (nDets!=null)
 		{
-			if ("contactRequest".equals(nDets.getType()))
+			if (NotificationConstants.CONTACT_REQUEST.equals(nDets.getType()))
 			{
 				NotificationContactRequest notifCR=NotificationContactRequest.fromNotificationDetails(nDets);
 				notif=notifCR;

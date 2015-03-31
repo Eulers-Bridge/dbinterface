@@ -6,6 +6,7 @@ package com.eulersbridge.iEngage.core.events.notifications;
 import java.io.IOException;
 
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
+import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.rest.domain.Notification;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,22 +53,22 @@ public class NotificationDeserializer extends JsonDeserializer<Notification>
 	{
         JsonNode node = jp.getCodec().readTree(jp);
 
-        Long nodeId=getLong(node.get("nodeId"));
-        Long userId=getLong(node.get("userId"));
-        Long timestamp = getLong(node.get("timestamp"));
-        String type = getText(node.get("type"));
-        Boolean read = getBoolean(node.get("read"));
-   	 	JsonNode notificationBodyNode = node.get("notificationBody");
+        Long nodeId=getLong(node.get(NotificationConstants.NodeId));
+        Long userId=getLong(node.get(NotificationConstants.UserId));
+        Long timestamp = getLong(node.get(NotificationConstants.Timestamp));
+        String type = getText(node.get(NotificationConstants.Type));
+        Boolean read = getBoolean(node.get(NotificationConstants.Read));
+   	 	JsonNode notificationBodyNode = node.get(NotificationConstants.NotificationBody);
    	 	Object notificationBody=null;
-        if ("contactRequest".equals(type)&&(notificationBodyNode!=null))
+        if (NotificationConstants.CONTACT_REQUEST.equals(type)&&(notificationBodyNode!=null))
         {
  
-        	Long crUserId=getLong(notificationBodyNode.get("userId"));
-        	Long crNodeId=getLong(notificationBodyNode.get("nodeId"));
-        	Long requestDate=getLong(notificationBodyNode.get("requestDate"));
-        	Long responseDate=getLong(notificationBodyNode.get("responseDate"));
-        	Boolean accepted=getBoolean(notificationBodyNode.get("accepted"));
-        	Boolean rejected=getBoolean(notificationBodyNode.get("rejected"));
+        	Long crUserId=getLong(notificationBodyNode.get(NotificationConstants.UserId));
+        	Long crNodeId=getLong(notificationBodyNode.get(NotificationConstants.NodeId));
+        	Long requestDate=getLong(notificationBodyNode.get(NotificationConstants.RequestDate));
+        	Long responseDate=getLong(notificationBodyNode.get(NotificationConstants.ResponseDate));
+        	Boolean accepted=getBoolean(notificationBodyNode.get(NotificationConstants.Accepted));
+        	Boolean rejected=getBoolean(notificationBodyNode.get(NotificationConstants.Rejected));
         	JsonNode contactDetails=notificationBodyNode.get("contactDetails");
         	String contactDets=null;
         	if (contactDetails!=null) contactDets=contactDetails.asText();
@@ -77,7 +78,7 @@ public class NotificationDeserializer extends JsonDeserializer<Notification>
         	else
         		notificationBody=crd;
         }
-        else if ("message".equals(type)&&(notificationBodyNode!=null))
+        else if ((NotificationConstants.MESSAGE.equals(type))&&(notificationBodyNode!=null))
         {
         	
         }

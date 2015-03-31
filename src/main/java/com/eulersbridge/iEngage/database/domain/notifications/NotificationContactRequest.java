@@ -86,7 +86,7 @@ public class NotificationContactRequest extends Notification
 		NotificationContactRequest notif=new NotificationContactRequest();
 		if (nDets!=null)
 		{
-			if ("contactRequest".equals(nDets.getType()))
+			if (NotificationConstants.CONTACT_REQUEST.equals(nDets.getType()))
 			{
 				ContactRequestDetails crd=(ContactRequestDetails)nDets.getNotificationBody();
 				ContactRequest cr=ContactRequest.fromContactRequestDetails(crd);
