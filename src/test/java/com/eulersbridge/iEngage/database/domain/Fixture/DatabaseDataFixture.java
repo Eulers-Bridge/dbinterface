@@ -872,4 +872,18 @@ public class DatabaseDataFixture
 		return ncr;
 	}
 
+    public static Owner populateOwner(){
+        Owner object = new Owner(44l);
+        return object;
+    }
+
+    public static Comment populateComment(User user, Owner object){
+        Comment comment = new Comment();
+        comment.setNodeId(0l);
+        comment.setUser(user);
+        comment.setTarget(object);
+        comment.setContent("A comment");
+        comment.setTimestamp(0l);
+        return comment;
+    }
 }
