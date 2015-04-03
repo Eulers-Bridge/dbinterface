@@ -69,14 +69,14 @@ public class CommentController {
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.COMMENT_LABEL+"/{commentId}")
     public @ResponseBody ResponseEntity<Boolean>
-    createComment(@PathVariable Long commentId){
+    deleteComment(@PathVariable Long commentId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete comment. " + commentId);
         DeletedEvent commentDeletedEvent = commentService.deleteComment(new DeleteCommentEvent(commentId));
         ResponseEntity<Boolean> response;
 
         if (commentDeletedEvent.isDeletionCompleted())
             response=new ResponseEntity<Boolean>(commentDeletedEvent.isDeletionCompleted(),HttpStatus.OK);
-        else if (commentDeletedEvent.isEntityFound())
+        else if (!commentDeletedEvent.isEntityFound())
             response=new ResponseEntity<Boolean>(commentDeletedEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
         else
             response=new ResponseEntity<Boolean>(commentDeletedEvent.isDeletionCompleted(),HttpStatus.GONE);

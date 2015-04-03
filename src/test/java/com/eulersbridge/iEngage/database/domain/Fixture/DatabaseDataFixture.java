@@ -37,6 +37,14 @@ public class DatabaseDataFixture
 					+SecurityConstants.RETURNING_OFFICER_ROLE;
 		return populateUser("greg.newitt@unimelb.edu.au", "Greg", "Newitt", "Male", "Australian", "1971", "password", nodeId, verified, inst, roles, "0447304209");
 	}
+    public static User populateUserYikai()
+    {
+        Long nodeId=(long)3;
+        boolean verified=true;
+        Institution inst=populateInstUniMelb();
+        String roles=SecurityConstants.USER_ROLE;
+        return populateUser("yikaig@student.unimelb.edu.au", "Yikai", "Gong", "Male", "Chinese", "1989", "password", nodeId, verified, inst, roles, "0469749222");
+    }
 	public static User populateUser(String email, String firstName, String lastName, String gender, String nationality, String yearOfBirth, String password, Long id, boolean verified, Institution inst, String roles, String contactNumber)
 	{
 		User user=new User(email, firstName, lastName, gender, nationality, yearOfBirth, password,contactNumber);
@@ -877,12 +885,17 @@ public class DatabaseDataFixture
         return object;
     }
 
-    public static Comment populateComment(User user, Owner object){
+    public static Comment populateComment1(User user, Owner object){
+        Comment comment = populateComment(user, object, "A comment");
+        return comment;
+    }
+
+    public static Comment populateComment(User user, Owner object, String contents){
         Comment comment = new Comment();
         comment.setNodeId(0l);
         comment.setUser(user);
         comment.setTarget(object);
-        comment.setContent("A comment");
+        comment.setContent(contents);
         comment.setTimestamp(0l);
         return comment;
     }

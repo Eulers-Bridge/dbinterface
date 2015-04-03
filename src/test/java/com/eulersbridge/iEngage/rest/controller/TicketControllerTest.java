@@ -163,7 +163,7 @@ public class TicketControllerTest
 	}
 
 	@Test
-	public final void testCreateEventNoContent() throws Exception 
+	public final void testCreateTicketNoContent() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateTicket()");
 		TicketCreatedEvent testData=null;
