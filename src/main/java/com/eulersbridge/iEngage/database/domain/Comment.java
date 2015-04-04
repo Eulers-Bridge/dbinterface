@@ -1,13 +1,13 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.annotation.*;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 
 /**
  * @author Yikai Gong
@@ -17,8 +17,11 @@ import org.springframework.data.neo4j.annotation.*;
 public class Comment {
     @GraphId
     private Long nodeId;
+
     @RelatedTo(type = DatabaseDomainConstants.POST_COMMENT, direction = Direction.INCOMING)
+    @Fetch
     private User user;
+
     @RelatedTo(type = DatabaseDomainConstants.HAS_COMMENT, direction = Direction.INCOMING)
     private Owner target;
 
