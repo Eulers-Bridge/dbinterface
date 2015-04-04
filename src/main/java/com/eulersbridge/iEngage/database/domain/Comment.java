@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.annotation.*;
-import org.springframework.data.neo4j.support.Neo4jTemplate;
 
 /**
  * @author Yikai Gong
@@ -25,13 +24,10 @@ public class Comment {
     @RelatedTo(type = DatabaseDomainConstants.HAS_COMMENT, direction = Direction.INCOMING)
     private Owner target;
 
-    @CreatedDate
-    @LastModifiedDate
     private Long timestamp;
     private String content;
 
     private static Logger LOG = LoggerFactory.getLogger(Comment.class);
-
 
 
     public static Comment fromCommentDetails(CommentDetails commentDetails){
@@ -42,12 +38,6 @@ public class Comment {
             comment.setNodeId(commentDetails.getNodeId());
             comment.setContent(commentDetails.getContent());
             comment.setTimestamp(commentDetails.getTimestamp());
-            User user = new User();
-            user.setEmail(commentDetails.getUserEmail());
-            comment.setUser(user);
-            Owner target = new Owner();
-            target.setNodeId(commentDetails.getTargetId());
-            comment.setTarget(target);
             if (LOG.isTraceEnabled()) LOG.trace("comment "+comment);
         }
         return comment;
