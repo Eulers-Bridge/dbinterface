@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.domain.notifications.Notification;
+import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactRequest;
 
 import org.springframework.data.neo4j.conversion.Result;
@@ -821,7 +822,7 @@ public class DatabaseDataFixture
 	public static Notification populateNotification1()
 	{
 		Boolean read=false;
-		String type="Alert";
+		String type=NotificationConstants.MESSAGE;
 		User user=populateUserGnewitt2();
 		Long nodeId=23342l;
 		Long timeStamp=Calendar.getInstance().getTimeInMillis();
@@ -831,7 +832,7 @@ public class DatabaseDataFixture
 	public static Notification populateNotification2()
 	{
 		Boolean read=true;
-		String type="Alert";
+		String type=NotificationConstants.MESSAGE;
 		User user=populateUserGnewitt();
 		Long nodeId=2342l;
 		Long timeStamp=Calendar.getInstance().getTimeInMillis();
@@ -848,6 +849,16 @@ public class DatabaseDataFixture
 		notification.setUser(user);
 		return notification;
 	}
+	public static HashMap<Long, Notification> populateNotifications()
+	{
+		HashMap<Long, Notification> notifications=new HashMap<Long, Notification>();
+		Notification initialInst=populateNotification1();
+		notifications.put(initialInst.getNodeId(), initialInst);
+		initialInst=populateNotification2();
+		notifications.put(initialInst.getNodeId(), initialInst);
+		return notifications;
+	}
+
 	public static NotificationContactRequest populateNotificationContactRequest1()
 	{
 		Boolean read=true;
@@ -871,5 +882,4 @@ public class DatabaseDataFixture
 
 		return ncr;
 	}
-
 }
