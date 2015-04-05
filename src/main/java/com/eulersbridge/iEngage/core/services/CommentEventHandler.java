@@ -143,13 +143,22 @@ public class CommentEventHandler implements CommentService {
         CommentDetails commentDetails = (CommentDetails) updateCommentEvent.getDetails();
         Comment comment = Comment.fromCommentDetails(commentDetails);
         Long commentId = commentDetails.getNodeId();
+        Long targetId = commentDetails.getTargetId();
+        String userEmail = commentDetails.getUserEmail();
+
+        User user = userRepository.findByEmail(userEmail);
+        Owner object = ownerRepository.findOne(targetId);
+
         if(LOG.isDebugEnabled()) LOG.debug("commentId is " + commentId);
         Comment commentOld = commentRepository.findOne(commentId);
-        if(commentOld == null){
-            if(LOG.isDebugEnabled()) LOG.debug("comment entity not found " + commentId);
+        if(commentOld == null || user == null || object == null){
+            if(LOG.isDebugEnabled()) LOG.debug("comment or user/target entity not found " + commentId);
             return CommentUpdatedEvent.notFound(commentId);
         }
         else{
+            comment.setTimestamp(new Date().getTime());
+            comment.setUser(user);
+            comment.setTarget(object);
             Comment result = commentRepository.save(comment);
             if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
             return new CommentUpdatedEvent(result.getNodeId(), result.toCommentDetails());

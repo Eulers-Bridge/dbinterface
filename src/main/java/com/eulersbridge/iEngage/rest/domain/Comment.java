@@ -32,7 +32,7 @@ public class Comment extends ResourceSupport {
 
     public static Comment fromCommentDetails(CommentDetails commentDetails){
         Comment comment = new Comment();
-        String simpleName = Ticket.class.getSimpleName();
+        String simpleName = Comment.class.getSimpleName();
         String name = simpleName.substring(0, 1).toLowerCase()
                 + simpleName.substring(1);
 
@@ -49,6 +49,10 @@ public class Comment extends ResourceSupport {
         comment.add(linkTo(CommentController.class).slash(name)
                 .slash(comment.getCommentId()).withSelfRel());
         // {!end selfRel}
+        // {!begin readAll}
+        comment.add(linkTo(CommentController.class).slash(name + 's').slash(commentDetails.getTargetId())
+                .withRel(RestDomainConstants.READALL_LABEL));
+        // {!end readAll}
 
         return comment;
     }
