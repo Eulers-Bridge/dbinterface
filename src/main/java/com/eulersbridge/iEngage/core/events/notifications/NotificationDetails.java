@@ -106,5 +106,15 @@ public class NotificationDetails extends Details
 	{
 		this.notificationBody = notificationBody;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "NotificationDetails [read=" + read + ", userId=" + userId
+				+ ", timestamp=" + timestamp + ", type=" + type
+				+ ", notificationBody=" + notificationBody + "]";
+	}
 	
 }
