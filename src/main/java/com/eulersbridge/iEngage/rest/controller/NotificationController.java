@@ -3,9 +3,9 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.Calendar;
 import java.util.Iterator;
 
+import org.hibernate.annotations.NotFound;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,7 @@ import com.eulersbridge.iEngage.core.events.CreateEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeleteEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
@@ -67,7 +68,7 @@ public class NotificationController
     	{
     		response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
     	}
-    	else if((null==notificationCreatedEvent.getNodeId())||(notificationCreatedEvent.isFailed()))
+    	else if(null==notificationCreatedEvent.getNodeId())
         {
             response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -98,14 +99,6 @@ public class NotificationController
         {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        Notification notif=new Notification();
-        notif.setNodeId(443l);
-        notif.setRead(true);
-        notif.setTimestamp(Calendar.getInstance().getTimeInMillis());
-        notif.setType("ContactRequest");
-        notif.setNotificationBody(null);
-        response=new ResponseEntity<Notification>(notif,HttpStatus.OK);
         return response;
     }
 
@@ -147,37 +140,40 @@ public class NotificationController
 			return new ResponseEntity<Iterator<Notification>>(HttpStatus.NOT_FOUND);
 		}
 
+		Iterable<? extends Details> details = notificationsEvent.getDetails();
+		if (LOG.isDebugEnabled()) LOG.debug("details - "+details);
+		Iterator<? extends Details> iterator = details.iterator();
 		Iterator<Notification> notifications = Notification
-				.toNotificationsIterator(notificationsEvent.getDetails().iterator());
+				.toNotificationsIterator(iterator);
 
 		return new ResponseEntity<Iterator<Notification>>(notifications, HttpStatus.OK);
 	}
 
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.NOTIFICATION_LABEL + "/{notificationId}")
-    public Boolean
+    public @ResponseBody ResponseEntity<Boolean>
     deleteNotification(@PathVariable Long notificationId)
     {
         if (LOG.isInfoEnabled()) LOG.info(notificationId+" attempting to delete notification. ");
         DeleteEvent deleteNotificationEvent = new DeleteEvent(notificationId);
-        Boolean response;
+        ResponseEntity<Boolean> response;
         DeletedEvent notificationDeletedEvent = notificationService.deleteNotification(deleteNotificationEvent);
         if((notificationDeletedEvent!=null)&&(notificationDeletedEvent.isEntityFound()))
         {
             Notification notification = Notification.fromNotificationDetails((NotificationDetails) notificationDeletedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug(notification.getNodeId()+" deleted.");
-            response = true;
+            response = new ResponseEntity<Boolean>(true,HttpStatus.OK);
         }
         else
         {
-            response = false;
+            response = new ResponseEntity<Boolean>(false,HttpStatus.NOT_FOUND);
         }
 
         return response;
     }
 
     //Update
-    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.TASK_LABEL+"/{notificationId}")
+    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.NOTIFICATION_LABEL+"/{notificationId}")
     public @ResponseBody ResponseEntity<Notification>
     updateNotification(@PathVariable Long notificationId, @RequestBody Notification notification)
     {
