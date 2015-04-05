@@ -35,7 +35,7 @@ public class AllReadEvent
 	 * @param parentId
 	 * @param details
 	 */
-	public AllReadEvent(Long parentId, Iterable<Details> details)
+	public AllReadEvent(Long parentId, Iterable<? extends Details> details)
 	{
 		super();
 		this.parentId = parentId;
@@ -48,7 +48,7 @@ public class AllReadEvent
 	 * @param totalItems
 	 * @param totalPages
 	 */
-	public AllReadEvent(Long parentId, Iterable<Details> details,
+	public AllReadEvent(Long parentId, Iterable<? extends Details> details,
 			Long totalItems, Integer totalPages)
 	{
 		super();
