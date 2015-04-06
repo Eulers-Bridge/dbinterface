@@ -4,8 +4,6 @@ import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.annotation.*;
 
 /**

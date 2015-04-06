@@ -307,6 +307,8 @@ public class CommentEventHandlerTest {
         Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
         Comment testComment1 = DatabaseDataFixture.populateComment(testUser, testObject, "A new comment");
 
+        when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
+        when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
         when(commentRepository.findOne(any(Long.class))).thenReturn(testComment);
         when(commentRepository.save(any(Comment.class))).thenReturn(testComment1);
 
@@ -327,6 +329,8 @@ public class CommentEventHandlerTest {
         Owner testObject = DatabaseDataFixture.populateOwner();
         Comment testComment1 = DatabaseDataFixture.populateComment(testUser, testObject, "A new comment");
 
+        when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
+        when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
         when(commentRepository.findOne(any(Long.class))).thenReturn(null);
         when(commentRepository.save(any(Comment.class))).thenReturn(testComment1);
 
