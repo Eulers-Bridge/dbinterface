@@ -31,9 +31,9 @@ public interface TicketService {
 	public TicketsReadEvent readTickets(ReadAllEvent readTicketsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public TicketSupportedEvent withdrawSupportTicket(SupportTicketEvent supportTicketEvent);
 }
