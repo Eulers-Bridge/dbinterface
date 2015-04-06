@@ -31,6 +31,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 
 import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
+import com.eulersbridge.iEngage.core.events.ticket.TicketsReadEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -844,18 +846,102 @@ public class UserEventHandler implements UserService, UserDetailsService
 	{
 		if (LOG.isDebugEnabled())
 			LOG.debug("findUserId(" + emailAddress + ")");
-		User user = userRepository.findByEmail(emailAddress);
-		Long response;
-		if (user == null)
+		Long response=null;
+		if (emailAddress!=null)
 		{
-			response = null;
-		}
-		else
-		{
-			response = user.getNodeId();
+			User user = userRepository.findByEmail(emailAddress);
+			if (user != null)
+			{
+				response = user.getNodeId();
+			}
 		}
 		return response;
 
+	}
+
+	public String findUserEmail(Long userId)
+	{
+		if (LOG.isDebugEnabled())
+			LOG.debug("findUserEmail(" + userId + ")");
+		String response=null;
+		if (userId!=null)
+		{
+			User user = userRepository.findOne(userId);
+			if (user != null)
+			{
+				response = user.getEmail();
+			}
+		}
+		return response;
+
+	}
+
+	@Override
+	public AllReadEvent readSupportsById(ReadAllEvent userEvent,
+			Direction sortDirection, int pageNumber, int pageLength)
+	{
+		Long userId=userEvent.getParentId();
+		String email=findUserEmail(userId);
+		
+		RequestReadUserEvent requestReadUserEvent=new RequestReadUserEvent(email);
+		return readSupportsByEmail(requestReadUserEvent, sortDirection, pageNumber, pageLength);
+	}
+
+	@Override
+	public AllReadEvent readSupportsByEmail(
+			RequestReadUserEvent requestReadUserEvent, Direction sortDirection,
+			int pageNumber, int pageLength)
+	{
+		String email=requestReadUserEvent.getEmail();
+		Long userId=findUserId(email);
+		AllReadEvent nare=null;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"b.name");
+
+		Page <Ticket>tickets=null;
+		ArrayList<TicketDetails> dets=new ArrayList<TicketDetails>();
+
+		if (LOG.isDebugEnabled()) LOG.debug("Email "+email);
+		
+		tickets=userRepository.findSupports(userId, pageable);
+		if (tickets!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+tickets.getTotalElements()+" total pages ="+tickets.getTotalPages());
+			Iterator<Ticket> iter=tickets.iterator();
+			while (iter.hasNext())
+			{
+				Ticket na=iter.next();
+				if (LOG.isDebugEnabled()) LOG.debug("Converting to details - "+na.getName());
+				TicketDetails det=na.toTicketDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found parentId.
+				User user=userRepository.findByEmail(email);
+				if ( (null==user) ||
+					 ((null==user.getEmail()) || ((null==user.getGivenName()) && (null==user.getFamilyName()) && (null==user.getGender()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(UserId)");
+					nare=TicketsReadEvent.notFound(userId);
+				}
+				else
+				{	
+					nare=new TicketsReadEvent(userId,dets,tickets.getTotalElements(),tickets.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new TicketsReadEvent(userId,dets,tickets.getTotalElements(),tickets.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
+			nare=TicketsReadEvent.notFound(userId);
+		}
+		return nare;
 	}
 
 }

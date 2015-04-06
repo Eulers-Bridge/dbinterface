@@ -68,6 +68,11 @@ public interface UserService
 	
 	public Long findUserId(String emailAddress);
 	public AllReadEvent readExistingContactsById(ReadAllEvent readUserProfilesEvent,Direction sortDirection, int pageNumber, int pageLength);
-	public AllReadEvent readExistingContactsByEmail(RequestReadUserEvent readUserProfilesEvent,Direction sortDirection, int pageNumber, int pageLength);	
+	public AllReadEvent readExistingContactsByEmail(RequestReadUserEvent readUserProfilesEvent,Direction sortDirection, int pageNumber, int pageLength);
+	
+	public AllReadEvent readSupportsById(ReadAllEvent userEvent,Direction sortDirection, int pageNumber, int pageLength);
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	public AllReadEvent readSupportsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection,int pageNumber, int pageLength);	
 }
 

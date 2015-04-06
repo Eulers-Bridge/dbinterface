@@ -40,6 +40,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestE
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketsReadEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
@@ -544,6 +545,64 @@ public class UserController
 				.toUserProfilesIterator(((ContactsReadEvent)contactEvent).getContacts().iterator());
 
 		result = new ResponseEntity<Iterator<UserProfile>>(contactProfiles, HttpStatus.OK);
+		
+		return result;
+	}
+    	
+	/**
+	 * Is passed all the necessary data to read contacts from the database. The
+	 * request must be a GET with the userId presented as the final
+	 * portion of the URL.
+	 * <p/>
+	 * This method will return the contacts read from the database.
+	 * 
+	 * @param userId
+	 *            the userId who has the contact objects to be read.
+	 * @return the contacts.
+	 * 
+	 */
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}"+ControllerConstants.SUPPORT)
+	public @ResponseBody ResponseEntity<Iterator<Ticket>> findSupports(@PathVariable String email,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
+			) 
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to find existing contacts. "+email);
+
+		ReadAllEvent userEvent;
+		AllReadEvent supportsEvent;
+		ResponseEntity<Iterator<Ticket>> result;
+		
+		if (longValidator.isValid(email))
+		{
+			Long id=longValidator.validate(email);
+			if (LOG.isDebugEnabled()) LOG.debug("UserId supplied. - "+id);
+			userEvent =new ReadAllEvent(id);
+			supportsEvent=userService.readSupportsById(userEvent, sortDirection, pageNumber, pageLength);
+		}
+		else if (emailValidator.isValid(email))
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
+			supportsEvent=userService.readSupportsByEmail(new RequestReadUserEvent(email), sortDirection, pageNumber, pageLength);
+		}
+		else
+			return new ResponseEntity<Iterator<Ticket>>(HttpStatus.BAD_REQUEST);
+			
+
+		if (!supportsEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<Ticket>>(HttpStatus.NOT_FOUND);
+		}
+		Iterator<Ticket> contactProfiles = Ticket.toTicketsIterator(((TicketsReadEvent)supportsEvent).getTickets().iterator());
+
+		result = new ResponseEntity<Iterator<Ticket>>(contactProfiles, HttpStatus.OK);
 		
 		return result;
 	}

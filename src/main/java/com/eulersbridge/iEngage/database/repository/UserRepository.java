@@ -64,5 +64,8 @@ public interface UserRepository extends GraphRepository<User>
 	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.CONTACT_LABEL+"]-(b:`"+DatabaseDomainConstants.USER+
 			"`) where id(a)={userId} return b")
 	Page<User> findContacts(@Param("userId")Long userId, Pageable pageable);
+	
+	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]-(b:`"+DatabaseDomainConstants.TICKET+"`) where id(a)={userId} return b")
+	Page<Ticket> findSupports(@Param("userId") Long userId, Pageable pageable);
 
 }
