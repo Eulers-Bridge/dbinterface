@@ -20,9 +20,9 @@ public interface TicketRepository extends GraphRepository<Ticket>
 			"]-(e:`"+DatabaseDomainConstants.TICKET+"`) where id(n)={elecId} return e")
 	Page<Ticket> findByElectionId(@Param("elecId")Long instId,Pageable p);
 
-    @Query("Match (a:`User`),(b:`Ticket`) where a.email={email} and id(b)={ticketId} CREATE UNIQUE a-[r:SUPPORTS]-b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Support' return r")
+    @Query("Match (a:`User`),(b:`Ticket`) where a.email={email} and id(b)={ticketId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]-b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Support' return r")
     Support supportTicket(@Param("ticketId")Long ticketId, @Param("email")String email);
 
-    @Query("Match (a:`User`)-[r:SUPPORTS]-(b:`Ticket`) where a.email={email} and id(b)={ticketId} delete r")
+    @Query("Match (a:`User`)-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]-(b:`Ticket`) where a.email={email} and id(b)={ticketId} delete r")
     void withdrawSupportTicket(@Param("ticketId")Long ticketId, @Param("email")String email);
 }
