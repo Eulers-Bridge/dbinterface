@@ -24,6 +24,7 @@ public class User extends ResourceSupport
 	private String password;
 	private String contactNumber;
 	private boolean accountVerified=false;
+	private boolean hasPersonality=false;
 	private	Long institutionId; 
 	private String email;
 
@@ -117,6 +118,22 @@ public class User extends ResourceSupport
 		this.institutionId = institutionId;
 	}
 
+	/**
+	 * @return the hasPersonality
+	 */
+	public boolean getHasPersonality()
+	{
+		return hasPersonality;
+	}
+
+	/**
+	 * @param hasPersonality the hasPersonality to set
+	 */
+	public void setHasPersonality(boolean hasPersonality)
+	{
+		this.hasPersonality = hasPersonality;
+	}
+
 	public UserDetails toUserDetails() 
 	  {
 		  UserDetails details = new UserDetails(email);
@@ -148,6 +165,7 @@ public class User extends ResourceSupport
 	    user.contactNumber = readUser.getContactNumber();
 	    user.accountVerified = readUser.isAccountVerified();
 	    user.institutionId = readUser.getInstitutionId();
+	    user.hasPersonality = readUser.hasPersonality();
 	    
 	    String simpleName=User.class.getSimpleName();
 	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);

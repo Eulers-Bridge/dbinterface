@@ -144,6 +144,8 @@ public class User
 		buff.append(getNationality());
 		buff.append(", yearOfBirth = ");
 		buff.append(getYearOfBirth());
+		buff.append(", personality = ");
+		buff.append(getPersonality());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isTraceEnabled()) LOG.trace("toString() = "+retValue);
@@ -287,6 +289,22 @@ public class User
 		this.yearOfBirth = yearOfBirth;
 	}
 
+	/**
+	 * @return the personality
+	 */
+	public Personality getPersonality()
+	{
+		return personality;
+	}
+
+	/**
+	 * @param personality the personality to set
+	 */
+	public void setPersonality(Personality personality)
+	{
+		this.personality = personality;
+	}
+
 	public UserDetails toUserDetails() 
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
@@ -296,6 +314,18 @@ public class User
 
 	    BeanUtils.copyProperties(this, details);
 	    details.setInstitutionId(this.getInstitution().getNodeId());
+	    Boolean personality=false;
+	    Personality thisPersonality = getPersonality();
+	    if (thisPersonality!=null)
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("personality = "+getPersonality());
+	    	personality=true;
+	    }
+	    else
+	    {
+	    	if (LOG.isDebugEnabled()) LOG.debug("personality = "+getPersonality());
+	    }
+	    details.setHasPersonality(personality);
 	    if (LOG.isTraceEnabled()) LOG.trace("userDetails "+details);
 
 	    return details;

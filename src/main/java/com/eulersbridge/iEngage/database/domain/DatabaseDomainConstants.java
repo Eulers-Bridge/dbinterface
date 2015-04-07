@@ -11,7 +11,7 @@ public class DatabaseDomainConstants
 	public static final String INSTITUTIONS_LABEL = "HAS_INSTITUTIONS";
 	public static final String CREATED_BY_LABEL = "CREATED_BY";
 	public static final String HAS_NEWS_LABEL = "HAS_NEWS";
-	public static final String HAS_PERSONALITY_LABEL = "HAS_PERSONALITY";
+	public static final String HAS_PERSONALITY_LABEL = "hasPersonality";
 	public static final String USERS_LABEL = "USER_OF";
 	public static final String VERIFIED_BY_LABEL = "verifiedBy";
     public static final String HAS_CANDIDATE_LABEL = "HAS_CANDIDATE";

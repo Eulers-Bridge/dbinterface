@@ -24,6 +24,7 @@ public class UserDetails extends Details
 	private String password;
 	private String contactNumber;
 	private boolean accountVerified=false;
+	private boolean hasPersonality=false;
 	private	Long institutionId;
 	
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
@@ -161,6 +162,8 @@ public class UserDetails extends Details
 		buff.append(getContactNumber());
 		buff.append(", accountVerified = ");
 		buff.append(isAccountVerified());
+		buff.append(", hasPersonality = ");
+		buff.append(hasPersonality());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -176,6 +179,7 @@ public class UserDetails extends Details
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (accountVerified ? 1231 : 1237);
+		result = prime * result + (hasPersonality ? 1231 : 1237);
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result
 				+ ((familyName == null) ? 0 : familyName.hashCode());
@@ -209,6 +213,8 @@ public class UserDetails extends Details
 			return false;
 		UserDetails other = (UserDetails) obj;
 		if (accountVerified != other.accountVerified)
+			return false;
+		if (hasPersonality != other.hasPersonality)
 			return false;
 		if (email == null) {
 			if (other.email != null)
@@ -256,6 +262,16 @@ public class UserDetails extends Details
 		} else if (!yearOfBirth.equals(other.yearOfBirth))
 			return false;
 		return true;
+	}
+
+	public Boolean hasPersonality()
+	{
+		return this.hasPersonality;
+	}
+	
+	public void setHasPersonality(Boolean personality)
+	{
+		this.hasPersonality=personality;
 	}
 	
 }
