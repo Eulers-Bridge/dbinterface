@@ -197,4 +197,38 @@ public class TaskEventHandler implements TaskService {
 		}
 		return nare;
 	}
+
+	@Override
+	public TasksReadEvent readRemainingTasks(
+			ReadAllEvent readCompletedTasksEvent, Direction sortDirection,
+			int pageNumber, int pageLength)
+	{
+		Page <Task>tasks=null;
+		ArrayList<TaskDetails> dets=new ArrayList<TaskDetails>();
+		TasksReadEvent nare=null;
+		Long userId=readCompletedTasksEvent.getParentId();
+
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"r.date");
+		tasks=taskRepository.findRemainingTasks(userId,pageable);
+		if (tasks!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+tasks.getTotalElements()+" total pages ="+tasks.getTotalPages());
+			Iterator<Task> iter=tasks.iterator();
+			while (iter.hasNext())
+			{
+				Task na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getAction());
+				TaskDetails det=na.toTaskDetails();
+				dets.add(det);
+			}
+			nare=new TasksReadEvent(dets,tasks.getTotalElements(),tasks.getTotalPages());
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
+			nare=(TasksReadEvent) TasksReadEvent.notFound(null);
+		}
+		return nare;
+	}
 }

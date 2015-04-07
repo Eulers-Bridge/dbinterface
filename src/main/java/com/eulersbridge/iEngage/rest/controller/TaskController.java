@@ -152,6 +152,49 @@ public class TaskController {
 		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
 	}
 
+	/**
+	 * Is passed all the necessary data to read tasks from the database. The
+	 * request must be a GET with the electionId presented as the final
+	 * portion of the URL.
+	 * <p/>
+	 * This method will return the tasks read from the database.
+	 * 
+	 * @param electionId
+	 *            the electionId of the task objects to be read.
+	 * @return the tasks.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.TASKS_LABEL+"/remaining/{userId}")
+	public @ResponseBody ResponseEntity<Iterator<Task>> findRemainingTasks(
+			@PathVariable Long userId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve remaining tasks for "+userId+".");
+
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		TasksReadEvent taskEvent = taskService.readRemainingTasks(
+				new ReadCompletedTasksEvent(userId), sortDirection,
+				pageNumber, pageLength);
+
+		if (!taskEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<Task>>(HttpStatus.NOT_FOUND);
+		}
+
+		Iterator<Task> tasks = Task
+				.toTasksIterator(taskEvent.getTasks().iterator());
+
+		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
+	}
+
     //Update
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.TASK_LABEL+"/{taskId}")
     public @ResponseBody ResponseEntity<Task>
