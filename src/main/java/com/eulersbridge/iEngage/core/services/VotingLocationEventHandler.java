@@ -110,22 +110,30 @@ public class VotingLocationEventHandler implements VotingLocationService
 		Long ownerId = votingLocationDetails.getOwnerId();
 		if (LOG.isDebugEnabled())
 			LOG.debug("Finding owner with nodeId = " + ownerId);
-		Owner owner = ownerRepository.findOne(ownerId);
-
 		CreatedEvent votingLocationCreatedEvent;
-		if (owner != null)
+		if (ownerId!=null)
 		{
-			votingLocation.setOwner(owner);
-			VotingLocation result = votingLocationRepository.save(votingLocation);
-	        if ((null==result)||(null==result.getNodeId()))
-	        	votingLocationCreatedEvent = CreatedEvent.failed(votingLocationDetails);
-	        else
-	        	votingLocationCreatedEvent = new VotingLocationCreatedEvent(result.toVotingLocationDetails());
+			Owner owner = ownerRepository.findOne(ownerId);
+	
+			if (owner != null)
+			{
+				votingLocation.setOwner(owner);
+				VotingLocation result = votingLocationRepository.save(votingLocation);
+		        if ((null==result)||(null==result.getNodeId()))
+		        	votingLocationCreatedEvent = CreatedEvent.failed(votingLocationDetails);
+		        else
+		        	votingLocationCreatedEvent = new VotingLocationCreatedEvent(result.toVotingLocationDetails());
+			}
+			else
+			{
+				votingLocationCreatedEvent = VotingLocationCreatedEvent
+						.ownerNotFound(ownerId);
+			}
 		}
 		else
 		{
 			votingLocationCreatedEvent = VotingLocationCreatedEvent
-					.ownerNotFound(votingLocationDetails.getOwnerId());
+					.ownerNotFound(ownerId);
 		}
 		return votingLocationCreatedEvent;
 	}

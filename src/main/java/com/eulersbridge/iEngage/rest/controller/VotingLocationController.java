@@ -63,28 +63,37 @@ public class VotingLocationController
     //Create
     @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.VOTING_LOCATION_LABEL)
     public @ResponseBody ResponseEntity<VotingLocation>
-    createVotingLocation(@RequestBody VotingLocation votingLocation){
+    createVotingLocation(@RequestBody VotingLocation votingLocation)
+    {
         if (LOG.isInfoEnabled()) LOG.info("attempting to create votingLocation "+votingLocation);
         CreateVotingLocationEvent createVotingLocationEvent = new CreateVotingLocationEvent(votingLocation.toVotingLocationDetails());
-        CreatedEvent votingLocationCreatedEvent = votingLocationService.createVotingLocation(createVotingLocationEvent);
+        
         ResponseEntity<VotingLocation> response;
-        if(null==votingLocationCreatedEvent)
-        {
-            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-		else if ((votingLocationCreatedEvent.getClass()==VotingLocationCreatedEvent.class)&&(!(((VotingLocationCreatedEvent)votingLocationCreatedEvent).isOwnerFound())))
-		{
-			response = new ResponseEntity<VotingLocation>(HttpStatus.NOT_FOUND);
-		}
-		else if((null==votingLocationCreatedEvent.getNodeId())||(votingLocationCreatedEvent.isFailed()))
+        if (null==votingLocation.getOwnerId())
         {
             response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         else
         {
-            VotingLocation result = VotingLocation.fromVotingLocationDetails((VotingLocationDetails)votingLocationCreatedEvent.getDetails());
-            if (LOG.isDebugEnabled()) LOG.debug("votingLocation"+result.toString());
-            response = new ResponseEntity<>(result, HttpStatus.CREATED);
+	        CreatedEvent votingLocationCreatedEvent = votingLocationService.createVotingLocation(createVotingLocationEvent);
+	        if(null==votingLocationCreatedEvent)
+	        {
+	            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	        }
+			else if ((votingLocationCreatedEvent.getClass()==VotingLocationCreatedEvent.class)&&(!(((VotingLocationCreatedEvent)votingLocationCreatedEvent).isOwnerFound())))
+			{
+				response = new ResponseEntity<VotingLocation>(HttpStatus.NOT_FOUND);
+			}
+			else if((null==votingLocationCreatedEvent.getNodeId())||(votingLocationCreatedEvent.isFailed()))
+	        {
+	            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	        }
+	        else
+	        {
+	            VotingLocation result = VotingLocation.fromVotingLocationDetails((VotingLocationDetails)votingLocationCreatedEvent.getDetails());
+	            if (LOG.isDebugEnabled()) LOG.debug("votingLocation"+result.toString());
+	            response = new ResponseEntity<>(result, HttpStatus.CREATED);
+	        }
         }
         return response;
     }
