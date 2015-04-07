@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.rest.controller.TicketController;
 
@@ -190,13 +191,13 @@ public class Ticket extends ResourceSupport{
 	}
 
 	public static Iterator<Ticket> toTicketsIterator(
-			Iterator<TicketDetails> iter)
+			Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <Ticket> elections=new ArrayList<Ticket>();
 		while(iter.hasNext())
 		{
-			TicketDetails dets=iter.next();
+			TicketDetails dets=(TicketDetails)iter.next();
 			Ticket thisTicket=Ticket.fromTicketDetails(dets);
 			Link self = thisTicket.getLink("self");
 			thisTicket.removeLinks();
@@ -205,4 +206,5 @@ public class Ticket extends ResourceSupport{
 		}
 		return elections.iterator();
 	}
+
 }
