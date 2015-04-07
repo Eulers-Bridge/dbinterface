@@ -208,7 +208,7 @@ public class TaskEventHandler implements TaskService {
 		TasksReadEvent nare=null;
 		Long userId=readCompletedTasksEvent.getParentId();
 
-		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"r.date");
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"t.xpValue");
 		tasks=taskRepository.findRemainingTasks(userId,pageable);
 		if (tasks!=null)
 		{
