@@ -289,8 +289,8 @@ public class CandidateController {
     }
 
     // remove ticket from candidate
-    @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL
-            + "/{candidateId}" + ControllerConstants.TICKET_LABEL + "/{ticketId}" +"/remove")
+    @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CANDIDATE_LABEL
+            + "/{candidateId}" + ControllerConstants.TICKET_LABEL + "/{ticketId}")
     public @ResponseBody ResponseEntity<Boolean> removeTicket(
             @PathVariable Long candidateId, @PathVariable Long ticketId){
         if (LOG.isInfoEnabled())
