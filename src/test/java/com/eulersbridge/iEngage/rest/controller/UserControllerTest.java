@@ -168,6 +168,7 @@ public class UserControllerTest
 				"\",\"password\":\""+dets.getPassword()+
 				"\",\"contactNumber\":\""+dets.getContactNumber()+
 				"\",\"accountVerified\":"+dets.isAccountVerified()+
+				",\"hasPersonality\":"+dets.hasPersonality()+
 				",\"institutionId\":"+dets.getInstitutionId().intValue()+
 				",\"email\":\""+dets.getEmail()+
 				"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/"+dets.getEmail()+
