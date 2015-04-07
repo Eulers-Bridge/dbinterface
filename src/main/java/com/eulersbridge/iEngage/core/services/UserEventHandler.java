@@ -1031,7 +1031,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 		Long userId=findUserId(email);
 		AllReadEvent nare=null;
 		
-		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"r.timestamp");
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"r.date");
 
 		Page <VoteRecord>tickets=null;
 		ArrayList<VoteRecordDetails> dets=new ArrayList<VoteRecordDetails>();
