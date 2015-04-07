@@ -326,7 +326,7 @@ public class InstitutionController
     	return new ResponseEntity<Boolean>(true,HttpStatus.OK);
     }
 
-    @RequestMapping("/general-info")
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.GENERAL_INFO_LABEL)
     public @ResponseBody ResponseEntity<GeneralInfo> generalInfo()
     {
     	if (LOG.isInfoEnabled()) LOG.info("general info called. ");
@@ -337,7 +337,7 @@ public class InstitutionController
     }
     
 
-    @RequestMapping(value=ControllerConstants.INSTITUTIONS_LABEL)
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.INSTITUTIONS_LABEL)
     public @ResponseBody ResponseEntity<Iterator<Institution>> getInstitutions() 
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions. ");
@@ -346,7 +346,7 @@ public class InstitutionController
 		return readInstitutions(rie);
     }
     
-    @RequestMapping(value=ControllerConstants.INSTITUTIONS_LABEL+"/{countryId}")
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.INSTITUTIONS_LABEL+"/{countryId}")
     public @ResponseBody ResponseEntity<Iterator<Institution>> getInstitutions(@PathVariable Long countryId) 
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions from country "+countryId+". ");
