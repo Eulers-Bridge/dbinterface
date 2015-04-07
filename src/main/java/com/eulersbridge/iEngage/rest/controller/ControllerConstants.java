@@ -66,4 +66,8 @@ public class ControllerConstants
 	public static final String GENERALINFO_LABEL = "/general-info";
 	public static final String EMAILVERIFY_LABEL = "/emailVerification";
     public static final String SUPPORT = "/support";
+	public static final String VOTE_REMINDER_LABEL = "/voteReminder";
+	public static final String VOTE_REMINDERS_LABEL = VOTE_REMINDER_LABEL+'s';
+	public static final String VOTE_RECORD_LABEL = "/voteRecord";
+	public static final String VOTE_RECORDS_LABEL = VOTE_RECORD_LABEL+'s';
 }

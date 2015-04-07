@@ -68,4 +68,10 @@ public interface UserRepository extends GraphRepository<User>
 	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]-(b:`"+DatabaseDomainConstants.TICKET+"`) where id(a)={userId} return b")
 	Page<Ticket> findSupports(@Param("userId") Long userId, Pageable pageable);
 
+	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.VREMINDER_LABEL+"]-(b:`"+DatabaseDomainConstants.ELECTION+"`) where id(a)={userId} return r")
+	Page<VoteReminder> findVoteReminders(@Param("userId") Long userId, Pageable pageable);
+
+	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.VRECORD_LABEL+"]-(b:`"+DatabaseDomainConstants.ELECTION+"`) where id(a)={userId} return r")
+	Page<VoteRecord> findVoteRecords(@Param("userId") Long userId, Pageable pageable);
+
 }

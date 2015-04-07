@@ -73,6 +73,16 @@ public interface UserService
 	public AllReadEvent readSupportsById(ReadAllEvent userEvent,Direction sortDirection, int pageNumber, int pageLength);
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
-	public AllReadEvent readSupportsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection,int pageNumber, int pageLength);	
+	public AllReadEvent readSupportsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection,int pageNumber, int pageLength);
+	
+	public AllReadEvent readVoteRemindersById(ReadAllEvent userEvent,Direction sortDirection, int pageNumber, int pageLength);
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	public AllReadEvent readVoteRemindersByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection,int pageNumber, int pageLength);
+
+	public AllReadEvent readVoteRecordsById(ReadAllEvent userEvent, Direction sortDirection, int pageNumber, int pageLength);
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	public AllReadEvent readVoteRecordsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection, int pageNumber, int pageLength);	
 }
 

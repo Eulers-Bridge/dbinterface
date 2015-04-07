@@ -5,8 +5,13 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
 import com.eulersbridge.iEngage.rest.controller.UserController;
 
@@ -139,5 +144,22 @@ public class VoteRecord extends ResourceSupport
 	public void setQrCode(String qrCode)
 	{
 		this.qrCode = qrCode;
+	}
+
+	public static Iterator<VoteRecord> toVoteRecordsIterator(
+			Iterator<? extends Details> iterator)
+	{
+		if (null==iterator) return null;
+		ArrayList <VoteRecord> elections=new ArrayList<VoteRecord>();
+		while(iterator.hasNext())
+		{
+			VoteRecordDetails dets=(VoteRecordDetails)iterator.next();
+			VoteRecord thisTicket=VoteRecord.fromVoteRecordDetails(dets);
+			Link self = thisTicket.getLink("self");
+			thisTicket.removeLinks();
+			thisTicket.add(self);
+			elections.add(thisTicket);		
+		}
+		return elections.iterator();
 	}
 }

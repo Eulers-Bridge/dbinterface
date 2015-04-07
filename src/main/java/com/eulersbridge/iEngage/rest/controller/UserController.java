@@ -40,7 +40,6 @@ import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestE
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketsReadEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
@@ -204,7 +203,7 @@ public class UserController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{email}/voteReminder")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{email}"+ControllerConstants.VOTE_REMINDER_LABEL)
     public @ResponseBody ResponseEntity<VoteReminder> addVoteReminder(@PathVariable String email,
     		@RequestBody VoteReminder voteReminder) 
     {
@@ -256,7 +255,7 @@ public class UserController
 
 	*/
     
-    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{email}/voteRecord")
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{email}"+ControllerConstants.VOTE_RECORD_LABEL)
     public @ResponseBody ResponseEntity<VoteRecord> addVoteRecord(@PathVariable String email,
     		@RequestBody VoteRecord voteRecord) 
     {
@@ -292,6 +291,120 @@ public class UserController
     	return result;
     }
     
+	/**
+	 * Is passed all the necessary data to read voteReminders from the database. The
+	 * request must be a GET with the userId.
+	 * <p/>
+	 * This method will return the voteReminders read from the database.
+	 * 
+	 * @param userId
+	 *            the userId who has the voteReminder objects to be read.
+	 * @return the contacts.
+	 * 
+	 */
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}"+ControllerConstants.VOTE_REMINDERS_LABEL)
+	public @ResponseBody ResponseEntity<Iterator<VoteReminder>> findVoteReminders(@PathVariable String email,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
+			) 
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to find existing vote reminders. "+email);
+
+		ReadAllEvent userEvent;
+		AllReadEvent voteRemindersEvent;
+		ResponseEntity<Iterator<VoteReminder>> result;
+		
+		if (longValidator.isValid(email))
+		{
+			Long id=longValidator.validate(email);
+			if (LOG.isDebugEnabled()) LOG.debug("UserId supplied. - "+id);
+			userEvent =new ReadAllEvent(id);
+			voteRemindersEvent=userService.readVoteRemindersById(userEvent, sortDirection, pageNumber, pageLength);
+		}
+		else if (emailValidator.isValid(email))
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
+			voteRemindersEvent=userService.readVoteRemindersByEmail(new RequestReadUserEvent(email), sortDirection, pageNumber, pageLength);
+		}
+		else
+			return new ResponseEntity<Iterator<VoteReminder>>(HttpStatus.BAD_REQUEST);
+			
+
+		if (!voteRemindersEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<VoteReminder>>(HttpStatus.NOT_FOUND);
+		}
+		Iterator<VoteReminder> contactProfiles = VoteReminder.toVoteRemindersIterator(voteRemindersEvent.getDetails().iterator());
+
+		result = new ResponseEntity<Iterator<VoteReminder>>(contactProfiles, HttpStatus.OK);
+		
+		return result;
+	}
+    	
+	/**
+	 * Is passed all the necessary data to read voteRecords from the database. The
+	 * request must be a GET with the userId.
+	 * <p/>
+	 * This method will return the voteRecords read from the database.
+	 * 
+	 * @param userId
+	 *            the userId who has the voteRecord objects to be read.
+	 * @return the contacts.
+	 * 
+	 */
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}"+ControllerConstants.VOTE_RECORDS_LABEL)
+	public @ResponseBody ResponseEntity<Iterator<VoteRecord>> findVoteRecords(@PathVariable String email,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
+			) 
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to find existing vote records. "+email);
+
+		ReadAllEvent userEvent;
+		AllReadEvent voteRecordsEvent;
+		ResponseEntity<Iterator<VoteRecord>> result;
+		
+		if (longValidator.isValid(email))
+		{
+			Long id=longValidator.validate(email);
+			if (LOG.isDebugEnabled()) LOG.debug("UserId supplied. - "+id);
+			userEvent =new ReadAllEvent(id);
+			voteRecordsEvent=userService.readVoteRecordsById(userEvent, sortDirection, pageNumber, pageLength);
+		}
+		else if (emailValidator.isValid(email))
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
+			voteRecordsEvent=userService.readVoteRecordsByEmail(new RequestReadUserEvent(email), sortDirection, pageNumber, pageLength);
+		}
+		else
+			return new ResponseEntity<Iterator<VoteRecord>>(HttpStatus.BAD_REQUEST);
+			
+
+		if (!voteRecordsEvent.isEntityFound())
+		{
+			return new ResponseEntity<Iterator<VoteRecord>>(HttpStatus.NOT_FOUND);
+		}
+		Iterator<VoteRecord> contactProfiles = VoteRecord.toVoteRecordsIterator(voteRecordsEvent.getDetails().iterator());
+
+		result = new ResponseEntity<Iterator<VoteRecord>>(contactProfiles, HttpStatus.OK);
+		
+		return result;
+	}
+    	
     /**
      * Is passed all the necessary data to read a vote reminder from the database.
      * The request must be a GET with the vote record id presented
@@ -304,7 +417,7 @@ public class UserController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/voteReminder/{id}")
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+ControllerConstants.VOTE_REMINDER_LABEL+"/{id}")
 	public @ResponseBody ResponseEntity<VoteReminder> findVoteReminder(@PathVariable Long id) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve voteReminder. "+id);
@@ -330,7 +443,7 @@ public class UserController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/voteRecord/{id}")
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+ControllerConstants.VOTE_RECORD_LABEL+"/{id}")
 	public @ResponseBody ResponseEntity<VoteRecord> findVoteRecord(@PathVariable Long id) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve voteRecord. "+id);
@@ -356,7 +469,7 @@ public class UserController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.USER_LABEL+"/voteReminder/{id}")
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.USER_LABEL+ControllerConstants.VOTE_REMINDER_LABEL+"/{id}")
 	public @ResponseBody ResponseEntity<VoteReminder> deleteVoteReminder(@PathVariable Long id) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete voteReminder. "+id);
@@ -383,7 +496,7 @@ public class UserController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.USER_LABEL+"/voteRecord/{id}")
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.USER_LABEL+ControllerConstants.VOTE_RECORD_LABEL+"/{id}")
 	public @ResponseBody ResponseEntity<VoteRecord> deleteVoteRecord(@PathVariable Long id) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete voteRecord. "+id);
@@ -600,7 +713,7 @@ public class UserController
 		{
 			return new ResponseEntity<Iterator<Ticket>>(HttpStatus.NOT_FOUND);
 		}
-		Iterator<Ticket> contactProfiles = Ticket.toTicketsIterator(((TicketsReadEvent)supportsEvent).getTickets().iterator());
+		Iterator<Ticket> contactProfiles = Ticket.toTicketsIterator(supportsEvent.getDetails().iterator());
 
 		result = new ResponseEntity<Iterator<Ticket>>(contactProfiles, HttpStatus.OK);
 		

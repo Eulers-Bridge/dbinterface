@@ -5,8 +5,13 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.rest.controller.UserController;
 
@@ -137,5 +142,22 @@ public class VoteReminder extends ResourceSupport
 	public void setTimestamp(Long timestamp)
 	{
 		this.timestamp = timestamp;
+	}
+
+	public static Iterator<VoteReminder> toVoteRemindersIterator(
+			Iterator<? extends Details> iterator)
+	{
+		if (null==iterator) return null;
+		ArrayList <VoteReminder> elections=new ArrayList<VoteReminder>();
+		while(iterator.hasNext())
+		{
+			VoteReminderDetails dets=(VoteReminderDetails)iterator.next();
+			VoteReminder thisTicket=VoteReminder.fromVoteReminderDetails(dets);
+			Link self = thisTicket.getLink("self");
+			thisTicket.removeLinks();
+			thisTicket.add(self);
+			elections.add(thisTicket);		
+		}
+		return elections.iterator();
 	}
 }
