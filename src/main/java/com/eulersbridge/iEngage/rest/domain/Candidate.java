@@ -51,8 +51,10 @@ public class Candidate extends ResourceSupport
         candidate.setGivenName(candidateDetails.getGivenName());
         candidate.setFamilyName(candidateDetails.getFamilyName());
         candidate.setPositionId(candidateDetails.getPositionId());
-//    	candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
-    	candidate.setTicketId(candidateDetails.getTicketDetails().getNodeId());
+        Long ticketId=null;
+        if (candidateDetails.getTicketDetails()!=null)
+        	ticketId=candidateDetails.getTicketDetails().getNodeId();
+    	candidate.setTicketId(ticketId);
 
         // {!begin selfRel}
         candidate.add(linkTo(CandidateController.class).slash(name)
