@@ -70,10 +70,23 @@ public class NotificationTest
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.notifications.Notification#setupForSave(java.util.HashMap)}.
 	 */
 	@Test
-	public final void testSetupForSave()
+	public final void testSetupForSaveUsingNodeId()
 	{
 		User testData=DatabaseDataFixture.populateUserGnewitt();
 		when(userRepository.findOne(any(Long.class))).thenReturn(testData);
+
+		Boolean response=notification.setupForSave(repos);
+		assertTrue(response);
+		assertEquals(notification.getUser(),testData);
+	}
+
+	@Test
+	public final void testSetupForSaveUsingEmail()
+	{
+		User saveData=DatabaseDataFixture.populateUserGnewitt(),testData=DatabaseDataFixture.populateUserGnewitt();
+		saveData.setNodeId(null);
+		notification.setUser(saveData);
+		when(userRepository.findByEmail(any(String.class))).thenReturn(testData);
 
 		Boolean response=notification.setupForSave(repos);
 		assertTrue(response);
