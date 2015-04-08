@@ -266,7 +266,6 @@ public class UserEventHandler implements UserService, UserDetailsService
 			else
 			{
 				UserDetails result = removeConfidentialDetails(user.toUserDetails());
-				result.setEmail(null);
 				if (LOG.isDebugEnabled()) LOG.debug("Result - " + result);
 				response = new ReadUserEvent(requestReadUserEvent.getEmail(),
 						result);
