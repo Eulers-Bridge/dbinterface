@@ -34,6 +34,7 @@ public class Ticket extends Likeable
     private String colour;
     private String code;
 
+//TODO check if this is the right way to go.
     @Query("START n = node({self}) match (a:`User`)-[r:SUPPORTS]-(n) RETURN count(DISTINCT a) ")
     private Long numberOfSupporters;
 
