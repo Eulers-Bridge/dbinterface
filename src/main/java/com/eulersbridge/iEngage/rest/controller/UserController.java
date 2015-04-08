@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 import java.io.StringWriter;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.UUID;
 import javax.servlet.ServletContext;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
+import com.eulersbridge.iEngage.core.events.CreateEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -65,7 +67,9 @@ import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
 import com.eulersbridge.iEngage.core.services.ContactRequestService;
 import com.eulersbridge.iEngage.core.services.EmailService;
+import com.eulersbridge.iEngage.core.services.NotificationService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.rest.domain.Contact;
 import com.eulersbridge.iEngage.email.EmailConstants;
 
@@ -78,6 +82,7 @@ public class UserController
     @Autowired EmailService emailService;
     @Autowired LikesService likesService;
     @Autowired ContactRequestService contactRequestService;
+    @Autowired NotificationService notificationService;
     @Autowired ServletContext servletContext;
     @Autowired VelocityEngine velocityEngine;
 	@Autowired JavaMailSender emailSender;
@@ -586,7 +591,9 @@ public class UserController
 			userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
 		}
 		else
+		{
 			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+		}
 			 	
 		if (!userEvent.isEntityFound())
 		{
@@ -595,6 +602,8 @@ public class UserController
 		else
 		{
 			UserDetails dets=(UserDetails) userEvent.getDetails();
+			if (!isEmail)
+				dets.setEmail(null);
 			if (LOG.isDebugEnabled()) LOG.debug("dets - "+dets);
 			UserProfile restUser=UserProfile.fromUserDetails(dets);
 			result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
@@ -786,7 +795,30 @@ public class UserController
 					ContactRequestDetails dets=(ContactRequestDetails) evt.getDetails();
 					
 					restContactRequest=ContactRequest.fromContactRequestDetails(dets);
-					// Create a new request.
+					// Create a new contact request.
+					Notification notification = new Notification();
+					notification.setNotificationBody(dets);
+					notification.setRead(false);
+					notification.setType(NotificationConstants.CONTACT_REQUEST);
+					notification.setTimestamp(Calendar.getInstance().getTimeInMillis());
+					UserDetails userDets=(UserDetails)userEvent.getDetails();
+					Long contacteeId=userService.findUserId(userDets.getEmail());
+					notification.setUserId(contacteeId);
+					
+					
+					if (LOG.isDebugEnabled())
+					{
+						LOG.debug("userEvent - "+userEvent);
+						LOG.debug("Notification - "+notification);
+						LOG.debug("Notification details - "+notification.toNotificationDetails());
+					}
+			        CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
+			        CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
+			        if (notificationCreatedEvent.isFailed())
+			        {
+			        	if (LOG.isDebugEnabled()) LOG.debug("Notification failed.");
+			        }
+
 					result = new ResponseEntity<ContactRequest>(restContactRequest,HttpStatus.OK);
 				}
 			}
