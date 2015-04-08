@@ -47,7 +47,9 @@ public class CandidateController {
     createCandidate(@RequestBody Candidate candidate){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create candidate "+candidate);
         CreateCandidateEvent createCandidateEvent = new CreateCandidateEvent(candidate.toCandidateDetails());
-        CreatedEvent candidateCreatedEvent = candidateService.createCandidate(createCandidateEvent);
+        CreatedEvent candidateCreatedEvent=null;
+        if ((candidate.getUserId()!=null)&&(candidate.getPositionId()!=null))
+        	candidateCreatedEvent = candidateService.createCandidate(createCandidateEvent);
         ResponseEntity<Candidate> response;
         if(null==candidateCreatedEvent)
         {

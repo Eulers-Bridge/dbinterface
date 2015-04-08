@@ -49,15 +49,23 @@ public class TicketEventHandler implements TicketService{
     	Long electionId=ticketDetails.getElectionId();
         
     	if (LOG.isDebugEnabled()) LOG.debug("Finding election with nodeId = "+electionId);
-    	Election elect=electionRepository.findOne(electionId);
-
     	TicketCreatedEvent ticketCreatedEvent;
-    	if (elect!=null)
+
+    	if (electionId!=null)
     	{
-            Ticket ticket = Ticket.fromTicketDetails(ticketDetails);
-            ticket.setElection(elect);
-            Ticket result = ticketRepository.save(ticket);
-            ticketCreatedEvent = new TicketCreatedEvent(result.toTicketDetails());
+	    	Election elect=electionRepository.findOne(electionId);
+	
+	    	if (elect!=null)
+	    	{
+	            Ticket ticket = Ticket.fromTicketDetails(ticketDetails);
+	            ticket.setElection(elect);
+	            Ticket result = ticketRepository.save(ticket);
+	            ticketCreatedEvent = new TicketCreatedEvent(result.toTicketDetails());
+	    	}
+	    	else
+	    	{
+	    		ticketCreatedEvent=TicketCreatedEvent.electionNotFound(electionId);
+	    	}
     	}
     	else
     	{

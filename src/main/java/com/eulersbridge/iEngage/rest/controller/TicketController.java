@@ -39,8 +39,11 @@ public class TicketController {
     createTicket(@RequestBody Ticket ticket){
         if (LOG.isInfoEnabled()) LOG.info("attempting to create ticket "+ticket);
         CreateTicketEvent createTicketEvent = new CreateTicketEvent(ticket.toTicketDetails());
-        CreatedEvent ticketCreatedEvent = ticketService.createTicket(createTicketEvent);
-        ResponseEntity<Ticket> response;
+        ResponseEntity<Ticket> response;       
+        CreatedEvent ticketCreatedEvent=null;
+        
+        if (ticket.getElectionId()!=null)
+	        ticketCreatedEvent = ticketService.createTicket(createTicketEvent);
         if(null==ticketCreatedEvent)
         {
             response = new ResponseEntity<Ticket>(HttpStatus.BAD_REQUEST);
