@@ -42,14 +42,27 @@ public class Notification
     	UserRepository userRepo=(UserRepository)repos.get(UserRepository.class.getSimpleName());
     	if (userRepo!=null)
 		{
-			if ((getUser()!=null)&&(getUser().getNodeId()!=null))
-			{	
-				User result=userRepo.findOne(getUser().getNodeId());
+    		if (LOG.isDebugEnabled()) LOG.debug("User Repository available.");
+			if (getUser()!=null)
+			{
+	    		if (LOG.isDebugEnabled()) LOG.debug("User available."+getUser());
+				User result=null;
+				if (getUser().getNodeId()!=null)
+					result=userRepo.findOne(getUser().getNodeId());
+					
+				if (getUser().getEmail()!=null)
+					result=userRepo.findByEmail(getUser().getEmail());
+
+					
 				if (result!=null)
 				{
 					user=result;
 					response=true;
 				}
+			}
+			else
+			{
+				if (LOG.isErrorEnabled()) LOG.error("An issue with supplied user."+getUser());
 			}
 		}
 		return response;
