@@ -52,7 +52,7 @@ public class NotificationEventHandler implements NotificationService
 		this.userRepository=userRepository;
 		this.contactRequestRepository=contactRequestRepository;
 		if (LOG.isDebugEnabled()) LOG.debug("User Repo name - "+UserRepository.class.getSimpleName());
-		repos.put(notificationRepository.getClass().getSimpleName(), notificationRepository);
+		repos.put(NotificationRepository.class.getSimpleName(), notificationRepository);
 		repos.put(UserRepository.class.getSimpleName(), userRepository);
 		repos.put(ContactRequestRepository.class.getSimpleName(), contactRequestRepository);
 	}
@@ -84,7 +84,11 @@ public class NotificationEventHandler implements NotificationService
 		if (LOG.isDebugEnabled()) LOG.debug("Notification - "+notif);
 		if (LOG.isDebugEnabled()) LOG.debug("Result - "+result);
 
-		CreatedEvent evt=new CreatedEvent(result.toNotificationDetails());
+		CreatedEvent evt;
+		if (result!=null)
+			evt=new CreatedEvent(result.toNotificationDetails());
+		else
+			evt=CreatedEvent.failed(dets);
 		return evt;
 	}
 
@@ -93,9 +97,14 @@ public class NotificationEventHandler implements NotificationService
 			RequestReadEvent requestReadNotificationEvent)
 	{
 		Long nodeId=requestReadNotificationEvent.getNodeId();
-		// TODO Auto-generated method stub
-		ReadEvent evt=new ReadEvent(nodeId);
-		return evt;
+        Notification notification = notificationRepository.findOne(nodeId);
+        
+        ReadEvent readNotificationEvent;
+        if(notification != null)
+            readNotificationEvent = new ReadEvent(notification.getNodeId(), notification.toNotificationDetails());
+        else readNotificationEvent = ReadEvent.notFound(requestReadNotificationEvent.getNodeId());
+	
+        return readNotificationEvent;
 	}
 
 	@Override
@@ -153,20 +162,57 @@ public class NotificationEventHandler implements NotificationService
 	@Override
 	public DeletedEvent deleteNotification(DeleteEvent deleteNotificationEvent)
 	{
-		Long nodeId=deleteNotificationEvent.getNodeId();
-		DeletedEvent evt=new DeletedEvent(nodeId);
-		// TODO Auto-generated method stub
-		return evt;
+        if (LOG.isDebugEnabled()) LOG.debug("Entered deleteNotification Event= "+deleteNotificationEvent);
+        
+        Long nodeId=deleteNotificationEvent.getNodeId();
+		DeletedEvent evt;
+
+        Notification notification = notificationRepository.findOne(nodeId);
+        if(null == notification)
+            evt = DeletedEvent.notFound(nodeId);
+        else
+        {
+            notificationRepository.delete(notification);
+            evt = new DeletedEvent(nodeId);
+        }
+        return evt;
 	}
 
 	@Override
 	public UpdatedEvent updateNotification(UpdateEvent updateNotificationEvent)
 	{
-		Long nodeId=updateNotificationEvent.getNodeId();
-		Details details=updateNotificationEvent.getDetails();
-		// TODO Auto-generated method stub
-		UpdatedEvent evt=new UpdatedEvent(nodeId, details);
+		UpdatedEvent evt;
+		if (updateNotificationEvent!=null)
+		{
+			Long nodeId=updateNotificationEvent.getNodeId();
+	        if(LOG.isDebugEnabled()) LOG.debug("notificationId is " + nodeId);
+			Details details=updateNotificationEvent.getDetails();
+	        NotificationDetails notificationDetails = (NotificationDetails) details;
+	        Notification notification = Notification.fromNotificationDetails(notificationDetails);
+	        Notification notificationOld = notificationRepository.findOne(nodeId);
+
+	        if(notificationOld == null)
+	        {
+	            if(LOG.isDebugEnabled()) LOG.debug("notification entity not found " + nodeId);
+	            evt = UpdatedEvent.notFound(nodeId);
+	        }
+	        else
+	        {
+	            Notification result = notificationRepository.save(notification);
+	            if (result!=null)
+	            {
+		            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+		            evt = new UpdatedEvent(result.getNodeId(), result.toNotificationDetails());
+	            }
+	            else
+	            	evt=UpdatedEvent.notFound(nodeId);
+	        }
+			
+		}
+		else
+			evt=UpdatedEvent.notFound(null);
 		return evt;
+
 	}
 
 }
