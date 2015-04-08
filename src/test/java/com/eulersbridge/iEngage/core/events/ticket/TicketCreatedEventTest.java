@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +21,7 @@ public class TicketCreatedEventTest {
     Long ticketId = new Long(11);
     String name = "ticket name";
     String logo = "logo";
-    Set<String> pictures;
+    Set<PhotoDetails> pictures;
     String information = "informations";
     ArrayList<Long> candidateIds;
 
@@ -27,9 +30,8 @@ public class TicketCreatedEventTest {
 
     @Before
     public void setUp() throws Exception {
-        pictures = new HashSet<>();
-        pictures.add("pic1");
-        pictures.add("pic2");
+        pictures = new HashSet<PhotoDetails>();
+        pictures.add(DatabaseDataFixture.populatePhoto1().toPhotoDetails());
         candidateIds = new ArrayList<>();
         candidateIds.add(new Long(0));
         candidateIds.add(new Long(1));
@@ -38,7 +40,7 @@ public class TicketCreatedEventTest {
         ticketDetails.setNodeId(ticketId);
         ticketDetails.setName(name);
         ticketDetails.setLogo(logo);
-        ticketDetails.setPictures(pictures);
+        ticketDetails.setPhotos(pictures);
         ticketDetails.setInformation(information);
 //        ticketDetails.setCandidateIds(candidateIds);
     }

@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.Query;
@@ -35,6 +36,10 @@ public class Ticket extends Likeable
 
     @Query("START n = node({self}) match (a:`User`)-[r:SUPPORTS]-(n) RETURN count(DISTINCT a) ")
     private Long numberOfSupporters;
+
+    @Fetch
+    @RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.BOTH)
+	private Iterable<Photo> photos;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -72,9 +77,10 @@ public class Ticket extends Likeable
         ticketDetails.setChararcterCode(getCode());
 
         ticketDetails.setNumberOfSupporters(numberOfSupporters);
-
         
         ticketDetails.setCandidateNames(toCandidateNames(candidates));
+
+        ticketDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos()));	
 
 
         if (LOG.isTraceEnabled()) LOG.trace("ticketDetails; "+ ticketDetails);
@@ -124,6 +130,8 @@ public class Ticket extends Likeable
         buff.append(getInformation());
         buff.append(", candidates = ");
         buff.append(getCandidates());
+        buff.append(", photos = ");
+        buff.append(getPhotos());
         buff.append(", colour = ");
         buff.append(getColour());
         buff.append(" ]");
@@ -232,6 +240,22 @@ public class Ticket extends Likeable
 	}
 
 	/**
+	 * @return the photos
+	 */
+	public Iterable<Photo> getPhotos()
+	{
+		return photos;
+	}
+
+	/**
+	 * @param photos the photos to set
+	 */
+	public void setPhotos(Iterable<Photo> photos)
+	{
+		this.photos = photos;
+	}
+
+	/**
 	 * @return the election
 	 */
 	public Election getElection()
@@ -263,6 +287,8 @@ public class Ticket extends Likeable
         {
     		result = prime * result
     				+ ((candidates == null) ? 0 : candidates.hashCode());
+    		result = prime * result
+    				+ ((photos == null) ? 0 : photos.hashCode());
     		result = prime * result
     				+ ((election == null) ? 0 : election.hashCode());
     		result = prime * result
@@ -298,6 +324,11 @@ public class Ticket extends Likeable
 				if (other.candidates != null) return false;
 			}
 			else if (!candidates.equals(other.candidates)) return false;
+			if (photos == null)
+			{
+				if (other.photos != null) return false;
+			}
+			else if (!photos.equals(other.photos)) return false;
 			if (election == null)
 			{
 				if (other.election != null) return false;

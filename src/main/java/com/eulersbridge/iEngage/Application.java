@@ -34,6 +34,7 @@ import com.eulersbridge.iEngage.database.domain.converters.CandidateToOwnerConve
 import com.eulersbridge.iEngage.database.domain.converters.EventToOwnerConverter;
 import com.eulersbridge.iEngage.database.domain.converters.NewsArticleToOwnerConverter;
 import com.eulersbridge.iEngage.database.domain.converters.PhotoAlbumToOwnerConverter;
+import com.eulersbridge.iEngage.database.domain.converters.TicketToOwnerConverter;
 import com.eulersbridge.iEngage.database.domain.converters.UserToOwnerConverter;
 import com.eulersbridge.iEngage.security.UserPermissionEvaluator;
 import com.fasterxml.jackson.databind.Module;
@@ -113,6 +114,7 @@ public class Application extends Neo4jConfiguration
 		registry.addConverter(new PhotoAlbumToOwnerConverter());
 		registry.addConverter(new UserToOwnerConverter());
 		registry.addConverter(new CandidateToOwnerConverter());
+		registry.addConverter(new TicketToOwnerConverter());
 		
 		return conversionService;
 	}

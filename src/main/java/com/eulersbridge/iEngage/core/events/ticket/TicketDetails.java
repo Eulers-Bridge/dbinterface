@@ -1,11 +1,10 @@
 package com.eulersbridge.iEngage.core.events.ticket;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 /**
  * @author Yikai Gong
@@ -15,7 +14,7 @@ public class TicketDetails extends Details
 {
 	private String name;
 	private String logo;
-	private Set<String> pictures;
+	private Iterable<PhotoDetails> photos;
 	private String information;
 	private String colour;
     private Iterable<String> candidateNames;
@@ -35,8 +34,8 @@ public class TicketDetails extends Details
 		buff.append(getName());
 		buff.append(", logo = ");
 		buff.append(getLogo());
-		buff.append(", pictures = ");
-		buff.append(getPictures());
+		buff.append(", photos = ");
+		buff.append(getPhotos());
 		buff.append(", information = ");
 		buff.append(getInformation());
 		buff.append(", colour = ");
@@ -69,7 +68,7 @@ public class TicketDetails extends Details
 			result = prime * result + ((name == null) ? 0 : name.hashCode());
 			result = prime * result + ((logo == null) ? 0 : logo.hashCode());
 			result = prime * result
-					+ ((pictures == null) ? 0 : pictures.hashCode());
+					+ ((photos == null) ? 0 : photos.hashCode());
 			result = prime * result
 					+ ((information == null) ? 0 : information.hashCode());
 			result = prime * result
@@ -103,6 +102,11 @@ public class TicketDetails extends Details
 				if (other.name != null) return false;
 			}
 			else if (!name.equals(other.name)) return false;
+			if (photos == null)
+			{
+				if (other.photos != null) return false;
+			}
+			else if (!photos.equals(other.photos)) return false;
 			if (electionId == null)
 			{
 				if (other.electionId != null) return false;
@@ -147,14 +151,14 @@ public class TicketDetails extends Details
 		this.logo = logo;
 	}
 
-	public Set<String> getPictures()
+	public Iterable<PhotoDetails> getPhotos()
 	{
-		return pictures;
+		return photos;
 	}
 
-	public void setPictures(Set<String> pictures)
+	public void setPhotos(Iterable<PhotoDetails> photos)
 	{
-		this.pictures = pictures;
+		this.photos = photos;
 	}
 
 	public String getInformation()

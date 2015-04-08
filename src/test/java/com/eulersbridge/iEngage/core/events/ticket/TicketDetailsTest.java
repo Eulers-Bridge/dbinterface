@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,11 +17,12 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class TicketDetailsTest {
+public class TicketDetailsTest
+{
     Long ticketId = new Long(11);
     String name = "ticket name";
     String logo = "logo";
-    Set<String> pictures;
+    Set<PhotoDetails> pictures = new HashSet<PhotoDetails>();
     String information = "informations";
     ArrayList<Long> candidateIds;
 
@@ -26,9 +30,7 @@ public class TicketDetailsTest {
 
     @Before
     public void setUp() throws Exception {
-        pictures = new HashSet<>();
-        pictures.add("pic1");
-        pictures.add("pic2");
+        pictures.add(DatabaseDataFixture.populatePhoto1().toPhotoDetails());
         candidateIds = new ArrayList<>();
         candidateIds.add(new Long(0));
         candidateIds.add(new Long(1));
@@ -37,7 +39,7 @@ public class TicketDetailsTest {
         ticketDetails.setNodeId(ticketId);
         ticketDetails.setName(name);
         ticketDetails.setLogo(logo);
-        ticketDetails.setPictures(pictures);
+        ticketDetails.setPhotos(pictures);
         ticketDetails.setInformation(information);
 //        ticketDetails.setCandidateIds(candidateIds);
 
@@ -88,14 +90,14 @@ public class TicketDetailsTest {
 
     @Test
     public void testGetPictures() throws Exception {
-        assertEquals("pics does not match", pictures, ticketDetails.getPictures());
+        assertEquals("pics does not match", pictures, ticketDetails.getPhotos());
     }
 
     @Test
     public void testSetPictures() throws Exception {
         TicketDetails ticketDetails1 = new TicketDetails();
-        ticketDetails1.setPictures(pictures);
-        assertEquals("pics does not match", pictures, ticketDetails1.getPictures());
+        ticketDetails1.setPhotos(pictures);
+        assertEquals("pics does not match", pictures, ticketDetails1.getPhotos());
     }
 
     @Test

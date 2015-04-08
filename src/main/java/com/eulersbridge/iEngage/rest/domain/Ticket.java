@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.rest.controller.TicketController;
 
@@ -11,7 +12,6 @@ import org.springframework.hateoas.ResourceSupport;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -24,7 +24,7 @@ public class Ticket extends ResourceSupport{
     private Long ticketId=null;
     private String name=null;
     private String logo=null;
-    private Set<String> pictures=null;
+    private Iterable<PhotoDetails> photos=null;
     private String information=null;
     private String colour=null;
     private Iterable<String> candidateNames=null;
@@ -49,7 +49,7 @@ public class Ticket extends ResourceSupport{
 	        ticket.setTicketId(ticketDetails.getNodeId());
 	        ticket.setName(ticketDetails.getName());
 	        ticket.setLogo(ticketDetails.getLogo());
-	        ticket.setPictures(ticketDetails.getPictures());
+	        ticket.setPhotos(ticketDetails.getPhotos());
 	        ticket.setInformation(ticketDetails.getInformation());
 	        ticket.setColour(ticketDetails.getColour());
 	        ticket.setCandidateNames(ticketDetails.getCandidateNames());
@@ -73,7 +73,6 @@ public class Ticket extends ResourceSupport{
         ticketDetails.setNodeId(getTicketId());
         ticketDetails.setName(getName());
         ticketDetails.setLogo(getLogo());
-        ticketDetails.setPictures(getPictures());
         ticketDetails.setInformation(getInformation());
         ticketDetails.setColour(getColour());
         ticketDetails.setElectionId(getElectionId());
@@ -105,12 +104,14 @@ public class Ticket extends ResourceSupport{
         this.logo = logo;
     }
 
-    public Set<String> getPictures() {
-        return pictures;
+    public Iterable<PhotoDetails> getPhotos()
+    {
+        return photos;
     }
 
-    public void setPictures(Set<String> pictures) {
-        this.pictures = pictures;
+    public void setPhotos(Iterable<PhotoDetails> pictures)
+    {
+        this.photos = pictures;
     }
 
     public String getInformation() {
@@ -186,7 +187,7 @@ public class Ticket extends ResourceSupport{
 	public String toString()
 	{
 		return "Ticket [ticketId=" + ticketId + ", name=" + name + ", logo="
-				+ logo + ", pictures=" + pictures + ", information="
+				+ logo + ", photos=" + photos + ", information="
 				+ information + ", candidateIds=" + candidateNames + ", electionId = "+electionId+"]";
 	}
 
