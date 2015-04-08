@@ -1154,7 +1154,7 @@ public class UserEventHandlerTest
 		assertEquals(dets.getInstitutionId(),user.getInstitution().getNodeId());
 		assertNull(dets.getPassword());
 		assertNull(dets.getYearOfBirth());
-		assertNull(dets.getEmail());
+		assertEquals(dets.getEmail(),user.getEmail());
 	}
 	@Test
 	public void testReadUserByContactNumberNotFound()
