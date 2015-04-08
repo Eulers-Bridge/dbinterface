@@ -1,6 +1,10 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
@@ -34,6 +38,10 @@ public class Candidate extends Likeable
     @Fetch
     @RelatedTo(type = DatabaseDomainConstants.IS_ON_TICKET_LABEL, direction= Direction.BOTH)
     private Ticket ticket;
+
+    @Fetch
+    @RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.BOTH)
+	private Iterable<Photo> photos;
 
     private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
@@ -110,6 +118,18 @@ public class Candidate extends Likeable
         	candidateDetails.setTicketDetails(null);
         else candidateDetails.setTicketDetails(getTicket().toTicketDetails());
 
+	    HashSet<PhotoDetails> pictures=new HashSet<PhotoDetails>();
+	    if (getPhotos()!=null)
+	    {
+		    Iterator<Photo> iter=getPhotos().iterator();
+		    while(iter.hasNext())
+		    {
+		    	Photo url=iter.next();
+		    	pictures.add(url.toPhotoDetails());
+		    }
+	    }
+	    candidateDetails.setPhotos(pictures);	
+	    	
         if (LOG.isTraceEnabled()) LOG.trace("candidateDetails; "+ candidateDetails);
         return candidateDetails;
     }
@@ -125,6 +145,8 @@ public class Candidate extends Likeable
         buff.append(getPolicyStatement());
         buff.append(", ticket = ");
         buff.append(getTicket());
+        buff.append(", photos = ");
+        buff.append(getPhotos());
         buff.append(" ]");
         retValue = buff.toString();
         if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -195,6 +217,17 @@ public class Candidate extends Likeable
         this.ticket = ticket;
     }
 
+	public Iterable<Photo> getPhotos()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("getPhotos() = "+photos);
+		return photos;
+	}
+	
+	public void setPhotos(Iterable<Photo> picture)
+	{
+		this.photos=picture;
+	}
+	
     /*
          * (non-Javadoc)
          *
@@ -217,6 +250,7 @@ public class Candidate extends Likeable
 			result = prime * result + ((user == null) ? 0 : user.hashCode());
 			result = prime * result + ((position == null) ? 0 : position.hashCode());
 			result = prime * result + ((ticket == null) ? 0 : ticket.hashCode());
+			result = prime * result + ((photos == null) ? 0 : photos.hashCode());
 		}
 		return result;
 	}
@@ -272,6 +306,12 @@ public class Candidate extends Likeable
 				if (other.ticket != null) return false;
 			}
 			else if (!ticket.equals(other.ticket)) return false;
+			
+			if (photos == null)
+			{
+				if (other.photos != null) return false;
+			}
+			else if (!photos.equals(other.photos)) return false;
 		}
 		return true;
 	}

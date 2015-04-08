@@ -146,7 +146,7 @@ public class CandidateControllerTest
 			tNodeId=dets.getTicketDetails().getNodeId();
 		}
 		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
-				"\",\"profilePicture\":"+dets.getPictures()+",\"userId\":"+dets.getUserId().intValue()+",\"givenName\":\""+dets.getGivenName()+
+				"\",\"photos\":"+dets.getPhotos()+",\"userId\":"+dets.getUserId().intValue()+",\"givenName\":\""+dets.getGivenName()+
 				"\",\"familyName\":\""+dets.getFamilyName()+"\",\"positionId\":"+dets.getPositionId().intValue()+
 				",\"ticketId\":"+tNodeId+
 //				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+

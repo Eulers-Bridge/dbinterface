@@ -1,20 +1,20 @@
 package com.eulersbridge.iEngage.core.events.candidate;
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
-
 /**
  * @author Yikai Gong
  */
 
-public class CandidateDetails extends Details {
+public class CandidateDetails extends Details
+{
     private String information;
     private String policyStatement;
-    private Set<String> pictures;
+	private Iterable<PhotoDetails> photos;
     private Long userId;
     private String givenName;
     private String familyName;
@@ -24,7 +24,8 @@ public class CandidateDetails extends Details {
     private static Logger LOG = LoggerFactory.getLogger(CandidateDetails.class);
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuffer buff = new StringBuffer("[ id = ");
         String retValue;
         buff.append(getNodeId());
@@ -32,8 +33,8 @@ public class CandidateDetails extends Details {
         buff.append(getInformation());
         buff.append(", policyStatement = ");
         buff.append(getPolicyStatement());
-        buff.append(", pictures = ");
-        buff.append(getPictures());
+        buff.append(", photos = ");
+        buff.append(getPhotos());
         buff.append(", userId = ");
         buff.append(getUserId());
         buff.append(", positionId = ");
@@ -49,7 +50,8 @@ public class CandidateDetails extends Details {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode()
+    {
         final int prime = 31;
         int result = 1;
         if (getNodeId()!=null)
@@ -60,7 +62,7 @@ public class CandidateDetails extends Details {
         {
             result = prime * result	+ ((information == null) ? 0 : information.hashCode());
             result = prime * result + ((policyStatement == null) ? 0 : policyStatement.hashCode());
-            result = prime * result + ((pictures == null) ? 0 : pictures.hashCode());
+            result = prime * result + ((photos == null) ? 0 : photos.hashCode());
             result = prime * result + ((userId == null) ? 0 : userId.hashCode());
             result = prime * result + ((positionId == null) ? 0 : positionId.hashCode());
         }
@@ -124,14 +126,6 @@ public class CandidateDetails extends Details {
 
     public void setPolicyStatement(String policyStatement) {
         this.policyStatement = policyStatement;
-    }
-
-    public Set<String> getPictures() {
-        return pictures;
-    }
-
-    public void setPictures(Set<String> pictures) {
-        this.pictures = pictures;
     }
 
 	/**
@@ -198,12 +192,29 @@ public class CandidateDetails extends Details {
 		this.positionId = positionId;
 	}
 
-    public TicketDetails getTicketDetails() {
+    public TicketDetails getTicketDetails()
+    {
         return ticketDetails;
     }
 
-    public void setTicketDetails(TicketDetails ticketDetails) {
+    public void setTicketDetails(TicketDetails ticketDetails)
+    {
         this.ticketDetails = ticketDetails;
     }
 
+	/**
+	 * @return the photos
+	 */
+	public Iterable<PhotoDetails> getPhotos()
+	{
+		return photos;
+	}
+
+	/**
+	 * @param photos the photos to set
+	 */
+	public void setPhotos(Iterable<PhotoDetails> photos)
+	{
+		this.photos = photos;
+	}
 }

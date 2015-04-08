@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.CandidateController;
 
 import org.slf4j.Logger;
@@ -10,7 +11,6 @@ import org.springframework.hateoas.ResourceSupport;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -23,7 +23,7 @@ public class Candidate extends ResourceSupport
     private Long candidateId;
     private String information;
     private String policyStatement;
-    private Set<String> profilePicture;
+	private Iterable<PhotoDetails> photos;
     private Long userId;
     private String givenName;
     private String familyName;
@@ -46,7 +46,7 @@ public class Candidate extends ResourceSupport
         candidate.setCandidateId(candidateDetails.getNodeId());
         candidate.setInformation(candidateDetails.getInformation());
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
-        candidate.setProfilePicture(candidateDetails.getPictures());
+        candidate.setPhotos(candidateDetails.getPhotos());
         candidate.setUserId(candidateDetails.getUserId());
         candidate.setGivenName(candidateDetails.getGivenName());
         candidate.setFamilyName(candidateDetails.getFamilyName());
@@ -127,12 +127,13 @@ public class Candidate extends ResourceSupport
         this.policyStatement = policyStatement;
     }
 
-    public Set<String> getProfilePicture() {
-        return profilePicture;
+    public Iterable<PhotoDetails> getPhotos()
+    {
+        return photos;
     }
 
-    public void setProfilePicture(Set<String> pictures) {
-        this.profilePicture = pictures;
+    public void setPhotos(Iterable<PhotoDetails> pictures) {
+        this.photos = pictures;
     }
 
     public Long getUserId()

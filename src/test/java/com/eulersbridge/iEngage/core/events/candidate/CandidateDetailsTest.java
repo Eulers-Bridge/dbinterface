@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +23,7 @@ public class CandidateDetailsTest
     String candidateEmail = "test@test.com";
     String information = "info";
     String policyStatement = "policy";
-    Set<String> pictures = new HashSet<>();
+    Set<PhotoDetails> pictures = new HashSet<PhotoDetails>();
     Long userId = 1414l;
     Long positionId = 4141l;
 
@@ -30,8 +33,8 @@ public class CandidateDetailsTest
         candidateDetails.setNodeId(candidateId);
         candidateDetails.setInformation(information);
         candidateDetails.setPolicyStatement(policyStatement);
-        pictures.add("http://url");
-        candidateDetails.setPictures(pictures);
+        pictures.add(DatabaseDataFixture.populatePhoto1().toPhotoDetails());
+        candidateDetails.setPhotos(pictures);
         candidateDetails.setUserId(userId);
         candidateDetails.setPositionId(positionId);
         assertNotNull("candidateDetails is null", candidateDetails);
@@ -80,14 +83,14 @@ public class CandidateDetailsTest
 
     @Test
     public void testGetPictures() throws Exception {
-        assertEquals("pictures does not match", pictures, candidateDetails.getPictures());
+        assertEquals("pictures does not match", pictures, candidateDetails.getPhotos());
     }
 
     @Test
     public void testSetPictures() throws Exception {
         CandidateDetails candidateDetails1 = new CandidateDetails();
-        candidateDetails1.setPictures(pictures);
-        assertEquals("pictures does not match", pictures, candidateDetails1.getPictures());
+        candidateDetails1.setPhotos(pictures);
+        assertEquals("pictures does not match", pictures, candidateDetails1.getPhotos());
     }
 
     @Test

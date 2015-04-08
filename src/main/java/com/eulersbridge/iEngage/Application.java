@@ -30,6 +30,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.access.PermissionEvaluator;
 
 import com.eulersbridge.iEngage.core.domain.Login;
+import com.eulersbridge.iEngage.database.domain.converters.CandidateToOwnerConverter;
 import com.eulersbridge.iEngage.database.domain.converters.EventToOwnerConverter;
 import com.eulersbridge.iEngage.database.domain.converters.NewsArticleToOwnerConverter;
 import com.eulersbridge.iEngage.database.domain.converters.PhotoAlbumToOwnerConverter;
@@ -111,6 +112,7 @@ public class Application extends Neo4jConfiguration
 		registry.addConverter(new NewsArticleToOwnerConverter());
 		registry.addConverter(new PhotoAlbumToOwnerConverter());
 		registry.addConverter(new UserToOwnerConverter());
+		registry.addConverter(new CandidateToOwnerConverter());
 		
 		return conversionService;
 	}
