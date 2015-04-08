@@ -6,6 +6,7 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import com.eulersbridge.iEngage.rest.controller.UserController;
@@ -27,6 +28,7 @@ public class UserProfile extends ResourceSupport
 	private String contactNumber;
 	private Long institutionId;
 	private String email;
+	private PhotoDetails profilePhoto;
 
 	private static Logger LOG = LoggerFactory.getLogger(User.class);
 
@@ -107,6 +109,22 @@ public class UserProfile extends ResourceSupport
 		this.institutionId = institutionId;
 	}
 
+	/**
+	 * @return the profilePhoto
+	 */
+	public PhotoDetails getProfilePhoto()
+	{
+		return profilePhoto;
+	}
+
+	/**
+	 * @param profilePhoto the profilePhoto to set
+	 */
+	public void setProfilePhoto(PhotoDetails profilePhoto)
+	{
+		this.profilePhoto = profilePhoto;
+	}
+
 	public UserDetails toUserDetails()
 	{
 		UserDetails details = new UserDetails(email);
@@ -133,6 +151,16 @@ public class UserProfile extends ResourceSupport
 		user.nationality = readUser.getNationality();
 		user.contactNumber = readUser.getContactNumber();
 		user.institutionId = readUser.getInstitutionId();
+		Iterable<PhotoDetails> photos=readUser.getPhotos();
+		user.profilePhoto=null;
+		if (photos!=null)
+		{
+			Iterator<PhotoDetails> iterator=photos.iterator();
+			if (iterator.hasNext())
+			{
+				user.profilePhoto=iterator.next();
+			}
+		}
 
 		// TODOCUMENT. Adding the library, the above extends ResourceSupport and
 		// this section is all that is actually needed in our model to add
