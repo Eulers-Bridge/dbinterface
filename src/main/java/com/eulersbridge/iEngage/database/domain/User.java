@@ -43,7 +43,10 @@ public class User
 	private Iterable<User> contacts;
 	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
 	private Set<Like> likes;
-	
+    @Fetch
+    @RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.BOTH)
+	private Iterable<Photo> photos;
+
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
 	public User()
@@ -146,6 +149,8 @@ public class User
 		buff.append(getYearOfBirth());
 		buff.append(", personality = ");
 		buff.append(getPersonality());
+		buff.append(", photos = ");
+		buff.append(getPhotos());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isTraceEnabled()) LOG.trace("toString() = "+retValue);
@@ -305,6 +310,22 @@ public class User
 		this.personality = personality;
 	}
 
+	/**
+	 * @return the photos
+	 */
+	public Iterable<Photo> getPhotos()
+	{
+		return photos;
+	}
+
+	/**
+	 * @param photos the photos to set
+	 */
+	public void setPhotos(Iterable<Photo> photos)
+	{
+		this.photos = photos;
+	}
+
 	public UserDetails toUserDetails() 
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
@@ -326,6 +347,9 @@ public class User
 	    	if (LOG.isDebugEnabled()) LOG.debug("personality = "+getPersonality());
 	    }
 	    details.setHasPersonality(personality);
+	    
+	    details.setPhotos(Photo.photosToPhotoDetails(getPhotos()));	
+	    
 	    if (LOG.isTraceEnabled()) LOG.trace("userDetails "+details);
 
 	    return details;
@@ -388,6 +412,7 @@ public class User
 			result = prime * result
 					+ ((personality == null) ? 0 : personality.hashCode());
 			result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+			result = prime * result + ((photos == null) ? 0 : photos.hashCode());
 			result = prime
 					* result
 					+ ((verificationToken == null) ? 0 : verificationToken
@@ -476,6 +501,11 @@ public class User
 				if (other.roles != null)
 					return false;
 			} else if (!roles.equals(other.roles))
+				return false;
+			if (photos == null) {
+				if (other.photos != null)
+					return false;
+			} else if (!photos.equals(other.photos))
 				return false;
 			if (verificationToken == null) {
 				if (other.verificationToken != null)

@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.rest.controller.UserController;
 
@@ -27,6 +28,7 @@ public class User extends ResourceSupport
 	private boolean hasPersonality=false;
 	private	Long institutionId; 
 	private String email;
+	private Iterable<PhotoDetails> photos;
 
     private static Logger LOG = LoggerFactory.getLogger(User.class);
 	public String getEmail() 
@@ -134,6 +136,22 @@ public class User extends ResourceSupport
 		this.hasPersonality = hasPersonality;
 	}
 
+	/**
+	 * @return the photos
+	 */
+	public Iterable<PhotoDetails> getPhotos()
+	{
+		return photos;
+	}
+
+	/**
+	 * @param photos the photos to set
+	 */
+	public void setPhotos(Iterable<PhotoDetails> photos)
+	{
+		this.photos = photos;
+	}
+
 	public UserDetails toUserDetails() 
 	  {
 		  UserDetails details = new UserDetails(email);
@@ -166,6 +184,7 @@ public class User extends ResourceSupport
 	    user.accountVerified = readUser.isAccountVerified();
 	    user.institutionId = readUser.getInstitutionId();
 	    user.hasPersonality = readUser.hasPersonality();
+	    user.setPhotos(readUser.getPhotos());
 	    
 	    String simpleName=User.class.getSimpleName();
 	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
@@ -198,6 +217,8 @@ public class User extends ResourceSupport
 			buff.append(getYearOfBirth());
 			buff.append(", password = ");
 			buff.append(getPassword());
+			buff.append(", photos = ");
+			buff.append(getPhotos());
 			buff.append(", contactNumber = ");
 			buff.append(getContactNumber());
 			buff.append(", institutionId = ");

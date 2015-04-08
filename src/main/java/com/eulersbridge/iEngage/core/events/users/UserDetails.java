@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 /**
  * @author Greg Newitt
@@ -19,6 +20,7 @@ public class UserDetails extends Details
 	private String givenName;
 	private String familyName;
 	private String gender;
+	private Iterable<PhotoDetails> photos;
 	private String nationality;
 	private String yearOfBirth;
 	private String password;
@@ -138,6 +140,39 @@ public class UserDetails extends Details
 	 */
 	public void setAccountVerified(boolean accountVerified) {
 		this.accountVerified = accountVerified;
+	}
+	
+	/**
+	 * @return the hasPersonality
+	 */
+	public Boolean hasPersonality()
+	{
+		return this.hasPersonality;
+	}
+	
+	/**
+	 * @param hasPersonality the hasPersonality to set
+	 */
+	public void setHasPersonality(Boolean personality)
+	{
+		this.hasPersonality=personality;
+	}
+
+	/**
+	 * @return the photos
+	 */
+	public Iterable<PhotoDetails> getPhotos()
+	{
+		return photos;
+	}
+
+	/**
+	 * @param photos the photos to set
+	 */
+	public void setPhotos(Iterable<PhotoDetails> photos)
+	{
+		this.photos=photos;
+		
 	}
 	
 	@Override
@@ -264,14 +299,4 @@ public class UserDetails extends Details
 		return true;
 	}
 
-	public Boolean hasPersonality()
-	{
-		return this.hasPersonality;
-	}
-	
-	public void setHasPersonality(Boolean personality)
-	{
-		this.hasPersonality=personality;
-	}
-	
 }
