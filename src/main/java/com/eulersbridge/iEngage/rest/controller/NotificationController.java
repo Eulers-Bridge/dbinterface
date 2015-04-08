@@ -160,7 +160,7 @@ public class NotificationController
         if((notificationDeletedEvent!=null)&&(notificationDeletedEvent.isEntityFound()))
         {
             Notification notification = Notification.fromNotificationDetails((NotificationDetails) notificationDeletedEvent.getDetails());
-            if (LOG.isDebugEnabled()) LOG.debug(notification.getNodeId()+" deleted.");
+            if (LOG.isDebugEnabled()) LOG.debug(notificationId+" deleted.");
             response = new ResponseEntity<Boolean>(true,HttpStatus.OK);
         }
         else
