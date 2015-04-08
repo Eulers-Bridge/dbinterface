@@ -49,8 +49,7 @@ public class Notification
 				User result=null;
 				if (getUser().getNodeId()!=null)
 					result=userRepo.findOne(getUser().getNodeId());
-					
-				if (getUser().getEmail()!=null)
+				else if (getUser().getEmail()!=null)
 					result=userRepo.findByEmail(getUser().getEmail());
 
 					
