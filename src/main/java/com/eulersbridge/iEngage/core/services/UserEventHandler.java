@@ -230,6 +230,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 		publicDetails.setGender(userDetails.getGender());
 		publicDetails.setNationality(userDetails.getNationality());
 		publicDetails.setInstitutionId(userDetails.getInstitutionId());
+		publicDetails.setPhotos(userDetails.getPhotos());
 
 		return publicDetails;
 	}
