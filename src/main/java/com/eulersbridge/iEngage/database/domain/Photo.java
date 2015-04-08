@@ -3,6 +3,9 @@
  */
 package com.eulersbridge.iEngage.database.domain;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -234,6 +237,23 @@ public class Photo extends Likeable
 		if (LOG.isTraceEnabled()) LOG.trace("photo " + photo);
 		return photo;
 	}
+	
+    public static Iterable<PhotoDetails> photosToPhotoDetails(Iterable<Photo> photos)
+    {
+	    HashSet<PhotoDetails> pictures=new HashSet<PhotoDetails>();
+	    if (photos!=null)
+	    {
+		    Iterator<Photo> iter=photos.iterator();
+		    while(iter.hasNext())
+		    {
+		    	Photo url=iter.next();
+		    	pictures.add(url.toPhotoDetails());
+		    }
+	    }
+	    return pictures;
+    }
+
+
 
 	/*
 	 * (non-Javadoc)

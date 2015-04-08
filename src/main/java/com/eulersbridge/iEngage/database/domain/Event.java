@@ -1,14 +1,11 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
@@ -96,17 +93,7 @@ public class Event extends Likeable
 	    		eventDetails.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
 	    }
         eventDetails.setDescription(getDescription());
-	    HashSet<PhotoDetails> pictures=new HashSet<PhotoDetails>();
-	    if (getPhotos()!=null)
-	    {
-		    Iterator<Photo> iter=getPhotos().iterator();
-		    while(iter.hasNext())
-		    {
-		    	Photo url=iter.next();
-		    	pictures.add(url.toPhotoDetails());
-		    }
-	    }
-	    eventDetails.setPhotos(pictures);	
+	    eventDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos()));	
         eventDetails.setVolunteerPositions(getVolunteerPositions());
         eventDetails.setCreated(getCreated());
         eventDetails.setOrganizer(getOrganizer());

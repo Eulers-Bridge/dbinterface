@@ -1,8 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -19,7 +17,6 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 @NodeEntity
 public class NewsArticle extends Likeable
@@ -210,17 +207,7 @@ public class NewsArticle extends Likeable
 	    if (likes==null)
 	       	details.setLikes(0);
 	    else details.setLikes(likes.size());
-	    HashSet<PhotoDetails> pictures=new HashSet<PhotoDetails>();
-	    if (getPhotos()!=null)
-	    {
-		    Iterator<Photo> iter=getPhotos().iterator();
-		    while(iter.hasNext())
-		    {
-		    	Photo url=iter.next();
-		    	pictures.add(url.toPhotoDetails());
-		    }
-	    }
-	    details.setPhotos(pictures);	
+	    details.setPhotos(Photo.photosToPhotoDetails(getPhotos()));	
 	    	
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails "+details);
 

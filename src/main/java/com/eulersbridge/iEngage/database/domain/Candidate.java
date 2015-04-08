@@ -1,10 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import java.util.HashSet;
-import java.util.Iterator;
-
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
@@ -118,17 +114,7 @@ public class Candidate extends Likeable
         	candidateDetails.setTicketDetails(null);
         else candidateDetails.setTicketDetails(getTicket().toTicketDetails());
 
-	    HashSet<PhotoDetails> pictures=new HashSet<PhotoDetails>();
-	    if (getPhotos()!=null)
-	    {
-		    Iterator<Photo> iter=getPhotos().iterator();
-		    while(iter.hasNext())
-		    {
-		    	Photo url=iter.next();
-		    	pictures.add(url.toPhotoDetails());
-		    }
-	    }
-	    candidateDetails.setPhotos(pictures);	
+	    candidateDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos()));	
 	    	
         if (LOG.isTraceEnabled()) LOG.trace("candidateDetails; "+ candidateDetails);
         return candidateDetails;
