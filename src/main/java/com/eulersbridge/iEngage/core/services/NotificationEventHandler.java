@@ -44,7 +44,7 @@ public class NotificationEventHandler implements NotificationService
     NotificationRepository notificationRepository;
     UserRepository userRepository;
     ContactRequestRepository contactRequestRepository;
-    HashMap repos=new HashMap<String,GraphRepository<?>>();
+    HashMap<String,GraphRepository<?>> repos=new HashMap<String,GraphRepository<?>>();
     
 	public NotificationEventHandler(NotificationRepository notificationRepository, UserRepository userRepository, ContactRequestRepository contactRequestRepository)
 	{
