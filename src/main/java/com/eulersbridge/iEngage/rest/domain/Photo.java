@@ -30,6 +30,7 @@ public class Photo extends ResourceSupport
 	Long date;
 	Long ownerId;
 	Integer sequence;
+	private boolean inappropriateContent=false;
 
     private static Logger LOG = LoggerFactory.getLogger(Photo.class);
 
@@ -158,6 +159,22 @@ public class Photo extends ResourceSupport
 		this.sequence = sequence;
 	}
 
+	/**
+	 * @return the inappropriateContent
+	 */
+	public boolean isInappropriateContent()
+	{
+		return inappropriateContent;
+	}
+
+	/**
+	 * @param inappropriateContent the inappropriateContent to set
+	 */
+	public void setInappropriateContent(boolean inappropriateContent)
+	{
+		this.inappropriateContent = inappropriateContent;
+	}
+
 	public static Photo fromPhotoDetails(PhotoDetails photoDetails)
     {
     	Photo photo = new Photo();
@@ -171,6 +188,7 @@ public class Photo extends ResourceSupport
         photo.setThumbNailUrl(photoDetails.getThumbNailUrl());
         photo.setOwnerId(photoDetails.getOwnerId());
         photo.setSequence(photoDetails.getSequence());
+        photo.setInappropriateContent(photoDetails.isInappropriateContent());
 
 	    // {!begin selfRel}
         photo.add(linkTo(PhotoController.class).slash(name).slash(photo.nodeId).withSelfRel());
@@ -190,7 +208,7 @@ public class Photo extends ResourceSupport
 
     public PhotoDetails toPhotoDetails()
     {
-    	PhotoDetails photoDetails = new PhotoDetails(getNodeId(), getUrl(), getThumbNailUrl(), getTitle(), getDescription(), getDate(), getSequence(), getOwnerId());
+    	PhotoDetails photoDetails = new PhotoDetails(getNodeId(), getUrl(), getThumbNailUrl(), getTitle(), getDescription(), getDate(), getSequence(), getOwnerId(),isInappropriateContent());
         if (LOG.isTraceEnabled()) LOG.trace("photoDetails "+photoDetails);
         return photoDetails;
     }

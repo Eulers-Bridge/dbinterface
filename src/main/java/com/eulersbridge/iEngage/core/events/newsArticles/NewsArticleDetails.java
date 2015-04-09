@@ -17,6 +17,7 @@ public class NewsArticleDetails extends Details
 	private Long date;
 	private String creatorEmail;
 	private Long institutionId;
+	private boolean inappropriateContent;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticleDetails.class);
 	
@@ -101,6 +102,20 @@ public class NewsArticleDetails extends Details
 		this.institutionId = institutionId;
 	}
 	
+	/**
+	 * @return the inappropriateContent
+	 */
+	public boolean isInappropriateContent()
+	{
+		return inappropriateContent;
+	}
+	/**
+	 * @param inappropriateContent the inappropriateContent to set
+	 */
+	public void setInappropriateContent(boolean inappropriateContent)
+	{
+		this.inappropriateContent = inappropriateContent;
+	}
 	@Override
 	public String toString()
 	{

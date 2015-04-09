@@ -99,7 +99,7 @@ public class PhotoControllerTest
 	static String setupContent(PhotoDetails dets)
 	{
 		String content=	"{\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+"\",\"description\":\""+dets.getDescription()+
-						"\",\"sequence\":"+dets.getSequence()+",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+"}";
+						"\",\"sequence\":"+dets.getSequence()+",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"inappropriateContent\":"+dets.isInappropriateContent()+"}";
 		if (LOG.isDebugEnabled()) LOG.debug(content);
 		return content;
 	}
@@ -107,7 +107,7 @@ public class PhotoControllerTest
 	String setupReturnedContent(PhotoDetails dets)
 	{
 		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+
-			"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"sequence\":"+dets.getSequence()+
+			"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"sequence\":"+dets.getSequence()+",\"inappropriateContent\":"+dets.isInappropriateContent()+
 			",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photos\"}]}";
 		return returnedContent;
 	}

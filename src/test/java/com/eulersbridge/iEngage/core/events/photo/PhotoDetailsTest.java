@@ -35,7 +35,7 @@ public class PhotoDetailsTest
 	@Test
 	public final void testPhotoDetails2()
 	{
-		dets=new PhotoDetails(testPhoto.getNodeId(), testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence(),testPhoto.getOwner().getNodeId());
+		dets=new PhotoDetails(testPhoto.getNodeId(), testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence(),testPhoto.getOwner().getNodeId(),testPhoto.isInappropriateContent());
 		assertNotNull("Not yet implemented",dets);
 	}
 

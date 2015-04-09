@@ -24,6 +24,7 @@ public class NewsArticle extends ResourceSupport
 	private Integer likes;
 	private Long date;
 	private String creatorEmail;
+	private boolean inappropriateContent=false;
 
     private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 
@@ -41,6 +42,7 @@ public class NewsArticle extends ResourceSupport
 	    news.photos = readNews.getPhotos();
 	    news.title = readNews.getTitle();
 	    news.institutionId = readNews.getInstitutionId();
+	    news.setInappropriateContent(readNews.isInappropriateContent());
 	    
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.
@@ -83,6 +85,7 @@ public class NewsArticle extends ResourceSupport
 	    details.setDate(getDate());
 	    details.setCreatorEmail(creatorEmail);
 	    details.setInstitutionId(getInstitutionId());
+	    details.setInappropriateContent(isInappropriateContent());
 
 	    return details;
 	}
@@ -196,6 +199,22 @@ public class NewsArticle extends ResourceSupport
 	 */
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
+	}
+
+	/**
+	 * @return the inappropriateContent
+	 */
+	public boolean isInappropriateContent()
+	{
+		return inappropriateContent;
+	}
+
+	/**
+	 * @param inappropriateContent the inappropriateContent to set
+	 */
+	public void setInappropriateContent(boolean inappropriateContent)
+	{
+		this.inappropriateContent = inappropriateContent;
 	}
 
 	public static Iterator<NewsArticle> toArticlesIterator(Iterator<NewsArticleDetails> iter)

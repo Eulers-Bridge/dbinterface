@@ -18,6 +18,7 @@ public class PhotoDetails extends Details
 	Integer sequence;
 	Long date;
 	Long ownerId;
+	private boolean inappropriateContent;
 	
 	/**
 	 * @param nodeId
@@ -30,7 +31,7 @@ public class PhotoDetails extends Details
 	 * @param ownerId
 	 */
 	public PhotoDetails(Long nodeId, String url, String thumbNailUrl, String title,
-			String description, Long date, Integer sequence, Long ownerId)
+			String description, Long date, Integer sequence, Long ownerId, boolean inappropriateContent)
 	{
 		super(nodeId);
 		this.url = url;
@@ -40,6 +41,7 @@ public class PhotoDetails extends Details
 		this.date = date;
 		this.ownerId = ownerId;
 		this.sequence = sequence;
+		this.inappropriateContent = inappropriateContent;
 	}
 
 	/**
@@ -144,6 +146,22 @@ public class PhotoDetails extends Details
 	public void setSequence(Integer sequence)
 	{
 		this.sequence = sequence;
+	}
+
+	/**
+	 * @return the inappropriateContent
+	 */
+	public boolean isInappropriateContent()
+	{
+		return inappropriateContent;
+	}
+
+	/**
+	 * @param inappropriateContent the inappropriateContent to set
+	 */
+	public void setInappropriateContent(boolean inappropriateContent)
+	{
+		this.inappropriateContent = inappropriateContent;
 	}
 
 	/* (non-Javadoc)

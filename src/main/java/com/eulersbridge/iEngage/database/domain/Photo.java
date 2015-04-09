@@ -32,7 +32,8 @@ public class Photo extends Likeable
 	Long date;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction = Direction.INCOMING)
 	private Owner owner;
-
+	private boolean inappropriateContent;
+	
 	private static Logger LOG = LoggerFactory.getLogger(Photo.class);
 
 	/**
@@ -42,7 +43,7 @@ public class Photo extends Likeable
 	 * @param date
 	 */
 	public Photo(String url, String thumbNailUrl, String title, String description, Long date,
-			Integer sequence)
+			Integer sequence, boolean inappropriateContent)
 	{
 		super();
 		this.url = url;
@@ -51,6 +52,7 @@ public class Photo extends Likeable
 		this.description = description;
 		this.date = date;
 		this.sequence = sequence;
+		setInappropriateContent(inappropriateContent);
 	}
 
 	public Photo()
@@ -193,6 +195,22 @@ public class Photo extends Likeable
 		this.sequence = sequence;
 	}
 
+	/**
+	 * @return the inappropriateContent
+	 */
+	public boolean isInappropriateContent()
+	{
+		return inappropriateContent;
+	}
+
+	/**
+	 * @param inappropriateContent the inappropriateContent to set
+	 */
+	public void setInappropriateContent(boolean inappropriateContent)
+	{
+		this.inappropriateContent = inappropriateContent;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -214,7 +232,7 @@ public class Photo extends Likeable
         if (getOwner()!=null)
         	ownerId=getOwner().getNodeId();
 		PhotoDetails photoDetails = new PhotoDetails(getNodeId(), getUrl(), getThumbNailUrl(),
-				getTitle(), getDescription(), getDate(), getSequence(),ownerId);
+				getTitle(), getDescription(), getDate(), getSequence(),ownerId, isInappropriateContent());
 		if (LOG.isTraceEnabled()) LOG.trace("photoDetails; " + photoDetails);
 		return photoDetails;
 	}
@@ -224,7 +242,7 @@ public class Photo extends Likeable
 		if (LOG.isTraceEnabled()) LOG.trace("fromElectionDetails()");
 		Photo photo = new Photo(photoDetails.getUrl(), photoDetails.getThumbNailUrl(),photoDetails.getTitle(),
 				photoDetails.getDescription(), photoDetails.getDate(),
-				photoDetails.getSequence());
+				photoDetails.getSequence(),photoDetails.isInappropriateContent());
 		if (photoDetails.getNodeId() != null)
 			photo.setNodeId(photoDetails.getNodeId());
 		if (photoDetails.getOwnerId() != null)

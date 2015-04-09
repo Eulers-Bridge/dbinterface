@@ -33,6 +33,7 @@ public class NewsArticle extends Likeable
 	private User creator;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH) @Fetch
 	private NewsFeed newsFeed;
+	private boolean inappropriateContent;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 	
@@ -162,6 +163,22 @@ public class NewsArticle extends Likeable
 		this.newsFeed = newsFeed;
 	}
 
+	/**
+	 * @return the inappropriateContent
+	 */
+	public boolean isInappropriateContent()
+	{
+		return inappropriateContent;
+	}
+
+	/**
+	 * @param inappropriateContent the inappropriateContent to set
+	 */
+	public void setInappropriateContent(boolean inappropriateContent)
+	{
+		this.inappropriateContent = inappropriateContent;
+	}
+
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
@@ -228,6 +245,7 @@ public class NewsArticle extends Likeable
 		    newsArt.creator=creator;
 		    NewsFeed nf=new NewsFeed();
 			newsArt.newsFeed=nf;
+			newsArt.setInappropriateContent(newsArtDetails.isInappropriateContent());
 		    if (LOG.isTraceEnabled()) LOG.trace("newsArt "+newsArt);
 
 		    return newsArt;

@@ -167,19 +167,19 @@ public class DatabaseDataFixture
 	{
 		Long nodeId=1l;
 		Long ownerId=2l;
-		Photo photo=populatePhoto("http://localhost:8080/photos/photo1.jpg","http://localhost:8080/photos/thumb1.jpg","Test Photo", "Contents of the Test Photo", Calendar.getInstance().getTimeInMillis(), nodeId,ownerId,3);
+		Photo photo=populatePhoto("http://localhost:8080/photos/photo1.jpg","http://localhost:8080/photos/thumb1.jpg","Test Photo", "Contents of the Test Photo", Calendar.getInstance().getTimeInMillis(), nodeId,ownerId,3,false);
 		return photo;
 	}
 	public static Photo populatePhoto2()
 	{
 		Long nodeId=2l;
 		Long ownerId=1l;
-		Photo photo=populatePhoto("http://localhost:8080/photos/photo2.jpg","http://localhost:8080/photos/thumb2.jpg","Test Photo2", "Contents of the Test Photo2", Calendar.getInstance().getTimeInMillis(), nodeId,ownerId,1);
+		Photo photo=populatePhoto("http://localhost:8080/photos/photo2.jpg","http://localhost:8080/photos/thumb2.jpg","Test Photo2", "Contents of the Test Photo2", Calendar.getInstance().getTimeInMillis(), nodeId,ownerId,1,false);
 		return photo;
 	}
-	public static Photo populatePhoto(String url, String thumbNailUrl, String title, String content, Long date,Long id, Long ownerId, Integer sequence)
+	public static Photo populatePhoto(String url, String thumbNailUrl, String title, String content, Long date,Long id, Long ownerId, Integer sequence, boolean inappropriateContent)
 	{
-		Photo photo=new Photo(url, thumbNailUrl, title, content, date, sequence);
+		Photo photo=new Photo(url, thumbNailUrl, title, content, date, sequence,inappropriateContent);
 		Long nodeId=id;
 		photo.setNodeId(nodeId);
 		Owner owner=new Owner(ownerId);

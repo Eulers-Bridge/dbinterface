@@ -120,7 +120,9 @@ public class NewsControllerTest
 		returnedContent.append(dets.getDate());
 		returnedContent.append(",\"creatorEmail\":\"");
 		returnedContent.append(dets.getCreatorEmail());
-		returnedContent.append("\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/");
+		returnedContent.append("\",\"inappropriateContent\":");
+		returnedContent.append(dets.isInappropriateContent());
+		returnedContent.append(",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/newsArticle/");
 		returnedContent.append(dets.getNodeId());
 		returnedContent.append("\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/newsArticle/");
 		returnedContent.append(dets.getNodeId());
