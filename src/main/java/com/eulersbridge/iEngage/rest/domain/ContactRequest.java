@@ -5,10 +5,15 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
 
 /**
@@ -175,6 +180,24 @@ public class ContactRequest extends ResourceSupport
 				+ contactDetails + ", requestDate=" + requestDate
 				+ ", responseDate=" + responseDate + ", accepted=" + accepted
 				+ ", rejected=" + rejected + ", userId=" + userId + "]";
+	}
+
+	public static Iterator<ContactRequest> toContactRequestIterator(
+			Iterator<? extends Details> iterator)
+	{
+		if (null==iterator) return null;
+		ArrayList <ContactRequest> contactRequests=new ArrayList<ContactRequest>();
+		while(iterator.hasNext())
+		{
+			ContactRequestDetails dets=(ContactRequestDetails)iterator.next();
+			ContactRequest thisContactRequest=ContactRequest.fromContactRequestDetails(dets);
+			Link self = thisContactRequest.getLink("self");
+			thisContactRequest.removeLinks();
+			if (self!=null)
+				thisContactRequest.add(self);
+			contactRequests.add(thisContactRequest);		
+		}
+		return contactRequests.iterator();
 	}
 
 
