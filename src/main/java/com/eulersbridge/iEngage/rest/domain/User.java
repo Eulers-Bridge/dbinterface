@@ -29,6 +29,8 @@ public class User extends ResourceSupport
 	private	Long institutionId; 
 	private String email;
 	private Iterable<PhotoDetails> photos;
+	private boolean trackingOff=false;
+	private boolean optOutDataCollection=false;
 
     private static Logger LOG = LoggerFactory.getLogger(User.class);
 	public String getEmail() 
@@ -152,6 +154,38 @@ public class User extends ResourceSupport
 		this.photos = photos;
 	}
 
+	/**
+	 * @return the trackingOn
+	 */
+	public boolean isTrackingOff()
+	{
+		return trackingOff;
+	}
+
+	/**
+	 * @param trackingOn the trackingOn to set
+	 */
+	public void setTrackingOff(boolean trackingOff)
+	{
+		this.trackingOff = trackingOff;
+	}
+
+	/**
+	 * @return the optOutDataCollection
+	 */
+	public boolean isOptOutDataCollection()
+	{
+		return optOutDataCollection;
+	}
+
+	/**
+	 * @param optOutDataCollection the optOutDataCollection to set
+	 */
+	public void setOptOutDataCollection(boolean optOutDataCollection)
+	{
+		this.optOutDataCollection = optOutDataCollection;
+	}
+
 	public UserDetails toUserDetails() 
 	  {
 		  UserDetails details = new UserDetails(email);
@@ -165,6 +199,8 @@ public class User extends ResourceSupport
 	    details.setContactNumber(getContactNumber());
 	    details.setAccountVerified(isAccountVerified());
 	    details.setInstitutionId(getInstitutionId());
+	    details.setOptOutDataCollection(isOptOutDataCollection());
+	    details.setTrackingOff(isTrackingOff());
 
 	    return details;
 	  }
@@ -173,17 +209,19 @@ public class User extends ResourceSupport
 	  public static User fromUserDetails(UserDetails readUser) {
 	    User user = new User();
 
-	    user.email = readUser.getEmail();
-	    user.givenName = readUser.getGivenName();
-	    user.familyName = readUser.getFamilyName();
-	    user.gender = readUser.getGender();
-	    user.nationality = readUser.getNationality();
-	    user.yearOfBirth = readUser.getYearOfBirth();
-	    user.password = readUser.getPassword();
-	    user.contactNumber = readUser.getContactNumber();
-	    user.accountVerified = readUser.isAccountVerified();
-	    user.institutionId = readUser.getInstitutionId();
-	    user.hasPersonality = readUser.hasPersonality();
+	    user.setEmail(readUser.getEmail());
+	    user.setGivenName(readUser.getGivenName());
+	    user.setFamilyName(readUser.getFamilyName());
+	    user.setGender(readUser.getGender());
+	    user.setNationality(readUser.getNationality());
+	    user.setYearOfBirth(readUser.getYearOfBirth());
+	    user.setPassword(readUser.getPassword());
+	    user.setContactNumber(readUser.getContactNumber());
+	    user.setAccountVerified(readUser.isAccountVerified());
+	    user.setInstitutionId(readUser.getInstitutionId());
+	    user.setHasPersonality(readUser.hasPersonality());
+	    user.setTrackingOff(readUser.isTrackingOff());
+	    user.setOptOutDataCollection(readUser.isOptOutDataCollection());
 	    user.setPhotos(readUser.getPhotos());
 	    
 	    String simpleName=User.class.getSimpleName();

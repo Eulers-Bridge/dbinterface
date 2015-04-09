@@ -35,6 +35,8 @@ public class User
 	private String contactNumber;
 	private String roles;
 	private boolean accountVerified=false;
+	private boolean optOutDataCollection;
+	private boolean trackingOff;
 	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
 	@Fetch private Institution institution;
 	@RelatedTo(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction=Direction.BOTH)
@@ -326,6 +328,54 @@ public class User
 		this.photos = photos;
 	}
 
+	/**
+	 * @return the optOutDataCollection
+	 */
+	public boolean getOptOutDataCollection()
+	{
+		return optOutDataCollection;
+	}
+
+	/**
+	 * @param optOutDataCollection the optOutDataCollection to set
+	 */
+	public void setOptOutDataCollection(boolean optOutDataCollection)
+	{
+		this.optOutDataCollection = optOutDataCollection;
+	}
+
+	/**
+	 * @return the trackingOff
+	 */
+	public boolean isTrackingOff()
+	{
+		return trackingOff;
+	}
+
+	/**
+	 * @param trackingOff the trackingOff to set
+	 */
+	public void setTrackingOff(boolean trackingOn)
+	{
+		this.trackingOff = trackingOn;
+	}
+
+	/**
+	 * @return the contacts
+	 */
+	public Iterable<User> getContacts()
+	{
+		return contacts;
+	}
+
+	/**
+	 * @param contacts the contacts to set
+	 */
+	public void setContacts(Iterable<User> contacts)
+	{
+		this.contacts = contacts;
+	}
+
 	public UserDetails toUserDetails() 
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
@@ -371,6 +421,8 @@ public class User
 		    user.contactNumber=userDetails.getContactNumber();
 		    user.yearOfBirth=userDetails.getYearOfBirth();
 		    user.accountVerified=userDetails.isAccountVerified();
+		    user.setTrackingOff(userDetails.isTrackingOff());
+		    user.setOptOutDataCollection(userDetails.isOptOutDataCollection());
 		    Institution inst=new Institution();
 		    inst.setNodeId(userDetails.getInstitutionId());
 		    user.institution=inst;

@@ -162,6 +162,8 @@ public class UserControllerTest
 				",\"institutionId\":"+dets.getInstitutionId().intValue()+
 				",\"email\":\""+dets.getEmail()+
 				"\",\"photos\":"+dets.getPhotos()+
+				",\"trackingOff\":"+dets.isTrackingOff()+
+				",\"optOutDataCollection\":"+dets.isOptOutDataCollection()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/"+dets.getEmail()+
 				"/\"}]}";
 	}
@@ -430,6 +432,8 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
 		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
+		.andExpect(jsonPath("$.trackingOff",is(dets.isTrackingOff())))
+		.andExpect(jsonPath("$.optOutDataCollection",is(dets.isOptOutDataCollection())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
@@ -529,6 +533,8 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
 		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
+		.andExpect(jsonPath("$.trackingOff",is(dets.isTrackingOff())))
+		.andExpect(jsonPath("$.optOutDataCollection",is(dets.isOptOutDataCollection())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
@@ -566,6 +572,8 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
 		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
+		.andExpect(jsonPath("$.trackingOff",is(dets.isTrackingOff())))
+		.andExpect(jsonPath("$.optOutDataCollection",is(dets.isOptOutDataCollection())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))

@@ -27,6 +27,8 @@ public class UserDetails extends Details
 	private String contactNumber;
 	private boolean accountVerified=false;
 	private boolean hasPersonality=false;
+	private boolean optOutDataCollection=false;
+	private boolean trackingOff=false;
 	private	Long institutionId;
 	
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
@@ -175,6 +177,38 @@ public class UserDetails extends Details
 		
 	}
 	
+	/**
+	 * @return the optOutDataCollection
+	 */
+	public Boolean isOptOutDataCollection()
+	{
+		return optOutDataCollection;
+	}
+
+	/**
+	 * @param optOutDataCollection the optOutDataCollection to set
+	 */
+	public void setOptOutDataCollection(Boolean optOutDataCollection)
+	{
+		this.optOutDataCollection = optOutDataCollection;
+	}
+
+	/**
+	 * @return the trackingOff
+	 */
+	public Boolean isTrackingOff()
+	{
+		return trackingOff;
+	}
+
+	/**
+	 * @param trackingOff the trackingOff to set
+	 */
+	public void setTrackingOff(Boolean trackingOff)
+	{
+		this.trackingOff = trackingOff;
+	}
+
 	@Override
 	public String toString()
 	{
