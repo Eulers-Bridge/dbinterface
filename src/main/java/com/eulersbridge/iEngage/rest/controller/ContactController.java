@@ -231,12 +231,12 @@ public class ContactController
 
 		*/
 		@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.CONTACT_LABEL+"/{contactRequestId}")
-		public @ResponseBody ResponseEntity<Contact> rejectContact(@PathVariable Long contactRequestId) 
+		public @ResponseBody ResponseEntity<ContactRequest> rejectContact(@PathVariable Long contactRequestId) 
 		{
 			if (LOG.isInfoEnabled()) LOG.info("Attempting to reject contact request from "+contactRequestId);
 
-			ResponseEntity<Contact> result;
-			Contact restContact;
+			ResponseEntity<ContactRequest> result;
+			ContactRequest restContact;
 
 			ReadContactRequestEvent readContactRequestEvent=new ReadContactRequestEvent(contactRequestId);
 			ReadEvent rEvt=contactRequestService.readContactRequest(readContactRequestEvent);
@@ -251,19 +251,19 @@ public class ContactController
 				UpdatedEvent uEvt=contactRequestService.rejectContactRequest(acceptContactRequestEvent);
 				if (uEvt.isEntityFound())
 				{
-					ContactDetails cDets=(ContactDetails)uEvt.getDetails();
-					restContact=Contact.fromContactDetails(cDets);
-					result = new ResponseEntity<Contact>(restContact,HttpStatus.OK);
+					ContactRequestDetails cDets=(ContactRequestDetails)uEvt.getDetails();
+					restContact=ContactRequest.fromContactRequestDetails(cDets);
+					result = new ResponseEntity<ContactRequest>(restContact,HttpStatus.OK);
 					if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
 				}
 				else
 				{
-					result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
+					result = new ResponseEntity<ContactRequest>(HttpStatus.NOT_FOUND);
 				}
 			}
 			else
 			{
-				result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
+				result = new ResponseEntity<ContactRequest>(HttpStatus.NOT_FOUND);
 			}
 			return result;
 		}
