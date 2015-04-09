@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 import java.io.StringWriter;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.UUID;
 import javax.servlet.ServletContext;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreateEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -36,11 +34,6 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
-import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
@@ -69,8 +62,6 @@ import com.eulersbridge.iEngage.core.services.ContactRequestService;
 import com.eulersbridge.iEngage.core.services.EmailService;
 import com.eulersbridge.iEngage.core.services.NotificationService;
 import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
-import com.eulersbridge.iEngage.rest.domain.Contact;
 import com.eulersbridge.iEngage.email.EmailConstants;
 
 @RestController
@@ -796,6 +787,55 @@ public class UserController
 	    	emailService.sendEmail(userEvent.getVerificationEmail());
 	    	return new ResponseEntity<User>(restUser,HttpStatus.CREATED);
     	}
+    }
+    
+    /**
+     * Is passed all the necessary data to resend the verification email.
+     * The request must be a GET with the email addressed in the
+     * url.
+     * <p/>
+     * This method will return the user object.
+     * The verification email will also be resent. 
+     * 
+     * @param email the user email address passed across in the URL.
+     * @return the user object returned by the Graph Database.
+     * 
+
+	*/
+    
+    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.EMAIL_VERIFICATION_LABEL+"/{email}/resendEmail")
+    public @ResponseBody ResponseEntity<User> resendVerificationEmail(@PathVariable String email) 
+    {
+    	if (LOG.isInfoEnabled()) LOG.info("attempting to resend verification email to user "+email);
+    	
+    	UserCreatedEvent userEvent=userService.resendVerificationEmail(new RequestReadUserEvent(email));
+
+    	ResponseEntity<User> response;
+    	
+    	if (null==userEvent)
+    	{
+    		response = new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+    	}
+    	else if (!userEvent.isInstituteFound())
+    	{
+    		response = new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+    	}
+    	else if (!userEvent.isUserUnique())
+    	{
+    		response = new ResponseEntity<User>(HttpStatus.CONFLICT);
+    	}
+    	else if (null==userEvent.getEmail())
+    	{
+    		response = new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+    	}
+    	else
+    	{
+	    	User restUser=User.fromUserDetails((UserDetails) userEvent.getDetails());
+	    	if (LOG.isDebugEnabled()) LOG.debug(userEvent.getVerificationEmail().toString());
+	    	emailService.sendEmail(userEvent.getVerificationEmail());
+	    	response = new ResponseEntity<User>(restUser,HttpStatus.OK);
+    	}
+    	return response;
     }
     
     /**

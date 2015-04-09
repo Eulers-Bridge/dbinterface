@@ -83,6 +83,8 @@ public interface UserService
 	public AllReadEvent readVoteRecordsById(ReadAllEvent userEvent, Direction sortDirection, int pageNumber, int pageLength);
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
-	public AllReadEvent readVoteRecordsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection, int pageNumber, int pageLength);	
+	public AllReadEvent readVoteRecordsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection, int pageNumber, int pageLength);
+	
+	UserCreatedEvent resendVerificationEmail(RequestReadUserEvent createUserEvent);	
 }
 

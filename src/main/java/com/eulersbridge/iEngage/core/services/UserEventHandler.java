@@ -161,6 +161,33 @@ public class UserEventHandler implements UserService, UserDetailsService
 	}
 
 	@Override
+	public UserCreatedEvent resendVerificationEmail(RequestReadUserEvent createUserEvent)
+	{
+		String userEmail = createUserEvent.getEmail();
+		UserCreatedEvent result;
+		User createdUser = userRepository.findByEmail(createUserEvent.getEmail());
+		if (createdUser!=null)
+		{
+			Iterable<VerificationToken> tokens = createdUser.getVerificationToken();
+			Iterator<VerificationToken> tokenIter = tokens.iterator();
+			VerificationToken token=null;
+			
+			if (tokenIter.hasNext())
+				token=tokenIter.next();
+	
+			if (LOG.isDebugEnabled())
+				LOG.debug("Verification token = " + token.toString());
+	
+			EmailVerification verifyEmail = new EmailVerification(
+					velocityEngine, createdUser, token);
+			result = new UserCreatedEvent(userEmail,
+					createdUser.toUserDetails(), verifyEmail);
+		}
+		else
+			result=UserCreatedEvent.instituteNotFound(null);
+		return result;
+	}
+	@Override
 	public ReadUserEvent readUser(
 			RequestReadUserEvent requestReadUserEvent)
 	{
