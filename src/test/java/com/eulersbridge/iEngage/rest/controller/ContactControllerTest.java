@@ -199,14 +199,17 @@ public class ContactControllerTest
 		
 		ReadEvent value=new ContactRequestReadEvent(contactRequestId,crDets);
 		when(contactRequestService.readContactRequest(any(ReadContactRequestEvent.class))).thenReturn(value);
-		UpdatedEvent updEvt=new UpdatedEvent(crDets.getNodeId(),cDets);
+		UpdatedEvent updEvt=new UpdatedEvent(crDets.getNodeId(),crDets);
 		when(contactRequestService.rejectContactRequest(any(UpdateEvent.class))).thenReturn(updEvt);
 		this.mockMvc.perform(delete(urlPrefix2+"/{contactRequestId}/",contactRequestId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$.nodeId",is(cDets.getNodeId().intValue())))
-		.andExpect(jsonPath("$.contactorId",is(cDets.getContactorId().intValue())))
-		.andExpect(jsonPath("$.contacteeId",is(cDets.getContacteeId().intValue())))
-		.andExpect(jsonPath("$.timestamp",is(cDets.getTimestamp())))
+		.andExpect(jsonPath("$.nodeId",is(crDets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.requestDate",is(crDets.getRequestDate().longValue())))
+		.andExpect(jsonPath("$.responseDate",is(crDets.getResponseDate().longValue())))
+		.andExpect(jsonPath("$.contactDetails",is(crDets.getContactDetails())))
+		.andExpect(jsonPath("$.accepted",is(crDets.getAccepted())))
+		.andExpect(jsonPath("$.rejected",is(crDets.getRejected())))
+		.andExpect(jsonPath("$.userId",is(crDets.getUserId().intValue())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
