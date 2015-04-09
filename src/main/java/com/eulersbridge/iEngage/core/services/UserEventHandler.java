@@ -421,21 +421,21 @@ public class UserEventHandler implements UserService, UserDetailsService
 		else
 		{
 			userToUpdate.setNodeId(user.getNodeId());
-			if (null==user.getRoles())
+			if (null==userToUpdate.getRoles())
 				userToUpdate.setRoles(user.getRoles());
-			if (null==user.getPassword())
+			if (null==userToUpdate.getPassword())
 				userToUpdate.setPassword(user.getPassword());
-			if (null==user.getContactNumber())
+			if (null==userToUpdate.getContactNumber())
 				userToUpdate.setContactNumber(user.getContactNumber());
-			if (null==user.getFamilyName())
+			if (null==userToUpdate.getFamilyName())
 				userToUpdate.setFamilyName(user.getFamilyName());
-			if (null==user.getGender())
+			if (null==userToUpdate.getGender())
 				userToUpdate.setGender(user.getGender());
-			if (null==user.getGivenName())
+			if (null==userToUpdate.getGivenName())
 				userToUpdate.setGivenName(user.getGivenName());
-			if (null==user.getNationality())
+			if (null==userToUpdate.getNationality())
 				userToUpdate.setNationality(user.getNationality());
-			if (null==user.getYearOfBirth())
+			if (null==userToUpdate.getYearOfBirth())
 				userToUpdate.setYearOfBirth(user.getYearOfBirth());
 			
 		}
