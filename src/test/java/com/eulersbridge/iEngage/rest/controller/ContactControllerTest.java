@@ -192,8 +192,6 @@ public class ContactControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("rejectingContact()");
 		ContactRequest cr = DatabaseDataFixture.populateContactRequest1();
-		Long timeStamp=Calendar.getInstance().getTimeInMillis();
-		ContactDetails cDets = new ContactDetails(453l, cr.getUser().getNodeId(), 432l, timeStamp);
 		Long contactRequestId=cr.getNodeId();
 		ContactRequestDetails crDets = cr.toContactRequestDetails();
 		
