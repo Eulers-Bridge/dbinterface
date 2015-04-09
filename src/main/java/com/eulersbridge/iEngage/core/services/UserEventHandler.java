@@ -437,6 +437,11 @@ public class UserEventHandler implements UserService, UserDetailsService
 				userToUpdate.setNationality(user.getNationality());
 			if (null==userToUpdate.getYearOfBirth())
 				userToUpdate.setYearOfBirth(user.getYearOfBirth());
+			if (null==newUser.getInstitutionId())
+			{
+				userToUpdate.setInstitution(user.getInstitution());
+				newUser.setInstitutionId(user.getInstitution().getNodeId());
+			}
 			
 		}
 		if (LOG.isDebugEnabled()) LOG.debug("userToUpdate :" + userToUpdate);
