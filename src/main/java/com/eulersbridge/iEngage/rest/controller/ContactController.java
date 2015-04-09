@@ -26,6 +26,7 @@ import com.eulersbridge.iEngage.core.events.CreateEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
@@ -246,13 +247,13 @@ public class ContactController
 				if (LOG.isDebugEnabled()) LOG.debug("Contact Request details returned - "+crDets);
 
 				
-				AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(contactRequestId);
-				UpdatedEvent uEvt=contactRequestService.acceptContactRequest(acceptContactRequestEvent);
+				UpdateEvent acceptContactRequestEvent=new UpdateEvent(contactRequestId,crDets);
+				UpdatedEvent uEvt=contactRequestService.rejectContactRequest(acceptContactRequestEvent);
 				if (uEvt.isEntityFound())
 				{
 					ContactDetails cDets=(ContactDetails)uEvt.getDetails();
 					restContact=Contact.fromContactDetails(cDets);
-					result = new ResponseEntity<Contact>(restContact,HttpStatus.CREATED);
+					result = new ResponseEntity<Contact>(restContact,HttpStatus.OK);
 					if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
 				}
 				else
