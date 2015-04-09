@@ -794,6 +794,16 @@ public class DatabaseDataFixture
 		contactRequest.setUser(user);
 		return contactRequest;
 	}
+	public static HashMap<Long, ContactRequest> populateContactRequests()
+	{
+		HashMap<Long, ContactRequest> tasks=new HashMap<Long, ContactRequest>();
+		ContactRequest initialTask=populateContactRequest1();
+		tasks.put(initialTask.getNodeId(), initialTask);
+		initialTask=populateContactRequest2();
+		tasks.put(initialTask.getNodeId(), initialTask);
+		return tasks;
+	}
+
 	public static Contact populateContact1()
 	{
 		Long nodeId=7123l;
