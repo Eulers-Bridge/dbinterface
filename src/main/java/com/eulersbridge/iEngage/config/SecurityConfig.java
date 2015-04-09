@@ -67,13 +67,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	    AppBasicAuthenticationEntryPoint entryPoint=new AppBasicAuthenticationEntryPoint();
 		AppBasicAuthenticationSuccessHandler successHandler=new AppBasicAuthenticationSuccessHandler();
 		http.authorizeRequests()
-        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.GENERALINFO_LABEL).permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.GENERAL_INFO_LABEL).permitAll()
         	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
-        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.EMAILVERIFY_LABEL+"/**").permitAll()
+        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.EMAIL_VERIFICATION_LABEL+"/**").permitAll()
         	.antMatchers(ControllerConstants.API_PREFIX+"/displayParams/**").permitAll()
-        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.GENERALINFO_LABEL).permitAll()
+        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.GENERAL_INFO_LABEL).permitAll()
         	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
-        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.EMAILVERIFY_LABEL+"/**").permitAll()
+        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.EMAIL_VERIFICATION_LABEL+"/**").permitAll()
         	.antMatchers("/**").hasRole("USER").anyRequest().fullyAuthenticated()
         .and()
         	.exceptionHandling().authenticationEntryPoint(digestEntryPoint())
