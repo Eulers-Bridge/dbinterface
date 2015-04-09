@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.events.badge;
 
 import com.eulersbridge.iEngage.core.events.Details;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class BadgeDetails extends Details{
     private String name;
+	private Integer level;
     private String description;
     private Long xpValue;
 
@@ -112,4 +114,19 @@ public class BadgeDetails extends Details{
     public void setXpValue(Long xpValue) {
         this.xpValue = xpValue;
     }
+
+	public Integer getLevel()
+	{
+		return level;
+	}
+	
+    /**
+	 * @param level the level to set
+	 */
+	public void setLevel(Integer level)
+	{
+		this.level = level;
+	}
+
+
 }

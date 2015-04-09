@@ -17,6 +17,7 @@ public class Badge {
     private Long nodeId;
     private String name;
     private String description;
+    private Integer level; 
     private Long xpValue;
 
     private static Logger LOG = LoggerFactory.getLogger(Badge.class);
@@ -31,6 +32,7 @@ public class Badge {
         if (LOG.isTraceEnabled()) LOG.trace("badgeDetails "+badgeDetails);
         badge.setNodeId(badgeDetails.getNodeId());
         badge.setName(badgeDetails.getName());
+        badge.setLevel(badgeDetails.getLevel());
         badge.setDescription(badgeDetails.getDescription());
         badge.setXpValue(badgeDetails.getXpValue());
 
@@ -44,6 +46,7 @@ public class Badge {
         if (LOG.isTraceEnabled()) LOG.trace("badge "+this);
         badgeDetails.setNodeId(getNodeId());
         badgeDetails.setName(getName());
+        badgeDetails.setLevel(getLevel());
         badgeDetails.setDescription(getDescription());
         badgeDetails.setXpValue(getXpValue());
 
@@ -58,6 +61,8 @@ public class Badge {
         buff.append(getNodeId());
         buff.append(", name = ");
         buff.append(getName());
+        buff.append(", level = ");
+        buff.append(getLevel());
         buff.append(", description = ");
         buff.append(getDescription());
         buff.append(", xpValue = ");
@@ -84,7 +89,23 @@ public class Badge {
         this.name = name;
     }
 
-    public String getDescription()
+    /**
+	 * @return the level
+	 */
+	public Integer getLevel()
+	{
+		return level;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(Integer level)
+	{
+		this.level = level;
+	}
+
+	public String getDescription()
     {
         return description;
     }

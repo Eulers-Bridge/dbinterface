@@ -21,6 +21,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class Badge extends ResourceSupport
 {
     private Long badgeId;
+    private Integer level;
     private String name;
     private String description;
 //    private boolean awarded;
@@ -42,6 +43,7 @@ public class Badge extends ResourceSupport
 
         badge.setBadgeId(badgeDetails.getNodeId());
         badge.setName(badgeDetails.getName());
+        badge.setLevel(badgeDetails.getLevel());
         badge.setDescription(badgeDetails.getDescription());
         badge.setXpValue(badgeDetails.getXpValue());
 
@@ -61,6 +63,7 @@ public class Badge extends ResourceSupport
         BadgeDetails badgeDetails = new BadgeDetails();
         badgeDetails.setNodeId(getBadgeId());
         badgeDetails.setName(getName());
+        badgeDetails.setLevel(getLevel());
         badgeDetails.setDescription(getDescription());
         badgeDetails.setXpValue(getXpValue());
         return badgeDetails;
@@ -106,6 +109,22 @@ public class Badge extends ResourceSupport
         this.xpValue = xpValue;
     }
     
+	/**
+	 * @return the level
+	 */
+	public Integer getLevel()
+	{
+		return level;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(Integer level)
+	{
+		this.level = level;
+	}
+
 	public static Iterator<Badge> toBadgesIterator(
 			Iterator<BadgeDetails> iter)
 	{
