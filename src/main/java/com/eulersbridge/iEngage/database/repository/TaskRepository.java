@@ -17,7 +17,7 @@ import org.springframework.data.repository.query.Param;
 public interface TaskRepository extends GraphRepository<Task>
 {
 	@Query("Match (a:`User`),(b:`Task`) where id(a)={userId} and id(b)={taskId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
-			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"' return r")
+			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
 	TaskComplete taskCompleted(@Param("taskId") Long taskId, @Param("userId") Long userId);
 
 	@Query("Match (a:`User`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where id(a)={userId} return b")
