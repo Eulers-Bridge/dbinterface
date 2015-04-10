@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.domain;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
 import com.eulersbridge.iEngage.rest.controller.BadgeController;
 
@@ -126,13 +127,13 @@ public class Badge extends ResourceSupport
 	}
 
 	public static Iterator<Badge> toBadgesIterator(
-			Iterator<BadgeDetails> iter)
+			Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <Badge> elections=new ArrayList<Badge>();
 		while(iter.hasNext())
 		{
-			BadgeDetails dets=iter.next();
+			BadgeDetails dets=(BadgeDetails)iter.next();
 			Badge thisBadge=Badge.fromBadgeDetails(dets);
 			Link self = thisBadge.getLink("self");
 			thisBadge.removeLinks();

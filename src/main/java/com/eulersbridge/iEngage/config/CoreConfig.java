@@ -197,7 +197,7 @@ public class CoreConfig
     public BadgeService createBadgeService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createBadgeService()");
-        return new BadgeEventHandler(badgeRepository);
+        return new BadgeEventHandler(badgeRepository,userRepo);
     }
 
     @Bean

@@ -1,11 +1,15 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdateEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.badge.BadgeCompleteDetails;
 import com.eulersbridge.iEngage.core.events.badge.BadgeCreatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDeletedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
@@ -17,6 +21,7 @@ import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.ReadBadgesEvent;
 import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.BadgeService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
@@ -96,6 +101,20 @@ public class BadgeControllerTest {
 				"\",\"xpValue\":"+dets.getXpValue().intValue()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
 				"{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s\"}]}";	
+		 return content;
+	}
+
+	String setupReturnedCompletedContent(BadgeCompleteDetails dets)
+	{
+		int nodeId=dets.getNodeId().intValue();
+		int taskId=dets.getBadgeId().intValue();
+		int userId=dets.getUserId().intValue();
+		String content="{\"nodeId\":"+nodeId+",\"badgeId\":"+taskId+",\"timestamp\":"+dets.getDate()+",\"userId\":"+userId+
+				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+taskId+"/complete/"+userId+"\"}"+
+//				",{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
+//				"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
+//				"{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s\"}"+
+				"]}";	
 		 return content;
 	}
 
@@ -353,5 +372,65 @@ public class BadgeControllerTest {
 		.andDo(print())
 		.andExpect(status().isGone())	;
 	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.BadgeController#completedBadge(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Badge)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testCompletedBadge() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingCompletedBadge()");
+		BadgeDetails badgeDets=DatabaseDataFixture.populateBadge1().toBadgeDetails();
+		UserDetails userDets=DatabaseDataFixture.populateUserGnewitt().toUserDetails();
+		Long badgeId=badgeDets.getNodeId();
+		Long userId=userDets.getNodeId();
+		Long id=1453l;
+		Long now=Calendar.getInstance().getTimeInMillis();
+        BadgeCompleteDetails dets=new BadgeCompleteDetails(id, userId, badgeId, now);
+		UpdatedEvent testData=new UpdatedEvent(453l,dets);
+		String returnedContent=setupReturnedCompletedContent(dets);
+		when (badgeService.completedBadge(any(UpdateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{badgeId}/complete/{userId}",badgeId.intValue(),userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
+		.andExpect(jsonPath("$.badgeId",is(dets.getBadgeId().intValue())))
+		.andExpect(jsonPath("$.userId",is(dets.getUserId().intValue())))
+		.andExpect(jsonPath("$.timestamp",is(dets.getDate())))
+		.andExpect(jsonPath("$.links[0].rel",is("self")))
+		.andExpect(content().string(returnedContent))
+		.andExpect(status().isOk())	;		
+	}
+
+	@Test
+	public final void testCompletedBadgeBadgeNotFound() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateBadge()");
+		BadgeDetails badgeDets=DatabaseDataFixture.populateBadge1().toBadgeDetails();
+		UserDetails userDets=DatabaseDataFixture.populateUserGnewitt().toUserDetails();
+		Long badgeId=badgeDets.getNodeId();
+		Long userId=userDets.getNodeId();
+		UpdatedEvent testData=UpdatedEvent.notFound(badgeId);
+		when (badgeService.completedBadge(any(UpdateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{badgeId}/complete/{userId}",badgeId.intValue(),userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound())	;		
+	}
+
+	@Test
+	public final void testCompletedBadgeNullEvtReturned() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdateBadge()");
+		BadgeDetails badgeDets=DatabaseDataFixture.populateBadge1().toBadgeDetails();
+		UserDetails userDets=DatabaseDataFixture.populateUserGnewitt().toUserDetails();
+		Long badgeId=badgeDets.getNodeId();
+		Long userId=userDets.getNodeId();
+		UpdatedEvent testData=null;
+		when (badgeService.completedBadge(any(UpdateEvent.class))).thenReturn(testData);
+		this.mockMvc.perform(put(urlPrefix+"/{badgeId}/complete/{userId}",badgeId.intValue(),userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
 
 }

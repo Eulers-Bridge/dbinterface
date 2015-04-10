@@ -29,7 +29,9 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.badge.BadgeCompleteDetails;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
 import com.eulersbridge.iEngage.core.events.badge.BadgesReadEvent;
 import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
@@ -37,9 +39,17 @@ import com.eulersbridge.iEngage.core.events.badge.DeleteBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
+import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
+import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.database.domain.Badge;
+import com.eulersbridge.iEngage.database.domain.BadgeComplete;
+import com.eulersbridge.iEngage.database.domain.Task;
+import com.eulersbridge.iEngage.database.domain.TaskComplete;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 /**
  * @author Greg Newitt
@@ -51,6 +61,8 @@ public class BadgeEventHandlerTest
 
     @Mock
 	BadgeRepository badgeRepository;
+    @Mock
+	UserRepository userRepository;
 
     BadgeEventHandler service;
 
@@ -64,7 +76,7 @@ public class BadgeEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new BadgeEventHandler(badgeRepository);
+		service=new BadgeEventHandler(badgeRepository,userRepository);
 	}
 
 	/**
@@ -254,6 +266,175 @@ public class BadgeEventHandlerTest
 		assertEquals(evtData.getNodeId(),testData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
+	}
+
+	@Test
+	public final void testCompletedBadge()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingBadge()");
+		BadgeComplete testData=DatabaseDataFixture.populateBadgeComplete1();
+		Badge testBadge=testData.getBadge();
+		User testUser=testData.getUser();
+		when(badgeRepository.findOne(any(Long.class))).thenReturn(testBadge);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+		when(badgeRepository.badgeCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
+		BadgeCompleteDetails dets=testData.toBadgeCompleteDetails();
+		UpdateEvent completeBadgeEvent=new UpdateEvent(null,dets);
+		UpdatedEvent evtData = service.completedBadge(completeBadgeEvent);
+		BadgeCompleteDetails returnedDets = (BadgeCompleteDetails) evtData.getDetails();
+		assertEquals(returnedDets,testData.toBadgeCompleteDetails());
+		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
+		assertTrue(evtData.isEntityFound());
+		assertNotNull(evtData.getNodeId());
+	}
+
+	@Test
+	public final void testCompletedBadgeNullUser()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingBadge()");
+		User testUser=null;
+		BadgeComplete testData=DatabaseDataFixture.populateBadgeComplete1();
+		testData.setUser(testUser);
+		Badge testBadge=testData.getBadge();
+		when(badgeRepository.findOne(any(Long.class))).thenReturn(testBadge);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+		when(badgeRepository.badgeCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
+		BadgeCompleteDetails dets=testData.toBadgeCompleteDetails();
+		UpdateEvent completeBadgeEvent=new UpdateEvent(null,dets);
+		UpdatedEvent evtData = service.completedBadge(completeBadgeEvent);
+		BadgeCompleteDetails returnedDets = (BadgeCompleteDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isEntityFound());
+		assertNull(evtData.getNodeId());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.BadgeBadgeHandler#readBadges(com.eulersbridge.iEngage.core.events.events.ReadAllBadge,Direction,int,int)}.
+	 */
+	@Test
+	public final void testFindCompletedBadges()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingCompletedBadges()");
+		HashMap<Long, Badge> events = DatabaseDataFixture.populateBadges();
+		ArrayList<Badge> evts=new ArrayList<Badge>();
+		Iterator<Badge> iter=events.values().iterator();
+		while (iter.hasNext())
+		{
+			Badge na=iter.next();
+			evts.add(na);
+		}
+
+		
+		Long userId=1l;
+		ReadAllEvent evt=new ReadAllEvent(userId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Badge> testData=new PageImpl<Badge>(evts,pageable,evts.size());
+		when(badgeRepository.findCompletedBadges(any(Long.class),any(Pageable.class))).thenReturn(testData);
+
+		AllReadEvent evtData = service.readCompletedBadges(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages(),new Integer(1));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
+	}
+
+	@Test
+	public final void testFindCompletedBadgesNoneAvailable()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingCompletedBadges()");
+		ArrayList<Badge> evts=new ArrayList<Badge>();
+		
+		Long userId=1l;
+		ReadAllEvent evt=new ReadAllEvent(userId);
+		int pageLength=10;
+		int pageNumber=0;
+		
+		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
+		Page<Badge> testData=new PageImpl<Badge>(evts,pageable,evts.size());
+		when(badgeRepository.findCompletedBadges(any(Long.class),any(Pageable.class))).thenReturn(testData);
+				
+		AllReadEvent evtData = service.readCompletedBadges(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertEquals(evtData.getTotalPages().intValue(),0);
+		assertEquals(evtData.getTotalItems().longValue(),0);
+	}
+
+	@Test
+	public final void testFindCompletedBadgesNullReturned()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("FindingCompletedBadges()");
+		
+		Long userId=1l;
+		ReadAllEvent evt=new ReadAllEvent(userId);
+		
+		Page<Badge> testData=null;
+		when(badgeRepository.findAll(any(Pageable.class))).thenReturn(testData);
+
+		int pageLength=10;
+		int pageNumber=0;
+		AllReadEvent evtData = service.readCompletedBadges(evt, Direction.ASC, pageNumber, pageLength);
+		assertNotNull(evtData);
+		assertFalse(((AllReadEvent)evtData).isEntityFound());
+	}
+	
+	@Test
+	public final void testCompletedBadgeInvalidUser()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingBadge()");
+		BadgeComplete testData=DatabaseDataFixture.populateBadgeComplete1();
+		Badge testBadge=testData.getBadge();
+		User testUser=testData.getUser();
+		when(badgeRepository.findOne(any(Long.class))).thenReturn(testBadge);
+		when(userRepository.findOne(any(Long.class))).thenReturn(null);
+		when(badgeRepository.badgeCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
+		BadgeCompleteDetails dets=testData.toBadgeCompleteDetails();
+		UpdateEvent completeBadgeEvent=new UpdateEvent(null,dets);
+		UpdatedEvent evtData = service.completedBadge(completeBadgeEvent);
+		BadgeCompleteDetails returnedDets = (BadgeCompleteDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isEntityFound());
+		assertEquals(evtData.getNodeId(),testUser.getNodeId());
+	}
+
+	@Test
+	public final void testCompletedBadgeNullBadge()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingBadge()");
+		Badge testBadge=null;
+		BadgeComplete testData=DatabaseDataFixture.populateBadgeComplete1();
+		testData.setBadge(testBadge);
+		User testUser=testData.getUser();
+		when(badgeRepository.findOne(any(Long.class))).thenReturn(testBadge);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+		when(badgeRepository.badgeCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
+		BadgeCompleteDetails dets=testData.toBadgeCompleteDetails();
+		UpdateEvent completeBadgeEvent=new UpdateEvent(null,dets);
+		UpdatedEvent evtData = service.completedBadge(completeBadgeEvent);
+		BadgeCompleteDetails returnedDets = (BadgeCompleteDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isEntityFound());
+		assertNull(evtData.getNodeId());
+	}
+
+	@Test
+	public final void testCompletedBadgeInvalidBadge()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("CompletingBadge()");
+		BadgeComplete testData=DatabaseDataFixture.populateBadgeComplete1();
+		Badge testBadge=testData.getBadge();
+		User testUser=testData.getUser();
+		when(badgeRepository.findOne(any(Long.class))).thenReturn(null);
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
+		when(badgeRepository.badgeCompleted(any(Long.class),any(Long.class))).thenReturn(testData);
+		BadgeCompleteDetails dets=testData.toBadgeCompleteDetails();
+		UpdateEvent completeBadgeEvent=new UpdateEvent(null,dets);
+		UpdatedEvent evtData = service.completedBadge(completeBadgeEvent);
+		BadgeCompleteDetails returnedDets = (BadgeCompleteDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertFalse(evtData.isEntityFound());
+		assertEquals(evtData.getNodeId(),testBadge.getNodeId());
 	}
 
 	/**

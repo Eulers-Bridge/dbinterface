@@ -29,17 +29,19 @@ public class BadgeComplete
 		date=Calendar.getInstance().getTimeInMillis();
 	}
 
-	public BadgeCompleteDetails toTaskCompleteDetails()
+	public BadgeCompleteDetails toBadgeCompleteDetails()
 	{
-	    if (LOG.isTraceEnabled()) LOG.trace("toTaskCompleteDetails()");
+	    if (LOG.isTraceEnabled()) LOG.trace("toBadgeCompleteDetails()");
 	    
-	    BadgeCompleteDetails details = new BadgeCompleteDetails(getNodeId(),this.getUser().getNodeId(),getBadge().getNodeId(),getDate());
+	    Long userId=((getUser() == null) ? null : getUser().getNodeId());
+	    Long badgeId=((getBadge() == null) ? null : getBadge().getNodeId());
+	    BadgeCompleteDetails details = new BadgeCompleteDetails(getNodeId(),userId,badgeId,getDate());
 	    details.setNodeId(getNodeId());
 	    if (LOG.isTraceEnabled()) LOG.trace("taskComplete "+this);
 
 	    BeanUtils.copyProperties(this, details);
-	    details.setBadgeId(this.getBadge().getNodeId());
-	    details.setUserId(this.getUser().getNodeId());
+	    details.setBadgeId(badgeId);
+	    details.setUserId(userId);
 	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
 
 	    return details;

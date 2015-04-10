@@ -762,6 +762,40 @@ public class DatabaseDataFixture
 		return tasks;
 	}
 	
+	public static BadgeComplete populateBadgeComplete1()
+	{
+		Long nodeId=1467l;
+		User user=populateUserGnewitt();
+		Badge badge=populateBadge1();
+		Long date=1425609701874l;
+		return populateBadgeComplete(nodeId, user, badge, date);
+	}
+	
+	public static BadgeComplete populateBadgeComplete2()
+	{
+		Long nodeId=1468l;
+		User user=populateUserGnewitt2();
+		Badge badge=populateBadge2();
+		Long date=1425609701878l;
+		return populateBadgeComplete(nodeId, user, badge, date);
+	}
+	public static BadgeComplete populateBadgeComplete(Long nodeId, User user, Badge badge, Long date)
+	{
+		BadgeComplete tc=new BadgeComplete();
+		tc.setNodeId(nodeId);
+		tc.setUser(user);
+		tc.setBadge(badge);
+		tc.setDate(date);
+		return tc;
+	}
+	public static HashMap<Long, BadgeComplete> populateCompleteBadges()
+	{
+		HashMap<Long, BadgeComplete> badges=new HashMap<Long, BadgeComplete>();
+		BadgeComplete initialTask=populateBadgeComplete1();
+		badges.put(initialTask.getNodeId(), initialTask);
+		return badges;
+	}
+
 	public static ContactRequest populateContactRequest1()
 	{
 		Long nodeId=123l;

@@ -1,9 +1,11 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgesReadEvent;
 import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
@@ -35,4 +37,10 @@ public interface BadgeService
     @PreAuthorize("hasRole('ROLE_USER')")
 	public BadgesReadEvent readBadges(ReadAllEvent readBadgesEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
+
+	public UpdatedEvent completedBadge(UpdateEvent any);
+
+	public AllReadEvent readCompletedBadges(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
+
+	public AllReadEvent readRemainingBadges(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
 }
