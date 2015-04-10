@@ -92,7 +92,7 @@ public class BadgeControllerTest {
 	String setupReturnedContent(BadgeDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
-		String content="{\"badgeId\":"+evtId+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+
+		String content="{\"badgeId\":"+evtId+",\"level\":"+dets.getLevel()+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+
 				"\",\"xpValue\":"+dets.getXpValue().intValue()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
 				"{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s\"}]}";	
