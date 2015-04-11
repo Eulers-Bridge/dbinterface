@@ -10,12 +10,7 @@ import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.Indexed;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
-import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.annotation.*;
 
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 
@@ -48,6 +43,12 @@ public class User
     @Fetch
     @RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.BOTH)
 	private Iterable<Photo> photos;
+
+    @Query("START n = node({self}) match (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"]-(a:"+DatabaseDomainConstants.TASK+") RETURN count(a) ")
+    private Long numOfCompTasks;
+
+    @Query("START n = node({self}) match (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"]-(a:"+DatabaseDomainConstants.BADGE+") RETURN count(a) ")
+    private Long numOfCompBadges;
 
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
@@ -376,7 +377,23 @@ public class User
 		this.contacts = contacts;
 	}
 
-	public UserDetails toUserDetails() 
+    public Long getNumOfCompTasks() {
+        return numOfCompTasks;
+    }
+
+    public void setNumOfCompTasks(Long numOfCompTasks) {
+        this.numOfCompTasks = numOfCompTasks;
+    }
+
+    public Long getNumOfCompBadges() {
+        return numOfCompBadges;
+    }
+
+    public void setNumOfCompBadges(Long numOfCompBadges) {
+        this.numOfCompBadges = numOfCompBadges;
+    }
+
+    public UserDetails toUserDetails()
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
 	    

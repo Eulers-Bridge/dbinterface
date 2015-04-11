@@ -30,6 +30,9 @@ public class UserProfile extends ResourceSupport
 	private String email;
 	private PhotoDetails profilePhoto;
 
+    private Long numOfCompTasks;
+    private Long numOfCompBadges;
+
 	private static Logger LOG = LoggerFactory.getLogger(User.class);
 
 	public String getEmail()
@@ -117,7 +120,23 @@ public class UserProfile extends ResourceSupport
 		return profilePhoto;
 	}
 
-	/**
+    public Long getNumOfCompTasks() {
+        return numOfCompTasks;
+    }
+
+    public void setNumOfCompTasks(Long numOfCompTasks) {
+        this.numOfCompTasks = numOfCompTasks;
+    }
+
+    public Long getNumOfCompBadges() {
+        return numOfCompBadges;
+    }
+
+    public void setNumOfCompBadges(Long numOfCompBadges) {
+        this.numOfCompBadges = numOfCompBadges;
+    }
+
+    /**
 	 * @param profilePhoto the profilePhoto to set
 	 */
 	public void setProfilePhoto(PhotoDetails profilePhoto)
@@ -151,6 +170,8 @@ public class UserProfile extends ResourceSupport
 		user.nationality = readUser.getNationality();
 		user.contactNumber = readUser.getContactNumber();
 		user.institutionId = readUser.getInstitutionId();
+        user.numOfCompTasks = readUser.getNumOfCompTasks();
+        user.numOfCompBadges = readUser.getNumOfCompBadges();
 		Iterable<PhotoDetails> photos=readUser.getPhotos();
 		user.profilePhoto=null;
 		if (photos!=null)
