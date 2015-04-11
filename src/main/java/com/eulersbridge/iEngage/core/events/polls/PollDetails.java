@@ -18,6 +18,8 @@ public class PollDetails extends Details
     private Long ownerId;
     private Long creatorId;
 
+    private Long numOfComments;
+
     private static Logger LOG = LoggerFactory.getLogger(PollDetails.class);
 
     public PollDetails()
@@ -63,6 +65,14 @@ public class PollDetails extends Details
 
     public void setDuration(Long duration) {
         this.duration = duration;
+    }
+
+    public Long getNumOfComments() {
+        return numOfComments;
+    }
+
+    public void setNumOfComments(Long numOfComments) {
+        this.numOfComments = numOfComments;
     }
 
     /**
