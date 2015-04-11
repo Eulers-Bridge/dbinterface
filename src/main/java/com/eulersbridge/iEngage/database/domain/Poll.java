@@ -27,7 +27,7 @@ public class Poll extends Likeable implements Commentable
 	@Fetch
 	private Owner owner;
 
-    @Query("START n = node({self}) match (a:`User`)-[r:"+ DatabaseDomainConstants.HAS_COMMENT+"]-(n) RETURN count(a) ")
+    @Query("START n = node({self}) match (n)-[r:"+ DatabaseDomainConstants.HAS_COMMENT+"]-(c) RETURN count(c) ")
     private Long numberOfComments;
 
 	private static Logger LOG = LoggerFactory.getLogger(Poll.class);
