@@ -32,7 +32,9 @@ public class UserDetails extends Details
 	private	Long institutionId;
 
     private Long numOfCompTasks;
+    private Long totalTasks;
     private Long numOfCompBadges;
+    private Long totalBadges;
 
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     
@@ -99,6 +101,22 @@ public class UserDetails extends Details
 
     public void setNumOfCompBadges(Long numOfCompBadges) {
         this.numOfCompBadges = numOfCompBadges;
+    }
+
+    public Long getTotalTasks() {
+        return totalTasks;
+    }
+
+    public void setTotalTasks(Long totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+
+    public Long getTotalBadges() {
+        return totalBadges;
+    }
+
+    public void setTotalBadges(Long totalBadges) {
+        this.totalBadges = totalBadges;
     }
 
     /**

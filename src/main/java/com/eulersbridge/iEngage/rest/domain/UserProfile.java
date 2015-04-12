@@ -31,7 +31,9 @@ public class UserProfile extends ResourceSupport
 	private PhotoDetails profilePhoto;
 
     private Long numOfCompTasks;
+    private Long totalTasks;
     private Long numOfCompBadges;
+    private Long totalBadges;
 
 	private static Logger LOG = LoggerFactory.getLogger(User.class);
 
@@ -85,7 +87,23 @@ public class UserProfile extends ResourceSupport
 		this.nationality = nationality;
 	}
 
-	/**
+    public Long getTotalTasks() {
+        return totalTasks;
+    }
+
+    public void setTotalTasks(Long totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+
+    public Long getTotalBadges() {
+        return totalBadges;
+    }
+
+    public void setTotalBadges(Long totalBadges) {
+        this.totalBadges = totalBadges;
+    }
+
+    /**
 	 * @return the contactNumber
 	 */
 	public String getContactNumber()
@@ -172,6 +190,9 @@ public class UserProfile extends ResourceSupport
 		user.institutionId = readUser.getInstitutionId();
         user.numOfCompTasks = readUser.getNumOfCompTasks();
         user.numOfCompBadges = readUser.getNumOfCompBadges();
+        user.totalTasks = readUser.getTotalTasks();
+        user.totalBadges = readUser.getTotalBadges();
+
 		Iterable<PhotoDetails> photos=readUser.getPhotos();
 		user.profilePhoto=null;
 		if (photos!=null)

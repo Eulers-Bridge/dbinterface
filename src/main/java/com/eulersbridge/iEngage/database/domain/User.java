@@ -47,8 +47,14 @@ public class User
     @Query("START n = node({self}) match (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"]-(a:"+DatabaseDomainConstants.TASK+") RETURN count(a) ")
     private Long numOfCompTasks;
 
+    @Query("match (n:"+ DatabaseDomainConstants.TASK+") return count(n)")
+    private Long totalTasks;
+
     @Query("START n = node({self}) match (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"]-(a:"+DatabaseDomainConstants.BADGE+") RETURN count(a) ")
     private Long numOfCompBadges;
+
+    @Query("match (n:"+ DatabaseDomainConstants.BADGE+") return count(n)")
+    private Long totalBadges;
 
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
@@ -391,6 +397,22 @@ public class User
 
     public void setNumOfCompBadges(Long numOfCompBadges) {
         this.numOfCompBadges = numOfCompBadges;
+    }
+
+    public Long getTotalTasks() {
+        return totalTasks;
+    }
+
+    public void setTotalTasks(Long totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+
+    public Long getTotalBadges() {
+        return totalBadges;
+    }
+
+    public void setTotalBadges(Long totalBadges) {
+        this.totalBadges = totalBadges;
     }
 
     public UserDetails toUserDetails()
