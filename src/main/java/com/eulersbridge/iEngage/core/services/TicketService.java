@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -28,7 +29,7 @@ public interface TicketService {
     public DeletedEvent deleteTicket(DeleteTicketEvent deleteTicketEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public TicketsReadEvent readTickets(ReadAllEvent readTicketsEvent,
+	public AllReadEvent readTickets(ReadAllEvent readTicketsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #supportTicketEvent.getEmailAddress()==authentication.name)")

@@ -3,20 +3,31 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.ticket.*;
+import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.SupportTicketEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketCreatedEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketDeletedEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
+import com.eulersbridge.iEngage.core.events.ticket.TicketSupportedEvent;
+import com.eulersbridge.iEngage.core.events.ticket.TicketUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Support;
 import com.eulersbridge.iEngage.database.domain.Ticket;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.TicketRepository;
-
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -122,12 +133,12 @@ public class TicketEventHandler implements TicketService{
     }
     
 	@Override
-	public TicketsReadEvent readTickets(ReadAllEvent readTicketsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public AllReadEvent readTickets(ReadAllEvent readTicketsEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Long electionId=readTicketsEvent.getParentId();
 		Page <Ticket>elections=null;
 		ArrayList<TicketDetails> dets=new ArrayList<TicketDetails>();
-		TicketsReadEvent nare=null;
+		AllReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("ElectionId "+electionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.name");
@@ -152,22 +163,22 @@ public class TicketEventHandler implements TicketService{
 					 ((null==elec.getTitle()) || ((null==elec.getStart()) && (null==elec.getEnd()) && (null==elec.getIntroduction()))))
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ElectionId)");
-					nare=TicketsReadEvent.electionNotFound();
+					nare=AllReadEvent.notFound(null);
 				}
 				else
 				{	
-					nare=new TicketsReadEvent(electionId,dets,elections.getTotalElements(),elections.getTotalPages());
+					nare=new AllReadEvent(electionId,dets,elections.getTotalElements(),elections.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new TicketsReadEvent(electionId,dets,elections.getTotalElements(),elections.getTotalPages());
+				nare=new AllReadEvent(electionId,dets,elections.getTotalElements(),elections.getTotalPages());
 			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
-			nare=TicketsReadEvent.electionNotFound();
+			nare=AllReadEvent.notFound(null);
 		}
 		return nare;
 	}

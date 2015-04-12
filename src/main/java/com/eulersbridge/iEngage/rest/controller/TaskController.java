@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.*;
 import com.eulersbridge.iEngage.core.services.TaskService;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Task;
 import com.eulersbridge.iEngage.rest.domain.TaskCompleted;
 
@@ -81,7 +82,7 @@ public class TaskController {
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.TASKS_LABEL)
-	public @ResponseBody ResponseEntity<Iterator<Task>> findTasks(
+	public @ResponseBody ResponseEntity<FindsParent> findTasks(
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
 			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
@@ -92,22 +93,26 @@ public class TaskController {
 		pageLength = Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve tasks.");
+		ResponseEntity<FindsParent> response;
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		AllReadEvent articleEvent = taskService.readTasks(
+		AllReadEvent taskEvent = taskService.readTasks(
 				new ReadTasksEvent(), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!taskEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Task>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<Task> tasks = Task
-				.toTasksIterator(articleEvent.getDetails().iterator());
-
-		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
+		else
+		{
+			Iterator<Task> tasks = Task
+					.toTasksIterator(taskEvent.getDetails().iterator());
+			FindsParent theTasks = FindsParent.fromArticlesIterator(tasks, taskEvent.getTotalItems(), taskEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theTasks, HttpStatus.OK);
+		}
+		return response;
 	}
 
 	/**
@@ -123,7 +128,7 @@ public class TaskController {
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.TASKS_LABEL+"/complete/{userId}")
-	public @ResponseBody ResponseEntity<Iterator<Task>> findCompletedTasks(
+	public @ResponseBody ResponseEntity<FindsParent> findCompletedTasks(
 			@PathVariable Long userId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -133,24 +138,28 @@ public class TaskController {
 		int pageLength = 10;
 		pageNumber = Integer.parseInt(page);
 		pageLength = Integer.parseInt(pageSize);
+		ResponseEntity<FindsParent> response;
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve completed tasks for "+userId+".");
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		AllReadEvent articleEvent = taskService.readCompletedTasks(
+		AllReadEvent taskEvent = taskService.readCompletedTasks(
 				new ReadCompletedTasksEvent(userId), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!taskEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Task>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<Task> tasks = Task
-				.toTasksIterator(articleEvent.getDetails().iterator());
-
-		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
+		else
+		{
+			Iterator<Task> tasks = Task
+					.toTasksIterator(taskEvent.getDetails().iterator());
+			FindsParent theTasks = FindsParent.fromArticlesIterator(tasks, taskEvent.getTotalItems(), taskEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theTasks, HttpStatus.OK);
+		}
+		return response;
 	}
 
 	/**
@@ -166,7 +175,7 @@ public class TaskController {
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.TASKS_LABEL+"/remaining/{userId}")
-	public @ResponseBody ResponseEntity<Iterator<Task>> findRemainingTasks(
+	public @ResponseBody ResponseEntity<FindsParent> findRemainingTasks(
 			@PathVariable Long userId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -176,6 +185,7 @@ public class TaskController {
 		int pageLength = 10;
 		pageNumber = Integer.parseInt(page);
 		pageLength = Integer.parseInt(pageSize);
+		ResponseEntity<FindsParent> response;
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve remaining tasks for "+userId+".");
 
@@ -187,13 +197,17 @@ public class TaskController {
 
 		if (!taskEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Task>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Iterator<Task> tasks = Task
+					.toTasksIterator(taskEvent.getDetails().iterator());
+			FindsParent theTasks = FindsParent.fromArticlesIterator(tasks, taskEvent.getTotalItems(), taskEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theTasks, HttpStatus.OK);
 		}
 
-		Iterator<Task> tasks = Task
-				.toTasksIterator(taskEvent.getDetails().iterator());
-
-		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
+		return response;
 	}
 
     //Update

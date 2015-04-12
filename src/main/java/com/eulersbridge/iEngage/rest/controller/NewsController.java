@@ -11,6 +11,7 @@ import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
 
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.rest.domain.NewsArticle;
-import com.eulersbridge.iEngage.rest.domain.NewsArticles;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
@@ -265,7 +265,7 @@ public class NewsController
 
 	*/
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{institutionId}")
-	public @ResponseBody ResponseEntity<NewsArticles> findArticles(@PathVariable(value="") Long institutionId,
+	public @ResponseBody ResponseEntity<FindsParent> findArticles(@PathVariable(value="") Long institutionId,
 			@RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
 			@RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize) 
@@ -276,7 +276,7 @@ public class NewsController
 		pageLength=Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institution "+institutionId+'.');
 				
-		ResponseEntity<NewsArticles> response;
+		ResponseEntity<FindsParent> response;
 		
 		Direction sortDirection=Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
@@ -284,14 +284,14 @@ public class NewsController
   	
 		if (!articleEvent.isEntityFound())
 		{
-			response = new ResponseEntity<NewsArticles>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
 		
 		else
 		{
 			Iterator<NewsArticle> articles = NewsArticle.toArticlesIterator(articleEvent.getArticles().iterator());
-			NewsArticles newsArticles = NewsArticles.fromArticlesIterator(articles, articleEvent.getTotalArticles(), articleEvent.getTotalPages());
-			response = new ResponseEntity<NewsArticles>(newsArticles,HttpStatus.OK);
+			FindsParent newsArticles = FindsParent.fromArticlesIterator(articles, articleEvent.getTotalArticles(), articleEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(newsArticles,HttpStatus.OK);
 		}
 
 		return response;

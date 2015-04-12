@@ -2,12 +2,15 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.*;
 import com.eulersbridge.iEngage.core.services.TicketService;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Ticket;
 
 import org.slf4j.Logger;
@@ -94,7 +97,7 @@ public class TicketController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.TICKETS_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<Iterator<Ticket>> findTickets(
+	public @ResponseBody ResponseEntity<FindsParent> findTickets(
 			@PathVariable(value = "") Long electionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -104,25 +107,32 @@ public class TicketController {
 		int pageLength = 10;
 		pageNumber = Integer.parseInt(page);
 		pageLength = Integer.parseInt(pageSize);
+		ResponseEntity<FindsParent> response;
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve tickets from institution "
 					+ electionId + '.');
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		TicketsReadEvent articleEvent = ticketService.readTickets(
-				new ReadTicketsEvent(electionId), sortDirection,
+		AllReadEvent articleEvent = ticketService.readTickets(
+				new ReadAllEvent(electionId), sortDirection,
 				pageNumber, pageLength);
 
 		if (!articleEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Ticket>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
+		
+		else
+		{
 
-		Iterator<Ticket> tickets = Ticket
-				.toTicketsIterator(articleEvent.getTickets().iterator());
-
-		return new ResponseEntity<Iterator<Ticket>>(tickets, HttpStatus.OK);
+			Iterator<Ticket> tickets = Ticket
+					.toTicketsIterator(articleEvent.getDetails().iterator());
+			FindsParent theTickets = FindsParent.fromArticlesIterator(tickets, articleEvent.getTotalItems(), articleEvent.getTotalPages());
+	
+			response = new ResponseEntity<FindsParent>(theTickets, HttpStatus.OK);
+		}
+		return response;
 	}
 
     //Update

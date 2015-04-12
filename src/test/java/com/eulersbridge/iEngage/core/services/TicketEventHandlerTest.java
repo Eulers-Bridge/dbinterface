@@ -16,6 +16,7 @@ import com.eulersbridge.iEngage.core.events.ticket.*;
 import com.eulersbridge.iEngage.database.domain.Support;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
@@ -177,7 +179,7 @@ public class TicketEventHandlerTest
 		Page<Ticket> testData=new PageImpl<Ticket>(evts,pageable,evts.size());
 		when(ticketRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
-		TicketsReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
 		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
@@ -200,7 +202,7 @@ public class TicketEventHandlerTest
 		Election inst=DatabaseDataFixture.populateElection1();
 		when(electionRepository.findOne(any(Long.class))).thenReturn(inst);
 				
-		TicketsReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
 		assertEquals(evtData.getTotalItems().longValue(),0);
@@ -222,9 +224,9 @@ public class TicketEventHandlerTest
 		when(ticketRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 		when(electionRepository.findOne(any(Long.class))).thenReturn(null);
 				
-		TicketsReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
-		assertFalse(evtData.isElectionFound());
+		assertFalse(evtData.isEntityFound());
 		assertEquals(evtData.getTotalPages(),null);
 		assertEquals(evtData.getTotalItems(),null);
 	}
@@ -242,9 +244,9 @@ public class TicketEventHandlerTest
 
 		int pageLength=10;
 		int pageNumber=0;
-		TicketsReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readTickets(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
-		assertFalse(evtData.isElectionFound());
+		assertFalse(evtData.isEntityFound());
 	}
 	
 

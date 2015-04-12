@@ -461,7 +461,7 @@ public class ViewNewsIntegrationTest {
 		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets,15l,2);
 		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$totalArticles",is(15)))
+		.andExpect(jsonPath("$totalElements",is(15)))
 		.andExpect(jsonPath("$totalPages",is(2)))
 		.andExpect(jsonPath("$articles[0].title",is(artDets.get(0).getTitle())))
 		.andExpect(jsonPath("$articles[0].date",is(artDets.get(0).getDate())))

@@ -13,6 +13,7 @@ import com.eulersbridge.iEngage.core.events.badge.*;
 import com.eulersbridge.iEngage.core.services.BadgeService;
 import com.eulersbridge.iEngage.rest.domain.Badge;
 import com.eulersbridge.iEngage.rest.domain.BadgeCompleted;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +83,7 @@ public class BadgeController {
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.BADGES_LABEL)
-	public @ResponseBody ResponseEntity<Iterator<Badge>> findBadges(
+	public @ResponseBody ResponseEntity<FindsParent> findBadges(
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
 			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
@@ -93,22 +94,26 @@ public class BadgeController {
 		pageLength = Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve badges.");
+		ResponseEntity<FindsParent> response;
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		AllReadEvent articleEvent = badgeService.readBadges(
+		AllReadEvent badgeEvent = badgeService.readBadges(
 				new ReadAllEvent(null), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!badgeEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Badge>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<Badge> badges = Badge
-				.toBadgesIterator(articleEvent.getDetails().iterator());
-
-		return new ResponseEntity<Iterator<Badge>>(badges, HttpStatus.OK);
+		else
+		{
+			Iterator<Badge> badges = Badge
+					.toBadgesIterator(badgeEvent.getDetails().iterator());
+			FindsParent theBadges = FindsParent.fromArticlesIterator(badges, badgeEvent.getTotalItems(), badgeEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theBadges, HttpStatus.OK);
+		}
+		return response;
 	}
 
 	/**
@@ -124,7 +129,7 @@ public class BadgeController {
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.BADGES_LABEL+"/complete/{userId}")
-	public @ResponseBody ResponseEntity<Iterator<Badge>> findCompletedBadges(
+	public @ResponseBody ResponseEntity<FindsParent> findCompletedBadges(
 			@PathVariable Long userId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -136,22 +141,26 @@ public class BadgeController {
 		pageLength = Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve completed badges for "+userId+".");
+		ResponseEntity<FindsParent> response;
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		AllReadEvent articleEvent = badgeService.readCompletedBadges(
+		AllReadEvent badgeEvent = badgeService.readCompletedBadges(
 				new ReadAllEvent(userId), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!badgeEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Badge>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<Badge> badges = Badge
-				.toBadgesIterator(articleEvent.getDetails().iterator());
-
-		return new ResponseEntity<Iterator<Badge>>(badges, HttpStatus.OK);
+		else
+		{
+			Iterator<Badge> badges = Badge
+					.toBadgesIterator(badgeEvent.getDetails().iterator());
+			FindsParent theBadges = FindsParent.fromArticlesIterator(badges, badgeEvent.getTotalItems(), badgeEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theBadges, HttpStatus.OK);
+		}
+		return response;
 	}
 
 	/**
@@ -167,7 +176,7 @@ public class BadgeController {
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.BADGES_LABEL+"/remaining/{userId}")
-	public @ResponseBody ResponseEntity<Iterator<Badge>> findRemainingBadges(
+	public @ResponseBody ResponseEntity<FindsParent> findRemainingBadges(
 			@PathVariable Long userId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -179,7 +188,8 @@ public class BadgeController {
 		pageLength = Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve remaining badges for "+userId+".");
-
+		ResponseEntity<FindsParent> response;
+		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
 		AllReadEvent badgeEvent = badgeService.readRemainingBadges(
@@ -188,13 +198,16 @@ public class BadgeController {
 
 		if (!badgeEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Badge>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<Badge> badges = Badge
-				.toBadgesIterator(badgeEvent.getDetails().iterator());
-
-		return new ResponseEntity<Iterator<Badge>>(badges, HttpStatus.OK);
+		else
+		{
+			Iterator<Badge> badges = Badge
+					.toBadgesIterator(badgeEvent.getDetails().iterator());
+			FindsParent theBadges = FindsParent.fromArticlesIterator(badges, badgeEvent.getTotalItems(), badgeEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theBadges, HttpStatus.OK);
+		}
+		return response;
 	}
 
     //Update
