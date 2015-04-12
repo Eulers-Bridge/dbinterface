@@ -5,10 +5,7 @@ import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.*;
 
 /**
  * @author Yikai Gong
@@ -29,6 +26,9 @@ public class Poll extends Likeable implements Commentable
 	@RelatedTo(type = DatabaseDomainConstants.HAS_POLL_LABEL, direction = Direction.BOTH)
 	@Fetch
 	private Owner owner;
+
+    @Query("START n = node({self}) match (n)-[r:"+ DatabaseDomainConstants.HAS_COMMENT+"]-(c) RETURN count(c) ")
+    private Long numberOfComments;
 
 	private static Logger LOG = LoggerFactory.getLogger(Poll.class);
 
@@ -62,6 +62,7 @@ public class Poll extends Likeable implements Commentable
 		pollDetails.setDuration(this.getDuration());
 		pollDetails.setOwnerId((owner == null) ? null : owner.getNodeId());
 		pollDetails.setCreatorId((creator == null) ? null : creator.getNodeId());
+        pollDetails.setNumOfComments(numberOfComments);
 		if (LOG.isTraceEnabled()) LOG.trace("pollDetails; " + pollDetails);
 		return pollDetails;
 	}
@@ -133,7 +134,15 @@ public class Poll extends Likeable implements Commentable
 		this.duration = duration;
 	}
 
-	/**
+    public Long getNumberOfComments() {
+        return numberOfComments;
+    }
+
+    public void setNumberOfComments(Long numberOfComments) {
+        this.numberOfComments = numberOfComments;
+    }
+
+    /**
 	 * @return the creator
 	 */
 	public Owner getCreator()

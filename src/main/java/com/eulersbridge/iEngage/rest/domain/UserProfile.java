@@ -30,6 +30,12 @@ public class UserProfile extends ResourceSupport
 	private String email;
 	private PhotoDetails profilePhoto;
 
+    private Long numOfCompTasks;
+    private Long totalTasks;
+    private Long numOfCompBadges;
+    private Long totalBadges;
+    private Long numOfContacts;
+
 	private static Logger LOG = LoggerFactory.getLogger(User.class);
 
 	public String getEmail()
@@ -82,7 +88,31 @@ public class UserProfile extends ResourceSupport
 		this.nationality = nationality;
 	}
 
-	/**
+    public Long getTotalTasks() {
+        return totalTasks;
+    }
+
+    public void setTotalTasks(Long totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+
+    public Long getTotalBadges() {
+        return totalBadges;
+    }
+
+    public void setTotalBadges(Long totalBadges) {
+        this.totalBadges = totalBadges;
+    }
+
+    public Long getNumOfContacts() {
+        return numOfContacts;
+    }
+
+    public void setNumOfContacts(Long numOfContacts) {
+        this.numOfContacts = numOfContacts;
+    }
+
+    /**
 	 * @return the contactNumber
 	 */
 	public String getContactNumber()
@@ -117,7 +147,23 @@ public class UserProfile extends ResourceSupport
 		return profilePhoto;
 	}
 
-	/**
+    public Long getNumOfCompTasks() {
+        return numOfCompTasks;
+    }
+
+    public void setNumOfCompTasks(Long numOfCompTasks) {
+        this.numOfCompTasks = numOfCompTasks;
+    }
+
+    public Long getNumOfCompBadges() {
+        return numOfCompBadges;
+    }
+
+    public void setNumOfCompBadges(Long numOfCompBadges) {
+        this.numOfCompBadges = numOfCompBadges;
+    }
+
+    /**
 	 * @param profilePhoto the profilePhoto to set
 	 */
 	public void setProfilePhoto(PhotoDetails profilePhoto)
@@ -151,6 +197,12 @@ public class UserProfile extends ResourceSupport
 		user.nationality = readUser.getNationality();
 		user.contactNumber = readUser.getContactNumber();
 		user.institutionId = readUser.getInstitutionId();
+        user.numOfCompTasks = readUser.getNumOfCompTasks();
+        user.numOfCompBadges = readUser.getNumOfCompBadges();
+        user.totalTasks = readUser.getTotalTasks();
+        user.totalBadges = readUser.getTotalBadges();
+        user.numOfContacts = readUser.getNumOfContacts();
+
 		Iterable<PhotoDetails> photos=readUser.getPhotos();
 		user.profilePhoto=null;
 		if (photos!=null)

@@ -10,12 +10,7 @@ import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.Indexed;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
-import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.annotation.*;
 
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 
@@ -48,6 +43,21 @@ public class User
     @Fetch
     @RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.BOTH)
 	private Iterable<Photo> photos;
+
+    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"]-(a:"+DatabaseDomainConstants.TASK+") RETURN count(DISTINCT a) ")
+    private Long numOfCompTasks;
+
+    @Query("match (n:"+ DatabaseDomainConstants.TASK+") return count(n)")
+    private Long totalTasks;
+
+    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"]-(a:"+DatabaseDomainConstants.BADGE+") RETURN count(DISTINCT a) ")
+    private Long numOfCompBadges;
+
+    @Query("match (n:"+ DatabaseDomainConstants.BADGE+") return count(n)")
+    private Long totalBadges;
+
+    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.CONTACT_LABEL+"]-(a:"+DatabaseDomainConstants.USER+") RETURN count(DISTINCT a)")
+    private Long numOfContacts;
 
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
@@ -376,7 +386,47 @@ public class User
 		this.contacts = contacts;
 	}
 
-	public UserDetails toUserDetails() 
+    public Long getNumOfCompTasks() {
+        return numOfCompTasks;
+    }
+
+    public void setNumOfCompTasks(Long numOfCompTasks) {
+        this.numOfCompTasks = numOfCompTasks;
+    }
+
+    public Long getNumOfCompBadges() {
+        return numOfCompBadges;
+    }
+
+    public void setNumOfCompBadges(Long numOfCompBadges) {
+        this.numOfCompBadges = numOfCompBadges;
+    }
+
+    public Long getTotalTasks() {
+        return totalTasks;
+    }
+
+    public void setTotalTasks(Long totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+
+    public Long getTotalBadges() {
+        return totalBadges;
+    }
+
+    public void setTotalBadges(Long totalBadges) {
+        this.totalBadges = totalBadges;
+    }
+
+    public Long getNumOfContacts() {
+        return numOfContacts;
+    }
+
+    public void setNumOfContacts(Long numOfContacts) {
+        this.numOfContacts = numOfContacts;
+    }
+
+    public UserDetails toUserDetails()
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
 	    

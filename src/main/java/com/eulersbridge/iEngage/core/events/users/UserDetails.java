@@ -30,7 +30,13 @@ public class UserDetails extends Details
 	private boolean optOutDataCollection=false;
 	private boolean trackingOff=false;
 	private	Long institutionId;
-	
+
+    private Long numOfCompTasks;
+    private Long totalTasks;
+    private Long numOfCompBadges;
+    private Long totalBadges;
+    private Long numOfContacts;
+
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     
 	public UserDetails() 
@@ -82,7 +88,47 @@ public class UserDetails extends Details
 		this.password = password;
 	}
 
-	/**
+    public Long getNumOfCompTasks() {
+        return numOfCompTasks;
+    }
+
+    public void setNumOfCompTasks(Long numOfCompTasks) {
+        this.numOfCompTasks = numOfCompTasks;
+    }
+
+    public Long getNumOfCompBadges() {
+        return numOfCompBadges;
+    }
+
+    public void setNumOfCompBadges(Long numOfCompBadges) {
+        this.numOfCompBadges = numOfCompBadges;
+    }
+
+    public Long getTotalTasks() {
+        return totalTasks;
+    }
+
+    public void setTotalTasks(Long totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+
+    public Long getTotalBadges() {
+        return totalBadges;
+    }
+
+    public void setTotalBadges(Long totalBadges) {
+        this.totalBadges = totalBadges;
+    }
+
+    public Long getNumOfContacts() {
+        return numOfContacts;
+    }
+
+    public void setNumOfContacts(Long numOfContacts) {
+        this.numOfContacts = numOfContacts;
+    }
+
+    /**
 	 * @return the contactNumber
 	 */
 	public String getContactNumber()
