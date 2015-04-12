@@ -33,19 +33,13 @@ import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeCompleteDetails;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
-import com.eulersbridge.iEngage.core.events.badge.BadgesReadEvent;
 import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.DeleteBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
-import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
-import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
-import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.BadgeComplete;
-import com.eulersbridge.iEngage.database.domain.Task;
-import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
@@ -184,7 +178,7 @@ public class BadgeEventHandlerTest
 		Page<Badge> testData=new PageImpl<Badge>(evts,pageable,evts.size());
 		when(badgeRepository.findAll(any(Pageable.class))).thenReturn(testData);
 
-		BadgesReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
 		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
@@ -205,7 +199,7 @@ public class BadgeEventHandlerTest
 		Page<Badge> testData=new PageImpl<Badge>(evts,pageable,evts.size());
 		when(badgeRepository.findAll(any(Pageable.class))).thenReturn(testData);
 				
-		BadgesReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
 		assertEquals(evtData.getTotalItems().longValue(),0);
@@ -224,7 +218,7 @@ public class BadgeEventHandlerTest
 
 		int pageLength=10;
 		int pageNumber=0;
-		BadgesReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readBadges(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertFalse(((AllReadEvent)evtData).isEntityFound());
 	}
@@ -354,6 +348,8 @@ public class BadgeEventHandlerTest
 		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
 		Page<Badge> testData=new PageImpl<Badge>(evts,pageable,evts.size());
 		when(badgeRepository.findCompletedBadges(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
 				
 		AllReadEvent evtData = service.readCompletedBadges(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);

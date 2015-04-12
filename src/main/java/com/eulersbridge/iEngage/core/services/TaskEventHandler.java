@@ -3,12 +3,23 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.task.*;
+import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.ReadTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
+import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
+import com.eulersbridge.iEngage.core.events.task.TaskCreatedEvent;
+import com.eulersbridge.iEngage.core.events.task.TaskDeletedEvent;
+import com.eulersbridge.iEngage.core.events.task.TaskDetails;
+import com.eulersbridge.iEngage.core.events.task.TaskUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 import com.eulersbridge.iEngage.database.domain.Task;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -67,11 +78,11 @@ public class TaskEventHandler implements TaskService {
     }
 
 	@Override
-	public TasksReadEvent readTasks(ReadAllEvent readTasksEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public AllReadEvent readTasks(ReadAllEvent readTasksEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Page <Task>tasks=null;
 		ArrayList<TaskDetails> dets=new ArrayList<TaskDetails>();
-		TasksReadEvent nare=null;
+		AllReadEvent nare=null;
 
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"action");
 		tasks=taskRepository.findAll(pageable);
@@ -87,12 +98,32 @@ public class TaskEventHandler implements TaskService {
 				TaskDetails det=na.toTaskDetails();
 				dets.add(det);
 			}
-			nare=new TasksReadEvent(dets,tasks.getTotalElements(),tasks.getTotalPages());
+			if (0==dets.size())
+			{
+				// Need to check if we actually found parentId.
+				User elec=userRepository.findOne(null);
+				if ( (null==elec) ||
+					 ((null==elec.getGivenName()) || ((null==elec.getFamilyName()) && (null==elec.getEmail()) && (null==elec.getInstitution()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(userId)");
+					nare=AllReadEvent.notFound(null);
+				}
+				else
+				{	
+					nare=new AllReadEvent(null,dets,tasks.getTotalElements(),tasks.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new AllReadEvent(null,dets,tasks.getTotalElements(),tasks.getTotalPages());
+			}
+
+			nare=new AllReadEvent(null,dets,tasks.getTotalElements(),tasks.getTotalPages());
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
-			nare=(TasksReadEvent) TasksReadEvent.notFound(null);
+			nare=AllReadEvent.notFound(null);
 		}
 		return nare;
 	}
@@ -165,13 +196,13 @@ public class TaskEventHandler implements TaskService {
     }
 
 	@Override
-	public TasksReadEvent readCompletedTasks(
+	public AllReadEvent readCompletedTasks(
 			ReadAllEvent readCompletedTasksEvent, Direction sortDirection,
 			int pageNumber, int pageLength)
 	{
 		Page <Task>tasks=null;
 		ArrayList<TaskDetails> dets=new ArrayList<TaskDetails>();
-		TasksReadEvent nare=null;
+		AllReadEvent nare=null;
 		Long userId=readCompletedTasksEvent.getParentId();
 
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"r.date");
@@ -188,24 +219,42 @@ public class TaskEventHandler implements TaskService {
 				TaskDetails det=na.toTaskDetails();
 				dets.add(det);
 			}
-			nare=new TasksReadEvent(dets,tasks.getTotalElements(),tasks.getTotalPages());
+			if (0==dets.size())
+			{
+				// Need to check if we actually found parentId.
+				User elec=userRepository.findOne(userId);
+				if ( (null==elec) ||
+					 ((null==elec.getGivenName()) || ((null==elec.getFamilyName()) && (null==elec.getEmail()) && (null==elec.getInstitution()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(userId)");
+					nare=AllReadEvent.notFound(userId);
+				}
+				else
+				{	
+					nare=new AllReadEvent(userId,dets,tasks.getTotalElements(),tasks.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new AllReadEvent(userId,dets,tasks.getTotalElements(),tasks.getTotalPages());
+			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
-			nare=(TasksReadEvent) TasksReadEvent.notFound(null);
+			nare=AllReadEvent.notFound(userId);
 		}
 		return nare;
 	}
 
 	@Override
-	public TasksReadEvent readRemainingTasks(
+	public AllReadEvent readRemainingTasks(
 			ReadAllEvent readCompletedTasksEvent, Direction sortDirection,
 			int pageNumber, int pageLength)
 	{
 		Page <Task>tasks=null;
 		ArrayList<TaskDetails> dets=new ArrayList<TaskDetails>();
-		TasksReadEvent nare=null;
+		AllReadEvent nare=null;
 		Long userId=readCompletedTasksEvent.getParentId();
 
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"t.xpValue");
@@ -222,12 +271,32 @@ public class TaskEventHandler implements TaskService {
 				TaskDetails det=na.toTaskDetails();
 				dets.add(det);
 			}
-			nare=new TasksReadEvent(dets,tasks.getTotalElements(),tasks.getTotalPages());
+			if (0==dets.size())
+			{
+				// Need to check if we actually found parentId.
+				User elec=userRepository.findOne(userId);
+				if ( (null==elec) ||
+					 ((null==elec.getGivenName()) || ((null==elec.getFamilyName()) && (null==elec.getEmail()) && (null==elec.getInstitution()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(userId)");
+					nare=AllReadEvent.notFound(userId);
+				}
+				else
+				{	
+					nare=new AllReadEvent(userId,dets,tasks.getTotalElements(),tasks.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new AllReadEvent(userId,dets,tasks.getTotalElements(),tasks.getTotalPages());
+			}
+
+			nare=new AllReadEvent(userId,dets,tasks.getTotalElements(),tasks.getTotalPages());
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
-			nare=(TasksReadEvent) TasksReadEvent.notFound(null);
+			nare=AllReadEvent.notFound(null);
 		}
 		return nare;
 	}

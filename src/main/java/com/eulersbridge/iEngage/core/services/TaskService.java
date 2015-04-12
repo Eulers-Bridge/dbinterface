@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -36,14 +37,14 @@ public interface TaskService {
     public DeletedEvent deleteTask(DeleteTaskEvent deleteTaskEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public TasksReadEvent readTasks(ReadAllEvent readTasksEvent,
+	public AllReadEvent readTasks(ReadAllEvent readTasksEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public TasksReadEvent readCompletedTasks(ReadAllEvent readCompletedTasksEvent,
+	public AllReadEvent readCompletedTasks(ReadAllEvent readCompletedTasksEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
     
     @PreAuthorize("hasRole('ROLE_USER')")
-	public TasksReadEvent readRemainingTasks(ReadAllEvent readCompletedTasksEvent,
+	public AllReadEvent readRemainingTasks(ReadAllEvent readCompletedTasksEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 }

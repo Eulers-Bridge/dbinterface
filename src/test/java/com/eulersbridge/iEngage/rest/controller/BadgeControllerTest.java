@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdateEvent;
@@ -14,7 +15,6 @@ import com.eulersbridge.iEngage.core.events.badge.BadgeCreatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDeletedEvent;
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
 import com.eulersbridge.iEngage.core.events.badge.BadgeUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.BadgesReadEvent;
 import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.DeleteBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
@@ -225,7 +225,7 @@ public class BadgeControllerTest {
 			com.eulersbridge.iEngage.database.domain.Badge article=iter.next();
 			badgeDets.add(article.toBadgeDetails());
 		}
-		BadgesReadEvent testData=new BadgesReadEvent(badgeDets);
+		AllReadEvent testData=new AllReadEvent(null,badgeDets);
 		when (badgeService.readBadges(any(ReadBadgesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -246,7 +246,7 @@ public class BadgeControllerTest {
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindBadges()");
 		ArrayList<BadgeDetails> eleDets=new ArrayList<BadgeDetails>(); 
-		BadgesReadEvent testData=new BadgesReadEvent(eleDets);
+		AllReadEvent testData=new AllReadEvent(null,eleDets);
 		when (badgeService.readBadges(any(ReadBadgesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

@@ -96,8 +96,8 @@ public class BadgeController {
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		BadgesReadEvent articleEvent = badgeService.readBadges(
-				new ReadBadgesEvent(), sortDirection,
+		AllReadEvent articleEvent = badgeService.readBadges(
+				new ReadAllEvent(null), sortDirection,
 				pageNumber, pageLength);
 
 		if (!articleEvent.isEntityFound())
@@ -106,7 +106,7 @@ public class BadgeController {
 		}
 
 		Iterator<Badge> badges = Badge
-				.toBadgesIterator(articleEvent.getBadges().iterator());
+				.toBadgesIterator(articleEvent.getDetails().iterator());
 
 		return new ResponseEntity<Iterator<Badge>>(badges, HttpStatus.OK);
 	}

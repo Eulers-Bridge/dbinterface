@@ -5,12 +5,20 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.core.events.DeleteEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.*;
+import com.eulersbridge.iEngage.core.events.badge.BadgeCompleteDetails;
+import com.eulersbridge.iEngage.core.events.badge.BadgeCreatedEvent;
+import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
+import com.eulersbridge.iEngage.core.events.badge.BadgeUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
+import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
+import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
+import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.BadgeComplete;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -35,7 +43,8 @@ public class BadgeEventHandler implements BadgeService{
 
 	private UserRepository userRepository;
 
-    public BadgeEventHandler(BadgeRepository badgeRepository, UserRepository userRepository) {
+    public BadgeEventHandler(BadgeRepository badgeRepository, UserRepository userRepository)
+    {
         this.badgeRepository = badgeRepository;
         this.userRepository = userRepository;
     }
@@ -57,7 +66,8 @@ public class BadgeEventHandler implements BadgeService{
     
 
     @Override
-    public ReadEvent requestReadBadge(RequestReadBadgeEvent requestReadBadgeEvent) {
+    public ReadEvent requestReadBadge(RequestReadBadgeEvent requestReadBadgeEvent)
+    {
         Badge badge = badgeRepository.findOne(requestReadBadgeEvent.getNodeId());
         ReadEvent readBadgeEvent;
         if(badge != null){
@@ -70,11 +80,11 @@ public class BadgeEventHandler implements BadgeService{
     }
 
 	@Override
-	public BadgesReadEvent readBadges(ReadAllEvent readBadgesEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public AllReadEvent readBadges(ReadAllEvent readBadgesEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Page <Badge>badges=null;
 		ArrayList<BadgeDetails> dets=new ArrayList<BadgeDetails>();
-		BadgesReadEvent nare=null;
+		AllReadEvent nare=null;
 
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"name");
 		badges=badgeRepository.findAll(pageable);
@@ -90,18 +100,19 @@ public class BadgeEventHandler implements BadgeService{
 				BadgeDetails det=na.toBadgeDetails();
 				dets.add(det);
 			}
-			nare=new BadgesReadEvent(dets,badges.getTotalElements(),badges.getTotalPages());
+			nare=new AllReadEvent(null,dets,badges.getTotalElements(),badges.getTotalPages());
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
-			nare=(BadgesReadEvent) BadgesReadEvent.notFound(null);
+			nare=AllReadEvent.notFound(null);
 		}
 		return nare;
 	}
 
     @Override
-    public UpdatedEvent updateBadge(UpdateBadgeEvent updateBadgeEvent) {
+    public UpdatedEvent updateBadge(UpdateBadgeEvent updateBadgeEvent)
+    {
         BadgeDetails badgeDetails = (BadgeDetails) updateBadgeEvent.getDetails();
         Badge badge = Badge.fromBadgeDetails(badgeDetails);
         Long badgeId = badgeDetails.getNodeId();
@@ -152,17 +163,18 @@ public class BadgeEventHandler implements BadgeService{
 	}
 
     @Override
-    public DeletedEvent deleteBadge(DeleteBadgeEvent deleteBadgeEvent) {
+    public DeletedEvent deleteBadge(DeleteEvent deleteBadgeEvent)
+    {
         if (LOG.isDebugEnabled()) LOG.debug("Entered deleteBadgeEvent= "+deleteBadgeEvent);
         Long badgeId = deleteBadgeEvent.getNodeId();
         if (LOG.isDebugEnabled()) LOG.debug("deleteBadge("+badgeId+")");
         Badge badge = badgeRepository.findOne(badgeId);
         if(badge == null){
-            return BadgeDeletedEvent.notFound(badgeId);
+            return DeletedEvent.notFound(badgeId);
         }
         else{
             badgeRepository.delete(badge);
-            BadgeDeletedEvent badgeDeletedEvent = new BadgeDeletedEvent(badgeId);
+            DeletedEvent badgeDeletedEvent = new DeletedEvent(badgeId);
             return badgeDeletedEvent;
         }
     }
@@ -173,7 +185,7 @@ public class BadgeEventHandler implements BadgeService{
 	{
 		Page <Badge>badges=null;
 		ArrayList<BadgeDetails> dets=new ArrayList<BadgeDetails>();
-		BadgesReadEvent nare=null;
+		AllReadEvent nare=null;
 		Long userId=readCompletedBadgesEvent.getParentId();
 
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"r.date");
@@ -190,12 +202,30 @@ public class BadgeEventHandler implements BadgeService{
 				BadgeDetails det=na.toBadgeDetails();
 				dets.add(det);
 			}
-			nare=new BadgesReadEvent(dets,badges.getTotalElements(),badges.getTotalPages());
+			if (0==dets.size())
+			{
+				// Need to check if we actually found parentId.
+				User elec=userRepository.findOne(userId);
+				if ( (null==elec) ||
+					 ((null==elec.getGivenName()) || ((null==elec.getFamilyName()) && (null==elec.getEmail()) && (null==elec.getInstitution()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(userId)");
+					nare=AllReadEvent.notFound(userId);
+				}
+				else
+				{	
+					nare=new AllReadEvent(userId,dets,badges.getTotalElements(),badges.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new AllReadEvent(userId,dets,badges.getTotalElements(),badges.getTotalPages());
+			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
-			nare=(BadgesReadEvent) BadgesReadEvent.notFound(null);
+			nare= AllReadEvent.notFound(null);
 		}
 		return nare;
 	}
@@ -206,7 +236,7 @@ public class BadgeEventHandler implements BadgeService{
 	{
 		Page <Badge>badges=null;
 		ArrayList<BadgeDetails> dets=new ArrayList<BadgeDetails>();
-		BadgesReadEvent nare=null;
+		AllReadEvent nare=null;
 		Long userId=readAllEvent.getParentId();
 
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"t.xpValue");
@@ -223,12 +253,30 @@ public class BadgeEventHandler implements BadgeService{
 				BadgeDetails det=na.toBadgeDetails();
 				dets.add(det);
 			}
-			nare=new BadgesReadEvent(dets,badges.getTotalElements(),badges.getTotalPages());
+			if (0==dets.size())
+			{
+				// Need to check if we actually found parentId.
+				User elec=userRepository.findOne(userId);
+				if ( (null==elec) ||
+					 ((null==elec.getGivenName()) || ((null==elec.getFamilyName()) && (null==elec.getEmail()) && (null==elec.getInstitution()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(userId)");
+					nare=AllReadEvent.notFound(userId);
+				}
+				else
+				{	
+					nare=new AllReadEvent(userId,dets,badges.getTotalElements(),badges.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new AllReadEvent(userId,dets,badges.getTotalElements(),badges.getTotalPages());
+			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findAll");
-			nare=(BadgesReadEvent) BadgesReadEvent.notFound(null);
+			nare= AllReadEvent.notFound(null);
 		}
 		return nare;
 	}

@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -94,7 +95,7 @@ public class TaskController {
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		TasksReadEvent articleEvent = taskService.readTasks(
+		AllReadEvent articleEvent = taskService.readTasks(
 				new ReadTasksEvent(), sortDirection,
 				pageNumber, pageLength);
 
@@ -104,7 +105,7 @@ public class TaskController {
 		}
 
 		Iterator<Task> tasks = Task
-				.toTasksIterator(articleEvent.getTasks().iterator());
+				.toTasksIterator(articleEvent.getDetails().iterator());
 
 		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
 	}
@@ -137,7 +138,7 @@ public class TaskController {
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		TasksReadEvent articleEvent = taskService.readCompletedTasks(
+		AllReadEvent articleEvent = taskService.readCompletedTasks(
 				new ReadCompletedTasksEvent(userId), sortDirection,
 				pageNumber, pageLength);
 
@@ -147,7 +148,7 @@ public class TaskController {
 		}
 
 		Iterator<Task> tasks = Task
-				.toTasksIterator(articleEvent.getTasks().iterator());
+				.toTasksIterator(articleEvent.getDetails().iterator());
 
 		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
 	}
@@ -180,7 +181,7 @@ public class TaskController {
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		TasksReadEvent taskEvent = taskService.readRemainingTasks(
+		AllReadEvent taskEvent = taskService.readRemainingTasks(
 				new ReadCompletedTasksEvent(userId), sortDirection,
 				pageNumber, pageLength);
 
@@ -190,7 +191,7 @@ public class TaskController {
 		}
 
 		Iterator<Task> tasks = Task
-				.toTasksIterator(taskEvent.getTasks().iterator());
+				.toTasksIterator(taskEvent.getDetails().iterator());
 
 		return new ResponseEntity<Iterator<Task>>(tasks, HttpStatus.OK);
 	}

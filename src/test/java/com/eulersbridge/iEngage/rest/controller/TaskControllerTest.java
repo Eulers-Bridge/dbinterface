@@ -34,6 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -50,7 +51,6 @@ import com.eulersbridge.iEngage.core.events.task.TaskCreatedEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskDeletedEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
 import com.eulersbridge.iEngage.core.events.task.TaskUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.TaskService;
@@ -278,7 +278,7 @@ public class TaskControllerTest
 			com.eulersbridge.iEngage.database.domain.Task article=iter.next();
 			taskDets.add(article.toTaskDetails());
 		}
-		TasksReadEvent testData=new TasksReadEvent(taskDets);
+		AllReadEvent testData=new AllReadEvent(null,taskDets);
 		when (taskService.readTasks(any(ReadTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -299,7 +299,7 @@ public class TaskControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindTasks()");
 		ArrayList<TaskDetails> eleDets=new ArrayList<TaskDetails>(); 
-		TasksReadEvent testData=new TasksReadEvent(eleDets);
+		AllReadEvent testData=new AllReadEvent(null,eleDets);
 		when (taskService.readTasks(any(ReadTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -320,7 +320,7 @@ public class TaskControllerTest
 			com.eulersbridge.iEngage.database.domain.Task article=iter.next();
 			taskDets.add(article.toTaskDetails());
 		}
-		TasksReadEvent testData=new TasksReadEvent(taskDets);
+		AllReadEvent testData=new AllReadEvent(null,taskDets);
 		when (taskService.readCompletedTasks(any(ReadCompletedTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/complete/{userId}",userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
@@ -342,7 +342,7 @@ public class TaskControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindCompletedTasks()");
 		Long userId=345l;
 		ArrayList<TaskDetails> eleDets=new ArrayList<TaskDetails>(); 
-		TasksReadEvent testData=new TasksReadEvent(eleDets);
+		AllReadEvent testData=new AllReadEvent(null,eleDets);
 		when (taskService.readCompletedTasks(any(ReadCompletedTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/complete/{userId}",userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())

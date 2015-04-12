@@ -37,7 +37,6 @@ import com.eulersbridge.iEngage.core.events.task.ReadTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
-import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 import com.eulersbridge.iEngage.database.domain.Task;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
@@ -159,7 +158,7 @@ public class TaskEventHandlerTest
 		Page<Task> testData=new PageImpl<Task>(evts,pageable,evts.size());
 		when(taskRepository.findAll(any(Pageable.class))).thenReturn(testData);
 
-		TasksReadEvent evtData = service.readTasks(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readTasks(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
 		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
@@ -180,7 +179,7 @@ public class TaskEventHandlerTest
 		Page<Task> testData=new PageImpl<Task>(evts,pageable,evts.size());
 		when(taskRepository.findAll(any(Pageable.class))).thenReturn(testData);
 				
-		TasksReadEvent evtData = service.readTasks(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readTasks(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
 		assertEquals(evtData.getTotalItems().longValue(),0);
@@ -199,9 +198,9 @@ public class TaskEventHandlerTest
 
 		int pageLength=10;
 		int pageNumber=0;
-		TasksReadEvent evtData = service.readTasks(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readTasks(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
-		assertFalse(((AllReadEvent)evtData).isEntityFound());
+		assertFalse((evtData).isEntityFound());
 	}
 	
 	/**
@@ -309,7 +308,7 @@ public class TaskEventHandlerTest
 		Page<Task> testData=new PageImpl<Task>(evts,pageable,evts.size());
 		when(taskRepository.findCompletedTasks(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
-		TasksReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
 		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
@@ -328,9 +327,12 @@ public class TaskEventHandlerTest
 		
 		Pageable pageable=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
 		Page<Task> testData=new PageImpl<Task>(evts,pageable,evts.size());
+		
 		when(taskRepository.findCompletedTasks(any(Long.class),any(Pageable.class))).thenReturn(testData);
+		User testUser=DatabaseDataFixture.populateUserGnewitt();
+		when(userRepository.findOne(any(Long.class))).thenReturn(testUser);
 				
-		TasksReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
 		assertEquals(evtData.getTotalItems().longValue(),0);
@@ -349,9 +351,9 @@ public class TaskEventHandlerTest
 
 		int pageLength=10;
 		int pageNumber=0;
-		TasksReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readCompletedTasks(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
-		assertFalse(((AllReadEvent)evtData).isEntityFound());
+		assertFalse((evtData).isEntityFound());
 	}
 	
 	@Test

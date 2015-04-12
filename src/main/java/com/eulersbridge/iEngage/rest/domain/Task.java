@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.domain;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
 import com.eulersbridge.iEngage.rest.controller.TaskController;
 
@@ -100,13 +101,13 @@ public class Task extends ResourceSupport
     }
     
 	public static Iterator<Task> toTasksIterator(
-			Iterator<TaskDetails> iter)
+			Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <Task> elections=new ArrayList<Task>();
 		while(iter.hasNext())
 		{
-			TaskDetails dets=iter.next();
+			TaskDetails dets=(TaskDetails)iter.next();
 			Task thisTask=Task.fromTaskDetails(dets);
 			Link self = thisTask.getLink("self");
 			thisTask.removeLinks();
@@ -115,5 +116,4 @@ public class Task extends ResourceSupport
 		}
 		return elections.iterator();
 	}
-
 }

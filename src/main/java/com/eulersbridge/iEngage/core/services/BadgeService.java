@@ -2,14 +2,13 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.core.events.DeleteEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.BadgesReadEvent;
 import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.DeleteBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
 
@@ -32,10 +31,10 @@ public interface BadgeService
     public UpdatedEvent updateBadge(UpdateBadgeEvent updateBadgeEvent);
 
     @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public DeletedEvent deleteBadge(DeleteBadgeEvent deleteBadgeEvent);
+    public DeletedEvent deleteBadge(DeleteEvent deleteBadgeEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public BadgesReadEvent readBadges(ReadAllEvent readBadgesEvent,
+	public AllReadEvent readBadges(ReadAllEvent readBadgesEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
 	public UpdatedEvent completedBadge(UpdateEvent any);
