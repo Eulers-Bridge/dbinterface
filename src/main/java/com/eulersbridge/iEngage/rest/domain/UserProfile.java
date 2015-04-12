@@ -201,7 +201,7 @@ public class UserProfile extends ResourceSupport
         user.numOfCompBadges = readUser.getNumOfCompBadges();
         user.totalTasks = readUser.getTotalTasks();
         user.totalBadges = readUser.getTotalBadges();
-        user.numOfCompTasks = readUser.getNumOfContacts();
+        user.numOfContacts = readUser.getNumOfContacts();
 
 		Iterable<PhotoDetails> photos=readUser.getPhotos();
 		user.profilePhoto=null;
