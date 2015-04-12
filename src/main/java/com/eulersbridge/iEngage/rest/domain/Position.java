@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.domain;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.positions.PositionDetails;
 import com.eulersbridge.iEngage.rest.controller.PositionController;
 
@@ -117,13 +118,13 @@ public class Position extends ResourceSupport
 	}
 
 	public static Iterator<Position> toPositionsIterator(
-			Iterator<PositionDetails> iter)
+			Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <Position> elections=new ArrayList<Position>();
 		while(iter.hasNext())
 		{
-			PositionDetails dets=iter.next();
+			PositionDetails dets=(PositionDetails)iter.next();
 			Position thisPosition=Position.fromPositionDetails(dets);
 			Link self = thisPosition.getLink("self");
 			thisPosition.removeLinks();

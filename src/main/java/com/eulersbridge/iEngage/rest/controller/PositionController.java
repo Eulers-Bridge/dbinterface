@@ -2,12 +2,15 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.core.services.PositionService;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Position;
 
 import org.slf4j.Logger;
@@ -91,7 +94,7 @@ public class PositionController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POSITIONS_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<Iterator<Position>> findPositions(
+	public @ResponseBody ResponseEntity<FindsParent> findPositions(
 			@PathVariable(value = "") Long electionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -104,22 +107,26 @@ public class PositionController {
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve positions from institution "
 					+ electionId + '.');
-
+		ResponseEntity<FindsParent> response;
+		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		PositionsReadEvent articleEvent = positionService.readPositions(
-				new ReadPositionsEvent(electionId), sortDirection,
+		AllReadEvent positionsEvent = positionService.readPositions(
+				new ReadAllEvent(electionId), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!positionsEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Position>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<Position> positions = Position
-				.toPositionsIterator(articleEvent.getPositions().iterator());
-
-		return new ResponseEntity<Iterator<Position>>(positions, HttpStatus.OK);
+		else
+		{
+			Iterator<Position> badges = Position
+					.toPositionsIterator(positionsEvent.getDetails().iterator());
+			FindsParent thePositions = FindsParent.fromArticlesIterator(badges, positionsEvent.getTotalItems(), positionsEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(thePositions, HttpStatus.OK);
+		}
+		return response;
 	}
 
     //Update

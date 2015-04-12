@@ -1,6 +1,9 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
@@ -11,23 +14,26 @@ import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.NewsService;
+import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
@@ -357,11 +363,68 @@ public class NewsControllerTest
 if (LOG.isDebugEnabled()) LOG.debug("dets.getPhotos = "+dets.getPhotos());
 	}
 
-	@Ignore
 	@Test
-	public final void testFindArticles() throws Exception
+	public final void testFindArticles() throws Exception 
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticles()");
+		Long instId=1l;
+		Map<Long, NewsArticle> dets=DatabaseDataFixture.populateNewsArticles();
+		Collection<NewsArticle> articles=dets.values();
+		Iterator<NewsArticle> iter=articles.iterator();
+		ArrayList<NewsArticleDetails> artDets=new ArrayList<NewsArticleDetails>(); 
+		while (iter.hasNext())
+		{
+			NewsArticle article=iter.next();
+			artDets.add(article.toNewsArticleDetails());
+		}
+		Long numElements=(long) artDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets,numElements,numPages);
+		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].title",is(artDets.get(0).getTitle())))
+		.andExpect(jsonPath("$foundObjects[0].date",is(artDets.get(0).getDate())))
+		.andExpect(jsonPath("$foundObjects[0].creatorEmail",is(artDets.get(0).getCreatorEmail())))
+		.andExpect(jsonPath("$foundObjects[0].content",is(artDets.get(0).getContent())))
+		.andExpect(jsonPath("$foundObjects[0].articleId",is(artDets.get(0).getNewsArticleId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].institutionId",is(artDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].title",is(artDets.get(1).getTitle())))
+		.andExpect(jsonPath("$foundObjects[1].date",is(artDets.get(1).getDate())))
+		.andExpect(jsonPath("$foundObjects[1].creatorEmail",is(artDets.get(1).getCreatorEmail())))
+		.andExpect(jsonPath("$foundObjects[1].content",is(artDets.get(1).getContent())))
+		.andExpect(jsonPath("$foundObjects[1].articleId",is(artDets.get(1).getNewsArticleId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].institutionId",is(artDets.get(1).getInstitutionId().intValue())))
+//TODO
+/*		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
+		.andExpect(jsonPath("$.likers",is(dets.getLikers())))
+/		.andExpect(jsonPath("$.links[0].rel",is("self")))
+*/		.andExpect(status().isOk())	;
+	}
 
+	@Test
+	public final void testFindArticlesZeroArticles() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticles()");
+		Long instId=11l;
+		ArrayList<NewsArticleDetails> artDets=new ArrayList<NewsArticleDetails>(); 
+		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets);
+		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+""
+				+ "s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testFindArticlesNoInst() throws Exception 
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticles()");
+		Long instId=11l;
+		NewsArticlesReadEvent testData=NewsArticlesReadEvent.institutionNotFound();
+		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isNotFound())	;
 	}
 
 }

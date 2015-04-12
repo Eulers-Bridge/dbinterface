@@ -3,12 +3,21 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.positions.*;
+import com.eulersbridge.iEngage.core.events.positions.CreatePositionEvent;
+import com.eulersbridge.iEngage.core.events.positions.DeletePositionEvent;
+import com.eulersbridge.iEngage.core.events.positions.PositionCreatedEvent;
+import com.eulersbridge.iEngage.core.events.positions.PositionDeletedEvent;
+import com.eulersbridge.iEngage.core.events.positions.PositionDetails;
+import com.eulersbridge.iEngage.core.events.positions.PositionReadEvent;
+import com.eulersbridge.iEngage.core.events.positions.PositionUpdatedEvent;
+import com.eulersbridge.iEngage.core.events.positions.RequestReadPositionEvent;
+import com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
@@ -75,12 +84,12 @@ public class PositionEventHandler implements PositionService{
     }
 
 	@Override
-	public PositionsReadEvent readPositions(ReadAllEvent evt, Direction sortDirection,int pageNumber, int pageLength)
+	public AllReadEvent readPositions(ReadAllEvent evt, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Long electionId=evt.getParentId();
 		Page <Position>positions=null;
 		ArrayList<PositionDetails> dets=new ArrayList<PositionDetails>();
-		PositionsReadEvent nare=null;
+		AllReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("ElectionId "+electionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.name");
@@ -105,22 +114,22 @@ public class PositionEventHandler implements PositionService{
 					 ((null==elec.getTitle()) || ((null==elec.getStart()) && (null==elec.getEnd()) && (null==elec.getIntroduction()))))
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ElectionId)");
-					nare=PositionsReadEvent.electionNotFound();
+					nare=AllReadEvent.notFound(null);
 				}
 				else
 				{	
-					nare=new PositionsReadEvent(electionId,dets,positions.getTotalElements(), positions.getTotalPages());
+					nare=new AllReadEvent(electionId,dets,positions.getTotalElements(), positions.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new PositionsReadEvent(electionId,dets,positions.getTotalElements(), positions.getTotalPages());
+				nare=new AllReadEvent(electionId,dets,positions.getTotalElements(), positions.getTotalPages());
 			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
-			nare=PositionsReadEvent.electionNotFound();
+			nare=AllReadEvent.notFound(null);
 		}
 		return nare;
 	}

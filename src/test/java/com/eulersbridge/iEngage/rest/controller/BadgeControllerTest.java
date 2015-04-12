@@ -225,18 +225,22 @@ public class BadgeControllerTest {
 			com.eulersbridge.iEngage.database.domain.Badge article=iter.next();
 			badgeDets.add(article.toBadgeDetails());
 		}
-		AllReadEvent testData=new AllReadEvent(null,badgeDets);
+		Long numElements=(long) badgeDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(null,badgeDets,numElements,numPages);
 		when (badgeService.readBadges(any(ReadBadgesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].badgeId",is(badgeDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$[0].name",is(badgeDets.get(0).getName())))
-		.andExpect(jsonPath("$[0].xpValue",is(badgeDets.get(0).getXpValue().intValue())))
-		.andExpect(jsonPath("$[0].description",is(badgeDets.get(0).getDescription())))
-		.andExpect(jsonPath("$[1].badgeId",is(badgeDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$[1].name",is(badgeDets.get(1).getName())))
-		.andExpect(jsonPath("$[1].xpValue",is(badgeDets.get(1).getXpValue().intValue())))
-		.andExpect(jsonPath("$[1].description",is(badgeDets.get(1).getDescription())))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].badgeId",is(badgeDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].name",is(badgeDets.get(0).getName())))
+		.andExpect(jsonPath("$foundObjects[0].xpValue",is(badgeDets.get(0).getXpValue().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].description",is(badgeDets.get(0).getDescription())))
+		.andExpect(jsonPath("$foundObjects[1].badgeId",is(badgeDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].name",is(badgeDets.get(1).getName())))
+		.andExpect(jsonPath("$foundObjects[1].xpValue",is(badgeDets.get(1).getXpValue().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].description",is(badgeDets.get(1).getDescription())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}

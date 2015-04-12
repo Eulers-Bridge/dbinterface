@@ -278,19 +278,23 @@ public class TaskControllerTest
 			com.eulersbridge.iEngage.database.domain.Task article=iter.next();
 			taskDets.add(article.toTaskDetails());
 		}
-		AllReadEvent testData=new AllReadEvent(null,taskDets);
+		Long numElements=(long) taskDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(null,taskDets,numElements,numPages);
 		when (taskService.readTasks(any(ReadTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].action",is(taskDets.get(0).getAction())))
-		.andExpect(jsonPath("$[0].description",is(taskDets.get(0).getDescription())))
-		.andExpect(jsonPath("$[0].xpValue",is(taskDets.get(0).getXpValue())))
-		.andExpect(jsonPath("$[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$[1].action",is(taskDets.get(1).getAction())))
-		.andExpect(jsonPath("$[1].description",is(taskDets.get(1).getDescription())))
-		.andExpect(jsonPath("$[1].xpValue",is(taskDets.get(1).getXpValue())))
-		.andExpect(jsonPath("$[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$[0].links[0].rel",is("self")))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].action",is(taskDets.get(0).getAction())))
+		.andExpect(jsonPath("$foundObjects[0].description",is(taskDets.get(0).getDescription())))
+		.andExpect(jsonPath("$foundObjects[0].xpValue",is(taskDets.get(0).getXpValue())))
+		.andExpect(jsonPath("$foundObjects[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].action",is(taskDets.get(1).getAction())))
+		.andExpect(jsonPath("$foundObjects[1].description",is(taskDets.get(1).getDescription())))
+		.andExpect(jsonPath("$foundObjects[1].xpValue",is(taskDets.get(1).getXpValue())))
+		.andExpect(jsonPath("$foundObjects[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
 
@@ -320,19 +324,23 @@ public class TaskControllerTest
 			com.eulersbridge.iEngage.database.domain.Task article=iter.next();
 			taskDets.add(article.toTaskDetails());
 		}
-		AllReadEvent testData=new AllReadEvent(null,taskDets);
+		Long numElements=(long) taskDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(null,taskDets,numElements,numPages);
 		when (taskService.readCompletedTasks(any(ReadCompletedTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/complete/{userId}",userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].action",is(taskDets.get(0).getAction())))
-		.andExpect(jsonPath("$[0].description",is(taskDets.get(0).getDescription())))
-		.andExpect(jsonPath("$[0].xpValue",is(taskDets.get(0).getXpValue())))
-		.andExpect(jsonPath("$[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$[1].action",is(taskDets.get(1).getAction())))
-		.andExpect(jsonPath("$[1].description",is(taskDets.get(1).getDescription())))
-		.andExpect(jsonPath("$[1].xpValue",is(taskDets.get(1).getXpValue())))
-		.andExpect(jsonPath("$[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$[0].links[0].rel",is("self")))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].action",is(taskDets.get(0).getAction())))
+		.andExpect(jsonPath("$foundObjects[0].description",is(taskDets.get(0).getDescription())))
+		.andExpect(jsonPath("$foundObjects[0].xpValue",is(taskDets.get(0).getXpValue())))
+		.andExpect(jsonPath("$foundObjects[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].action",is(taskDets.get(1).getAction())))
+		.andExpect(jsonPath("$foundObjects[1].description",is(taskDets.get(1).getDescription())))
+		.andExpect(jsonPath("$foundObjects[1].xpValue",is(taskDets.get(1).getXpValue())))
+		.andExpect(jsonPath("$foundObjects[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
 

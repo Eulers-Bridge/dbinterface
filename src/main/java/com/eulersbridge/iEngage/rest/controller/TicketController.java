@@ -114,22 +114,19 @@ public class TicketController {
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		AllReadEvent articleEvent = ticketService.readTickets(
+		AllReadEvent ticketsEvent = ticketService.readTickets(
 				new ReadAllEvent(electionId), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!ticketsEvent.isEntityFound())
 		{
 			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-		
 		else
 		{
-
 			Iterator<Ticket> tickets = Ticket
-					.toTicketsIterator(articleEvent.getDetails().iterator());
-			FindsParent theTickets = FindsParent.fromArticlesIterator(tickets, articleEvent.getTotalItems(), articleEvent.getTotalPages());
-	
+					.toTicketsIterator(ticketsEvent.getDetails().iterator());
+			FindsParent theTickets = FindsParent.fromArticlesIterator(tickets, ticketsEvent.getTotalItems(), ticketsEvent.getTotalPages());
 			response = new ResponseEntity<FindsParent>(theTickets, HttpStatus.OK);
 		}
 		return response;
