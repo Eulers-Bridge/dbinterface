@@ -44,17 +44,20 @@ public class User
     @RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.BOTH)
 	private Iterable<Photo> photos;
 
-    @Query("START n = node({self}) match (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"]-(a:"+DatabaseDomainConstants.TASK+") RETURN count(a) ")
+    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"]-(a:"+DatabaseDomainConstants.TASK+") RETURN count(DISTINCT a) ")
     private Long numOfCompTasks;
 
     @Query("match (n:"+ DatabaseDomainConstants.TASK+") return count(n)")
     private Long totalTasks;
 
-    @Query("START n = node({self}) match (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"]-(a:"+DatabaseDomainConstants.BADGE+") RETURN count(a) ")
+    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"]-(a:"+DatabaseDomainConstants.BADGE+") RETURN count(DISTINCT a) ")
     private Long numOfCompBadges;
 
     @Query("match (n:"+ DatabaseDomainConstants.BADGE+") return count(n)")
     private Long totalBadges;
+
+    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.CONTACT_LABEL+"]-(a:"+DatabaseDomainConstants.USER+") RETURN count(DISTINCT a)")
+    private Long numOfContacts;
 
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
@@ -413,6 +416,14 @@ public class User
 
     public void setTotalBadges(Long totalBadges) {
         this.totalBadges = totalBadges;
+    }
+
+    public Long getNumOfContacts() {
+        return numOfContacts;
+    }
+
+    public void setNumOfContacts(Long numOfContacts) {
+        this.numOfContacts = numOfContacts;
     }
 
     public UserDetails toUserDetails()

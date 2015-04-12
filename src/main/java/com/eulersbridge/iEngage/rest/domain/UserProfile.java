@@ -34,6 +34,7 @@ public class UserProfile extends ResourceSupport
     private Long totalTasks;
     private Long numOfCompBadges;
     private Long totalBadges;
+    private Long numOfContacts;
 
 	private static Logger LOG = LoggerFactory.getLogger(User.class);
 
@@ -101,6 +102,14 @@ public class UserProfile extends ResourceSupport
 
     public void setTotalBadges(Long totalBadges) {
         this.totalBadges = totalBadges;
+    }
+
+    public Long getNumOfContacts() {
+        return numOfContacts;
+    }
+
+    public void setNumOfContacts(Long numOfContacts) {
+        this.numOfContacts = numOfContacts;
     }
 
     /**
@@ -192,6 +201,7 @@ public class UserProfile extends ResourceSupport
         user.numOfCompBadges = readUser.getNumOfCompBadges();
         user.totalTasks = readUser.getTotalTasks();
         user.totalBadges = readUser.getTotalBadges();
+        user.numOfCompTasks = readUser.getNumOfContacts();
 
 		Iterable<PhotoDetails> photos=readUser.getPhotos();
 		user.profilePhoto=null;
