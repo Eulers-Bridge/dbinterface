@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
@@ -280,7 +281,7 @@ public class NewsController
 		
 		Direction sortDirection=Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
-		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadNewsArticlesEvent(institutionId),sortDirection, pageNumber,pageLength);
+		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(new ReadAllEvent(institutionId),sortDirection, pageNumber,pageLength);
   	
 		if (!articleEvent.isEntityFound())
 		{

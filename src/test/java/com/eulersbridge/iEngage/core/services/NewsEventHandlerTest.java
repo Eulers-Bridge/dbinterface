@@ -22,6 +22,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
@@ -30,7 +31,6 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
@@ -205,7 +205,7 @@ public class NewsEventHandlerTest
 	public void testShouldReadNewsArticles()
 	{
 		Long instId=(long)1;
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
+		ReadAllEvent rnae=new ReadAllEvent(instId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
@@ -226,7 +226,7 @@ public class NewsEventHandlerTest
 	public void testShouldReadNewsArticlesNonExistentInstId()
 	{
 		Long instId=(long)28;
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
+		ReadAllEvent rnae=new ReadAllEvent(instId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);
@@ -238,7 +238,7 @@ public class NewsEventHandlerTest
 	public void testShouldReadNewsArticlesNoArticles()
 	{
 		Long instId=(long)2;
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(instId);
+		ReadAllEvent rnae=new ReadAllEvent(instId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent nare=newsService.readNewsArticles(rnae,sortDirection,page,size);
 		assertNotNull(nare);

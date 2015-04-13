@@ -30,9 +30,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -106,7 +106,7 @@ public class ViewLoginIntegrationTest {
 		ArrayList<NewsArticleDetails> coll = initNewsArticles(instId, DatabaseDataFixture.populateNewsArticles());
 		NewsArticlesReadEvent value=new NewsArticlesReadEvent(instId,coll);
 		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
-		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
+		when (newsService.readNewsArticles(any(ReadAllEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$articles.[0].title",is(coll.get(0).getTitle())))
@@ -144,7 +144,7 @@ public class ViewLoginIntegrationTest {
 
 		NewsArticlesReadEvent value=new NewsArticlesReadEvent(instId,coll);
 		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
-		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
+		when (newsService.readNewsArticles(any(ReadAllEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
 	}
@@ -156,7 +156,7 @@ public class ViewLoginIntegrationTest {
 		ReadUserEvent testData=new ReadUserEvent(userDets.getEmail(), userDets);
 		NewsArticlesReadEvent value=NewsArticlesReadEvent.newsFeedNotFound();
 		when (userService.readUser(any(RequestReadUserEvent.class))).thenReturn(testData);
-		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
+		when (newsService.readNewsArticles(any(ReadAllEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
 	}

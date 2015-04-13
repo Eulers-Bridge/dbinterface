@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.domain.Logout;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.users.LoginDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
@@ -70,7 +70,7 @@ public class LoginController
 
 		Long institutionId=userDetails.getInstitutionId();
 		Long userId=userDetails.getNodeId();
-		ReadNewsArticlesEvent rnae=new ReadNewsArticlesEvent(institutionId);
+		ReadAllEvent rnae=new ReadAllEvent(institutionId);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institutionId. "+institutionId);
 		Direction sortDirection=Direction.DESC;
 		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(rnae,sortDirection, pageNumber,pageLength);

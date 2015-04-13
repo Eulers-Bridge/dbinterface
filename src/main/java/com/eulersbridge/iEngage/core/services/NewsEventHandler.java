@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
@@ -127,7 +128,7 @@ public class NewsEventHandler implements NewsService
 
 	@Override
 	public NewsArticlesReadEvent readNewsArticles(
-			ReadNewsArticlesEvent readNewsArticlesEvent, Direction sortDirection,int pageNumber, int pageSize) 
+			ReadAllEvent readNewsArticlesEvent, Direction sortDirection,int pageNumber, int pageSize) 
 	{
 		Long institutionId=readNewsArticlesEvent.getParentId();
 		Page <NewsArticle>articles=null;

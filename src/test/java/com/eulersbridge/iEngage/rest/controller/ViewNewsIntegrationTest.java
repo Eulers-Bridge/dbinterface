@@ -33,6 +33,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
@@ -43,7 +44,6 @@ import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleLikedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticlesEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
@@ -461,7 +461,7 @@ public class ViewNewsIntegrationTest {
 		Long numElements=(long) artDets.size();
 		Integer numPages= (int) ((numElements/10)+1);
 		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets,numElements,numPages);
-		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (newsService.readNewsArticles(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
 		.andExpect(jsonPath("$totalPages",is(numPages)))
@@ -491,7 +491,7 @@ public class ViewNewsIntegrationTest {
 		Long instId=11l;
 		ArrayList<NewsArticleDetails> artDets=new ArrayList<NewsArticleDetails>(); 
 		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets);
-		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (newsService.readNewsArticles(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+""
 				+ "s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())	;
@@ -503,7 +503,7 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticles()");
 		Long instId=11l;
 		NewsArticlesReadEvent testData=NewsArticlesReadEvent.institutionNotFound();
-		when (newsService.readNewsArticles(any(ReadNewsArticlesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (newsService.readNewsArticles(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
 	}
