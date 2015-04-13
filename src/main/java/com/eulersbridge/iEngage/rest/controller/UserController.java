@@ -298,7 +298,7 @@ public class UserController
 	 * 
 	 */
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}"+ControllerConstants.VOTE_REMINDERS_LABEL)
-	public @ResponseBody ResponseEntity<Iterator<VoteReminder>> findVoteReminders(@PathVariable String email,
+	public @ResponseBody ResponseEntity<FindsParent> findVoteReminders(@PathVariable String email,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
 			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
@@ -311,10 +311,10 @@ public class UserController
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to find existing vote reminders. "+email);
+		ResponseEntity<FindsParent> response;
 
 		ReadAllEvent userEvent;
 		AllReadEvent voteRemindersEvent;
-		ResponseEntity<Iterator<VoteReminder>> result;
 		
 		if (longValidator.isValid(email))
 		{
@@ -329,18 +329,20 @@ public class UserController
 			voteRemindersEvent=userService.readVoteRemindersByEmail(new RequestReadUserEvent(email), sortDirection, pageNumber, pageLength);
 		}
 		else
-			return new ResponseEntity<Iterator<VoteReminder>>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<FindsParent>(HttpStatus.BAD_REQUEST);
 			
 
 		if (!voteRemindersEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<VoteReminder>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-		Iterator<VoteReminder> contactProfiles = VoteReminder.toVoteRemindersIterator(voteRemindersEvent.getDetails().iterator());
-
-		result = new ResponseEntity<Iterator<VoteReminder>>(contactProfiles, HttpStatus.OK);
-		
-		return result;
+		else
+		{
+			Iterator<VoteReminder> voteReminders = VoteReminder.toVoteRemindersIterator(voteRemindersEvent.getDetails().iterator());
+			FindsParent theVoteReminders = FindsParent.fromArticlesIterator(voteReminders, voteRemindersEvent.getTotalItems(), voteRemindersEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theVoteReminders, HttpStatus.OK);
+		}		
+		return response;
 	}
     	
 	/**
@@ -355,7 +357,7 @@ public class UserController
 	 * 
 	 */
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}"+ControllerConstants.VOTE_RECORDS_LABEL)
-	public @ResponseBody ResponseEntity<Iterator<VoteRecord>> findVoteRecords(@PathVariable String email,
+	public @ResponseBody ResponseEntity<FindsParent> findVoteRecords(@PathVariable String email,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
 			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
@@ -371,7 +373,7 @@ public class UserController
 
 		ReadAllEvent userEvent;
 		AllReadEvent voteRecordsEvent;
-		ResponseEntity<Iterator<VoteRecord>> result;
+		ResponseEntity<FindsParent> response;
 		
 		if (longValidator.isValid(email))
 		{
@@ -386,18 +388,20 @@ public class UserController
 			voteRecordsEvent=userService.readVoteRecordsByEmail(new RequestReadUserEvent(email), sortDirection, pageNumber, pageLength);
 		}
 		else
-			return new ResponseEntity<Iterator<VoteRecord>>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<FindsParent>(HttpStatus.BAD_REQUEST);
 			
 
 		if (!voteRecordsEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<VoteRecord>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-		Iterator<VoteRecord> contactProfiles = VoteRecord.toVoteRecordsIterator(voteRecordsEvent.getDetails().iterator());
-
-		result = new ResponseEntity<Iterator<VoteRecord>>(contactProfiles, HttpStatus.OK);
-		
-		return result;
+		else
+		{
+			Iterator<VoteRecord> voteRecords = VoteRecord.toVoteRecordsIterator(voteRecordsEvent.getDetails().iterator());
+			FindsParent theVoteRecords = FindsParent.fromArticlesIterator(voteRecords, voteRecordsEvent.getTotalItems(), voteRecordsEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theVoteRecords, HttpStatus.OK);
+		}		
+		return response;
 	}
     	
     /**

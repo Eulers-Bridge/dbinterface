@@ -108,6 +108,7 @@ public class TicketController {
 		pageNumber = Integer.parseInt(page);
 		pageLength = Integer.parseInt(pageSize);
 		ResponseEntity<FindsParent> response;
+
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve tickets from institution "
 					+ electionId + '.');

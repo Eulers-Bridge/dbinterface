@@ -18,7 +18,6 @@ import com.eulersbridge.iEngage.core.events.votingLocation.DeleteVotingLocationE
 import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationsReadEvent;
 
 /**
  * @author Greg Newitt
@@ -43,7 +42,7 @@ public interface VotingLocationService
 			Direction sortDirection, int pageNumber, int pageLength);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public VotingLocationsReadEvent findVotingBooths(ReadAllEvent readVotingLocationsEvent,
+	public AllReadEvent findVotingBooths(ReadAllEvent readVotingLocationsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
 

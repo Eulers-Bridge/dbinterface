@@ -149,19 +149,19 @@ public class VotingLocationController
 		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		AllReadEvent articleEvent = votingLocationService.findVotingLocations(
+		AllReadEvent votingLocationsEvent = votingLocationService.findVotingLocations(
 				new ReadAllEvent(institutionId), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!votingLocationsEvent.isEntityFound())
 		{
 			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
 			Iterator<VotingLocation> votingLocations = VotingLocation
-					.toVotingLocationsIterator(articleEvent.getDetails().iterator());
-			FindsParent theVotingLocations = FindsParent.fromArticlesIterator(votingLocations, articleEvent.getTotalItems(), articleEvent.getTotalPages());
+					.toVotingLocationsIterator(votingLocationsEvent.getDetails().iterator());
+			FindsParent theVotingLocations = FindsParent.fromArticlesIterator(votingLocations, votingLocationsEvent.getTotalItems(), votingLocationsEvent.getTotalPages());
 			response = new ResponseEntity<FindsParent>(theVotingLocations, HttpStatus.OK);
 		}
 		return response;
@@ -181,7 +181,7 @@ public class VotingLocationController
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.VOTING_BOOTHS_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<Iterator<VotingLocation>> findVotingBooths(
+	public @ResponseBody ResponseEntity<FindsParent> findVotingBooths(
 			@PathVariable(value = "") Long electionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -194,22 +194,26 @@ public class VotingLocationController
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve votingLocations from institution "
 					+ electionId + '.');
+		ResponseEntity<FindsParent> response;
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		VotingLocationsReadEvent articleEvent = votingLocationService.findVotingBooths(
+		AllReadEvent votingBoothsEvent = votingLocationService.findVotingBooths(
 				new ReadAllEvent(electionId), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!votingBoothsEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<VotingLocation>>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<VotingLocation> votingLocations = VotingLocation
-				.toVotingLocationsIterator(articleEvent.getVotingLocations().iterator());
-
-		return new ResponseEntity<Iterator<VotingLocation>>(votingLocations, HttpStatus.OK);
+		else
+		{
+			Iterator<VotingLocation> votingLocations = VotingLocation
+					.toVotingLocationsIterator(votingBoothsEvent.getDetails().iterator());
+			FindsParent theVotingLocations = FindsParent.fromArticlesIterator(votingLocations, votingBoothsEvent.getTotalItems(), votingBoothsEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theVotingLocations, HttpStatus.OK);
+		}
+		return response;
 	}
 
     //Update

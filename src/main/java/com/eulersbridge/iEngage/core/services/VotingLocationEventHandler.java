@@ -32,7 +32,6 @@ import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationReadEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationRemovedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationsReadEvent;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.VotingLocation;
@@ -286,14 +285,14 @@ public class VotingLocationEventHandler implements VotingLocationService
 	 * , org.springframework.data.domain.Sort.Direction, int, int)
 	 */
 	@Override
-	public VotingLocationsReadEvent findVotingBooths(
+	public AllReadEvent findVotingBooths(
 			ReadAllEvent readVotingLocationsEvent,
 			Direction sortDirection, int pageNumber, int pageLength)
 	{
 		Long ownerId = readVotingLocationsEvent.getParentId();
 		Page<VotingLocation> votingLocations = null;
 		ArrayList<VotingLocationDetails> dets = new ArrayList<VotingLocationDetails>();
-		VotingLocationsReadEvent nare = null;
+		AllReadEvent nare = null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("ElectionId " + ownerId);
 		Pageable pageable = new PageRequest(pageNumber, pageLength,
@@ -321,18 +320,18 @@ public class VotingLocationEventHandler implements VotingLocationService
 				{
 					if (LOG.isDebugEnabled())
 						LOG.debug("Null or null properties returned by findOne(ownerId)");
-					nare = VotingLocationsReadEvent.notFound(ownerId);
+					nare = AllReadEvent.notFound(ownerId);
 				}
 				else
 				{
-					nare = new VotingLocationsReadEvent(dets,
+					nare = new AllReadEvent(ownerId,dets,
 							votingLocations.getTotalElements(),
 							votingLocations.getTotalPages());
 				}
 			}
 			else
 			{
-				nare = new VotingLocationsReadEvent(dets,
+				nare = new AllReadEvent(ownerId,dets,
 						votingLocations.getTotalElements(), votingLocations.getTotalPages());
 			}
 		}
@@ -340,7 +339,7 @@ public class VotingLocationEventHandler implements VotingLocationService
 		{
 			if (LOG.isDebugEnabled())
 				LOG.debug("Null returned by findByElectionId");
-			nare = VotingLocationsReadEvent.notFound(ownerId);
+			nare = AllReadEvent.notFound(ownerId);
 		}
 		return nare;
 	}

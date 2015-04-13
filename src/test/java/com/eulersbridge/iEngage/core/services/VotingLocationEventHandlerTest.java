@@ -42,7 +42,6 @@ import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationCreated
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationReadEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationRemovedEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationsReadEvent;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.VotingLocation;
@@ -396,7 +395,7 @@ public class VotingLocationEventHandlerTest
 		Page<VotingLocation> testData=new PageImpl<VotingLocation>(evts,pageable,evts.size());
 		when(votingLocationRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
-		VotingLocationsReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
 		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
@@ -419,7 +418,7 @@ public class VotingLocationEventHandlerTest
 		Owner inst=new Owner(DatabaseDataFixture.populateElection1().getNodeId());
 		when(ownerRepository.findOne(any(Long.class))).thenReturn(inst);
 				
-		VotingLocationsReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
 		assertEquals(evtData.getTotalItems().longValue(),0);
@@ -441,7 +440,7 @@ public class VotingLocationEventHandlerTest
 		when(votingLocationRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 		when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
 				
-		VotingLocationsReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertFalse(evtData.isEntityFound());
 		assertEquals(evtData.getTotalPages(),null);
@@ -461,7 +460,7 @@ public class VotingLocationEventHandlerTest
 
 		int pageLength=10;
 		int pageNumber=0;
-		VotingLocationsReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertFalse(evtData.isEntityFound());
 	}
