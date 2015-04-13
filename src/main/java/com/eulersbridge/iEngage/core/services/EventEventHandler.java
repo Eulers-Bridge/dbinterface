@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -141,13 +142,13 @@ public class EventEventHandler implements EventService
 	}
 
 	@Override
-	public EventsReadEvent readEvents(ReadAllEvent readAllEvent,
+	public AllReadEvent readEvents(ReadAllEvent readAllEvent,
 			Direction sortDirection, int pageNumber, int pageLength)
 	{
 		Long institutionId = readAllEvent.getParentId();
 		Page<Event> events = null;
 		ArrayList<EventDetails> dets = new ArrayList<EventDetails>();
-		EventsReadEvent nare = null;
+		AllReadEvent nare = null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + institutionId);
 		Pageable pageable = new PageRequest(pageNumber, pageLength,
@@ -178,17 +179,17 @@ public class EventEventHandler implements EventService
 				{
 					if (LOG.isDebugEnabled())
 						LOG.debug("Null or null properties returned by findOne(InstitutionId)");
-					nare = EventsReadEvent.institutionNotFound();
+					nare = AllReadEvent.notFound(null);
 				}
 				else
 				{
-					nare = new EventsReadEvent(institutionId, dets,
+					nare = new AllReadEvent(institutionId, dets,
 							events.getTotalElements(), events.getTotalPages());
 				}
 			}
 			else
 			{
-				nare = new EventsReadEvent(institutionId, dets,
+				nare = new AllReadEvent(institutionId, dets,
 						events.getTotalElements(), events.getTotalPages());
 			}
 		}
@@ -196,7 +197,7 @@ public class EventEventHandler implements EventService
 		{
 			if (LOG.isDebugEnabled())
 				LOG.debug("Null returned by findByInstitutionId");
-			nare = EventsReadEvent.institutionNotFound();
+			nare = AllReadEvent.notFound(null);
 		}
 		return nare;
 	}

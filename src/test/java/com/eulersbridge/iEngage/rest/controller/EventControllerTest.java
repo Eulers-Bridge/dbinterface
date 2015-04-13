@@ -35,6 +35,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
@@ -46,7 +47,6 @@ import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDeletedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
 import com.eulersbridge.iEngage.core.events.events.EventUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.events.EventsReadEvent;
 import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
@@ -308,37 +308,41 @@ public class EventControllerTest
 			Event article=iter.next();
 			eventDets.add(article.toEventDetails());
 		}
-		EventsReadEvent testData=new EventsReadEvent(instId,eventDets);
+		Long numElements=(long) eventDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(null,eventDets,numElements,numPages);
 		when (eventService.readEvents(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$events[0].eventId",is(eventDets.get(0).getEventId().intValue())))
-		.andExpect(jsonPath("$events[0].name",is(eventDets.get(0).getName())))
-		.andExpect(jsonPath("$events[0].location",is(eventDets.get(0).getLocation())))
-		.andExpect(jsonPath("$events[0].starts",is(eventDets.get(0).getStarts().intValue())))
-		.andExpect(jsonPath("$events[0].ends",is(eventDets.get(0).getEnds().intValue())))
-		.andExpect(jsonPath("$events[0].description",is(eventDets.get(0).getDescription())))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].eventId",is(eventDets.get(0).getEventId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].name",is(eventDets.get(0).getName())))
+		.andExpect(jsonPath("$foundObjects[0].location",is(eventDets.get(0).getLocation())))
+		.andExpect(jsonPath("$foundObjects[0].starts",is(eventDets.get(0).getStarts().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].ends",is(eventDets.get(0).getEnds().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].description",is(eventDets.get(0).getDescription())))
 //		.andExpect(jsonPath("$events[0].photos",is(eventDets.get(0).getPhotos())))
-		.andExpect(jsonPath("$events[0].volunteerPositions",is(eventDets.get(0).getVolunteerPositions())))
-		.andExpect(jsonPath("$events[0].created",is(eventDets.get(0).getCreated().intValue())))
-		.andExpect(jsonPath("$events[0].modified",is(eventDets.get(0).getModified().intValue())))
-		.andExpect(jsonPath("$events[0].organizer",is(eventDets.get(0).getOrganizer())))
-		.andExpect(jsonPath("$events[0].organizerEmail",is(eventDets.get(0).getOrganizerEmail())))
-		.andExpect(jsonPath("$events[0].institutionId",is(eventDets.get(0).getInstitutionId().intValue())))
-		.andExpect(jsonPath("$events[1].eventId",is(eventDets.get(1).getEventId().intValue())))
-		.andExpect(jsonPath("$events[1].name",is(eventDets.get(1).getName())))
-		.andExpect(jsonPath("$events[1].location",is(eventDets.get(1).getLocation())))
-		.andExpect(jsonPath("$events[1].starts",is(eventDets.get(1).getStarts().intValue())))
-		.andExpect(jsonPath("$events[1].ends",is(eventDets.get(1).getEnds().intValue())))
-		.andExpect(jsonPath("$events[1].description",is(eventDets.get(1).getDescription())))
+		.andExpect(jsonPath("$foundObjects[0].volunteerPositions",is(eventDets.get(0).getVolunteerPositions())))
+		.andExpect(jsonPath("$foundObjects[0].created",is(eventDets.get(0).getCreated().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].modified",is(eventDets.get(0).getModified().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].organizer",is(eventDets.get(0).getOrganizer())))
+		.andExpect(jsonPath("$foundObjects[0].organizerEmail",is(eventDets.get(0).getOrganizerEmail())))
+		.andExpect(jsonPath("$foundObjects[0].institutionId",is(eventDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].eventId",is(eventDets.get(1).getEventId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].name",is(eventDets.get(1).getName())))
+		.andExpect(jsonPath("$foundObjects[1].location",is(eventDets.get(1).getLocation())))
+		.andExpect(jsonPath("$foundObjects[1].starts",is(eventDets.get(1).getStarts().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].ends",is(eventDets.get(1).getEnds().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].description",is(eventDets.get(1).getDescription())))
 //		.andExpect(jsonPath("$events[1].photos",is(eventDets.get(1).getPhotos())))
-		.andExpect(jsonPath("$events[1].volunteerPositions",is(eventDets.get(1).getVolunteerPositions())))
-		.andExpect(jsonPath("$events[1].created",is(eventDets.get(1).getCreated().intValue())))
-		.andExpect(jsonPath("$events[1].modified",is(eventDets.get(1).getModified().intValue())))
-		.andExpect(jsonPath("$events[1].organizer",is(eventDets.get(1).getOrganizer())))
-		.andExpect(jsonPath("$events[1].organizerEmail",is(eventDets.get(1).getOrganizerEmail())))
-		.andExpect(jsonPath("$events[1].institutionId",is(eventDets.get(1).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].volunteerPositions",is(eventDets.get(1).getVolunteerPositions())))
+		.andExpect(jsonPath("$foundObjects[1].created",is(eventDets.get(1).getCreated().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].modified",is(eventDets.get(1).getModified().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].organizer",is(eventDets.get(1).getOrganizer())))
+		.andExpect(jsonPath("$foundObjects[1].organizerEmail",is(eventDets.get(1).getOrganizerEmail())))
+		.andExpect(jsonPath("$foundObjects[1].institutionId",is(eventDets.get(1).getInstitutionId().intValue())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}

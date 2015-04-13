@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -32,7 +33,6 @@ import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
 import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
 import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
-import com.eulersbridge.iEngage.core.events.events.EventsReadEvent;
 import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
@@ -238,7 +238,7 @@ public class EventEventHandlerTest
 		Page<Event> testData=new PageImpl<Event>(evts,pageable,evts.size());
 		when(eventRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
-		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
 		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
@@ -261,7 +261,7 @@ public class EventEventHandlerTest
 		Institution inst=DatabaseDataFixture.populateInstUniMelb();
 		when(institutionRepository.findOne(any(Long.class))).thenReturn(inst);
 				
-		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
 		assertEquals(evtData.getTotalItems().longValue(),0);
@@ -283,9 +283,9 @@ public class EventEventHandlerTest
 		when(eventRepository.findByInstitutionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 		when(institutionRepository.findOne(any(Long.class))).thenReturn(null);
 				
-		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
-		assertFalse(evtData.isInstitutionFound());
+		assertFalse(evtData.isEntityFound());
 		assertEquals(evtData.getTotalPages(),null);
 		assertEquals(evtData.getTotalItems(),null);
 	}
@@ -303,8 +303,8 @@ public class EventEventHandlerTest
 
 		int pageLength=10;
 		int pageNumber=0;
-		EventsReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readEvents(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
-		assertFalse(evtData.isInstitutionFound());
+		assertFalse(evtData.isEntityFound());
 	}
 }

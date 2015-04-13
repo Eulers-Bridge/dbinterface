@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
@@ -14,7 +15,7 @@ import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.services.EventService;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.Event;
-import com.eulersbridge.iEngage.rest.domain.Events;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
 
@@ -115,7 +116,7 @@ public class EventController
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.EVENTS_LABEL
 			+ "/{institutionId}")
-	public @ResponseBody ResponseEntity<Events> findEvents(
+	public @ResponseBody ResponseEntity<FindsParent> findEvents(
 			@PathVariable(value = "") Long institutionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -129,25 +130,25 @@ public class EventController
 			LOG.info("Attempting to retrieve events from institution "
 					+ institutionId + '.');
 
-		ResponseEntity<Events> response;
+		ResponseEntity<FindsParent> response;
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		EventsReadEvent evtEvent = eventService.readEvents(new ReadAllEvent(
+		AllReadEvent evtEvent = eventService.readEvents(new ReadAllEvent(
 				institutionId), sortDirection, pageNumber, pageLength);
 
 		if (!evtEvent.isEntityFound())
 		{
-			response = new ResponseEntity<Events>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
 
 		else
 		{
-			Iterator<Event> evts = Event.toEventsIterator(evtEvent.getEvents()
+			Iterator<Event> evts = Event.toEventsIterator(evtEvent.getDetails()
 					.iterator());
-			Events events = Events.fromEventsIterator(evts,
+			FindsParent events = FindsParent.fromArticlesIterator(evts,
 					evtEvent.getTotalItems(), evtEvent.getTotalPages());
-			response = new ResponseEntity<Events>(events, HttpStatus.OK);
+			response = new ResponseEntity<FindsParent>(events, HttpStatus.OK);
 		}
 
 		return response;
