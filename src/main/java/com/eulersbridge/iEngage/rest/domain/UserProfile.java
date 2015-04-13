@@ -6,6 +6,7 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
@@ -268,13 +269,13 @@ public class UserProfile extends ResourceSupport
 	}
 	
 	public static Iterator<UserProfile> toUserProfilesIterator(
-			Iterator<UserDetails> iter)
+			Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <UserProfile> userProfiles=new ArrayList<UserProfile>();
 		while(iter.hasNext())
 		{
-			UserDetails dets=iter.next();
+			UserDetails dets=(UserDetails)iter.next();
 			UserProfile thisUserProfile=UserProfile.fromUserDetails(dets);
 			Link self = thisUserProfile.getLink("self");
 			thisUserProfile.removeLinks();
@@ -283,5 +284,4 @@ public class UserProfile extends ResourceSupport
 		}
 		return userProfiles.iterator();
 	}
-
 }

@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
@@ -616,7 +615,7 @@ public class UserController
 	 * 
 	 */
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.CONTACTS_LABEL+"/{contactInfo}")
-	public @ResponseBody ResponseEntity<Iterator<UserProfile>> findExistingContacts(@PathVariable String contactInfo,
+	public @ResponseBody ResponseEntity<FindsParent> findExistingContacts(@PathVariable String contactInfo,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
 			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
@@ -632,7 +631,7 @@ public class UserController
 
 		ReadAllEvent userEvent;
 		AllReadEvent contactEvent;
-		ResponseEntity<Iterator<UserProfile>> result;
+		ResponseEntity<FindsParent> result;
 		
 		if (longValidator.isValid(contactInfo))
 		{
@@ -647,17 +646,17 @@ public class UserController
 			contactEvent=userService.readExistingContactsByEmail(new RequestReadUserEvent(contactInfo), sortDirection, pageNumber, pageLength);
 		}
 		else
-			return new ResponseEntity<Iterator<UserProfile>>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<FindsParent>(HttpStatus.BAD_REQUEST);
 			
 
 		if (!contactEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<UserProfile>>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
 		Iterator<UserProfile> contactProfiles = UserProfile
-				.toUserProfilesIterator(((ContactsReadEvent)contactEvent).getContacts().iterator());
-
-		result = new ResponseEntity<Iterator<UserProfile>>(contactProfiles, HttpStatus.OK);
+				.toUserProfilesIterator(contactEvent.getDetails().iterator());
+		FindsParent theUsers = FindsParent.fromArticlesIterator(contactProfiles, contactEvent.getTotalItems(), contactEvent.getTotalPages());
+		result = new ResponseEntity<FindsParent>(theUsers, HttpStatus.OK);
 		
 		return result;
 	}

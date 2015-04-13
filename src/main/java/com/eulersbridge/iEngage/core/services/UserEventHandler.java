@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 
-import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
@@ -310,7 +309,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 	{
 		Page <User>contacts=null;
 		ArrayList<UserDetails> dets=new ArrayList<UserDetails>();
-		ContactsReadEvent nare=null;
+		AllReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("UserId "+userId);
 		contacts=userRepository.findContacts(userId, pageable);
@@ -334,22 +333,22 @@ public class UserEventHandler implements UserService, UserDetailsService
 					 ((null==user.getEmail()) || ((null==user.getGivenName()) && (null==user.getFamilyName()) && (null==user.getGender()))))
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(UserId)");
-					nare=ContactsReadEvent.userNotFound();
+					nare=AllReadEvent.notFound(null);
 				}
 				else
 				{	
-					nare=new ContactsReadEvent(userId,dets,contacts.getTotalElements(),contacts.getTotalPages());
+					nare=new AllReadEvent(userId,dets,contacts.getTotalElements(),contacts.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new ContactsReadEvent(userId,dets,contacts.getTotalElements(),contacts.getTotalPages());
+				nare=new AllReadEvent(userId,dets,contacts.getTotalElements(),contacts.getTotalPages());
 			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
-			nare=ContactsReadEvent.userNotFound();
+			nare=AllReadEvent.notFound(null);
 		}
 		return nare;
 	}
@@ -381,7 +380,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 			nare=readExistingContacts(userId, pageable);
 		}
 		else
-			nare=ContactsReadEvent.userNotFound();
+			nare=AllReadEvent.notFound(null);
 		
 		return nare;
 	}

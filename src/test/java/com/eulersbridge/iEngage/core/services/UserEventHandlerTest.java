@@ -37,7 +37,6 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.contacts.ContactsReadEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
@@ -1300,8 +1299,6 @@ public class UserEventHandlerTest
 
 		AllReadEvent uEvt=userServiceMocked.readExistingContactsById(readAllEvent, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(uEvt);
-		ContactsReadEvent cre=(ContactsReadEvent)uEvt;
-		assertFalse(cre.isEntityFound());
-		assertFalse(cre.isUserFound());
+		assertFalse(uEvt.isEntityFound());
 	}
 }
