@@ -33,6 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
@@ -53,7 +54,6 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
@@ -761,28 +761,28 @@ public class PhotoControllerTest
 			com.eulersbridge.iEngage.database.domain.PhotoAlbum article=iter.next();
 			photoDets.add(article.toPhotoAlbumDetails());
 		}
-		PhotoAlbumsReadEvent testData=new PhotoAlbumsReadEvent(instId,photoDets);
+		AllReadEvent testData=new AllReadEvent(instId,photoDets);
 		testData.setTotalPages(1);
-		testData.setTotalEvents(new Long(photoDets.size()));
+		testData.setTotalItems(new Long(photoDets.size()));
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalPhotoAlbums",is(testData.getTotalEvents().intValue())))
+		.andExpect(jsonPath("$totalElements",is(testData.getTotalItems().intValue())))
 		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
-		.andExpect(jsonPath("$photoAlbums[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$photoAlbums[0].name",is(photoDets.get(0).getName())))
-		.andExpect(jsonPath("$photoAlbums[0].description",is(photoDets.get(0).getDescription())))
-		.andExpect(jsonPath("$photoAlbums[0].location",is(photoDets.get(0).getLocation())))
-		.andExpect(jsonPath("$photoAlbums[0].created",is(photoDets.get(0).getCreated())))
-		.andExpect(jsonPath("$photoAlbums[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
-		.andExpect(jsonPath("$photoAlbums[0].modified",is(photoDets.get(0).getModified())))
-		.andExpect(jsonPath("$photoAlbums[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$photoAlbums[1].name",is(photoDets.get(1).getName())))
-		.andExpect(jsonPath("$photoAlbums[1].description",is(photoDets.get(1).getDescription())))
-		.andExpect(jsonPath("$photoAlbums[1].location",is(photoDets.get(1).getLocation())))
-		.andExpect(jsonPath("$photoAlbums[1].created",is(photoDets.get(1).getCreated())))
-		.andExpect(jsonPath("$photoAlbums[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
-		.andExpect(jsonPath("$photoAlbums[1].modified",is(photoDets.get(1).getModified())))
+		.andExpect(jsonPath("$foundObjects[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].name",is(photoDets.get(0).getName())))
+		.andExpect(jsonPath("$foundObjects[0].description",is(photoDets.get(0).getDescription())))
+		.andExpect(jsonPath("$foundObjects[0].location",is(photoDets.get(0).getLocation())))
+		.andExpect(jsonPath("$foundObjects[0].created",is(photoDets.get(0).getCreated())))
+		.andExpect(jsonPath("$foundObjects[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].modified",is(photoDets.get(0).getModified())))
+		.andExpect(jsonPath("$foundObjects[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].name",is(photoDets.get(1).getName())))
+		.andExpect(jsonPath("$foundObjects[1].description",is(photoDets.get(1).getDescription())))
+		.andExpect(jsonPath("$foundObjects[1].location",is(photoDets.get(1).getLocation())))
+		.andExpect(jsonPath("$foundObjects[1].created",is(photoDets.get(1).getCreated())))
+		.andExpect(jsonPath("$foundObjects[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].modified",is(photoDets.get(1).getModified())))
 		.andExpect(status().isOk())	;
 	}
 
@@ -792,7 +792,7 @@ public class PhotoControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotoAlbums()");
 		Long instId=11l;
 		ArrayList<PhotoAlbumDetails> photoAlbumDets=new ArrayList<PhotoAlbumDetails>(); 
-		PhotoAlbumsReadEvent testData=new PhotoAlbumsReadEvent(instId,photoAlbumDets);
+		AllReadEvent testData=new AllReadEvent(instId,photoAlbumDets);
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk())	;
@@ -803,7 +803,7 @@ public class PhotoControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotoAlbums()");
 		Long instId=11l;
-		PhotoAlbumsReadEvent testData= PhotoAlbumsReadEvent.institutionNotFound();
+		AllReadEvent testData= AllReadEvent.notFound(null);
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
@@ -813,7 +813,7 @@ public class PhotoControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPhotoAlbums()");
 		Long instId=11l;
-		PhotoAlbumsReadEvent testData= PhotoAlbumsReadEvent.newsFeedNotFound();
+		AllReadEvent testData= AllReadEvent.notFound(null);
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;

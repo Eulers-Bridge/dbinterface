@@ -22,8 +22,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
@@ -40,9 +42,7 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
@@ -539,7 +539,7 @@ public class PhotoEventHandlerTest
 
 		
 		Long ownerId=1l;
-		ReadPhotoAlbumsEvent evt=new ReadPhotoAlbumsEvent(ownerId);
+		ReadAllEvent evt=new ReadAllEvent(ownerId);
 		int pageLength=10;
 		int pageNumber=0;
 		
@@ -547,13 +547,11 @@ public class PhotoEventHandlerTest
 		Page<PhotoAlbum> testData=new PageImpl<PhotoAlbum>(evts,pageable,evts.size());
 		when(photoAlbumRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
-		PhotoAlbumsReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
-		assertEquals(evtData.getTotalEvents(),new Long(evts.size()));
+		assertEquals(evtData.getTotalItems(),new Long(evts.size()));
 		assertTrue(evtData.isEntityFound());
-		assertTrue(evtData.isInstitutionFound());
-		assertTrue(evtData.isEventsFound());
 	}
 
 	@Test
@@ -565,7 +563,7 @@ public class PhotoEventHandlerTest
 
 		
 		Long ownerId=1l;
-		ReadPhotoAlbumsEvent evt=new ReadPhotoAlbumsEvent(ownerId);
+		ReadAllEvent evt=new ReadAllEvent(ownerId);
 		int pageLength=10;
 		int pageNumber=0;
 		
@@ -575,13 +573,11 @@ public class PhotoEventHandlerTest
 		Owner inst=new Owner(DatabaseDataFixture.populatePhotoAlbum1().getNodeId());
 		when(ownerRepository.findOne(any(Long.class))).thenReturn(inst);
 
-		PhotoAlbumsReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
-		assertEquals(evtData.getTotalEvents().longValue(),evts.size());
+		assertEquals(evtData.getTotalItems().longValue(),evts.size());
 		assertTrue(evtData.isEntityFound());
-		assertTrue(evtData.isInstitutionFound());
-		assertTrue(evtData.isEventsFound());
 	}
 
 	@Test
@@ -590,20 +586,18 @@ public class PhotoEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("FindingPhotoAlbums()");
 		
 		Long ownerId=1l;
-		ReadPhotoAlbumsEvent evt=new ReadPhotoAlbumsEvent(ownerId);
+		ReadAllEvent evt=new ReadAllEvent(ownerId);
 		int pageLength=10;
 		int pageNumber=0;
 		
 		Page<PhotoAlbum> testData=null;
 		when(photoAlbumRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
-		PhotoAlbumsReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertNull(evtData.getTotalPages());
-		assertNull(evtData.getTotalEvents());
+		assertNull(evtData.getTotalItems());
 		assertFalse(evtData.isEntityFound());
-		assertFalse(evtData.isInstitutionFound());
-		assertFalse(evtData.isEventsFound());
 	}
 
 	@Test
@@ -615,7 +609,7 @@ public class PhotoEventHandlerTest
 
 		
 		Long ownerId=1l;
-		ReadPhotoAlbumsEvent evt=new ReadPhotoAlbumsEvent(ownerId);
+		ReadAllEvent evt=new ReadAllEvent(ownerId);
 		int pageLength=10;
 		int pageNumber=0;
 		
@@ -624,13 +618,11 @@ public class PhotoEventHandlerTest
 		when(photoAlbumRepository.findByOwnerId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 		when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
 
-		PhotoAlbumsReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertNull(evtData.getTotalPages());
-		assertNull(evtData.getTotalEvents());
+		assertNull(evtData.getTotalItems());
 		assertFalse(evtData.isEntityFound());
-		assertFalse(evtData.isInstitutionFound());
-		assertFalse(evtData.isEventsFound());
 	}
 
 

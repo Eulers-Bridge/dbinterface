@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -36,14 +38,12 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Photo;
 import com.eulersbridge.iEngage.rest.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.rest.domain.PhotoAlbums;
 import com.eulersbridge.iEngage.rest.domain.Photos;
 
 /**
@@ -472,7 +472,7 @@ public class PhotoController
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_ALBUMS_LABEL
 			+ "/{ownerId}")
-	public @ResponseBody ResponseEntity<PhotoAlbums> findPhotoAlbums(
+	public @ResponseBody ResponseEntity<FindsParent> findPhotoAlbums(
 			@PathVariable(value = "") Long ownerId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -487,22 +487,22 @@ public class PhotoController
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		ResponseEntity<PhotoAlbums> response;
+		ResponseEntity<FindsParent> response;
 
-		PhotoAlbumsReadEvent photoAlbumEvent = photoService.findPhotoAlbums(
-				new ReadPhotoAlbumsEvent(ownerId), sortDirection, pageNumber,
+		AllReadEvent photoAlbumEvent = photoService.findPhotoAlbums(
+				new ReadAllEvent(ownerId), sortDirection, pageNumber,
 				pageLength);
 
 		if (!photoAlbumEvent.isEntityFound())
 		{
-			response = new ResponseEntity<PhotoAlbums>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Iterator<PhotoAlbum> photoAlbumIter = PhotoAlbum.toPhotoAlbumsIterator(photoAlbumEvent.getPhotoAlbums().iterator());
-			PhotoAlbums photoAlbums = PhotoAlbums.fromPhotoAlbumsIterator(photoAlbumIter,
-					photoAlbumEvent.getTotalEvents(), photoAlbumEvent.getTotalPages());
-			response = new ResponseEntity<PhotoAlbums>(photoAlbums, HttpStatus.OK);
+			Iterator<PhotoAlbum> photoAlbumIter = PhotoAlbum.toPhotoAlbumsIterator(photoAlbumEvent.getDetails().iterator());
+			FindsParent photoAlbums = FindsParent.fromArticlesIterator(photoAlbumIter,
+					photoAlbumEvent.getTotalItems(), photoAlbumEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(photoAlbums, HttpStatus.OK);
 		}
 		return response;
 	}

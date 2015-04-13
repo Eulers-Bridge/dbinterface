@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.rest.controller.PhotoController;
 
@@ -216,13 +217,13 @@ public class PhotoAlbum extends ResourceSupport
         return photoAlbum;
 	}
 	
-	public static Iterator<PhotoAlbum> toPhotoAlbumsIterator( Iterator<PhotoAlbumDetails> iter)
+	public static Iterator<PhotoAlbum> toPhotoAlbumsIterator( Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <PhotoAlbum> photoAlbums=new ArrayList<PhotoAlbum>();
 		while(iter.hasNext())
 		{
-			PhotoAlbumDetails dets=iter.next();
+			PhotoAlbumDetails dets=(PhotoAlbumDetails)iter.next();
 			PhotoAlbum thisPhotoAlbum=PhotoAlbum.fromPhotoAlbumDetails(dets);
 			Link self = thisPhotoAlbum.getLink("self");
 			thisPhotoAlbum.removeLinks();

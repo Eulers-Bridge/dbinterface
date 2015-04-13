@@ -13,7 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -35,8 +37,6 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumsReadEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Photo;
@@ -335,8 +335,8 @@ public class PhotoEventHandler implements PhotoService
 	}
 
 	@Override
-	public PhotoAlbumsReadEvent findPhotoAlbums(
-			ReadPhotoAlbumsEvent findPhotoAlbumsEvent, Direction dir,
+	public AllReadEvent findPhotoAlbums(
+			ReadAllEvent findPhotoAlbumsEvent, Direction dir,
 			int pageNumber, int pageLength)
 	{
         if (LOG.isDebugEnabled()) LOG.debug("Entered findPhotoAlbums findPhotoAlbumsEvent = "+findPhotoAlbumsEvent);
@@ -344,7 +344,7 @@ public class PhotoEventHandler implements PhotoService
 		Page <PhotoAlbum>photoAlbums=null;
 		ArrayList<PhotoAlbumDetails> dets=new ArrayList<PhotoAlbumDetails>();
         
-		PhotoAlbumsReadEvent result=null;
+		AllReadEvent result=null;
 		
 		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,dir,"p.created");
@@ -369,22 +369,22 @@ public class PhotoEventHandler implements PhotoService
 				if ( (null==owner) || (null==owner.getNodeId()) )
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ownerId)");
-					result=PhotoAlbumsReadEvent.institutionNotFound();
+					result=AllReadEvent.notFound(null);
 				}
 				else
 				{	
-					result=new PhotoAlbumsReadEvent(ownerId,dets,photoAlbums.getTotalElements(),photoAlbums.getTotalPages());
+					result=new AllReadEvent(ownerId,dets,photoAlbums.getTotalElements(),photoAlbums.getTotalPages());
 				}
 			}
 			else
 			{	
-				result=new PhotoAlbumsReadEvent(ownerId,dets,photoAlbums.getTotalElements(),photoAlbums.getTotalPages());
+				result=new AllReadEvent(ownerId,dets,photoAlbums.getTotalElements(),photoAlbums.getTotalPages());
 			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByOwnerId");
-			result=PhotoAlbumsReadEvent.institutionNotFound();
+			result=AllReadEvent.notFound(null);
 		}
 		return result;
 	}
