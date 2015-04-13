@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
@@ -152,11 +153,11 @@ public class InstitutionEventHandler implements InstitutionService {
 	}
 
 	@Override
-	public InstitutionsReadEvent readInstitutions(ReadInstitutionsEvent readInstitutionsEvent) 
+	public InstitutionsReadEvent readInstitutions(ReadAllEvent readInstitutionsEvent) 
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("readInstitutions()");
 	    Result<Institution> returned=null;
-	    Long countryId=readInstitutionsEvent.getCountryId();
+	    Long countryId=readInstitutionsEvent.getParentId();
 	    if (null==countryId)
 			returned=instRepository.findAll();
 	    else

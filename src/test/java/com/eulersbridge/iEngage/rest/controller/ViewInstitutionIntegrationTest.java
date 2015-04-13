@@ -26,6 +26,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
@@ -116,7 +117,7 @@ public class ViewInstitutionIntegrationTest
 		insts.add(inst);
 		InstitutionsReadEvent testData=new InstitutionsReadEvent(insts);
 		String returnedContent="[{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
-		when (instService.readInstitutions(any(ReadInstitutionsEvent.class))).thenReturn(testData);
+		when (instService.readInstitutions(any(ReadAllEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institutions/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$.[0].name",is(insts.get(0).getName())))
 		.andExpect(jsonPath("$.[0].state",is(insts.get(0).getState())))
@@ -149,7 +150,7 @@ public class ViewInstitutionIntegrationTest
 		insts.add(inst);
 		InstitutionsReadEvent testData=new InstitutionsReadEvent(insts);
 		String returnedContent="[{\"institutionId\":1,\"newsFeedId\":101,\"name\":\"University of Melbourne\",\"state\":\"Victoria\",\"campus\":\"Parkville\",\"country\":\"Australia\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/institution/1\"}]}]";
-		when (instService.readInstitutions(any(ReadInstitutionsEvent.class))).thenReturn(testData);
+		when (instService.readInstitutions(any(ReadAllEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/institutions/{countryId}",countryId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$.[0].name",is(insts.get(0).getName())))
 		.andExpect(jsonPath("$.[0].state",is(insts.get(0).getState())))

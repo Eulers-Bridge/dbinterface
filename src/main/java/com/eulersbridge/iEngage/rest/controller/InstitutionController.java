@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
@@ -342,7 +343,7 @@ public class InstitutionController
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions. ");
     	
-		ReadInstitutionsEvent rie=new ReadInstitutionsEvent();
+		ReadAllEvent rie=new ReadAllEvent(null);
 		return readInstitutions(rie);
     }
     
@@ -351,11 +352,11 @@ public class InstitutionController
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions from country "+countryId+". ");
     	
-		ReadInstitutionsEvent rie=new ReadInstitutionsEvent(countryId);
+		ReadAllEvent rie=new ReadAllEvent(countryId);
 		return readInstitutions(rie);
     }
     
-    public @ResponseBody ResponseEntity<Iterator<Institution>> readInstitutions(ReadInstitutionsEvent rie)
+    public @ResponseBody ResponseEntity<Iterator<Institution>> readInstitutions(ReadAllEvent rie)
     {
 		InstitutionsReadEvent ire=instService.readInstitutions(rie);
 		

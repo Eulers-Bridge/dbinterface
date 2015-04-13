@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
@@ -28,7 +29,6 @@ import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
 import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
 import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
@@ -230,10 +230,10 @@ public class InstitutionEventHandlerTest
 	@Test
 	public void testReadInstitutions() 
 	{
-		ReadInstitutionsEvent rie=new ReadInstitutionsEvent();
+		ReadAllEvent rie=new ReadAllEvent(null);
 		InstitutionsReadEvent institutions=instService.readInstitutions(rie);
 		assertNotNull("Not yet implemented",institutions);
-		rie=new ReadInstitutionsEvent((long)1);
+		rie=new ReadAllEvent((long)1);
 		institutions=instService.readInstitutions(rie);
 		assertNotNull("Not yet implemented",institutions);
 	}
