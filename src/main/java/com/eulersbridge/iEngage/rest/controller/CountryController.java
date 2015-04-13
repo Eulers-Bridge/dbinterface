@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
@@ -24,7 +25,6 @@ import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.ReadCountrysEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.core.services.CountryService;
 import com.eulersbridge.iEngage.rest.domain.Country;
@@ -191,7 +191,7 @@ public class CountryController
     {
     	if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve countrys. ");
     	
-		ReadCountrysEvent rce=new ReadCountrysEvent(null);
+		ReadAllEvent rce=new ReadAllEvent(null);
 		CountrysReadEvent cre = countryService.readCountrys(rce);
 		Iterator <CountryDetails> iter=cre.getCountrys().iterator();
 		ArrayList <Country> countrys=new ArrayList<Country>();

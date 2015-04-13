@@ -27,6 +27,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
@@ -37,7 +38,6 @@ import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.ReadCountrysEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.core.services.CountryService;
 import com.eulersbridge.iEngage.rest.domain.Institution;
@@ -232,7 +232,7 @@ public class ViewCountryIntegrationTest
 		CountryDetails countryDetails=country.toCountryDetails();
 		countrys.add(countryDetails);
 		CountrysReadEvent testData=new CountrysReadEvent(countrys);
-		when (countryService.readCountrys(any(ReadCountrysEvent.class))).thenReturn(testData);
+		when (countryService.readCountrys(any(ReadAllEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(get("/api/countrys").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$[0].countryName",is(countryDetails.getCountryName())))
 		.andExpect(jsonPath("$[0].countryId",is(countryDetails.getCountryId().intValue())))

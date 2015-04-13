@@ -9,6 +9,7 @@ import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
@@ -19,7 +20,6 @@ import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.ReadCountrysEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
@@ -105,7 +105,7 @@ public class CountryEventHandler implements CountryService
 	}
 
 	@Override
-	public CountrysReadEvent readCountrys(ReadCountrysEvent rce) 
+	public CountrysReadEvent readCountrys(ReadAllEvent rce) 
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("readCountrys()");
 		Result<Country> returned=countryRepository.findAll();

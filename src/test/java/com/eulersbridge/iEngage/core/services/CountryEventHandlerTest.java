@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
@@ -20,7 +21,6 @@ import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.ReadCountrysEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -124,7 +124,7 @@ public class CountryEventHandlerTest
 	@Test
 	public void testReadCountrys() 
 	{
-		ReadCountrysEvent rce=new ReadCountrysEvent(null);
+		ReadAllEvent rce=new ReadAllEvent(null);
 		CountrysReadEvent countrys=countryService.readCountrys(rce);
 		assertNotNull("Not yet implemented",countrys);
 	}
