@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
@@ -18,7 +19,6 @@ import com.eulersbridge.iEngage.core.events.badge.BadgeUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.DeleteBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.ReadBadgesEvent;
 import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
 import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -228,7 +228,7 @@ public class BadgeControllerTest {
 		Long numElements=(long) badgeDets.size();
 		Integer numPages= (int) ((numElements/10)+1);
 		AllReadEvent testData=new AllReadEvent(null,badgeDets,numElements,numPages);
-		when (badgeService.readBadges(any(ReadBadgesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (badgeService.readBadges(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
@@ -251,7 +251,7 @@ public class BadgeControllerTest {
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindBadges()");
 		ArrayList<BadgeDetails> eleDets=new ArrayList<BadgeDetails>(); 
 		AllReadEvent testData=new AllReadEvent(null,eleDets);
-		when (badgeService.readBadges(any(ReadBadgesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (badgeService.readBadges(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isOk())	;
