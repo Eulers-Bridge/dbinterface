@@ -1,8 +1,10 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
@@ -127,8 +129,8 @@ public class PollController
 
 		ResponseEntity<Polls> response;
 
-		PollsReadEvent pollEvent = pollService.findPolls(
-				new ReadPollsEvent(ownerId), sortDirection, pageNumber,
+		AllReadEvent pollEvent = pollService.findPolls(
+				new ReadAllEvent(ownerId), sortDirection, pageNumber,
 				pageLength);
 
 		if (!pollEvent.isEntityFound())
@@ -137,9 +139,9 @@ public class PollController
 		}
 		else
 		{
-			Iterator<Poll> pollIter = Poll.toPollsIterator(pollEvent.getPolls().iterator());
+			Iterator<Poll> pollIter = Poll.toPollsIterator(pollEvent.getDetails().iterator());
 			Polls polls = Polls.fromPollsIterator(pollIter,
-					pollEvent.getTotalEvents(), pollEvent.getTotalPages());
+					pollEvent.getTotalItems(), pollEvent.getTotalPages());
 			response = new ResponseEntity<Polls>(polls, HttpStatus.OK);
 		}
 		return response;

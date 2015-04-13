@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.domain;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.rest.controller.PollController;
 
@@ -83,13 +84,13 @@ public class Poll extends ResourceSupport{
         return pollDetails;
     }
 
-	public static Iterator<Poll> toPollsIterator( Iterator<PollDetails> iter)
+	public static Iterator<Poll> toPollsIterator( Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <Poll> polls=new ArrayList<Poll>();
 		while(iter.hasNext())
 		{
-			PollDetails dets=iter.next();
+			PollDetails dets=(PollDetails)iter.next();
 			Poll thisPoll=Poll.fromPollDetails(dets);
 			Link self = thisPoll.getLink("self");
 			thisPoll.removeLinks();

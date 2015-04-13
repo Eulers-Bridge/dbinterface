@@ -3,7 +3,9 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
@@ -239,15 +241,15 @@ public class PollEventHandler implements PollService
 	}
 
 	@Override
-	public PollsReadEvent findPolls(ReadPollsEvent readPollsEvent,
+	public AllReadEvent findPolls(ReadAllEvent readPollsEvent,
 			Direction dir, int pageNumber, int pageLength)
 	{
         if (LOG.isDebugEnabled()) LOG.debug("Entered findPolls readPollsEvent = "+readPollsEvent);
-        Long ownerId = readPollsEvent.getOwnerId();
+        Long ownerId = readPollsEvent.getParentId();
 		Page <Poll>polls=null;
 		ArrayList<PollDetails> dets=new ArrayList<PollDetails>();
         
-		PollsReadEvent result=null;
+		AllReadEvent result=null;
 		
 		if (LOG.isDebugEnabled()) LOG.debug("OwnerId "+ownerId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,dir,"p.date");
@@ -272,22 +274,22 @@ public class PollEventHandler implements PollService
 				if ( (null==inst) || (null==inst.getNodeId()) )
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ownerId)");
-					result=PollsReadEvent.institutionNotFound();
+					result=AllReadEvent.notFound(null);
 				}
 				else
 				{	
-					result=new PollsReadEvent(ownerId,dets,polls.getTotalElements(),polls.getTotalPages());
+					result=new AllReadEvent(ownerId,dets,polls.getTotalElements(),polls.getTotalPages());
 				}
 			}
 			else
 			{	
-				result=new PollsReadEvent(ownerId,dets,polls.getTotalElements(),polls.getTotalPages());
+				result=new AllReadEvent(ownerId,dets,polls.getTotalElements(),polls.getTotalPages());
 			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByOwnerId");
-			result=PollsReadEvent.institutionNotFound();
+			result=AllReadEvent.notFound(null);
 		}
 		return result;
 	}

@@ -37,9 +37,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
@@ -55,10 +57,8 @@ import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollResultReadEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollsReadEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollResultEvent;
-import com.eulersbridge.iEngage.core.events.polls.ReadPollsEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -684,13 +684,13 @@ public class PollControllerTest
 			com.eulersbridge.iEngage.database.domain.Poll poll=iter.next();
 			pollDets.add(poll.toPollDetails());
 		}
-		PollsReadEvent testData=new PollsReadEvent(instId,pollDets);
-		testData.setTotalPages(1);
-		testData.setTotalEvents(new Long(pollDets.size()));
-		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		Long numElements=(long) pollDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(instId,pollDets,numElements,numPages);
+		when (pollService.findPolls(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalPolls",is(testData.getTotalEvents().intValue())))
+		.andExpect(jsonPath("$totalPolls",is(testData.getTotalItems().intValue())))
 		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
 		.andExpect(jsonPath("$polls[0].nodeId",is(pollDets.get(0).getNodeId().intValue())))
 		.andExpect(jsonPath("$polls[0].question",is(pollDets.get(0).getQuestion())))
@@ -714,10 +714,14 @@ public class PollControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPolls()");
 		Long instId=11l;
-		ArrayList<PollDetails> eleDets=new ArrayList<PollDetails>(); 
-		PollsReadEvent testData=new PollsReadEvent(instId,eleDets);
-		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		ArrayList<PollDetails> pollDets=new ArrayList<PollDetails>(); 
+		Long numElements=(long) pollDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(instId,pollDets,numElements,numPages);
+		when (pollService.findPolls(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$totalPolls",is(testData.getTotalItems().intValue())))
+		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
 		.andExpect(status().isOk())	;
 	}
 
@@ -726,8 +730,8 @@ public class PollControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPolls()");
 		Long instId=11l;
-		PollsReadEvent testData=PollsReadEvent.newsFeedNotFound();
-		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		AllReadEvent testData=AllReadEvent.notFound(instId);
+		when (pollService.findPolls(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
 	}
@@ -737,8 +741,8 @@ public class PollControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPolls()");
 		Long instId=11l;
-		PollsReadEvent testData=PollsReadEvent.institutionNotFound();
-		when (pollService.findPolls(any(ReadPollsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		AllReadEvent testData=AllReadEvent.notFound(instId);
+		when (pollService.findPolls(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
 	}

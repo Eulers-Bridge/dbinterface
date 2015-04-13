@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
@@ -29,7 +31,7 @@ public interface PollService {
 	public PollAnswerCreatedEvent answerPoll(CreatePollAnswerEvent pollAnswerEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public PollsReadEvent findPolls(ReadPollsEvent readPollsEvent,
+	public AllReadEvent findPolls(ReadAllEvent readPollsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
     @PreAuthorize("hasRole('ROLE_USER')")

@@ -24,8 +24,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.neo4j.conversion.Result;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
@@ -38,10 +40,8 @@ import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollResult;
 import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
 import com.eulersbridge.iEngage.core.events.polls.PollUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollsReadEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollResultEvent;
-import com.eulersbridge.iEngage.core.events.polls.ReadPollsEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
 import com.eulersbridge.iEngage.database.domain.Owner;
@@ -530,20 +530,18 @@ public final void testFindPolls()
 	evts.add(DatabaseDataFixture.populatePoll2());
 
 	Long ownerId=1L;
-	ReadPollsEvent readPollsEvent=new ReadPollsEvent(ownerId);
+	ReadAllEvent readPollsEvent=new ReadAllEvent(ownerId);
 	int pageLength=10;
 	int pageNumber=0;
 
 	Pageable p=new PageRequest(pageNumber,pageLength,Direction.ASC,"a.date");
 	Page<Poll> testData=new PageImpl<Poll>(evts,p,evts.size());
 	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(testData);
-	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
+	AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
 	assertNotNull(evtData);
 	assertEquals(evtData.getTotalPages(),new Integer(1));
-	assertEquals(evtData.getTotalEvents(),new Long(evts.size()));
+	assertEquals(evtData.getTotalItems(),new Long(evts.size()));
 	assertTrue(evtData.isEntityFound());
-	assertTrue(evtData.isInstitutionFound());
-	assertTrue(evtData.isNewsFeedFound());
 }
 
 @Test
@@ -554,7 +552,7 @@ public final void testFindPollsNoPolls()
 	ArrayList<Poll> evts=new ArrayList<Poll>();
 
 	Long ownerId=1L;
-	ReadPollsEvent readPollsEvent=new ReadPollsEvent(ownerId);
+	ReadAllEvent readPollsEvent=new ReadAllEvent(ownerId);
 	int pageLength=10;
 	int pageNumber=0;
 	Poll testPoll=DatabaseDataFixture.populatePoll1();
@@ -564,13 +562,11 @@ public final void testFindPollsNoPolls()
 	Page<Poll> testData=new PageImpl<Poll>(evts,p,evts.size());
 	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(testData);
 	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
-	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
+	AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
 	assertNotNull(evtData);
 	assertEquals(evtData.getTotalPages(),new Integer(0));
-	assertEquals(evtData.getTotalEvents(),new Long(evts.size()));
+	assertEquals(evtData.getTotalItems(),new Long(evts.size()));
 	assertTrue(evtData.isEntityFound());
-	assertTrue(evtData.isInstitutionFound());
-	assertTrue(evtData.isNewsFeedFound());
 }
 
 @Test
@@ -581,7 +577,7 @@ public final void testFindPollsNoPollsNoOwner()
 	ArrayList<Poll> evts=new ArrayList<Poll>();
 
 	Long ownerId=1L;
-	ReadPollsEvent readPollsEvent=new ReadPollsEvent(ownerId);
+	ReadAllEvent readPollsEvent=new ReadAllEvent(ownerId);
 	int pageLength=10;
 	int pageNumber=0;
 	
@@ -589,12 +585,10 @@ public final void testFindPollsNoPollsNoOwner()
 	Page<Poll> testData=new PageImpl<Poll>(evts,p,evts.size());
 	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(testData);
 	when(pollRepository.findOne(any(Long.class))).thenReturn(null);
-	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
+	AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
 	assertNotNull(evtData);
 	assertNull(evtData.getDetails());
 	assertFalse(evtData.isEntityFound());
-	assertFalse(evtData.isInstitutionFound());
-	assertFalse(evtData.isNewsFeedFound());
 }
 
 @Test
@@ -607,17 +601,15 @@ public final void testFindPollsNullPolls()
 	evts.add(DatabaseDataFixture.populatePoll2());
 
 	Long ownerId=1L;
-	ReadPollsEvent readPollsEvent=new ReadPollsEvent(ownerId);
+	ReadAllEvent readPollsEvent=new ReadAllEvent(ownerId);
 	int pageLength=10;
 	int pageNumber=0;
 
 	when(pollRepository.findByOwnerId(any(Long.class), any (Pageable.class))).thenReturn(null);
-	PollsReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
+	AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
 	assertNotNull(evtData);
 	assertNull(evtData.getDetails());
 	assertFalse(evtData.isEntityFound());
-	assertFalse(evtData.isInstitutionFound());
-	assertFalse(evtData.isNewsFeedFound());
 }
 
 
