@@ -35,20 +35,20 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateCreatedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDeletedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateReadEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidatesReadEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CreateCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.DeleteCandidateEvent;
-import com.eulersbridge.iEngage.core.events.candidate.ReadCandidatesEvent;
 import com.eulersbridge.iEngage.core.events.candidate.RequestReadCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
@@ -342,18 +342,22 @@ public class CandidateControllerTest
 			com.eulersbridge.iEngage.database.domain.Candidate article=iter.next();
 			candidateDets.add(article.toCandidateDetails());
 		}
-		CandidatesReadEvent testData=new CandidatesReadEvent(electionId,candidateDets);
-		when (candidateService.readCandidates(any(ReadCandidatesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		Long numElements=(long) candidateDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(electionId,candidateDets,numElements,numPages);
+		when (candidateService.readCandidates(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].information",is(candidateDets.get(0).getInformation())))
-		.andExpect(jsonPath("$[0].policyStatement",is(candidateDets.get(0).getPolicyStatement())))
-		.andExpect(jsonPath("$[0].positionId",is(candidateDets.get(0).getPositionId().intValue())))
-		.andExpect(jsonPath("$[0].candidateId",is(candidateDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$[1].information",is(candidateDets.get(1).getInformation())))
-		.andExpect(jsonPath("$[1].policyStatement",is(candidateDets.get(1).getPolicyStatement())))
-		.andExpect(jsonPath("$[1].positionId",is(candidateDets.get(1).getPositionId().intValue())))
-		.andExpect(jsonPath("$[1].candidateId",is(candidateDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$totalElements",is(testData.getTotalItems().intValue())))
+		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("$foundObjects[0].information",is(candidateDets.get(0).getInformation())))
+		.andExpect(jsonPath("$foundObjects[0].policyStatement",is(candidateDets.get(0).getPolicyStatement())))
+		.andExpect(jsonPath("$foundObjects[0].positionId",is(candidateDets.get(0).getPositionId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].candidateId",is(candidateDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].information",is(candidateDets.get(1).getInformation())))
+		.andExpect(jsonPath("$foundObjects[1].policyStatement",is(candidateDets.get(1).getPolicyStatement())))
+		.andExpect(jsonPath("$foundObjects[1].positionId",is(candidateDets.get(1).getPositionId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].candidateId",is(candidateDets.get(1).getNodeId().intValue())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
@@ -363,9 +367,11 @@ public class CandidateControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindCandidates()");
 		Long electionId=11l;
-		ArrayList<CandidateDetails> eleDets=new ArrayList<CandidateDetails>(); 
-		CandidatesReadEvent testData=new CandidatesReadEvent(electionId,eleDets);
-		when (candidateService.readCandidates(any(ReadCandidatesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		ArrayList<CandidateDetails> candidateDets=new ArrayList<CandidateDetails>(); 
+		Long numElements=(long) candidateDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(electionId,candidateDets,numElements,numPages);
+		when (candidateService.readCandidates(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isOk())	;
@@ -376,8 +382,8 @@ public class CandidateControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindCandidates()");
 		Long electionId=11l;
-		CandidatesReadEvent testData=CandidatesReadEvent.electionNotFound();
-		when (candidateService.readCandidates(any(ReadCandidatesEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		AllReadEvent testData=AllReadEvent.notFound(null);
+		when (candidateService.readCandidates(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;

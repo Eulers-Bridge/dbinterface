@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.CandidateController;
@@ -189,13 +190,13 @@ public class Candidate extends ResourceSupport
     }
     
 	public static Iterator<Candidate> toCandidatesIterator(
-			Iterator<CandidateDetails> iter)
+			Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <Candidate> elections=new ArrayList<Candidate>();
 		while(iter.hasNext())
 		{
-			CandidateDetails dets=iter.next();
+			CandidateDetails dets=(CandidateDetails)iter.next();
 			Candidate thisCandidate=Candidate.fromCandidateDetails(dets);
 			Link self = thisCandidate.getLink("self");
 			thisCandidate.removeLinks();
@@ -204,5 +205,4 @@ public class Candidate extends ResourceSupport
 		}
 		return elections.iterator();
 	}
-
 }

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import com.eulersbridge.iEngage.database.repository.*;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -33,7 +35,6 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateCreatedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateReadEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidatesReadEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CreateCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.DeleteCandidateEvent;
 import com.eulersbridge.iEngage.core.events.candidate.RequestReadCandidateEvent;
@@ -270,7 +271,7 @@ public class CandidateEventHandlerTest
 		Page<Candidate> testData=new PageImpl<Candidate>(candidates,pageable,candidates.size());
 		when(candidateRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 
-		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages(),new Integer(1));
 		assertEquals(evtData.getTotalItems(),new Long(candidates.size()));
@@ -293,7 +294,7 @@ public class CandidateEventHandlerTest
 		Election inst=DatabaseDataFixture.populateElection1();
 		when(electionRepository.findOne(any(Long.class))).thenReturn(inst);
 				
-		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
 		assertEquals(evtData.getTotalPages().intValue(),0);
 		assertEquals(evtData.getTotalItems().longValue(),0);
@@ -315,9 +316,9 @@ public class CandidateEventHandlerTest
 		when(candidateRepository.findByElectionId(any(Long.class),any(Pageable.class))).thenReturn(testData);
 		when(electionRepository.findOne(any(Long.class))).thenReturn(null);
 				
-		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
-		assertFalse(evtData.isElectionFound());
+		assertFalse(evtData.isEntityFound());
 		assertEquals(evtData.getTotalPages(),null);
 		assertEquals(evtData.getTotalItems(),null);
 	}
@@ -335,9 +336,9 @@ public class CandidateEventHandlerTest
 
 		int pageLength=10;
 		int pageNumber=0;
-		CandidatesReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
+		AllReadEvent evtData = service.readCandidates(evt, Direction.ASC, pageNumber, pageLength);
 		assertNotNull(evtData);
-		assertFalse(evtData.isElectionFound());
+		assertFalse(evtData.isEntityFound());
 	}
 	
 	/**

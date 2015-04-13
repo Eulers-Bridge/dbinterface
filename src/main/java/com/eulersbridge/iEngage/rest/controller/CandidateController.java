@@ -8,6 +8,7 @@ import com.eulersbridge.iEngage.core.services.CandidateService;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.Candidate;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.User;
 
@@ -104,7 +105,7 @@ public class CandidateController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CANDIDATES_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<Iterator<Candidate>> findCandidates(
+	public @ResponseBody ResponseEntity<FindsParent> findCandidates(
 			@PathVariable(value = "") Long electionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -117,22 +118,26 @@ public class CandidateController {
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve candidates from institution "
 					+ electionId + '.');
-
+		ResponseEntity<FindsParent> response;
+		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		CandidatesReadEvent articleEvent = candidateService.readCandidates(
-				new ReadCandidatesEvent(electionId), sortDirection,
+		AllReadEvent articleEvent = candidateService.readCandidates(
+				new ReadAllEvent(electionId), sortDirection,
 				pageNumber, pageLength);
 
 		if (!articleEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Candidate>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<Candidate> candidates = Candidate
-				.toCandidatesIterator(articleEvent.getCandidates().iterator());
-
-		return new ResponseEntity<Iterator<Candidate>>(candidates, HttpStatus.OK);
+		else
+		{
+			Iterator<Candidate> candidates = Candidate
+					.toCandidatesIterator(articleEvent.getDetails().iterator());
+			FindsParent theBadges = FindsParent.fromArticlesIterator(candidates, articleEvent.getTotalItems(), articleEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theBadges, HttpStatus.OK);
+		}
+		return response;
 	}
 
     //Update

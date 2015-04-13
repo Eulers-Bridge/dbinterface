@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -100,12 +101,12 @@ public class CandidateEventHandler implements CandidateService {
     }
 
 	@Override
-	public CandidatesReadEvent readCandidates(ReadAllEvent readCandidatesEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public AllReadEvent readCandidates(ReadAllEvent readCandidatesEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Long electionId=readCandidatesEvent.getParentId();
 		Page <Candidate>candidates=null;
 		ArrayList<CandidateDetails> dets=new ArrayList<CandidateDetails>();
-		CandidatesReadEvent nare=null;
+		AllReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("ElectionId "+electionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.name");
@@ -130,22 +131,22 @@ public class CandidateEventHandler implements CandidateService {
 					 ((null==elec.getTitle()) || ((null==elec.getStart()) && (null==elec.getEnd()) && (null==elec.getIntroduction()))))
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ElectionId)");
-					nare=CandidatesReadEvent.electionNotFound();
+					nare=AllReadEvent.notFound(null);
 				}
 				else
 				{	
-					nare=new CandidatesReadEvent(electionId,dets,candidates.getTotalElements(),candidates.getTotalPages());
+					nare=new AllReadEvent(electionId,dets,candidates.getTotalElements(),candidates.getTotalPages());
 				}
 			}
 			else
 			{	
-				nare=new CandidatesReadEvent(electionId,dets,candidates.getTotalElements(),candidates.getTotalPages());
+				nare=new AllReadEvent(electionId,dets,candidates.getTotalElements(),candidates.getTotalPages());
 			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
-			nare=CandidatesReadEvent.electionNotFound();
+			nare=AllReadEvent.notFound(null);
 		}
 		return nare;
 	}
