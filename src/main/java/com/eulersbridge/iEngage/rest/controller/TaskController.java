@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.*;
@@ -98,7 +99,7 @@ public class TaskController {
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
 		AllReadEvent taskEvent = taskService.readTasks(
-				new ReadTasksEvent(), sortDirection,
+				new ReadAllEvent(null), sortDirection,
 				pageNumber, pageLength);
 
 		if (!taskEvent.isEntityFound())

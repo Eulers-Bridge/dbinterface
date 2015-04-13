@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 import com.eulersbridge.iEngage.rest.controller.VotingLocationController;
 
@@ -82,13 +83,13 @@ public class VotingLocation extends ResourceSupport
         return photoDetails;
     }
 
-	public static Iterator<VotingLocation> toVotingLocationsIterator( Iterator<VotingLocationDetails> iter)
+	public static Iterator<VotingLocation> toVotingLocationsIterator( Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <VotingLocation> photos=new ArrayList<VotingLocation>();
 		while(iter.hasNext())
 		{
-			VotingLocationDetails dets=iter.next();
+			VotingLocationDetails dets=(VotingLocationDetails)iter.next();
 			VotingLocation thisVotingLocation=VotingLocation.fromVotingLocationDetails(dets);
 			Link self = thisVotingLocation.getLink("self");
 			thisVotingLocation.removeLinks();
@@ -228,6 +229,5 @@ public class VotingLocation extends ResourceSupport
 		}
 		return true;
 	}
-
 }
 

@@ -10,7 +10,6 @@ import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
-import com.eulersbridge.iEngage.core.events.task.TasksReadEvent;
 import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 
 import org.springframework.data.domain.Sort.Direction;

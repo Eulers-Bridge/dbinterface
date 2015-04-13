@@ -6,6 +6,7 @@ package com.eulersbridge.iEngage.core.services;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -38,7 +39,7 @@ public interface VotingLocationService
     public UpdatedEvent updateVotingLocation(UpdateVotingLocationEvent updateVotingLocationEvent);
 
     @PreAuthorize("hasRole('ROLE_USER')")
-	public VotingLocationsReadEvent findVotingLocations(ReadAllEvent readVotingLocationsEvent,
+	public AllReadEvent findVotingLocations(ReadAllEvent readVotingLocationsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
     @PreAuthorize("hasRole('ROLE_USER')")

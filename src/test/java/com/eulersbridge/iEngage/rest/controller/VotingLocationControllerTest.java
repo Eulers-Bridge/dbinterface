@@ -35,10 +35,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
@@ -46,7 +48,6 @@ import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.votingLocation.CreateVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.DeleteVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationsEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationCreatedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDeletedEvent;
@@ -290,20 +291,24 @@ public class VotingLocationControllerTest
 			com.eulersbridge.iEngage.database.domain.VotingLocation article=iter.next();
 			votingLocationDets.add(article.toVotingLocationDetails());
 		}
-		VotingLocationsReadEvent testData=new VotingLocationsReadEvent(votingLocationDets);
-		when (votingLocationService.findVotingLocations(any(ReadVotingLocationsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		Long numElements=(long) votingLocationDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(electionId,votingLocationDets,numElements,numPages);
+		when (votingLocationService.findVotingLocations(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].name",is(votingLocationDets.get(0).getName())))
-		.andExpect(jsonPath("$[0].information",is(votingLocationDets.get(0).getInformation())))
-		.andExpect(jsonPath("$[0].votingLocationId",is(votingLocationDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$[0].ownerId",is(votingLocationDets.get(0).getOwnerId().intValue())))
-		.andExpect(jsonPath("$[0].links[0].rel",is("self")))
-		.andExpect(jsonPath("$[1].name",is(votingLocationDets.get(1).getName())))
-		.andExpect(jsonPath("$[1].information",is(votingLocationDets.get(1).getInformation())))
-		.andExpect(jsonPath("$[1].votingLocationId",is(votingLocationDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$[1].ownerId",is(votingLocationDets.get(1).getOwnerId().intValue())))
-		.andExpect(jsonPath("$[1].links[0].rel",is("self")))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].name",is(votingLocationDets.get(0).getName())))
+		.andExpect(jsonPath("$foundObjects[0].information",is(votingLocationDets.get(0).getInformation())))
+		.andExpect(jsonPath("$foundObjects[0].votingLocationId",is(votingLocationDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].ownerId",is(votingLocationDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].links[0].rel",is("self")))
+		.andExpect(jsonPath("$foundObjects[1].name",is(votingLocationDets.get(1).getName())))
+		.andExpect(jsonPath("$foundObjects[1].information",is(votingLocationDets.get(1).getInformation())))
+		.andExpect(jsonPath("$foundObjects[1].votingLocationId",is(votingLocationDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].ownerId",is(votingLocationDets.get(1).getOwnerId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].links[0].rel",is("self")))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
@@ -313,10 +318,14 @@ public class VotingLocationControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindVotingLocations()");
 		Long electionId=11l;
-		ArrayList<VotingLocationDetails> eleDets=new ArrayList<VotingLocationDetails>(); 
-		VotingLocationsReadEvent testData=new VotingLocationsReadEvent(eleDets);
-		when (votingLocationService.findVotingLocations(any(ReadVotingLocationsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		ArrayList<VotingLocationDetails> votingLocationDets=new ArrayList<VotingLocationDetails>(); 
+		Long numElements=(long) votingLocationDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(electionId,votingLocationDets,numElements,numPages);
+		when (votingLocationService.findVotingLocations(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
 		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
@@ -327,7 +336,7 @@ public class VotingLocationControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindVotingLocations()");
 		Long ownerId=11l;
 		VotingLocationsReadEvent testData=VotingLocationsReadEvent.notFound(ownerId);
-		when (votingLocationService.findVotingLocations(any(ReadVotingLocationsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (votingLocationService.findVotingLocations(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",ownerId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;

@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -217,14 +218,14 @@ public class VotingLocationEventHandler implements VotingLocationService
 	 * , org.springframework.data.domain.Sort.Direction, int, int)
 	 */
 	@Override
-	public VotingLocationsReadEvent findVotingLocations(
+	public AllReadEvent findVotingLocations(
 			ReadAllEvent readVotingLocationsEvent,
 			Direction sortDirection, int pageNumber, int pageLength)
 	{
 		Long ownerId = readVotingLocationsEvent.getParentId();
 		Page<VotingLocation> votingLocations = null;
 		ArrayList<VotingLocationDetails> dets = new ArrayList<VotingLocationDetails>();
-		VotingLocationsReadEvent nare = null;
+		AllReadEvent nare = null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + ownerId);
 		Pageable pageable = new PageRequest(pageNumber, pageLength,
@@ -252,18 +253,18 @@ public class VotingLocationEventHandler implements VotingLocationService
 				{
 					if (LOG.isDebugEnabled())
 						LOG.debug("Null or null properties returned by findOne(ownerId)");
-					nare = VotingLocationsReadEvent.notFound(ownerId);
+					nare = AllReadEvent.notFound(ownerId);
 				}
 				else
 				{
-					nare = new VotingLocationsReadEvent(dets,
+					nare = new AllReadEvent(ownerId,dets,
 							votingLocations.getTotalElements(),
 							votingLocations.getTotalPages());
 				}
 			}
 			else
 			{
-				nare = new VotingLocationsReadEvent(dets,
+				nare = new AllReadEvent(ownerId,dets,
 						votingLocations.getTotalElements(), votingLocations.getTotalPages());
 			}
 		}
@@ -271,7 +272,7 @@ public class VotingLocationEventHandler implements VotingLocationService
 		{
 			if (LOG.isDebugEnabled())
 				LOG.debug("Null returned by findByInstitutionId");
-			nare = VotingLocationsReadEvent.notFound(ownerId);
+			nare = AllReadEvent.notFound(ownerId);
 		}
 		return nare;
 	}

@@ -37,6 +37,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
@@ -44,7 +45,6 @@ import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.ReadCompletedTasksEvent;
 import com.eulersbridge.iEngage.core.events.task.ReadTaskEvent;
-import com.eulersbridge.iEngage.core.events.task.ReadTasksEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
 import com.eulersbridge.iEngage.core.events.task.TaskCreatedEvent;
@@ -281,7 +281,7 @@ public class TaskControllerTest
 		Long numElements=(long) taskDets.size();
 		Integer numPages= (int) ((numElements/10)+1);
 		AllReadEvent testData=new AllReadEvent(null,taskDets,numElements,numPages);
-		when (taskService.readTasks(any(ReadTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (taskService.readTasks(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
@@ -304,7 +304,7 @@ public class TaskControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindTasks()");
 		ArrayList<TaskDetails> eleDets=new ArrayList<TaskDetails>(); 
 		AllReadEvent testData=new AllReadEvent(null,eleDets);
-		when (taskService.readTasks(any(ReadTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (taskService.readTasks(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isOk())	;

@@ -36,6 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.positions.CreatePositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.DeletePositionEvent;
@@ -44,7 +45,6 @@ import com.eulersbridge.iEngage.core.events.positions.PositionDeletedEvent;
 import com.eulersbridge.iEngage.core.events.positions.PositionDetails;
 import com.eulersbridge.iEngage.core.events.positions.PositionReadEvent;
 import com.eulersbridge.iEngage.core.events.positions.PositionUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.positions.ReadPositionsEvent;
 import com.eulersbridge.iEngage.core.events.positions.RequestReadPositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent;
 import com.eulersbridge.iEngage.core.services.ElectionService;
@@ -281,7 +281,7 @@ public class PositionControllerTest
 		Long numElements=(long) positionDets.size();
 		Integer numPages=(positionDets.size()/10)+1;
 		AllReadEvent testData=new AllReadEvent(electionId,positionDets,numElements,numPages);
-		when (positionService.readPositions(any(ReadPositionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (positionService.readPositions(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
@@ -305,7 +305,7 @@ public class PositionControllerTest
 		Long electionId=11l;
 		ArrayList<PositionDetails> eleDets=new ArrayList<PositionDetails>(); 
 		AllReadEvent testData=new AllReadEvent(electionId,eleDets);
-		when (positionService.readPositions(any(ReadPositionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (positionService.readPositions(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isOk())	;
@@ -317,7 +317,7 @@ public class PositionControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindPositions()");
 		Long electionId=11l;
 		AllReadEvent testData=AllReadEvent.notFound(null);
-		when (positionService.readPositions(any(ReadPositionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (positionService.readPositions(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;
