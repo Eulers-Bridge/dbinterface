@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -145,12 +146,12 @@ public class ElectionEventHandler implements ElectionService
     }
 
 	@Override
-	public ElectionsReadEvent readElections(ReadAllEvent readElectionsEvent, Direction sortDirection,int pageNumber, int pageLength)
+	public AllReadEvent readElections(ReadAllEvent readElectionsEvent, Direction sortDirection,int pageNumber, int pageLength)
 	{
 		Long institutionId=readElectionsEvent.getParentId();
 		Page <Election>elections=null;
 		ArrayList<ElectionDetails> dets=new ArrayList<ElectionDetails>();
-		ElectionsReadEvent nare=null;
+		AllReadEvent nare=null;
 
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
 		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.start");
@@ -177,22 +178,22 @@ public class ElectionEventHandler implements ElectionService
 					 ((null==inst.getName()) || ((null==inst.getCampus()) && (null==inst.getState()) && (null==inst.getCountry()))))
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(InstitutionId)");
-					nare=ElectionsReadEvent.institutionNotFound();
+					nare=AllReadEvent.notFound(null);
 				}
 				else
 				{	
-					nare=new ElectionsReadEvent(institutionId,dets,numElements,numPages);
+					nare=new AllReadEvent(institutionId,dets,numElements,numPages);
 				}
 			}
 			else
 			{	
-				nare=new ElectionsReadEvent(institutionId,dets,numElements,numPages);
+				nare=new AllReadEvent(institutionId,dets,numElements,numPages);
 			}
 		}
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
-			nare=ElectionsReadEvent.institutionNotFound();
+			nare=AllReadEvent.notFound(null);
 		}
 		return nare;
 	}

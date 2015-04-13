@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.rest.domain;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.rest.controller.ElectionController;
 
@@ -209,13 +210,13 @@ public class Election extends ResourceSupport
 		this.process = process;
 	}
 
-	public static Iterator<Election> toElectionsIterator(Iterator<ElectionDetails> iter)
+	public static Iterator<Election> toElectionsIterator(Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
 		ArrayList <Election> elections=new ArrayList<Election>();
 		while(iter.hasNext())
 		{
-			ElectionDetails dets=iter.next();
+			ElectionDetails dets=(ElectionDetails)iter.next();
 			Election thisElection=Election.fromElectionDetails(dets);
 			Link self = thisElection.getLink("self");
 			thisElection.removeLinks();

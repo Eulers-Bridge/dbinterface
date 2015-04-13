@@ -33,7 +33,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
@@ -44,7 +46,6 @@ import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.core.events.elections.ElectionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.ElectionsReadEvent;
 import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.ReadElectionsEvent;
 import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
 import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
@@ -442,24 +443,28 @@ public class ElectionControllerTest
 			com.eulersbridge.iEngage.database.domain.Election article=iter.next();
 			eleDets.add(article.toElectionDetails());
 		}
-		ElectionsReadEvent testData=new ElectionsReadEvent(instId,eleDets);
-		when (electionService.readElections(any(ReadElectionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		Long numElements=(long) eleDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(null,eleDets,numElements,numPages);
+		when (electionService.readElections(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].title",is(eleDets.get(0).getTitle())))
-		.andExpect(jsonPath("$[0].start",is(eleDets.get(0).getStart().intValue())))
-		.andExpect(jsonPath("$[0].end",is(eleDets.get(0).getEnd().intValue())))
-		.andExpect(jsonPath("$[0].startVoting",is(eleDets.get(0).getStartVoting().intValue())))
-		.andExpect(jsonPath("$[0].endVoting",is(eleDets.get(0).getEndVoting().intValue())))
-		.andExpect(jsonPath("$[0].electionId",is(eleDets.get(0).getElectionId().intValue())))
-		.andExpect(jsonPath("$[0].institutionId",is(eleDets.get(0).getInstitutionId().intValue())))
-		.andExpect(jsonPath("$[1].title",is(eleDets.get(1).getTitle())))
-		.andExpect(jsonPath("$[1].start",is(eleDets.get(1).getStart().intValue())))
-		.andExpect(jsonPath("$[1].end",is(eleDets.get(1).getEnd().intValue())))
-		.andExpect(jsonPath("$[1].startVoting",is(eleDets.get(1).getStartVoting().intValue())))
-		.andExpect(jsonPath("$[1].endVoting",is(eleDets.get(1).getEndVoting().intValue())))
-		.andExpect(jsonPath("$[1].electionId",is(eleDets.get(1).getElectionId().intValue())))
-		.andExpect(jsonPath("$[1].institutionId",is(eleDets.get(1).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].title",is(eleDets.get(0).getTitle())))
+		.andExpect(jsonPath("$foundObjects[0].start",is(eleDets.get(0).getStart().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].end",is(eleDets.get(0).getEnd().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].startVoting",is(eleDets.get(0).getStartVoting().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].endVoting",is(eleDets.get(0).getEndVoting().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].electionId",is(eleDets.get(0).getElectionId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].institutionId",is(eleDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].title",is(eleDets.get(1).getTitle())))
+		.andExpect(jsonPath("$foundObjects[1].start",is(eleDets.get(1).getStart().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].end",is(eleDets.get(1).getEnd().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].startVoting",is(eleDets.get(1).getStartVoting().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].endVoting",is(eleDets.get(1).getEndVoting().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].electionId",is(eleDets.get(1).getElectionId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].institutionId",is(eleDets.get(1).getInstitutionId().intValue())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
@@ -470,9 +475,13 @@ public class ElectionControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElections()");
 		Long instId=11l;
 		ArrayList<ElectionDetails> eleDets=new ArrayList<ElectionDetails>(); 
-		ElectionsReadEvent testData=new ElectionsReadEvent(instId,eleDets);
-		when (electionService.readElections(any(ReadElectionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		Long numElements=(long) eleDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(null,eleDets,numElements,numPages);
+		when (electionService.readElections(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
 		.andDo(print())
 		.andExpect(status().isOk())	;
 	}
@@ -483,7 +492,7 @@ public class ElectionControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("performingFindElections()");
 		Long instId=11l;
 		ElectionsReadEvent testData=ElectionsReadEvent.institutionNotFound();
-		when (electionService.readElections(any(ReadElectionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
+		when (electionService.readElections(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;

@@ -2,7 +2,9 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.elections.*;
@@ -21,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eulersbridge.iEngage.rest.domain.Election;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.VotingLocation;
 
 @RestController
@@ -78,7 +81,7 @@ public class ElectionController
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTIONS_LABEL
 			+ "/{institutionId}")
-	public @ResponseBody ResponseEntity<Iterator<Election>> findElections(
+	public @ResponseBody ResponseEntity<FindsParent> findElections(
 			@PathVariable(value = "") Long institutionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -91,22 +94,26 @@ public class ElectionController
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve elections from institution "
 					+ institutionId + '.');
-
+		ResponseEntity<FindsParent> response;
+		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		ElectionsReadEvent articleEvent = electionService.readElections(
-				new ReadElectionsEvent(institutionId), sortDirection,
+		AllReadEvent electionEvent = electionService.readElections(
+				new ReadAllEvent(institutionId), sortDirection,
 				pageNumber, pageLength);
 
-		if (!articleEvent.isEntityFound())
+		if (!electionEvent.isEntityFound())
 		{
-			return new ResponseEntity<Iterator<Election>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 		}
-
-		Iterator<Election> elections = Election
-				.toElectionsIterator(articleEvent.getElections().iterator());
-
-		return new ResponseEntity<Iterator<Election>>(elections, HttpStatus.OK);
+		else
+		{
+			Iterator<Election> elections = Election
+					.toElectionsIterator(electionEvent.getDetails().iterator());
+			FindsParent theElections = FindsParent.fromArticlesIterator(elections, electionEvent.getTotalItems(), electionEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theElections, HttpStatus.OK);
+		}
+		return response;
 	}
 
 	// Create
