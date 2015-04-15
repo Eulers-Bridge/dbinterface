@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -376,7 +375,6 @@ public class NotificationControllerTest
 		.andExpect(status().isBadRequest())	;		
 	}
 
-@Ignore
 	@Test
 	public void testUpdateNotificationBadContent() throws Exception
 	{

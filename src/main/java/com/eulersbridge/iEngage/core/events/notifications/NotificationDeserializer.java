@@ -4,6 +4,7 @@
 package com.eulersbridge.iEngage.core.events.notifications;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
 import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
@@ -25,6 +26,27 @@ import org.slf4j.LoggerFactory;
 public class NotificationDeserializer extends JsonDeserializer<Notification>
 {
     static Logger LOG = LoggerFactory.getLogger(NotificationDeserializer.class);
+    
+    static String notificationfieldsArray[]={
+    								NotificationConstants.NodeId,
+    								NotificationConstants.UserId,
+    								NotificationConstants.Timestamp,
+    						        NotificationConstants.Type,
+    						        NotificationConstants.Read,
+    						   	 	NotificationConstants.NotificationBody
+    							};
+    
+    public static boolean stringContainsValidNotificationField(String inputString)
+    {
+        for(int i =0; i < notificationfieldsArray.length; i++)
+        {
+            if(inputString.equals(notificationfieldsArray[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     
     private Long getLong(JsonNode node)
     {
@@ -52,6 +74,15 @@ public class NotificationDeserializer extends JsonDeserializer<Notification>
 			throws IOException, JsonProcessingException
 	{
         JsonNode node = jp.getCodec().readTree(jp);
+        Iterator<String> fields = node.fieldNames();
+        while (fields.hasNext())
+        {
+        	String field = fields.next();
+        	boolean valid=stringContainsValidNotificationField(field);
+        	if (LOG.isDebugEnabled()) LOG.debug("field - "+field+" validField - "+valid);
+        	if (!valid) throw new JsonMappingException("Invalid field name -"+field);
+        	
+        }
 
         Long nodeId=getLong(node.get(NotificationConstants.NodeId));
         Long userId=getLong(node.get(NotificationConstants.UserId));
