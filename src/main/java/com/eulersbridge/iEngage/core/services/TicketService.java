@@ -37,4 +37,8 @@ public interface TicketService {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #supportTicketEvent.getEmailAddress()==authentication.name)")
     public TicketSupportedEvent withdrawSupportTicket(SupportTicketEvent supportTicketEvent);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public AllReadEvent readCandidates(ReadAllEvent readAllEvent,
+			Direction sortDirection, int pageNumber, int pageLength);
 }

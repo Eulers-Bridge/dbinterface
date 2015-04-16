@@ -26,6 +26,10 @@ public interface CandidateRepository extends GraphRepository<Candidate>
 			"]-(e:`"+DatabaseDomainConstants.CANDIDATE+"`) where id(n)={positionId} return e")
 	Page<Candidate> findByPositionId(@Param("positionId")Long positionId, Pageable pageable);
 
+	@Query("Match (n:`"+DatabaseDomainConstants.CANDIDATE+"`)-[r:"+DatabaseDomainConstants.IS_ON_TICKET_LABEL+
+			"]-(e:`"+DatabaseDomainConstants.TICKET+"`) where id(e)={ticketId} return n")
+	Page<Candidate> findByTicketId(@Param("ticketId")Long ticketId, Pageable pageable);
+
     @Query("Match (a:`"+DatabaseDomainConstants.CANDIDATE+"`),(b:`"+DatabaseDomainConstants.TICKET+"`) where id(a)={candidateId} and id(b)={ticketId} CREATE UNIQUE a-[r:IS_ON_TICKET]-b SET r.__type__='IsOnTicket' return r")
     IsOnTicket createIsOnTicketRelationship(@Param("candidateId")Long candidateId, @Param("ticketId")Long ticketId);
 

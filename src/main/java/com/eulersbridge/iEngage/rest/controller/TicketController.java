@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.*;
 import com.eulersbridge.iEngage.core.services.TicketService;
+import com.eulersbridge.iEngage.rest.domain.Candidate;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Ticket;
 
@@ -129,6 +130,55 @@ public class TicketController {
 					.toTicketsIterator(ticketsEvent.getDetails().iterator());
 			FindsParent theTickets = FindsParent.fromArticlesIterator(tickets, ticketsEvent.getTotalItems(), ticketsEvent.getTotalPages());
 			response = new ResponseEntity<FindsParent>(theTickets, HttpStatus.OK);
+		}
+		return response;
+	}
+
+	/**
+	 * Is passed all the necessary data to read candidates for a ticket from the database. The
+	 * request must be a GET with the positionId presented as the final
+	 * portion of the URL.
+	 * <p/>
+	 * This method will return the candidates read from the database.
+	 * 
+	 * @param ticketId
+	 *            the ticketId of the candidate objects to be read.
+	 * @return the candidates.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.TICKET_LABEL
+			+ "/{ticketId}"+ControllerConstants.CANDIDATES_LABEL)
+	public @ResponseBody ResponseEntity<FindsParent> findCandidatesForPosition(
+			@PathVariable(value = "") Long ticketId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve candidates for a ticket "
+					+ ticketId + '.');
+		ResponseEntity<FindsParent> response;
+		
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		AllReadEvent candidatesEvent = ticketService.readCandidates(
+				new ReadAllEvent(ticketId), sortDirection,
+				pageNumber, pageLength);
+
+		if (!candidatesEvent.isEntityFound())
+		{
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Iterator<Candidate> candidates = Candidate
+					.toCandidatesIterator(candidatesEvent.getDetails().iterator());
+			FindsParent theCandidates = FindsParent.fromArticlesIterator(candidates, candidatesEvent.getTotalItems(), candidatesEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theCandidates, HttpStatus.OK);
 		}
 		return response;
 	}

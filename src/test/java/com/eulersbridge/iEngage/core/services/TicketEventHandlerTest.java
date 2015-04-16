@@ -71,8 +71,7 @@ public class TicketEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-//		service=new TicketEventHandler(ticketRepository,candidateRepository);
-		service=new TicketEventHandler(ticketRepository,electionRepository, userRepository);
+		service=new TicketEventHandler(ticketRepository,electionRepository, userRepository, candidateRepository);
 	}
 
 	/**

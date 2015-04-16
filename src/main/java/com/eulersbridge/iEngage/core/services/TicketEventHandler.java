@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
@@ -20,10 +21,12 @@ import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.ticket.TicketSupportedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
+import com.eulersbridge.iEngage.database.domain.Candidate;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Support;
 import com.eulersbridge.iEngage.database.domain.Ticket;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.CandidateRepository;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.TicketRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
@@ -45,12 +48,14 @@ public class TicketEventHandler implements TicketService{
     private TicketRepository ticketRepository;
     private ElectionRepository electionRepository;
     private UserRepository userRepository;
+    private CandidateRepository candidateRepository;
 
-    public TicketEventHandler(TicketRepository ticketRepository, ElectionRepository electionRepository, UserRepository userRepository)
+    public TicketEventHandler(TicketRepository ticketRepository, ElectionRepository electionRepository, UserRepository userRepository, CandidateRepository candidateRepository)
     {
         this.ticketRepository = ticketRepository;
         this.electionRepository = electionRepository;
         this.userRepository = userRepository;
+        this.candidateRepository = candidateRepository;
     }
 
     @Override
@@ -183,7 +188,59 @@ public class TicketEventHandler implements TicketService{
 		return nare;
 	}
 
-    @Override
+	@Override
+	public AllReadEvent readCandidates(ReadAllEvent readAllEvent,
+			Direction sortDirection, int pageNumber, int pageLength)
+	{
+		Long ticketId=readAllEvent.getParentId();
+		Page <Candidate>candidates=null;
+		ArrayList<CandidateDetails> dets=new ArrayList<CandidateDetails>();
+		AllReadEvent nare=null;
+
+		if (LOG.isDebugEnabled()) LOG.debug("PositionId "+ticketId);
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.name");
+		candidates=candidateRepository.findByTicketId(ticketId, pageable);
+		if (candidates!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+candidates.getTotalElements()+" total pages ="+candidates.getTotalPages());
+			Iterator<Candidate> iter=candidates.iterator();
+			while (iter.hasNext())
+			{
+				Candidate na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getNodeId());
+				CandidateDetails det=na.toCandidateDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found instId.
+				Ticket ticket=ticketRepository.findOne(ticketId);
+				if ( (null==ticket) ||
+					 ((null==ticket.getName()) ))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ticketId)");
+					nare=AllReadEvent.notFound(null);
+				}
+				else
+				{	
+					nare=new AllReadEvent(ticketId,dets,candidates.getTotalElements(),candidates.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new AllReadEvent(ticketId,dets,candidates.getTotalElements(),candidates.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
+			nare=AllReadEvent.notFound(null);
+		}
+		return nare;
+	}
+
+	@Override
     public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent) {
         TicketSupportedEvent ticketSupportedEvent;
         Ticket ticket = ticketRepository.findOne(supportTicketEvent.getTicketId());
