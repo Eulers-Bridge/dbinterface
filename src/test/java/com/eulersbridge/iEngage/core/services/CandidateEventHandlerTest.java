@@ -361,6 +361,26 @@ public class CandidateEventHandlerTest
 		assertNotNull(evtData.getNodeId());
 	}
 	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.CandidateEventHandler#updateCandidate(com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent)}.
+	 */
+	@Test
+	public final void testUpdateCandidateFailed()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingCandidate()");
+		Candidate testData=DatabaseDataFixture.populateCandidate1();
+		when(candidateRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(candidateRepository.save(any(Candidate.class))).thenReturn(null);
+		CandidateDetails dets=testData.toCandidateDetails();
+		UpdateCandidateEvent createElectionEvent=new UpdateCandidateEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updateCandidate(createElectionEvent);
+		CandidateDetails returnedDets = (CandidateDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertEquals(evtData.getNodeId(),testData.getNodeId());
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isFailed());
+		assertNotNull(evtData.getNodeId());
+	}
+	/**
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.CandidateEventHandler#updateCandidate(com.eulersbridge.iEngage.core.events.candidates.UpdateCandidateEvent)}.
 	 */
 	@Test

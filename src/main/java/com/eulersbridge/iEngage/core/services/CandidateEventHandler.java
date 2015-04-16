@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.core.events.DeleteEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
@@ -152,21 +153,38 @@ public class CandidateEventHandler implements CandidateService {
 	}
 
 	@Override
-    public UpdatedEvent updateCandidate(UpdateCandidateEvent updateCandidateEvent) {
-        CandidateDetails candidateDetails = (CandidateDetails) updateCandidateEvent.getDetails();
-        Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
-        Long candidateId = candidateDetails.getNodeId();
-        if(LOG.isDebugEnabled()) LOG.debug("candidateId is " + candidateId);
-        Candidate candidateOld = candidateRepository.findOne(candidateId);
-        if(candidateOld == null){
-            if(LOG.isDebugEnabled()) LOG.debug("candidate entity not found " + candidateId);
-            return CandidateUpdatedEvent.notFound(candidateId);
-        }
-        else{
-            Candidate result = candidateRepository.save(candidate);
-            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
-            return new CandidateUpdatedEvent(result.getNodeId(), result.toCandidateDetails());
-        }
+    public UpdatedEvent updateCandidate(UpdateCandidateEvent updateCandidateEvent)
+	{
+		UpdatedEvent response;
+		if (updateCandidateEvent!=null)
+		{
+	        CandidateDetails candidateDetails = (CandidateDetails) updateCandidateEvent.getDetails();
+	        Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
+	        Long candidateId = candidateDetails.getNodeId();
+	        if(LOG.isDebugEnabled()) LOG.debug("candidateId is " + candidateId);
+	        Candidate candidateOld = candidateRepository.findOne(candidateId);
+	        if(candidateOld == null)
+	        {
+	            if(LOG.isDebugEnabled()) LOG.debug("candidate entity not found " + candidateId);
+	            response = UpdatedEvent.notFound(candidateId);
+	        }
+	        else
+	        {
+	            Candidate result = candidateRepository.save(candidate);
+	            if (result!=null)
+	            {
+	            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+	            response = new UpdatedEvent(result.getNodeId(), result.toCandidateDetails());
+	            }
+	            else
+	            	response = UpdatedEvent.failed(candidateId);
+	        }
+		}
+		else
+		{
+			response = UpdatedEvent.notFound(null);
+		}
+		return response;
     }
 
     @Override
@@ -186,35 +204,40 @@ public class CandidateEventHandler implements CandidateService {
     }
 
     @Override
-    public TicketAddedEvent addTicket(AddTicketEvent addTicketEvent) {
-        TicketAddedEvent ticketAddedEvent = null;
+    public UpdatedEvent addTicket(AddTicketEvent addTicketEvent) {
+        UpdatedEvent ticketAddedEvent = null;
         Candidate candidate = candidateRepository.findOne(addTicketEvent.getCandidateId());
         Ticket ticket = ticketRepository.findOne(addTicketEvent.getTicketId());
         if(candidate == null)
-            ticketAddedEvent = TicketAddedEvent.candidateNotFound(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
+            ticketAddedEvent = UpdatedEvent.notFound(addTicketEvent.getCandidateId());
         else if(ticket == null)
-            ticketAddedEvent = TicketAddedEvent.ticketNotFound(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
-        else {
-            ticketAddedEvent = new TicketAddedEvent(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
-            IsOnTicket isOnTicket = candidateRepository.createIsOnTicketRelationship(addTicketEvent.getCandidateId(), addTicketEvent.getTicketId());
-            if (isOnTicket == null)
-                ticketAddedEvent.setResult(false);
+            ticketAddedEvent = UpdatedEvent.notFound(addTicketEvent.getTicketId());
+        else 
+        {
+            candidate.setTicket(ticket);
+            Candidate savedCandidate=candidateRepository.save(candidate);
+            if (savedCandidate == null)
+            	ticketAddedEvent = UpdatedEvent.failed(addTicketEvent.getCandidateId());
+            else
+                ticketAddedEvent = new UpdatedEvent(addTicketEvent.getCandidateId());
         }
         return ticketAddedEvent;
     }
 
     @Override
-    public TicketRemovedEvent removeTicket(RemoveTicketEvent removeTicketEvent) {
-        TicketRemovedEvent ticketRemovedEvent = null;
-        Candidate candidate = candidateRepository.findOne(removeTicketEvent.getCandidateId());
-        Ticket ticket = ticketRepository.findOne(removeTicketEvent.getTicketId());
+    public UpdatedEvent removeTicket(DeleteEvent removeTicketEvent) {
+    	UpdatedEvent ticketRemovedEvent = null;
+        Candidate candidate = candidateRepository.findOne(removeTicketEvent.getNodeId());
         if(candidate == null)
-            ticketRemovedEvent = TicketRemovedEvent.candidateNotFound(removeTicketEvent.getCandidateId(), removeTicketEvent.getCandidateId());
-        else if(ticket == null)
-            ticketRemovedEvent = TicketRemovedEvent.ticketNotFound(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
-        else{
-            candidateRepository.deleteIsOnTicketRelationship(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
-            ticketRemovedEvent = new TicketRemovedEvent(removeTicketEvent.getCandidateId(), removeTicketEvent.getTicketId());
+            ticketRemovedEvent = UpdatedEvent.notFound(removeTicketEvent.getNodeId());
+        else
+        {
+        	candidate.setTicket(null);
+            Candidate savedCandidate=candidateRepository.save(candidate);
+        	if (savedCandidate!=null)
+        		ticketRemovedEvent = new UpdatedEvent(removeTicketEvent.getNodeId());
+        	else
+                ticketRemovedEvent = UpdatedEvent.failed(removeTicketEvent.getNodeId());
         }
         return ticketRemovedEvent;
     }

@@ -283,16 +283,26 @@ public class CandidateController {
             @PathVariable Long candidateId, @PathVariable Long ticketId){
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to add ticket " + ticketId + " to candidate " + candidateId);
-        TicketAddedEvent ticketAddedEvent = candidateService.addTicket(new AddTicketEvent(candidateId, ticketId));
-        if (!ticketAddedEvent.isCandidateFound()){
-            return new ResponseEntity<Boolean>(HttpStatus.GONE);
-        } else if(!ticketAddedEvent.isTicketFound()){
-            return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
-        } else if (!ticketAddedEvent.isResult()){
-            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } else {
-            return new ResponseEntity<Boolean>(HttpStatus.OK);
+    	ResponseEntity<Boolean> response;
+        UpdatedEvent ticketAddedEvent = candidateService.addTicket(new AddTicketEvent(candidateId, ticketId));
+        if (!ticketAddedEvent.isEntityFound())
+        {
+			if (ticketAddedEvent.getNodeId()==candidateId)
+        		response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+        	else if (ticketAddedEvent.getNodeId()==ticketId)
+                response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        	else
+        		response = new ResponseEntity<Boolean>(HttpStatus.FAILED_DEPENDENCY);
         }
+        else if (ticketAddedEvent.isFailed())
+        {
+        	response = new ResponseEntity<Boolean>(HttpStatus.FORBIDDEN);
+        }
+        else
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.OK);
+        }
+        return response;
     }
 
     // remove ticket from candidate
@@ -302,13 +312,20 @@ public class CandidateController {
             @PathVariable Long candidateId, @PathVariable Long ticketId){
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to remove ticket " + ticketId + " from candidate " + candidateId);
-        TicketRemovedEvent ticketRemovedEvent = candidateService.removeTicket(new RemoveTicketEvent(candidateId, ticketId));
-        if (!ticketRemovedEvent.isCandidateFound()){
-            return new ResponseEntity<Boolean>(HttpStatus.GONE);
-        } else if(!ticketRemovedEvent.isTicketFound()){
-            return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<Boolean>(HttpStatus.OK);
+    	ResponseEntity<Boolean> response;
+        UpdatedEvent ticketRemovedEvent = candidateService.removeTicket(new DeleteEvent(candidateId));
+        if (!ticketRemovedEvent.isEntityFound())
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        } 
+        else if (ticketRemovedEvent.isFailed())
+        {
+        	response = new ResponseEntity<Boolean>(HttpStatus.FORBIDDEN);
         }
+        else
+        {
+            response = new ResponseEntity<Boolean>(HttpStatus.OK);
+        }
+        return response;
     }
 }
