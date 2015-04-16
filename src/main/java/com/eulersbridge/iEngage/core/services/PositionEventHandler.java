@@ -191,21 +191,40 @@ public class PositionEventHandler implements PositionService{
 		return nare;
 	}
     @Override
-    public UpdatedEvent updatePosition(UpdatePositionEvent updatePositionEvent) {
-        PositionDetails positionDetails = (PositionDetails) updatePositionEvent.getDetails();
-        Position position = Position.fromPositionDetails(positionDetails);
-        Long positionId = positionDetails.getNodeId();
-        if(LOG.isDebugEnabled()) LOG.debug("positionId is " + positionId);
-        Position positionOld = positionRepository.findOne(positionId);
-        if(positionOld == null){
-            if(LOG.isDebugEnabled()) LOG.debug("position entity not found " + positionId);
-            return PositionUpdatedEvent.notFound(positionId);
-        }
-        else{
-            Position result = positionRepository.save(position);
-            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
-            return new PositionUpdatedEvent(result.getNodeId(), result.toPositionDetails());
-        }
+    public UpdatedEvent updatePosition(UpdatePositionEvent updatePositionEvent)
+    {
+		UpdatedEvent response;
+		if (updatePositionEvent!=null)
+		{
+	        PositionDetails positionDetails = (PositionDetails) updatePositionEvent.getDetails();
+	        Position position = Position.fromPositionDetails(positionDetails);
+	        Long positionId = positionDetails.getNodeId();
+	        if(LOG.isDebugEnabled()) LOG.debug("positionId is " + positionId);
+	        Position positionOld = positionRepository.findOne(positionId);
+	        if(null == positionOld)
+	        {
+	            if(LOG.isDebugEnabled()) LOG.debug("position entity not found " + positionId);
+	            response = PositionUpdatedEvent.notFound(positionId);
+	        }
+	        else
+	        {
+	            Position result = positionRepository.save(position);
+	            if (result!=null)
+	            {
+		            if(LOG.isDebugEnabled()) LOG.debug("updated successfully" + result.getNodeId());
+		            response = new PositionUpdatedEvent(result.getNodeId(), result.toPositionDetails());
+	            }
+	            else
+	            {
+	            	response = UpdatedEvent.failed(positionId);
+	            }
+	        }
+		}
+		else
+		{
+            response = UpdatedEvent.notFound(null);
+		}
+		return response;
     }
 
     @Override

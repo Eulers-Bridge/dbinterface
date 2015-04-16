@@ -38,6 +38,7 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.CreatePositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.DeletePositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.PositionCreatedEvent;
@@ -353,6 +354,16 @@ public class PositionControllerTest
 	}
 
 	@Test
+	public void testUpdatePositionNullContent() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdatePosition()");
+		Long id=1L;
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isBadRequest())	;		
+	}
+
+	@Test
 	public void testUpdatePositionNullEventReturned() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdatePosition()");
@@ -403,6 +414,19 @@ public class PositionControllerTest
 		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;		
+	}
+	
+	@Test
+	public void testUpdatePositionFailed() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingUpdatePosition()");
+		Long id=1L;
+		PositionDetails dets=DatabaseDataFixture.populatePosition1().toPositionDetails();
+		String content=setupContent(dets);
+		when (positionService.updatePosition(any(UpdatePositionEvent.class))).thenReturn(UpdatedEvent.failed(id));
+		this.mockMvc.perform(put(urlPrefix+"/{id}/",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+		.andDo(print())
+		.andExpect(status().isConflict())	;		
 	}
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PositionController#deletePosition(java.lang.Long)}.

@@ -83,15 +83,15 @@ public class PositionController {
     }
 
 	/**
-	 * Is passed all the necessary data to read positions from the database. The
-	 * request must be a GET with the electionId presented as the final
+	 * Is passed all the necessary data to read candidates for a position from the database. The
+	 * request must be a GET with the positionId presented as the final
 	 * portion of the URL.
 	 * <p/>
-	 * This method will return the positions read from the database.
+	 * This method will return the candidates read from the database.
 	 * 
-	 * @param electionId
-	 *            the electionId of the position objects to be read.
-	 * @return the positions.
+	 * @param positionId
+	 *            the positionId of the candidate objects to be read.
+	 * @return the candidates.
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POSITION_LABEL
@@ -183,23 +183,35 @@ public class PositionController {
     //Update
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POSITION_LABEL+"/{positionId}")
     public @ResponseBody ResponseEntity<Position>
-    updatePosition(@PathVariable Long positionId, @RequestBody Position position){
+    updatePosition(@PathVariable Long positionId, @RequestBody Position position)
+    {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to update position. " + positionId);
-        UpdatedEvent positionUpdatedEvent = positionService.updatePosition(new UpdatePositionEvent(positionId, position.toPositionDetails()));
-        if(null != positionUpdatedEvent){
-            if (LOG.isDebugEnabled()) LOG.debug("positionUpdatedEvent - "+positionUpdatedEvent);
-            if(positionUpdatedEvent.isEntityFound()){
-                Position result = Position.fromPositionDetails((PositionDetails) positionUpdatedEvent.getDetails());
-                if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
-                return new ResponseEntity<Position>(result, HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity<Position>(HttpStatus.NOT_FOUND);
-            }
+        ResponseEntity<Position> response;
+        if (position!=null)
+        {
+	        UpdatedEvent positionUpdatedEvent = positionService.updatePosition(new UpdatePositionEvent(positionId, position.toPositionDetails()));
+	        if(null != positionUpdatedEvent)
+	        {
+	            if (LOG.isDebugEnabled()) LOG.debug("positionUpdatedEvent - "+positionUpdatedEvent);
+	            if(!positionUpdatedEvent.isEntityFound())
+	                response = new ResponseEntity<Position>(HttpStatus.NOT_FOUND);
+	            else if(positionUpdatedEvent.isFailed())
+	                response = new ResponseEntity<Position>(HttpStatus.CONFLICT);
+	            else
+	            {
+	                Position result = Position.fromPositionDetails((PositionDetails) positionUpdatedEvent.getDetails());
+	                if (LOG.isDebugEnabled()) LOG.debug("result = "+result);
+	                return new ResponseEntity<Position>(result, HttpStatus.OK);
+	            }
+	        }
+	        else
+	            response = new ResponseEntity<Position>(HttpStatus.BAD_REQUEST);
         }
-        else{
-            return new ResponseEntity<Position>(HttpStatus.BAD_REQUEST);
+        else
+        {
+        	response = new ResponseEntity<Position>(HttpStatus.BAD_REQUEST);
         }
+        return response;
     }
 
     //Delete

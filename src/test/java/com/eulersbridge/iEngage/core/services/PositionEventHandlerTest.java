@@ -272,6 +272,41 @@ public class PositionEventHandlerTest
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.PositionEventHandler#updatePosition(com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent)}.
 	 */
 	@Test
+	public final void testUpdatePositionFailed()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPosition()");
+		Position testData=DatabaseDataFixture.populatePosition1();
+		when(positionRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(positionRepository.save(any(Position.class))).thenReturn(null);
+		PositionDetails dets=testData.toPositionDetails();
+		UpdatePositionEvent createElectionEvent=new UpdatePositionEvent(dets.getNodeId(), dets);
+		UpdatedEvent evtData = service.updatePosition(createElectionEvent);
+		PositionDetails returnedDets = (PositionDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertEquals(evtData.getNodeId(),testData.getNodeId());
+		assertTrue(evtData.isEntityFound());
+		assertTrue(evtData.isFailed());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PositionEventHandler#updatePosition(com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent)}.
+	 */
+	@Test
+	public final void testUpdatePositionNullEvent()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPosition()");
+		UpdatedEvent evtData = service.updatePosition(null);
+		PositionDetails returnedDets = (PositionDetails) evtData.getDetails();
+		assertNull(returnedDets);
+		assertNull(evtData.getNodeId());
+		assertFalse(evtData.isEntityFound());
+		assertFalse(evtData.isFailed());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.PositionEventHandler#updatePosition(com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent)}.
+	 */
+	@Test
 	public final void testUpdatePositionNotFound() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPosition()");
