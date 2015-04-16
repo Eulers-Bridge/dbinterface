@@ -166,9 +166,9 @@ public class PositionEventHandler implements PositionService{
 			if (0==dets.size())
 			{
 				// Need to check if we actually found instId.
-				Election elec=electionRepository.findOne(positionId);
-				if ( (null==elec) ||
-					 ((null==elec.getTitle()) || ((null==elec.getStart()) && (null==elec.getEnd()) && (null==elec.getIntroduction()))))
+				Position position=positionRepository.findOne(positionId);
+				if ( (null==position) ||
+					 ((null==position.getName()) || (null==position.getDescription())))
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ElectionId)");
 					nare=AllReadEvent.notFound(null);
