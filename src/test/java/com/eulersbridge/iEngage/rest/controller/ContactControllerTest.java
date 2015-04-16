@@ -33,6 +33,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
+import com.eulersbridge.iEngage.core.events.CreateEvent;
+import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdateEvent;
@@ -45,6 +47,7 @@ import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.services.ContactRequestService;
+import com.eulersbridge.iEngage.core.services.NotificationService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -66,6 +69,9 @@ public class ContactControllerTest
 	
 	@Mock
 	ContactRequestService contactRequestService;
+	
+	@Mock
+	NotificationService notificationService;
 	
     private static Logger LOG = LoggerFactory.getLogger(ContactControllerTest.class);
     
@@ -173,6 +179,8 @@ public class ContactControllerTest
 		when(contactRequestService.readContactRequest(any(ReadContactRequestEvent.class))).thenReturn(value);
 		UpdatedEvent updEvt=new UpdatedEvent(crDets.getNodeId(),cDets);
 		when(contactRequestService.acceptContactRequest(any(AcceptContactRequestEvent.class))).thenReturn(updEvt);
+		CreatedEvent notifEvt=new CreatedEvent(DatabaseDataFixture.populateNotification1().toNotificationDetails());
+		when(notificationService.createNotification(any(CreateEvent.class))).thenReturn(notifEvt);
 		this.mockMvc.perform(put(urlPrefix2+"/{contactRequestId}/",contactRequestId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(cDets.getNodeId().intValue())))
