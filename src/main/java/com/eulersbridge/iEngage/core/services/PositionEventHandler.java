@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.positions.CreatePositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.DeletePositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.PositionCreatedEvent;
@@ -18,8 +19,10 @@ import com.eulersbridge.iEngage.core.events.positions.PositionReadEvent;
 import com.eulersbridge.iEngage.core.events.positions.PositionUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.RequestReadPositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent;
+import com.eulersbridge.iEngage.database.domain.Candidate;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
+import com.eulersbridge.iEngage.database.repository.CandidateRepository;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.PositionRepository;
 
@@ -39,12 +42,14 @@ public class PositionEventHandler implements PositionService{
 
     private PositionRepository positionRepository;
     private ElectionRepository electionRepository;
+    private CandidateRepository candidateRepository;
 
     public PositionEventHandler(PositionRepository positionRepository,
-			ElectionRepository electionRepository)
+			ElectionRepository electionRepository, CandidateRepository candidateRepository)
 	{
         this.positionRepository = positionRepository;
 		this.electionRepository = electionRepository;
+		this.candidateRepository = candidateRepository;
 	}
 
 	@Override
@@ -134,6 +139,57 @@ public class PositionEventHandler implements PositionService{
 		return nare;
 	}
 
+	@Override
+	public AllReadEvent readCandidates(ReadAllEvent readAllEvent,
+			Direction sortDirection, int pageNumber, int pageLength)
+	{
+		Long positionId=readAllEvent.getParentId();
+		Page <Candidate>candidates=null;
+		ArrayList<CandidateDetails> dets=new ArrayList<CandidateDetails>();
+		AllReadEvent nare=null;
+
+		if (LOG.isDebugEnabled()) LOG.debug("PositionId "+positionId);
+		Pageable pageable=new PageRequest(pageNumber,pageLength,sortDirection,"e.name");
+		candidates=candidateRepository.findByPositionId(positionId, pageable);
+		if (candidates!=null)
+		{
+			if (LOG.isDebugEnabled())
+				LOG.debug("Total elements = "+candidates.getTotalElements()+" total pages ="+candidates.getTotalPages());
+			Iterator<Candidate> iter=candidates.iterator();
+			while (iter.hasNext())
+			{
+				Candidate na=iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getNodeId());
+				CandidateDetails det=na.toCandidateDetails();
+				dets.add(det);
+			}
+			if (0==dets.size())
+			{
+				// Need to check if we actually found instId.
+				Election elec=electionRepository.findOne(positionId);
+				if ( (null==elec) ||
+					 ((null==elec.getTitle()) || ((null==elec.getStart()) && (null==elec.getEnd()) && (null==elec.getIntroduction()))))
+				{
+					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ElectionId)");
+					nare=AllReadEvent.notFound(null);
+				}
+				else
+				{	
+					nare=new AllReadEvent(positionId,dets,candidates.getTotalElements(),candidates.getTotalPages());
+				}
+			}
+			else
+			{	
+				nare=new AllReadEvent(positionId,dets,candidates.getTotalElements(),candidates.getTotalPages());
+			}
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByInstitutionId");
+			nare=AllReadEvent.notFound(null);
+		}
+		return nare;
+	}
     @Override
     public UpdatedEvent updatePosition(UpdatePositionEvent updatePositionEvent) {
         PositionDetails positionDetails = (PositionDetails) updatePositionEvent.getDetails();

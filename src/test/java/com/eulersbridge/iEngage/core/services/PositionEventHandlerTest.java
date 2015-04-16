@@ -40,6 +40,7 @@ import com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.repository.CandidateRepository;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.PositionRepository;
 
@@ -55,6 +56,8 @@ public class PositionEventHandlerTest
 	ElectionRepository electionRepository;
     @Mock
 	PositionRepository positionRepository;
+    @Mock
+	CandidateRepository candidateRepository;
 
     PositionEventHandler service;
 
@@ -66,7 +69,7 @@ public class PositionEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new PositionEventHandler(positionRepository,electionRepository);
+		service=new PositionEventHandler(positionRepository,electionRepository,candidateRepository);
 	}
 
 	/**

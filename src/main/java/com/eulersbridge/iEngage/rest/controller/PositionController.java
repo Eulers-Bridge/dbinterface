@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.core.services.PositionService;
+import com.eulersbridge.iEngage.rest.domain.Candidate;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Position;
 
@@ -68,7 +69,8 @@ public class PositionController {
     //Get
     @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POSITION_LABEL + "/{positionId}")
     public @ResponseBody ResponseEntity<Position>
-    findPosition(@PathVariable Long positionId){
+    findPosition(@PathVariable Long positionId)
+    {
         if (LOG.isInfoEnabled()) LOG.info(positionId+" attempting to get position. ");
         RequestReadPositionEvent requestReadPositionEvent = new RequestReadPositionEvent(positionId);
         ReadEvent readPositionEvent = positionService.readPosition(requestReadPositionEvent);
@@ -79,6 +81,55 @@ public class PositionController {
             return new ResponseEntity<Position>(HttpStatus.NOT_FOUND);
         }
     }
+
+	/**
+	 * Is passed all the necessary data to read positions from the database. The
+	 * request must be a GET with the electionId presented as the final
+	 * portion of the URL.
+	 * <p/>
+	 * This method will return the positions read from the database.
+	 * 
+	 * @param electionId
+	 *            the electionId of the position objects to be read.
+	 * @return the positions.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POSITION_LABEL
+			+ "/{positionId}"+ControllerConstants.CANDIDATES_LABEL)
+	public @ResponseBody ResponseEntity<FindsParent> findCandidatesForPosition(
+			@PathVariable(value = "") Long positionId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve candidates for position"
+					+ positionId + '.');
+		ResponseEntity<FindsParent> response;
+		
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		AllReadEvent candidatesEvent = positionService.readCandidates(
+				new ReadAllEvent(positionId), sortDirection,
+				pageNumber, pageLength);
+
+		if (!candidatesEvent.isEntityFound())
+		{
+			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Iterator<Candidate> candidates = Candidate
+					.toCandidatesIterator(candidatesEvent.getDetails().iterator());
+			FindsParent theCandidates = FindsParent.fromArticlesIterator(candidates, candidatesEvent.getTotalItems(), candidatesEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theCandidates, HttpStatus.OK);
+		}
+		return response;
+	}
 
 	/**
 	 * Is passed all the necessary data to read positions from the database. The

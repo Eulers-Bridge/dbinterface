@@ -33,4 +33,8 @@ public interface PositionService {
     @PreAuthorize("hasRole('ROLE_USER')")
 	public AllReadEvent readPositions(ReadAllEvent readPositionsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public AllReadEvent readCandidates(ReadAllEvent readAllEvent,
+			Direction sortDirection, int pageNumber, int pageLength);
 }
