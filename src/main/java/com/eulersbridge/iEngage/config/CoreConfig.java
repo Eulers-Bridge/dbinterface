@@ -34,11 +34,11 @@ public class CoreConfig
     @Autowired
     ForumQuestionRepository forumQuestionRepository;
 	@Autowired
-	InstitutionRepository instRepo;
+	InstitutionRepository institutionRepository;
 	@Autowired
 	NewsArticleRepository newsRepo;
 	@Autowired
-	NewsFeedRepository syRepo;
+	NewsFeedRepository newsFeedRepository;
     @Autowired
     NotificationRepository notificationRepository;
     @Autowired
@@ -77,14 +77,14 @@ public class CoreConfig
 	public UserService createUserService() 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createUserService()");
-	    return new UserEventHandler(userRepo,personRepo,instRepo,tokenRepo);
+	    return new UserEventHandler(userRepo,personRepo,institutionRepository,tokenRepo);
 	}
 	
 	@Bean
 	public InstitutionService createInstitutionService()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createInstitutionService()");
-		return new InstitutionEventHandler(instRepo,countryRepo,syRepo);
+		return new InstitutionEventHandler(institutionRepository,countryRepo,newsFeedRepository);
 	}
 
 	@Bean
@@ -105,7 +105,7 @@ public class CoreConfig
 	public NewsService createNewsService()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createNewsService()");
-		return new NewsEventHandler(newsRepo,userRepo, instRepo);
+		return new NewsEventHandler(newsRepo,userRepo, institutionRepository);
 	}
 	
 	@Bean
@@ -120,7 +120,7 @@ public class CoreConfig
     public ElectionService createElectionService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createElectionService()");
-        return new ElectionEventHandler(electionRepo,instRepo);
+        return new ElectionEventHandler(electionRepo,institutionRepository);
     }
 
     @Bean
@@ -134,7 +134,7 @@ public class CoreConfig
     public EventService createEventService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createEventService()");
-        return new EventEventHandler(eventRepository,instRepo);
+        return new EventEventHandler(eventRepository,institutionRepository);
     }
 
     @Bean
@@ -155,7 +155,7 @@ public class CoreConfig
     public PositionService createPositionService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPositionService()");
-        return new PositionEventHandler(positionRepository,electionRepo);
+        return new PositionEventHandler(positionRepository,electionRepo,candidateRepository);
     }
 
     @Bean
