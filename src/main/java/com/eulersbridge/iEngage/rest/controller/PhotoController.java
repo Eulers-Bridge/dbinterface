@@ -21,10 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
@@ -39,12 +44,15 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
+import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.Photo;
 import com.eulersbridge.iEngage.rest.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.rest.domain.Photos;
+import com.eulersbridge.iEngage.rest.domain.User;
 
 /**
  * @author Greg Newitt
@@ -60,6 +68,8 @@ public class PhotoController
 	PhotoService photoService;
 	@Autowired
 	UserService userService;
+	@Autowired
+	LikesService likesService;
 
 	public PhotoController()
 	{
@@ -505,6 +515,129 @@ public class PhotoController
 			response = new ResponseEntity<FindsParent>(photoAlbums, HttpStatus.OK);
 		}
 		return response;
+	}
+
+	/**
+	 * Is passed all the necessary data to unlike an event from the database.
+	 * The request must be a PUT with the event id presented along with the
+	 * userid as the final portion of the URL.
+	 * <p/>
+	 * This method will return the a boolean result.
+	 * 
+	 * @param email
+	 *            the eventId eventId of the event object to be unliked.
+	 * @param email
+	 *            the email address of the user unliking the event.
+	 * @return the success or failure.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.PHOTO_LABEL
+			+ "/{photoId}/likedBy/{email}/")
+	public @ResponseBody ResponseEntity<Boolean> unlikeEvent(
+			@PathVariable Long photoId, @PathVariable String email)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to have " + email + " unlike photo. "
+					+ photoId);
+		LikedEvent event = likesService.unlike(new LikeEvent(photoId,
+				email));
+
+		ResponseEntity<Boolean> response;
+
+		if (!event.isEntityFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+		}
+		else if (!event.isUserFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Boolean restEvent = event.isResultSuccess();
+			response = new ResponseEntity<Boolean>(restEvent, HttpStatus.OK);
+		}
+		return response;
+	}
+
+	/**
+	 * Is passed all the necessary data to like an event from the database. The
+	 * request must be a PUT with the event id presented along with the userid
+	 * as the final portion of the URL.
+	 * <p/>
+	 * This method will return the a boolean result.
+	 * 
+	 * @param email
+	 *            the eventId eventId of the event object to be liked.
+	 * @param email
+	 *            the email address of the user liking the event.
+	 * @return the success or failure.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.PHOTO_LABEL
+			+ "/{eventId}/likedBy/{email}/")
+	public @ResponseBody ResponseEntity<Boolean> likeEvent(
+			@PathVariable Long photoId, @PathVariable String email)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to have " + email + " like news article. "
+					+ photoId);
+		LikedEvent event = likesService
+				.like(new LikeEvent(photoId, email));
+
+		ResponseEntity<Boolean> response;
+
+		if (!event.isEntityFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+		}
+		else if (!event.isUserFound())
+		{
+			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Boolean restEvent = event.isResultSuccess();
+			response = new ResponseEntity<Boolean>(restEvent, HttpStatus.OK);
+		}
+		return response;
+	}
+
+	// likes
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_LABEL
+			+ "/{photoId}" + ControllerConstants.LIKES_LABEL)
+	public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
+			@PathVariable Long photoId,
+			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+			@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
+	{
+		int pageNumber = 0;
+		int pageLength = 10;
+		pageNumber = Integer.parseInt(page);
+		pageLength = Integer.parseInt(pageSize);
+		if (LOG.isInfoEnabled())
+			LOG.info("Attempting to retrieve liked users from photo " + photoId
+					+ '.');
+		Direction sortDirection = Direction.DESC;
+		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+		LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(
+				new LikesLikeableObjectEvent(photoId), sortDirection,
+				pageNumber, pageLength);
+		Iterator<LikeInfo> likes = User
+				.toLikesIterator(likeableObjectLikesEvent.getUserDetails()
+						.iterator());
+		if (likes.hasNext() == false)
+		{
+			ReadEvent readPollEvent = photoService
+					.readPhoto(new ReadPhotoEvent(photoId));
+			if (!readPollEvent.isEntityFound())
+				return new ResponseEntity<Iterator<LikeInfo>>(
+						HttpStatus.NOT_FOUND);
+			else return new ResponseEntity<Iterator<LikeInfo>>(likes,
+					HttpStatus.OK);
+		}
+		else return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
 	}
 
 }
