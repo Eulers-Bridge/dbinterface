@@ -182,7 +182,7 @@ public class ContactRequest extends ResourceSupport
 				+ ", rejected=" + rejected + ", userId=" + userId + "]";
 	}
 
-	public static Iterator<ContactRequest> toContactRequestIterator(
+	public static Iterator<ContactRequest> toContactRequestsIterator(
 			Iterator<? extends Details> iterator)
 	{
 		if (null==iterator) return null;
@@ -199,6 +199,4 @@ public class ContactRequest extends ResourceSupport
 		}
 		return contactRequests.iterator();
 	}
-
-
 }
