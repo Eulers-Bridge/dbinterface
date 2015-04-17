@@ -57,4 +57,8 @@ public class DatabaseDomainConstants
 	public static final String VOTING_LOCATION = "VotingLocation";
 	public static final String HAS_COMPLETED_TASK_LABEL = "HAS_COMPLETED_TASK";
 	public static final String HAS_COMPLETED_BADGE_LABEL = "HAS_COMPLETED_BADGE";
+	public static final Boolean AccountVerifiedDefault = false;
+	public static final Boolean ConsentGivenDefault = false;
+	public static final Boolean TrackingOffDefault = true;
+	public static final Boolean OptOutDataCollectionDefault = true;
 }
