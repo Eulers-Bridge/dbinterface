@@ -238,25 +238,29 @@ public class ContactControllerTest
 			com.eulersbridge.iEngage.database.domain.ContactRequest article=iter.next();
 			contactRequestDets.add(article.toContactRequestDetails());
 		}
-		AllReadEvent testData=new AllReadEvent(userId,contactRequestDets);
+		Long numElements=(long) contactRequestDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(userId,contactRequestDets,numElements,numPages);
 		when (contactRequestService.readContactRequestsReceived(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix3+"/{parentId}/",userId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].nodeId",is(contactRequestDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$[0].contactDetails",is(contactRequestDets.get(0).getContactDetails())))
-		.andExpect(jsonPath("$[0].userId",is(contactRequestDets.get(0).getUserId().intValue())))
-		.andExpect(jsonPath("$[0].accepted",is(contactRequestDets.get(0).getAccepted())))
-		.andExpect(jsonPath("$[0].rejected",is(contactRequestDets.get(0).getRejected())))
-		.andExpect(jsonPath("$[0].requestDate",is(contactRequestDets.get(0).getRequestDate().longValue())))
-		.andExpect(jsonPath("$[0].responseDate",is(contactRequestDets.get(0).getResponseDate().longValue())))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].nodeId",is(contactRequestDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].contactDetails",is(contactRequestDets.get(0).getContactDetails())))
+		.andExpect(jsonPath("$foundObjects[0].userId",is(contactRequestDets.get(0).getUserId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].accepted",is(contactRequestDets.get(0).getAccepted())))
+		.andExpect(jsonPath("$foundObjects[0].rejected",is(contactRequestDets.get(0).getRejected())))
+		.andExpect(jsonPath("$foundObjects[0].requestDate",is(contactRequestDets.get(0).getRequestDate().longValue())))
+		.andExpect(jsonPath("$foundObjects[0].responseDate",is(contactRequestDets.get(0).getResponseDate().longValue())))
 //		.andExpect(jsonPath("$[0].links[0].rel",is("self")))
-		.andExpect(jsonPath("$[1].nodeId",is(contactRequestDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$[1].contactDetails",is(contactRequestDets.get(1).getContactDetails())))
-		.andExpect(jsonPath("$[1].userId",is(contactRequestDets.get(1).getUserId().intValue())))
-		.andExpect(jsonPath("$[1].accepted",is(contactRequestDets.get(1).getAccepted())))
-		.andExpect(jsonPath("$[1].rejected",is(contactRequestDets.get(1).getRejected())))
-		.andExpect(jsonPath("$[1].requestDate",is(contactRequestDets.get(1).getRequestDate().longValue())))
-		.andExpect(jsonPath("$[1].responseDate",is(contactRequestDets.get(1).getResponseDate().longValue())))
+		.andExpect(jsonPath("$foundObjects[1].nodeId",is(contactRequestDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].contactDetails",is(contactRequestDets.get(1).getContactDetails())))
+		.andExpect(jsonPath("$foundObjects[1].userId",is(contactRequestDets.get(1).getUserId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].accepted",is(contactRequestDets.get(1).getAccepted())))
+		.andExpect(jsonPath("$foundObjects[1].rejected",is(contactRequestDets.get(1).getRejected())))
+		.andExpect(jsonPath("$foundObjects[1].requestDate",is(contactRequestDets.get(1).getRequestDate().longValue())))
+		.andExpect(jsonPath("$foundObjects[1].responseDate",is(contactRequestDets.get(1).getResponseDate().longValue())))
 //		.andExpect(jsonPath("$[1].links[0].rel",is("self")))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
@@ -280,25 +284,29 @@ public class ContactControllerTest
 			com.eulersbridge.iEngage.database.domain.ContactRequest article=iter.next();
 			contactRequestDets.add(article.toContactRequestDetails());
 		}
-		AllReadEvent testData=new AllReadEvent(userId,contactRequestDets);
+		Long numElements=(long) contactRequestDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent testData=new AllReadEvent(userId,contactRequestDets,numElements,numPages);
 		when (contactRequestService.readContactRequestsMade(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"/{parentId}/"+ControllerConstants.CONTACT_REQUESTS_LABEL,userId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$[0].nodeId",is(contactRequestDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$[0].contactDetails",is(contactRequestDets.get(0).getContactDetails())))
-		.andExpect(jsonPath("$[0].userId",is(contactRequestDets.get(0).getUserId().intValue())))
-		.andExpect(jsonPath("$[0].accepted",is(contactRequestDets.get(0).getAccepted())))
-		.andExpect(jsonPath("$[0].rejected",is(contactRequestDets.get(0).getRejected())))
-		.andExpect(jsonPath("$[0].requestDate",is(contactRequestDets.get(0).getRequestDate().longValue())))
-		.andExpect(jsonPath("$[0].responseDate",is(contactRequestDets.get(0).getResponseDate().longValue())))
+		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("$foundObjects[0].nodeId",is(contactRequestDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].contactDetails",is(contactRequestDets.get(0).getContactDetails())))
+		.andExpect(jsonPath("$foundObjects[0].userId",is(contactRequestDets.get(0).getUserId().intValue())))
+		.andExpect(jsonPath("$foundObjects[0].accepted",is(contactRequestDets.get(0).getAccepted())))
+		.andExpect(jsonPath("$foundObjects[0].rejected",is(contactRequestDets.get(0).getRejected())))
+		.andExpect(jsonPath("$foundObjects[0].requestDate",is(contactRequestDets.get(0).getRequestDate().longValue())))
+		.andExpect(jsonPath("$foundObjects[0].responseDate",is(contactRequestDets.get(0).getResponseDate().longValue())))
 //		.andExpect(jsonPath("$[0].links[0].rel",is("self")))
-		.andExpect(jsonPath("$[1].nodeId",is(contactRequestDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$[1].contactDetails",is(contactRequestDets.get(1).getContactDetails())))
-		.andExpect(jsonPath("$[1].userId",is(contactRequestDets.get(1).getUserId().intValue())))
-		.andExpect(jsonPath("$[1].accepted",is(contactRequestDets.get(1).getAccepted())))
-		.andExpect(jsonPath("$[1].rejected",is(contactRequestDets.get(1).getRejected())))
-		.andExpect(jsonPath("$[1].requestDate",is(contactRequestDets.get(1).getRequestDate().longValue())))
-		.andExpect(jsonPath("$[1].responseDate",is(contactRequestDets.get(1).getResponseDate().longValue())))
+		.andExpect(jsonPath("$foundObjects[1].nodeId",is(contactRequestDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].contactDetails",is(contactRequestDets.get(1).getContactDetails())))
+		.andExpect(jsonPath("$foundObjects[1].userId",is(contactRequestDets.get(1).getUserId().intValue())))
+		.andExpect(jsonPath("$foundObjects[1].accepted",is(contactRequestDets.get(1).getAccepted())))
+		.andExpect(jsonPath("$foundObjects[1].rejected",is(contactRequestDets.get(1).getRejected())))
+		.andExpect(jsonPath("$foundObjects[1].requestDate",is(contactRequestDets.get(1).getRequestDate().longValue())))
+		.andExpect(jsonPath("$foundObjects[1].responseDate",is(contactRequestDets.get(1).getResponseDate().longValue())))
 //		.andExpect(jsonPath("$[1].links[0].rel",is("self")))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
