@@ -42,6 +42,7 @@ import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.rest.domain.Contact;
 import com.eulersbridge.iEngage.rest.domain.ContactRequest;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Notification;
 
 /**
@@ -205,6 +206,17 @@ public class ContactController
 					restContact=Contact.fromContactDetails(cDets);
 					result = new ResponseEntity<Contact>(restContact,HttpStatus.CREATED);
 					if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
+					
+					
+					// Create a new contact request.
+					Notification notification=createNotification(crDets.getUserId(), NotificationConstants.CONTACT_ACCEPTED, cDets);
+					
+			        CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
+			        CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
+			        if (notificationCreatedEvent.isFailed())
+			        {
+			        	if (LOG.isDebugEnabled()) LOG.debug("Notification failed.");
+			        }
 				}
 				else
 				{
@@ -216,6 +228,25 @@ public class ContactController
 				result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
 			}
 			return result;
+		}
+		
+		public Notification createNotification(Long userId,String type,Object notificationBody)
+		{
+			// Create a new contact request.
+			Notification notification = new Notification();
+			notification.setNotificationBody(notificationBody);
+			notification.setRead(false);
+			notification.setType(type);
+			notification.setTimestamp(Calendar.getInstance().getTimeInMillis());
+			notification.setUserId(userId);
+			
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug("Notification - "+notification);
+				LOG.debug("Notification details - "+notification.toNotificationDetails());
+			}
+
+			return notification;
 		}
 	    
 	    /**
@@ -282,7 +313,7 @@ public class ContactController
 		 */
 		@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACT_REQUESTS_LABEL
 				+ "/{userId}")
-		public @ResponseBody ResponseEntity<Iterator<ContactRequest>> findContactRequestsReceived(
+		public @ResponseBody ResponseEntity<FindsParent> findContactRequestsReceived(
 				@PathVariable(value = "") Long userId,
 				@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 				@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -292,25 +323,29 @@ public class ContactController
 			int pageLength = 10;
 			pageNumber = Integer.parseInt(page);
 			pageLength = Integer.parseInt(pageSize);
+			ResponseEntity<FindsParent> response;
 			if (LOG.isInfoEnabled())
 				LOG.info("Attempting to retrieve contactRequests for user "
 						+ userId + '.');
 
 			Direction sortDirection = Direction.DESC;
 			if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-			AllReadEvent articleEvent = contactRequestService.readContactRequestsReceived(
+			AllReadEvent contactRequestEvent = contactRequestService.readContactRequestsReceived(
 					new ReadAllEvent(userId), sortDirection,
 					pageNumber, pageLength);
 
-			if (!articleEvent.isEntityFound())
+			if (!contactRequestEvent.isEntityFound())
 			{
-				return new ResponseEntity<Iterator<ContactRequest>>(HttpStatus.NOT_FOUND);
+				response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 			}
-
-			Iterator<ContactRequest> contactRequests = ContactRequest
-					.toContactRequestIterator(articleEvent.getDetails().iterator());
-
-			return new ResponseEntity<Iterator<ContactRequest>>(contactRequests, HttpStatus.OK);
+			else
+			{
+				Iterator<ContactRequest> contactRequests = ContactRequest
+						.toContactRequestsIterator(contactRequestEvent.getDetails().iterator());
+				FindsParent theContactRequests = FindsParent.fromArticlesIterator(contactRequests, contactRequestEvent.getTotalItems(), contactRequestEvent.getTotalPages());
+				response = new ResponseEntity<FindsParent>(theContactRequests, HttpStatus.OK);
+			}
+			return response;
 		}
 
 		/**
@@ -326,7 +361,7 @@ public class ContactController
 		 * 
 		 */
 		@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL+"/{userId}"+ControllerConstants.CONTACT_REQUESTS_LABEL)
-		public @ResponseBody ResponseEntity<Iterator<ContactRequest>> findContactRequestsMade(
+		public @ResponseBody ResponseEntity<FindsParent> findContactRequestsMade(
 				@PathVariable(value = "") Long userId,
 				@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 				@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -336,25 +371,29 @@ public class ContactController
 			int pageLength = 10;
 			pageNumber = Integer.parseInt(page);
 			pageLength = Integer.parseInt(pageSize);
+			ResponseEntity<FindsParent> response;
 			if (LOG.isInfoEnabled())
 				LOG.info("Attempting to retrieve contactRequests for user "
 						+ userId + '.');
 
 			Direction sortDirection = Direction.DESC;
 			if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-			AllReadEvent articleEvent = contactRequestService.readContactRequestsMade(
+			AllReadEvent contactRequestEvent = contactRequestService.readContactRequestsMade(
 					new ReadAllEvent(userId), sortDirection,
 					pageNumber, pageLength);
 
-			if (!articleEvent.isEntityFound())
+			if (!contactRequestEvent.isEntityFound())
 			{
-				return new ResponseEntity<Iterator<ContactRequest>>(HttpStatus.NOT_FOUND);
+				response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
 			}
-
-			Iterator<ContactRequest> contactRequests = ContactRequest
-					.toContactRequestIterator(articleEvent.getDetails().iterator());
-
-			return new ResponseEntity<Iterator<ContactRequest>>(contactRequests, HttpStatus.OK);
+			else
+			{
+				Iterator<ContactRequest> contactRequests = ContactRequest
+						.toContactRequestsIterator(contactRequestEvent.getDetails().iterator());
+				FindsParent theContactRequests = FindsParent.fromArticlesIterator(contactRequests, contactRequestEvent.getTotalItems(), contactRequestEvent.getTotalPages());
+				response = new ResponseEntity<FindsParent>(theContactRequests, HttpStatus.OK);
+			}
+			return response;
 		}
 
 }
