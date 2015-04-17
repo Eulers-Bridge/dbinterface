@@ -438,8 +438,14 @@ public class UserEventHandler implements UserService, UserDetailsService
 				userToUpdate.setNationality(user.getNationality());
 			if (null==userToUpdate.getYearOfBirth())
 				userToUpdate.setYearOfBirth(user.getYearOfBirth());
-			if (user.isAccountVerified())
-				userToUpdate.setAccountVerified(true);
+			if (null==userToUpdate.isAccountVerified())
+				userToUpdate.setAccountVerified(user.isAccountVerified());
+			if (null==userToUpdate.isTrackingOff())
+				userToUpdate.setTrackingOff(user.isTrackingOff());
+			if (null==userToUpdate.isConsentGiven())
+				userToUpdate.setConsentGiven(user.isConsentGiven());
+			if (null==userToUpdate.isOptOutDataCollection())
+				userToUpdate.setOptOutDataCollection(user.isOptOutDataCollection());
 			if (null==newUser.getInstitutionId())
 			{
 				userToUpdate.setInstitution(user.getInstitution());

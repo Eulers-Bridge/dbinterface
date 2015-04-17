@@ -24,13 +24,14 @@ public class User extends ResourceSupport
 	private String yearOfBirth;
 	private String password;
 	private String contactNumber;
-	private boolean accountVerified=false;
-	private boolean hasPersonality=false;
+	private Boolean accountVerified;
+	private Boolean hasPersonality;
 	private	Long institutionId; 
 	private String email;
 	private Iterable<PhotoDetails> photos;
-	private boolean trackingOff=false;
-	private boolean optOutDataCollection=false;
+	private Boolean consentGiven;
+	private Boolean trackingOff;
+	private Boolean optOutDataCollection;
 
     private static Logger LOG = LoggerFactory.getLogger(User.class);
 	public String getEmail() 
@@ -106,12 +107,28 @@ public class User extends ResourceSupport
 		this.contactNumber = contactNumber;
 	}
 
-	public boolean isAccountVerified() {
+	public Boolean isAccountVerified() {
 		return accountVerified;
 	}
 
-	public void setAccountVerified(boolean accountVerified) {
+	public void setAccountVerified(Boolean accountVerified) {
 		this.accountVerified = accountVerified;
+	}
+
+	/**
+	 * @return the consentGiven
+	 */
+	public Boolean isConsentGiven()
+	{
+		return consentGiven;
+	}
+
+	/**
+	 * @param consentGiven the consentGiven to set
+	 */
+	public void setConsentGiven(Boolean consentGiven)
+	{
+		this.consentGiven = consentGiven;
 	}
 
 	public Long getInstitutionId() {
@@ -125,7 +142,7 @@ public class User extends ResourceSupport
 	/**
 	 * @return the hasPersonality
 	 */
-	public boolean getHasPersonality()
+	public Boolean getHasPersonality()
 	{
 		return hasPersonality;
 	}
@@ -133,7 +150,7 @@ public class User extends ResourceSupport
 	/**
 	 * @param hasPersonality the hasPersonality to set
 	 */
-	public void setHasPersonality(boolean hasPersonality)
+	public void setHasPersonality(Boolean hasPersonality)
 	{
 		this.hasPersonality = hasPersonality;
 	}
@@ -157,7 +174,7 @@ public class User extends ResourceSupport
 	/**
 	 * @return the trackingOn
 	 */
-	public boolean isTrackingOff()
+	public Boolean isTrackingOff()
 	{
 		return trackingOff;
 	}
@@ -165,7 +182,7 @@ public class User extends ResourceSupport
 	/**
 	 * @param trackingOn the trackingOn to set
 	 */
-	public void setTrackingOff(boolean trackingOff)
+	public void setTrackingOff(Boolean trackingOff)
 	{
 		this.trackingOff = trackingOff;
 	}
@@ -173,7 +190,7 @@ public class User extends ResourceSupport
 	/**
 	 * @return the optOutDataCollection
 	 */
-	public boolean isOptOutDataCollection()
+	public Boolean isOptOutDataCollection()
 	{
 		return optOutDataCollection;
 	}
@@ -181,7 +198,7 @@ public class User extends ResourceSupport
 	/**
 	 * @param optOutDataCollection the optOutDataCollection to set
 	 */
-	public void setOptOutDataCollection(boolean optOutDataCollection)
+	public void setOptOutDataCollection(Boolean optOutDataCollection)
 	{
 		this.optOutDataCollection = optOutDataCollection;
 	}
@@ -201,6 +218,7 @@ public class User extends ResourceSupport
 	    details.setInstitutionId(getInstitutionId());
 	    details.setOptOutDataCollection(isOptOutDataCollection());
 	    details.setTrackingOff(isTrackingOff());
+	    details.setConsentGiven(isConsentGiven());
 
 	    return details;
 	  }
@@ -222,6 +240,7 @@ public class User extends ResourceSupport
 	    user.setHasPersonality(readUser.hasPersonality());
 	    user.setTrackingOff(readUser.isTrackingOff());
 	    user.setOptOutDataCollection(readUser.isOptOutDataCollection());
+	    user.setConsentGiven(readUser.isConsentGiven());
 	    user.setPhotos(readUser.getPhotos());
 	    
 	    String simpleName=User.class.getSimpleName();
@@ -263,6 +282,12 @@ public class User extends ResourceSupport
 			buff.append(getInstitutionId());
 			buff.append(", accountVerified = ");
 			buff.append(isAccountVerified());
+			buff.append(", consentGiven = ");
+			buff.append(isConsentGiven());
+			buff.append(", optOutDataCollection = ");
+			buff.append(isOptOutDataCollection());
+			buff.append(", trackingOff = ");
+			buff.append(isTrackingOff());
 			buff.append(" ]");
 			retValue=buff.toString();
 			if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);

@@ -162,6 +162,7 @@ public class UserControllerTest
 				",\"institutionId\":"+dets.getInstitutionId().intValue()+
 				",\"email\":\""+dets.getEmail()+
 				"\",\"photos\":"+dets.getPhotos()+
+				",\"consentGiven\":"+dets.isConsentGiven()+
 				",\"trackingOff\":"+dets.isTrackingOff()+
 				",\"optOutDataCollection\":"+dets.isOptOutDataCollection()+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/user/"+dets.getEmail()+

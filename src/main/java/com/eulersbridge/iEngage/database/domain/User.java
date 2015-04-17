@@ -29,9 +29,10 @@ public class User
 	private String password;
 	private String contactNumber;
 	private String roles;
-	private boolean accountVerified=false;
-	private boolean optOutDataCollection;
-	private boolean trackingOff;
+	private Boolean accountVerified;
+	private Boolean optOutDataCollection;
+	private Boolean trackingOff;
+	private Boolean consentGiven;
 	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
 	@Fetch private Institution institution;
 	@RelatedTo(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction=Direction.BOTH)
@@ -163,6 +164,14 @@ public class User
 		buff.append(getPersonality());
 		buff.append(", photos = ");
 		buff.append(getPhotos());
+		buff.append(", accountVerified = ");
+		buff.append(isAccountVerified());
+		buff.append(", consentGiven = ");
+		buff.append(isConsentGiven());
+		buff.append(", optOutDataCollection = ");
+		buff.append(isOptOutDataCollection());
+		buff.append(", trackingOff = ");
+		buff.append(isTrackingOff());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isTraceEnabled()) LOG.trace("toString() = "+retValue);
@@ -223,14 +232,14 @@ public class User
 	/**
 	 * @return the verified
 	 */
-	public boolean isAccountVerified() {
+	public Boolean isAccountVerified() {
 		return accountVerified;
 	}
 
 	/**
 	 * @param verified the verified to set
 	 */
-	public void setAccountVerified(boolean accountVerified) {
+	public void setAccountVerified(Boolean accountVerified) {
 		this.accountVerified = accountVerified;
 	}
 	
@@ -341,7 +350,7 @@ public class User
 	/**
 	 * @return the optOutDataCollection
 	 */
-	public boolean getOptOutDataCollection()
+	public Boolean isOptOutDataCollection()
 	{
 		return optOutDataCollection;
 	}
@@ -349,7 +358,7 @@ public class User
 	/**
 	 * @param optOutDataCollection the optOutDataCollection to set
 	 */
-	public void setOptOutDataCollection(boolean optOutDataCollection)
+	public void setOptOutDataCollection(Boolean optOutDataCollection)
 	{
 		this.optOutDataCollection = optOutDataCollection;
 	}
@@ -357,7 +366,7 @@ public class User
 	/**
 	 * @return the trackingOff
 	 */
-	public boolean isTrackingOff()
+	public Boolean isTrackingOff()
 	{
 		return trackingOff;
 	}
@@ -365,9 +374,25 @@ public class User
 	/**
 	 * @param trackingOff the trackingOff to set
 	 */
-	public void setTrackingOff(boolean trackingOn)
+	public void setTrackingOff(Boolean trackingOn)
 	{
 		this.trackingOff = trackingOn;
+	}
+
+	/**
+	 * @return the consentGiven
+	 */
+	public Boolean isConsentGiven()
+	{
+		return consentGiven;
+	}
+
+	/**
+	 * @param consentGiven the consentGiven to set
+	 */
+	public void setConsentGiven(Boolean consentGiven)
+	{
+		this.consentGiven = consentGiven;
 	}
 
 	/**
@@ -447,7 +472,22 @@ public class User
 	    	if (LOG.isDebugEnabled()) LOG.debug("personality = "+getPersonality());
 	    }
 	    details.setHasPersonality(personality);
-	    
+	    if (null==isAccountVerified())
+	    	details.setAccountVerified(DatabaseDomainConstants.AccountVerifiedDefault);
+	    else
+	    	details.setAccountVerified(isAccountVerified());
+	    if (null==isConsentGiven())
+	    	details.setConsentGiven(DatabaseDomainConstants.ConsentGivenDefault);
+	    else
+	    	details.setConsentGiven(isConsentGiven());
+	    if (null==isTrackingOff())
+	    	details.setTrackingOff(DatabaseDomainConstants.TrackingOffDefault);
+	    else
+	    	details.setTrackingOff(isTrackingOff());
+	    if (null==isOptOutDataCollection())
+	    	details.setOptOutDataCollection(DatabaseDomainConstants.OptOutDataCollectionDefault);
+	    else
+	    	details.setOptOutDataCollection(isOptOutDataCollection());
 	    details.setPhotos(Photo.photosToPhotoDetails(getPhotos()));	
 	    
 	    if (LOG.isTraceEnabled()) LOG.trace("userDetails "+details);
@@ -468,9 +508,10 @@ public class User
 		    user.familyName=userDetails.getFamilyName();
 		    user.nationality=userDetails.getNationality();
 		    user.password=userDetails.getPassword();
-		    user.contactNumber=userDetails.getContactNumber();
-		    user.yearOfBirth=userDetails.getYearOfBirth();
-		    user.accountVerified=userDetails.isAccountVerified();
+		    user.setContactNumber(userDetails.getContactNumber());
+		    user.setYearOfBirth(userDetails.getYearOfBirth());
+		    user.setAccountVerified(userDetails.isAccountVerified());
+		    user.setConsentGiven(userDetails.isConsentGiven());
 		    user.setTrackingOff(userDetails.isTrackingOff());
 		    user.setOptOutDataCollection(userDetails.isOptOutDataCollection());
 		    Institution inst=new Institution();
@@ -495,7 +536,10 @@ public class User
 		}
 		else
 		{
-			result = prime * result + (accountVerified ? 1231 : 1237);
+			result = prime * result + ((accountVerified == null) ? 0 : accountVerified.hashCode());
+			result = prime * result + ((consentGiven == null) ? 0 : consentGiven.hashCode());
+			result = prime * result + ((trackingOff == null) ? 0 : trackingOff.hashCode());
+			result = prime * result + ((optOutDataCollection == null) ? 0 : optOutDataCollection.hashCode());
 			result = prime * result + ((email == null) ? 0 : email.hashCode());
 			result = prime * result
 					+ ((familyName == null) ? 0 : familyName.hashCode());
@@ -548,6 +592,12 @@ public class User
 			if (other.nodeId != null)
 				return false;
 			if (accountVerified != other.accountVerified)
+				return false;
+			if (consentGiven != other.consentGiven)
+				return false;
+			if (trackingOff != other.trackingOff)
+				return false;
+			if (optOutDataCollection != other.optOutDataCollection)
 				return false;
 			if (email == null) {
 				if (other.email != null)

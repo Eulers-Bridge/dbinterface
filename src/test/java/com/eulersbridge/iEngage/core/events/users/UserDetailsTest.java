@@ -19,7 +19,7 @@ public class UserDetailsTest {
     final String nationality = new String("China");
     final String yearOfBirth = new String("1989");
     final String password = new String("password");
-    final boolean accountVerified = true;
+    final Boolean accountVerified = true;
     final Long institutionId = new Long(1);
     UserDetails userDetails = null;
 
@@ -38,6 +38,7 @@ public class UserDetailsTest {
         userDetails.setPassword(password);
         userDetails.setInstitutionId(institutionId);
         userDetails.setNodeId(userId);
+        userDetails.setAccountVerified(accountVerified);
 
         userDetails1 = new UserDetails(email1);
     }
@@ -165,7 +166,7 @@ public class UserDetailsTest {
 
     @Test
     public void testIsAccountVerified() throws Exception {
-        assertFalse("accountVerified is not false", userDetails.isAccountVerified());
+        assertTrue("accountVerified is not false", userDetails.isAccountVerified());
     }
 
     @Test
@@ -207,11 +208,15 @@ public class UserDetailsTest {
         assertNotEquals("",userDetails2,userDetails);
         assertNotEquals("",userDetails2.hashCode(),userDetails.hashCode());
         userDetails2.setEmail(email);
-        userDetails2.setAccountVerified(true);
+        
+        userDetails2.setAccountVerified(null);
         assertNotEquals(userDetails2, userDetails1);
+        assertNotEquals(userDetails, userDetails2);
         assertNotEquals(""+userDetails2.isAccountVerified()+" "+userDetails.isAccountVerified(),userDetails2.hashCode(),userDetails.hashCode());
-        userDetails2.setAccountVerified(false);
+        userDetails2.setAccountVerified(userDetails.isAccountVerified());
         assertEquals(userDetails2, userDetails);
+        assertEquals(userDetails, userDetails2);
+        
         userDetails2.setFamilyName(null);
         assertNotEquals(userDetails2, userDetails);
         assertNotEquals(userDetails, userDetails2);

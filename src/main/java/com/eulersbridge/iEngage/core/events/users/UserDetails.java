@@ -25,10 +25,11 @@ public class UserDetails extends Details
 	private String yearOfBirth;
 	private String password;
 	private String contactNumber;
-	private boolean accountVerified=false;
-	private boolean hasPersonality=false;
-	private boolean optOutDataCollection=false;
-	private boolean trackingOff=false;
+	private Boolean accountVerified;
+	private Boolean hasPersonality;
+	private Boolean consentGiven;
+	private Boolean optOutDataCollection;
+	private Boolean trackingOff;
 	private	Long institutionId;
 
     private Long numOfCompTasks;
@@ -179,17 +180,33 @@ public class UserDetails extends Details
 	/**
 	 * @return the accountVerified
 	 */
-	public boolean isAccountVerified() {
+	public Boolean isAccountVerified() {
 		return accountVerified;
 	}
 
 	/**
 	 * @param accountVerified the accountVerified to set
 	 */
-	public void setAccountVerified(boolean accountVerified) {
+	public void setAccountVerified(Boolean accountVerified) {
 		this.accountVerified = accountVerified;
 	}
 	
+	/**
+	 * @return the consentGiven
+	 */
+	public Boolean isConsentGiven()
+	{
+		return consentGiven;
+	}
+
+	/**
+	 * @param consentGiven the consentGiven to set
+	 */
+	public void setConsentGiven(Boolean consentGiven)
+	{
+		this.consentGiven = consentGiven;
+	}
+
 	/**
 	 * @return the hasPersonality
 	 */
@@ -279,6 +296,12 @@ public class UserDetails extends Details
 		buff.append(isAccountVerified());
 		buff.append(", hasPersonality = ");
 		buff.append(hasPersonality());
+		buff.append(", consentGiven = ");
+		buff.append(isConsentGiven());
+		buff.append(", optOutDataCollection = ");
+		buff.append(isOptOutDataCollection());
+		buff.append(", trackingOff = ");
+		buff.append(isTrackingOff());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
@@ -293,8 +316,11 @@ public class UserDetails extends Details
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (accountVerified ? 1231 : 1237);
-		result = prime * result + (hasPersonality ? 1231 : 1237);
+		result = prime * result	+ ((accountVerified == null) ? 0 : accountVerified.hashCode());
+		result = prime * result	+ ((hasPersonality == null) ? 0 : hasPersonality.hashCode());
+		result = prime * result	+ ((consentGiven == null) ? 0 : consentGiven.hashCode());
+		result = prime * result	+ ((optOutDataCollection == null) ? 0 : optOutDataCollection.hashCode());
+		result = prime * result	+ ((trackingOff == null) ? 0 : trackingOff.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result
 				+ ((familyName == null) ? 0 : familyName.hashCode());
@@ -327,10 +353,33 @@ public class UserDetails extends Details
 		if (getClass() != obj.getClass())
 			return false;
 		UserDetails other = (UserDetails) obj;
-		if (accountVerified != other.accountVerified)
+
+		if (accountVerified == null) {
+			if (other.accountVerified != null)
+				return false;
+		} else if (!accountVerified.equals(other.accountVerified))
 			return false;
-		if (hasPersonality != other.hasPersonality)
+		if (hasPersonality == null) {
+			if (other.hasPersonality != null)
+				return false;
+		} else if (!hasPersonality.equals(other.hasPersonality))
 			return false;
+		if (consentGiven == null) {
+			if (other.consentGiven != null)
+				return false;
+		} else if (!consentGiven.equals(other.consentGiven))
+			return false;
+		if (trackingOff == null) {
+			if (other.trackingOff != null)
+				return false;
+		} else if (!trackingOff.equals(other.trackingOff))
+			return false;
+		if (optOutDataCollection == null) {
+			if (other.optOutDataCollection != null)
+				return false;
+		} else if (!optOutDataCollection.equals(other.optOutDataCollection))
+			return false;
+		
 		if (email == null) {
 			if (other.email != null)
 				return false;
