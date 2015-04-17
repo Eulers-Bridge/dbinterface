@@ -109,6 +109,14 @@ public class NotificationDeserializer extends JsonDeserializer<Notification>
         	else
         		notificationBody=crd;
         }
+        else if ((NotificationConstants.CONTACT_ACCEPTED.equals(type))&&(notificationBodyNode!=null))
+        {
+//        	ContactRequestAcceptedDetails cra= new ContactRequestAcceptedDetails();
+        }
+        else if ((NotificationConstants.CONTACT_REJECTED.equals(type))&&(notificationBodyNode!=null))
+        {
+        	
+        }
         else if ((NotificationConstants.MESSAGE.equals(type))&&(notificationBodyNode!=null))
         {
         	

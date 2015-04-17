@@ -3,6 +3,8 @@ package com.eulersbridge.iEngage.database.domain.notifications;
 public class NotificationConstants 
 {
 	public static final String CONTACT_REQUEST = "contactRequest";
+	public static final String CONTACT_ACCEPTED = "contactAccepted";
+	public static final String CONTACT_REJECTED = "contactRejected";
 	public static final String MESSAGE = "message";
 	
 	public static final String UserId = "userId";
