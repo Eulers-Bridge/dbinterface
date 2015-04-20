@@ -170,6 +170,16 @@ public class CandidateEventHandler implements CandidateService {
 	        }
 	        else
 	        {
+				if (null==candidate.getInformation())
+					candidate.setInformation(candidateOld.getInformation());
+				if (null==candidate.getPolicyStatement())
+					candidate.setPolicyStatement(candidateOld.getPolicyStatement());
+				if (null==candidate.getPosition())
+					candidate.setPosition(candidateOld.getPosition());
+				if (null==candidate.getUser())
+					candidate.setUser(candidateOld.getUser());
+
+	        	
 	            Candidate result = candidateRepository.save(candidate);
 	            if (result!=null)
 	            {
