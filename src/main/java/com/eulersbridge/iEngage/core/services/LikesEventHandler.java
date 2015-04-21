@@ -48,7 +48,7 @@ public class LikesEventHandler implements LikesService
 		Long nodeId = likeEvent.getNodeId();
 		
 		retValue=checkParams(email,nodeId);
-		if (null!=retValue)
+		if (null==retValue)
 		{
 			Like like = userRepository.like(email, nodeId);
 			if (like != null)
@@ -68,7 +68,7 @@ public class LikesEventHandler implements LikesService
 		Long nodeId = unlikeEvent.getNodeId();
 		
 		retValue=checkParams(email,nodeId);
-		if (null!=retValue)
+		if (null==retValue)
 		{
 			userRepository.unlike(email, nodeId);
 			retValue = new LikedEvent(nodeId, email, result);
