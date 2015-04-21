@@ -50,6 +50,29 @@ public class Contact
 	    return details;
 	}
 	
+	static public Contact fromContactDetails(ContactDetails details)
+	{
+	    if (LOG.isTraceEnabled()) LOG.trace("toContactDetails()");
+	    Contact contact=null;
+	    User contactor=null;
+	    User contactee=null;
+	    if (details!=null)
+	    {
+	    	contact=new Contact();
+	    	contact.setNodeId(details.getNodeId());
+	    	contact.setTimestamp(details.getTimestamp());
+		    contactor=new User(details.getContactorId());
+			contactee=new User(details.getContacteeId());
+			contact.setContactee(contactee);
+			contact.setContactor(contactor);
+	    }
+	    	
+		
+	    if (LOG.isTraceEnabled()) LOG.trace("Contact "+contact);
+
+	    return contact;
+	}
+	
 	public Long getNodeId()
 	{
 		return nodeId;
