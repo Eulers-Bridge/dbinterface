@@ -38,6 +38,8 @@ public class UserDetails extends Details
     private Long totalBadges;
     private Long numOfContacts;
 
+    private Long experience;
+
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     
 	public UserDetails() 
@@ -127,6 +129,14 @@ public class UserDetails extends Details
 
     public void setNumOfContacts(Long numOfContacts) {
         this.numOfContacts = numOfContacts;
+    }
+
+    public Long getExperience() {
+        return experience;
+    }
+
+    public void setExperience(Long experience) {
+        this.experience = experience;
     }
 
     /**

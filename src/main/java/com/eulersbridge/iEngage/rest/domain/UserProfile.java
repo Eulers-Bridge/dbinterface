@@ -37,6 +37,8 @@ public class UserProfile extends ResourceSupport
     private Long totalBadges;
     private Long numOfContacts;
 
+    private Long experience;
+
 	private static Logger LOG = LoggerFactory.getLogger(User.class);
 
 	public String getEmail()
@@ -111,6 +113,14 @@ public class UserProfile extends ResourceSupport
 
     public void setNumOfContacts(Long numOfContacts) {
         this.numOfContacts = numOfContacts;
+    }
+
+    public Long getExperience() {
+        return experience;
+    }
+
+    public void setExperience(Long experience) {
+        this.experience = experience;
     }
 
     /**
@@ -203,6 +213,7 @@ public class UserProfile extends ResourceSupport
         user.totalTasks = readUser.getTotalTasks();
         user.totalBadges = readUser.getTotalBadges();
         user.numOfContacts = readUser.getNumOfContacts();
+        user.experience = readUser.getExperience();
 
 		Iterable<PhotoDetails> photos=readUser.getPhotos();
 		user.profilePhoto=null;

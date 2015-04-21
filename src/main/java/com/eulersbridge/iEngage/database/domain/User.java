@@ -60,6 +60,8 @@ public class User
     @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.CONTACT_LABEL+"]-(a:"+DatabaseDomainConstants.USER+") RETURN count(DISTINCT a)")
     private Long numOfContacts;
 
+    private Long experience;
+
     private static Logger LOG = LoggerFactory.getLogger(User.class);
     
 	public User()
@@ -449,6 +451,14 @@ public class User
 
     public void setNumOfContacts(Long numOfContacts) {
         this.numOfContacts = numOfContacts;
+    }
+
+    public Long getExperience() {
+        return experience;
+    }
+
+    public void setExperience(Long experience) {
+        this.experience = experience;
     }
 
     public UserDetails toUserDetails()
