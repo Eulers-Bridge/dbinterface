@@ -19,7 +19,8 @@ public class PollDetails extends Details
     private Long creatorId;
 
     private Long numOfComments;
-
+    private Long numOfAnswers;
+    
     private static Logger LOG = LoggerFactory.getLogger(PollDetails.class);
 
     public PollDetails()
@@ -76,6 +77,22 @@ public class PollDetails extends Details
     }
 
     /**
+	 * @return the numOfAnswers
+	 */
+	public Long getNumOfAnswers()
+	{
+		return numOfAnswers;
+	}
+
+	/**
+	 * @param numOfAnswers the numOfAnswers to set
+	 */
+	public void setNumOfAnswers(Long numOfAnswers)
+	{
+		this.numOfAnswers = numOfAnswers;
+	}
+
+	/**
 	 * @return the ownerId
 	 */
 	public Long getOwnerId()

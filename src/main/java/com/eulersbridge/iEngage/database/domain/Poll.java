@@ -30,6 +30,9 @@ public class Poll extends Likeable implements Commentable
     @Query("START n = node({self}) match (n)-[r:"+ DatabaseDomainConstants.HAS_COMMENT+"]-(c) RETURN count(c) ")
     private Long numberOfComments;
 
+    @Query("START n = node({self}) match (n)-[r:"+ DatabaseDomainConstants.APQ_LABEL+"]-(c) RETURN count(c) ")
+    private Long numberOfAnswers;
+
 	private static Logger LOG = LoggerFactory.getLogger(Poll.class);
 
 	public Poll()
@@ -62,7 +65,8 @@ public class Poll extends Likeable implements Commentable
 		pollDetails.setDuration(this.getDuration());
 		pollDetails.setOwnerId((owner == null) ? null : owner.getNodeId());
 		pollDetails.setCreatorId((creator == null) ? null : creator.getNodeId());
-        pollDetails.setNumOfComments(numberOfComments);
+        pollDetails.setNumOfComments(getNumberOfComments());
+        pollDetails.setNumOfAnswers(getNumberOfAnswers());
 		if (LOG.isTraceEnabled()) LOG.trace("pollDetails; " + pollDetails);
 		return pollDetails;
 	}
@@ -143,6 +147,22 @@ public class Poll extends Likeable implements Commentable
     }
 
     /**
+	 * @return the numberOfAnswers
+	 */
+	public Long getNumberOfAnswers()
+	{
+		return numberOfAnswers;
+	}
+
+	/**
+	 * @param numberOfAnswers the numberOfAnswers to set
+	 */
+	public void setNumberOfAnswers(Long numberOfAnswers)
+	{
+		this.numberOfAnswers = numberOfAnswers;
+	}
+
+	/**
 	 * @return the creator
 	 */
 	public Owner getCreator()

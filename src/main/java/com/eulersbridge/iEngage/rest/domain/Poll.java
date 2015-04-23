@@ -28,6 +28,7 @@ public class Poll extends ResourceSupport{
     private Long creatorId;
 
     private Long numOfComments;
+    private Long numOfAnswers;
 
     private static Logger LOG = LoggerFactory.getLogger(Poll.class);
 
@@ -44,6 +45,7 @@ public class Poll extends ResourceSupport{
         poll.setOwnerId(pollDetails.getOwnerId());
         poll.setCreatorId(pollDetails.getCreatorId());
         poll.setNumOfComments(pollDetails.getNumOfComments());
+        poll.setNumOfAnswers(pollDetails.getNumOfAnswers());
 
 	    // {!begin selfRel}
         poll.add(linkTo(PollController.class).slash(name).slash(poll.getNodeId()).withSelfRel());
@@ -148,6 +150,22 @@ public class Poll extends ResourceSupport{
     }
 
     /**
+	 * @return the numOfAnswers
+	 */
+	public Long getNumOfAnswers()
+	{
+		return numOfAnswers;
+	}
+
+	/**
+	 * @param numOfAnswers the numOfAnswers to set
+	 */
+	public void setNumOfAnswers(Long numOfAnswers)
+	{
+		this.numOfAnswers = numOfAnswers;
+	}
+
+	/**
 	 * @return the ownerId
 	 */
 	public Long getOwnerId()
