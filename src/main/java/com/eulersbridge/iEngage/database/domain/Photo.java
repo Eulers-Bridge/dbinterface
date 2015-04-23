@@ -233,6 +233,7 @@ public class Photo extends Likeable
         	ownerId=getOwner().getNodeId();
 		PhotoDetails photoDetails = new PhotoDetails(getNodeId(), getUrl(), getThumbNailUrl(),
 				getTitle(), getDescription(), getDate(), getSequence(),ownerId, isInappropriateContent());
+		photoDetails.setNumOfLikes(getNumOfLikes());
 		if (LOG.isTraceEnabled()) LOG.trace("photoDetails; " + photoDetails);
 		return photoDetails;
 	}

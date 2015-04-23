@@ -31,6 +31,7 @@ public class Photo extends ResourceSupport
 	Long ownerId;
 	Integer sequence;
 	private boolean inappropriateContent=false;
+	private Long  numOfLikes;
 
     private static Logger LOG = LoggerFactory.getLogger(Photo.class);
 
@@ -175,6 +176,22 @@ public class Photo extends ResourceSupport
 		this.inappropriateContent = inappropriateContent;
 	}
 
+	/**
+	 * @return the numOfLikes
+	 */
+	public Long getNumOfLikes()
+	{
+		return numOfLikes;
+	}
+
+	/**
+	 * @param numOfLikes the numOfLikes to set
+	 */
+	public void setNumOfLikes(Long numOfLikes)
+	{
+		this.numOfLikes = numOfLikes;
+	}
+
 	public static Photo fromPhotoDetails(PhotoDetails photoDetails)
     {
     	Photo photo = new Photo();
@@ -189,6 +206,7 @@ public class Photo extends ResourceSupport
         photo.setOwnerId(photoDetails.getOwnerId());
         photo.setSequence(photoDetails.getSequence());
         photo.setInappropriateContent(photoDetails.isInappropriateContent());
+        photo.setNumOfLikes(photoDetails.getNumOfLikes());
 
 	    // {!begin selfRel}
         photo.add(linkTo(PhotoController.class).slash(name).slash(photo.nodeId).withSelfRel());

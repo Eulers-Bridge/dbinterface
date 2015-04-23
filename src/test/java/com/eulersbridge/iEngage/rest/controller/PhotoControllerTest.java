@@ -59,6 +59,7 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -99,7 +100,7 @@ public class PhotoControllerTest
 	static String setupContent(PhotoDetails dets)
 	{
 		String content=	"{\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+"\",\"description\":\""+dets.getDescription()+
-						"\",\"sequence\":"+dets.getSequence()+",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"inappropriateContent\":"+dets.isInappropriateContent()+"}";
+						"\",\"sequence\":"+dets.getSequence()+",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"numOfLikes\":"+dets.getNumOfLikes()+",\"inappropriateContent\":"+dets.isInappropriateContent()+"}";
 		if (LOG.isDebugEnabled()) LOG.debug(content);
 		return content;
 	}
@@ -107,7 +108,8 @@ public class PhotoControllerTest
 	String setupReturnedContent(PhotoDetails dets)
 	{
 		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+
-			"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"sequence\":"+dets.getSequence()+",\"inappropriateContent\":"+dets.isInappropriateContent()+
+			"\",\"description\":\""+dets.getDescription()+"\",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"sequence\":"+dets.getSequence()+
+			",\"inappropriateContent\":"+dets.isInappropriateContent()+",\"numOfLikes\":"+dets.getNumOfLikes()+
 			",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/photo/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/photos\"}]}";
 		return returnedContent;
 	}
@@ -139,6 +141,8 @@ public class PhotoControllerTest
 		.andExpect(jsonPath("$.title",is(dets.getTitle())))
 		.andExpect(jsonPath("$.description",is(dets.getDescription())))
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
+		.andExpect(jsonPath("$.inappropriateContent",is(dets.isInappropriateContent())))
+		.andExpect(jsonPath("$.numOfLikes",is(dets.getNumOfLikes().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))
@@ -204,7 +208,8 @@ public class PhotoControllerTest
 	public final void testCreatePhoto() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreatePhoto()");
-		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		PhotoDetails dets=photo.toPhotoDetails();
 		PhotoCreatedEvent testData=new PhotoCreatedEvent(dets.getNodeId(), dets);
 		String content=setupContent(dets);
 		String returnedContent=setupReturnedContent(dets);
@@ -219,6 +224,8 @@ public class PhotoControllerTest
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
 		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
 		.andExpect(jsonPath("$.sequence",is(dets.getSequence())))
+		.andExpect(jsonPath("$.inappropriateContent",is(dets.isInappropriateContent())))
+		.andExpect(jsonPath("$.numOfLikes",is(dets.getNumOfLikes().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))
@@ -484,7 +491,8 @@ public class PhotoControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingUpdatePhoto()");
 		Long id=1L;
-		PhotoDetails dets=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		PhotoDetails dets=photo.toPhotoDetails();
 		dets.setTitle("Test Photo2");
 		PhotoUpdatedEvent testData=new PhotoUpdatedEvent(id, dets);
 		String content=setupContent(dets);
@@ -500,6 +508,8 @@ public class PhotoControllerTest
 		.andExpect(jsonPath("$.date",is(dets.getDate())))
 		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
 		.andExpect(jsonPath("$.sequence",is(dets.getSequence())))
+		.andExpect(jsonPath("$.inappropriateContent",is(dets.isInappropriateContent())))
+		.andExpect(jsonPath("$.numOfLikes",is(dets.getNumOfLikes().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))
@@ -646,12 +656,16 @@ public class PhotoControllerTest
 		.andExpect(jsonPath("$photos[0].description",is(photoDets.get(0).getDescription())))
 		.andExpect(jsonPath("$photos[0].date",is(photoDets.get(0).getDate())))
 		.andExpect(jsonPath("$photos[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("$photos[0].inappropriateContent",is(photoDets.get(0).isInappropriateContent())))
+		.andExpect(jsonPath("$photos[0].numOfLikes",is(photoDets.get(0).getNumOfLikes().intValue())))
 		.andExpect(jsonPath("$photos[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
 		.andExpect(jsonPath("$photos[1].url",is(photoDets.get(1).getUrl())))
 		.andExpect(jsonPath("$photos[1].title",is(photoDets.get(1).getTitle())))
 		.andExpect(jsonPath("$photos[1].description",is(photoDets.get(1).getDescription())))
 		.andExpect(jsonPath("$photos[1].date",is(photoDets.get(1).getDate())))
 		.andExpect(jsonPath("$photos[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
+		.andExpect(jsonPath("$photos[1].inappropriateContent",is(photoDets.get(1).isInappropriateContent())))
+		.andExpect(jsonPath("$photos[1].numOfLikes",is(photoDets.get(1).getNumOfLikes().intValue())))
 		.andExpect(status().isOk())	;
 	}
 

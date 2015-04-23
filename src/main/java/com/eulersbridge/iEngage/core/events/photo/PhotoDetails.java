@@ -18,6 +18,7 @@ public class PhotoDetails extends Details
 	Integer sequence;
 	Long date;
 	Long ownerId;
+	Long numOfLikes;
 	private boolean inappropriateContent;
 	
 	/**
@@ -29,6 +30,7 @@ public class PhotoDetails extends Details
 	 * @param date
 	 * @param sequence 
 	 * @param ownerId
+	 * @param numberOfLikes 
 	 */
 	public PhotoDetails(Long nodeId, String url, String thumbNailUrl, String title,
 			String description, Long date, Integer sequence, Long ownerId, boolean inappropriateContent)
@@ -164,6 +166,22 @@ public class PhotoDetails extends Details
 		this.inappropriateContent = inappropriateContent;
 	}
 
+	/**
+	 * @return the numOfLikes
+	 */
+	public Long getNumOfLikes()
+	{
+		return numOfLikes;
+	}
+
+	/**
+	 * @param numberOfLikes the numOfLikes to set
+	 */
+	public void setNumOfLikes(Long numberOfLikes)
+	{
+		this.numOfLikes = numberOfLikes;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -260,7 +278,9 @@ public class PhotoDetails extends Details
 	{
 		return "PhotoDetails [nodeId=" + nodeId + ", url=" + url +", thumbNailUrl=" + thumbNailUrl +", sequence=" + sequence + ", title="
 				+ title + ", description=" + description + ", date=" + date
-				+ ", ownerId=" + ownerId + "]";
+				+ ", ownerId=" + ownerId 
+				+ ", inappropriateContent=" + inappropriateContent 
+				+ ", numberOfLikes=" + numOfLikes + "]";
 	}
 
 }
