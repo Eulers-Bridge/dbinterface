@@ -107,6 +107,18 @@ public class PollControllerTest
 		
 		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
 	}
+	
+	private String setupReturnedContent(PollDetails dets)
+	{
+		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"question\":\""+dets.getQuestion()+"\",\"answers\":\""+dets.getAnswers()+
+				"\",\"start\":"+dets.getStart()+",\"duration\":"+dets.getDuration()+",\"ownerId\":"+dets.getOwnerId()+",\"creatorId\":"+dets.getCreatorId()+
+				",\"numOfComments\":"+dets.getNumOfComments()+",\"numOfAnswers\":"+dets.getNumOfAnswers()+
+				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/poll/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/poll/1/previous\"},"+
+				"{\"rel\":\"Next\",\"href\":\"http://localhost/api/poll/1/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/poll/1/likedBy/USERID\"},"+
+				"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/poll/1/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/poll/1/likes\"},"+
+				"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/polls\"}]}";
+		return returnedContent;
+	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PollController#PollController()}.
@@ -214,15 +226,13 @@ public class PollControllerTest
 	public final void testCreatePoll() throws Exception
 	{
 		LOG.debug("performingCreatePoll()");
-		PollDetails dets=DatabaseDataFixture.populatePoll1().toPollDetails();
+		Poll poll=DatabaseDataFixture.populatePoll1();
+		poll.setNumberOfAnswers(623432l);
+		poll.setNumberOfComments(543543l);
+		PollDetails dets=poll.toPollDetails();
 		PollCreatedEvent testData=new PollCreatedEvent(dets);
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
-		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"question\":\""+dets.getQuestion()+"\",\"answers\":\""+dets.getAnswers()+
-								"\",\"start\":"+dets.getStart()+",\"duration\":"+dets.getDuration()+",\"ownerId\":"+dets.getOwnerId()+",\"creatorId\":"+dets.getCreatorId()+ ",\"numOfComments\":"+dets.getNumOfComments() +
-								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/poll/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/poll/1/previous\"},"+
-								"{\"rel\":\"Next\",\"href\":\"http://localhost/api/poll/1/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/poll/1/likedBy/USERID\"},"+
-								"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/poll/1/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/poll/1/likes\"},"+
-								"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/polls\"}]}";
+		String returnedContent=setupReturnedContent(dets);
 		when (pollService.createPoll(any(CreatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
@@ -232,6 +242,8 @@ public class PollControllerTest
 		.andExpect(jsonPath("$.duration",is(dets.getDuration().intValue())))
 		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
 		.andExpect(jsonPath("$.creatorId",is(dets.getCreatorId().intValue())))
+		.andExpect(jsonPath("$.numOfAnswers", is(dets.getNumOfAnswers().intValue())))
+		.andExpect(jsonPath("$.numOfComments", is(dets.getNumOfComments().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))
@@ -323,16 +335,14 @@ public class PollControllerTest
 	{
 		LOG.debug("performingUpdatePoll()");
 		Long id=1L;
-		PollDetails dets=DatabaseDataFixture.populatePoll1().toPollDetails();
+		Poll poll=DatabaseDataFixture.populatePoll1();
+		poll.setNumberOfAnswers(5l);
+		poll.setNumberOfComments(3l);
+		PollDetails dets=poll.toPollDetails();
 		dets.setQuestion("New Question");
 		PollUpdatedEvent testData=new PollUpdatedEvent(id, dets);
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
-		String returnedContent="{\"nodeId\":"+dets.getNodeId().intValue()+",\"question\":\""+dets.getQuestion()+"\",\"answers\":\""+dets.getAnswers()+
-				"\",\"start\":"+dets.getStart()+",\"duration\":"+dets.getDuration()+",\"ownerId\":"+dets.getOwnerId()+",\"creatorId\":"+dets.getCreatorId()+",\"numOfComments\":"+dets.getNumOfComments()+
-				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/poll/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/poll/1/previous\"},"+
-				"{\"rel\":\"Next\",\"href\":\"http://localhost/api/poll/1/next\"},{\"rel\":\"Liked By\",\"href\":\"http://localhost/api/poll/1/likedBy/USERID\"},"+
-				"{\"rel\":\"UnLiked By\",\"href\":\"http://localhost/api/poll/1/unlikedBy/USERID\"},{\"rel\":\"Likes\",\"href\":\"http://localhost/api/poll/1/likes\"},"+
-				"{\"rel\":\"Read all\",\"href\":\"http://localhost/api/polls\"}]}";
+		String returnedContent=setupReturnedContent(dets);
 		when (pollService.updatePoll(any(UpdatePollEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(put(urlPrefix+"/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
@@ -342,6 +352,8 @@ public class PollControllerTest
 		.andExpect(jsonPath("$.duration",is(dets.getDuration().intValue())))
 		.andExpect(jsonPath("$.ownerId",is(dets.getOwnerId().intValue())))
 		.andExpect(jsonPath("$.creatorId",is(dets.getCreatorId().intValue())))
+		.andExpect(jsonPath("$.numOfAnswers", is(dets.getNumOfAnswers().intValue())))
+		.andExpect(jsonPath("$.numOfComments", is(dets.getNumOfComments().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
 		.andExpect(jsonPath("$.links[2].rel",is("Next")))
