@@ -7,7 +7,17 @@ public class Response
 	String errorReason;
 	Object responseObject;
 	
-	public Response(boolean success,String errorReason)
+	public Response()
+	{
+		this.success=true;
+	}
+	
+	public Response(boolean success)
+	{
+		this.success=success;
+	}
+	
+	private Response(boolean success,String errorReason)
 	{
 		this.success=success;
 		this.errorReason=errorReason;
@@ -26,5 +36,11 @@ public class Response
 	public Object getResponseObject()
 	{
 		return responseObject;
+	}
+	
+	public static Response failed(String errorReason)
+	{
+		Response result=new Response(false,errorReason);
+		return result;
 	}
 }

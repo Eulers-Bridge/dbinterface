@@ -35,6 +35,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
 import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
@@ -57,9 +59,11 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
+import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.PhotoService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.database.domain.Photo;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -84,6 +88,8 @@ public class PhotoControllerTest
 	PhotoService photoService;
 	@Mock
 	UserService userService;
+	@Mock
+	LikesService likesService;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -831,5 +837,122 @@ public class PhotoControllerTest
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
+	}
+	
+	@Test
+	public final void testLikePhoto() throws Exception
+	{
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		String email=user.getEmail();
+		Long photoId=photo.getNodeId();
+		LikedEvent event=new LikedEvent(photoId, email, true);
+		when(likesService.like(any(LikeEvent.class))).thenReturn(event);
+
+		this.mockMvc.perform(put(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$success",is(event.isResultSuccess())))
+		.andExpect(status().isOk());
+	}
+	@Test
+	public final void testLikePhotoFailed() throws Exception
+	{
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		String email=user.getEmail();
+		Long photoId=photo.getNodeId();
+		LikedEvent event=new LikedEvent(photoId, email, false);
+		when(likesService.like(any(LikeEvent.class))).thenReturn(event);
+
+		this.mockMvc.perform(put(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$success",is(event.isResultSuccess())))
+		.andExpect(status().isOk());
+	}
+	@Test
+	public final void testLikePhotoEntityNotFound() throws Exception
+	{
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		String email=user.getEmail();
+		Long photoId=photo.getNodeId();
+		LikedEvent event=LikedEvent.entityNotFound(photoId, email);
+		when(likesService.like(any(LikeEvent.class))).thenReturn(event);
+
+		this.mockMvc.perform(put(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isGone());
+	}
+	@Test
+	public final void testLikePhotoUserNotFound() throws Exception
+	{
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		String email=user.getEmail();
+		Long photoId=photo.getNodeId();
+		LikedEvent event=LikedEvent.userNotFound(photoId, email);
+		when(likesService.like(any(LikeEvent.class))).thenReturn(event);
+
+		this.mockMvc.perform(put(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound());
+	}
+	@Test
+	public final void testUnlikePhoto() throws Exception
+	{
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		String email=user.getEmail();
+		Long photoId=photo.getNodeId();
+		LikedEvent event=new LikedEvent(photoId, email, true);
+		when(likesService.unlike(any(LikeEvent.class))).thenReturn(event);
+
+		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$success",is(event.isResultSuccess())))
+		.andExpect(status().isOk());
+	}
+	@Test
+	public final void testUnlikePhotoFailed() throws Exception
+	{
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		String email=user.getEmail();
+		Long photoId=photo.getNodeId();
+		LikedEvent event=new LikedEvent(photoId, email, false);
+		when(likesService.unlike(any(LikeEvent.class))).thenReturn(event);
+
+		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(jsonPath("$success",is(event.isResultSuccess())))
+		.andExpect(status().isOk());
+	}
+	@Test
+	public final void testUnlikePhotoEntityNotFound() throws Exception
+	{
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		String email=user.getEmail();
+		Long photoId=photo.getNodeId();
+		LikedEvent event=LikedEvent.entityNotFound(photoId, email);
+		when(likesService.unlike(any(LikeEvent.class))).thenReturn(event);
+
+		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isGone());
+	}
+	@Test
+	public final void testUnlikePhotoUserNotFound() throws Exception
+	{
+		Photo photo=DatabaseDataFixture.populatePhoto1();
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		String email=user.getEmail();
+		Long photoId=photo.getNodeId();
+		LikedEvent event=LikedEvent.userNotFound(photoId, email);
+		when(likesService.unlike(any(LikeEvent.class))).thenReturn(event);
+
+		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isNotFound());
 	}
 }

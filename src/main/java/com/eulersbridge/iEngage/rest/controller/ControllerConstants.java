@@ -34,6 +34,8 @@ public class ControllerConstants
 	public static final String GENERAL_INFO_LABEL = "/general-info";
 	public static final String INSTITUTION_LABEL = "/institution";
 	public static final String INSTITUTIONS_LABEL = INSTITUTION_LABEL+'s';
+	public static final String LIKED_BY_LABEL = "/likedBy";
+    public static final String LIKES_LABEL = "/likes";
 	public static final String LOGIN_LABEL = "/login";
 	public static final String LOGOUT_LABEL = "/logout";
 	public static final String NEWS_ARTICLE_LABEL = "/newsArticle";
@@ -69,6 +71,5 @@ public class ControllerConstants
 	
 	public static final String PREVIOUS_LABEL = "/previous";
 	public static final String NEXT_LABEL = "/next";
-    public static final String LIKES_LABEL = "/likes";
     public static final String SUPPORT = "/support";
 }

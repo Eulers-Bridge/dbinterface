@@ -11,7 +11,8 @@ public class SignUp
 
 	public Response process() {
 		// TODO Auto-generated method stub
-		return new Response(true,"Success");
+//		return new Response(true,"Success");
+		return new Response();
 	}
 
 }

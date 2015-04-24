@@ -40,7 +40,8 @@ public class Login
 	{
     	if (LOG.isDebugEnabled()) LOG.debug("process() = ");
 		// TODO Auto-generated method stub
-		return new Response(true,username+" logged in");
+//		return new Response(true,username+" logged in");
+		return new Response();
 	}
 
 

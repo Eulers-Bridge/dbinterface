@@ -51,8 +51,9 @@ public class ResponseTest {
 	@Test
 	public final void testShouldConstructResponseObject() 
 	{
-		Response testObj=new Response(true,"Successful");
+		Response testObj=new Response(true);
 		assertEquals("Class created is not of type Response.",testObj.getClass(),Response.class); 
+		assertTrue(testObj.getSuccess());
 	}
 
 	/**
@@ -63,11 +64,11 @@ public class ResponseTest {
 	{
 		boolean res=true;
 		String errMesg="Successful";
-		Response testObj=new Response(res,errMesg);
+		Response testObj=new Response(res);
 		assertEquals("Result not returning true.",testObj.getSuccess(),res); 
 		
 		res=false;
-		testObj=new Response(res,errMesg);
+		testObj=new Response(res);
 		assertEquals("Result not returning false.",testObj.getSuccess(),res); 
 	}
 
@@ -79,12 +80,12 @@ public class ResponseTest {
 	{
 		boolean res=true;
 		String errMesg="Successful";
-		Response testObj=new Response(res,errMesg);
-		assertEquals("Error Message not matching"+errMesg+".",testObj.getErrorReason(),errMesg); 
+		Response testObj=new Response(res);
+		assertNull("Error Message not matching"+errMesg+".",testObj.getErrorReason()); 
 		
 		res=false;
 		errMesg="failure";
-		testObj=new Response(res,errMesg);
+		testObj=Response.failed(errMesg);
 		assertEquals("Error Message not matching"+errMesg+".",testObj.getErrorReason(),errMesg); 
 	}
 

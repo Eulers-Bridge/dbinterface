@@ -35,7 +35,8 @@ public class Logout {
 	public Response process() 
 	{
     	if (LOG.isDebugEnabled()) LOG.debug("process() = ");
-		return new Response(true,username+logoutTemplate);
+//		return new Response(true,username+logoutTemplate);
+		return new Response();
 	}
 
 }

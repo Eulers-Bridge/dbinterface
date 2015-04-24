@@ -27,7 +27,6 @@ import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
@@ -52,6 +51,7 @@ import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.Photo;
 import com.eulersbridge.iEngage.rest.domain.PhotoAlbum;
 import com.eulersbridge.iEngage.rest.domain.Photos;
+import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.User;
 
 /**
@@ -532,8 +532,8 @@ public class PhotoController
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.PHOTO_LABEL
-			+ "/{photoId}/likedBy/{email}/")
-	public @ResponseBody ResponseEntity<Boolean> unlikeEvent(
+			+ "/{photoId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+	public @ResponseBody ResponseEntity<Response> unlikeEvent(
 			@PathVariable Long photoId, @PathVariable String email)
 	{
 		if (LOG.isInfoEnabled())
@@ -542,20 +542,24 @@ public class PhotoController
 		LikedEvent event = likesService.unlike(new LikeEvent(photoId,
 				email));
 
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 
 		if (!event.isEntityFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+			response = new ResponseEntity<Response>(HttpStatus.GONE);
 		}
 		else if (!event.isUserFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Boolean restEvent = event.isResultSuccess();
-			response = new ResponseEntity<Boolean>(restEvent, HttpStatus.OK);
+			Response restEvent;
+			if (event.isResultSuccess())
+				restEvent = new Response();
+			else
+				restEvent = Response.failed("Could not like.");
+			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
 		}
 		return response;
 	}
@@ -575,8 +579,8 @@ public class PhotoController
 	 * 
 	 */
 	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.PHOTO_LABEL
-			+ "/{eventId}/likedBy/{email}/")
-	public @ResponseBody ResponseEntity<Boolean> likeEvent(
+			+ "/{photoId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+	public @ResponseBody ResponseEntity<Response> likeEvent(
 			@PathVariable Long photoId, @PathVariable String email)
 	{
 		if (LOG.isInfoEnabled())
@@ -585,20 +589,24 @@ public class PhotoController
 		LikedEvent event = likesService
 				.like(new LikeEvent(photoId, email));
 
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 
 		if (!event.isEntityFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+			response = new ResponseEntity<Response>(HttpStatus.GONE);
 		}
 		else if (!event.isUserFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Boolean restEvent = event.isResultSuccess();
-			response = new ResponseEntity<Boolean>(restEvent, HttpStatus.OK);
+			Response restEvent;
+			if (event.isResultSuccess())
+				restEvent = new Response();
+			else
+				restEvent = Response.failed("Could not like.");
+			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
 		}
 		return response;
 	}
