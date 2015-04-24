@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.domain.ForumQuestion;
 import com.eulersbridge.iEngage.rest.domain.ForumQuestions;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
+import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.User;
 
 import org.slf4j.Logger;
@@ -177,47 +178,55 @@ public class ForumQuestionController {
     }
 
     //like
-    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}/likedBy/{email}/")
-    public @ResponseBody ResponseEntity<Boolean> like(@PathVariable Long forumQuestionId,@PathVariable String email)
+    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+    public @ResponseBody ResponseEntity<Response> like(@PathVariable Long forumQuestionId,@PathVariable String email)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like forumQuestion. "+forumQuestionId);
         LikedEvent likedEvent = likesService.like(new LikeEvent(forumQuestionId, email));
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
         if (!likedEvent.isEntityFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+            response = new ResponseEntity<Response>(HttpStatus.GONE);
         }
         else if (!likedEvent.isUserFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
         }
         else
         {
-            Boolean restNews=likedEvent.isResultSuccess();
-            response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+			Response restEvent;
+			if (likedEvent.isResultSuccess())
+				restEvent = new Response();
+			else
+				restEvent = Response.failed("Could not like.");
+			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
         }
         return response;
     }
 
     //unlike
-    @RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}/unlikedBy/{email}/")
-    public @ResponseBody ResponseEntity<Boolean> unlike(@PathVariable Long forumQuestionId,@PathVariable String email)
+    @RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+    public @ResponseBody ResponseEntity<Response> unlike(@PathVariable Long forumQuestionId,@PathVariable String email)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike forumQuestion. "+forumQuestionId);
         LikedEvent unlikedEvent = likesService.unlike(new LikeEvent(forumQuestionId, email));
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
         if (!unlikedEvent.isEntityFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+            response = new ResponseEntity<Response>(HttpStatus.GONE);
         }
         else if (!unlikedEvent.isUserFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
         }
         else
         {
-            Boolean restNews = unlikedEvent.isResultSuccess();
-            response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+			Response restEvent;
+			if (unlikedEvent.isResultSuccess())
+				restEvent = new Response();
+			else
+				restEvent = Response.failed("Could not unlike.");
+			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
         }
         return response;
     }

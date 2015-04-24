@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.LikeInfo;
+import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.User;
 
 import org.slf4j.Logger;
@@ -96,26 +97,30 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}/likedBy/{email}/")
-	public @ResponseBody ResponseEntity<Boolean> likeArticle(@PathVariable Long articleId,@PathVariable String email) 
+	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+	public @ResponseBody ResponseEntity<Response> likeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
 		LikedEvent articleEvent=likesService.like(new LikeEvent(articleId,email));
 		
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		
 		if (!articleEvent.isEntityFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+			response = new ResponseEntity<Response>(HttpStatus.GONE);
 		}
 		else if (!articleEvent.isUserFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Boolean restNews=articleEvent.isResultSuccess();
-			response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+			Response restNews;
+			if (articleEvent.isResultSuccess())
+				restNews = new Response();
+			else
+				restNews = Response.failed("Could not like.");
+			response = new ResponseEntity<Response>(restNews, HttpStatus.OK);
 		}
 		return response;
 	}
@@ -132,26 +137,30 @@ public class NewsController
      * 
 
 	*/
-	@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}/unlikedBy/{email}/")
-	public @ResponseBody ResponseEntity<Boolean> unlikeArticle(@PathVariable Long articleId,@PathVariable String email) 
+	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+	public @ResponseBody ResponseEntity<Response> unlikeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" unlike news article. "+articleId);
 		LikedEvent articleEvent=likesService.unlike(new LikeEvent(articleId,email));
   	
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		
 		if (!articleEvent.isEntityFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+			response = new ResponseEntity<Response>(HttpStatus.GONE);
 		}
 		else if (!articleEvent.isUserFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Boolean restNews=articleEvent.isResultSuccess();
-			response = new ResponseEntity<Boolean>(restNews,HttpStatus.OK);
+			Response restNews;
+			if (articleEvent.isResultSuccess())
+				restNews = new Response();
+			else
+				restNews = Response.failed("Could not unlike.");
+			response = new ResponseEntity<Response>(restNews, HttpStatus.OK);
 		}
 		return response;
 	}

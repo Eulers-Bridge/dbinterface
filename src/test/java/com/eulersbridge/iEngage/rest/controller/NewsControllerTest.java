@@ -216,9 +216,24 @@ public class NewsControllerTest
 		LikedEvent evt=new LikedEvent(id, user.getEmail(), true);
 		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
 
-		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(content().string("true"))
+        .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(status().isOk())	;		
+	}
+
+	@Test
+	public void testLikeArticleFailed() throws Exception
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("performingLikedByEvent()");
+		Long id=1L;
+		User user=DatabaseDataFixture.populateUserGnewitt();
+		LikedEvent evt=new LikedEvent(id, user.getEmail(), false);
+		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
+
+		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		.andDo(print())
+        .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -231,7 +246,7 @@ public class NewsControllerTest
 		LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
 		
 		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
-		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isNotFound())	;		
 	}
@@ -245,7 +260,7 @@ public class NewsControllerTest
 		LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
 		
 		when(likesService.like(any(LikeEvent.class))).thenReturn(evt);
-		this.mockMvc.perform(put(urlPrefix+"/{id}/likedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(status().isGone())	;		
 	}
@@ -262,9 +277,24 @@ public class NewsControllerTest
         LikedEvent evt= new LikedEvent(id, user.getEmail(), true);
 
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(content().string("true"))
+                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(status().isOk())	;
+	}
+
+	@Test
+	public final void testUnlikeArticleFailed() throws Exception
+	{
+        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
+        Long id=1L;
+        User user=DatabaseDataFixture.populateUserGnewitt();
+        LikedEvent evt= new LikedEvent(id, user.getEmail(), false);
+
+		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
+        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 
@@ -277,7 +307,7 @@ public class NewsControllerTest
         LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
 
         when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())	;
     }
@@ -291,7 +321,7 @@ public class NewsControllerTest
         LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
 
         when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(put(urlPrefix+"/{id}/unlikedBy/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isGone())	;
     }
