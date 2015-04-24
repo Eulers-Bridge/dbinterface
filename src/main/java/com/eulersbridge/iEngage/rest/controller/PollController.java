@@ -17,6 +17,7 @@ import com.eulersbridge.iEngage.rest.domain.LikeInfo;
 import com.eulersbridge.iEngage.rest.domain.Poll;
 import com.eulersbridge.iEngage.rest.domain.PollAnswer;
 import com.eulersbridge.iEngage.rest.domain.Polls;
+import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.User;
 
 import org.slf4j.Logger;
@@ -287,54 +288,62 @@ public class PollController
 
 	// like
 	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL
-			+ "/{pollId}/likedBy/{email}/")
-	public @ResponseBody ResponseEntity<Boolean> likePoll(
+			+ "/{pollId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+	public @ResponseBody ResponseEntity<Response> likePoll(
 			@PathVariable Long pollId, @PathVariable String email)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to have " + email + " like poll. " + pollId);
 		LikedEvent likedPollEvent = likesService.like(new LikeEvent(pollId,
 				email));
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		if (!likedPollEvent.isEntityFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+			response = new ResponseEntity<Response>(HttpStatus.GONE);
 		}
 		else if (!likedPollEvent.isUserFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Boolean restNews = likedPollEvent.isResultSuccess();
-			response = new ResponseEntity<Boolean>(restNews, HttpStatus.OK);
+			Response restEvent;
+			if (likedPollEvent.isResultSuccess())
+				restEvent = new Response();
+			else
+				restEvent = Response.failed("Could not like.");
+			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
 		}
 		return response;
 	}
 
 	// unlike
-	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL
-			+ "/{pollId}/unlikedBy/{email}/")
-	public @ResponseBody ResponseEntity<Boolean> unlikePoll(
+	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.POLL_LABEL
+			+ "/{pollId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+	public @ResponseBody ResponseEntity<Response> unlikePoll(
 			@PathVariable Long pollId, @PathVariable String email)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to have " + email + " unlike poll. " + pollId);
 		LikedEvent unlikedPollEvent = likesService.unlike(new LikeEvent(pollId,
 				email));
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		if (!unlikedPollEvent.isEntityFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+			response = new ResponseEntity<Response>(HttpStatus.GONE);
 		}
 		else if (!unlikedPollEvent.isUserFound())
 		{
-			response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
-			Boolean restNews = unlikedPollEvent.isResultSuccess();
-			response = new ResponseEntity<Boolean>(restNews, HttpStatus.OK);
+			Response restEvent;
+			if (unlikedPollEvent.isResultSuccess())
+				restEvent = new Response();
+			else
+				restEvent = Response.failed("Could not unlike.");
+			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
 		}
 		return response;
 	}
