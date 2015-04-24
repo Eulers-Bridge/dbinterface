@@ -194,21 +194,21 @@ public class CandidateController {
     {
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to have " + email + " like candidate. " + candidateId);
-        LikedEvent likedPollEvent = likesService.like(new LikeEvent(candidateId,
+        LikedEvent likedCandidateEvent = likesService.like(new LikeEvent(candidateId,
                 email));
         ResponseEntity<Response> response;
-        if (!likedPollEvent.isEntityFound())
+        if (!likedCandidateEvent.isEntityFound())
         {
             response = new ResponseEntity<Response>(HttpStatus.GONE);
         }
-        else if (!likedPollEvent.isUserFound())
+        else if (!likedCandidateEvent.isUserFound())
         {
             response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
         }
         else
         {
 			Response restEvent;
-			if (likedPollEvent.isResultSuccess())
+			if (likedCandidateEvent.isResultSuccess())
 				restEvent = new Response();
 			else
 				restEvent = Response.failed("Could not like.");
@@ -225,24 +225,24 @@ public class CandidateController {
     {
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to have " + email + " unlike candidate. " + candidateId);
-        LikedEvent unlikedPollEvent = likesService.unlike(new LikeEvent(candidateId,
+        LikedEvent unlikedCandidateEvent = likesService.unlike(new LikeEvent(candidateId,
                 email));
         ResponseEntity<Response> response;
-        if (!unlikedPollEvent.isEntityFound())
+        if (!unlikedCandidateEvent.isEntityFound())
         {
             response = new ResponseEntity<Response>(HttpStatus.GONE);
         }
-        else if (!unlikedPollEvent.isUserFound())
+        else if (!unlikedCandidateEvent.isUserFound())
         {
             response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
         }
         else
         {
 			Response restEvent;
-			if (unlikedPollEvent.isResultSuccess())
+			if (unlikedCandidateEvent.isResultSuccess())
 				restEvent = new Response();
 			else
-				restEvent = Response.failed("Could not like.");
+				restEvent = Response.failed("Could not unlike.");
 			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
         }
         return response;
