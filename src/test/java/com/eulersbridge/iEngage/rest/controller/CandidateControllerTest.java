@@ -58,7 +58,6 @@ import com.eulersbridge.iEngage.core.services.CandidateService;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.PositionService;
 import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
