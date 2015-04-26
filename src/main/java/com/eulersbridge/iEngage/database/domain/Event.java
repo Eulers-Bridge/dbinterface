@@ -39,8 +39,6 @@ public class Event extends Likeable
 //	private User creator;
     private String organizerEmail;
     private Long modified;
-	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
-	private Set<Like> likes;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_EVENT_LABEL, direction=Direction.BOTH) @Fetch
 	private NewsFeed newsFeed;
 
