@@ -6,8 +6,7 @@ import com.eulersbridge.iEngage.core.services.CommentService;
 import com.eulersbridge.iEngage.database.domain.Comment;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.User;
-import org.junit.After;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +20,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
@@ -86,28 +87,44 @@ public class CommentControllerTest {
         return content;
     }
 
-    public String setupReturnedContent(CommentDetails dets){
-        int evtId=dets.getNodeId().intValue();
-        String targetId = String.valueOf(dets.getTargetId());
-        String timestamp = String.valueOf(dets.getTimestamp());
-        String content="{\"commentId\":"+evtId+",\"targetId\":"+targetId+
-                ",\"userName\":\""+dets.getUserName() +"\",\"userEmail\":\""+
-                dets.getUserEmail()+"\",\"timestamp\":"+timestamp+",\"content\":\""+
-                dets.getContent()+"\""
-                +",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
-                "{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s/"+ targetId +"\"}]}";
+    public String setupReturnedContent(CommentDetails dets)
+    {
+    	String content=null;
+		if (dets!=null)
+		{
+	        int evtId=dets.getNodeId().intValue();
+	        String targetId = String.valueOf(dets.getTargetId());
+	        String timestamp = String.valueOf(dets.getTimestamp());
+	        
+			String photoDets=null;
+			if  (dets.getProfilePhotoDetails()!=null)
+			{
+				photoDets=PhotoControllerTest.setupContent(dets.getProfilePhotoDetails());
+				if  (dets.getProfilePhotoDetails().getNumOfLikes()!=null)
+				{
+					photoDets=photoDets.replace("\"numOfLikes\":"+dets.getProfilePhotoDetails().getNumOfLikes()+',',"");
+					photoDets=photoDets.replace("{",
+						"{\"nodeId\":"+dets.getProfilePhotoDetails().getNodeId()+",\"numOfLikes\":"+dets.getProfilePhotoDetails().getNumOfLikes()+',');
+				}
+			}
+	        
+	        content="{\"commentId\":"+evtId+",\"targetId\":"+targetId+
+	                ",\"userName\":\""+dets.getUserName() +"\",\"userEmail\":\""+
+	                dets.getUserEmail()+"\",\"timestamp\":"+timestamp+",\"content\":\""+
+	                dets.getContent()+"\",\"profilePhotoDetails\":"+photoDets+
+	                ",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"},"+
+	                "{\"rel\":\"Read all\",\"href\":\"http://localhost"+urlPrefix+"s/"+ targetId +"\"}]}";
+		}
         return content;
     }
 
     @Test
     public void testCreateComment() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         String content = setupContent(testCommentDetails);
-        String exceptedReturn = setupReturnedContent(testCommentDetails);
+        String expectedReturn = setupReturnedContent(testCommentDetails);
         CommentCreatedEvent commentCreatedEvent = new CommentCreatedEvent(testCommentDetails);
         when (commentService.createComment(any(CreateCommentEvent.class))).thenReturn(commentCreatedEvent);
         this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
@@ -118,16 +135,14 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$.userEmail", is(testCommentDetails.getUserEmail())))
                 .andExpect(jsonPath("$.timestamp", is(testCommentDetails.getTimestamp().intValue())))
                 .andExpect(jsonPath("$.content", is(testCommentDetails.getContent())))
-                .andExpect(content().string(exceptedReturn))
+                .andExpect(content().string(expectedReturn))
                 .andExpect(status().isCreated());
     }
 
     @Test
     public final void testCreateCommentNullEvt() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         String content = setupContent(testCommentDetails);
         when (commentService.createComment(any(CreateCommentEvent.class))).thenReturn(null);
@@ -139,9 +154,7 @@ public class CommentControllerTest {
     @Test
     public final void testCreateCommentInvalidContent() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         String content = setupInvalidContent(testCommentDetails);
         CommentCreatedEvent commentCreatedEvent = new CommentCreatedEvent(testCommentDetails);
@@ -154,9 +167,7 @@ public class CommentControllerTest {
     @Test
     public final void testCreateCommentNoContent() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         CommentCreatedEvent commentCreatedEvent = new CommentCreatedEvent(testCommentDetails);
         when (commentService.createComment(any(CreateCommentEvent.class))).thenReturn(commentCreatedEvent);
@@ -168,9 +179,7 @@ public class CommentControllerTest {
     @Test
     public final void testCreateCommentNullNodeId() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         String content = setupContent(testCommentDetails);
         CommentCreatedEvent commentCreatedEvent = new CommentCreatedEvent(testCommentDetails);
@@ -184,9 +193,7 @@ public class CommentControllerTest {
     @Test
     public final void testCreateCommentFailed() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         String content = setupContent(testCommentDetails);
         CreatedEvent commentCreatedEvent = CommentCreatedEvent.failed(testCommentDetails);
@@ -199,9 +206,7 @@ public class CommentControllerTest {
     @Test
     public final void testCreateCommentTargetNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         String content = setupContent(testCommentDetails);
         CommentCreatedEvent commentCreatedEvent =  CommentCreatedEvent.targetNotFound(testCommentDetails.getNodeId());
@@ -214,9 +219,7 @@ public class CommentControllerTest {
     @Test
     public final void testCreateCommentUserNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingCreateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         String content = setupContent(testCommentDetails);
         CommentCreatedEvent commentCreatedEvent =  CommentCreatedEvent.userNotFound();
@@ -229,9 +232,7 @@ public class CommentControllerTest {
     @Test
     public void deleteComment() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingDeleteComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
 
         CommentDeletedEvent commentDeletedEvent = new CommentDeletedEvent(testCommentDetails.getNodeId());
@@ -245,9 +246,7 @@ public class CommentControllerTest {
     @Test
     public void deleteCommentNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingDeleteComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         Long commentId = testCommentDetails.getNodeId();
 
@@ -261,9 +260,7 @@ public class CommentControllerTest {
     @Test
     public void deleteCommentForbidden() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingDeleteComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         Long commentId = testCommentDetails.getNodeId();
 
@@ -277,44 +274,59 @@ public class CommentControllerTest {
     @Test
     public void testFindComments() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingFindComments()");
-        Owner testObject = DatabaseDataFixture.populateOwner();
+        Owner testObject = DatabaseDataFixture.populateOwner1();
         Long targetId = testObject.getNodeId();
-        User testUser1 = DatabaseDataFixture.populateUserGnewitt();
-        User testUser2 = DatabaseDataFixture.populateUserYikai();
-        CommentDetails testCommentDetails1 = DatabaseDataFixture.populateComment1(testUser1, testObject).toCommentDetails();
-        CommentDetails testCommentDetails2 = DatabaseDataFixture.populateComment1(testUser2, testObject).toCommentDetails();
-        ArrayList<CommentDetails> testCommentsDetails = new ArrayList<>();
-        testCommentsDetails.add(testCommentDetails1);
-        testCommentsDetails.add(testCommentDetails2);
+        HashMap<Long, Comment> dets = DatabaseDataFixture.populateComments();
+        
+		Iterable<com.eulersbridge.iEngage.database.domain.Comment> comments=dets.values();
+		Iterator<com.eulersbridge.iEngage.database.domain.Comment> iter=comments.iterator();
+		ArrayList<CommentDetails> commentDets=new ArrayList<CommentDetails>(); 
+		while (iter.hasNext())
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("doing while loop.");
+			com.eulersbridge.iEngage.database.domain.Comment comment=iter.next();
+			CommentDetails cDets=comment.toCommentDetails();
+			cDets.setProfilePhotoDetails(DatabaseDataFixture.populatePhoto1().toPhotoDetails());
+			commentDets.add(cDets);
+		}
+		Long numElements=(long) commentDets.size();
+		Integer numPages= (int) ((numElements/10)+1);
+		AllReadEvent commentsReadEvent=new AllReadEvent(targetId,commentDets,numElements,numPages);
 
-        CommentsReadEvent commentsReadEvent = new CommentsReadEvent(targetId, testCommentsDetails);
-        when (commentService.readComments(any(RequestReadCommentsEvent.class), any(Sort.Direction.class),
+        when (commentService.readComments(any(ReadAllEvent.class), any(Sort.Direction.class),
                 any(int.class), any(int.class))).thenReturn(commentsReadEvent);
         this.mockMvc.perform(get(urlPrefix+"s/{targetId}/",targetId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$[0].commentId", is(testCommentDetails1.getNodeId().intValue())))
-                .andExpect(jsonPath("$[0].targetId", is(testCommentDetails1.getTargetId().intValue())))
-                .andExpect(jsonPath("$[0].userName", is(testCommentDetails1.getUserName())))
-                .andExpect(jsonPath("$[0].userEmail", is(testCommentDetails1.getUserEmail())))
-                .andExpect(jsonPath("$[0].timestamp", is(testCommentDetails1.getTimestamp().intValue())))
-                .andExpect(jsonPath("$[0].content", is(testCommentDetails1.getContent())))
-                .andExpect(jsonPath("$[1].commentId", is(testCommentDetails2.getNodeId().intValue())))
-                .andExpect(jsonPath("$[1].targetId", is(testCommentDetails2.getTargetId().intValue())))
-                .andExpect(jsonPath("$[1].userName", is(testCommentDetails2.getUserName())))
-                .andExpect(jsonPath("$[1].userEmail", is(testCommentDetails2.getUserEmail())))
-                .andExpect(jsonPath("$[1].timestamp", is(testCommentDetails2.getTimestamp().intValue())))
-                .andExpect(jsonPath("$[1].content", is(testCommentDetails2.getContent())))
+				.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
+				.andExpect(jsonPath("$totalPages",is(numPages)))
+                .andExpect(jsonPath("$foundObjects[0].commentId", is(commentDets.get(0).getNodeId().intValue())))
+                .andExpect(jsonPath("$foundObjects[0].targetId", is(commentDets.get(0).getTargetId().intValue())))
+                .andExpect(jsonPath("$foundObjects[0].userName", is(commentDets.get(0).getUserName())))
+                .andExpect(jsonPath("$foundObjects[0].userEmail", is(commentDets.get(0).getUserEmail())))
+                .andExpect(jsonPath("$foundObjects[0].timestamp", is(commentDets.get(0).getTimestamp().intValue())))
+                .andExpect(jsonPath("$foundObjects[0].content", is(commentDets.get(0).getContent())))
+//                .andExpect(jsonPath("$foundObjects[0].profilePhotoDetails", is(commentDets.get(0).getProfilePhotoDetails())))
+                .andExpect(jsonPath("$foundObjects[1].commentId", is(commentDets.get(1).getNodeId().intValue())))
+                .andExpect(jsonPath("$foundObjects[1].targetId", is(commentDets.get(1).getTargetId().intValue())))
+                .andExpect(jsonPath("$foundObjects[1].userName", is(commentDets.get(1).getUserName())))
+                .andExpect(jsonPath("$foundObjects[1].userEmail", is(commentDets.get(1).getUserEmail())))
+                .andExpect(jsonPath("$foundObjects[1].timestamp", is(commentDets.get(1).getTimestamp().intValue())))
+                .andExpect(jsonPath("$foundObjects[1].content", is(commentDets.get(1).getContent())))
+  //              .andExpect(jsonPath("$foundObjects[1].profilePhotoDetails", is(commentDets.get(1).getProfilePhotoDetails())))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testFindCommentsZeroComments() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingFindComments()");
-        Owner testObject = DatabaseDataFixture.populateOwner();
+        Owner testObject = DatabaseDataFixture.populateOwner1();
         Long targetId = testObject.getNodeId();
         ArrayList<CommentDetails> testCommentsDetails = new ArrayList<>();
-        CommentsReadEvent commentsReadEvent = new CommentsReadEvent(targetId, testCommentsDetails);
-        when (commentService.readComments(any(RequestReadCommentsEvent.class), any(Sort.Direction.class),
+		Long numElements=(long) testCommentsDetails.size();
+		Integer numPages= (int) ((numElements/10)+1);
+
+		AllReadEvent commentsReadEvent=new AllReadEvent(targetId,testCommentsDetails,numElements,numPages);
+        when (commentService.readComments(any(ReadAllEvent.class), any(Sort.Direction.class),
                 any(int.class), any(int.class))).thenReturn(commentsReadEvent);
         this.mockMvc.perform(get(urlPrefix+"s/{targetId}/",targetId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -324,7 +336,7 @@ public class CommentControllerTest {
     @Test
     public void testFindCommentsTargetNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingFindComments()");
-        Owner testObject = DatabaseDataFixture.populateOwner();
+        Owner testObject = DatabaseDataFixture.populateOwner1();
         Long targetId = testObject.getNodeId();
         CommentsReadEvent commentsReadEvent = CommentsReadEvent.targetNotFound(targetId);
         when (commentService.readComments(any(RequestReadCommentsEvent.class), any(Sort.Direction.class),
@@ -337,13 +349,11 @@ public class CommentControllerTest {
     @Test
     public void testUpdateComment() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingUpdateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         Long commentId = testCommentDetails.getNodeId();
         String content = setupContent(testCommentDetails);
-        String exceptedReturn = setupReturnedContent(testCommentDetails);
+        String expectedReturn = setupReturnedContent(testCommentDetails);
 
         CommentUpdatedEvent commentUpdatedEvent = new CommentUpdatedEvent(commentId, testCommentDetails);
         when (commentService.updateComment(any(UpdateCommentEvent.class))).thenReturn(commentUpdatedEvent);
@@ -355,16 +365,14 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$.userEmail", is(testCommentDetails.getUserEmail())))
                 .andExpect(jsonPath("$.timestamp", is(testCommentDetails.getTimestamp().intValue())))
                 .andExpect(jsonPath("$.content", is(testCommentDetails.getContent())))
-                .andExpect(content().string(exceptedReturn))
+                .andExpect(content().string(expectedReturn))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testUpdateCommentNullEventReturned() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingUpdateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         Long commentId = testCommentDetails.getNodeId();
         String content = setupContent(testCommentDetails);
@@ -378,9 +386,7 @@ public class CommentControllerTest {
     @Test
     public void testUpdateCommentBadContent() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingUpdateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         Long commentId = testCommentDetails.getNodeId();
         String content = setupInvalidContent(testCommentDetails);
@@ -395,9 +401,7 @@ public class CommentControllerTest {
     @Test
     public void testUpdateCommentEmptyContent() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingUpdateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         Long commentId = testCommentDetails.getNodeId();
 
@@ -411,9 +415,7 @@ public class CommentControllerTest {
     @Test
     public void testUpdateCommentNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingUpdateComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         Long commentId = testCommentDetails.getNodeId();
         String content = setupContent(testCommentDetails);
@@ -428,11 +430,10 @@ public class CommentControllerTest {
     @Test
     public void testFindComment() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingFindComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
-        String exceptedReturn = setupReturnedContent(testCommentDetails);
+        testCommentDetails.setProfilePhotoDetails(DatabaseDataFixture.populatePhoto1().toPhotoDetails());
+        String expectedReturn = setupReturnedContent(testCommentDetails);
         CommentReadEvent commentReadEvent = new CommentReadEvent(testCommentDetails.getNodeId(), testCommentDetails);
         when (commentService.requestReadComment(any(RequestReadCommentEvent.class))).thenReturn(commentReadEvent);
         this.mockMvc.perform(get(urlPrefix + "/{commentId}/", testCommentDetails.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -443,16 +444,14 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$.userEmail", is(testCommentDetails.getUserEmail())))
                 .andExpect(jsonPath("$.timestamp", is(testCommentDetails.getTimestamp().intValue())))
                 .andExpect(jsonPath("$.content", is(testCommentDetails.getContent())))
-                .andExpect(content().string(exceptedReturn))
+                .andExpect(content().string(expectedReturn))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testFindCommentNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("performingFindComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
         CommentDetails testCommentDetails = testComment.toCommentDetails();
         ReadEvent commentReadEvent = CommentReadEvent.notFound(testCommentDetails.getNodeId());
         when (commentService.requestReadComment(any(RequestReadCommentEvent.class))).thenReturn(commentReadEvent);

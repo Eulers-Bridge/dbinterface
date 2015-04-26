@@ -1,16 +1,16 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.comments.*;
-import com.eulersbridge.iEngage.core.events.ticket.RequestReadTicketEvent;
-import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
-import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
 import com.eulersbridge.iEngage.core.services.CommentService;
 import com.eulersbridge.iEngage.rest.domain.Comment;
-import com.eulersbridge.iEngage.rest.domain.Ticket;
+import com.eulersbridge.iEngage.rest.domain.FindsParent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +86,7 @@ public class CommentController {
     //Read All
     @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.COMMENTS_LABEL
             + "/{targetId}")
-    public @ResponseBody ResponseEntity<Iterator<Comment>> findComments(
+    public @ResponseBody ResponseEntity<FindsParent> findComments(
             @PathVariable Long targetId,
             @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
             @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -99,17 +99,23 @@ public class CommentController {
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to retrieve comments from target " + targetId + '.');
 
+		ResponseEntity<FindsParent> response;
         Direction sortDirection = Direction.DESC;
         if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-        CommentsReadEvent commentsReadEvent = commentService.readComments(new RequestReadCommentsEvent(targetId), sortDirection,
+        AllReadEvent commentsReadEvent = commentService.readComments(new ReadAllEvent(targetId), sortDirection,
                 pageNumber, pageLength);
 
         if (!commentsReadEvent.isEntityFound())
         {
-            return new ResponseEntity<Iterator<Comment>>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
         }
-        Iterator<Comment> candidates = Comment.toCommentIterator(commentsReadEvent.getCommentDetailses().iterator());
-        return new ResponseEntity<Iterator<Comment>>(candidates, HttpStatus.OK);
+        else
+        {
+        Iterator<Comment> candidates = Comment.toCommentIterator(commentsReadEvent.getDetails().iterator());
+		FindsParent theComments = FindsParent.fromArticlesIterator(candidates, commentsReadEvent.getTotalItems(), commentsReadEvent.getTotalPages());
+		response = new ResponseEntity<FindsParent>(theComments, HttpStatus.OK);
+        }
+		return response;
     }
 
     //Update

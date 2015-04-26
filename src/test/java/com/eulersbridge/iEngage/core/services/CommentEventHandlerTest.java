@@ -26,9 +26,6 @@ import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertNotNull;
-
-
 /**
  * @author Yikai Gong
  */
@@ -65,8 +62,8 @@ public class CommentEventHandlerTest {
     public void testCreateComment() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("CreatingComment()");
         User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Owner testObject = DatabaseDataFixture.populateOwner1();
+        Comment testComment = DatabaseDataFixture.populateComment1();
 
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
@@ -83,9 +80,8 @@ public class CommentEventHandlerTest {
     @Test
     public void testCreateCommentUserNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("CreatingComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Owner testObject = DatabaseDataFixture.populateOwner1();
+        Comment testComment = DatabaseDataFixture.populateComment1();
 
         when(userRepository.findByEmail(any(String.class))).thenReturn(null);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
@@ -104,8 +100,7 @@ public class CommentEventHandlerTest {
     public void testCreateCommentTargetNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("CreatingComment()");
         User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
 
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
@@ -124,8 +119,8 @@ public class CommentEventHandlerTest {
     public void testCreateCommentFailed() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("CreatingComment()");
         User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Owner testObject = DatabaseDataFixture.populateOwner1();
+        Comment testComment = DatabaseDataFixture.populateComment1();
 
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
@@ -142,8 +137,8 @@ public class CommentEventHandlerTest {
     public void testRequestReadComment() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("ReadingComment()");
         User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Owner testObject = DatabaseDataFixture.populateOwner1();
+        Comment testComment = DatabaseDataFixture.populateComment1();
 
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
@@ -159,8 +154,8 @@ public class CommentEventHandlerTest {
     public void testRequestReadCommentNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("ReadingComment()");
         User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Owner testObject = DatabaseDataFixture.populateOwner1();
+        Comment testComment = DatabaseDataFixture.populateComment1();
 
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
@@ -175,9 +170,7 @@ public class CommentEventHandlerTest {
     @Test
     public void testDeleteComment() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("DeletingComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
 
         when(commentRepository.findOne(any(Long.class))).thenReturn(testComment);
         doNothing().when(commentRepository).delete(any(Comment.class));
@@ -192,9 +185,7 @@ public class CommentEventHandlerTest {
     @Test
     public void testDeleteCommentNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("DeletingComment()");
-        User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
+        Comment testComment = DatabaseDataFixture.populateComment1();
 
         when(commentRepository.findOne(any(Long.class))).thenReturn(null);
         doNothing().when(commentRepository).delete(any(Comment.class));
@@ -209,11 +200,9 @@ public class CommentEventHandlerTest {
     @Test
     public void testReadComments() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("ReadingComments()");
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        User testUser1 = DatabaseDataFixture.populateUserGnewitt();
-        User testUser2 = DatabaseDataFixture.populateUserYikai();
-        Comment testComment1 = DatabaseDataFixture.populateComment1(testUser1, testObject);
-        Comment testComment2 = DatabaseDataFixture.populateComment1(testUser2, testObject);
+        Owner testObject = DatabaseDataFixture.populateOwner1();
+        Comment testComment1 = DatabaseDataFixture.populateComment1();
+        Comment testComment2 = DatabaseDataFixture.populateComment2();
         ArrayList<Comment> testCommentsArray = new ArrayList<>();
         testCommentsArray.add(testComment1);
         testCommentsArray.add(testComment2);
@@ -227,7 +216,7 @@ public class CommentEventHandlerTest {
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
         when(commentRepository.findByTargetId(any(Long.class), any(Pageable.class))).thenReturn(testComments);
 
-        CommentsReadEvent commentsReadEvent = service.readComments(requestReadCommentsEvent, Sort.Direction.ASC,
+        AllReadEvent commentsReadEvent = service.readComments(requestReadCommentsEvent, Sort.Direction.ASC,
                 pageNumber, pageLength);
         assertNotNull(commentsReadEvent);
         assertEquals(commentsReadEvent.getTotalPages(), new Integer(1));
@@ -237,7 +226,7 @@ public class CommentEventHandlerTest {
     @Test
     public void testReadCommentsNoneAvailable() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("ReadingComments()");
-        Owner testObject = DatabaseDataFixture.populateOwner();
+        Owner testObject = DatabaseDataFixture.populateOwner1();
         ArrayList<Comment> testCommentsArray = new ArrayList<>();
 
         Long targetId = testObject.getNodeId();
@@ -249,7 +238,7 @@ public class CommentEventHandlerTest {
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
         when(commentRepository.findByTargetId(any(Long.class), any(Pageable.class))).thenReturn(testComments);
 
-        CommentsReadEvent commentsReadEvent = service.readComments(requestReadCommentsEvent, Sort.Direction.ASC,
+        AllReadEvent commentsReadEvent = service.readComments(requestReadCommentsEvent, Sort.Direction.ASC,
                 pageNumber, pageLength);
         assertNotNull(commentsReadEvent);
         assertEquals(commentsReadEvent.getTotalPages(), new Integer(0));
@@ -259,7 +248,7 @@ public class CommentEventHandlerTest {
     @Test
     public void testReadCommentsNoValidTarget() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("ReadingComments()");
-        Owner testObject = DatabaseDataFixture.populateOwner();
+        Owner testObject = DatabaseDataFixture.populateOwner1();
         ArrayList<Comment> testCommentsArray = new ArrayList<>();
 
         Long targetId = testObject.getNodeId();
@@ -271,7 +260,7 @@ public class CommentEventHandlerTest {
         when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
         when(commentRepository.findByTargetId(any(Long.class), any(Pageable.class))).thenReturn(testComments);
 
-        CommentsReadEvent commentsReadEvent = service.readComments(requestReadCommentsEvent, Sort.Direction.ASC,
+        AllReadEvent commentsReadEvent = service.readComments(requestReadCommentsEvent, Sort.Direction.ASC,
                 pageNumber, pageLength);
         assertNotNull(commentsReadEvent);
         assertFalse(commentsReadEvent.isEntityFound());
@@ -282,17 +271,15 @@ public class CommentEventHandlerTest {
     @Test
     public void testReadCommentsNullReturned() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("ReadingComments()");
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        ArrayList<Comment> testCommentsArray = new ArrayList<>();
+        Owner testObject = DatabaseDataFixture.populateOwner1();
 
         Long targetId = testObject.getNodeId();
         RequestReadCommentsEvent requestReadCommentsEvent = new RequestReadCommentsEvent(targetId);
         int pageLength=10;
         int pageNumber=0;
-        Pageable pageable=new PageRequest(pageNumber, pageLength, Sort.Direction.ASC, "r.timestamp");
         when(commentRepository.findByTargetId(any(Long.class), any(Pageable.class))).thenReturn(null);
 
-        CommentsReadEvent commentsReadEvent = service.readComments(requestReadCommentsEvent, Sort.Direction.ASC,
+        AllReadEvent commentsReadEvent = service.readComments(requestReadCommentsEvent, Sort.Direction.ASC,
                 pageNumber, pageLength);
         assertNotNull(commentsReadEvent);
         assertEquals(commentsReadEvent.getTotalPages(), null);
@@ -303,9 +290,9 @@ public class CommentEventHandlerTest {
     public void testUpdateComment() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("UpdatingComment()");
         User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment = DatabaseDataFixture.populateComment1(testUser, testObject);
-        Comment testComment1 = DatabaseDataFixture.populateComment(testUser, testObject, "A new comment");
+        Owner testObject = DatabaseDataFixture.populateOwner1();
+        Comment testComment = DatabaseDataFixture.populateComment1();
+        Comment testComment1 = DatabaseDataFixture.populateComment2();
 
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
@@ -326,8 +313,8 @@ public class CommentEventHandlerTest {
     public void testUpdateCommentNotFound() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("UpdatingComment()");
         User testUser = DatabaseDataFixture.populateUserGnewitt();
-        Owner testObject = DatabaseDataFixture.populateOwner();
-        Comment testComment1 = DatabaseDataFixture.populateComment(testUser, testObject, "A new comment");
+        Owner testObject = DatabaseDataFixture.populateOwner1();
+        Comment testComment1 = DatabaseDataFixture.populateComment1();
 
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);

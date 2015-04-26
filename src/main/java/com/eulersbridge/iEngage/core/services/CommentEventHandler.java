@@ -97,11 +97,11 @@ public class CommentEventHandler implements CommentService {
     }
 
     @Override
-    public CommentsReadEvent readComments(ReadAllEvent requestReadCommentsEvent, Sort.Direction sortDirection, int pageNumber, int pageLength) {
+    public AllReadEvent readComments(ReadAllEvent requestReadCommentsEvent, Sort.Direction sortDirection, int pageNumber, int pageLength) {
         Long targetId = requestReadCommentsEvent.getParentId();
         Page<Comment> comments = null;
         ArrayList<CommentDetails> dets = new ArrayList<CommentDetails>();
-        CommentsReadEvent commentsReadEvent = null;
+        AllReadEvent commentsReadEvent = null;
 
         if (LOG.isDebugEnabled()) LOG.debug("targetId "+targetId);
         Pageable pageable= new PageRequest(pageNumber, pageLength, sortDirection, "r.timestamp");
@@ -122,7 +122,7 @@ public class CommentEventHandler implements CommentService {
                 if ((null == owner) 
                 		|| null == owner.getNodeId()) {
                     if (LOG.isDebugEnabled()) LOG.debug("Comment-able Object not found");
-                    commentsReadEvent = CommentsReadEvent.targetNotFound(targetId);
+                    commentsReadEvent = AllReadEvent.notFound(targetId);
                 } else {
                     commentsReadEvent = new CommentsReadEvent(targetId, dets, comments.getTotalElements(), comments.getTotalPages());
                 }
@@ -133,7 +133,7 @@ public class CommentEventHandler implements CommentService {
         }
         else{
             if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByTargetId");
-            commentsReadEvent = CommentsReadEvent.targetNotFound(targetId);
+            commentsReadEvent = CommentsReadEvent.targetNotFound(null);
         }
         return commentsReadEvent;
     }
