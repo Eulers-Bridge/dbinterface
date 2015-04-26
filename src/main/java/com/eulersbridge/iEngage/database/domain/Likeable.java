@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.database.domain;
 
 import org.springframework.data.neo4j.annotation.Query;
 
+import com.eulersbridge.iEngage.core.events.likes.LikeableDetails;
+
 public class Likeable 
 {
     @Query("START n = node({self}) match (n)-[r:"+ DatabaseDomainConstants.LIKES_LABEL+"]-(c) RETURN count(c) ")
@@ -22,5 +24,10 @@ public class Likeable
 	{
 		this.numOfLikes = numberOfLikes;
 	}
-
+	
+	public LikeableDetails toDetails(LikeableDetails details)
+	{
+		details.setNumOfLikes(getNumOfLikes());
+		return details;
+	}
 }

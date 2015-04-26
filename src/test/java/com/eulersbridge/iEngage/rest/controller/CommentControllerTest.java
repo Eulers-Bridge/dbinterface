@@ -100,11 +100,10 @@ public class CommentControllerTest {
 			if  (dets.getProfilePhotoDetails()!=null)
 			{
 				photoDets=PhotoControllerTest.setupContent(dets.getProfilePhotoDetails());
-				if  (dets.getProfilePhotoDetails().getNumOfLikes()!=null)
+				if  (dets.getProfilePhotoDetails().getNodeId()!=null)
 				{
-					photoDets=photoDets.replace("\"numOfLikes\":"+dets.getProfilePhotoDetails().getNumOfLikes()+',',"");
 					photoDets=photoDets.replace("{",
-						"{\"nodeId\":"+dets.getProfilePhotoDetails().getNodeId()+",\"numOfLikes\":"+dets.getProfilePhotoDetails().getNumOfLikes()+',');
+						"{\"nodeId\":"+dets.getProfilePhotoDetails().getNodeId()+',');
 				}
 			}
 	        

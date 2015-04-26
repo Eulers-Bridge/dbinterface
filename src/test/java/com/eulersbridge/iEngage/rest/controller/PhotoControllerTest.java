@@ -105,8 +105,8 @@ public class PhotoControllerTest
 
 	static String setupContent(PhotoDetails dets)
 	{
-		String content=	"{\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+"\",\"description\":\""+dets.getDescription()+
-						"\",\"sequence\":"+dets.getSequence()+",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"numOfLikes\":"+dets.getNumOfLikes()+",\"inappropriateContent\":"+dets.isInappropriateContent()+"}";
+		String content=	"{\"numOfLikes\":"+dets.getNumOfLikes()+",\"url\":\""+dets.getUrl()+"\",\"thumbNailUrl\":\""+dets.getThumbNailUrl()+"\",\"title\":\""+dets.getTitle()+"\",\"description\":\""+dets.getDescription()+
+						"\",\"sequence\":"+dets.getSequence()+",\"date\":"+dets.getDate()+",\"ownerId\":"+dets.getOwnerId()+",\"inappropriateContent\":"+dets.isInappropriateContent()+"}";
 		if (LOG.isDebugEnabled()) LOG.debug(content);
 		return content;
 	}

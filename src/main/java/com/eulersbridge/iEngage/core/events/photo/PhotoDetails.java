@@ -3,13 +3,13 @@
  */
 package com.eulersbridge.iEngage.core.events.photo;
 
-import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.likes.LikeableDetails;
 
 /**
  * @author Greg Newitt
  *
  */
-public class PhotoDetails extends Details
+public class PhotoDetails extends LikeableDetails
 {
 	String url;
 	String thumbNailUrl;
@@ -18,7 +18,6 @@ public class PhotoDetails extends Details
 	Integer sequence;
 	Long date;
 	Long ownerId;
-	Long numOfLikes;
 	private boolean inappropriateContent;
 	
 	/**
@@ -166,22 +165,6 @@ public class PhotoDetails extends Details
 		this.inappropriateContent = inappropriateContent;
 	}
 
-	/**
-	 * @return the numOfLikes
-	 */
-	public Long getNumOfLikes()
-	{
-		return numOfLikes;
-	}
-
-	/**
-	 * @param numberOfLikes the numOfLikes to set
-	 */
-	public void setNumOfLikes(Long numberOfLikes)
-	{
-		this.numOfLikes = numberOfLikes;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -280,7 +263,7 @@ public class PhotoDetails extends Details
 				+ title + ", description=" + description + ", date=" + date
 				+ ", ownerId=" + ownerId 
 				+ ", inappropriateContent=" + inappropriateContent 
-				+ ", numberOfLikes=" + numOfLikes + "]";
+				+ ", numberOfLikes=" + getNumOfLikes() + "]";
 	}
 
 }
