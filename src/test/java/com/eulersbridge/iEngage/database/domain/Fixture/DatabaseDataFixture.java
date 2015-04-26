@@ -937,26 +937,52 @@ public class DatabaseDataFixture
 		return ncr;
 	}
 
-    public static Owner populateOwner()
+    public static Owner populateOwner1()
     {
         Owner object = new Owner(44l);
         return object;
     }
 
-    public static Comment populateComment1(User user, Owner object)
+    public static Owner populateOwner2()
     {
-        Comment comment = populateComment(user, object, "A comment");
+        Owner object = new Owner(4443l);
+        return object;
+    }
+
+    public static Comment populateComment1()
+    {
+        Owner object=populateOwner1();
+		User user=populateUserGnewitt();
+		Comment comment = populateComment(243l, user, object, "A comment", 453l);
         return comment;
     }
 
-    public static Comment populateComment(User user, Owner object, String contents)
+    public static Comment populateComment2()
+    {
+        Owner object=populateOwner2();
+		User user=populateUserYikai();
+		Comment comment = populateComment(251l, user, object, "Another comment",4655l);
+        return comment;
+    }
+
+    public static Comment populateComment(Long nodeId, User user, Owner object, String contents, Long timestamp)
     {
         Comment comment = new Comment();
-        comment.setNodeId(0l);
+        comment.setNodeId(nodeId);
         comment.setUser(user);
         comment.setTarget(object);
         comment.setContent(contents);
-        comment.setTimestamp(0l);
+        comment.setTimestamp(timestamp);
         return comment;
     }
+	public static HashMap<Long, Comment> populateComments()
+	{
+		HashMap<Long, Comment> comments=new HashMap<Long, Comment>();
+		Comment initialInst=populateComment1();
+		comments.put(initialInst.getNodeId(), initialInst);
+		initialInst=populateComment2();
+		comments.put(initialInst.getNodeId(), initialInst);
+		return comments;
+	}
+
 }
