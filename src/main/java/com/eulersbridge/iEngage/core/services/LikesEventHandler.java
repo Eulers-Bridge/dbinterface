@@ -40,6 +40,26 @@ public class LikesEventHandler implements LikesService
     }
     
 	@Override
+	public LikedEvent isLikedBy(LikeEvent likeEvent)
+	{
+		boolean result = true;
+		LikedEvent retValue;
+		String email = likeEvent.getEmailAddress();
+		Long nodeId = likeEvent.getNodeId();
+		
+		retValue=checkParams(email,nodeId);
+		if (null==retValue)
+		{
+			Like like = userRepository.isLikedBy(email, nodeId);
+			if (like != null)
+				result = true;
+			else result = false;
+			retValue = new LikedEvent(nodeId, email, result);
+		}
+		return retValue;
+	}
+
+	@Override
 	public LikedEvent like(LikeEvent likeEvent)
 	{
 		boolean result = true;

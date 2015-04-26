@@ -20,4 +20,7 @@ public interface LikesService {
     
     @PreAuthorize("hasRole('ROLE_USER')")
     public LikedEvent unlike(LikeEvent likeEvent);
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+	public LikedEvent isLikedBy(LikeEvent likeEvent);
 }

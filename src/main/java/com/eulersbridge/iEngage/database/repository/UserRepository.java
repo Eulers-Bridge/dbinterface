@@ -50,7 +50,11 @@ public interface UserRepository extends GraphRepository<User>
     @Query("Match (u:`"+DatabaseDomainConstants.USER+"`)-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a) WHERE id(a)={objId} RETURN u")
     Page<User> findByLikeableObjId (@Param("objId")Long id, Pageable p);
 
-    @Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.LIKES_LABEL+"]-b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
+	
+	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:`"+DatabaseDomainConstants.LIKES_LABEL+"`]-(b) where a.email={email} and id(b)={likedId} return r")
+	Like isLikedBy(@Param("email")String email, @Param("likedId") Long likedId);
+
+	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.LIKES_LABEL+"]-b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
     Like like(@Param("email")String email,@Param("likedId")Long likedId);
 
     @Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")

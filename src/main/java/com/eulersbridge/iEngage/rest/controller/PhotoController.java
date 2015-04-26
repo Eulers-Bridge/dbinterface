@@ -578,6 +578,53 @@ public class PhotoController
 	 * @return the success or failure.
 	 * 
 	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_LABEL
+			+ "/{photoId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+	public @ResponseBody ResponseEntity<Response> isLikedBy(
+			@PathVariable Long photoId, @PathVariable String email)
+	{
+		if (LOG.isInfoEnabled())
+			LOG.info("Checking if " + email + " likes "
+					+ photoId);
+		LikedEvent event = likesService
+				.isLikedBy(new LikeEvent(photoId, email));
+
+		ResponseEntity<Response> response;
+
+		if (!event.isEntityFound())
+		{
+			response = new ResponseEntity<Response>(HttpStatus.GONE);
+		}
+		else if (!event.isUserFound())
+		{
+			response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
+		}
+		else
+		{
+			Response restEvent;
+			if (event.isResultSuccess())
+				restEvent = new Response();
+			else
+				restEvent = Response.failed("No like.");
+			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
+		}
+		return response;
+	}
+
+	/**
+	 * Is passed all the necessary data to like an event from the database. The
+	 * request must be a PUT with the event id presented along with the userid
+	 * as the final portion of the URL.
+	 * <p/>
+	 * This method will return the a boolean result.
+	 * 
+	 * @param email
+	 *            the eventId eventId of the event object to be liked.
+	 * @param email
+	 *            the email address of the user liking the event.
+	 * @return the success or failure.
+	 * 
+	 */
 	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.PHOTO_LABEL
 			+ "/{photoId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
 	public @ResponseBody ResponseEntity<Response> likeEvent(
