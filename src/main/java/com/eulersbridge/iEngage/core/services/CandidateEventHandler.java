@@ -132,7 +132,7 @@ public class CandidateEventHandler implements CandidateService {
 					 ((null==elec.getTitle()) || ((null==elec.getStart()) && (null==elec.getEnd()) && (null==elec.getIntroduction()))))
 				{
 					if (LOG.isDebugEnabled()) LOG.debug("Null or null properties returned by findOne(ElectionId)");
-					nare=AllReadEvent.notFound(null);
+					nare=AllReadEvent.notFound(electionId);
 				}
 				else
 				{	
