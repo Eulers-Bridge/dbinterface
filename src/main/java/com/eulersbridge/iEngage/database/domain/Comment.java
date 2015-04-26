@@ -1,6 +1,9 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import java.util.Iterator;
+
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
+
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +44,8 @@ public class Comment {
         return comment;
     }
 
-    public CommentDetails toCommentDetails(){
+    public CommentDetails toCommentDetails()
+    {
         if (LOG.isTraceEnabled()) LOG.trace("toCommentDetails("+this+")");
         CommentDetails commentDetails = new CommentDetails();
         commentDetails.setNodeId(getNodeId());
@@ -50,6 +54,12 @@ public class Comment {
         commentDetails.setTargetId(target.getNodeId());
         commentDetails.setTimestamp(getTimestamp());
         commentDetails.setContent(getContent());
+        Iterator<Photo> photos=null;
+        if (getUser().getPhotos()!=null)
+        {
+        	photos=getUser().getPhotos().iterator();
+        	if (photos.hasNext()) commentDetails.setProfilePhotoDetails(photos.next().toPhotoDetails());
+        }
 
         return commentDetails;
     }

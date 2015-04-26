@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.core.events.comments;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +17,7 @@ public class CommentDetails extends Details {
     private String userEmail;
     private Long timestamp;
     private String content;
-
+    private PhotoDetails profilePhotoDetails;
     private static Logger LOG = LoggerFactory.getLogger(CommentDetails.class);
 
     @Override
@@ -144,4 +146,20 @@ public class CommentDetails extends Details {
     public void setContent(String content) {
         this.content = content;
     }
+
+	/**
+	 * @return the profilePhotoDetails
+	 */
+	public PhotoDetails getProfilePhotoDetails()
+	{
+		return profilePhotoDetails;
+	}
+
+	/**
+	 * @param profilePhotoDetails the profilePhotoDetails to set
+	 */
+	public void setProfilePhotoDetails(PhotoDetails profilePhotoDetails)
+	{
+		this.profilePhotoDetails = profilePhotoDetails;
+	}
 }

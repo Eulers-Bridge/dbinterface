@@ -1,10 +1,13 @@
 package com.eulersbridge.iEngage.rest.domain;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.CommentController;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
@@ -23,6 +26,7 @@ public class Comment extends ResourceSupport {
     private String userEmail;
     private Long timestamp;
     private String content;
+    private PhotoDetails profilePhotoDetails;
 
     private static Logger LOG = LoggerFactory.getLogger(Comment.class);
 
@@ -44,6 +48,7 @@ public class Comment extends ResourceSupport {
             comment.setUserEmail(commentDetails.getUserEmail());
             comment.setTimestamp(commentDetails.getTimestamp());
             comment.setContent(commentDetails.getContent());
+            comment.setProfilePhotoDetails(commentDetails.getProfilePhotoDetails());
         }
         // {!begin selfRel}
         comment.add(linkTo(CommentController.class).slash(name)
@@ -69,13 +74,13 @@ public class Comment extends ResourceSupport {
     }
 
     public static Iterator<Comment> toCommentIterator(
-            Iterator<CommentDetails> iterator)
+            Iterator<? extends Details> iterator)
     {
         if (iterator == null) return null;
         ArrayList<Comment> comments = new ArrayList<Comment>();
         while(iterator.hasNext())
         {
-            CommentDetails commentDetails = iterator.next();
+            CommentDetails commentDetails = (CommentDetails) iterator.next();
             Comment comment = Comment.fromCommentDetails(commentDetails);
             Link self = comment.getLink("self");
             comment.removeLinks();
@@ -133,7 +138,23 @@ public class Comment extends ResourceSupport {
         this.content = content;
     }
 
-    @Override
+    /**
+	 * @return the profilePhotoDetails
+	 */
+	public PhotoDetails getProfilePhotoDetails()
+	{
+		return profilePhotoDetails;
+	}
+
+	/**
+	 * @param profilePhotoDetails the profilePhotoDetails to set
+	 */
+	public void setProfilePhotoDetails(PhotoDetails profilePhotoDetails)
+	{
+		this.profilePhotoDetails = profilePhotoDetails;
+	}
+
+	@Override
     public String toString()
     {
         return "Comment [commentId=" + commentId + ", targetId=" + targetId + ", username="
