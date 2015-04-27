@@ -337,7 +337,7 @@ public class CommentControllerTest {
         if (LOG.isDebugEnabled()) LOG.debug("performingFindComments()");
         Owner testObject = DatabaseDataFixture.populateOwner1();
         Long targetId = testObject.getNodeId();
-        CommentsReadEvent commentsReadEvent = CommentsReadEvent.targetNotFound(targetId);
+        AllReadEvent commentsReadEvent = AllReadEvent.notFound(targetId);
         when (commentService.readComments(any(RequestReadCommentsEvent.class), any(Sort.Direction.class),
                 any(int.class), any(int.class))).thenReturn(commentsReadEvent);
         this.mockMvc.perform(get(urlPrefix+"s/{targetId}/",targetId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))

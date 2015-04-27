@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 public class CommentEventHandler implements CommentService {
 
-    private static Logger LOG = LoggerFactory.getLogger(CommentService.class);
+    private static Logger LOG = LoggerFactory.getLogger(CommentEventHandler.class);
 
     private UserRepository userRepository;
     private CommentRepository commentRepository;
@@ -116,24 +116,28 @@ public class CommentEventHandler implements CommentService {
                 CommentDetails det = na.toCommentDetails();
                 dets.add(det);
             }
-            if (0 == dets.size()) {
+            if (0 == dets.size())
+            {
                 // Need to check if we actually found instId.
                 Owner owner = ownerRepository.findOne(targetId);
-                if ((null == owner) 
-                		|| null == owner.getNodeId()) {
+                if ((null == owner) || (null == owner.getNodeId()))
+                {
                     if (LOG.isDebugEnabled()) LOG.debug("Comment-able Object not found");
                     commentsReadEvent = AllReadEvent.notFound(targetId);
-                } else {
-                    commentsReadEvent = new CommentsReadEvent(targetId, dets, comments.getTotalElements(), comments.getTotalPages());
+                }
+                else 
+                {
+                    commentsReadEvent = new AllReadEvent(targetId, dets, comments.getTotalElements(), comments.getTotalPages());
                 }
             }
-            else {
-                commentsReadEvent = new CommentsReadEvent(targetId, dets, comments.getTotalElements(),comments.getTotalPages());
+            else
+            {
+                commentsReadEvent = new AllReadEvent(targetId, dets, comments.getTotalElements(),comments.getTotalPages());
             }
         }
         else{
             if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByTargetId");
-            commentsReadEvent = CommentsReadEvent.targetNotFound(null);
+            commentsReadEvent = AllReadEvent.notFound(null);
         }
         return commentsReadEvent;
     }
