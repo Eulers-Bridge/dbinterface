@@ -111,9 +111,9 @@ public class CommentController {
         }
         else
         {
-        Iterator<Comment> candidates = Comment.toCommentIterator(commentsReadEvent.getDetails().iterator());
-		FindsParent theComments = FindsParent.fromArticlesIterator(candidates, commentsReadEvent.getTotalItems(), commentsReadEvent.getTotalPages());
-		response = new ResponseEntity<FindsParent>(theComments, HttpStatus.OK);
+	        Iterator<Comment> candidates = Comment.toCommentIterator(commentsReadEvent.getDetails().iterator());
+			FindsParent theComments = FindsParent.fromArticlesIterator(candidates, commentsReadEvent.getTotalItems(), commentsReadEvent.getTotalPages());
+			response = new ResponseEntity<FindsParent>(theComments, HttpStatus.OK);
         }
 		return response;
     }
