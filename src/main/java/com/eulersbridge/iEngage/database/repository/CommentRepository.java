@@ -2,7 +2,6 @@ package com.eulersbridge.iEngage.database.repository;
 
 import com.eulersbridge.iEngage.database.domain.Comment;
 import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
-import com.eulersbridge.iEngage.database.domain.Owner;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
