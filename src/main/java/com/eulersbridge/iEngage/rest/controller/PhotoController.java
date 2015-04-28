@@ -583,14 +583,20 @@ public class PhotoController
 	public @ResponseBody ResponseEntity<Response> isLikedBy(
 			@PathVariable Long photoId, @PathVariable String email)
 	{
+		ResponseEntity<Response> response=entityIsLikedBy(likesService, photoId, email);
+		return response;
+	}
+
+	static ResponseEntity<Response> entityIsLikedBy(LikesService likesServiceParam, Long entityId, String email)
+	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Checking if " + email + " likes "
-					+ photoId);
-		LikedEvent event = likesService
-				.isLikedBy(new LikeEvent(photoId, email));
-
+					+ entityId);
+		LikedEvent event = likesServiceParam
+				.isLikedBy(new LikeEvent(entityId, email));
+	
 		ResponseEntity<Response> response;
-
+	
 		if (!event.isEntityFound())
 		{
 			response = new ResponseEntity<Response>(HttpStatus.GONE);
@@ -610,7 +616,7 @@ public class PhotoController
 		}
 		return response;
 	}
-
+	
 	/**
 	 * Is passed all the necessary data to like an event from the database. The
 	 * request must be a PUT with the event id presented along with the userid

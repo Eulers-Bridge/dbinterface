@@ -85,6 +85,30 @@ public class NewsController
     		return new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
     }
     
+	/**
+	 * Is passed all the necessary data to check if an entity is liked by a user. The
+	 * request must be a GET with the entity id presented along with the userid
+	 * as the final portion of the URL.
+	 * <p/>
+	 * This method will return a response containing a boolean result.
+	 * 
+	 * @param email
+	 *            the eventId eventId of the event object to be liked.
+	 * @param email
+	 *            the email address of the user liking the event.
+	 * @return the success or failure.
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.NEWS_ARTICLE_LABEL
+			+ "/{articleId}"+ControllerConstants.LIKED_BY_LABEL+"/{email}/")
+	public @ResponseBody ResponseEntity<Response> isLikedBy(
+			@PathVariable Long articleId, @PathVariable String email)
+	{
+		ResponseEntity<Response> response=PhotoController.entityIsLikedBy(likesService, articleId, email);
+
+		return response;
+	}
+
     /**
      * Is passed all the necessary data to read a news article from the database.
      * The request must be a GET with the news article id presented
