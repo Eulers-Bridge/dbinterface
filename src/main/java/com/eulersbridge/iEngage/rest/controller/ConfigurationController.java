@@ -7,6 +7,7 @@ import com.eulersbridge.iEngage.core.events.configuration.*;
 import com.eulersbridge.iEngage.core.services.ConfigurationService;
 import com.eulersbridge.iEngage.rest.domain.Configuration;
 
+import com.eulersbridge.iEngage.rest.domain.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,18 +99,27 @@ public class ConfigurationController {
 
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CONFIGURATION_LABEL+"/{configId}")
-    public @ResponseBody ResponseEntity<Boolean>
+    public @ResponseBody ResponseEntity<Response>
     deleteConfiguration(@PathVariable Long configId)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete configuration. " + configId);
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
         DeletedEvent configurationDeletedEvent = configurationService.deleteConfiguration(new DeleteConfigurationEvent(configId));
-        if (configurationDeletedEvent.isDeletionCompleted())
-            response = new ResponseEntity<Boolean>(configurationDeletedEvent.isDeletionCompleted(), HttpStatus.OK);
-        else if (configurationDeletedEvent.isEntityFound())
-            response = new ResponseEntity<Boolean>(configurationDeletedEvent.isDeletionCompleted(), HttpStatus.GONE);
-        else
-            response = new ResponseEntity<Boolean>(configurationDeletedEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
+        Response restEvent;
+        if (!configurationDeletedEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (configurationDeletedEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
         return response;
     }
 }

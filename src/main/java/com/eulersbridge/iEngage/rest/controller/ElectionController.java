@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import com.eulersbridge.iEngage.core.services.VotingLocationService;
 
+import com.eulersbridge.iEngage.rest.domain.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
@@ -181,10 +182,10 @@ public class ElectionController
 		}
 	}
 
-	// Add Voting Location
+	// Remove Voting Location
 	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.ELECTION_LABEL
 			+"/{electionId}"+ ControllerConstants.VOTING_LOCATION_LABEL+"/{votingLocationId}")
-	public @ResponseBody ResponseEntity<Boolean> removeVotingLocation(
+	public @ResponseBody ResponseEntity<Response> removeVotingLocation(
 			@PathVariable Long electionId, @PathVariable Long votingLocationId)
 	{
 		if (LOG.isInfoEnabled())
@@ -197,16 +198,17 @@ public class ElectionController
 				LOG.debug("locationRemovedEvent - " + locationRemovedEvent);
 			if (locationRemovedEvent.isEntityFound())
 			{
-				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+                Response restEvent = new Response();
+				return new ResponseEntity<Response>(restEvent, HttpStatus.OK);
 			}
 			else
 			{
-				return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
 			}
 		}
 		else
 		{
-			return new ResponseEntity<Boolean>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Response>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -257,23 +259,30 @@ public class ElectionController
 	// Delete
 	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.ELECTION_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<Boolean> deleteElection(
+	public @ResponseBody ResponseEntity<Response> deleteElection(
 			@PathVariable Long electionId)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to delete election. " + electionId);
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		DeletedEvent elecEvent = electionService
 				.deleteElection(new DeleteElectionEvent(electionId));
-		if (elecEvent.isDeletionCompleted())
-			response = new ResponseEntity<Boolean>(
-					elecEvent.isDeletionCompleted(), HttpStatus.OK);
-		else if (elecEvent.isEntityFound())
-			response = new ResponseEntity<Boolean>(
-					elecEvent.isDeletionCompleted(), HttpStatus.GONE);
-		else response = new ResponseEntity<Boolean>(
-				elecEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
-		return response;
+        Response restEvent;
+        if (!elecEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (elecEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
 	}
 
 	// Update

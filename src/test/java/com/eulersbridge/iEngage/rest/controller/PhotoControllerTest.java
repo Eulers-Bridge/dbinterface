@@ -424,7 +424,7 @@ public class PhotoControllerTest
 		PhotoDeletedEvent testData=new PhotoDeletedEvent(dets.getNodeId());
 		when (photoService.deletePhoto(any(DeletePhotoEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(content().string("true"))
+		.andExpect(content().string("{\"success\":true,\"errorReason\":null,\"responseObject\":null}"))
 		.andExpect(status().isOk())	;
 	}
 
@@ -462,7 +462,7 @@ public class PhotoControllerTest
 		PhotoAlbumDeletedEvent testData=new PhotoAlbumDeletedEvent(dets.getNodeId());
 		when (photoService.deletePhotoAlbum(any(DeletePhotoAlbumEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix2+"/{photoAlbumId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(content().string("true"))
+		.andExpect(content().string("{\"success\":true,\"errorReason\":null,\"responseObject\":null}"))
 		.andExpect(status().isOk())	;
 	}
 

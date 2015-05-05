@@ -169,21 +169,28 @@ public class CandidateController {
 
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CANDIDATE_LABEL+"/{candidateId}")
-    public @ResponseBody ResponseEntity<Boolean>
+    public @ResponseBody ResponseEntity<Response>
     deleteCandidate(@PathVariable Long candidateId)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete candidate. " + candidateId);
         DeletedEvent candidateDeletedEvent = candidateService.deleteCandidate(new DeleteCandidateEvent(candidateId));
-        ResponseEntity<Boolean> response;
-
-		if (candidateDeletedEvent.isDeletionCompleted())
-			response=new ResponseEntity<Boolean>(candidateDeletedEvent.isDeletionCompleted(),HttpStatus.OK);
-		else if (candidateDeletedEvent.isEntityFound())
-			response=new ResponseEntity<Boolean>(candidateDeletedEvent.isDeletionCompleted(),HttpStatus.GONE);
-		else
-			response=new ResponseEntity<Boolean>(candidateDeletedEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
-		return response;
-		
+        ResponseEntity<Response> response;
+        Boolean isDeletionCompleted = Boolean.valueOf(candidateDeletedEvent.isDeletionCompleted());
+        if (!candidateDeletedEvent.isEntityFound()){
+            response=new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
+        }
+        else{
+            Response restEvent;
+            if (isDeletionCompleted){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
     }
 
     // like
@@ -317,23 +324,24 @@ public class CandidateController {
     // remove ticket from candidate
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CANDIDATE_LABEL
             + "/{candidateId}" + ControllerConstants.TICKET_LABEL + "/{ticketId}")
-    public @ResponseBody ResponseEntity<Boolean> removeTicket(
+    public @ResponseBody ResponseEntity<Response> removeTicket(
             @PathVariable Long candidateId, @PathVariable Long ticketId){
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to remove ticket " + ticketId + " from candidate " + candidateId);
-    	ResponseEntity<Boolean> response;
+    	ResponseEntity<Response> response;
         UpdatedEvent ticketRemovedEvent = candidateService.removeTicket(new DeleteEvent(candidateId));
         if (!ticketRemovedEvent.isEntityFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
         } 
         else if (ticketRemovedEvent.isFailed())
         {
-        	response = new ResponseEntity<Boolean>(HttpStatus.FORBIDDEN);
+        	response = new ResponseEntity<Response>(HttpStatus.FORBIDDEN);
         }
         else
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.OK);
+            Response restEvent = new Response();
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
         }
         return response;
     }

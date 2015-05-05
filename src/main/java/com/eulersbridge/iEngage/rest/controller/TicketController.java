@@ -12,6 +12,7 @@ import com.eulersbridge.iEngage.core.events.ticket.*;
 import com.eulersbridge.iEngage.core.services.TicketService;
 import com.eulersbridge.iEngage.rest.domain.Candidate;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
+import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.Ticket;
 
 import org.slf4j.Logger;
@@ -207,20 +208,28 @@ public class TicketController {
 
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.TICKET_LABEL+"/{ticketId}")
-    public @ResponseBody ResponseEntity<Boolean>
+    public @ResponseBody ResponseEntity<Response>
     deleteTicket(@PathVariable Long ticketId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete ticket. " + ticketId);
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
 
         DeletedEvent ticketDeletedEvent = ticketService.deleteTicket(new DeleteTicketEvent(ticketId));
-        Boolean isDeletionCompleted = Boolean.valueOf(ticketDeletedEvent.isDeletionCompleted());
-    	if (isDeletionCompleted)
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.OK);
-    	else if (ticketDeletedEvent.isEntityFound())
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.GONE);
-    	else
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.NOT_FOUND);
-    	return response;
+        Response restEvent;
+        if (!ticketDeletedEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (ticketDeletedEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
     }
 
     //Support
@@ -248,23 +257,30 @@ public class TicketController {
 
     //Withdraw Support
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.TICKET_LABEL+"/{ticketId}"+ ControllerConstants.SUPPORT +"/{email}")
-    public @ResponseBody ResponseEntity<Boolean> withdrawSupportTicket(@PathVariable Long ticketId, @PathVariable String email){
+    public @ResponseBody ResponseEntity<Response> withdrawSupportTicket(@PathVariable Long ticketId, @PathVariable String email){
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to have " + email + "withdraw support ticket: " + ticketId);
         TicketSupportedEvent ticketSupportedEvent = ticketService.withdrawSupportTicket(new SupportTicketEvent(ticketId, email));
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
         if (!ticketSupportedEvent.isEntityFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+            response = new ResponseEntity<Response>(HttpStatus.GONE);
         }
         else if (!ticketSupportedEvent.isUserFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
         }
         else
         {
-            Boolean restEvent = ticketSupportedEvent.isResult();
-            response = new ResponseEntity<Boolean>(restEvent, HttpStatus.OK);
+            Response restEvent;
+            if(ticketSupportedEvent.isResult()){
+                restEvent = new Response();
+                response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
+            }
+            else{
+                restEvent = Response.failed("Could not delete");
+                response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
+            }
         }
         return response;
     }

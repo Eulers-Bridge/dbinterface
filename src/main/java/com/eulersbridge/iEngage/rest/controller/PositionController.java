@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.rest.domain.Candidate;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Position;
 
+import com.eulersbridge.iEngage.rest.domain.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -216,21 +217,26 @@ public class PositionController {
 
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.POSITION_LABEL+"/{positionId}")
-    public @ResponseBody ResponseEntity<Boolean>
+    public @ResponseBody ResponseEntity<Response>
     deletePosition(@PathVariable Long positionId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete position. " + positionId);
-        ResponseEntity<Boolean> response;
-
+        ResponseEntity<Response> response;
         DeletedEvent positionDeletedEvent = positionService.deletePosition(new DeletePositionEvent(positionId));
-        Boolean isDeletionCompleted = Boolean.valueOf(positionDeletedEvent.isDeletionCompleted());
-    	if (isDeletionCompleted)
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.OK);
-    	else if (positionDeletedEvent.isEntityFound())
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.GONE);
-    	else
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.NOT_FOUND);
-    	return response;
+        Response restEvent;
+        if (!positionDeletedEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (positionDeletedEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
     }
-
-
 }

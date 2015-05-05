@@ -308,7 +308,7 @@ public class NotificationControllerTest
 		when (notificationService.deleteNotification(any(DeleteEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{positionId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(content().string("true"))
+		.andExpect(content().string("{\"success\":true,\"errorReason\":null,\"responseObject\":null}"))
 		.andExpect(status().isOk())	;
 	}
 
@@ -322,7 +322,7 @@ public class NotificationControllerTest
 		when (notificationService.deleteNotification(any(DeleteEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{positionId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(content().string("false"))
+		.andExpect(content().string("{\"success\":false,\"errorReason\":\"Not found\",\"responseObject\":null}"))
 		.andExpect(status().isNotFound())	;
 	}
 
@@ -334,7 +334,7 @@ public class NotificationControllerTest
 		when (notificationService.deleteNotification(any(DeleteEvent.class))).thenReturn(null);
 		this.mockMvc.perform(delete(urlPrefix+"/{positionId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(content().string("false"))
+		.andExpect(content().string("{\"success\":false,\"errorReason\":\"Not found\",\"responseObject\":null}"))
 		.andExpect(status().isNotFound())	;
 	}
 

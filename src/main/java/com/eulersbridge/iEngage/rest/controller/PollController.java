@@ -219,24 +219,30 @@ public class PollController
 	// Delete
 	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.POLL_LABEL
 			+ "/{pollId}")
-	public @ResponseBody ResponseEntity<Boolean> deletePoll(
+	public @ResponseBody ResponseEntity<Response> deletePoll(
 			@PathVariable Long pollId)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to delete poll. " + pollId);
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		DeletedEvent pollDeletedEvent = pollService
 				.deletePoll(new DeletePollEvent(pollId));
-		
-		if (pollDeletedEvent.isDeletionCompleted())
-			response = new ResponseEntity<Boolean>(
-					pollDeletedEvent.isDeletionCompleted(), HttpStatus.OK);
-		else if (pollDeletedEvent.isEntityFound())
-			response = new ResponseEntity<Boolean>(
-					pollDeletedEvent.isDeletionCompleted(), HttpStatus.GONE);
-		else response = new ResponseEntity<Boolean>(
-				pollDeletedEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
-		return response;
+        Response restEvent;
+        if (!pollDeletedEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (pollDeletedEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
 	}
 
 	// Answer Poll
@@ -384,5 +390,4 @@ public class PollController
 		}
 		else return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
 	}
-
 }

@@ -212,45 +212,59 @@ public class PhotoController
 	// Delete
 	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.PHOTO_LABEL
 			+ "/{photoId}")
-	public @ResponseBody ResponseEntity<Boolean> deletePhoto(
+	public @ResponseBody ResponseEntity<Response> deletePhoto(
 			@PathVariable Long photoId)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to delete photo. " + photoId);
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		DeletedEvent elecEvent = photoService.deletePhoto(new DeletePhotoEvent(
 				photoId));
-		if (elecEvent.isDeletionCompleted())
-			response = new ResponseEntity<Boolean>(
-					elecEvent.isDeletionCompleted(), HttpStatus.OK);
-		else if (elecEvent.isEntityFound())
-			response = new ResponseEntity<Boolean>(
-					elecEvent.isDeletionCompleted(), HttpStatus.GONE);
-		else response = new ResponseEntity<Boolean>(
-				elecEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
-		return response;
+        Response restEvent;
+        if (!elecEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (elecEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
 	}
 
 	// Delete
 	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.PHOTO_ALBUM_LABEL
 			+ "/{photoAlbumId}")
-	public @ResponseBody ResponseEntity<Boolean> deletePhotoAlbum(
+	public @ResponseBody ResponseEntity<Response> deletePhotoAlbum(
 			@PathVariable Long photoAlbumId)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to delete photo. " + photoAlbumId);
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		DeletedEvent elecEvent = photoService.deletePhotoAlbum(new DeletePhotoAlbumEvent(
 				photoAlbumId));
-		if (elecEvent.isDeletionCompleted())
-			response = new ResponseEntity<Boolean>(
-					elecEvent.isDeletionCompleted(), HttpStatus.OK);
-		else if (elecEvent.isEntityFound())
-			response = new ResponseEntity<Boolean>(
-					elecEvent.isDeletionCompleted(), HttpStatus.GONE);
-		else response = new ResponseEntity<Boolean>(
-				elecEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
-		return response;
+        Response restEvent;
+        if (!elecEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (elecEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
 	}
 
 	// Update
