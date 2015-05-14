@@ -18,6 +18,7 @@ import com.eulersbridge.iEngage.core.events.votingLocation.DeleteVotingLocationE
 import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationEvent;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 /**
  * @author Greg Newitt
@@ -25,31 +26,31 @@ import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationE
  */
 public interface VotingLocationService
 {
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
     public ReadEvent readVotingLocation(ReadVotingLocationEvent readVotingLocationEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public CreatedEvent createVotingLocation(CreateVotingLocationEvent createVotingLocationEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public DeletedEvent deleteVotingLocation(DeleteVotingLocationEvent deleteVotingLocationEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public UpdatedEvent updateVotingLocation(UpdateVotingLocationEvent updateVotingLocationEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent findVotingLocations(ReadAllEvent readVotingLocationsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent findVotingBooths(ReadAllEvent readVotingLocationsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public UpdatedEvent addVotingLocationToElection(AddVotingLocationEvent addVotingLocationEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public DeletedEvent removeVotingLocationFromElection(RemoveVotingLocationEvent removeVotingLocationEvent);
 
 }

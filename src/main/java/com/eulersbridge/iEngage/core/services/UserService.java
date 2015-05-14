@@ -31,39 +31,40 @@ import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 //All methods are guaranteed to return something, null will never be returned.
 public interface UserService 
 {
 	public UserCreatedEvent signUpNewUser(CreateUserEvent createUserEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public ReadUserEvent readUser(RequestReadUserEvent requestReadUserEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadUserEvent readUserByContactNumber(RequestReadUserEvent requestReadUserEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadUserEvent readUserByContactEmail(RequestReadUserEvent requestReadUserEvent);
 //TODO Need to secure this better.
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadUserEvent readUserById(RequestReadUserEvent requestReadUserEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #updateUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #updateUserEvent.getEmail()==authentication.name)")
 	public UpdatedEvent updateUser(UpdateUserEvent updateUserEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #deleteUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #deleteUserEvent.getEmail()==authentication.name)")
 	public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent);
 	public UserAccountVerifiedEvent validateUserAccount(VerifyUserAccountEvent verifyUserAccountEvent);
 	public UserAuthenticatedEvent authenticateUser(AuthenticateUserEvent authUserEvent) throws AuthenticationException;
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteReminderEvent.getVoteReminderDetails().getUserId()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #addVoteReminderEvent.getVoteReminderDetails().getUserId()==authentication.name)")
 	public CreatedEvent addVoteReminder(AddVoteReminderEvent addVoteReminderEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #addVoteRecordEvent.getVoteRecordDetails().getVoterId()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #addVoteRecordEvent.getVoteRecordDetails().getVoterId()==authentication.name)")
 	public VoteRecordAddedEvent addVoteRecord(AddVoteRecordEvent addVoteRecordEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadEvent readVoteRecord(ReadVoteRecordEvent readVoteRecordEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadEvent readVoteReminder(ReadVoteReminderEvent any);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public DeletedEvent deleteVoteRecord(DeleteVoteRecordEvent deleteVoteRecordEvent);
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public DeletedEvent deleteVoteReminder(DeleteVoteReminderEvent deleteVoteReminderEvent);
 	
 	public Long findUserId(String emailAddress);
@@ -72,17 +73,17 @@ public interface UserService
 	
 	public AllReadEvent readSupportsById(ReadAllEvent userEvent,Direction sortDirection, int pageNumber, int pageLength);
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public AllReadEvent readSupportsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection,int pageNumber, int pageLength);
 	
 	public AllReadEvent readVoteRemindersById(ReadAllEvent userEvent,Direction sortDirection, int pageNumber, int pageLength);
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public AllReadEvent readVoteRemindersByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection,int pageNumber, int pageLength);
 
 	public AllReadEvent readVoteRecordsById(ReadAllEvent userEvent, Direction sortDirection, int pageNumber, int pageLength);
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #requestReadUserEvent.getEmail()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #requestReadUserEvent.getEmail()==authentication.name)")
 	public AllReadEvent readVoteRecordsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection, int pageNumber, int pageLength);
 	
 	UserCreatedEvent resendVerificationEmail(RequestReadUserEvent createUserEvent);	

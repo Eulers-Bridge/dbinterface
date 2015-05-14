@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.core.events.positions.CreatePositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.DeletePositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.RequestReadPositionEvent;
 import com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,23 +19,23 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * Created by darcular on 8/10/14.
  */
 public interface PositionService {
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public CreatedEvent createPosition(CreatePositionEvent createPositionEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
     public ReadEvent readPosition(RequestReadPositionEvent requestReadPositionEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public UpdatedEvent updatePosition(UpdatePositionEvent updatePositionEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public DeletedEvent deletePosition(DeletePositionEvent deletePositionEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readPositions(ReadAllEvent readPositionsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readCandidates(ReadAllEvent readAllEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 }

@@ -15,6 +15,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 /**
  * @author Greg Newitt
@@ -22,22 +23,25 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEve
  */
 public interface ContactRequestService
 {
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public CreatedEvent createContactRequest(CreateContactRequestEvent createContactRequestEvent);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadEvent readContactRequest(ReadContactRequestEvent readContactRequestEvent);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadEvent readContactRequestByUserIdContactNumber(ReadContactRequestEvent readContactRequestEvent);
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public UpdatedEvent acceptContactRequest(AcceptContactRequestEvent acceptContactRequestEvent);
 
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	UpdatedEvent rejectContactRequest(UpdateEvent acceptContactRequestEvent);
 
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readContactRequestsReceived(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
 	
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readContactRequestsMade(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
 
 }

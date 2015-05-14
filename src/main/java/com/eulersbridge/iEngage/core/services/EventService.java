@@ -6,6 +6,7 @@ import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,18 +17,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface EventService {
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public EventCreatedEvent createEvent(CreateEventEvent createEventEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
     public ReadEvent readEvent(RequestReadEventEvent requestReadEventEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public UpdatedEvent updateEvent(UpdateEventEvent updateEventEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public DeletedEvent deleteEvent(DeleteEventEvent deleteEventEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readEvents(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
 }

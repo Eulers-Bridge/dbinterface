@@ -7,6 +7,7 @@ import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.*;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,29 +17,29 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 
 public interface TicketService {
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.TICKET_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public CreatedEvent createTicket(CreateTicketEvent createTicketEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
     public ReadEvent requestReadTicket(RequestReadTicketEvent requestReadTicketEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.TICKET_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public UpdatedEvent updateTicket(UpdateTicketEvent updateTicketEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.TICKET_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public DeletedEvent deleteTicket(DeleteTicketEvent deleteTicketEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readTickets(ReadAllEvent readTicketsEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #supportTicketEvent.getEmailAddress()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #supportTicketEvent.getEmailAddress()==authentication.name)")
     public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent);
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #supportTicketEvent.getEmailAddress()==authentication.name)")
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #supportTicketEvent.getEmailAddress()==authentication.name)")
     public TicketSupportedEvent withdrawSupportTicket(SupportTicketEvent supportTicketEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readCandidates(ReadAllEvent readAllEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 }

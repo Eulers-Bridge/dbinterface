@@ -11,6 +11,7 @@ import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,31 +20,32 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * @author Yikai Gong
  */
 
-public interface TaskService {
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+public interface TaskService
+{
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public CreatedEvent createTask(CreateTaskEvent createTaskEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
     public ReadEvent requestReadTask(RequestReadTaskEvent requestReadTaskEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public UpdatedEvent updateTask(UpdateTaskEvent updateTaskEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
     public UpdatedEvent completedTask(CompletedTaskEvent updateTaskEvent);
 
-    	@PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+    	@PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
     public DeletedEvent deleteTask(DeleteTaskEvent deleteTaskEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readTasks(ReadAllEvent readTasksEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readCompletedTasks(ReadAllEvent readCompletedTasksEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
     
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public AllReadEvent readRemainingTasks(ReadAllEvent readCompletedTasksEvent,
 			Direction sortDirection, int pageNumber, int pageLength);
 }
