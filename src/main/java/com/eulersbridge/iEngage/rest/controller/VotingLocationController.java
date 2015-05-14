@@ -244,21 +244,29 @@ public class VotingLocationController
 
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.VOTING_LOCATION_LABEL+"/{votingLocationId}")
-    public @ResponseBody ResponseEntity<Boolean>
+    public @ResponseBody ResponseEntity<Response>
     deleteVotingLocation(@PathVariable Long votingLocationId)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete votingLocation. " + votingLocationId);
         DeletedEvent votingLocationDeletedEvent = votingLocationService.deleteVotingLocation(new DeleteVotingLocationEvent(votingLocationId));
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
 
-		if (votingLocationDeletedEvent.isDeletionCompleted())
-			response=new ResponseEntity<Boolean>(votingLocationDeletedEvent.isDeletionCompleted(),HttpStatus.OK);
-		else if (votingLocationDeletedEvent.isEntityFound())
-			response=new ResponseEntity<Boolean>(votingLocationDeletedEvent.isDeletionCompleted(),HttpStatus.GONE);
-		else
-			response=new ResponseEntity<Boolean>(votingLocationDeletedEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
-		return response;
-		
+        Response restEvent;
+        if (!votingLocationDeletedEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (votingLocationDeletedEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
     }
 
     // like
@@ -359,6 +367,4 @@ public class VotingLocationController
         }
         else return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
     }
-
-
 }

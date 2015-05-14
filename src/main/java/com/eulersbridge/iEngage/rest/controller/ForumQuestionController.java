@@ -160,21 +160,27 @@ public class ForumQuestionController {
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.FORUM_QUESTION_LABEL+"/{forumQuestionId}")
     public @ResponseBody
-    ResponseEntity<Boolean> deleteForumQuestion(@PathVariable Long forumQuestionId)
+    ResponseEntity<Response> deleteForumQuestion(@PathVariable Long forumQuestionId)
     {
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete forumQuestion. " + forumQuestionId);
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		DeletedEvent forumQuestionDeletedEvent = forumQuestionService.deleteForumQuestion(new DeleteForumQuestionEvent(forumQuestionId));
-		
-		if (forumQuestionDeletedEvent.isDeletionCompleted())
-			response = new ResponseEntity<Boolean>(
-					forumQuestionDeletedEvent.isDeletionCompleted(), HttpStatus.OK);
-		else if (forumQuestionDeletedEvent.isEntityFound())
-			response = new ResponseEntity<Boolean>(
-					forumQuestionDeletedEvent.isDeletionCompleted(), HttpStatus.GONE);
-		else response = new ResponseEntity<Boolean>(
-				forumQuestionDeletedEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
-		return response;
+        Response restEvent;
+        if (!forumQuestionDeletedEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (forumQuestionDeletedEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
     }
 
     //like

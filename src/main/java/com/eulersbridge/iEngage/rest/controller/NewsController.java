@@ -229,18 +229,27 @@ public class NewsController
 
 	*/
 	@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.NEWS_ARTICLE_LABEL+"/{articleId}")
-	public @ResponseBody ResponseEntity<Boolean> deleteNewsArticle(@PathVariable Long articleId) 
+	public @ResponseBody ResponseEntity<Response> deleteNewsArticle(@PathVariable Long articleId)
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to delete news article. "+articleId);
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		DeletedEvent newsEvent=newsService.deleteNewsArticle(new DeleteNewsArticleEvent(articleId));
-		if (newsEvent.isDeletionCompleted())
-			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.OK);
-		else if (newsEvent.isEntityFound())
-			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.GONE);
-		else
-			response=new ResponseEntity<Boolean>(newsEvent.isDeletionCompleted(),HttpStatus.NOT_FOUND);
-		return response;
+        if (!newsEvent.isEntityFound()){
+            Response restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            Response restEvent;
+            if (newsEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
 	}
     
     

@@ -192,23 +192,30 @@ public class EventController
 	// Delete
 	@RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.EVENT_LABEL
 			+ "/{eventId}")
-	public @ResponseBody ResponseEntity<Boolean> deleteEvent(
+	public @ResponseBody ResponseEntity<Response> deleteEvent(
 			@PathVariable Long eventId)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to delete event. " + eventId);
-		ResponseEntity<Boolean> response;
+		ResponseEntity<Response> response;
 		DeletedEvent eventDeletedEvent = eventService
 				.deleteEvent(new DeleteEventEvent(eventId));
-		if (eventDeletedEvent.isDeletionCompleted())
-			response = new ResponseEntity<Boolean>(
-					eventDeletedEvent.isDeletionCompleted(), HttpStatus.OK);
-		else if (eventDeletedEvent.isEntityFound())
-			response = new ResponseEntity<Boolean>(
-					eventDeletedEvent.isDeletionCompleted(), HttpStatus.GONE);
-		else response = new ResponseEntity<Boolean>(
-				eventDeletedEvent.isDeletionCompleted(), HttpStatus.NOT_FOUND);
-		return response;
+        Response restEvent;
+        if (!eventDeletedEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (eventDeletedEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
 	}
 
 	/**
@@ -252,7 +259,7 @@ public class EventController
 			if (event.isResultSuccess())
 				restEvent = new Response();
 			else
-				restEvent = Response.failed("Could not like.");
+				restEvent = Response.failed("Could not unlike.");
 			response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
 		}
 		return response;

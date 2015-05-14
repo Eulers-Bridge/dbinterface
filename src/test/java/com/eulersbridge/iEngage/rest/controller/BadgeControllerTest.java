@@ -350,7 +350,7 @@ public class BadgeControllerTest {
 		when (badgeService.deleteBadge(any(DeleteBadgeEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{badgeId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(content().string("true"))
+		.andExpect(content().string("{\"success\":true,\"errorReason\":null,\"responseObject\":null}"))
 		.andExpect(status().isOk())	;
 	}
 	@Test

@@ -11,6 +11,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.task.*;
 import com.eulersbridge.iEngage.core.services.TaskService;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
+import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.Task;
 import com.eulersbridge.iEngage.rest.domain.TaskCompleted;
 
@@ -260,22 +261,27 @@ public class TaskController {
 
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.TASK_LABEL+"/{taskId}")
-    public @ResponseBody ResponseEntity<Boolean>
+    public @ResponseBody ResponseEntity<Response>
     deleteTask(@PathVariable Long taskId){
         if (LOG.isInfoEnabled()) LOG.info("Attempting to delete task. " + taskId);
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
 
         DeletedEvent taskDeletedEvent = taskService.deleteTask(new DeleteTaskEvent(taskId));
-        Boolean isDeletionCompleted = Boolean.valueOf(taskDeletedEvent.isDeletionCompleted());
-        
-    	if (isDeletionCompleted)
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.OK);
-    	else if (taskDeletedEvent.isEntityFound())
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.GONE);
-    	else
-    		response=new ResponseEntity<Boolean>(isDeletionCompleted,HttpStatus.NOT_FOUND);
-    	return response;
+        Response restEvent;
+        if (!taskDeletedEvent.isEntityFound()){
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
+        }
+        else{
+            if (taskDeletedEvent.isDeletionCompleted()){
+                restEvent = new Response();
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.OK);
+            }
+            else {
+                restEvent = Response.failed("Could not delete");
+                response=new ResponseEntity<Response>(restEvent,HttpStatus.GONE);
+            }
+        }
+        return response;
     }
-
-	
 }

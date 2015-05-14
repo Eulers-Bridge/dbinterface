@@ -365,7 +365,7 @@ public class ViewNewsIntegrationTest {
 		NewsArticleDeletedEvent testData=new NewsArticleDeletedEvent(dets.getNewsArticleId());
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",dets.getNewsArticleId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(content().string("true"))
+		.andExpect(content().string("{\"success\":true,\"errorReason\":null,\"responseObject\":null}"))
 //TODO This should not be returning boolean.
 		.andExpect(status().isOk())	;
 	}
@@ -378,7 +378,7 @@ public class ViewNewsIntegrationTest {
 		DeletedEvent testData=NewsArticleDeletedEvent.notFound(newsArticleId);
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(content().string("false"))
+		.andExpect(content().string("{\"success\":false,\"errorReason\":\"Not found\",\"responseObject\":null}"))
 //TODO This should not be returning boolean.
 		.andExpect(status().isNotFound())	;
 	}
@@ -391,7 +391,7 @@ public class ViewNewsIntegrationTest {
 		DeletedEvent testData=NewsArticleDeletedEvent.deletionForbidden(dets.getNewsArticleId());
 		when (newsService.deleteNewsArticle(any(DeleteNewsArticleEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(delete(urlPrefix+"/{newsArticleId}/",dets.getNewsArticleId().intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(content().string("false"))
+		.andExpect(content().string("{\"success\":false,\"errorReason\":\"Could not delete\",\"responseObject\":null}"))
 //TODO This should not be returning boolean.
 		.andExpect(status().isGone())	;
 	}

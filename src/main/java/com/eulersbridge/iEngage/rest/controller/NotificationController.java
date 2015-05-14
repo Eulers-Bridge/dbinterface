@@ -5,6 +5,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import java.util.Iterator;
 
+import com.eulersbridge.iEngage.rest.domain.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,24 +151,26 @@ public class NotificationController
 
     //Delete
     @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.NOTIFICATION_LABEL + "/{notificationId}")
-    public @ResponseBody ResponseEntity<Boolean>
+    public @ResponseBody ResponseEntity<Response>
     deleteNotification(@PathVariable Long notificationId)
     {
         if (LOG.isInfoEnabled()) LOG.info(notificationId+" attempting to delete notification. ");
         DeleteEvent deleteNotificationEvent = new DeleteEvent(notificationId);
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
         DeletedEvent notificationDeletedEvent = notificationService.deleteNotification(deleteNotificationEvent);
+        Response restEvent;
         if((notificationDeletedEvent!=null)&&(notificationDeletedEvent.isEntityFound()))
         {
             Notification notification = Notification.fromNotificationDetails((NotificationDetails) notificationDeletedEvent.getDetails());
             if (LOG.isDebugEnabled()) LOG.debug(notificationId+" deleted.");
-            response = new ResponseEntity<Boolean>(true,HttpStatus.OK);
+            restEvent = new Response();
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
         }
         else
         {
-            response = new ResponseEntity<Boolean>(false,HttpStatus.NOT_FOUND);
+            restEvent = Response.failed("Not found");
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.NOT_FOUND);
         }
-
         return response;
     }
 
@@ -203,6 +206,4 @@ public class NotificationController
         else response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return response;
     }
-
-
 }
