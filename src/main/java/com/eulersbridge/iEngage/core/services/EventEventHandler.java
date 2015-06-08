@@ -152,7 +152,7 @@ public class EventEventHandler implements EventService
 
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + institutionId);
 		Pageable pageable = new PageRequest(pageNumber, pageLength,
-				sortDirection, "e.start");
+				sortDirection, "e.starts");
 		events = eventRepository.findByInstitutionId(institutionId, pageable);
 		if (events != null)
 		{
