@@ -178,6 +178,8 @@ public class CandidateEventHandler implements CandidateService {
 					candidate.setPosition(candidateOld.getPosition());
 				if (null==candidate.getUser())
 					candidate.setUser(candidateOld.getUser());
+				if (null==candidate.getTicket())
+					candidate.setTicket(candidateOld.getTicket());
 
 	        	
 	            Candidate result = candidateRepository.save(candidate);
