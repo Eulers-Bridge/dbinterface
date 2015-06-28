@@ -11,11 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.convert.ConversionService;
@@ -50,6 +46,7 @@ import com.google.common.collect.Sets;
 @ComponentScan
 @EnableNeo4jRepositories(basePackages={"com.eulersbridge.iEngage.database.repository"})
 @EnableAutoConfiguration
+@EnableAspectJAutoProxy
 public class Application extends Neo4jConfiguration
 {
 	@Resource

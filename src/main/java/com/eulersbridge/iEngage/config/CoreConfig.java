@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.config;
 import com.eulersbridge.iEngage.core.services.*;
 import com.eulersbridge.iEngage.database.repository.*;
 
+import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class CoreConfig
     PhotoRepository photoRepository;
     @Autowired
     PhotoAlbumRepository photoAlbumRepository;
-   @Autowired
+    @Autowired
     PositionRepository positionRepository;
     @Autowired
     TicketRepository ticketRepository;
@@ -219,5 +220,10 @@ public class CoreConfig
     {
         if (LOG.isDebugEnabled()) LOG.debug("createCommentService()");
         return new CommentEventHandler(userRepo, commentRepository, ownerRepository);
+    }
+
+    @Bean
+    public AspectService createAspectService(){
+        return new AspectService();
     }
 }

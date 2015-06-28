@@ -16,7 +16,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface TaskRepository extends GraphRepository<Task>
 {
-	@Query("Match (a:`User`),(b:`Task`) where id(a)={userId} and id(b)={taskId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
+	@Query("Match (a:`User`),(b:`Task`) where id(a)={userId} and id(b)={taskId} CREATE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
 			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
 	TaskComplete taskCompleted(@Param("taskId") Long taskId, @Param("userId") Long userId);
 
@@ -26,4 +26,7 @@ public interface TaskRepository extends GraphRepository<Task>
 	@Query("Match (u:`"+DatabaseDomainConstants.USER+"`),(t:`"+DatabaseDomainConstants.TASK+"`) where id(u)={userId} and"+
 			" not (u)-[:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"]-(t) return t")
 	Page<Task> findRemainingTasks(@Param("userId") Long userId, Pageable pageable);
+
+    @Query("Match (a:`User`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where a.email={userEmail} and b.action={action} return count(r)")
+    Long getNumOfCompletedASpecificTask(@Param("userId") String userEmail, @Param("action") String taskAction);
 }
