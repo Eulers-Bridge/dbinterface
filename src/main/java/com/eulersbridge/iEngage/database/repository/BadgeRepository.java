@@ -20,6 +20,10 @@ public interface BadgeRepository extends GraphRepository<Badge>
 			"]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='BadgeComplete' return r")
 	BadgeComplete badgeCompleted(@Param("badgeId") Long badgeId, @Param("userId") Long userId);
 
+    @Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b:`"+DatabaseDomainConstants.BADGE+"`) where a.email={userEmail} and id(b)={badgeId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+
+            "]-b SET r.date=coalesce(r.date,timestamp()),r.__type__='BadgeComplete' return r")
+    BadgeComplete badgeCompleted(@Param("badgeId") Long badgeId, @Param("userEmail") String userEmail);
+
 	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"`]-(b:`"+DatabaseDomainConstants.BADGE+"`) where id(a)={userId} return b")
 	Page<Badge> findCompletedBadges(@Param("userId") Long userId, Pageable pageable);
 
