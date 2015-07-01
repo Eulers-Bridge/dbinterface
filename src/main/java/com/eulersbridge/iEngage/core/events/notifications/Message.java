@@ -17,7 +17,7 @@ public class Message extends Details
 	String text;
 	
     private static Logger LOG = LoggerFactory.getLogger(Message.class);
-	public Message(Long nodeId, Long userId, Long timestamp, String text)
+	public Message(Long nodeId, String text)
 	{
 		super(nodeId);
 		this.text=text;
