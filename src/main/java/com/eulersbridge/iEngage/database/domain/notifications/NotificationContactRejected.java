@@ -4,7 +4,6 @@
 package com.eulersbridge.iEngage.database.domain.notifications;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
@@ -15,7 +14,6 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
-import com.eulersbridge.iEngage.core.events.notifications.NotificationHelper;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -27,22 +25,12 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Greg Newitt
  *
  */
-public class NotificationContactRequest extends Notification implements NotificationInterface
+public class NotificationContactRejected extends Notification implements NotificationInterface
 {
 	@RelatedTo(type = DatabaseDomainConstants.HAS_NOTIFICATION_DETAILS_LABEL, direction=Direction.OUTGOING) @Fetch
 	ContactRequest contactRequest;
 
-    static Logger LOG = LoggerFactory.getLogger(NotificationContactRequest.class);
-
-	private static String[] contactRequestFieldsArray={
-		NotificationConstants.NodeId,
-		NotificationConstants.RequestDate,
-        NotificationConstants.ResponseDate,
-		NotificationConstants.UserId,
-   	 	NotificationConstants.Accepted,
-        NotificationConstants.Rejected,
-        NotificationConstants.ContactDetails
-	};
+    static Logger LOG = LoggerFactory.getLogger(NotificationContactRejected.class);
 
 
     @Override
@@ -96,12 +84,12 @@ public class NotificationContactRequest extends Notification implements Notifica
 		return dets;
 	}
 	
-	public static NotificationContactRequest fromNotificationDetails(NotificationDetails nDets)
+	public static NotificationContactRejected fromNotificationDetails(NotificationDetails nDets)
 	{
-		NotificationContactRequest notif=new NotificationContactRequest();
+		NotificationContactRejected notif=new NotificationContactRejected();
 		if (nDets!=null)
 		{
-			if (NotificationConstants.CONTACT_REQUEST.equals(nDets.getType()))
+			if (NotificationConstants.CONTACT_REJECTED.equals(nDets.getType()))
 			{
 				ContactRequestDetails crd=(ContactRequestDetails)nDets.getNotificationBody();
 				ContactRequest cr=ContactRequest.fromContactRequestDetails(crd);
@@ -117,24 +105,20 @@ public class NotificationContactRequest extends Notification implements Notifica
 		return notif;
 	}
 	
-	static public ContactRequestDetails populateFields(JsonNode node) throws JsonMappingException
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
 	{
-        Iterator<String> fields = node.fieldNames();
-        NotificationHelper.checkFieldNames(fields,contactRequestFieldsArray);
+		return "NotificationContactRejected [contactRequest=" + contactRequest
+				+ ", nodeId=" + nodeId + ", read=" + read + ", timestamp="
+				+ timestamp + ", type=" + type + ", user=" + user + "]";
+	}
 
-        Long crUserId=NotificationHelper.getLong(node.get(NotificationConstants.UserId));
-		Long crNodeId=NotificationHelper.getLong(node.get(NotificationConstants.NodeId));
-		Long requestDate=NotificationHelper.getLong(node.get(NotificationConstants.RequestDate));
-		Long responseDate=NotificationHelper.getLong(node.get(NotificationConstants.ResponseDate));
-		Boolean accepted=NotificationHelper.getBoolean(node.get(NotificationConstants.Accepted));
-		Boolean rejected=NotificationHelper.getBoolean(node.get(NotificationConstants.Rejected));
-		JsonNode contactDetails=node.get(NotificationConstants.ContactDetails);
-		String contactDets=null;
-		if (contactDetails!=null) contactDets=contactDetails.asText();
-		ContactRequestDetails crd=new ContactRequestDetails(crNodeId, contactDets, requestDate, responseDate, accepted, rejected, crUserId);
-		if ((null==crNodeId)&&((null==contactDetails)&&(null==crUserId)))
-			throw new JsonMappingException("notificationBody must be populated with a contactRequest containing nodeId or contactDetails and contactor UserId");
-		return crd;
+	public static ContactRequestDetails populateFields(JsonNode node) throws JsonMappingException
+	{
+		return NotificationContactRequest.populateFields(node);
 	}
 
 	/**
@@ -151,17 +135,6 @@ public class NotificationContactRequest extends Notification implements Notifica
 	public void setContactRequest(ContactRequest contactRequest)
 	{
 		this.contactRequest = contactRequest;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString()
-	{
-		return "NotificationContactRequest [contactRequest=" + contactRequest
-				+ ", nodeId=" + nodeId + ", read=" + read + ", timestamp="
-				+ timestamp + ", type=" + type + ", user=" + user + "]";
 	}
 
 }

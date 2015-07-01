@@ -14,6 +14,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
+import com.eulersbridge.iEngage.core.events.notifications.NotificationHelper;
 import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
@@ -23,7 +24,7 @@ import com.eulersbridge.iEngage.database.repository.UserRepository;
  *
  */
 @NodeEntity
-public class Notification
+public class Notification implements NotificationInterface
 {
     @GraphId
     Long nodeId;
@@ -80,24 +81,20 @@ public class Notification
 	
 	public static Notification fromNotificationDetails(NotificationDetails nDets)
 	{
-		Notification notif=new Notification();
+		Notification notif;
 		if (nDets!=null)
 		{
-			if (NotificationConstants.CONTACT_REQUEST.equals(nDets.getType()))
-			{
-				NotificationContactRequest notifCR=NotificationContactRequest.fromNotificationDetails(nDets);
-				notif=notifCR;
-			}
-			else
-			{
-//			notif.setNotificationBody(nDets.getNotificationBody());
-			}
+			notif=NotificationHelper.notificationFactory(nDets);
 			notif.setType(nDets.getType());
 			notif.setNodeId(nDets.getNodeId());
 			User user=new User(nDets.getUserId());
 			notif.setUser(user);
 			notif.setRead(nDets.getRead());
 			notif.setTimestamp(nDets.getTimestamp());
+		}
+		else
+		{
+			notif=null;
 		}
 		return notif;
 	}

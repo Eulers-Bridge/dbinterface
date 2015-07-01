@@ -17,4 +17,8 @@ public class NotificationConstants
 	public static final String Read = "read";
 	public static final String NotificationBody = "notificationBody";
 	public static final String Timestamp = "timestamp";
+	public static final String ContactDetails = "contactDetails";
+	public static final String ContacteeId = "contacteeId";
+	public static final String ContactorId = "contactorId";
+	public static final String Text = "text";
 }

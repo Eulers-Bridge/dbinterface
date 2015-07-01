@@ -4,15 +4,22 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDeserializer;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
+import com.eulersbridge.iEngage.core.events.notifications.NotificationHelper;
+import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 /**
@@ -30,6 +37,40 @@ public class Notification extends ResourceSupport
 	Object notificationBody;
 	Boolean read=false;
 
+    static String notificationfieldsArray[]={
+		NotificationConstants.NodeId,
+		NotificationConstants.Timestamp,
+        NotificationConstants.Type,
+		NotificationConstants.UserId,
+   	 	NotificationConstants.NotificationBody,
+        NotificationConstants.Read
+	};
+
+    static Logger LOG = LoggerFactory.getLogger(Notification.class);
+
+	/**
+	 * 
+	 */
+	public Notification()
+	{
+		super();
+	}
+
+	public Notification(Long userId,String type,Object notificationBody)
+	{
+		setNotificationBody(notificationBody);
+		setRead(false);
+		setType(type);
+		setTimestamp(Calendar.getInstance().getTimeInMillis());
+		setUserId(userId);
+		
+		if (LOG.isDebugEnabled())
+		{
+			LOG.debug("Notification - "+this);
+			LOG.debug("Notification details - "+toNotificationDetails());
+		}
+	}
+    
 	public NotificationDetails toNotificationDetails()
 	{
 		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, read, type, notificationBody);
@@ -53,6 +94,29 @@ public class Notification extends ResourceSupport
 		return notification;
 	}
 
+    static public Notification populateFields(JsonNode node) throws JsonMappingException
+    {
+        Iterator<String> fields = node.fieldNames();
+        NotificationHelper.checkFieldNames(fields,notificationfieldsArray);
+
+        Long nodeId=NotificationHelper.getLong(node.get(NotificationConstants.NodeId));
+        Long userId=NotificationHelper.getLong(node.get(NotificationConstants.UserId));
+        Long timestamp = NotificationHelper.getLong(node.get(NotificationConstants.Timestamp));
+        String type = NotificationHelper.getText(node.get(NotificationConstants.Type));
+        Boolean read = NotificationHelper.getBoolean(node.get(NotificationConstants.Read));
+   	 	Object notificationBody=null;
+
+   	 	Notification notif=new Notification();
+        notif.setNodeId(nodeId);
+        notif.setRead(read);
+        notif.setTimestamp(timestamp);
+        notif.setType(type);
+        notif.setNotificationBody(notificationBody);
+        notif.setUserId(userId);
+        return notif;
+
+    }
+    
 	/**
 	 * @return the read
 	 */
