@@ -53,6 +53,7 @@ public class NotificationTest
 		dets=notification.toNotificationDetails();
 		repos=new HashMap<String,GraphRepository<?>>();
 		repos.put(UserRepository.class.getSimpleName(), userRepository);
+		if (LOG.isDebugEnabled()) LOG.debug("Setup");
 	}
 
 	/**
