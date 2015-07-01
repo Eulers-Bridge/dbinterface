@@ -586,7 +586,6 @@ public class UserController
 		}
 		else
 		{
-            //FIXME contactInfo should be parsed into Long here?
 			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
 		}
 			 	
