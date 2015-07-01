@@ -43,6 +43,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.RequestReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.notifications.Message;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
 import com.eulersbridge.iEngage.core.services.NotificationService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -81,8 +82,9 @@ public class NotificationControllerTest
 	String setupContent(NotificationDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
+		Message message=(Message)dets.getNotificationBody();
 		String content="{\"nodeId\":"+evtId+",\"type\":\""+dets.getType()+"\",\"timestamp\":"+dets.getTimestamp()+
-						",\"userId\":"+dets.getUserId()+",\"read\":"+dets.getRead()+",\"notificationBody\":"+dets.getNotificationBody()+"}";
+						",\"userId\":"+dets.getUserId()+",\"read\":"+dets.getRead()+",\"notificationBody\": {\"nodeId\":"+message.getNodeId()+",\"text\":\""+message.getText()+"\"}}";
 		return content;
 	}
 	
@@ -90,15 +92,16 @@ public class NotificationControllerTest
 	{
 		int evtId=dets.getNodeId().intValue();
 		String content="{\"nodeId1\":"+evtId+",\"type\":\""+dets.getType()+"\",\"timestamp\":"+dets.getTimestamp()+
-					   ",\"userId\":"+dets.getUserId()+",\"read\":"+dets.getRead()+",\"notificationBody\":"+dets.getNotificationBody()+"}";
+					   ",\"userId\":"+dets.getUserId()+",\"read\":"+dets.getRead()+",\"notificationBody\":{"+dets.getNotificationBody()+"}}";
 		return content;
 	}
 	
 	String setupReturnedContent(NotificationDetails dets)
 	{
 		int evtId=dets.getNodeId().intValue();
+		Message message=(Message)dets.getNotificationBody();
 		String content="{\"nodeId\":"+evtId+",\"userId\":"+dets.getUserId()+",\"timestamp\":"+dets.getTimestamp()+",\"read\":"+dets.getRead()+
-				",\"type\":\""+dets.getType()+"\",\"notificationBody\":"+dets.getNotificationBody()+",\"links\":["+
+				",\"type\":\""+dets.getType()+"\",\"notificationBody\":{\"nodeId\":"+message.getNodeId()+",\"text\":\""+message.getText()+"\"},\"links\":["+
 //				"{\"rel\":\"self\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"\"}"+
 //				",{\"rel\":\"Previous\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/previous\"},"+
 //				"{\"rel\":\"Next\",\"href\":\"http://localhost"+urlPrefix+"/"+evtId+"/next\"},"+
@@ -126,9 +129,12 @@ public class NotificationControllerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNotification()");
 		NotificationDetails dets=DatabaseDataFixture.populateNotification1().toNotificationDetails();
+		if (LOG.isDebugEnabled()) LOG.debug("dets - "+dets);
 		CreatedEvent testData=new CreatedEvent(dets);
 		String content=setupContent(dets);
+		if (LOG.isDebugEnabled()) LOG.debug("content - "+content);
 		String returnedContent=setupReturnedContent(dets);
+		if (LOG.isDebugEnabled()) LOG.debug("returned content - "+returnedContent);
 		when (notificationService.createNotification(any(CreateEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
