@@ -33,12 +33,10 @@ public class NotificationMessage extends Notification implements NotificationInt
         NotificationHelper.checkFieldNames(fields,messageFieldsArray);
 
 		Long nodeId=NotificationHelper.getLong(node.get(NotificationConstants.NodeId));
-		Long userId=NotificationHelper.getLong(node.get(NotificationConstants.UserId));
-		Long timestamp=NotificationHelper.getLong(node.get(NotificationConstants.Timestamp));
 		String text=NotificationHelper.getText(node.get(NotificationConstants.Text));
-		Message mes=new Message(nodeId, userId, timestamp, text);
-		if ((null==nodeId)&&((null==userId)&&(null==text)))
-			throw new JsonMappingException("notificationBody must be populated with a message containing userId and text");
+		Message mes=new Message(nodeId, text);
+		if ((null==text))
+			throw new JsonMappingException("notificationBody must be populated with a message containing text");
 		return mes;
 	}
 
@@ -49,7 +47,7 @@ public class NotificationMessage extends Notification implements NotificationInt
 		Long userId=null;
 		if (user!=null) userId=user.getNodeId();
 		
-		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, read, type, message);
+		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, read, type, new Message(userId, message));
 		return dets;
 	}
 	
