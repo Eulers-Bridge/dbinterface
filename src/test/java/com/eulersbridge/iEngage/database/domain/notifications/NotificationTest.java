@@ -115,7 +115,7 @@ public class NotificationTest
 	public final void testFromNotificationDetails()
 	{
 		Notification notificationTest=Notification.fromNotificationDetails(dets);
-		assertEquals("notificationTest not of Notification class",notificationTest.getClass(),Notification.class);
+		assertEquals("notificationTest not of NotificationMessage class",notificationTest.getClass(),NotificationMessage.class);
 		assertEquals("",dets.getNodeId(),notificationTest.getNodeId());
 		assertEquals("",dets.getType(),notificationTest.getType());
 		assertEquals("",dets.getRead(),notificationTest.getRead());

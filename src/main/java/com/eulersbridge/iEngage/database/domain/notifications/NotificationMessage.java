@@ -62,7 +62,8 @@ public class NotificationMessage extends Notification implements NotificationInt
 			{
 				Message message=(Message)nDets.getNotificationBody();
 				if (LOG.isDebugEnabled()) LOG.debug("Message - "+message);
-				notif.setMessage(message.getText());
+				if (message!=null)
+					notif.setMessage(message.getText());
 			}
 			notif.setType(nDets.getType());
 			notif.setNodeId(nDets.getNodeId());
