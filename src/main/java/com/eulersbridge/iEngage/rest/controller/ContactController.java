@@ -3,7 +3,6 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.Calendar;
 import java.util.Iterator;
 
 import org.apache.commons.validator.routines.EmailValidator;
@@ -122,7 +121,7 @@ public class ContactController
 				{	
 					if (!userEvent.isEntityFound())
 					{
-						// They are not already users.  Need to deal with that.
+						// TODO They are not already users.  Need to deal with that.
 						ContactRequestDetails dets=(ContactRequestDetails) evt.getDetails();
 						restContactRequest=ContactRequest.fromContactRequestDetails(dets);
 						
@@ -134,15 +133,10 @@ public class ContactController
 						ContactRequestDetails dets=(ContactRequestDetails) evt.getDetails();
 						
 						restContactRequest=ContactRequest.fromContactRequestDetails(dets);
-						// Create a new contact request.
-						Notification notification = new Notification();
-						notification.setNotificationBody(dets);
-						notification.setRead(false);
-						notification.setType(NotificationConstants.CONTACT_REQUEST);
-						notification.setTimestamp(Calendar.getInstance().getTimeInMillis());
 						UserDetails userDets=(UserDetails)userEvent.getDetails();
 						Long contacteeId=userService.findUserId(userDets.getEmail());
-						notification.setUserId(contacteeId);
+						// Create a new contact request.
+						Notification notification=new Notification(contacteeId, NotificationConstants.CONTACT_REQUEST, dets);
 						
 						
 						if (LOG.isDebugEnabled())
@@ -209,7 +203,7 @@ public class ContactController
 					
 					
 					// Create a new contact request.
-					Notification notification=createNotification(crDets.getUserId(), NotificationConstants.CONTACT_ACCEPTED, cDets);
+					Notification notification=new Notification(crDets.getUserId(), NotificationConstants.CONTACT_ACCEPTED, cDets);
 					
 			        CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
 			        CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
@@ -230,25 +224,6 @@ public class ContactController
 			return result;
 		}
 		
-		public Notification createNotification(Long userId,String type,Object notificationBody)
-		{
-			// Create a new contact request.
-			Notification notification = new Notification();
-			notification.setNotificationBody(notificationBody);
-			notification.setRead(false);
-			notification.setType(type);
-			notification.setTimestamp(Calendar.getInstance().getTimeInMillis());
-			notification.setUserId(userId);
-			
-			if (LOG.isDebugEnabled())
-			{
-				LOG.debug("Notification - "+notification);
-				LOG.debug("Notification details - "+notification.toNotificationDetails());
-			}
-
-			return notification;
-		}
-	    
 	    /**
 	     * Is passed all the necessary data to reject a contact  request.
 	     * The request must be a DELETE with the contact request ID presented
