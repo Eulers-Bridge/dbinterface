@@ -7,10 +7,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
+import com.eulersbridge.iEngage.core.events.notifications.Message;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.domain.notifications.Notification;
 import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactRequest;
+import com.eulersbridge.iEngage.database.domain.notifications.NotificationMessage;
 
 import org.springframework.data.neo4j.conversion.Result;
 
@@ -880,7 +882,7 @@ public class DatabaseDataFixture
 		User user=populateUserGnewitt2();
 		Long nodeId=23342l;
 		Long timeStamp=Calendar.getInstance().getTimeInMillis();
-		return populateNotification(nodeId, read, timeStamp, type, user);
+		return populateNotificationMessage(nodeId, read, timeStamp, type, user,"test message 1");
 	}
 
 	public static Notification populateNotification2()
@@ -890,7 +892,7 @@ public class DatabaseDataFixture
 		User user=populateUserGnewitt();
 		Long nodeId=2342l;
 		Long timeStamp=Calendar.getInstance().getTimeInMillis();
-		return populateNotification(nodeId, read, timeStamp, type, user);
+		return populateNotificationMessage(nodeId, read, timeStamp, type, user,"test message 2");
 	}
 
 	public static Notification populateNotification(Long nodeId, Boolean read, Long timestamp, String type, User user)
@@ -901,6 +903,17 @@ public class DatabaseDataFixture
 		notification.setTimestamp(timestamp);
 		notification.setType(type);
 		notification.setUser(user);
+		return notification;
+	}
+	public static NotificationMessage populateNotificationMessage(Long nodeId, Boolean read, Long timestamp, String type, User user,String message)
+	{
+		NotificationMessage notification=new NotificationMessage();
+		notification.setNodeId(nodeId);
+		notification.setRead(read);
+		notification.setTimestamp(timestamp);
+		notification.setType(type);
+		notification.setUser(user);
+		notification.setMessage(message);
 		return notification;
 	}
 	public static HashMap<Long, Notification> populateNotifications()
