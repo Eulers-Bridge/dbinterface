@@ -6,6 +6,7 @@ import com.eulersbridge.iEngage.core.services.CommentService;
 import com.eulersbridge.iEngage.database.domain.Comment;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +57,10 @@ public class CommentControllerTest {
     public void setUp() throws Exception {
         if (LOG.isDebugEnabled()) LOG.debug("setup()");
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+
+        MappingJackson2HttpMessageConverter converter=RestDataFixture.setUpConverter();
+		this.mockMvc = standaloneSetup(controller).setMessageConverters(converter).build();
+//		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
     }
 
     @Test

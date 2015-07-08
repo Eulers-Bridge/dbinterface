@@ -1,11 +1,26 @@
 package com.eulersbridge.iEngage.rest.controller.fixture;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.rest.domain.User;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RestDataFixture 
 {
+	public static MappingJackson2HttpMessageConverter setUpConverter()
+	{
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+		ObjectMapper mapper = new ObjectMapper();
+		DeserializationFeature feature=DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+		mapper.enable(feature);
+		converter.setObjectMapper(mapper);
+		return converter;
+	}
+
+	
 	public static User uniMelbUser()
 	{
 		User user = populateUser();

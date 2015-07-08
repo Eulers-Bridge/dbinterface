@@ -51,6 +51,7 @@ import com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent;
 import com.eulersbridge.iEngage.core.services.ElectionService;
 import com.eulersbridge.iEngage.core.services.PositionService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 /**
  * @author Greg Newitt
@@ -81,7 +82,8 @@ public class PositionControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("setup()");
 		MockitoAnnotations.initMocks(this);
 		
-		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+		MappingJackson2HttpMessageConverter converter=RestDataFixture.setUpConverter();
+		this.mockMvc = standaloneSetup(controller).setMessageConverters(converter).build();
 	}
 
 	String setupContent(PositionDetails dets)

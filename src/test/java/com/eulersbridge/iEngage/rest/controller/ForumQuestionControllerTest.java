@@ -59,6 +59,7 @@ import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 /**
  * @author Greg Newitt
@@ -95,7 +96,9 @@ public class ForumQuestionControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("setup()");
 		MockitoAnnotations.initMocks(this);
 		
-		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+		MappingJackson2HttpMessageConverter converter=RestDataFixture.setUpConverter();
+		this.mockMvc = standaloneSetup(controller).setMessageConverters(converter).build();
+//		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
 	}
 
 	/**

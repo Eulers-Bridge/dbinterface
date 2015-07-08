@@ -24,6 +24,7 @@ import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.BadgeService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +78,9 @@ public class BadgeControllerTest {
         if (LOG.isDebugEnabled()) LOG.debug("setup()");
         MockitoAnnotations.initMocks(this);
 
-        this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+		MappingJackson2HttpMessageConverter converter=RestDataFixture.setUpConverter();
+		this.mockMvc = standaloneSetup(controller).setMessageConverters(converter).build();
+//		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
     }
 
 	String setupContent(BadgeDetails dets)

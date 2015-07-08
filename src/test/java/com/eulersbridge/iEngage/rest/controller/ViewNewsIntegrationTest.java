@@ -52,6 +52,7 @@ import com.eulersbridge.iEngage.core.services.NewsService;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 public class ViewNewsIntegrationTest {
 
@@ -75,7 +76,8 @@ public class ViewNewsIntegrationTest {
 		if (LOG.isDebugEnabled()) LOG.debug("setup()");
 		MockitoAnnotations.initMocks(this);
 		
-		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+		MappingJackson2HttpMessageConverter converter=RestDataFixture.setUpConverter();
+		this.mockMvc = standaloneSetup(controller).setMessageConverters(converter).build();
 	}
 
 	String createPhotosString(Iterator <PhotoDetails> iter)

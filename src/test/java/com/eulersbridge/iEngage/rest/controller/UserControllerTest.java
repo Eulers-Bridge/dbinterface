@@ -88,7 +88,8 @@ public class UserControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("setup()");
 		MockitoAnnotations.initMocks(this);
 		
-		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+		MappingJackson2HttpMessageConverter converter=RestDataFixture.setUpConverter();
+		this.mockMvc = standaloneSetup(controller).setMessageConverters(converter).build();
 	}
 	
 	private String populatePersonalityContent(PersonalityDetails dets)

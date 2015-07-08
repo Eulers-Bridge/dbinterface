@@ -55,6 +55,7 @@ import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.TaskService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 
 /**
  * @author Greg Newitt
@@ -84,7 +85,8 @@ public class TaskControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("setup()");
 		MockitoAnnotations.initMocks(this);
 		
-		this.mockMvc = standaloneSetup(controller).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+		MappingJackson2HttpMessageConverter converter=RestDataFixture.setUpConverter();
+		this.mockMvc = standaloneSetup(controller).setMessageConverters(converter).build();
 	}
 
 	String setupContent(TaskDetails dets)
