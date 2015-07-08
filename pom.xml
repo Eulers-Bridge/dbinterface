@@ -8,12 +8,12 @@
     <version>0.1.0</version>
     <properties>
         <start-class>com.eulersbridge.iEngage.Application</start-class>
-        <spring-boot-version>1.1.6.RELEASE</spring-boot-version>
+        <spring-boot-version>1.1.10.RELEASE</spring-boot-version>
 	</properties>
 
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.1.6.RELEASE</version>
+        <version>1.1.10.RELEASE</version>
         <groupId>org.springframework.boot</groupId>
     </parent>
 
@@ -73,7 +73,7 @@
         <dependency>
         	<groupId>org.springframework.data</groupId>
         	<artifactId>spring-data-neo4j-rest</artifactId>
-        	<version>3.2.0.RELEASE</version>
+        	<version>3.2.3.RELEASE</version>
         	<!-- version>3.2.0.BUILD-SNAPSHOT</version-->
         </dependency>
         <dependency>
