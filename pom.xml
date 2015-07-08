@@ -8,12 +8,12 @@
     <version>0.1.0</version>
     <properties>
         <start-class>com.eulersbridge.iEngage.Application</start-class>
-        <spring-boot-version>1.2.5.RELEASE</spring-boot-version>
+        <spring-boot-version>1.1.12.RELEASE</spring-boot-version>
 	</properties>
 
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.2.5.RELEASE</version>
+        <version>1.1.12.RELEASE</version>
         <groupId>org.springframework.boot</groupId>
     </parent>
 
@@ -86,10 +86,12 @@
         <dependency>
         	<groupId>org.springframework.plugin</groupId>
         	<artifactId>spring-plugin-core</artifactId>
+        	<version>1.1.0.RELEASE</version>
         </dependency>
 	<dependency>
 		<groupId>javax.mail</groupId>
 		<artifactId>javax.mail-api</artifactId>
+		<version>1.5.1</version>
 		</dependency>
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
