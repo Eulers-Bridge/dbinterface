@@ -8,12 +8,12 @@
     <version>0.1.0</version>
     <properties>
         <start-class>com.eulersbridge.iEngage.Application</start-class>
-        <spring-boot-version>1.1.10.RELEASE</spring-boot-version>
+        <spring-boot-version>1.1.12.RELEASE</spring-boot-version>
 	</properties>
 
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.1.10.RELEASE</version>
+        <version>1.1.12.RELEASE</version>
         <groupId>org.springframework.boot</groupId>
     </parent>
 
@@ -106,13 +106,12 @@
 	<dependency>
 	    <groupId>com.jayway.jsonpath</groupId>
 	    <artifactId>json-path</artifactId>
-	    <version>0.8.1</version>
 	    <scope>test</scope>
 	</dependency>
 	<dependency>
 	    <groupId>com.jayway.jsonpath</groupId>
 	    <artifactId>json-path-assert</artifactId>
-	    <version>0.8.1</version>
+	    <version>0.9.1</version>
 	    <scope>test</scope>
 	</dependency>
 	<dependency>
@@ -123,14 +122,16 @@
 	    <scope>test</scope>
 	</dependency>
 		<dependency>
-			<groupId>net.thucydides</groupId>
-			<artifactId>thucydides-core</artifactId>
-			<version>0.9.275</version>
+			<groupId>net.serenity-bdd</groupId>
+			<artifactId>serenity-core</artifactId>
+			<version>1.0.59</version>
+	    	<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.thucydides</groupId>
-			<artifactId>thucydides-jbehave-plugin</artifactId>
-			<version>0.9.275</version>
+			<groupId>net.serenity-bdd</groupId>
+			<artifactId>serenity-jbehave</artifactId>
+			<version>1.0.23</version>
+	    	<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-validator</groupId>
