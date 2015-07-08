@@ -33,13 +33,13 @@ import com.eulersbridge.iEngage.database.domain.converters.PhotoAlbumToOwnerConv
 import com.eulersbridge.iEngage.database.domain.converters.TicketToOwnerConverter;
 import com.eulersbridge.iEngage.database.domain.converters.UserToOwnerConverter;
 import com.eulersbridge.iEngage.security.UserPermissionEvaluator;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.fasterxml.jackson.databind.module.SimpleDeserializers;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
-import com.google.common.collect.Sets;
 
 @PropertySource("classpath:application.properties")
 @Configuration
@@ -116,21 +116,22 @@ public class Application extends Neo4jConfiguration
 		return conversionService;
 	}
 
-/*	@Primary
+	@Primary
 	@Bean
 	public ObjectMapper objectMapper()
 	{
 		ObjectMapper om=new ObjectMapper();
-	    om.registerModule(new SimpleModule("CustomSerializerModule")
+		om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+/*	    om.registerModule(new SimpleModule("CustomSerializerModule")
 	    {
 	        @Override public void setupModule(SetupContext context)
 	        {
 	            context.addSerializers(serializers);
 	        }
 	    });
-		return om;
+*/		return om;
 	}
-*/	
+	
 /*	@Bean
 	public Module  module1()
 	{
