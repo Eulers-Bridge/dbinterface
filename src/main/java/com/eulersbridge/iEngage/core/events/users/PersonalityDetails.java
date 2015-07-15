@@ -11,7 +11,6 @@ import com.eulersbridge.iEngage.core.events.Details;
  */
 public class PersonalityDetails extends Details
 {
-	private Long nodeId;
 	private Float extroversion;
 	private Float agreeableness;
 	private Float conscientiousness;

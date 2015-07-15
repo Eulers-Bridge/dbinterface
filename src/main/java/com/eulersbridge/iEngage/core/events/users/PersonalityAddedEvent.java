@@ -29,6 +29,8 @@ public class PersonalityAddedEvent extends CreatedEvent
 	public PersonalityAddedEvent(PersonalityDetails personalityDetails) 
 	{
 		super(personalityDetails);
+		if (personalityDetails.getNodeId()!=null)
+			userFound=true;
 	}
 
 	/**
@@ -57,6 +59,16 @@ public class PersonalityAddedEvent extends CreatedEvent
 	{
 		return userFound;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "PersonalityAddedEvent [userFound=" + userFound
+				+ ", toString()=" + super.toString() + "]";
+	}
+
 	public static PersonalityAddedEvent userNotFound()
 	{
 		PersonalityAddedEvent res=new PersonalityAddedEvent();

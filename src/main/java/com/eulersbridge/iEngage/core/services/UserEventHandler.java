@@ -652,16 +652,31 @@ public class UserEventHandler implements UserService, UserDetailsService
 			if (LOG.isDebugEnabled())
 				LOG.debug("Personality - " + personality);
 
-			Personality personalityAdded = personRepository.save(personality);
+			Personality personalityAdded;
+			Boolean existingPersonality=(user.getPersonality()!=null);
+			if (existingPersonality)
+			{
+				personality.setNodeId(user.getPersonality().getNodeId());
+			}
+
+			personalityAdded = personRepository.save(personality);
 			if (personalityAdded != null)
 			{
-				Long personalityId = personalityAdded.getNodeId();
-				Personality personalityLinked = userRepository.addPersonality(
-						user.getNodeId(), personalityId);
-				if (personalityLinked.equals(personalityAdded))
+				if (!existingPersonality)
+				{
+					Long personalityId = personalityAdded.getNodeId();
+					Personality personalityLinked = userRepository.addPersonality(
+							user.getNodeId(), personalityId);
+					if (personalityLinked.equals(personalityAdded))
+						evt = new PersonalityAddedEvent(
+								personalityAdded.toPersonalityDetails());
+					else evt = PersonalityAddedEvent.userNotFound();
+				}
+				else
+				{
 					evt = new PersonalityAddedEvent(
 							personalityAdded.toPersonalityDetails());
-				else evt = PersonalityAddedEvent.userNotFound();
+				}
 			}
 			else
 			{
