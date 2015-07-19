@@ -5,8 +5,11 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
 import com.eulersbridge.iEngage.core.events.comments.CreateCommentEvent;
 import com.eulersbridge.iEngage.core.events.comments.RequestReadCommentEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
+import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
+import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
@@ -18,6 +21,10 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * @author Yikai Gong
@@ -63,5 +70,46 @@ public class AspectService {
             badgeRepository.badgeCompleted(14853l, userEmail);
     }
 
+    @AfterReturning(
+            pointcut="execution(* com.eulersbridge.iEngage.core.services.NewsEventHandler.requestReadNewsArticle(..)) && args(requestReadNewsArticleEvent)",
+            returning="result")
+    public void updateReadArticleTask(JoinPoint joinPoint, RequestReadNewsArticleEvent requestReadNewsArticleEvent, ReadEvent result){
+        if(result.isEntityFound()){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = null;
+            if (!(auth instanceof AnonymousAuthenticationToken)) {
+                userDetails = (UserDetails)auth.getPrincipal();
+            }
+            String userEmail = userDetails.getUsername();
+            String taskAction = "Read an Article.";
+            TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+        }
+    }
+
+    @AfterReturning(
+            pointcut="execution(* com.eulersbridge.iEngage.core.services.UserEventHandler.addPersonality(..)) && args(addPersonalityEvent)",
+            returning="result")
+    public void updateAddPersonalityTask(JoinPoint joinPoint, AddPersonalityEvent addPersonalityEvent, PersonalityAddedEvent result){
+        if(result.isUserFound()){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = null;
+            if (!(auth instanceof AnonymousAuthenticationToken)) {
+                userDetails = (UserDetails)auth.getPrincipal();
+            }
+            String userEmail = userDetails.getUsername();
+            String taskAction = "Complete Personality Questions.";
+            TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            if (taskComplete!=null){
+                updateAddPersonalityBadge(userEmail, taskAction);
+            }
+        }
+    }
+
+    public void updateAddPersonalityBadge(String userEmail, String taskAction){
+        Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
+        if (numOfCompCommentTask >= 1){
+            badgeRepository.badgeCompleted(400l, userEmail);
+        }
+    }
 
 }
