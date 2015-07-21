@@ -19,7 +19,7 @@ public interface UserRepository extends GraphRepository<User>
  			"]-(v:`VerificationToken`) where ID(u)={userId} AND ID(v)={tokenId} set u.accountVerified={isVerified} set v.verified={isVerified} ")
 	void verifyUser(@Param("userId") Long userId, @Param("tokenId") Long tokenId, @Param("isVerified") boolean isVerified);
 
-	@Query("MATCH (u:`"+DatabaseDomainConstants.USER+"`) where ID(u)={userId} MATCH (p:`Personality`) where ID(p)={personalityId} create (u)-[r:"+DatabaseDomainConstants.HAS_PERSONALITY_LABEL+
+	@Query("MATCH (u:`"+DatabaseDomainConstants.USER+"`) where ID(u)={userId} MATCH (p:`Personality`) where ID(p)={personalityId} create unique (u)-[r:"+DatabaseDomainConstants.HAS_PERSONALITY_LABEL+
 			"]->(p) return p;")
 	Personality addPersonality(@Param("userId") Long userId,@Param("personalityId") Long personalityId);
 	
