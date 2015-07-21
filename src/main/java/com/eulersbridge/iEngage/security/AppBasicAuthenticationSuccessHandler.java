@@ -27,7 +27,7 @@ public class AppBasicAuthenticationSuccessHandler extends
 {
 	private RequestCache requestCache = new HttpSessionRequestCache();
 	
-    private static Logger LOG = LoggerFactory.getLogger(AppBasicAuthenticationEntryPoint.class);
+    private static Logger LOG = LoggerFactory.getLogger(AppBasicAuthenticationSuccessHandler.class);
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) 
 			throws ServletException, IOException 
