@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -34,15 +35,12 @@ import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
-import com.eulersbridge.iEngage.database.domain.Country;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
-import com.eulersbridge.iEngage.database.repository.CountryMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
-import com.eulersbridge.iEngage.database.repository.InstitutionMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.NewsFeedMemoryRepository;
 import com.eulersbridge.iEngage.database.repository.NewsFeedRepository;
+import com.eulersbridge.iEngage.database.repository.ResultImpl;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
@@ -60,10 +58,8 @@ public class InstitutionEventHandlerTest
     @Mock
     NewsFeedRepository newsFeedRepository;
 
-	InstitutionService instService,service;
-	InstitutionMemoryRepository testInstRepo;
-	CountryMemoryRepository testCountryRepo;
-	NewsFeedMemoryRepository testSYRepo;
+	InstitutionService service;
+//	InstitutionMemoryRepository testInstRepo;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -87,17 +83,6 @@ public class InstitutionEventHandlerTest
 		MockitoAnnotations.initMocks(this);
 
 		service=new InstitutionEventHandler(institutionRepository, countryRepository, newsFeedRepository);
-		
-		HashMap<Long, Country> countrys=DatabaseDataFixture.populateCountries();
-		testCountryRepo=new CountryMemoryRepository(countrys);
-
-		HashMap<Long, Institution> institutions=DatabaseDataFixture.populateInstitutions();
-		testInstRepo=new InstitutionMemoryRepository(institutions);
-		
-		HashMap<Long, NewsFeed> years=DatabaseDataFixture.populateStudentYears();
-		testSYRepo=new NewsFeedMemoryRepository(years);
-
-		instService=new InstitutionEventHandler(testInstRepo, testCountryRepo, testSYRepo);
 	}
 
 
@@ -113,7 +98,7 @@ public class InstitutionEventHandlerTest
 	 */
 	@Test
 	public void testInstitutionEventHandler() {
-		InstitutionService instService2=new InstitutionEventHandler(testInstRepo, testCountryRepo,testSYRepo);
+		InstitutionService instService2=new InstitutionEventHandler(institutionRepository, countryRepository,newsFeedRepository);
 		assertNotNull("Constructor did not create service.",instService2);
 	}
 
@@ -131,7 +116,7 @@ public class InstitutionEventHandlerTest
 		nADs.setState("Victoria");
 		nADs.setCountryName("Australia");
 		createInstitutionEvent=new CreateInstitutionEvent(nADs);
-		InstitutionCreatedEvent nace = instService.createInstitution(createInstitutionEvent);
+		InstitutionCreatedEvent nace = service.createInstitution(createInstitutionEvent);
 		assertNotNull("Not yet implemented",nace);
 	}
 
@@ -139,10 +124,13 @@ public class InstitutionEventHandlerTest
 	 * Test method for {@link com.eulersbridge.iEngage.core.services.InstitutionEventHandler#requestReadInstitution(com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent)}.
 	 */
 	@Test
-	public void testRequestReadInstitution() {
+	public void testRequestReadInstitution()
+	{
 		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(new Long(1));
+		Institution value=DatabaseDataFixture.populateInstUniMelb();
+		when (institutionRepository.findOne(any(Long.class))).thenReturn(value);
 		assertEquals("1 == 1",rnae.getNodeId(),new Long(1));
-		ReadInstitutionEvent rane=(ReadInstitutionEvent) instService.requestReadInstitution(rnae);
+		ReadInstitutionEvent rane=(ReadInstitutionEvent) service.requestReadInstitution(rnae);
 		assertNotNull("Not yet implemented",rane);
 	}
 
@@ -151,7 +139,7 @@ public class InstitutionEventHandlerTest
 		Long nodeId=new Long(19);
 		RequestReadInstitutionEvent rnae=new RequestReadInstitutionEvent(nodeId);
 		assertEquals("19 == 19",rnae.getNodeId(),new Long(19));
-		ReadEvent rane=instService.requestReadInstitution(rnae);
+		ReadEvent rane=service.requestReadInstitution(rnae);
 		assertNotNull("Not yet implemented",rane);
 		assertNull(rane.getDetails());
 		assertEquals(nodeId,rane.getNodeId());
@@ -207,7 +195,7 @@ public class InstitutionEventHandlerTest
 	public void testDeleteInstitution() 
 	{
 		DeleteInstitutionEvent deleteInstitutionEvent=new DeleteInstitutionEvent(new Long(1));
-		DeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
+		DeletedEvent nUDe = service.deleteInstitution(deleteInstitutionEvent);
 		assertNotNull("Institution Deleted Event returned null.",nUDe);
 	}
 
@@ -218,7 +206,7 @@ public class InstitutionEventHandlerTest
 	public void testDeleteNonExistentInstitutionShouldReturnNotFound() 
 	{
 		DeleteInstitutionEvent deleteInstitutionEvent=new DeleteInstitutionEvent(new Long(19));
-		DeletedEvent nUDe = instService.deleteInstitution(deleteInstitutionEvent);
+		DeletedEvent nUDe = service.deleteInstitution(deleteInstitutionEvent);
 		assertNotNull("Institution Deleted Event returned null.",nUDe);
 		assertFalse("Entity allegedly found!",nUDe.isEntityFound());
 		assertFalse("No entity, so deletetion could not have been completed.",nUDe.isDeletionCompleted());
@@ -230,11 +218,20 @@ public class InstitutionEventHandlerTest
 	@Test
 	public void testReadInstitutions() 
 	{
+		ArrayList<Institution> evts=new ArrayList<Institution>();
+		evts.add(DatabaseDataFixture.populateInstUniMelb());
+		evts.add(DatabaseDataFixture.populateInstMonashUni());
+
+
 		ReadAllEvent rie=new ReadAllEvent(null);
-		InstitutionsReadEvent institutions=instService.readInstitutions(rie);
+		Result<Institution> value=new ResultImpl<Institution>(evts);
+		when(institutionRepository.findAll()).thenReturn(value);
+
+		InstitutionsReadEvent institutions=service.readInstitutions(rie);
 		assertNotNull("Not yet implemented",institutions);
 		rie=new ReadAllEvent((long)1);
-		institutions=instService.readInstitutions(rie);
+		when(institutionRepository.findByCountryId(any(Long.class))).thenReturn(value);
+		institutions=service.readInstitutions(rie);
 		assertNotNull("Not yet implemented",institutions);
 	}
 	
@@ -243,7 +240,10 @@ public class InstitutionEventHandlerTest
 	{
 		NewsFeedDetails newsFeedDetails=new NewsFeedDetails((long)1);
 		CreateNewsFeedEvent csye=new CreateNewsFeedEvent(newsFeedDetails);
-		NewsFeedCreatedEvent syce=instService.createNewsFeed(csye);
+	   	NewsFeed value=NewsFeed.fromDetails(newsFeedDetails);
+		when(newsFeedRepository.save(any(NewsFeed.class))).thenReturn(value);
+
+		NewsFeedCreatedEvent syce=service.createNewsFeed(csye);
 		assertNotNull("Student year created event was null.",syce);
 	}
 

@@ -1,14 +1,17 @@
 package com.eulersbridge.iEngage.core.services;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.data.neo4j.conversion.Result;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
@@ -24,40 +27,34 @@ import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
 import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.CountryMemoryRepository;
+import com.eulersbridge.iEngage.database.repository.CountryRepository;
+import com.eulersbridge.iEngage.database.repository.ResultImpl;
+
 /**
  * @author Greg Newitt
  *
  */
 public class CountryEventHandlerTest 
 {
-	CountryMemoryRepository testRepo;
 	CountryEventHandler countryService;
 
-    @BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
+    @Mock
+	CountryRepository countryRepository;
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
+	CountryService service;
+	
 	@Before
 	public void setUp() throws Exception 
 	{
-		HashMap<Long, Country> countrys=DatabaseDataFixture.populateCountries();
-		testRepo=new CountryMemoryRepository(countrys);
-		countryService=new CountryEventHandler(testRepo);
-	}
-
-	@After
-	public void tearDown() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		
+		service=new CountryEventHandler(countryRepository);
 	}
 
 	@Test
 	public void testCountryEventHandler() 
 	{
-		CountryService countryService2=new CountryEventHandler(testRepo);
+		CountryService countryService2=new CountryEventHandler(countryRepository);
 		assertNotNull("countryService not being created by constructor.",countryService2);
 	}
 
@@ -65,49 +62,63 @@ public class CountryEventHandlerTest
 	public void testCreateCountry() 
 	{
 		CreateCountryEvent createCountryEvent;
-		CountryDetails cDs;
-		Long id=new Long(2);
-		cDs=new CountryDetails(id);
-		cDs.setCountryName("United Kingdom");
+		Country value=DatabaseDataFixture.populateCountryAust();
+		CountryDetails cDs=value.toCountryDetails();
 		createCountryEvent=new CreateCountryEvent(cDs);
-		CountryCreatedEvent nace = countryService.createCountry(createCountryEvent);
+		when(countryRepository.save(any(Country.class))).thenReturn(value);
+		CountryCreatedEvent nace = service.createCountry(createCountryEvent);
 		assertNotNull("Not yet implemented",nace);
+		assertEquals(nace.getDetails(),value.toCountryDetails());
+		assertEquals(nace.getId(),value.getNodeId());
+		assertEquals(nace.getNodeId(),value.getNodeId());
 	}
 
 	@Test
 	public void testReadCountry() 
 	{
-		ReadCountryEvent rnae=new ReadCountryEvent(new Long(1));
-		assertEquals("1 == 1",rnae.getNodeId(),new Long(1));
-		CountryReadEvent rane=(CountryReadEvent) countryService.readCountry(rnae);
+		Country value=DatabaseDataFixture.populateCountryAust();
+		ReadCountryEvent rnae=new ReadCountryEvent(value.getNodeId());
+		when(countryRepository.findOne(any(Long.class))).thenReturn(value);
+		CountryReadEvent rane=(CountryReadEvent) service.readCountry(rnae);
 		assertNotNull("Not yet implemented",rane);
+		assertEquals(rane.getDetails(),value.toCountryDetails());
+		assertEquals(rane.getNodeId(),value.getNodeId());
+		assertTrue(rane.isEntityFound());
 	}
 
 	@Test
 	public void testReadNonExistentCountryShouldReturnNotFound() 
 	{
 		ReadCountryEvent rnae=new ReadCountryEvent(new Long(19));
-		assertEquals("19 == 19",rnae.getNodeId(),new Long(19));
-		ReadEvent rane=countryService.readCountry(rnae);
+		when(countryRepository.findOne(any(Long.class))).thenReturn(null);
+		ReadEvent rane=service.readCountry(rnae);
 		assertNotNull("Not yet implemented",rane);
 		assertFalse("Entity should not be found.",rane.isEntityFound());
 	}
 
 	@Test
 	public void testUpdateCountry() {
-		CountryDetails cDs;
+		Country value=DatabaseDataFixture.populateCountryAust();
+		CountryDetails cDs=value.toCountryDetails();
+		when(countryRepository.save(any(Country.class))).thenReturn(value);
+
 		cDs=new CountryDetails(new Long(1));
 		cDs.setCountryName("New Zealand");
 		
 		UpdateCountryEvent updateCountryEvent=new UpdateCountryEvent(cDs.getCountryId(), cDs);
-		UpdatedEvent nude = countryService.updateCountry(updateCountryEvent);
+		UpdatedEvent nude = service.updateCountry(updateCountryEvent);
 		assertNotNull("Not yet implemented",nude);
+		assertEquals(nude.getNodeId(),value.getNodeId());
+		assertEquals(nude.getDetails(),value.toCountryDetails());
+		assertTrue(nude.isEntityFound());
+		assertFalse(nude.isFailed());
 	}
 
 	@Test
-	public void testDeleteCountry() {
+	public void testDeleteCountry()
+	{
 		DeleteCountryEvent deleteCountryEvent=new DeleteCountryEvent(new Long(1));
-		DeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
+		DeletedEvent nUDe = service.deleteCountry(deleteCountryEvent);
 		assertNotNull("Not yet implemented",nUDe);
 	}
 
@@ -115,7 +126,7 @@ public class CountryEventHandlerTest
 	public void testDeleteNonExistentCountryShouldReturnNotFound() 
 	{
 		DeleteCountryEvent deleteCountryEvent=new DeleteCountryEvent(new Long(19));
-		DeletedEvent nUDe = countryService.deleteCountry(deleteCountryEvent);
+		DeletedEvent nUDe = service.deleteCountry(deleteCountryEvent);
 		assertNotNull("Not yet implemented",nUDe);
 		assertFalse("Entity can't be found...",nUDe.isEntityFound());
 		assertFalse("Deletion has not completed!",nUDe.isDeletionCompleted());
@@ -124,8 +135,14 @@ public class CountryEventHandlerTest
 	@Test
 	public void testReadCountrys() 
 	{
+		ArrayList<Country> evts=new ArrayList<Country>();
+		evts.add(DatabaseDataFixture.populateCountryAust());
+		evts.add(DatabaseDataFixture.populateCountryAust());
+		Result<Country> value=new ResultImpl<Country>(evts);
+
 		ReadAllEvent rce=new ReadAllEvent(null);
-		CountrysReadEvent countrys=countryService.readCountrys(rce);
+		when (countryRepository.findAll()).thenReturn(value);
+		CountrysReadEvent countrys=service.readCountrys(rce);
 		assertNotNull("Not yet implemented",countrys);
 	}
 
