@@ -63,7 +63,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-neo4j</artifactId>
-        <!--  version>3.3.1.RELEASE</version-->
+        	<version>3.3.1.RELEASE</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
@@ -74,8 +74,14 @@
         <dependency>
         	<groupId>org.springframework.data</groupId>
         	<artifactId>spring-data-neo4j-rest</artifactId>
-        	<!--version>3.3.1.RELEASE</version-->
-        	<version>3.2.3.RELEASE</version>
+        	<version>3.3.1.RELEASE</version>
+        	<!--version>3.2.3.RELEASE</version-->
+        </dependency>
+        <dependency>
+        	<!-- Required to provide property data accessor for Spring Data 3.3 Current SpringBoot was V 1.9.3 -->
+	        <groupId>org.springframework.data</groupId>
+	        <artifactId>spring-data-commons</artifactId>
+	        <version>1.10.0.RELEASE</version>
         </dependency>
         <dependency>
              <groupId>org.hibernate</groupId>
