@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdateEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
@@ -378,6 +379,36 @@ public class ContactRequestEventHandlerTest
 		assertNull(uEvt.getNodeId());
 		assertFalse(uEvt.isEntityFound());
 		assertNull(uEvt.getDetails());
+	}
+
+	/**
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.ContactRequestEventHandler#rejectContactRequest(com.eulersbridge.iEngage.core.events.contactRequest.RejectContactRequestEvent)}.
+	 */
+	@Test
+	public final void testRejectContactRequestByContactNumber()
+	{
+		if (LOG.isDebugEnabled()) LOG.debug("RejectingContactRequest()");
+		ContactRequest testData=DatabaseDataFixture.populateContactRequest1();
+		testData.setResponseDate(null);
+		ContactRequest respData=DatabaseDataFixture.populateContactRequest1();
+   		respData.setAccepted(false);
+   		respData.setRejected(true);
+   		respData.setResponseDate(Calendar.getInstance().getTimeInMillis());
+
+		User userData=DatabaseDataFixture.populateUserGnewitt();
+		when(contactRequestRepository.findOne(any(Long.class))).thenReturn(testData);
+		when(userRepository.findByContactNumber(any(String.class))).thenReturn(userData);
+		Contact value=DatabaseDataFixture.populateContact1();
+		when(userRepository.addContact(any(Long.class), any(Long.class))).thenReturn(value);
+		when(contactRequestRepository.save(any(ContactRequest.class))).thenReturn(respData);
+		Details details=new Details();
+		UpdateEvent rejectContactRequestEvent=new UpdateEvent(testData.getNodeId(), details);
+		UpdatedEvent uEvt=service.rejectContactRequest(rejectContactRequestEvent);
+		assertEquals(testData.getNodeId(),uEvt.getNodeId());
+		assertEquals(((ContactRequestDetails)(uEvt.getDetails())).getNodeId(),testData.getNodeId());
+		assertEquals(((ContactRequestDetails)(uEvt.getDetails())).getResponseDate(),testData.getResponseDate());
+		assertTrue(((ContactRequestDetails)(uEvt.getDetails())).getRejected());
+		assertEquals(((ContactRequestDetails)(uEvt.getDetails())).getRequestDate(),testData.getRequestDate());
 	}
 
 }
