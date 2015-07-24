@@ -141,6 +141,8 @@ public class CandidateControllerTest
 		int evtId=dets.getNodeId().intValue();
 		String tName=null;
 		String tColour=null;
+		String email=dets.getEmail();
+		if (email!=null) email='\"'+email+'\"';
 		Long tNodeId=null;
 		if (null!=dets.getTicketDetails())
 		{
@@ -148,10 +150,13 @@ public class CandidateControllerTest
 			tColour=dets.getTicketDetails().getColour();
 			tNodeId=dets.getTicketDetails().getNodeId();
 		}
-		return "{\"candidateId\":"+evtId+",\"information\":\""+dets.getInformation()+"\",\"policyStatement\":\""+dets.getPolicyStatement()+
-				"\",\"photos\":"+dets.getPhotos()+",\"userId\":"+dets.getUserId().intValue()+",\"givenName\":\""+dets.getGivenName()+
-				"\",\"familyName\":\""+dets.getFamilyName()+"\",\"positionId\":"+dets.getPositionId().intValue()+
-				",\"ticketId\":"+tNodeId+
+		return "{\"candidateId\":"+evtId+",\"information\":"+RestDataFixture.quoteNonNullStrings(dets.getInformation())+
+				",\"policyStatement\":"+RestDataFixture.quoteNonNullStrings(dets.getPolicyStatement())+
+				",\"photos\":"+dets.getPhotos()+",\"userId\":"+dets.getUserId().intValue()+
+				",\"email\":"+RestDataFixture.quoteNonNullStrings(dets.getEmail())+
+				",\"givenName\":"+RestDataFixture.quoteNonNullStrings(dets.getGivenName())+
+				",\"familyName\":"+RestDataFixture.quoteNonNullStrings(dets.getFamilyName())+
+				",\"positionId\":"+dets.getPositionId().intValue()+",\"ticketId\":"+tNodeId+
 //				",\"ticketName\":"+tName+",\"ticketColour\":"+tColour+
 				",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+evtId+"\"},"+
 //				"{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+evtId+"/previous\"},"+

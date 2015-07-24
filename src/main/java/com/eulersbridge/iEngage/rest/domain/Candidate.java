@@ -26,6 +26,7 @@ public class Candidate extends ResourceSupport
     private String policyStatement;
 	private Iterable<PhotoDetails> photos;
     private Long userId;
+    private String email;
     private String givenName;
     private String familyName;
     private Long positionId;
@@ -49,6 +50,7 @@ public class Candidate extends ResourceSupport
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
         candidate.setPhotos(candidateDetails.getPhotos());
         candidate.setUserId(candidateDetails.getUserId());
+        candidate.setEmail(candidateDetails.getEmail());
         candidate.setGivenName(candidateDetails.getGivenName());
         candidate.setFamilyName(candidateDetails.getFamilyName());
         candidate.setPositionId(candidateDetails.getPositionId());
@@ -75,6 +77,7 @@ public class Candidate extends ResourceSupport
          candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());
         candidateDetails.setUserId(getUserId());
+        candidateDetails.setEmail(getEmail());
         candidateDetails.setPositionId(getPositionId());
         return candidateDetails;
     }
@@ -147,6 +150,21 @@ public class Candidate extends ResourceSupport
         this.userId = userId;
     }
 
+	/**
+	 * @return the email
+	 */
+	public String getEmail()
+	{
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email)
+	{
+		this.email = email;
+	}
     /**
 	 * @return the givenName
 	 */
@@ -205,4 +223,5 @@ public class Candidate extends ResourceSupport
 		}
 		return elections.iterator();
 	}
+
 }

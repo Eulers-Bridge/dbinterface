@@ -75,7 +75,12 @@ public class Candidate extends Likeable
         candidate.setInformation(candidateDetails.getInformation());
         candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
         User user=new User();
-        user.setNodeId(candidateDetails.getUserId());
+        Long userId=candidateDetails.getUserId();
+        String email=candidateDetails.getEmail();
+        if (userId!=null)
+        	user.setNodeId(userId);
+        else if (email!=null)
+        	user.setEmail(email);
         candidate.setUser(user);
         Position position=new Position();
         position.setNodeId(candidateDetails.getPositionId());
@@ -97,12 +102,14 @@ public class Candidate extends Likeable
         	candidateDetails.setUserId(null);
         	candidateDetails.setFamilyName(null);
         	candidateDetails.setGivenName(null);
+        	candidateDetails.setEmail(null);
         }
         else
         {
         	candidateDetails.setUserId(getUser().getNodeId());
         	candidateDetails.setFamilyName(getUser().getFamilyName());
         	candidateDetails.setGivenName(getUser().getGivenName());
+        	candidateDetails.setEmail(getUser().getEmail());
         }
         candidateDetails.setInformation(getInformation());
         candidateDetails.setPolicyStatement(getPolicyStatement());

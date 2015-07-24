@@ -20,6 +20,11 @@ public class RestDataFixture
 		return converter;
 	}
 
+	public static String quoteNonNullStrings(String value)
+	{
+		if (value!=null) return '\"'+value+'\"';
+		else return value;
+	}
 	
 	public static User uniMelbUser()
 	{

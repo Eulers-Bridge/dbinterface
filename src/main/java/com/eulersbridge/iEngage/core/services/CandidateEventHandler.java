@@ -54,10 +54,20 @@ public class CandidateEventHandler implements CandidateService {
         CreatedEvent candidateCreatedEvent;
         
         Long userId=candidateDetails.getUserId();
-    	if (LOG.isDebugEnabled()) LOG.debug("Finding user with nodeId = "+userId);
+        String userEmail=candidateDetails.getEmail();
     	
         User user=null;
-        if (userId!=null) user = userRepository.findOne(userId);
+        if (userId!=null)
+        {
+        	if (LOG.isDebugEnabled()) LOG.debug("Finding user with nodeId = "+userId);
+        	user = userRepository.findOne(userId);
+        }
+        else if (userEmail!=null)
+        {
+        	if (LOG.isDebugEnabled()) LOG.debug("Finding user with email = "+userEmail);
+        	user = userRepository.findByEmail(userEmail);
+        }
+        
         
         if (user!=null)
         {

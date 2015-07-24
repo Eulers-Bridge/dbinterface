@@ -16,6 +16,7 @@ public class CandidateDetails extends Details
     private String policyStatement;
 	private Iterable<PhotoDetails> photos;
     private Long userId;
+    private String email;
     private String givenName;
     private String familyName;
     private Long positionId;
@@ -37,6 +38,8 @@ public class CandidateDetails extends Details
         buff.append(getPhotos());
         buff.append(", userId = ");
         buff.append(getUserId());
+        buff.append(", email = ");
+        buff.append(getEmail());
         buff.append(", positionId = ");
         buff.append(getPositionId());
         buff.append(", ticket = ");
@@ -64,6 +67,7 @@ public class CandidateDetails extends Details
             result = prime * result + ((policyStatement == null) ? 0 : policyStatement.hashCode());
             result = prime * result + ((photos == null) ? 0 : photos.hashCode());
             result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+            result = prime * result + ((email == null) ? 0 : email.hashCode());
             result = prime * result + ((positionId == null) ? 0 : positionId.hashCode());
         }
         return result;
@@ -97,6 +101,11 @@ public class CandidateDetails extends Details
                 if (other.policyStatement != null)
                     return false;
             } else if (!policyStatement.equals(other.policyStatement))
+                return false;
+            if (email == null) {
+                if (other.email != null)
+                    return false;
+            } else if (!email.equals(other.email))
                 return false;
             if (userId == null) {
                 if (other.userId != null)
@@ -142,6 +151,22 @@ public class CandidateDetails extends Details
 	public void setUserId(Long userId)
 	{
 		this.userId = userId;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail()
+	{
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email)
+	{
+		this.email = email;
 	}
 
 	/**
