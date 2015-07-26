@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
+import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
@@ -60,14 +61,26 @@ public class AspectService {
         Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
         if (numOfCompCommentTask >= 30){
             // TODO may not be a good idea to use the badge's nodeId directly (a readable, unique and indexed label instead?)
-            badgeRepository.badgeCompleted(33269l, userEmail);
+            Badge badge = badgeRepository.checkBadgeCompleted(33269l, userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(33269l, userEmail);
         }
-        else if(numOfCompCommentTask >= 20)
+        else if(numOfCompCommentTask >= 20){
+            Badge badge = badgeRepository.checkBadgeCompleted(33268l, userEmail);
+            if (badge == null)
             badgeRepository.badgeCompleted(33268l, userEmail);
-        else if(numOfCompCommentTask >= 10)
-            badgeRepository.badgeCompleted(33267l, userEmail);
-        else if(numOfCompCommentTask >= 1)
-            badgeRepository.badgeCompleted(14853l, userEmail);
+        }
+        else if(numOfCompCommentTask >= 10){
+            Badge badge = badgeRepository.checkBadgeCompleted(33267l, userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(33267l, userEmail);
+
+        }
+        else if(numOfCompCommentTask >= 1){
+            Badge badge = badgeRepository.checkBadgeCompleted(14853l, userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(14853l, userEmail);
+        }
     }
 
     @AfterReturning(
@@ -108,7 +121,9 @@ public class AspectService {
     public void updateAddPersonalityBadge(String userEmail, String taskAction){
         Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
         if (numOfCompCommentTask >= 1){
-            badgeRepository.badgeCompleted(400l, userEmail);
+            Badge badge = badgeRepository.checkBadgeCompleted(400l, userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(400l, userEmail);
         }
     }
 
