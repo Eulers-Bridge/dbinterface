@@ -1,12 +1,11 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
 import com.eulersbridge.iEngage.core.events.comments.CreateCommentEvent;
 import com.eulersbridge.iEngage.core.events.comments.RequestReadCommentEvent;
+import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
+import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollAnswerCreatedEvent;
@@ -271,5 +270,96 @@ public class AspectService {
             if (badge == null)
                 badgeRepository.badgeCompleted(badgeId, userEmail);
         }
+    }
+
+    @AfterReturning(
+            pointcut="execution(* com.eulersbridge.iEngage.core.services.ContactRequestEventHandler.createContactRequest(..)) && args(createContactRequestEvent)",
+            returning="result")
+    public void updateInviteAFriendTask(JoinPoint joinPoint, CreateContactRequestEvent createContactRequestEvent, CreatedEvent result){
+        if(!result.isFailed()){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = null;
+            if (!(auth instanceof AnonymousAuthenticationToken)) {
+                userDetails = (UserDetails)auth.getPrincipal();
+            }
+            String userEmail = userDetails.getUsername();
+            String taskAction = "Invite a Friend.";
+            TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            if (taskComplete!=null){
+                updateInviteFriendsBadge(userEmail, taskAction);
+            }
+        }
+    }
+
+    public void updateInviteFriendsBadge(String userEmail, String taskAction){
+        Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
+        Long[] badgeIds = new Long[]{14857l, 33272l, 33270l, 33271l};
+        if (numOfCompCommentTask >= 25){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[3], userEmail);
+        }
+        else if(numOfCompCommentTask >= 10){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[2], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[2], userEmail);
+        }
+        else if(numOfCompCommentTask >= 5){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[1], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[1], userEmail);
+
+        }
+        else if(numOfCompCommentTask >= 1){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[0], userEmail);
+        }
+    }
+
+    @AfterReturning(
+            pointcut="execution(* com.eulersbridge.iEngage.core.services.ContactRequestEventHandler.acceptContactRequest(..)) && args(acceptContactRequestEvent)",
+            returning="result")
+    public void updateAcceptFriendRequestTask(JoinPoint joinPoint, AcceptContactRequestEvent acceptContactRequestEvent, UpdatedEvent result){
+        if(!result.isFailed()){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = null;
+            if (!(auth instanceof AnonymousAuthenticationToken)) {
+                userDetails = (UserDetails)auth.getPrincipal();
+            }
+            String userEmail = userDetails.getUsername();
+            String taskAction = "Add a Friend.";
+            TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            if (taskComplete!=null){
+                updateAcceptFriendRequestBadge(userEmail, taskAction);
+            }
+        }
+    }
+
+    public void updateAcceptFriendRequestBadge(String userEmail, String taskAction){
+        Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
+        Long[] badgeIds = new Long[]{14856l, 32274l, 32275l, 32276l};
+        if (numOfCompCommentTask >= 25){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[3], userEmail);
+        }
+        else if(numOfCompCommentTask >= 10){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[2], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[2], userEmail);
+        }
+        else if(numOfCompCommentTask >= 5){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[1], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[1], userEmail);
+
+        }
+        else if(numOfCompCommentTask >= 1){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[0], userEmail);
+        }
+        // TODO award/revoke the badge: Select user with highest number of connections per month
     }
 }
