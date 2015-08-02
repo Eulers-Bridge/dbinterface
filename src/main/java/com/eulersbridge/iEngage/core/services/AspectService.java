@@ -8,6 +8,8 @@ import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
 import com.eulersbridge.iEngage.core.events.comments.CreateCommentEvent;
 import com.eulersbridge.iEngage.core.events.comments.RequestReadCommentEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerCreatedEvent;
 import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
@@ -173,6 +175,51 @@ public class AspectService {
 
         }
         if (numOfCompCommentTask >= 50){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[3], userEmail);
+        }
+        else if(numOfCompCommentTask >= 20){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[2], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[2], userEmail);
+        }
+        else if(numOfCompCommentTask >= 10){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[1], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[1], userEmail);
+
+        }
+        else if(numOfCompCommentTask >= 1){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[0], userEmail);
+        }
+    }
+
+    @AfterReturning(
+            pointcut="execution(* com.eulersbridge.iEngage.core.services.PollEventHandler.answerPoll(..)) && args(createPollAnswerEvent)",
+            returning="result")
+    public void updateVoteInAPollTask(JoinPoint joinPoint, CreatePollAnswerEvent createPollAnswerEvent, PollAnswerCreatedEvent result){
+        if(result.isPollFound() && result.isAnswererFound() && result.isAnswerValid()){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = null;
+            if (!(auth instanceof AnonymousAuthenticationToken)) {
+                userDetails = (UserDetails)auth.getPrincipal();
+            }
+            String userEmail = userDetails.getUsername();
+            String taskAction = "Be a Pollster.";
+            TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            if (taskComplete!=null){
+                updateVoteInAPollBadge(userEmail, taskAction);
+            }
+        }
+    }
+
+    public void updateVoteInAPollBadge(String userEmail, String taskAction){
+        Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
+        Long[] badgeIds = new Long[]{14873l, 33264l, 33265l, 33266l};
+        if (numOfCompCommentTask >= 30){
             Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
             if (badge == null)
                 badgeRepository.badgeCompleted(badgeIds[3], userEmail);
