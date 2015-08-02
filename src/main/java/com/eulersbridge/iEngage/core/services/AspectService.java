@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
 import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
+import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -239,6 +240,36 @@ public class AspectService {
             Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
             if (badge == null)
                 badgeRepository.badgeCompleted(badgeIds[0], userEmail);
+        }
+        // TODO award/revoke the badge: Select user with highest poll votes per month
+    }
+
+    @AfterReturning(
+            pointcut="execution(* com.eulersbridge.iEngage.core.services.UserEventHandler.addVoteReminder(..)) && args(addVoteReminderEvent)",
+            returning="result")
+    public void updateAddVoteReminderTask(JoinPoint joinPoint, AddVoteReminderEvent addVoteReminderEvent, CreatedEvent result){
+        if(!result.isFailed()){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = null;
+            if (!(auth instanceof AnonymousAuthenticationToken)) {
+                userDetails = (UserDetails)auth.getPrincipal();
+            }
+            String userEmail = userDetails.getUsername();
+            String taskAction = "Set Vote Reminder.";
+            TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            if (taskComplete!=null){
+                updateAddVoteReminderBadge(userEmail, taskAction);
+            }
+        }
+    }
+
+    public void updateAddVoteReminderBadge(String userEmail, String taskAction){
+        Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
+        Long badgeId = 14854l;
+        if (numOfCompCommentTask >= 1){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeId, userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeId, userEmail);
         }
     }
 }
