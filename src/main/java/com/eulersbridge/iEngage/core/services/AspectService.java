@@ -1,6 +1,8 @@
 package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
+import com.eulersbridge.iEngage.core.events.LikeEvent;
+import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
 import com.eulersbridge.iEngage.core.events.comments.CreateCommentEvent;
@@ -127,4 +129,69 @@ public class AspectService {
         }
     }
 
+    @AfterReturning(
+            pointcut="execution(* com.eulersbridge.iEngage.core.services.LikesEventHandler.like(..)) && args(likeEvent)",
+            returning="result")
+    public void updateShareTask(JoinPoint joinPoint, LikeEvent likeEvent, LikedEvent result){
+        if(result.isResultSuccess()){
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            UserDetails userDetails = null;
+            if (!(auth instanceof AnonymousAuthenticationToken)) {
+                userDetails = (UserDetails)auth.getPrincipal();
+            }
+            String userEmail = userDetails.getUsername();
+            String taskAction = "Share.";
+            String targetType = likeEvent.getTargetType().getName();
+            TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail, targetType);
+            if (taskComplete!=null){
+                updateShareBadge(userEmail, taskAction, targetType);
+            }
+        }
+    }
+
+    public void updateShareBadge(String userEmail, String taskAction, String tag){
+        Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction, tag);
+        Long[] badgeIds = new Long[4];
+        switch (tag){
+            case "NewsArticle":
+                badgeIds[0] = 14867l;
+                badgeIds[1] = 33252l;
+                badgeIds[2] = 33253l;
+                badgeIds[3] = 33254l;
+                break;
+            case "Event":
+                badgeIds[0] = 14868l;
+                badgeIds[1] = 33255l;
+                badgeIds[2] = 33256l;
+                badgeIds[3] = 33257l;
+                break;
+            case "Photo":
+                badgeIds[0] = 14869l;
+                badgeIds[1] = 33258l;
+                badgeIds[2] = 33259l;
+                badgeIds[3] = 33260l;
+
+        }
+        if (numOfCompCommentTask >= 50){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[3], userEmail);
+        }
+        else if(numOfCompCommentTask >= 20){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[2], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[2], userEmail);
+        }
+        else if(numOfCompCommentTask >= 10){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[1], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[1], userEmail);
+
+        }
+        else if(numOfCompCommentTask >= 1){
+            Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
+            if (badge == null)
+                badgeRepository.badgeCompleted(badgeIds[0], userEmail);
+        }
+    }
 }

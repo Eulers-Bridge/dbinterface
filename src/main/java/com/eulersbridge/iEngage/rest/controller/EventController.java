@@ -288,7 +288,7 @@ public class EventController
 			LOG.info("Attempting to have " + email + " like news article. "
 					+ eventId);
 		LikedEvent event = likesService
-				.like(new LikeEvent(eventId, email));
+				.like(new LikeEvent(eventId, email, Event.class));
 
 		ResponseEntity<Response> response;
 

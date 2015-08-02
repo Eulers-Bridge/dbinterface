@@ -654,7 +654,7 @@ public class PhotoController
 			LOG.info("Attempting to have " + email + " like news article. "
 					+ photoId);
 		LikedEvent event = likesService
-				.like(new LikeEvent(photoId, email));
+				.like(new LikeEvent(photoId, email, Photo.class));
 
 		ResponseEntity<Response> response;
 

@@ -125,8 +125,8 @@ public class NewsController
 	public @ResponseBody ResponseEntity<Response> likeArticle(@PathVariable Long articleId,@PathVariable String email) 
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to have "+email+" like news article. "+articleId);
-		LikedEvent articleEvent=likesService.like(new LikeEvent(articleId,email));
-		
+		LikedEvent articleEvent=likesService.like(new LikeEvent(articleId,email,NewsArticle.class));
+
 		ResponseEntity<Response> response;
 		
 		if (!articleEvent.isEntityFound())
