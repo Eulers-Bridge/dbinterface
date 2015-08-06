@@ -27,6 +27,9 @@ public interface BadgeRepository extends GraphRepository<Badge>
 	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"`]-(b:`"+DatabaseDomainConstants.BADGE+"`) where id(a)={userId} return b")
 	Page<Badge> findCompletedBadges(@Param("userId") Long userId, Pageable pageable);
 
+    @Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"`]-(b:`"+DatabaseDomainConstants.BADGE+"`) where a.email={userEmail} and id(b)=badgeId return b")
+    Badge checkBadgeCompleted(@Param("badgeId") Long badgeId, @Param("userEmail") String userEmail);
+
 	@Query("Match (u:`"+DatabaseDomainConstants.USER+"`),(t:`"+DatabaseDomainConstants.BADGE+"`) where id(u)={userId} and"+
 			" not (u)-[:"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"]-(t) return t")
 	Page<Badge> findRemainingBadges(@Param("userId") Long userId, Pageable pageable);

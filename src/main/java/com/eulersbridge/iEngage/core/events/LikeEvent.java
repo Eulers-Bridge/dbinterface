@@ -13,6 +13,7 @@ public class LikeEvent
 {
 	protected Long nodeId;
 	protected String emailAddress;
+    protected Class targetType;
 
 	public LikeEvent(Long nodeId, User user) 
 	{
@@ -24,6 +25,13 @@ public class LikeEvent
 		this.nodeId=nodeId;
 		this.emailAddress=email;
 	}
+
+    public LikeEvent(Long nodeId, String email, Class targetType)
+    {
+        this.nodeId=nodeId;
+        this.emailAddress=email;
+        this.targetType = targetType;
+    }
 
 	/**
 	 * @return the userId
@@ -54,4 +62,12 @@ public class LikeEvent
 	public void setNodeId(Long nodeId) {
 		this.nodeId = nodeId;
 	}
+
+    public Class getTargetType() {
+        return targetType;
+    }
+
+    public void setTargetType(Class targetType) {
+        this.targetType = targetType;
+    }
 }

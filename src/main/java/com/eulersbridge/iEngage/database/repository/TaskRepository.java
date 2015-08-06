@@ -24,6 +24,10 @@ public interface TaskRepository extends GraphRepository<Task>
             "]->b SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
     TaskComplete taskCompleted(@Param("taskAction") String taskAction, @Param("userEmail") String userEmail);
 
+    @Query("Match (a:`User`),(b:`Task`) where a.email={userEmail} and b.action={taskAction} CREATE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
+            "]->b SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete',r.tag={targetType} return r")
+    TaskComplete taskCompleted(@Param("taskAction") String taskAction, @Param("userEmail") String userEmail, @Param("targetType") String targetType);
+
 	@Query("Match (a:`User`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where id(a)={userId} return b")
 	Page<Task> findCompletedTasks(@Param("userId") Long userId, Pageable pageable);
 
@@ -33,4 +37,7 @@ public interface TaskRepository extends GraphRepository<Task>
 
     @Query("Match (a:`User`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where a.email={userEmail} and b.action={action} return count(r)")
     Long getNumOfCompletedASpecificTask(@Param("userEmail") String userEmail, @Param("action") String taskAction);
+
+    @Query("Match (a:`User`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where a.email={userEmail} and b.action={action} and r.tag={targetType} return count(r)")
+    Long getNumOfCompletedASpecificTask(@Param("userEmail") String userEmail, @Param("action") String taskAction, @Param("targetType") String targetType);
 }
