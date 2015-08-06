@@ -16,7 +16,7 @@ import com.eulersbridge.iEngage.database.domain.Owner;
 public class NewsArticleToOwnerConverter implements Converter<NewsArticle, Owner>
 {
 
-	@Override
+    @Override
 	public Owner convert(NewsArticle source)
 	{
 		Owner owner=new Owner();

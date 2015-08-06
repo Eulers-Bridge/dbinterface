@@ -21,11 +21,11 @@ import org.springframework.core.env.PropertyResolver;
 import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.support.MappingInfrastructureFactoryBean;
-import org.springframework.data.neo4j.rest.SpringCypherRestGraphDatabase;
+//import org.springframework.data.neo4j.rest.SpringCypherRestGraphDatabase;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+//import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.eulersbridge.iEngage.core.domain.Login;
 import com.eulersbridge.iEngage.database.domain.converters.CandidateToOwnerConverter;
@@ -46,8 +46,9 @@ import com.fasterxml.jackson.databind.module.SimpleSerializers;
 @PropertySource("classpath:application.properties")
 @Configuration
 @ComponentScan
-@EnableNeo4jRepositories("com.eulersbridge.iEngage.database.repository")
-@EnableTransactionManagement(mode = AdviceMode.PROXY)
+@EnableNeo4jRepositories(basePackages={"com.eulersbridge.iEngage.database.repository"})
+//@EnableNeo4jRepositories("com.eulersbridge.iEngage.database.repository")
+//@EnableTransactionManagement(mode = AdviceMode.PROXY)
 @EnableAutoConfiguration
 @EnableAspectJAutoProxy
 public class Application extends Neo4jConfiguration
@@ -82,7 +83,8 @@ public class Application extends Neo4jConfiguration
  	{
     	String url=propResolver.getRequiredProperty("neo4j.server.url");
     	if (LOG.isDebugEnabled()) LOG.debug("url = "+url);
-	 	return new SpringCypherRestGraphDatabase(url);
+    	return new SpringRestGraphDatabase(url);
+//    	return new SpringCypherRestGraphDatabase(url);
     }
 
 	@Override
