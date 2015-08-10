@@ -1,0 +1,271 @@
+<html>
+
+<style type="text/css">
+
+</style>
+
+<body style="margin: 0;
+     padding: 0;
+     background: background-color: rgba(230, 235, 238, 1); 
+     position: relative;
+     height: auto;
+     height:100%;" >
+         <table  cellpadding="0" cellspacing="0" border="0" align="center" width="100%"
+         style="margin: 0;
+         padding: 0;
+         background: background-color: rgba(230, 235, 238, 1); 
+         position: relative;
+         height: auto;
+         height:100%;">
+            <tbody>
+            <tr >
+            <td align="center" style="margin: 0; padding: 0; background-color: rgba(230, 235, 238, 1) ;padding: 35px 0">
+                <table cellpadding="0" cellspacing="0" border="0" align="center" width="550" style="
+                background:#ffffff;background-color:#ffffff;
+                 -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                -o-border-radius: 5px;
+                border-radius: 5px;
+                -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.20);
+                -moz-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.20);
+                -o-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.20);
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.20);
+                height: auto;
+                height:100%;" border="0" cellpadding="8" cellspacing="0">
+                    <tr>
+                        <td colspan="3" height="6"><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" width="100%">
+                          <h1 style="font-family:  Helvetica, Arial, sans-serif;
+                            font-weight: 100;
+                            font-size: 30px;
+                            padding-top: 20px;
+                            color: #14B54A;
+                            ">Welcome to Isegoria!</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td ><hr style="height:1px; display: block;
+                            margin-top: 0.5em;
+                            margin-bottom: 0.5em;
+                            margin-left: auto;
+                            margin-right: auto;
+                            border-style: none;
+                            background-color: rgba(230, 235, 238, 1);
+                            margin-right: 20px;
+                            margin-left: 20px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style="font-family:Helvetica, sans-serif;
+                            font-weight: normal;
+                            font-size: 16px;
+                            color: #313E4D;
+                            letter-spacing: 0px;
+                            text-align: center;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                            color: #313E4D;
+                            margin-right: 20px;
+                            margin-left: 20px;">Great to have you join us and Curtin University, you now hold the keys to tracking what's new on your campus, keeping in touch with your democratic representatives and attending the coolest events and activities. All this is ready to explore in Isegoria, in the most advanced mobile app for organisations ever.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td ><hr style="height:1px; display: block;
+                            margin-top: 0.5em;
+                            margin-bottom: 0.5em;
+                            margin-left: auto;
+                            margin-right: auto;
+                            border-style: none;
+                            background-color: rgba(230, 235, 238, 1);
+                            margin-right: 20px;
+                            margin-left: 20px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="
+                            padding-left: 20px;">
+                        <table border="0">
+                        <tr>
+                        <td>
+                            <h2 style="font-family:  Helvetica, sans-serif;
+                            font-weight: 500;
+                            text-align: left;
+                            font-size: 28px;
+                            color: #313E4D;
+                            display: inline;
+                            text-transform: uppercase;">Smith, </h2>
+                        </td>
+                        <td >
+                            <h2 style="font-family:  Helvetica, sans-serif;
+                            text-align: right;
+                            font-weight: 100;
+                            font-size: 28px;
+                            color: #9EA6AC;
+                            display: inline;">Drew</h2>
+                        </td>
+                        </tr>
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td ><hr style="height:1px; display: block;
+                            margin-top: 0.5em;
+                            margin-bottom: 0.5em;
+                            margin-left: auto;
+                            margin-right: auto;
+                            border-style: none;
+                            background-color: rgba(230, 235, 238, 1);
+                            margin-right: 20px;
+                            margin-left: 20px;">
+                        </td>
+                    </tr>
+                     <tr>
+                        <td colspan="3" height="6"><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="
+                            padding-left: 20px;">
+                        <table border="0" width="100%">
+                        <tr>
+                        <td><h4 style="font-family:  Helvetica, sans-serif;
+                            font-weight: 100;
+                            font-size: 20px;
+                            color: #9EA6AC;
+                            text-transform: uppercase;
+                            line-height: 0.9em;">Curtin University of Technology</h4></td>
+                        <td rowspan="2" valign="top"><img src="watermark.png" alt="watermark" width="50" height="50" /></td>
+                        </tr>
+                        <tr><td><h4 style="font-family:  Helvetica, sans-serif;
+                            font-weight: 100;
+                            font-size: 20px;
+                            color: #9EA6AC;
+                            text-transform: uppercase;
+                            line-height: 0.5em;">User Access</h4></td></tr>
+                        </table>
+
+                            
+                            
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td ><hr style="height:1px; display: block;
+                            margin-top: 0.5em;
+                            margin-bottom: 0.5em;
+                            margin-left: auto;
+                            margin-right: auto;
+                            border-style: none;
+                            background-color: rgba(230, 235, 238, 1);
+                            margin-right: 20px;
+                            margin-left: 20px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style="font-family:Helvetica, sans-serif;
+                                font-weight: normal;
+                                font-size: 16px;
+                                color: #313E4D;
+                                letter-spacing: 0px;
+                                text-align: center;
+                                margin-top: 20px;
+                                margin-bottom: 40px;
+                                ">What now? If your email has been pre-registered as an Administrator or content-creator you can access Isegoria’s admin server below.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                        <div style="width: 450px;
+                            height: 64px;
+                            background-color: #D7FFE4;
+                            -webkit-border-radius: 5px;
+                            -moz-border-radius: 5px;
+                            -o-border-radius: 5px;
+                            border-radius: 5px;
+                            text-align: center;
+                            margin-bottom: 40px">
+                            <a style="font-family:  Helvetica, sans-serif;
+                                font-weight: 100;
+                                font-size: 20px;
+                                color: #14B54A;
+                                text-transform: none;
+                                line-height: 64px;
+                                -webkit-font-smoothing: subpixel-antialiased;
+                                -moz-font-smoothing: subpixel-antialiased;
+                                -o-font-smoothing: subpixel-antialiased;
+                                font-smoothing: subpixel-antialiased;
+                                text-decoration: underline;" href="http://www.isegoria.app/signup/011abuiGh">http://www.isegoria.app/signup/011abuiGh</a>
+                        </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>    
+            </tr>
+            <tr>
+            <td align="center" style="margin: 0; padding: 0; background-color: rgba(230, 235, 238, 1) ;padding: 20px 0px"> 
+            <table style="text-align: center;
+                -webkit-animation: fade 0.5s 1 ease-in-out;
+                -moz-animation: fade 1s 1 ease-in-out;
+                -o-animation: fade 1s 1 ease-in-out;
+                animation: fade 1s 1 ease-in-out;
+                width: 500px;
+                margin: 0px auto;
+                text-align: center;
+                margin-top: 0px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                -o-border-radius: 5px;
+                border-radius: 5px;
+                padding:0 40 0 40;width:100%!important;
+                " border="0">
+                <tr>
+                    <td>
+                     <img style="margin-top: 50px;"src="logo.png" alt="logo" width="40" height="24" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                         <p style="font-family: Helvetica, sans-serif;
+                        font-weight: 500;
+                        font-size: 12px;
+                        color: #9EA6AC;
+                        letter-spacing: 0px;">Isegoria Passport Control, Euler's Bridge© 2014</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      <hr style="height:1px;background-color: rgba(158, 166, 172, 0.5);
+                        width: 300px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      <nav style="text-decoration: none;
+                        -webkit-transition: all 0.2s ease-in-out; font-family: Helvetica, sans-serif;
+                        font-weight: 500;
+                        font-size: 12px;
+                        color: #9EA6AC;
+                        letter-spacing: 0px;">
+                        <a style="margin: 12px;">Support</a><a style="margin: 12px;">Twitter</a><a style="margin: 12px;">Isegoria</a><a style="margin: 12px;">Contact Us</a>
+                    </nav>
+                    </td>
+                </tr>
+            </table>
+
+            </td>
+            </tr>
+
+            </tbody>
+
+         </table>
+
+    
+
+</body>
+
+</html>
