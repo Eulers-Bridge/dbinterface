@@ -26,5 +26,10 @@
         	</form>
         </div -->
         
+        <br/>
+        <img src="cid:logo"/>
+        <br/>
+        <img src="cid:watermark"/>
+        
     </body>
 </html>

@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.velocity.VelocityEngineUtils;
@@ -83,6 +84,14 @@ public class EmailVerification extends Email implements Serializable
     			if(LOG.isDebugEnabled()) LOG.debug("body={}", body);
     			message.setText(body, true);
 
+    			ClassPathResource logoResource=new ClassPathResource("templates/images/logo.png");
+    			if (LOG.isDebugEnabled()) LOG.debug("class path resource exists"+logoResource.exists());
+    			message.addInline("logo", logoResource);
+
+    			ClassPathResource watermarkResource=new ClassPathResource("templates/images/watermark.png");
+    			if (LOG.isDebugEnabled()) LOG.debug("class path resource exists"+watermarkResource.exists());
+    			message.addInline("watermark", watermarkResource);
+    			
            /*for(String resourceIdentifier: hTemplateVariables.keySet()) {
           	 //Inline resources are added to the mime message using the specified Content-ID. 
           	  //The order in which you are adding the text and the resource are very important. 
