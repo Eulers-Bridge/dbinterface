@@ -18,8 +18,8 @@ public class Email implements Serializable
 	private final String recipientName;
 	private final String senderEmailAddress;
 	private final String subject;
-	protected final VelocityEngine velocityEngine;
-    private static Logger LOG = LoggerFactory.getLogger(Email.class);
+	protected final transient VelocityEngine velocityEngine;
+    private static transient Logger LOG = LoggerFactory.getLogger(Email.class);
     
     public Email(VelocityEngine velocityEngine,String recipientEmailAddress,String recipientName,String senderEmailAddress, String subject) 
     {
