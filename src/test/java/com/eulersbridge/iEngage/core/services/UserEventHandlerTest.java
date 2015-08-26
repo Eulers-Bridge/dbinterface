@@ -712,7 +712,7 @@ public class UserEventHandlerTest
 		{
 			userServiceMocked.authenticateUser(evt);
 		}
-		catch (UsernameNotFoundException e)
+		catch (BadCredentialsException e)
 		{
 			assertNotNull(e);
 			exception=true;

@@ -656,7 +656,9 @@ public class UserEventHandler implements UserService, UserDetailsService
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("No such account.");
 			evt = UserAuthenticatedEvent.badCredentials();
-			throw new UsernameNotFoundException(SecurityConstants.UserNotFound);
+			throw new BadCredentialsException(
+					SecurityConstants.BadPassword);
+//			throw new UsernameNotFoundException(SecurityConstants.UserNotFound);
 		}
 		return evt;
 	}
