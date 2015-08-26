@@ -5,12 +5,15 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.rest.controller.UserController;
+import com.eulersbridge.iEngage.security.PasswordHash;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -224,7 +227,8 @@ public class User extends ResourceSupport
 	  }
 
 	  // {!begin fromUserDetails}
-	  public static User fromUserDetails(UserDetails readUser) {
+	  public static User fromUserDetails(UserDetails readUser) 
+	  {
 	    User user = new User();
 
 	    user.setEmail(readUser.getEmail());
@@ -233,7 +237,23 @@ public class User extends ResourceSupport
 	    user.setGender(readUser.getGender());
 	    user.setNationality(readUser.getNationality());
 	    user.setYearOfBirth(readUser.getYearOfBirth());
-	    user.setPassword(readUser.getPassword());
+	    String password=readUser.getPassword(),hash=null;
+	    if (password!=null)
+	    {
+	    	try
+			{
+	    		hash=PasswordHash.createHash(password);
+			}
+			catch (NoSuchAlgorithmException e)
+			{
+				e.printStackTrace();
+			}
+			catch (InvalidKeySpecException e)
+			{
+				e.printStackTrace();
+			}
+	    }
+		user.setPassword(hash);
 	    user.setContactNumber(readUser.getContactNumber());
 	    user.setAccountVerified(readUser.isAccountVerified());
 	    user.setInstitutionId(readUser.getInstitutionId());

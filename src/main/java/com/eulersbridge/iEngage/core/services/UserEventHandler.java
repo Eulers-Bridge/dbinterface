@@ -1,8 +1,12 @@
 package com.eulersbridge.iEngage.core.services;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.naming.AuthenticationNotSupportedException;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
@@ -27,6 +31,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 
@@ -67,6 +72,7 @@ import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
 import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.email.EmailConstants;
+import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 public class UserEventHandler implements UserService, UserDetailsService
@@ -265,6 +271,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 	public ReadUserEvent readUserByContactEmail(
 			RequestReadUserEvent requestReadUserEvent)
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("readUserByContactEmail()");
 		ReadUserEvent readEvt=readUser(requestReadUserEvent);
 		ReadUserEvent publicReadEvt=readEvt;
 		if (readEvt.isEntityFound())
@@ -583,19 +590,56 @@ public class UserEventHandler implements UserService, UserDetailsService
 		{
 			if (user.isAccountVerified())
 			{
-				if (user.comparePassword(password))
+				String dbHash=user.getPassword();
+				String components[]=dbHash.split(":");
+				if (components.length==3)
 				{
-					List<GrantedAuthority> grantedAuths = authsFromString(user
-							.getRoles());
-					evt = new UserAuthenticatedEvent(grantedAuths);
+					if (LOG.isDebugEnabled()) LOG.debug("Hashed password");
+					boolean check;
+					try
+					{
+						check = PasswordHash.validatePassword(password, dbHash);
+					}
+					catch (NoSuchAlgorithmException e)
+					{
+						throw new AuthenticationServiceException("No Such Algorithm.");
+					}
+					catch (InvalidKeySpecException e)
+					{
+						throw new AuthenticationServiceException("Invalid Key Spec.");
+					}
+	                if (check)
+	                {
+						List<GrantedAuthority> grantedAuths = authsFromString(user
+								.getRoles());
+						evt = new UserAuthenticatedEvent(grantedAuths);
+	                }
+					else
+					{
+						if (LOG.isDebugEnabled())
+							LOG.debug("Password does not match.");
+						evt = UserAuthenticatedEvent.badCredentials();
+						throw new BadCredentialsException(
+								SecurityConstants.BadPassword);
+					}
 				}
 				else
 				{
-					if (LOG.isDebugEnabled())
-						LOG.debug("Password does not match.");
-					evt = UserAuthenticatedEvent.badCredentials();
-					throw new BadCredentialsException(
-							SecurityConstants.BadPassword);
+					if (LOG.isDebugEnabled()) LOG.debug("Non hashed password.");
+					if (user.comparePassword(password))
+					{
+						List<GrantedAuthority> grantedAuths = authsFromString(user
+								.getRoles());
+						evt = new UserAuthenticatedEvent(grantedAuths);
+					}
+					else
+					{
+						if (LOG.isDebugEnabled())
+							LOG.debug("Password does not match.");
+						evt = UserAuthenticatedEvent.badCredentials();
+						throw new BadCredentialsException(
+								SecurityConstants.BadPassword);
+					}
 				}
 			}
 			else

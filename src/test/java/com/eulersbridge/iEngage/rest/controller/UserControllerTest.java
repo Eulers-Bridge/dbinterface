@@ -432,7 +432,6 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.trackingOff",is(dets.isTrackingOff())))
 		.andExpect(jsonPath("$.optOutDataCollection",is(dets.isOptOutDataCollection())))
@@ -457,7 +456,6 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))
@@ -533,14 +531,12 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.trackingOff",is(dets.isTrackingOff())))
 		.andExpect(jsonPath("$.optOutDataCollection",is(dets.isOptOutDataCollection())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
 	
@@ -572,14 +568,12 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.trackingOff",is(dets.isTrackingOff())))
 		.andExpect(jsonPath("$.optOutDataCollection",is(dets.isOptOutDataCollection())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isCreated());
 	}
 	
@@ -647,7 +641,6 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.gender",is(dets.getGender())))
 		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
 		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.password",is(dets.getPassword())))
 		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$.email",is(dets.getEmail())))

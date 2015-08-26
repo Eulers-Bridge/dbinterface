@@ -26,6 +26,7 @@ import com.eulersbridge.iEngage.core.services.UserService;
 import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
 import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;
+import com.eulersbridge.iEngage.security.Neo4jAuthenticationProvider;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 /**
@@ -55,9 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("configure()");
-		DaoAuthenticationProvider authProv=new DaoAuthenticationProvider();
-		authProv.setUserDetailsService(userDetailsService);
-//		Neo4jAuthenticationProvider authProv=new Neo4jAuthenticationProvider(userService);
+//		DaoAuthenticationProvider authProv=new DaoAuthenticationProvider();
+//		authProv.setUserDetailsService(userDetailsService);
+		Neo4jAuthenticationProvider authProv=new Neo4jAuthenticationProvider(userService);
 		auth.authenticationProvider(authProv);
 	}
 	

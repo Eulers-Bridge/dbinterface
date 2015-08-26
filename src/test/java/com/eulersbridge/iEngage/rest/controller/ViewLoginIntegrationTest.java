@@ -126,7 +126,6 @@ public class ViewLoginIntegrationTest {
 		.andExpect(jsonPath("$user.gender",is(userDets.getGender())))
 		.andExpect(jsonPath("$user.nationality",is(userDets.getNationality())))
 		.andExpect(jsonPath("$user.yearOfBirth",is(userDets.getYearOfBirth())))
-		.andExpect(jsonPath("$user.password",is(userDets.getPassword())))
 		.andExpect(jsonPath("$user.accountVerified",is(userDets.isAccountVerified())))
 		.andExpect(jsonPath("$user.institutionId",is(userDets.getInstitutionId().intValue())))
 		.andExpect(jsonPath("$user.email",is(userDets.getEmail())))
