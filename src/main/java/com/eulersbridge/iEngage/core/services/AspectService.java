@@ -140,7 +140,7 @@ public class AspectService {
                 userEmail = auth.getName();
             }
             String taskAction = "Share.";
-            String targetType = likeEvent.getTargetType().getName();
+            String targetType = likeEvent.getTargetType().getSimpleName();
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail, targetType);
             if (taskComplete!=null){
                 updateShareBadge(userEmail, taskAction, targetType);
