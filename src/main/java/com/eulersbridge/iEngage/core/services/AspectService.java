@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * @author Yikai Gong
@@ -93,11 +92,11 @@ public class AspectService {
     public void updateReadArticleTask(JoinPoint joinPoint, RequestReadNewsArticleEvent requestReadNewsArticleEvent, ReadEvent result){
         if(result.isEntityFound()){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = null;
+            String userEmail = "";
             if (!(auth instanceof AnonymousAuthenticationToken)) {
-                userDetails = (UserDetails)auth.getPrincipal();
+//                userDetails = (UserDetails)auth.getPrincipal();
+                userEmail = auth.getName();
             }
-            String userEmail = userDetails.getUsername();
             String taskAction = "Read an Article.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
         }
@@ -109,11 +108,10 @@ public class AspectService {
     public void updateAddPersonalityTask(JoinPoint joinPoint, AddPersonalityEvent addPersonalityEvent, PersonalityAddedEvent result){
         if(result.isUserFound()){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = null;
+            String userEmail = "";
             if (!(auth instanceof AnonymousAuthenticationToken)) {
-                userDetails = (UserDetails)auth.getPrincipal();
+                userEmail = auth.getName();
             }
-            String userEmail = userDetails.getUsername();
             String taskAction = "Complete Personality Questions.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
             if (taskComplete!=null){
@@ -137,13 +135,12 @@ public class AspectService {
     public void updateShareTask(JoinPoint joinPoint, LikeEvent likeEvent, LikedEvent result){
         if(result.isResultSuccess()){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = null;
+            String userEmail = "";
             if (!(auth instanceof AnonymousAuthenticationToken)) {
-                userDetails = (UserDetails)auth.getPrincipal();
+                userEmail = auth.getName();
             }
-            String userEmail = userDetails.getUsername();
             String taskAction = "Share.";
-            String targetType = likeEvent.getTargetType().getName();
+            String targetType = likeEvent.getTargetType().getSimpleName();
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail, targetType);
             if (taskComplete!=null){
                 updateShareBadge(userEmail, taskAction, targetType);
@@ -203,11 +200,10 @@ public class AspectService {
     public void updateVoteInAPollTask(JoinPoint joinPoint, CreatePollAnswerEvent createPollAnswerEvent, PollAnswerCreatedEvent result){
         if(result.isPollFound() && result.isAnswererFound() && result.isAnswerValid()){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = null;
+            String userEmail = "";
             if (!(auth instanceof AnonymousAuthenticationToken)) {
-                userDetails = (UserDetails)auth.getPrincipal();
+                userEmail = auth.getName();
             }
-            String userEmail = userDetails.getUsername();
             String taskAction = "Be a Pollster.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
             if (taskComplete!=null){
@@ -249,11 +245,10 @@ public class AspectService {
     public void updateAddVoteReminderTask(JoinPoint joinPoint, AddVoteReminderEvent addVoteReminderEvent, CreatedEvent result){
         if(!result.isFailed()){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = null;
+            String userEmail = "";
             if (!(auth instanceof AnonymousAuthenticationToken)) {
-                userDetails = (UserDetails)auth.getPrincipal();
+                userEmail = auth.getName();
             }
-            String userEmail = userDetails.getUsername();
             String taskAction = "Set Vote Reminder.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
             if (taskComplete!=null){
@@ -278,11 +273,10 @@ public class AspectService {
     public void updateInviteAFriendTask(JoinPoint joinPoint, CreateContactRequestEvent createContactRequestEvent, CreatedEvent result){
         if(!result.isFailed()){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = null;
+            String userEmail = "";
             if (!(auth instanceof AnonymousAuthenticationToken)) {
-                userDetails = (UserDetails)auth.getPrincipal();
+                userEmail = auth.getName();
             }
-            String userEmail = userDetails.getUsername();
             String taskAction = "Invite a Friend.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
             if (taskComplete!=null){
@@ -323,11 +317,10 @@ public class AspectService {
     public void updateAcceptFriendRequestTask(JoinPoint joinPoint, AcceptContactRequestEvent acceptContactRequestEvent, UpdatedEvent result){
         if(!result.isFailed()){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            UserDetails userDetails = null;
+            String userEmail = "";
             if (!(auth instanceof AnonymousAuthenticationToken)) {
-                userDetails = (UserDetails)auth.getPrincipal();
+                userEmail = auth.getName();
             }
-            String userEmail = userDetails.getUsername();
             String taskAction = "Add a Friend.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
             if (taskComplete!=null){
