@@ -26,6 +26,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
+import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -144,12 +145,14 @@ public class ContactRequestEventHandler implements ContactRequestService
 	       		Contact contact=userRepository.addContact(contactor.getNodeId(),contactee.getNodeId());
 	       		if ((contact!=null)&&(contact.getNodeId()!=null))
 	       		{	
+		       		ContactDetails cDets=contact.toContactDetails();
+		       		if (LOG.isDebugEnabled()) LOG.debug("contactDetails = "+cDets);
 		           	ContactRequest result=contactRequestRepository.save(cr);
 		           	if (result!=null)
-		           		uEvt=new UpdatedEvent(contactRequestId, contact.toContactDetails());
+		           		uEvt=new UpdatedEvent(contactRequestId, cDets);
 		           	//TODO Should really be failed.
 //		           	else uEvt=UpdatedEvent.notFound(null);
-		           	else uEvt=new UpdatedEvent(contactRequestId, contact.toContactDetails());
+		           	else uEvt=new UpdatedEvent(contactRequestId, cDets);
 		           	// Probably should remove the other contactRequest, if there is one.
 	       		}
 	       		else
