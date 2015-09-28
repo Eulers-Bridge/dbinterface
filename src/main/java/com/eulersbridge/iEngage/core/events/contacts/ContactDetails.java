@@ -70,4 +70,16 @@ public class ContactDetails extends Details
 	{
 		this.timestamp = timestamp;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "ContactDetails [contactorId=" + contactorId + ", contacteeId="
+				+ contacteeId + ", timestamp=" + timestamp + ", nodeId="
+				+ nodeId + "]";
+	}
+
 }
