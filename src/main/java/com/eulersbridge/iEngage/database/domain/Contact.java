@@ -132,7 +132,7 @@ public class Contact
 	 */
 	@Override
 	public String toString() {
-		return "VoteReminder [nodeId=" + nodeId + ", contactor=" + contactor
+		return "Contact [nodeId=" + nodeId + ", contactor=" + contactor
 				+ ", contactee=" + contactee + ", timestamp=" + timestamp
 				+ "]";
 	}
