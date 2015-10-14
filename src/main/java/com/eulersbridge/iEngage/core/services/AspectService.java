@@ -7,6 +7,8 @@ import com.eulersbridge.iEngage.core.events.comments.RequestReadCommentEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.notifications.Message;
+import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
 import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
 import com.eulersbridge.iEngage.core.events.polls.PollAnswerCreatedEvent;
 import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
@@ -17,6 +19,7 @@ import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
 import com.eulersbridge.iEngage.database.repository.CommentRepository;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
@@ -29,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Date;
 
 /**
  * @author Yikai Gong
@@ -43,6 +48,24 @@ public class AspectService {
     private BadgeRepository badgeRepository;
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private NotificationService notificationService;
+
+    public void buildTaskCompletedNotification(String userEmail, String txt){
+        Message message = new Message(null, txt);
+        Long userId = userRepository.getUserId(userEmail);
+        NotificationDetails notificationDetails = new NotificationDetails(null, userId, new Date().getTime(), false, NotificationConstants.MESSAGE, message);
+        CreateEvent createNotificationEvent = new CreateEvent(notificationDetails);
+        notificationService.createNotification(createNotificationEvent);
+    }
+
+    public void buildBadgeAwardedNotification(String userEmail, String txt){
+        Message message = new Message(null, txt);
+        Long userId = userRepository.getUserId(userEmail);
+        NotificationDetails notificationDetails = new NotificationDetails(null, userId, new Date().getTime(), false, NotificationConstants.MESSAGE, message);
+        CreateEvent createNotificationEvent = new CreateEvent(notificationDetails);
+        notificationService.createNotification(createNotificationEvent);
+    }
 
     // Use Spring Aspect to call the method below and check the result
     @AfterReturning(
@@ -55,6 +78,7 @@ public class AspectService {
             String taskAction = "Post a Comment.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
             if (taskComplete!=null){
+                buildTaskCompletedNotification(userEmail, "Task Completed: Post a Comment.");
                 updateCommentBadge(userEmail, taskAction);
             }
         }
@@ -81,8 +105,10 @@ public class AspectService {
         }
         else if(numOfCompCommentTask >= 1){
             Badge badge = badgeRepository.checkBadgeCompleted(14853l, userEmail);
-            if (badge == null)
+            if (badge == null) {
                 badgeRepository.badgeCompleted(14853l, userEmail);
+                buildBadgeAwardedNotification(userEmail, "New Badge: Community Comments - level 0");
+            }
         }
     }
 
@@ -99,6 +125,9 @@ public class AspectService {
             }
             String taskAction = "Read an Article.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            if (taskComplete!=null){
+//                buildTaskCompletedNotification(userEmail, "Task Completed: Read am Comment.");
+            }
         }
     }
 
@@ -124,8 +153,10 @@ public class AspectService {
         Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
         if (numOfCompCommentTask >= 1){
             Badge badge = badgeRepository.checkBadgeCompleted(400l, userEmail);
-            if (badge == null)
+            if (badge == null){
                 badgeRepository.badgeCompleted(400l, userEmail);
+                buildBadgeAwardedNotification(userEmail, "New Badge: Personality Discovery");
+            }
         }
     }
 
