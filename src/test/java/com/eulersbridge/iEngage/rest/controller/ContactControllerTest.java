@@ -46,6 +46,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEve
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.ContactRequestService;
 import com.eulersbridge.iEngage.core.services.NotificationService;
 import com.eulersbridge.iEngage.core.services.UserService;
@@ -181,6 +182,11 @@ public class ContactControllerTest
 		when(contactRequestService.acceptContactRequest(any(AcceptContactRequestEvent.class))).thenReturn(updEvt);
 		CreatedEvent notifEvt=new CreatedEvent(DatabaseDataFixture.populateNotification1().toNotificationDetails());
 		when(notificationService.createNotification(any(CreateEvent.class))).thenReturn(notifEvt);
+		
+		UserDetails uDets=DatabaseDataFixture.populateUserGnewitt().toUserDetails();
+		ReadUserEvent contactee=new ReadUserEvent(uDets.getEmail(), uDets);
+		when(userService.readUserByContactEmail(any(RequestReadUserEvent.class))).thenReturn(contactee);
+		when(userService.readUserByContactNumber(any(RequestReadUserEvent.class))).thenReturn(contactee);
 		this.mockMvc.perform(put(urlPrefix2+"/{contactRequestId}/",contactRequestId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.nodeId",is(cDets.getNodeId().intValue())))

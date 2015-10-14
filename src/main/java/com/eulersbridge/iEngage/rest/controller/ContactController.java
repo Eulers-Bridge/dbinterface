@@ -32,6 +32,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
+import com.eulersbridge.iEngage.core.events.notifications.Message;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -67,6 +68,25 @@ public class ContactController
 			longValidator=LongValidator.getInstance();
 	    }
 
+	    private ReadUserEvent getUser(String contactInfo)
+	    {
+			ReadUserEvent userEvent=null;
+
+			if (contactInfo!=null)
+			{
+				boolean isEmail=emailValidator.isValid(contactInfo);
+				String email=null;
+			
+				if (isEmail)
+				{
+					email=contactInfo;
+					userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
+				}
+				else
+					userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+			}
+			return userEvent;
+	    }
 	    /**
 	     * Is passed all the necessary data to add a contact from the database.
 	     * The request must be a PUT with the contact email or phone number presented
@@ -87,15 +107,8 @@ public class ContactController
 			ReadUserEvent userEvent;
 			ResponseEntity<ContactRequest> result;
 			boolean isEmail=emailValidator.isValid(contactInfo);
-			String email=null;
-		
-			if (isEmail)
-			{
-				email=contactInfo;
-				userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
-			}
-			else
-				userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+			
+			userEvent=getUser(contactInfo);
 				 	
 			// Look for existing contact request.
 			ContactRequestDetails fr=new ContactRequestDetails(contactInfo,userId);
@@ -196,14 +209,21 @@ public class ContactController
 				UpdatedEvent uEvt=contactRequestService.acceptContactRequest(acceptContactRequestEvent);
 				if (uEvt.isEntityFound())
 				{
+					if (LOG.isDebugEnabled()) LOG.debug("uEvt - "+uEvt);
 					ContactDetails cDets=(ContactDetails)uEvt.getDetails();
 					restContact=Contact.fromContactDetails(cDets);
 					result = new ResponseEntity<Contact>(restContact,HttpStatus.CREATED);
 					if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
+					if (LOG.isDebugEnabled()) LOG.debug("Contact Details - "+cDets);
 					
-					
+					crDets.getContactDetails();
+					ReadUserEvent contacteeEvt=getUser(crDets.getContactDetails());
+					UserDetails contacteeDets=(UserDetails)contacteeEvt.getDetails();
+					String givenName=contacteeDets.getGivenName(); 
+					String familyName=contacteeDets.getFamilyName();
 					// Create a new contact request.
-					Notification notification=new Notification(crDets.getUserId(), NotificationConstants.CONTACT_ACCEPTED, cDets);
+					Message message = new Message(null, givenName+' '+familyName+" accepted your contact request.");
+					Notification notification=new Notification(crDets.getUserId(), NotificationConstants.MESSAGE, message);
 					
 			        CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
 			        CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
