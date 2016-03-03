@@ -47,7 +47,7 @@ public class NotificationMessage extends Notification implements NotificationInt
 		Long userId=null;
 		if (user!=null) userId=user.getNodeId();
 		
-		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, read, type, new Message(userId, message));
+		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, isRead(), type, new Message(userId, message));
 		return dets;
 	}
 	

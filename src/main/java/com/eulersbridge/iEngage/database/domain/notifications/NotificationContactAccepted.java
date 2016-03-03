@@ -85,7 +85,7 @@ public class NotificationContactAccepted extends Notification implements Notific
 		if (user!=null) userId=user.getNodeId();
 		
 		ContactDetails contactDetails=contact.toContactDetails();
-		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, read, type, contactDetails);
+		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, isRead(), type, contactDetails);
 		return dets;
 	}
 	
@@ -148,7 +148,7 @@ public class NotificationContactAccepted extends Notification implements Notific
 	public String toString()
 	{
 		return "NotificationContactAccepted [contact=" + contact + ", nodeId="
-				+ nodeId + ", read=" + read + ", timestamp=" + timestamp
+				+ nodeId + ", read=" + isRead() + ", timestamp=" + timestamp
 				+ ", type=" + type + ", user=" + user + "]";
 	}
 

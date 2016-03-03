@@ -80,7 +80,7 @@ public class NotificationContactRejected extends Notification implements Notific
 		if (user!=null) userId=user.getNodeId();
 		
 		ContactRequestDetails contactRequestDetails=contactRequest.toContactRequestDetails();
-		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, read, type, contactRequestDetails);
+		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, isRead(), type, contactRequestDetails);
 		return dets;
 	}
 	
@@ -112,7 +112,7 @@ public class NotificationContactRejected extends Notification implements Notific
 	public String toString()
 	{
 		return "NotificationContactRejected [contactRequest=" + contactRequest
-				+ ", nodeId=" + nodeId + ", read=" + read + ", timestamp="
+				+ ", nodeId=" + nodeId + ", read=" + isRead() + ", timestamp="
 				+ timestamp + ", type=" + type + ", user=" + user + "]";
 	}
 

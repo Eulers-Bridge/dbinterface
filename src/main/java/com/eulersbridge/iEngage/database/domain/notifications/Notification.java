@@ -5,12 +5,14 @@ package com.eulersbridge.iEngage.database.domain.notifications;
 
 import java.util.HashMap;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
@@ -28,13 +30,21 @@ public class Notification implements NotificationInterface
 {
     @GraphId
     Long nodeId;
-	Boolean read=false;
+
+    // Shift read property to has_notification relationship
+//	Boolean read=false;
 	Long timestamp;
 	String type;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction=Direction.OUTGOING)
 	User user;
+    @RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.HAS_NOTIFICATION_LABEL)
+    HasNotification hasNotificationRelationship;
 	
     static Logger LOG = LoggerFactory.getLogger(Notification.class);
+
+    public Boolean isRead(){
+        return this.hasNotificationRelationship.getRead();
+    }
 
 	public Boolean setupForSave(HashMap<String,GraphRepository<?>> repos)
 	{
@@ -75,7 +85,7 @@ public class Notification implements NotificationInterface
 		Long userId=null;
 		if (user!=null) userId=user.getNodeId();
 		
-		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, read, type, null);
+		NotificationDetails dets=new NotificationDetails(nodeId, userId, timestamp, isRead(), type, null);
 		return dets;
 	}
 	
@@ -124,7 +134,7 @@ public class Notification implements NotificationInterface
 	 */
 	public Boolean getRead()
 	{
-		return read;
+		return this.isRead();
 	}
 
 
@@ -134,7 +144,7 @@ public class Notification implements NotificationInterface
 	 */
 	public void setRead(Boolean read)
 	{
-		this.read = read;
+		this.hasNotificationRelationship.setRead(read);
 	}
 
 
@@ -203,7 +213,7 @@ public class Notification implements NotificationInterface
 	@Override
 	public String toString()
 	{
-		return "Notification [nodeId=" + nodeId + ", read=" + read
+		return "Notification [nodeId=" + nodeId + ", read=" + hasNotificationRelationship.getRead()
 				+ ", timestamp=" + timestamp + ", type=" + type + ", user="
 				+ user + "]";
 	}
