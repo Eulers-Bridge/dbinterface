@@ -36,7 +36,7 @@ public interface PollRepository extends GraphRepository<Poll>
 	PollAnswer getPollAnswer(@Param("userId") Long answererId, @Param("pollId") Long pollId);
 	
 	@Query("MATCH (a:`User`)-[r:`"+DatabaseDomainConstants.APQ_LABEL+"`]->(b:`"+DatabaseDomainConstants.POLL+"`) WHERE id(b)={pollId} WITH collect(distinct r.answerIndex) as answers "+
-			"unwind answers as x match (u:`User`)-[t:`"+DatabaseDomainConstants.APQ_LABEL+"`]-(p:`"+DatabaseDomainConstants.POLL+"`) where t.answerIndex=x return x as answer,count(t) as frequency order by x")
+			"unwind answers as x match (u:`User`)-[t:`"+DatabaseDomainConstants.APQ_LABEL+"`]-(p:`"+DatabaseDomainConstants.POLL+"`) where t.answerIndex=x and id(p)={pollId} return x as answer,count(t) as frequency order by x")
 	Result <PollResultTemplate> getPollResults(@Param("pollId") Long pollId);
 
 }
