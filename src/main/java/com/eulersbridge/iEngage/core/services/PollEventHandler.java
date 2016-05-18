@@ -221,8 +221,8 @@ public class PollEventHandler implements PollService
 				String answers[]=poll.getAnswers().split(",");
 				int numAnswers=answers.length;
 				ArrayList <PollResult> resultDetails=new ArrayList<PollResult>();
-				
-				resultDetails=PollResultDetails.toPollResultList(results.iterator(),numAnswers);
+
+                resultDetails=PollResultDetails.toPollResultList(results.iterator(),numAnswers);
 				PollResultDetails dets=new PollResultDetails(pollId, resultDetails);
 				pollResultReadEvent = new PollResultReadEvent(pollId,dets);
 			}

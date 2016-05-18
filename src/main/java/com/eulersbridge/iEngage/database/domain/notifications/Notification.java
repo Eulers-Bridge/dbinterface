@@ -39,7 +39,7 @@ public class Notification implements NotificationInterface
 	User user;
     @RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.HAS_NOTIFICATION_LABEL)
     HasNotification hasNotificationRelationship;
-	
+
     static Logger LOG = LoggerFactory.getLogger(Notification.class);
 
     public Boolean isRead(){
@@ -144,12 +144,13 @@ public class Notification implements NotificationInterface
 	 */
 	public void setRead(Boolean read)
 	{
-		this.hasNotificationRelationship.setRead(read);
+        //Fix me
+        if(this.hasNotificationRelationship == null)
+            this.hasNotificationRelationship= new HasNotification();
+        this.hasNotificationRelationship.setRead(read);
 	}
 
-
-
-	/**
+    /**
 	 * @return the timestamp
 	 */
 	public Long getTimestamp()
