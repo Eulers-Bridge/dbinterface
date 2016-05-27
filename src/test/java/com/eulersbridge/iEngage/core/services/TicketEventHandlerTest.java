@@ -11,10 +11,12 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import com.eulersbridge.iEngage.core.events.ticket.*;
 import com.eulersbridge.iEngage.database.domain.Support;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.resultMap.SupportAndNum;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 import org.junit.Before;
@@ -327,10 +329,13 @@ public class TicketEventHandlerTest
         Ticket testTicket = DatabaseDataFixture.populateTicket1();
         User testUser = DatabaseDataFixture.populateUserGnewitt();
         Support support = DatabaseDataFixture.populateSupport(testUser, testTicket);
+        SupportAndNum supportAndNum = new SupportAndNum();
+        supportAndNum.setSupport(support);
+        supportAndNum.setNumOfSupport(10L);
         SupportTicketEvent supportTicketEvent = new SupportTicketEvent(testTicket.getNodeId(), testUser.getEmail());
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ticketRepository.findOne(any(Long.class))).thenReturn(testTicket);
-        when(ticketRepository.supportTicket(any(Long.class), any(String.class))).thenReturn(support);
+        when(ticketRepository.supportTicket_return_number_of_supports(any(Long.class), any(String.class))).thenReturn(supportAndNum);
 
         TicketSupportedEvent ticketSupportedEvent = service.supportTicket(supportTicketEvent);
         assertTrue(ticketSupportedEvent.isEntityFound());

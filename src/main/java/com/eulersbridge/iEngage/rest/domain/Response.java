@@ -37,8 +37,12 @@ public class Response
 	{
 		return responseObject;
 	}
-	
-	public static Response failed(String errorReason)
+
+    public void setResponseObject(Object responseObject) {
+        this.responseObject = responseObject;
+    }
+
+    public static Response failed(String errorReason)
 	{
 		Response result=new Response(false,errorReason);
 		return result;

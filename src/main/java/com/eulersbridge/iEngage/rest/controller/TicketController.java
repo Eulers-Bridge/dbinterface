@@ -234,23 +234,25 @@ public class TicketController {
 
     //Support
     @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.TICKET_LABEL+"/{ticketId}"+ ControllerConstants.SUPPORT +"/{email}")
-    public @ResponseBody ResponseEntity<Boolean> supportTicket(@PathVariable Long ticketId, @PathVariable String email){
+    public @ResponseBody ResponseEntity<Response> supportTicket(@PathVariable Long ticketId, @PathVariable String email){
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to have " + email + " support ticket: " + ticketId);
         TicketSupportedEvent ticketSupportedEvent = ticketService.supportTicket(new SupportTicketEvent(ticketId, email));
-        ResponseEntity<Boolean> response;
+        ResponseEntity<Response> response;
         if (!ticketSupportedEvent.isEntityFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.GONE);
+            response = new ResponseEntity<Response>(HttpStatus.GONE);
         }
         else if (!ticketSupportedEvent.isUserFound())
         {
-            response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
         }
         else
         {
-            Boolean restEvent = ticketSupportedEvent.isResult();
-            response = new ResponseEntity<Boolean>(restEvent, HttpStatus.OK);
+//            Boolean restEvent = ticketSupportedEvent.isResult();
+            Response restEvent = new Response(ticketSupportedEvent.isResult());
+            restEvent.setResponseObject(ticketSupportedEvent.getNumOfSupports());
+            response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
         }
         return response;
     }

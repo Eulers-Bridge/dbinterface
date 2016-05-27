@@ -11,6 +11,7 @@ public class TicketSupportedEvent {
     protected boolean entityFound = true;
     protected boolean userFound = true;
     protected boolean result = true;
+    protected Long numOfSupports;
 
     public TicketSupportedEvent(Long ticketId, String userEmail, boolean result) {
         this.ticketId = ticketId;
@@ -68,5 +69,13 @@ public class TicketSupportedEvent {
 
     public void setResult(boolean result) {
         this.result = result;
+    }
+
+    public Long getNumOfSupports() {
+        return numOfSupports;
+    }
+
+    public void setNumOfSupports(Long numOfSupports) {
+        this.numOfSupports = numOfSupports;
     }
 }

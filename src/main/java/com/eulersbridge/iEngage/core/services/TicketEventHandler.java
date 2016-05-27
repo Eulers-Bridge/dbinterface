@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
 import com.eulersbridge.iEngage.core.events.CreatedEvent;
@@ -26,6 +27,7 @@ import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Support;
 import com.eulersbridge.iEngage.database.domain.Ticket;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.resultMap.SupportAndNum;
 import com.eulersbridge.iEngage.database.repository.CandidateRepository;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.TicketRepository;
@@ -250,10 +252,20 @@ public class TicketEventHandler implements TicketService{
         else if (user == null)
             ticketSupportedEvent = TicketSupportedEvent.userNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
         else{
-            ticketSupportedEvent = new TicketSupportedEvent(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress(), true);
-            Support supportEntity = ticketRepository.supportTicket(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
-            if(supportEntity==null)
-                ticketSupportedEvent.setResult(false);
+            ticketSupportedEvent = new TicketSupportedEvent(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress(), false);
+//            Support supportEntity = ticketRepository.supportTicket(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+//            if(supportEntity==null)
+//                ticketSupportedEvent.setResult(false);
+            SupportAndNum resultRow = ticketRepository.supportTicket_return_number_of_supports(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
+            Support supportEntity = resultRow.getSupport();
+            Long numOfSupports = resultRow.getNumOfSupport();
+            System.out.println("support:"+supportEntity);
+            System.out.println("numOfSupports:"+numOfSupports);
+            if(supportEntity!=null){
+                ticketSupportedEvent.setResult(true);
+                ticketSupportedEvent.setNumOfSupports(numOfSupports);
+            }
+
         }
         return ticketSupportedEvent;
     }

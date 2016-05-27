@@ -451,7 +451,7 @@ public class TicketControllerTest
         this.mockMvc.perform(put(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(content().string("true"))
+                .andExpect(content().string("{\"success\":true,\"errorReason\":null,\"responseObject\":null}"))
                 .andExpect(status().isOk());
     }
 
@@ -491,7 +491,7 @@ public class TicketControllerTest
         this.mockMvc.perform(put(urlPrefix + "/{ticketId}/" + ControllerConstants.SUPPORT + "/{email}", testTicketId, testUserEmail)
                 .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(content().string("false"))
+                .andExpect(content().string("{\"success\":false,\"errorReason\":null,\"responseObject\":null}"))
                 .andExpect(status().isOk());
     }
 
