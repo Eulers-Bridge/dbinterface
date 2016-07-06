@@ -11,6 +11,8 @@ import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.ticket.CreateTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.DeleteTicketEvent;
 import com.eulersbridge.iEngage.core.events.ticket.ReadTicketEvent;
@@ -22,6 +24,7 @@ import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.ticket.TicketSupportedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.TicketUpdatedEvent;
 import com.eulersbridge.iEngage.core.events.ticket.UpdateTicketEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.database.domain.Candidate;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Support;
@@ -38,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
 /**
@@ -285,4 +289,37 @@ public class TicketEventHandler implements TicketService{
         }
         return ticketSupportedEvent;
     }
+
+	@Override
+	public LikeableObjectLikesEvent findSupporters(LikesLikeableObjectEvent likesLikeableObjectEvent, Direction sortDirection, int pageNumber, int pageSize) {
+		Long ticketId = likesLikeableObjectEvent.getLikeableObjId();
+		ArrayList<UserDetails> userDetailses = new ArrayList<UserDetails>();
+		LikeableObjectLikesEvent likeableObjectLikesEvent;
+
+		if (LOG.isDebugEnabled()) LOG.debug("ticketId "+ticketId);
+		Pageable pageable = new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
+		Page<User> users = ticketRepository.findSupporters(ticketId, pageable);
+		if (users != null)
+		{
+			Iterator<User> iter = users.iterator();
+			while (iter.hasNext())
+			{
+				if (LOG.isDebugEnabled())
+					LOG.debug("Total elements = "+users.getTotalElements()+" total pages ="+users.getTotalPages());
+
+				User user =iter.next();
+				if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+user.getEmail());
+				UserDetails userDetails = user.toUserDetails();
+				userDetailses.add(userDetails);
+			}
+			likeableObjectLikesEvent = new LikeableObjectLikesEvent(ticketId, userDetailses);
+		}
+		else
+		{
+			if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByLikeableObjId");
+			likeableObjectLikesEvent = LikeableObjectLikesEvent.objectNotFound(ticketId);
+		}
+		return likeableObjectLikesEvent;
+	}
+
 }

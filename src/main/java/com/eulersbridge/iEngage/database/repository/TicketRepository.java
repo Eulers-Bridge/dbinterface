@@ -4,6 +4,7 @@ import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
 import com.eulersbridge.iEngage.database.domain.Support;
 import com.eulersbridge.iEngage.database.domain.Ticket;
 
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.resultMap.SupportAndNum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,5 +34,8 @@ public interface TicketRepository extends GraphRepository<Ticket>
 
     @Query("Match (a:`User`)-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]-(b:`Ticket`) where a.email={email} and id(b)={ticketId} delete r")
     void withdrawSupportTicket(@Param("ticketId")Long ticketId, @Param("email")String email);
+
+    @Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]-(b:`"+DatabaseDomainConstants.TICKET+"`) where id(b)={ticketId} return a")
+    Page<User> findSupporters(@Param("ticketId") Long ticketId, Pageable pageable);
 }
 
