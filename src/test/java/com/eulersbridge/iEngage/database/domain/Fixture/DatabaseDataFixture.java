@@ -420,7 +420,7 @@ public class DatabaseDataFixture
 		Poll poll = new Poll(question,answers, start, duration);
 		Owner creator=new Owner(creatorId);
 		Owner owner= new Owner(ownerId);
-		poll.setCreator(creator);
+		poll.setCreator(new User(creator.getNodeId()));
 		poll.setOwner(owner);
 		poll.setNodeId(nodeId);
 		return poll;

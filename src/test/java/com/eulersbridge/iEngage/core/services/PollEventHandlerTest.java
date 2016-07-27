@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.eulersbridge.iEngage.database.domain.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -44,10 +45,6 @@ import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.ReadPollResultEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Poll;
-import com.eulersbridge.iEngage.database.domain.PollAnswer;
-import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
@@ -321,7 +318,7 @@ public final void testCreatePollCreatorNotFound()
 		Owner testOwner=new Owner();
 		testOwner.setNodeId(testData.getOwner().getNodeId());
 		Owner testCreator=new Owner(null);
-		testData.setCreator(testCreator);
+		testData.setCreator(new User(testCreator.getNodeId()));
 		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testCreator);
 		when(pollRepository.save(any(Poll.class))).thenReturn(testData);

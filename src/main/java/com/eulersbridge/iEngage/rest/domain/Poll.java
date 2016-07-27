@@ -26,6 +26,7 @@ public class Poll extends ResourceSupport{
     private Long duration;
     private Long ownerId;
     private Long creatorId;
+    private String creatorEmail;
 
     private Long numOfComments;
     private Long numOfAnswers;
@@ -46,6 +47,7 @@ public class Poll extends ResourceSupport{
         poll.setCreatorId(pollDetails.getCreatorId());
         poll.setNumOfComments(pollDetails.getNumOfComments());
         poll.setNumOfAnswers(pollDetails.getNumOfAnswers());
+        poll.setCreatorEmail(pollDetails.getCreatorEmail());
 
 	    // {!begin selfRel}
         poll.add(linkTo(PollController.class).slash(name).slash(poll.getNodeId()).withSelfRel());
@@ -196,4 +198,12 @@ public class Poll extends ResourceSupport{
 	{
 		this.creatorId = creatorId;
 	}
+
+    public String getCreatorEmail() {
+        return creatorEmail;
+    }
+
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
+    }
 }

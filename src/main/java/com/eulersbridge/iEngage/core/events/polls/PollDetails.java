@@ -17,6 +17,7 @@ public class PollDetails extends Details
     private Long duration;
     private Long ownerId;
     private Long creatorId;
+	private String creatorEmail;
 
     private Long numOfComments;
     private Long numOfAnswers;
@@ -122,6 +123,14 @@ public class PollDetails extends Details
 	public void setCreatorId(Long creatorId)
 	{
 		this.creatorId = creatorId;
+	}
+
+	public String getCreatorEmail() {
+		return creatorEmail;
+	}
+
+	public void setCreatorEmail(String creatorEmail) {
+		this.creatorEmail = creatorEmail;
 	}
 
 	@Override

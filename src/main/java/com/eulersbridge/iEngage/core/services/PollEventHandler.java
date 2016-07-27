@@ -9,10 +9,7 @@ import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Poll;
-import com.eulersbridge.iEngage.database.domain.PollAnswer;
-import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
+import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
@@ -85,7 +82,7 @@ public class PollEventHandler implements PollService
 	    	else
 	    	{
 	    		poll.setOwner(owner);
-	    		poll.setCreator(creator);
+	    		poll.setCreator(new User(creator.getNodeId()));
 	    		Poll result = pollRepository.save(poll);
 	        	pollCreatedEvent = new PollCreatedEvent( result.toPollDetails());
 	    	}
@@ -151,7 +148,7 @@ public class PollEventHandler implements PollService
 		    	else
 		    	{
 		    		poll.setOwner(owner);
-		    		poll.setCreator(creator);
+		    		poll.setCreator(new User(creator.getNodeId()));
 		    		Poll result = pollRepository.save(poll);
 		    		resultEvt = new PollUpdatedEvent( result.getNodeId(), result.toPollDetails());
 		    	}
@@ -208,7 +205,7 @@ public class PollEventHandler implements PollService
 			ReadPollResultEvent readPollResultEvent)
 	{
 		Long pollId=readPollResultEvent.getNodeId();
-		if (LOG.isDebugEnabled()) LOG.debug("Finding results for poll - "+pollId);;
+		if (LOG.isDebugEnabled()) LOG.debug("Finding results for poll - "+pollId);
 		Poll poll = pollRepository.findOne(pollId);
 		ReadEvent pollResultReadEvent=null;
 		if (poll != null)

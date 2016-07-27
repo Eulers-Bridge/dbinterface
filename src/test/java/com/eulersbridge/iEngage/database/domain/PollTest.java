@@ -204,8 +204,8 @@ public class PollTest
 	{
 		Owner creator=new Owner(4325l);
 		assertNotEquals(poll.getCreator(),creator);
-		poll.setCreator(creator);
-		assertEquals(poll.getCreator(),creator);
+		poll.setCreator(new User(creator.getNodeId()));
+		assertEquals(poll.getCreator(),new User(creator.getNodeId()));
 	}
 
 	/**
@@ -336,7 +336,7 @@ public class PollTest
 		assertNotEquals(pollTest, poll);
 		pollTest.setOwner(poll.getOwner());
 		
-		pollTest.setCreator(new Owner(22l));
+		pollTest.setCreator(new User(22l));
 		assertNotEquals(poll, pollTest);
 		pollTest.setCreator(null);
 		assertNotEquals(poll, pollTest);

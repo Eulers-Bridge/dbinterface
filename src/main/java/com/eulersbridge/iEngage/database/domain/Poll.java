@@ -22,7 +22,7 @@ public class Poll extends Likeable implements Commentable
 	private Long duration;
 	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction = Direction.BOTH)
 	@Fetch
-	private Owner creator;
+	private User creator;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_POLL_LABEL, direction = Direction.BOTH)
 	@Fetch
 	private Owner owner;
@@ -65,6 +65,7 @@ public class Poll extends Likeable implements Commentable
 		pollDetails.setDuration(this.getDuration());
 		pollDetails.setOwnerId((owner == null) ? null : owner.getNodeId());
 		pollDetails.setCreatorId((creator == null) ? null : creator.getNodeId());
+		pollDetails.setCreatorEmail((creator == null) ? null : creator.getEmail());
         pollDetails.setNumOfComments(getNumberOfComments());
         pollDetails.setNumOfAnswers(getNumberOfAnswers());
 		if (LOG.isTraceEnabled()) LOG.trace("pollDetails; " + pollDetails);
@@ -82,7 +83,7 @@ public class Poll extends Likeable implements Commentable
 		poll.setDuration(pollDetails.getDuration());
 		Owner owner = new Owner(pollDetails.getOwnerId());
 		poll.setOwner(owner);
-		Owner creator = new Owner(pollDetails.getCreatorId());
+		User creator = new User(pollDetails.getCreatorId());
 		poll.setCreator(creator);
 		if (LOG.isTraceEnabled()) LOG.trace("poll " + poll);
 		return poll;
@@ -165,7 +166,7 @@ public class Poll extends Likeable implements Commentable
 	/**
 	 * @return the creator
 	 */
-	public Owner getCreator()
+	public User getCreator()
 	{
 		return creator;
 	}
@@ -174,7 +175,7 @@ public class Poll extends Likeable implements Commentable
 	 * @param creator
 	 *            the creator to set
 	 */
-	public void setCreator(Owner creator)
+	public void setCreator(User creator)
 	{
 		this.creator = creator;
 	}
