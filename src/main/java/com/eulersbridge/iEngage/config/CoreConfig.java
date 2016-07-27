@@ -128,7 +128,8 @@ public class CoreConfig
     public PollService createPollService()
     {
         if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
-        return new PollEventHandler(pollRepository,pollAnswerRepository,ownerRepository);
+        return new PollEventHandler(pollRepository,pollAnswerRepository,
+                ownerRepository, institutionRepository);
     }
 
     @Bean

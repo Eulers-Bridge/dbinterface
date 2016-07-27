@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.repository.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -46,9 +47,6 @@ import com.eulersbridge.iEngage.core.events.polls.ReadPollResultEvent;
 import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
 import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
-import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
-import com.eulersbridge.iEngage.database.repository.PollRepository;
 
 /**
  * @author Greg Newitt
@@ -64,6 +62,10 @@ public class PollEventHandlerTest
 	PollAnswerRepository answerRepository;
     @Mock
     OwnerRepository ownerRepository;
+	@Mock
+	UserRepository userRepository;
+	@Mock
+	InstitutionRepository institutionRepository;
 
     PollEventHandler service;
 	/**
@@ -74,7 +76,7 @@ public class PollEventHandlerTest
 	{
 		MockitoAnnotations.initMocks(this);
 
-		service=new PollEventHandler(pollRepository,answerRepository,ownerRepository);
+		service=new PollEventHandler(pollRepository,answerRepository,ownerRepository,institutionRepository);
 	}
 
 	/**
@@ -129,12 +131,13 @@ public final void testCreatePoll()
 {
 	if (LOG.isDebugEnabled()) LOG.debug("CreatingPoll()");
 	Poll testData=DatabaseDataFixture.populatePoll1();
-	Owner testOwner=new Owner();
+	Institution testOwner=new Institution();
 	testOwner.setNodeId(testData.getOwner().getNodeId());
 	Owner testCreator=new Owner();
 	testCreator.setNodeId(testData.getCreator().getNodeId());
-	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
 	when(pollRepository.save(any(Poll.class))).thenReturn(testData);
+	when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
 	PollDetails dets=testData.toPollDetails();
 	CreatePollEvent createPollEvent=new CreatePollEvent(dets);
 	PollCreatedEvent evtData = service.createPoll(createPollEvent);
@@ -165,10 +168,11 @@ public final void testCreatePollCreatorNotFound()
 {
 	if (LOG.isDebugEnabled()) LOG.debug("CreatingPoll()");
 	Poll testData=DatabaseDataFixture.populatePoll1();
-	Owner testOwner=new Owner();
+	Institution testOwner=new Institution();
 	testOwner.setNodeId(testData.getOwner().getNodeId());
 	Owner testCreator=null;
-	when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testCreator);
+	when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
+	when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
 	when(pollRepository.save(any(Poll.class))).thenReturn(testData);
 	PollDetails dets=testData.toPollDetails();
 	CreatePollEvent createPollEvent=new CreatePollEvent(dets);
@@ -221,18 +225,20 @@ public final void testCreatePollCreatorNotFound()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
 		Poll testData=DatabaseDataFixture.populatePoll1();
-		Owner testOwner=new Owner();
+		Institution testOwner=new Institution();
 		testOwner.setNodeId(testData.getOwner().getNodeId());
 		Owner testCreator=new Owner();
 		testCreator.setNodeId(testData.getCreator().getNodeId());
+		when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
 		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testCreator);
 		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
 		PollDetails dets=testData.toPollDetails();
 		UpdatePollEvent createPollEvent=new UpdatePollEvent(dets.getNodeId(), dets);
 		UpdatedEvent evtData = service.updatePoll(createPollEvent);
+		System.out.println(evtData);
 		PollDetails returnedDets = (PollDetails) evtData.getDetails();
-		assertEquals(returnedDets,testData.toPollDetails());
+		assertEquals(testData.toPollDetails(),returnedDets);
 		assertEquals(evtData.getNodeId(),returnedDets.getNodeId());
 		assertTrue(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
@@ -278,7 +284,7 @@ public final void testCreatePollCreatorNotFound()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
 		Poll testData=DatabaseDataFixture.populatePoll1();
-		Owner testOwner=new Owner(null);
+		Institution testOwner=new Institution();
 		testData.setOwner(testOwner);
 		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
 		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
@@ -295,11 +301,12 @@ public final void testCreatePollCreatorNotFound()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
 		Poll testData=DatabaseDataFixture.populatePoll1();
-		Owner testOwner=new Owner();
+		Institution testOwner=new Institution();
 		testOwner.setNodeId(testData.getOwner().getNodeId());
 		Owner testCreator=null;
 		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testCreator);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
+		when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
 		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
 		PollDetails dets=testData.toPollDetails();
 		UpdatePollEvent createPollEvent=new UpdatePollEvent(dets.getNodeId(), dets);
@@ -315,12 +322,13 @@ public final void testCreatePollCreatorNotFound()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
 		Poll testData=DatabaseDataFixture.populatePoll1();
-		Owner testOwner=new Owner();
+		Institution testOwner=new Institution();
 		testOwner.setNodeId(testData.getOwner().getNodeId());
 		Owner testCreator=new Owner(null);
 		testData.setCreator(new User(testCreator.getNodeId()));
 		when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testCreator);
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
+		when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
 		when(pollRepository.save(any(Poll.class))).thenReturn(testData);
 		PollDetails dets=testData.toPollDetails();
 		UpdatePollEvent createPollEvent=new UpdatePollEvent(dets.getNodeId(), dets);

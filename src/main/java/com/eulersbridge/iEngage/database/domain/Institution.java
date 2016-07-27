@@ -32,8 +32,12 @@ public class Institution extends Likeable
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
-	
-	public Institution(String name,String campus,String state,Country country)
+
+	public Institution(Long nodeId) {
+		this.nodeId = nodeId;
+	}
+
+	public Institution(String name, String campus, String state, Country country)
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("Constructor("+name+','+campus+','+state+','+country+')');
 		this.name=name;

@@ -25,7 +25,7 @@ public class Poll extends Likeable implements Commentable
 	private User creator;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_POLL_LABEL, direction = Direction.BOTH)
 	@Fetch
-	private Owner owner;
+	private Institution owner;
 
     @Query("START n = node({self}) match (n)-[r:"+ DatabaseDomainConstants.HAS_COMMENT+"]-(c) RETURN count(c) ")
     private Long numberOfComments;
@@ -81,7 +81,9 @@ public class Poll extends Likeable implements Commentable
 		poll.setAnswers(pollDetails.getAnswers());
 		poll.setStart(pollDetails.getStart());
 		poll.setDuration(pollDetails.getDuration());
-		Owner owner = new Owner(pollDetails.getOwnerId());
+//		Owner owner = new Owner(pollDetails.getOwnerId());
+		Institution owner = new Institution();
+		owner.setNodeId(pollDetails.getOwnerId());
 		poll.setOwner(owner);
 		User creator = new User(pollDetails.getCreatorId());
 		poll.setCreator(creator);
@@ -183,7 +185,7 @@ public class Poll extends Likeable implements Commentable
 	/**
 	 * @return the owner
 	 */
-	public Owner getOwner()
+	public Institution getOwner()
 	{
 		return owner;
 	}
@@ -192,7 +194,7 @@ public class Poll extends Likeable implements Commentable
 	 * @param owner
 	 *            the owner to set
 	 */
-	public void setOwner(Owner owner)
+	public void setOwner(Institution owner)
 	{
 		this.owner = owner;
 	}

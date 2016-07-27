@@ -223,7 +223,7 @@ public class PollTest
 	@Test
 	public final void testSetOwner()
 	{
-		Owner owner=new Owner(43254l);
+		Institution owner=new Institution(43254l);
 		assertNotEquals(poll.getOwner(),owner);
 		poll.setOwner(owner);
 		assertEquals(poll.getOwner(),owner);
@@ -329,7 +329,7 @@ public class PollTest
 		assertNotEquals(pollTest, poll);
 		pollTest.setAnswers(poll.getAnswers());
 		
-		pollTest.setOwner(new Owner(23l));
+		pollTest.setOwner(new Institution(23l));
 		assertNotEquals(poll, pollTest);
 		pollTest.setOwner(null);
 		assertNotEquals(poll, pollTest);

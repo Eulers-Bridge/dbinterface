@@ -10,12 +10,14 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,12 +36,17 @@ public class PollEventHandler implements PollService
 	private PollRepository pollRepository;
 	private PollAnswerRepository answerRepository;
 	private OwnerRepository ownerRepository;
+	private InstitutionRepository institutionRepository;
 
-	public PollEventHandler(PollRepository pollRepository, PollAnswerRepository answerRepository, OwnerRepository ownerRepository)
+	public PollEventHandler(PollRepository pollRepository,
+							PollAnswerRepository answerRepository,
+							OwnerRepository ownerRepository,
+							InstitutionRepository institutionRepository)
 	{
 		this.pollRepository = pollRepository;
 		this.answerRepository=answerRepository;
 		this.ownerRepository = ownerRepository;
+		this.institutionRepository = institutionRepository;
 	}
 
 	@Override
@@ -67,7 +74,7 @@ public class PollEventHandler implements PollService
 		Poll poll = Poll.fromPollDetails(pollDetails);
 		
 		if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+pollDetails.getOwnerId());
-    	Owner owner=ownerRepository.findOne(pollDetails.getOwnerId());
+    	Institution owner=institutionRepository.findOne(pollDetails.getOwnerId());
     	PollCreatedEvent pollCreatedEvent;
     	if (null==owner)
     		pollCreatedEvent=PollCreatedEvent.ownerNotFound(pollDetails.getOwnerId());
@@ -130,9 +137,9 @@ public class PollEventHandler implements PollService
 		else
 		{
 			if (LOG.isDebugEnabled()) LOG.debug("Finding owner with ownerId = "+pollDetails.getOwnerId());
-			Owner owner=null;
+			Institution owner=null;
 			if (null!=pollDetails.getOwnerId())
-				owner=ownerRepository.findOne(pollDetails.getOwnerId());
+				owner=institutionRepository.findOne(pollDetails.getOwnerId());
 	    	if (null==owner)
 	    		resultEvt=PollUpdatedEvent.ownerNotFound(pollDetails.getOwnerId());
 	    	else
