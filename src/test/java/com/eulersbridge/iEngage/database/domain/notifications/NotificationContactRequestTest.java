@@ -83,7 +83,7 @@ public class NotificationContactRequestTest
 
 		Boolean response=notification.setupForSave(repos);
 		assertTrue(response);
-		assertEquals(notification.getUser(),testData);
+		assertEquals(notification.getHasNotificationRelationship().getUser(),testData);
 		assertEquals(notification.getContactRequest(),testCr);
 	}
 
@@ -101,7 +101,7 @@ public class NotificationContactRequestTest
 		cr.setNodeId(null);
 		Boolean response=notification.setupForSave(repos);
 		assertTrue(response);
-		assertEquals(notification.getUser(),testData);
+		assertEquals(notification.getHasNotificationRelationship().getUser(),testData);
 		assertEquals(notification.getContactRequest(),testCr);
 	}
 

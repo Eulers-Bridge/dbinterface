@@ -78,7 +78,7 @@ public class NotificationTest
 
 		Boolean response=notification.setupForSave(repos);
 		assertTrue(response);
-		assertEquals(notification.getUser(),testData);
+		assertEquals(notification.getHasNotificationRelationship().getUser(),testData);
 	}
 
 	@Test
@@ -91,7 +91,7 @@ public class NotificationTest
 
 		Boolean response=notification.setupForSave(repos);
 		assertTrue(response);
-		assertEquals(notification.getUser(),testData);
+		assertEquals(notification.getHasNotificationRelationship().getUser(),testData);
 	}
 
 	/**
