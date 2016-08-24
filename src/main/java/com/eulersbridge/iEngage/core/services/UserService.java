@@ -7,23 +7,11 @@ import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 
+import com.eulersbridge.iEngage.core.events.users.*;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 
-import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
-import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
-import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
@@ -43,6 +31,8 @@ public interface UserService
 	public ReadUserEvent readUserByContactNumber(RequestReadUserEvent requestReadUserEvent);
 	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadUserEvent readUserByContactEmail(RequestReadUserEvent requestReadUserEvent);
+	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
+	public SearchUserEvent searchUserProfileByName(RequestSearchUserEvent requestSearchUserEvent);
 //TODO Need to secure this better.
 	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadUserEvent readUserById(RequestReadUserEvent requestReadUserEvent);

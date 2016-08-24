@@ -10,6 +10,8 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface UserRepository extends GraphRepository<User> 
 {
     static Logger LOG = LoggerFactory.getLogger(UserRepository.class);
@@ -81,5 +83,8 @@ public interface UserRepository extends GraphRepository<User>
 
     @Query("Match (a:`User`) WHERE a.email={userEmail} RETURN id(a)")
     Long getUserId(@Param("userEmail") String userEmail);
+
+	@Query("Match (u:User) USING INDEX u:User(givenName) WHERE u.givenName STARTS WITH {pattern1} return u")
+	List<User> searchUserByName(@Param("pattern1") String pattern1, @Param("pattern2") Long pattern2);
 
 }

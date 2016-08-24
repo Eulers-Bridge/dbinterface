@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.rest.domain.*;
 
@@ -34,19 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent.VerificationErrorType;
-import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
-import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
-import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
@@ -983,6 +972,58 @@ public class UserController
 		}
     	return new ResponseEntity<StringWriter>(sw,HttpStatus.OK);
     }
+
+	/**
+	 * Is passed all the necessary data to read a user from the database.
+	 * The request must be a GET with the user email presented
+	 * as the final portion of the URL.
+	 * <p/>
+	 * This method will return the user object read from the database.
+	 *
+	 * @param email the email address of the user object to be read.
+	 * @return the user object.
+	 *
+
+	 */
+	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.SEARCH_USER_LABEL+"/{inputName}")
+	public @ResponseBody ResponseEntity<Iterator<UserProfile>> searchUserProfiles(@PathVariable String inputName)
+	{
+		if (LOG.isInfoEnabled()) LOG.info("Attempting to search User profiles Input:"+ inputName);
+		RequestSearchUserEvent requestSearchUserEvent = new RequestSearchUserEvent(inputName);
+
+
+//		ReadUserEvent userEvent;
+//		ResponseEntity<UserProfile> result;
+//		boolean isEmail=emailValidator.isValid(contactInfo);
+//		String email=null;
+//
+//		if (isEmail)
+//		{
+//			email=contactInfo;
+//			userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
+//		}
+//		else
+//		{
+//			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+//		}
+//
+//		if (!userEvent.isEntityFound())
+//		{
+//			result = new ResponseEntity<UserProfile>(HttpStatus.NOT_FOUND);
+//		}
+//		else
+//		{
+//			UserDetails dets=(UserDetails) userEvent.getDetails();
+//			if (!isEmail)
+//				dets.setEmail(null);
+//			if (LOG.isDebugEnabled()) LOG.debug("dets - "+dets);
+//			UserProfile restUser=UserProfile.fromUserDetails(dets);
+//			result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
+//			if (LOG.isDebugEnabled()) LOG.debug("result - "+result);
+//		}
+		return null;
+	}
+
 
 //    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}" + ControllerConstants.LIKES_LABEL)
 //    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(

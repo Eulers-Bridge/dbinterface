@@ -9,10 +9,8 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
-import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.neo4j.annotation.*;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
@@ -28,16 +26,16 @@ import com.eulersbridge.iEngage.database.repository.UserRepository;
 @NodeEntity
 public class Notification implements NotificationInterface
 {
+
     @GraphId
     Long nodeId;
-
     // Shift read property to has_notification relationship
 //	Boolean read=false;
 	Long timestamp;
 	String type;
-	@RelatedTo(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction=Direction.OUTGOING)
+	@RelatedTo(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction=Direction.INCOMING)
 	User user;
-    @RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.HAS_NOTIFICATION_LABEL)
+    @RelatedToVia(direction=Direction.INCOMING, type=DatabaseDomainConstants.HAS_NOTIFICATION_LABEL)
     HasNotification hasNotificationRelationship;
 
     static Logger LOG = LoggerFactory.getLogger(Notification.class);
@@ -66,7 +64,10 @@ public class Notification implements NotificationInterface
 					
 				if (result!=null)
 				{
-					user=result;
+					// shift user to HasNotification obj
+					// set Notification level user to null to avoid duplicated relationship link during save
+					user=null;
+					hasNotificationRelationship.setUser(result);
 					response=true;
 				}
 			}
@@ -99,8 +100,14 @@ public class Notification implements NotificationInterface
 			notif.setNodeId(nDets.getNodeId());
 			User user=new User(nDets.getUserId());
 			notif.setUser(user);
+
+			HasNotification hasNotification = new HasNotification();
+			hasNotification.setNotification(notif);
+			notif.setHasNotificationRelationship(hasNotification);
+
 			notif.setRead(nDets.getRead());
 			notif.setTimestamp(nDets.getTimestamp());
+
 		}
 		else
 		{
@@ -216,7 +223,14 @@ public class Notification implements NotificationInterface
 	{
 		return "Notification [nodeId=" + nodeId + ", read=" + hasNotificationRelationship.getRead()
 				+ ", timestamp=" + timestamp + ", type=" + type + ", user="
-				+ user + "]";
+				+ user + ", hasNotification="+hasNotificationRelationship.getId()+"]";
 	}
 
+	public HasNotification getHasNotificationRelationship() {
+		return hasNotificationRelationship;
+	}
+
+	public void setHasNotificationRelationship(HasNotification hasNotificationRelationship) {
+		this.hasNotificationRelationship = hasNotificationRelationship;
+	}
 }

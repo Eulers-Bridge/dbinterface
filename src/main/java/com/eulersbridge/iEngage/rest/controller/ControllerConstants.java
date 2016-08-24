@@ -64,6 +64,7 @@ public class ControllerConstants
 	public static final String VOTE_REMINDERS_LABEL = VOTE_REMINDER_LABEL+'s';
 	public static final String VOTE_RECORD_LABEL = "/voteRecord";
 	public static final String VOTE_RECORDS_LABEL = VOTE_RECORD_LABEL+'s';
+	public static final String SEARCH_USER_LABEL = "/searchUserProfile";
 
 	public static final String PAGE_NUMBER = "0";
 	public static final String PAGE_LENGTH = "10";

@@ -14,6 +14,7 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.database.domain.*;
 
 import org.apache.velocity.app.VelocityEngine;
@@ -36,22 +37,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
-import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
-import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
@@ -311,7 +296,16 @@ public class UserEventHandler implements UserService, UserDetailsService
 		}
 		return response;
 	}
-	
+
+	@Override
+	public SearchUserEvent searchUserProfileByName(RequestSearchUserEvent requestSearchUserEvent) {
+		String[] input = requestSearchUserEvent.getqueryString().split(" ");
+		String pattern_1 = input[0];
+		String pattern_2 = input[1];
+//		userRepository.
+		return null;
+	}
+
 	public AllReadEvent readExistingContacts(Long userId, Pageable pageable)
 	{
 		Page <User>contacts=null;

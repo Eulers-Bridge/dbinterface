@@ -57,4 +57,14 @@ public class HasNotification {
     public void setRead(Boolean read) {
         this.read = read;
     }
+
+    @Override
+    public String toString() {
+        return "HasNotification{" +
+                "id=" + id +
+                ", userId=" + user.getNodeId() +
+                ", notificationId=" + notification.getNodeId()+
+                ", read=" + read +
+                '}';
+    }
 }
