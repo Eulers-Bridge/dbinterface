@@ -84,7 +84,10 @@ public interface UserRepository extends GraphRepository<User>
     @Query("Match (a:`User`) WHERE a.email={userEmail} RETURN id(a)")
     Long getUserId(@Param("userEmail") String userEmail);
 
-	@Query("Match (u:User) USING INDEX u:User(givenName) WHERE u.givenName STARTS WITH {pattern1} return u")
-	List<User> searchUserByName(@Param("pattern1") String pattern1, @Param("pattern2") Long pattern2);
+	@Query("Match (u:User) WHERE lower(u.givenName) STARTS WITH {pattern1} AND lower(u.familyName) STARTS WITH {pattern2} return u limit 20")
+	List<User> searchUserByName(@Param("pattern1") String pattern1, @Param("pattern2") String pattern2);
+
+	@Query("Match (u:User) WHERE lower(u.givenName) STARTS WITH {pattern1} OR lower(u.familyName) STARTS WITH {pattern2} return u limit 20")
+	List<User> searchUserByName2(@Param("pattern1") String pattern1, @Param("pattern2") String pattern2);
 
 }

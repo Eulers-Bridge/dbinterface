@@ -17,6 +17,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.database.domain.*;
 
+import com.eulersbridge.iEngage.rest.domain.UserProfile;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -301,9 +302,18 @@ public class UserEventHandler implements UserService, UserDetailsService
 	public SearchUserEvent searchUserProfileByName(RequestSearchUserEvent requestSearchUserEvent) {
 		String[] input = requestSearchUserEvent.getqueryString().split(" ");
 		String pattern_1 = input[0];
-		String pattern_2 = input[1];
-//		userRepository.
-		return null;
+		String pattern_2 = input.length==2? input[1]:"";
+		List<User> users = userRepository.searchUserByName(pattern_1, pattern_2);
+		if (users.size()<1){
+			users = userRepository.searchUserByName2(pattern_1, pattern_2);
+		}
+		List <UserProfile> userProfileList = new ArrayList<>(users.size());
+		for (User user : users){
+			UserProfile userProfile = UserProfile.fromUserDetails(user.toUserDetails());
+			userProfileList.add(userProfile);
+		}
+		SearchUserEvent searchUserEvent = new SearchUserEvent(requestSearchUserEvent.getqueryString(), userProfileList);
+		return searchUserEvent;
 	}
 
 	public AllReadEvent readExistingContacts(Long userId, Pageable pageable)

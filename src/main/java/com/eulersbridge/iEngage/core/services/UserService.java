@@ -31,6 +31,7 @@ public interface UserService
 	public ReadUserEvent readUserByContactNumber(RequestReadUserEvent requestReadUserEvent);
 	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public ReadUserEvent readUserByContactEmail(RequestReadUserEvent requestReadUserEvent);
+	// For search api
 	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or hasRole('"+SecurityConstants.USER_ROLE+"')")
 	public SearchUserEvent searchUserProfileByName(RequestSearchUserEvent requestSearchUserEvent);
 //TODO Need to secure this better.

@@ -1,10 +1,7 @@
 package com.eulersbridge.iEngage.rest.controller;
 
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import javax.servlet.ServletContext;
 
@@ -133,7 +130,7 @@ public class UserController
      * institution the user belongs to.
      * 
      * @param email the email address of the user to be updated.
-     * @param user the user object passed across as JSON.
+     * @param personality the user object passed across as JSON.
      * @return the user object returned by the Graph Database.
      * 
 
@@ -181,7 +178,7 @@ public class UserController
      * This method will return the resulting vote reminder object. 
      * 
      * @param email the email address of the user to be updated.
-     * @param user the user object passed across as JSON.
+     * @param voteReminder the user object passed across as JSON.
      * @return the user object returned by the Graph Database.
      * 
 
@@ -233,7 +230,7 @@ public class UserController
      * This method will return the resulting vote record object. 
      * 
      * @param email the email address of the user to be updated.
-     * @param user the user object passed across as JSON.
+     * @param voteRecord the user object passed across as JSON.
      * @return the user object returned by the Graph Database.
      * 
 
@@ -281,7 +278,7 @@ public class UserController
 	 * <p/>
 	 * This method will return the voteReminders read from the database.
 	 * 
-	 * @param userId
+	 * @param email
 	 *            the userId who has the voteReminder objects to be read.
 	 * @return the contacts.
 	 * 
@@ -340,7 +337,7 @@ public class UserController
 	 * <p/>
 	 * This method will return the voteRecords read from the database.
 	 * 
-	 * @param userId
+	 * @param email
 	 *            the userId who has the voteRecord objects to be read.
 	 * @return the contacts.
 	 * 
@@ -400,7 +397,7 @@ public class UserController
      * <p/>
      * This method will return the voteReminder object read from the database.
      * 
-     * @param email the vote reminder id of the vote reminder object to be read.
+     * @param id the vote reminder id of the vote reminder object to be read.
      * @return the vote reminder object.
      * 
 
@@ -426,7 +423,7 @@ public class UserController
      * <p/>
      * This method will return the voteRecord object read from the database.
      * 
-     * @param email the vote record id of the vote record object to be read.
+     * @param id the vote record id of the vote record object to be read.
      * @return the vote record object.
      * 
 
@@ -452,7 +449,7 @@ public class UserController
      * <p/>
      * This method will return the voteReminder object read from the database.
      * 
-     * @param email the vote reminder id of the vote reminder object to be read.
+     * @param id the vote reminder id of the vote reminder object to be read.
      * @return the vote reminder object.
      * 
 
@@ -479,7 +476,7 @@ public class UserController
      * <p/>
      * This method will return the voteRecord object read from the database.
      * 
-     * @param email the vote record id of the vote record object to be read.
+     * @param id the vote record id of the vote record object to be read.
      * @return the vote record object.
      * 
 
@@ -553,7 +550,7 @@ public class UserController
      * <p/>
      * This method will return the user object read from the database.
      * 
-     * @param email the email address of the user object to be read.
+     * @param contactInfo
      * @return the user object.
      * 
 
@@ -602,7 +599,7 @@ public class UserController
 	 * <p/>
 	 * This method will return the contacts read from the database.
 	 * 
-	 * @param userId
+	 * @param contactInfo
 	 *            the userId who has the contact objects to be read.
 	 * @return the contacts.
 	 * 
@@ -661,7 +658,7 @@ public class UserController
 	 * <p/>
 	 * This method will return the contacts read from the database.
 	 * 
-	 * @param userId
+	 * @param email
 	 *            the userId who has the contact objects to be read.
 	 * @return the contacts.
 	 * 
@@ -973,55 +970,16 @@ public class UserController
     	return new ResponseEntity<StringWriter>(sw,HttpStatus.OK);
     }
 
-	/**
-	 * Is passed all the necessary data to read a user from the database.
-	 * The request must be a GET with the user email presented
-	 * as the final portion of the URL.
-	 * <p/>
-	 * This method will return the user object read from the database.
-	 *
-	 * @param email the email address of the user object to be read.
-	 * @return the user object.
-	 *
 
-	 */
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.SEARCH_USER_LABEL+"/{inputName}")
 	public @ResponseBody ResponseEntity<Iterator<UserProfile>> searchUserProfiles(@PathVariable String inputName)
 	{
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to search User profiles Input:"+ inputName);
 		RequestSearchUserEvent requestSearchUserEvent = new RequestSearchUserEvent(inputName);
-
-
-//		ReadUserEvent userEvent;
-//		ResponseEntity<UserProfile> result;
-//		boolean isEmail=emailValidator.isValid(contactInfo);
-//		String email=null;
-//
-//		if (isEmail)
-//		{
-//			email=contactInfo;
-//			userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
-//		}
-//		else
-//		{
-//			userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
-//		}
-//
-//		if (!userEvent.isEntityFound())
-//		{
-//			result = new ResponseEntity<UserProfile>(HttpStatus.NOT_FOUND);
-//		}
-//		else
-//		{
-//			UserDetails dets=(UserDetails) userEvent.getDetails();
-//			if (!isEmail)
-//				dets.setEmail(null);
-//			if (LOG.isDebugEnabled()) LOG.debug("dets - "+dets);
-//			UserProfile restUser=UserProfile.fromUserDetails(dets);
-//			result = new ResponseEntity<UserProfile>(restUser,HttpStatus.OK);
-//			if (LOG.isDebugEnabled()) LOG.debug("result - "+result);
-//		}
-		return null;
+		SearchUserEvent searchUserEvent = userService.searchUserProfileByName(requestSearchUserEvent);
+        List<UserProfile> userProfileList = searchUserEvent.getUserProfileList();
+        ResponseEntity result = new ResponseEntity<Iterator<UserProfile>>(userProfileList.iterator(), HttpStatus.OK);
+		return result;
 	}
 
 
