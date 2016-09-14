@@ -29,7 +29,7 @@ public class UserProfile extends ResourceSupport
 	private String contactNumber;
 	private Long institutionId;
 	private String email;
-	private PhotoDetails profilePhoto;
+	private String profilePhoto;
 
     private Long numOfCompTasks;
     private Long totalTasks;
@@ -153,7 +153,7 @@ public class UserProfile extends ResourceSupport
 	/**
 	 * @return the profilePhoto
 	 */
-	public PhotoDetails getProfilePhoto()
+	public String getProfilePhoto()
 	{
 		return profilePhoto;
 	}
@@ -177,7 +177,7 @@ public class UserProfile extends ResourceSupport
     /**
 	 * @param profilePhoto the profilePhoto to set
 	 */
-	public void setProfilePhoto(PhotoDetails profilePhoto)
+	public void setProfilePhoto(String profilePhoto)
 	{
 		this.profilePhoto = profilePhoto;
 	}
@@ -216,15 +216,15 @@ public class UserProfile extends ResourceSupport
         user.experience = readUser.getExperience();
 
 		Iterable<PhotoDetails> photos=readUser.getPhotos();
-		user.profilePhoto=null;
-		if (photos!=null)
-		{
-			Iterator<PhotoDetails> iterator=photos.iterator();
-			if (iterator.hasNext())
-			{
-				user.profilePhoto=iterator.next();
-			}
-		}
+		user.profilePhoto = readUser.getProfilePhoto();
+//		if (photos!=null)
+//		{
+//			Iterator<PhotoDetails> iterator=photos.iterator();
+//			if (iterator.hasNext())
+//			{
+//				user.profilePhoto=iterator.next();
+//			}
+//		}
 
 		// TODOCUMENT. Adding the library, the above extends ResourceSupport and
 		// this section is all that is actually needed in our model to add

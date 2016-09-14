@@ -35,6 +35,7 @@ public class User extends ResourceSupport
 	private Boolean consentGiven;
 	private Boolean trackingOff;
 	private Boolean optOutDataCollection;
+	private String profilePhoto;
 
     private static Logger LOG = LoggerFactory.getLogger(User.class);
 	public String getEmail() 
@@ -206,7 +207,15 @@ public class User extends ResourceSupport
 		this.optOutDataCollection = optOutDataCollection;
 	}
 
-	public UserDetails toUserDetails() 
+	public String getProfilePhoto() {
+		return profilePhoto;
+	}
+
+	public void setProfilePhoto(String profilePhoto) {
+		this.profilePhoto = profilePhoto;
+	}
+
+	public UserDetails toUserDetails()
 	  {
 		  UserDetails details = new UserDetails(email);
 
@@ -222,6 +231,7 @@ public class User extends ResourceSupport
 	    details.setOptOutDataCollection(isOptOutDataCollection());
 	    details.setTrackingOff(isTrackingOff());
 	    details.setConsentGiven(isConsentGiven());
+		details.setProfilePhoto(getProfilePhoto());
 
 	    return details;
 	  }
@@ -262,6 +272,7 @@ public class User extends ResourceSupport
 	    user.setOptOutDataCollection(readUser.isOptOutDataCollection());
 	    user.setConsentGiven(readUser.isConsentGiven());
 	    user.setPhotos(readUser.getPhotos());
+		user.setProfilePhoto(readUser.getProfilePhoto());
 	    
 	    String simpleName=User.class.getSimpleName();
 	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);

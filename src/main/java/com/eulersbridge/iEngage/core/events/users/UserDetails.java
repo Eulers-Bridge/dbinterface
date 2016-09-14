@@ -20,6 +20,7 @@ public class UserDetails extends Details
 	private String givenName;
 	private String familyName;
 	private String gender;
+	private String profilePhoto;
 	private Iterable<PhotoDetails> photos;
 	private String nationality;
 	private String yearOfBirth;
@@ -139,7 +140,15 @@ public class UserDetails extends Details
         this.experience = experience;
     }
 
-    /**
+	public String getProfilePhoto() {
+		return profilePhoto;
+	}
+
+	public void setProfilePhoto(String profilePhoto) {
+		this.profilePhoto = profilePhoto;
+	}
+
+	/**
 	 * @return the contactNumber
 	 */
 	public String getContactNumber()

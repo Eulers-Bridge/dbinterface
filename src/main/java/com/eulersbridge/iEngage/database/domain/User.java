@@ -33,6 +33,7 @@ public class User
 	private Boolean optOutDataCollection;
 	private Boolean trackingOff;
 	private Boolean consentGiven;
+	private String profilePhoto;
 	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
 	@Fetch private Institution institution;
 	@RelatedTo(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction=Direction.BOTH)
@@ -461,7 +462,15 @@ public class User
         this.experience = experience;
     }
 
-    public UserDetails toUserDetails()
+	public String getProfilePhoto() {
+		return profilePhoto;
+	}
+
+	public void setProfilePhoto(String profilePhoto) {
+		this.profilePhoto = profilePhoto;
+	}
+
+	public UserDetails toUserDetails()
 	{
 	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
 	    
@@ -524,6 +533,7 @@ public class User
 		    user.setConsentGiven(userDetails.isConsentGiven());
 		    user.setTrackingOff(userDetails.isTrackingOff());
 		    user.setOptOutDataCollection(userDetails.isOptOutDataCollection());
+		    user.setProfilePhoto(userDetails.getProfilePhoto());
 		    Institution inst=new Institution();
 		    inst.setNodeId(userDetails.getInstitutionId());
 		    user.institution=inst;
