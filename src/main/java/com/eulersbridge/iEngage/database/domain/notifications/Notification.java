@@ -35,7 +35,7 @@ public class Notification implements NotificationInterface
 	String type;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction=Direction.INCOMING)
 	User user;
-    @RelatedToVia(direction=Direction.INCOMING, type=DatabaseDomainConstants.HAS_NOTIFICATION_LABEL)
+    @RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.HAS_NOTIFICATION_LABEL)
     HasNotification hasNotificationRelationship;
 
     static Logger LOG = LoggerFactory.getLogger(Notification.class);
