@@ -30,6 +30,7 @@ public class ContactRequest extends ResourceSupport
 	private Boolean rejected;
 	private Long userId;
 	private UserProfile requesterProfile;
+	private UserProfile requestReceiverProfile;
 	
     private static Logger LOG = LoggerFactory.getLogger(ContactRequest.class);
 
@@ -53,6 +54,8 @@ public class ContactRequest extends ResourceSupport
         contactRequest.setRejected(contactRequestDetails.getRejected());
         contactRequest.setUserId(contactRequestDetails.getUserId());
 		contactRequest.setRequesterProfile(UserProfile.fromUserDetails(contactRequestDetails.getRequesterDetails()));
+		if (contactRequestDetails.getRequestReceiverDetails() != null)
+			contactRequest.setRequestReceiverProfile(UserProfile.fromUserDetails(contactRequestDetails.getRequestReceiverDetails()));
 
 /*        // {!begin selfRel}
         badge.add(linkTo(ContactRequestController.class).slash(name)
@@ -183,6 +186,14 @@ public class ContactRequest extends ResourceSupport
 
 	public void setRequesterProfile(UserProfile requesterProfile) {
 		this.requesterProfile = requesterProfile;
+	}
+
+	public UserProfile getRequestReceiverProfile() {
+		return requestReceiverProfile;
+	}
+
+	public void setRequestReceiverProfile(UserProfile requestReceiverProfile) {
+		this.requestReceiverProfile = requestReceiverProfile;
 	}
 
 	@Override

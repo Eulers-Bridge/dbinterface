@@ -19,6 +19,7 @@ public class ContactRequestDetails extends Details
 	private Boolean rejected;
 	private Long userId;
 	private UserDetails requesterDetails;
+    private UserDetails requestReceiverDetails;
 
 	/**
 	 * @param contactDetails
@@ -152,7 +153,15 @@ public class ContactRequestDetails extends Details
 		this.requesterDetails = requesterDetails;
 	}
 
-	@Override
+    public UserDetails getRequestReceiverDetails() {
+        return requestReceiverDetails;
+    }
+
+    public void setRequestReceiverDetails(UserDetails requestReceiverDetails) {
+        this.requestReceiverDetails = requestReceiverDetails;
+    }
+
+    @Override
 	public String toString()
 	{
 		return "ContactRequestDetails [nodeId=" + nodeId + ", contactDetails="

@@ -329,6 +329,8 @@ public class ContactRequestEventHandler implements ContactRequestService
 					ContactRequest na=iter.next();
 					if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+na.getUser());
 					ContactRequestDetails det=na.toContactRequestDetails();
+					User requestReceiver = userRepository.findByEmail(det.getContactDetails());
+					det.setRequestReceiverDetails(requestReceiver.toUserDetails());
 					dets.add(det);
 				}
 				if (0==dets.size())
