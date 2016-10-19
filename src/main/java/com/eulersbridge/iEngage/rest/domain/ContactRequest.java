@@ -29,6 +29,7 @@ public class ContactRequest extends ResourceSupport
 	private Boolean accepted;
 	private Boolean rejected;
 	private Long userId;
+	private UserProfile requesterProfile;
 	
     private static Logger LOG = LoggerFactory.getLogger(ContactRequest.class);
 
@@ -51,6 +52,7 @@ public class ContactRequest extends ResourceSupport
         contactRequest.setAccepted(contactRequestDetails.getAccepted());
         contactRequest.setRejected(contactRequestDetails.getRejected());
         contactRequest.setUserId(contactRequestDetails.getUserId());
+		contactRequest.setRequesterProfile(UserProfile.fromUserDetails(contactRequestDetails.getRequesterDetails()));
 
 /*        // {!begin selfRel}
         badge.add(linkTo(ContactRequestController.class).slash(name)
@@ -65,7 +67,8 @@ public class ContactRequest extends ResourceSupport
     }
 
     public ContactRequestDetails toContactRequestDetails(){
-        ContactRequestDetails badgeDetails = new ContactRequestDetails(nodeId, contactDetails, requestDate, responseDate, accepted, rejected, userId);
+        ContactRequestDetails badgeDetails = new ContactRequestDetails(nodeId, contactDetails,
+				requestDate, responseDate, accepted, rejected, userId, null);
         return badgeDetails;
     }
 
@@ -173,6 +176,15 @@ public class ContactRequest extends ResourceSupport
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+
+	public UserProfile getRequesterProfile() {
+		return requesterProfile;
+	}
+
+	public void setRequesterProfile(UserProfile requesterProfile) {
+		this.requesterProfile = requesterProfile;
+	}
+
 	@Override
 	public String toString()
 	{

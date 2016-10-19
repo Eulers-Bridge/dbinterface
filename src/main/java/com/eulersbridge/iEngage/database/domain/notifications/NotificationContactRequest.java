@@ -131,7 +131,7 @@ public class NotificationContactRequest extends Notification implements Notifica
 		JsonNode contactDetails=node.get(NotificationConstants.ContactDetails);
 		String contactDets=null;
 		if (contactDetails!=null) contactDets=contactDetails.asText();
-		ContactRequestDetails crd=new ContactRequestDetails(crNodeId, contactDets, requestDate, responseDate, accepted, rejected, crUserId);
+		ContactRequestDetails crd=new ContactRequestDetails(crNodeId, contactDets, requestDate, responseDate, accepted, rejected, crUserId, null);
 		if ((null==crNodeId)&&((null==contactDetails)&&(null==crUserId)))
 			throw new JsonMappingException("notificationBody must be populated with a contactRequest containing nodeId or contactDetails and contactor UserId");
 		return crd;

@@ -4,6 +4,7 @@
 package com.eulersbridge.iEngage.core.events.contactRequest;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 
 /**
  * @author Greg Newitt
@@ -17,6 +18,7 @@ public class ContactRequestDetails extends Details
 	private Boolean accepted;
 	private Boolean rejected;
 	private Long userId;
+	private UserDetails requesterDetails;
 
 	/**
 	 * @param contactDetails
@@ -39,7 +41,7 @@ public class ContactRequestDetails extends Details
 	 */
 	public ContactRequestDetails(Long nodeId, String contactDetails,
 			Long requestDate, Long responseDate, Boolean accepted,
-			Boolean rejected, Long userId)
+			Boolean rejected, Long userId, UserDetails requesterDetails)
 	{
 		super(nodeId);
 		this.contactDetails = contactDetails;
@@ -48,6 +50,7 @@ public class ContactRequestDetails extends Details
 		this.accepted = accepted;
 		this.rejected = rejected;
 		this.userId = userId;
+		this.requesterDetails = requesterDetails;
 	}
 
 	public ContactRequestDetails()
@@ -140,6 +143,15 @@ public class ContactRequestDetails extends Details
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+
+	public UserDetails getRequesterDetails() {
+		return requesterDetails;
+	}
+
+	public void setRequesterDetails(UserDetails requesterDetails) {
+		this.requesterDetails = requesterDetails;
+	}
+
 	@Override
 	public String toString()
 	{
