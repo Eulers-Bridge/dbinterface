@@ -8,12 +8,12 @@
     <version>0.1.0</version>
     <properties>
         <start-class>com.eulersbridge.iEngage.Application</start-class>
-        <spring-boot-version>1.2.5.RELEASE</spring-boot-version>
+        <spring-boot-version>1.2.8.RELEASE</spring-boot-version>
 	</properties>
 
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.2.5.RELEASE</version>
+        <version>1.2.8.RELEASE</version>
         <groupId>org.springframework.boot</groupId>
     </parent>
 
