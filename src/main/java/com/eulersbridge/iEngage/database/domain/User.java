@@ -478,6 +478,7 @@ public class User
 	    if (LOG.isTraceEnabled()) LOG.trace("user "+this);
 
 	    BeanUtils.copyProperties(this, details);
+		details.setUserId(nodeId);
 	    details.setInstitutionId(this.getInstitution().getNodeId());
 	    Boolean personality=false;
 	    Personality thisPersonality = getPersonality();

@@ -16,6 +16,7 @@ import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 public class UserDetails extends Details
 {
 
+	private Long userId;
 	private String email;
 	private String givenName;
 	private String familyName;
@@ -47,7 +48,15 @@ public class UserDetails extends Details
 	{
 	}
 
-	public UserDetails(String email) 
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public UserDetails(String email)
 	{
 		this.email=email;
 	}

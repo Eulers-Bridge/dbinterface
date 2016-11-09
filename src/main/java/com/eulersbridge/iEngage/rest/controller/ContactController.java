@@ -109,6 +109,10 @@ public class ContactController
 			boolean isEmail=emailValidator.isValid(contactInfo);
 			
 			userEvent=getUser(contactInfo);
+			if (((UserDetails)userEvent.getDetails()).getUserId() == userId){
+				if (LOG.isDebugEnabled()) LOG.debug("Trying to add self as contact. UserId: " + userId);
+				return new ResponseEntity<ContactRequest>(HttpStatus.BAD_REQUEST);
+			}
 				 	
 			// Look for existing contact request.
 			ContactRequestDetails fr=new ContactRequestDetails(contactInfo,userId);

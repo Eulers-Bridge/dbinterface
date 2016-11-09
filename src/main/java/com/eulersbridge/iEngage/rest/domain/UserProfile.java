@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 public class UserProfile extends ResourceSupport
 {
+	private Long userId;
 	private String givenName;
 	private String familyName;
 	private String gender;
@@ -123,7 +124,15 @@ public class UserProfile extends ResourceSupport
         this.experience = experience;
     }
 
-    /**
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	/**
 	 * @return the contactNumber
 	 */
 	public String getContactNumber()
@@ -201,6 +210,7 @@ public class UserProfile extends ResourceSupport
 	{
 		UserProfile user = new UserProfile();
 
+		user.setUserId(readUser.getUserId());
 		user.email = readUser.getEmail();
 		user.givenName = readUser.getGivenName();
 		user.familyName = readUser.getFamilyName();
