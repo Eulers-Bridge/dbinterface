@@ -12,7 +12,7 @@ This README attempts to document whatever steps are necessary to get your applic
 
 * Summary of set up
 Minimum requirements for compile are:
-Java 1.7
+Java 1.8
 Maven 3
 
 Then use mvn spring-boot:run to execute it in situ.
