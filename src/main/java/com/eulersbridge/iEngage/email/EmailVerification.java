@@ -34,7 +34,7 @@ public class EmailVerification extends Email implements Serializable
 
     public EmailVerification(VelocityEngine velocityEngine, User user, VerificationToken token) 
     {
-        super(velocityEngine,user.getEmail(),user.getGivenName() + " " + user.getFamilyName(),"replies-welcome@eulersbridge.com","Email Verification");
+    	super(velocityEngine,user.getEmail(),user.getGivenName() + " " + user.getFamilyName(),"greg.newitt@eulersbridge.com","Email Verification");
 		resourceName=EmailConstants.EmailVerificationTemplate;
         this.token = token;
         this.tokenType = token.getTokenType();
