@@ -40,7 +40,7 @@ public class UserDetails extends Details
     private Long totalBadges;
     private Long numOfContacts;
 
-    private Long experience;
+    private Long experience = 0l;
 
     private static Logger LOG = LoggerFactory.getLogger(UserDetails.class);
     

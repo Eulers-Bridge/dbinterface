@@ -434,6 +434,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 			userToUpdate.setNodeId(user.getNodeId());
 			if (null==userToUpdate.getEmail())
 				userToUpdate.setEmail(user.getEmail());
+			//Fixme: Maybe dangerous to allow user to update their roles?
 			if (null==userToUpdate.getRoles())
 				userToUpdate.setRoles(user.getRoles());
 			if (null==userToUpdate.getPassword())
@@ -463,6 +464,7 @@ public class UserEventHandler implements UserService, UserDetailsService
 				userToUpdate.setInstitution(user.getInstitution());
 				newUser.setInstitutionId(user.getInstitution().getNodeId());
 			}
+			User.copyUntweakablePropoties(user, userToUpdate);
 			
 		}
 		if (LOG.isDebugEnabled()) LOG.debug("userToUpdate :" + userToUpdate);

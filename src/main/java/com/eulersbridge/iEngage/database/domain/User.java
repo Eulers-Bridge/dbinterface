@@ -540,6 +540,7 @@ public class User
 		    user.institution=inst;
 //		    BeanUtils.copyProperties( userDetails,user);
 		    if (LOG.isTraceEnabled()) LOG.trace("user "+user);
+        user.setExperience(userDetails.getExperience());
 
 		    return user;
 		  }
@@ -693,5 +694,8 @@ public class User
 		}
 		return true;
 	}
-	  
+
+	public static void copyUntweakablePropoties(User origin, User target){
+		target.setExperience(origin.getExperience());
+	}
 }
