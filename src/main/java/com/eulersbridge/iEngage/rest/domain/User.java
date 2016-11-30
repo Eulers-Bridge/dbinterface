@@ -18,323 +18,328 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 
-public class User extends ResourceSupport
-{
-	private String givenName;
-	private String familyName;
-	private String gender;
-	private String nationality;
-	private String yearOfBirth;
-	private String password;
-	private String contactNumber;
-	private Boolean accountVerified;
-	private Boolean hasPersonality;
-	private	Long institutionId; 
-	private String email;
-	private Iterable<PhotoDetails> photos;
-	private Boolean consentGiven;
-	private Boolean trackingOff;
-	private Boolean optOutDataCollection;
-	private String profilePhoto;
+public class User extends ResourceSupport {
+  private String givenName;
+  private String familyName;
+  private String gender;
+  private String nationality;
+  private String yearOfBirth;
+  private String password;
+  private String contactNumber;
+  private Boolean accountVerified;
+  private Boolean hasPersonality;
+  private Long institutionId;
+  private String email;
+  private Iterable<PhotoDetails> photos;
+  private Boolean consentGiven;
+  private Boolean trackingOff;
+  private Boolean optOutDataCollection;
+  private String profilePhoto;
 
-    private static Logger LOG = LoggerFactory.getLogger(User.class);
-	public String getEmail() 
-	{
-	    return email;
-	}
+  private Long experience;
+  private Long level;
 
-	  public void setEmail(String email) {
-	    this.email = email;
-	  }
+  private static Logger LOG = LoggerFactory.getLogger(User.class);
 
-	  public String getGivenName() {
-		return givenName;
-	}
+  public String getEmail() {
+    return email;
+  }
 
-	public void setGivenName(String givenName) {
-		this.givenName = givenName;
-	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-	public String getFamilyName() {
-		return familyName;
-	}
+  public String getGivenName() {
+    return givenName;
+  }
 
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
-	}
+  public void setGivenName(String givenName) {
+    this.givenName = givenName;
+  }
 
-	public String getGender() {
-		return gender;
-	}
+  public String getFamilyName() {
+    return familyName;
+  }
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+  public void setFamilyName(String familyName) {
+    this.familyName = familyName;
+  }
 
-	public String getNationality() {
-		return nationality;
-	}
+  public String getGender() {
+    return gender;
+  }
 
-	public void setNationality(String nationality) {
-		this.nationality = nationality;
-	}
+  public void setGender(String gender) {
+    this.gender = gender;
+  }
 
-	public String getYearOfBirth() {
-		return yearOfBirth;
-	}
+  public String getNationality() {
+    return nationality;
+  }
 
-	public void setYearOfBirth(String yearOfBirth) {
-		this.yearOfBirth = yearOfBirth;
-	}
+  public void setNationality(String nationality) {
+    this.nationality = nationality;
+  }
 
-	public String getPassword() {
-		return password;
-	}
+  public String getYearOfBirth() {
+    return yearOfBirth;
+  }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+  public void setYearOfBirth(String yearOfBirth) {
+    this.yearOfBirth = yearOfBirth;
+  }
 
-	/**
-	 * @return the contactNumber
-	 */
-	public String getContactNumber()
-	{
-		return contactNumber;
-	}
+  public String getPassword() {
+    return password;
+  }
 
-	/**
-	 * @param contactNumber the contactNumber to set
-	 */
-	public void setContactNumber(String contactNumber)
-	{
-		this.contactNumber = contactNumber;
-	}
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-	public Boolean isAccountVerified() {
-		return accountVerified;
-	}
+  public Long getExperience() {
+    return experience;
+  }
 
-	public void setAccountVerified(Boolean accountVerified) {
-		this.accountVerified = accountVerified;
-	}
+  public void setExperience(Long experience) {
+    this.experience = experience;
+  }
 
-	/**
-	 * @return the consentGiven
-	 */
-	public Boolean isConsentGiven()
-	{
-		return consentGiven;
-	}
+  public Long getLevel() {
+    return level;
+  }
 
-	/**
-	 * @param consentGiven the consentGiven to set
-	 */
-	public void setConsentGiven(Boolean consentGiven)
-	{
-		this.consentGiven = consentGiven;
-	}
+  public void setLevel(Long level) {
+    this.level = level;
+  }
 
-	public Long getInstitutionId() {
-		return institutionId;
-	}
+  /**
+   * @return the contactNumber
+   */
+  public String getContactNumber() {
+    return contactNumber;
+  }
 
-	public void setInstitutionId(Long institutionId) {
-		this.institutionId = institutionId;
-	}
+  /**
+   * @param contactNumber the contactNumber to set
+   */
+  public void setContactNumber(String contactNumber) {
+    this.contactNumber = contactNumber;
+  }
 
-	/**
-	 * @return the hasPersonality
-	 */
-	public Boolean getHasPersonality()
-	{
-		return hasPersonality;
-	}
+  public Boolean isAccountVerified() {
+    return accountVerified;
+  }
 
-	/**
-	 * @param hasPersonality the hasPersonality to set
-	 */
-	public void setHasPersonality(Boolean hasPersonality)
-	{
-		this.hasPersonality = hasPersonality;
-	}
+  public void setAccountVerified(Boolean accountVerified) {
+    this.accountVerified = accountVerified;
+  }
 
-	/**
-	 * @return the photos
-	 */
-	public Iterable<PhotoDetails> getPhotos()
-	{
-		return photos;
-	}
+  /**
+   * @return the consentGiven
+   */
+  public Boolean isConsentGiven() {
+    return consentGiven;
+  }
 
-	/**
-	 * @param photos the photos to set
-	 */
-	public void setPhotos(Iterable<PhotoDetails> photos)
-	{
-		this.photos = photos;
-	}
+  /**
+   * @param consentGiven the consentGiven to set
+   */
+  public void setConsentGiven(Boolean consentGiven) {
+    this.consentGiven = consentGiven;
+  }
 
-	/**
-	 * @return the trackingOn
-	 */
-	public Boolean isTrackingOff()
-	{
-		return trackingOff;
-	}
+  public Long getInstitutionId() {
+    return institutionId;
+  }
 
-	/**
-	 * @param trackingOn the trackingOn to set
-	 */
-	public void setTrackingOff(Boolean trackingOff)
-	{
-		this.trackingOff = trackingOff;
-	}
+  public void setInstitutionId(Long institutionId) {
+    this.institutionId = institutionId;
+  }
 
-	/**
-	 * @return the optOutDataCollection
-	 */
-	public Boolean isOptOutDataCollection()
-	{
-		return optOutDataCollection;
-	}
+  /**
+   * @return the hasPersonality
+   */
+  public Boolean getHasPersonality() {
+    return hasPersonality;
+  }
 
-	/**
-	 * @param optOutDataCollection the optOutDataCollection to set
-	 */
-	public void setOptOutDataCollection(Boolean optOutDataCollection)
-	{
-		this.optOutDataCollection = optOutDataCollection;
-	}
+  /**
+   * @param hasPersonality the hasPersonality to set
+   */
+  public void setHasPersonality(Boolean hasPersonality) {
+    this.hasPersonality = hasPersonality;
+  }
 
-	public String getProfilePhoto() {
-		return profilePhoto;
-	}
+  /**
+   * @return the photos
+   */
+  public Iterable<PhotoDetails> getPhotos() {
+    return photos;
+  }
 
-	public void setProfilePhoto(String profilePhoto) {
-		this.profilePhoto = profilePhoto;
-	}
+  /**
+   * @param photos the photos to set
+   */
+  public void setPhotos(Iterable<PhotoDetails> photos) {
+    this.photos = photos;
+  }
 
-	public UserDetails toUserDetails()
-	  {
-		  UserDetails details = new UserDetails(email);
+  /**
+   * @return the trackingOn
+   */
+  public Boolean isTrackingOff() {
+    return trackingOff;
+  }
 
-	    details.setGivenName(getGivenName());
-	    details.setFamilyName(getFamilyName());
-	    details.setGender(getGender());
-	    details.setNationality(getNationality());
-	    details.setYearOfBirth(getYearOfBirth());
-	    details.setPassword(getPassword());
-	    details.setContactNumber(getContactNumber());
-	    details.setAccountVerified(isAccountVerified());
-	    details.setInstitutionId(getInstitutionId());
-	    details.setOptOutDataCollection(isOptOutDataCollection());
-	    details.setTrackingOff(isTrackingOff());
-	    details.setConsentGiven(isConsentGiven());
-		details.setProfilePhoto(getProfilePhoto());
+  /**
+   * @param trackingOn the trackingOn to set
+   */
+  public void setTrackingOff(Boolean trackingOff) {
+    this.trackingOff = trackingOff;
+  }
 
-	    return details;
-	  }
+  /**
+   * @return the optOutDataCollection
+   */
+  public Boolean isOptOutDataCollection() {
+    return optOutDataCollection;
+  }
 
-	  // {!begin fromUserDetails}
-	  public static User fromUserDetails(UserDetails readUser) 
-	  {
-	    User user = new User();
+  /**
+   * @param optOutDataCollection the optOutDataCollection to set
+   */
+  public void setOptOutDataCollection(Boolean optOutDataCollection) {
+    this.optOutDataCollection = optOutDataCollection;
+  }
 
-	    user.setEmail(readUser.getEmail());
-	    user.setGivenName(readUser.getGivenName());
-	    user.setFamilyName(readUser.getFamilyName());
-	    user.setGender(readUser.getGender());
-	    user.setNationality(readUser.getNationality());
-	    user.setYearOfBirth(readUser.getYearOfBirth());
-	    String password=readUser.getPassword(),hash=null;
-	    if (password!=null)
-	    {
-	    	try
-			{
-	    		hash=PasswordHash.createHash(password);
-			}
-			catch (NoSuchAlgorithmException e)
-			{
-				e.printStackTrace();
-			}
-			catch (InvalidKeySpecException e)
-			{
-				e.printStackTrace();
-			}
-	    }
-		user.setPassword(hash);
-	    user.setContactNumber(readUser.getContactNumber());
-	    user.setAccountVerified(readUser.isAccountVerified());
-	    user.setInstitutionId(readUser.getInstitutionId());
-	    user.setHasPersonality(readUser.hasPersonality());
-	    user.setTrackingOff(readUser.isTrackingOff());
-	    user.setOptOutDataCollection(readUser.isOptOutDataCollection());
-	    user.setConsentGiven(readUser.isConsentGiven());
-	    user.setPhotos(readUser.getPhotos());
-		user.setProfilePhoto(readUser.getProfilePhoto());
-	    
-	    String simpleName=User.class.getSimpleName();
-	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
+  public String getProfilePhoto() {
+    return profilePhoto;
+  }
 
-	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
-	    //this section is all that is actually needed in our model to add hateoas support.
+  public void setProfilePhoto(String profilePhoto) {
+    this.profilePhoto = profilePhoto;
+  }
 
-	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
-	    //We have explicitly avoided that.
-	    // {!begin selfRel}
-		user.add(new Link(linkTo(UserController.class).slash(name).slash(user.email).toUriComponentsBuilder().build().toUriString() + "/","self"));
-	    // {!end selfRel}
-	    return user;
-	  }
+  public UserDetails toUserDetails() {
+    UserDetails details = new UserDetails(email);
 
-		public String toString()
-		{
-			StringBuffer buff=new StringBuffer("[ email = ");
-			String retValue;
-			buff.append(getEmail());
-			buff.append(", givenName = ");
-			buff.append(getGivenName());
-			buff.append(", familyName = ");
-			buff.append(getFamilyName());
-			buff.append(", gender = ");
-			buff.append(getGender());
-			buff.append(", nationality = ");
-			buff.append(getNationality());
-			buff.append(", yearOfBirth = ");
-			buff.append(getYearOfBirth());
-			buff.append(", password = ");
-			buff.append(getPassword());
-			buff.append(", photos = ");
-			buff.append(getPhotos());
-			buff.append(", contactNumber = ");
-			buff.append(getContactNumber());
-			buff.append(", institutionId = ");
-			buff.append(getInstitutionId());
-			buff.append(", accountVerified = ");
-			buff.append(isAccountVerified());
-			buff.append(", consentGiven = ");
-			buff.append(isConsentGiven());
-			buff.append(", optOutDataCollection = ");
-			buff.append(isOptOutDataCollection());
-			buff.append(", trackingOff = ");
-			buff.append(isTrackingOff());
-			buff.append(" ]");
-			retValue=buff.toString();
-			if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);
-			return retValue;
-		}
+    details.setGivenName(getGivenName());
+    details.setFamilyName(getFamilyName());
+    details.setGender(getGender());
+    details.setNationality(getNationality());
+    details.setYearOfBirth(getYearOfBirth());
+    details.setPassword(getPassword());
+    details.setContactNumber(getContactNumber());
+    details.setAccountVerified(isAccountVerified());
+    details.setInstitutionId(getInstitutionId());
+    details.setOptOutDataCollection(isOptOutDataCollection());
+    details.setTrackingOff(isTrackingOff());
+    details.setConsentGiven(isConsentGiven());
+    details.setProfilePhoto(getProfilePhoto());
 
-    public static Iterator<LikeInfo> toLikesIterator(Iterator<UserDetails> iter)
-    {
-        if (null==iter) return null;
-        ArrayList<LikeInfo> likes = new ArrayList<LikeInfo>();
-        while(iter.hasNext())
-        {
-            UserDetails userDetails = iter.next();
-            LikeInfo likeInfo = LikeInfo.fromUserDetails(userDetails);
-            likes.add(likeInfo);
-        }
-        return likes.iterator();
+    return details;
+  }
+
+  // {!begin fromUserDetails}
+
+  public static User fromUserDetails(UserDetails readUser) {
+    User user = new User();
+
+    user.setEmail(readUser.getEmail());
+    user.setGivenName(readUser.getGivenName());
+    user.setFamilyName(readUser.getFamilyName());
+    user.setGender(readUser.getGender());
+    user.setNationality(readUser.getNationality());
+    user.setYearOfBirth(readUser.getYearOfBirth());
+    String password = readUser.getPassword(), hash = null;
+    if (password != null) {
+      try {
+        hash = PasswordHash.createHash(password);
+      } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+      } catch (InvalidKeySpecException e) {
+        e.printStackTrace();
+      }
     }
+    user.setPassword(hash);
+    user.setContactNumber(readUser.getContactNumber());
+    user.setAccountVerified(readUser.isAccountVerified());
+    user.setInstitutionId(readUser.getInstitutionId());
+    user.setHasPersonality(readUser.hasPersonality());
+    user.setTrackingOff(readUser.isTrackingOff());
+    user.setOptOutDataCollection(readUser.isOptOutDataCollection());
+    user.setConsentGiven(readUser.isConsentGiven());
+    user.setPhotos(readUser.getPhotos());
+    user.setProfilePhoto(readUser.getProfilePhoto());
+    user.setExperience(readUser.getExperience());
+    user.setLevel(calculateUserLevel(readUser.getExperience()));
+
+    String simpleName = User.class.getSimpleName();
+    String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
+
+    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
+    //this section is all that is actually needed in our model to add hateoas support.
+
+    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
+    //We have explicitly avoided that.
+    // {!begin selfRel}
+    user.add(new Link(linkTo(UserController.class).slash(name).slash(user.email).toUriComponentsBuilder().build().toUriString() + "/", "self"));
+    // {!end selfRel}
+    return user;
+  }
+
+  public String toString() {
+    StringBuffer buff = new StringBuffer("[ email = ");
+    String retValue;
+    buff.append(getEmail());
+    buff.append(", givenName = ");
+    buff.append(getGivenName());
+    buff.append(", familyName = ");
+    buff.append(getFamilyName());
+    buff.append(", gender = ");
+    buff.append(getGender());
+    buff.append(", nationality = ");
+    buff.append(getNationality());
+    buff.append(", yearOfBirth = ");
+    buff.append(getYearOfBirth());
+    buff.append(", password = ");
+    buff.append(getPassword());
+    buff.append(", photos = ");
+    buff.append(getPhotos());
+    buff.append(", contactNumber = ");
+    buff.append(getContactNumber());
+    buff.append(", institutionId = ");
+    buff.append(getInstitutionId());
+    buff.append(", accountVerified = ");
+    buff.append(isAccountVerified());
+    buff.append(", consentGiven = ");
+    buff.append(isConsentGiven());
+    buff.append(", optOutDataCollection = ");
+    buff.append(isOptOutDataCollection());
+    buff.append(", trackingOff = ");
+    buff.append(isTrackingOff());
+    buff.append(" ]");
+    retValue = buff.toString();
+    if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
+    return retValue;
+  }
+
+  public static Iterator<LikeInfo> toLikesIterator(Iterator<UserDetails> iter) {
+    if (null == iter) return null;
+    ArrayList<LikeInfo> likes = new ArrayList<LikeInfo>();
+    while (iter.hasNext()) {
+      UserDetails userDetails = iter.next();
+      LikeInfo likeInfo = LikeInfo.fromUserDetails(userDetails);
+      likes.add(likeInfo);
+    }
+    return likes.iterator();
+  }
+
+  private static Long calculateUserLevel(Long experience){
+    if (experience==null || experience<0)
+      return 0l;
+    else
+      return experience%1000;
+  }
 }
