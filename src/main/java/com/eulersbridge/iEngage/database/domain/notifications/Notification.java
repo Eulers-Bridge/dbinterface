@@ -41,7 +41,10 @@ public class Notification implements NotificationInterface
     static Logger LOG = LoggerFactory.getLogger(Notification.class);
 
     public Boolean isRead(){
-        return this.hasNotificationRelationship.getRead();
+
+			// Fixme
+//        return this.hasNotificationRelationship.getRead();
+			return false;
     }
 
 	public Boolean setupForSave(HashMap<String,GraphRepository<?>> repos)
