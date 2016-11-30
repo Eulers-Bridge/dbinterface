@@ -90,4 +90,7 @@ public interface UserRepository extends GraphRepository<User>
 	@Query("Match (u:User) WHERE lower(u.givenName) STARTS WITH {pattern1} OR lower(u.familyName) STARTS WITH {pattern2} return u limit 20")
 	List<User> searchUserByName2(@Param("pattern1") String pattern1, @Param("pattern2") String pattern2);
 
+	@Query("MATCH (u:`"+DatabaseDomainConstants.USER+"`) WHERE u.email={userEmail} SET u.experience=u.experience+{expValue}")
+	void addExpPoint(@Param("userEmail") String userEmail, @Param("expValue") Long expValue);
+
 }

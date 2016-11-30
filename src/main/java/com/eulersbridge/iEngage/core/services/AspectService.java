@@ -77,6 +77,7 @@ public class AspectService {
             String userEmail = commentDetails.getUserEmail();
             String taskAction = "Post a Comment.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            userRepository.addExpPoint(userEmail, 100l);
             if (taskComplete!=null){
 //                buildTaskCompletedNotification(userEmail, "Task Completed: Post a Comment.");
                 updateCommentBadge(userEmail, taskAction);
@@ -130,6 +131,7 @@ public class AspectService {
             }
             String taskAction = "Read an Article.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            userRepository.addExpPoint(userEmail, 100l);
             if (taskComplete!=null){
 //                buildTaskCompletedNotification(userEmail, "Task Completed: Read am Comment.");
             }
@@ -148,6 +150,7 @@ public class AspectService {
             }
             String taskAction = "Complete Personality Questions.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            userRepository.addExpPoint(userEmail, 100l);
             if (taskComplete!=null){
                 updateAddPersonalityBadge(userEmail, taskAction);
             }
@@ -178,6 +181,7 @@ public class AspectService {
             String taskAction = "Share.";
             String targetType = likeEvent.getTargetType().getSimpleName();
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail, targetType);
+            userRepository.addExpPoint(userEmail, 100l);
             if (taskComplete!=null){
                 updateShareBadge(userEmail, taskAction, targetType);
             }
@@ -252,6 +256,7 @@ public class AspectService {
             }
             String taskAction = "Be a Pollster.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            userRepository.addExpPoint(userEmail, 100l);
             if (taskComplete!=null){
                 updateVoteInAPollBadge(userEmail, taskAction);
             }
@@ -304,6 +309,7 @@ public class AspectService {
             }
             String taskAction = "Set Vote Reminder.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            userRepository.addExpPoint(userEmail, 100l);
             if (taskComplete!=null){
                 updateAddVoteReminderBadge(userEmail, taskAction);
             }
@@ -334,6 +340,7 @@ public class AspectService {
             }
             String taskAction = "Invite a Friend.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            userRepository.addExpPoint(userEmail, 100l);
             if (taskComplete!=null){
                 updateInviteFriendsBadge(userEmail, taskAction);
             }
@@ -385,6 +392,7 @@ public class AspectService {
             }
             String taskAction = "Add a Friend.";
             TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
+            userRepository.addExpPoint(userEmail, 100l);
             if (taskComplete!=null){
                 updateAcceptFriendRequestBadge(userEmail, taskAction);
             }
