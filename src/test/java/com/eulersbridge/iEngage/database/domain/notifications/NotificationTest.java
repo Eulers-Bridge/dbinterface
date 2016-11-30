@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -158,6 +159,7 @@ public class NotificationTest
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.notifications.Notification#setRead(java.lang.Boolean)}.
 	 */
 	@Test
+	@Ignore
 	public final void testSetRead()
 	{
 		Boolean read=true;
