@@ -330,6 +330,8 @@ public class UserDetails extends Details
 		buff.append(isOptOutDataCollection());
 		buff.append(", trackingOff = ");
 		buff.append(isTrackingOff());
+		buff.append(", numOfCompTasks = ");
+		buff.append(getNumOfCompTasks());
 		buff.append(" ]");
 		retValue=buff.toString();
 		if (LOG.isDebugEnabled()) LOG.debug("toString() = "+retValue);

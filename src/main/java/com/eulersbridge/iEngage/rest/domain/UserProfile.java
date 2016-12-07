@@ -39,6 +39,7 @@ public class UserProfile extends ResourceSupport
     private Long numOfContacts;
 
     private Long experience;
+	private Long level;
 
 	private static Logger LOG = LoggerFactory.getLogger(User.class);
 
@@ -130,6 +131,14 @@ public class UserProfile extends ResourceSupport
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public Long getLevel() {
+		return level;
+	}
+
+	public void setLevel(Long level) {
+		this.level = level;
 	}
 
 	/**
@@ -227,6 +236,7 @@ public class UserProfile extends ResourceSupport
 
 		Iterable<PhotoDetails> photos=readUser.getPhotos();
 		user.profilePhoto = readUser.getProfilePhoto();
+		user.setLevel(User.calculateUserLevel(readUser.getExperience()));
 //		if (photos!=null)
 //		{
 //			Iterator<PhotoDetails> iterator=photos.iterator();

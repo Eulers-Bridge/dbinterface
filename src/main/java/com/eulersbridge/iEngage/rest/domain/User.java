@@ -336,7 +336,7 @@ public class User extends ResourceSupport {
     return likes.iterator();
   }
 
-  private static Long calculateUserLevel(Long experience){
+  public static Long calculateUserLevel(Long experience){
     if (experience==null || experience<0)
       return 0l;
     else
