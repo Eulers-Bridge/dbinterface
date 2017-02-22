@@ -340,6 +340,6 @@ public class User extends ResourceSupport {
     if (experience==null || experience<0)
       return 0l;
     else
-      return experience%1000;
+      return experience/1000;
   }
 }
