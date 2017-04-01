@@ -3,6 +3,8 @@ package com.eulersbridge.iEngage.database.domain;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.NodeEntity;
@@ -19,10 +21,12 @@ public class NewsFeed
 	private	Institution  institution;
 	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH)
 	private	Set<NewsArticle>  news;
-	
+
+	private static Logger LOG = LoggerFactory.getLogger(NewsFeed.class);
+
 	public NewsFeed()
 	{
-		
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
 	
 	public static NewsFeed fromDetails(NewsFeedDetails newsFeedDets) 

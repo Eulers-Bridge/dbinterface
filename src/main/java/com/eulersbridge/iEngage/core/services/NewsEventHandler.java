@@ -24,6 +24,7 @@ import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 public class NewsEventHandler implements NewsService 
 {
@@ -137,7 +138,9 @@ public class NewsEventHandler implements NewsService
 
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
 		Pageable pageable=new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
+		System.out.println("start findByInstitutionId()");
 		articles=newsRepo.findByInstitutionId(institutionId, pageable);
+		System.out.println("end findByInstitutionId");
 		if (articles!=null)
 		{
 			if (LOG.isDebugEnabled())

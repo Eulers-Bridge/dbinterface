@@ -57,6 +57,7 @@ public class Photo extends Likeable
 
 	public Photo()
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
 
 	/**

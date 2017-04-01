@@ -153,6 +153,8 @@ public class DatabaseDataFixture
 		article.setNewsFeed(studentYear);
 		article.setLikes(new HashSet<Like>());
 		article.setPhotos(picture);
+		article.setInstitutionID(1l);
+		article.setCreatorEmail("null");
 		return article;
 	}
 	public static Map<Long,NewsArticle> populateNewsArticles()

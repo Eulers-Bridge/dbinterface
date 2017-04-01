@@ -9,12 +9,7 @@ import org.neo4j.graphdb.Direction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.neo4j.annotation.Fetch;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.Indexed;
-import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
-import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.annotation.*;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 
@@ -29,17 +24,26 @@ public class NewsArticle extends Likeable
 	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
 	private Set<Like> likes;
 	@Indexed @NotNull private Long date;
-	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction=Direction.BOTH) @Fetch
+	@RelatedTo(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction=Direction.BOTH)
 	private User creator;
-	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH) @Fetch
+	@RelatedTo(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction=Direction.BOTH)
 	private NewsFeed newsFeed;
 	private boolean inappropriateContent;
+
+	@Query("START n = node({self}) match (n)-[r:"+DatabaseDomainConstants.CREATED_BY_LABEL+"]-(c) RETURN c.email ")
+	private String creatorEmail;
+
+  @Query("START n=node({self}) " +
+		"match (n)-[r:"+DatabaseDomainConstants.HAS_NEWS_LABEL+"]" +
+		"-(f)-[r2:"+DatabaseDomainConstants.HAS_NEWS_FEED_LABEL+"]" +
+		"-(i:"+DatabaseDomainConstants.INSTITUTION+") RETURN id(i)")
+	private Long InstitutionID;
 	
 	private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
 	
 	public NewsArticle() 
 	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
 	
 	public NewsArticle(String title,String content, Calendar date, User creator)
@@ -179,6 +183,22 @@ public class NewsArticle extends Likeable
 		this.inappropriateContent = inappropriateContent;
 	}
 
+	public String getCreatorEmail() {
+		return creatorEmail;
+	}
+
+	public void setCreatorEmail(String creatorEmail) {
+		this.creatorEmail = creatorEmail;
+	}
+
+	public Long getInstitutionID() {
+		return InstitutionID;
+	}
+
+	public void setInstitutionID(Long institutionID) {
+		InstitutionID = institutionID;
+	}
+
 	public String toString()
 	{
 		StringBuffer buff=new StringBuffer("[ nodeId = ");
@@ -215,11 +235,11 @@ public class NewsArticle extends Likeable
 	    if (LOG.isTraceEnabled()) LOG.trace("newsArticle "+this);
 
 	    BeanUtils.copyProperties(this, details);
-	    if (getCreator()!=null) details.setCreatorEmail(getCreator().getEmail());
+	    if (getCreator()!=null) details.setCreatorEmail(getCreatorEmail());
 	    if (getNewsFeed()!=null)
 	    {
-	    	if (getNewsFeed().getInstitution()!=null)
-	    		details.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
+	    	if (getInstitutionID()!=null)
+	    		details.setInstitutionId(getInstitutionID());
 	    }
 	    if (likes==null)
 	       	details.setLikes(0);

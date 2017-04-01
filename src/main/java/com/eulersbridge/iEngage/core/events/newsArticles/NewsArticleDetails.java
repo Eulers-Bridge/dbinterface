@@ -23,6 +23,7 @@ public class NewsArticleDetails extends Details
 	
 	public NewsArticleDetails()
 	{
+		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
 	}
 	public Long getNewsArticleId()
 	{

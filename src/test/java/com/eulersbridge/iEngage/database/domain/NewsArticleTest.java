@@ -213,7 +213,7 @@ public class NewsArticleTest
 		assertEquals("Titles don't match.",dets.getTitle(),news.getTitle());
 		assertEquals("Contents don't match.",dets.getContent(),news.getContent());
 		assertEquals("Dates don't match.",dets.getDate(),news.getDate());
-		assertEquals("Creator emails don't match.",dets.getCreatorEmail(),news.getCreator().getEmail());
+		assertEquals("Creator emails don't match.",dets.getCreatorEmail(),news.getCreatorEmail());
 		assertEquals("IDs don't match.",dets.getNewsArticleId(),news.getNodeId());
 //TODO		assertEquals("Pictures don't match.",dets.getPicture().size(),0);
 		assertEquals("Likes don't match.",dets.getLikes().intValue(),news.getLikes().size());
@@ -230,7 +230,7 @@ public class NewsArticleTest
 		assertEquals("Titles don't match.",news2.getTitle(),news.getTitle());
 		assertEquals("Contents don't match.",news2.getContent(),news.getContent());
 		assertEquals("Dates don't match.",news2.getDate(),news.getDate());
-		assertEquals("Creator emails don't match.",news2.getCreator().getEmail(),news.getCreator().getEmail());
+		assertEquals("Creator emails don't match.",news2.getCreator().getEmail(),news.getCreatorEmail());
 		assertEquals("IDs don't match.",news2.getNodeId(),news.getNodeId());
 //TODO		assertEquals("Pictures don't match.",news2.getPicture(),dets.getPicture());
 		assertNull("Likers don't match.",news2.getLikes());
