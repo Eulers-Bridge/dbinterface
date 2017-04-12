@@ -16,16 +16,16 @@ import org.springframework.data.repository.query.Param;
 
 public interface TaskRepository extends GraphRepository<Task>
 {
-	@Query("Match (a:`User`),(b:`Task`) where id(a)={userId} and id(b)={taskId} CREATE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
-			"]->b SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
+	@Query("Match (a:`User`),(b:`Task`) where id(a)={userId} and id(b)={taskId} CREATE (a)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
+			"]->(b) SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
 	TaskComplete taskCompleted(@Param("taskId") Long taskId, @Param("userId") Long userId);
 
-    @Query("Match (a:`User`),(b:`Task`) where a.email={userEmail} and b.action={taskAction} CREATE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
-            "]->b SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
+    @Query("Match (a:`User`),(b:`Task`) where a.email={userEmail} and b.action={taskAction} CREATE (a)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
+            "]->(b) SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
     TaskComplete taskCompleted(@Param("taskAction") String taskAction, @Param("userEmail") String userEmail);
 
-    @Query("Match (a:`User`),(b:`Task`) where a.email={userEmail} and b.action={taskAction} CREATE a-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
-            "]->b SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete',r.tag={targetType} return r")
+    @Query("Match (a:`User`),(b:`Task`) where a.email={userEmail} and b.action={taskAction} CREATE (a)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+
+            "]->(b) SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete',r.tag={targetType} return r")
     TaskComplete taskCompleted(@Param("taskAction") String taskAction, @Param("userEmail") String userEmail, @Param("targetType") String targetType);
 
 	@Query("Match (a:`User`)-[r:`"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where id(a)={userId} return b")

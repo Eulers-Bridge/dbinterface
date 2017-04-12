@@ -138,9 +138,7 @@ public class NewsEventHandler implements NewsService
 
 		if (LOG.isDebugEnabled()) LOG.debug("InstitutionId "+institutionId);
 		Pageable pageable=new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
-		System.out.println("start findByInstitutionId()");
 		articles=newsRepo.findByInstitutionId(institutionId, pageable);
-		System.out.println("end findByInstitutionId");
 		if (articles!=null)
 		{
 			if (LOG.isDebugEnabled())

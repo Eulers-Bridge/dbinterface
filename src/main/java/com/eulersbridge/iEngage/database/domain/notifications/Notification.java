@@ -106,6 +106,7 @@ public class Notification implements NotificationInterface
 
 			HasNotification hasNotification = new HasNotification();
 			hasNotification.setNotification(notif);
+			hasNotification.setUser(user);
 			notif.setHasNotificationRelationship(hasNotification);
 
 			notif.setRead(nDets.getRead());
