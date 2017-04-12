@@ -23,13 +23,13 @@ public interface PollRepository extends GraphRepository<Poll>
 	@Query ("MATCH (p:`"+DatabaseDomainConstants.POLL+"`)-[r:`"+DatabaseDomainConstants.CREATED_BY_LABEL+"`]-(o) where id(o)={creatorId} RETURN p")
 	Page<Poll> findByCreatorId(@Param("creatorId")Long creatorId,Pageable p);
 
-	@Query("Match (a:`User`),(b) where id(a)={userId} and id(b)={pollId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.APQ_LABEL+
-			"]->b SET r.timeStamp=coalesce(r.timeStamp,timestamp()),r.__type__='"+DatabaseDomainConstants.APQ_LABEL+"',r.answerIndex={answerIndex} return r")
+	@Query("Match (a:`User`),(b) where id(a)={userId} and id(b)={pollId} CREATE UNIQUE (a)-[r:"+DatabaseDomainConstants.APQ_LABEL+
+			"]->(b) SET r.timeStamp=coalesce(r.timeStamp,timestamp()),r.__type__='"+DatabaseDomainConstants.APQ_LABEL+"',r.answerIndex={answerIndex} return r")
 	PollAnswer addPollAnswer(@Param("userId")Long userId,@Param("pollId")Long pollId,
 								 @Param("answerIndex")Integer answerIndex);
 
-	@Query("Match (a:`User`),(b) where id(a)={pollAnswer.getAnswererId} and id(b)={pollAnswer.getPollId()} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.APQ_LABEL+
-			"]->b SET r.timeStamp=coalesce(r.timeStamp,timestamp()),r.__type__='"+DatabaseDomainConstants.APQ_LABEL+"',r.answerIndex={pollAnswer.getAnswerIndex()} return r")
+	@Query("Match (a:`User`),(b) where id(a)={pollAnswer.getAnswererId} and id(b)={pollAnswer.getPollId()} CREATE UNIQUE (a)-[r:"+DatabaseDomainConstants.APQ_LABEL+
+			"]->(b) SET r.timeStamp=coalesce(r.timeStamp,timestamp()),r.__type__='"+DatabaseDomainConstants.APQ_LABEL+"',r.answerIndex={pollAnswer.getAnswerIndex()} return r")
 	PollAnswer addPollAnswer2(@Param("pollAnswer")PollAnswer pollAnswer);
 
 	@Query("Match (a:`User`)-[r:"+DatabaseDomainConstants.APQ_LABEL+"]-(b) where id(a)={userId} and id(b)={pollId} return r")

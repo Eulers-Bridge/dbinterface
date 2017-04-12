@@ -20,7 +20,7 @@ public interface NewsArticleRepository extends GraphRepository<NewsArticle>
 			"]-(a:`NewsArticle`) where id(n)={instId} return a")
 	Page<NewsArticle> findByInstitutionId(@Param("instId")Long instId,Pageable p);
 	
-	@Query("Match (a:`User`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE a-[r:LIKES]->b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
+	@Query("Match (a:`User`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE (a)-[r:LIKES]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
 	Like likeArticle(@Param("email")String email,@Param("likedId")Long likedId);
 	
 	@Query("Match (a:`User`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
