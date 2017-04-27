@@ -25,10 +25,10 @@ public interface TicketRepository extends GraphRepository<Ticket>
 			"]-(e:`"+DatabaseDomainConstants.TICKET+"`) where id(n)={elecId} return e")
 	Page<Ticket> findByElectionId(@Param("elecId")Long instId,Pageable p);
 
-    @Query("Match (a:`User`),(b:`Ticket`) where a.email={email} and id(b)={ticketId} CREATE UNIQUE (a)-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Support' return r")
+    @Query("Match (a:`User`),(b:`Ticket`) where a.email={email} and id(b)={ticketId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]->b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Support' return r")
     Support supportTicket(@Param("ticketId")Long ticketId, @Param("email")String email);
 
-    @Query("Match (a:`User`),(b:`Ticket`) where a.email={email} and id(b)={ticketId} CREATE UNIQUE (a)-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Support'"+
+    @Query("Match (a:`User`),(b:`Ticket`) where a.email={email} and id(b)={ticketId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.SUPPORT_LABEL+"]->b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Support'"+
             " with r as support Match (b:`Ticket`)-[s:"+DatabaseDomainConstants.SUPPORT_LABEL+"]-(a:`User`) where id(b)={ticketId} return support,  count(s) as numOfSupport")
     SupportAndNum supportTicket_return_number_of_supports(@Param("ticketId")Long ticketId, @Param("email")String email);
 

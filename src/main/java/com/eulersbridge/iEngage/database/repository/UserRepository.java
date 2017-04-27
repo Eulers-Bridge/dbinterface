@@ -25,13 +25,13 @@ public interface UserRepository extends GraphRepository<User>
 			"]->(p) return p;")
 	Personality addPersonality(@Param("userId") Long userId,@Param("personalityId") Long personalityId);
 	
-	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE (a)-[r:"+DatabaseDomainConstants.VREMINDER_LABEL+
-			"]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='VoteReminder',r.location={location},r.date={date} return r")
+	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.VREMINDER_LABEL+
+			"]->b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='VoteReminder',r.location={location},r.date={date} return r")
 	VoteReminder addVoteReminder(@Param("userId")Long userId,@Param("electionId")Long electionId,
 								 @Param("date")Long date, @Param("location")String location);
 
-	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE (a)-[r:"+DatabaseDomainConstants.VRECORD_LABEL+
-			"]->(b) SET r.date=coalesce(r.date,timestamp()),r.__type__='VoteRecord',r.location={location} return r")
+	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.VRECORD_LABEL+
+			"]->b SET r.date=coalesce(r.date,timestamp()),r.__type__='VoteRecord',r.location={location} return r")
 	VoteRecord addVoteRecord(@Param("userId")Long userId,@Param("electionId")Long electionId, @Param("location")String location);
 	
 	@Query("Match (u:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.VRECORD_LABEL+"]-(e:`Election`) where id(r)={id} return r")
@@ -56,7 +56,7 @@ public interface UserRepository extends GraphRepository<User>
 	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:`"+DatabaseDomainConstants.LIKES_LABEL+"`]-(b) where a.email={email} and id(b)={likedId} return r")
 	Like isLikedBy(@Param("email")String email, @Param("likedId") Long likedId);
 
-	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE (a)-[r:"+DatabaseDomainConstants.LIKES_LABEL+"]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
+	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.LIKES_LABEL+"]->b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
     Like like(@Param("email")String email,@Param("likedId")Long likedId);
 
     @Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
@@ -64,8 +64,8 @@ public interface UserRepository extends GraphRepository<User>
 
     User findByContactNumber(String contactNumber);
     
-	@Query("Match (a),(b) where id(a)={contactorId} and id(b)={contacteeId} CREATE UNIQUE (a)-[r:"+DatabaseDomainConstants.CONTACT_LABEL+
-			"]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Contact' return r")
+	@Query("Match (a),(b) where id(a)={contactorId} and id(b)={contacteeId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.CONTACT_LABEL+
+			"]->b SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Contact' return r")
 	Contact addContact(@Param("contactorId")Long contactorId,@Param("contacteeId")Long contacteeId);
 	
 	@Query("Match (a:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.CONTACT_LABEL+"]-(b:`"+DatabaseDomainConstants.USER+
