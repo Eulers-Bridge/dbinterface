@@ -3,16 +3,16 @@
  */
 package com.eulersbridge.iEngage.core.events.users;
 
-import static org.junit.Assert.*;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Greg Newitt

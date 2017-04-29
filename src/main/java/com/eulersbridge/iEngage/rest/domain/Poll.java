@@ -1,16 +1,15 @@
 package com.eulersbridge.iEngage.rest.domain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.rest.controller.PollController;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -28,8 +27,8 @@ public class Poll extends ResourceSupport{
     private Long creatorId;
     private String creatorEmail;
 
-    private Long numOfComments;
-    private Long numOfAnswers;
+    private Integer numOfComments;
+    private Integer numOfAnswers;
 
     private static Logger LOG = LoggerFactory.getLogger(Poll.class);
 
@@ -143,18 +142,18 @@ public class Poll extends ResourceSupport{
         this.duration = duration;
     }
 
-    public Long getNumOfComments() {
+    public Integer getNumOfComments() {
         return numOfComments;
     }
 
-    public void setNumOfComments(Long numOfComments) {
+    public void setNumOfComments(Integer numOfComments) {
         this.numOfComments = numOfComments;
     }
 
     /**
 	 * @return the numOfAnswers
 	 */
-	public Long getNumOfAnswers()
+	public Integer getNumOfAnswers()
 	{
 		return numOfAnswers;
 	}
@@ -162,7 +161,7 @@ public class Poll extends ResourceSupport{
 	/**
 	 * @param numOfAnswers the numOfAnswers to set
 	 */
-	public void setNumOfAnswers(Long numOfAnswers)
+	public void setNumOfAnswers(Integer numOfAnswers)
 	{
 		this.numOfAnswers = numOfAnswers;
 	}
@@ -176,7 +175,7 @@ public class Poll extends ResourceSupport{
 	}
 
 	/**
-	 * @param ownerId the ownerId to set
+	 * @param newsFeedId the ownerId to set
 	 */
 	public void setOwnerId(Long newsFeedId)
 	{

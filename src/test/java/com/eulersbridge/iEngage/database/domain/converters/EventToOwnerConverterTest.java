@@ -3,14 +3,11 @@
  */
 package com.eulersbridge.iEngage.database.domain.converters;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.Owner;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.eulersbridge.iEngage.database.domain.Event;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 /**
  * @author Greg Newitt
@@ -37,7 +34,7 @@ public class EventToOwnerConverterTest
 	{
 		Event source=DatabaseDataFixture.populateEvent1();		
 		Owner owner=converter.convert(source);
-		assertEquals(owner.getNodeId(),source.getEventId());
+		assert(owner.getNodeId().equals(source.getNodeId()));
 	}
 
 }

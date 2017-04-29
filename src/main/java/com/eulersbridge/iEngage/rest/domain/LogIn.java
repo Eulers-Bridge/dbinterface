@@ -3,19 +3,14 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import com.eulersbridge.iEngage.core.events.users.LoginDetails;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.rest.controller.*;
+import org.springframework.hateoas.ResourceSupport;
 
 import java.util.Iterator;
 
-import org.springframework.hateoas.ResourceSupport;
-
-import com.eulersbridge.iEngage.core.events.users.LoginDetails;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
-import com.eulersbridge.iEngage.rest.controller.ElectionController;
-import com.eulersbridge.iEngage.rest.controller.NewsController;
-import com.eulersbridge.iEngage.rest.controller.UserController;
-import com.eulersbridge.iEngage.rest.controller.InstitutionController;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @author Greg Newitt

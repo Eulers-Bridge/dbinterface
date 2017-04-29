@@ -1,16 +1,16 @@
 package com.eulersbridge.iEngage.core.events.candidate;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Yikai Gong

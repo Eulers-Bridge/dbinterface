@@ -3,13 +3,13 @@
  */
 package com.eulersbridge.iEngage.core.events.notifications;
 
-import java.io.IOException;
-
 import com.eulersbridge.iEngage.rest.domain.Notification;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+
+import java.io.IOException;
 
 /**
  * @author Greg Newitt

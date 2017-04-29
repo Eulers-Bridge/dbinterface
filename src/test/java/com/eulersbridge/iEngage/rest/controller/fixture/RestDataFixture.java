@@ -1,12 +1,11 @@
 package com.eulersbridge.iEngage.rest.controller.fixture;
 
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.rest.domain.User;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 public class RestDataFixture 
 {

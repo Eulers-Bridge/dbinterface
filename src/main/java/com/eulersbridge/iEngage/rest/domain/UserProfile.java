@@ -1,17 +1,13 @@
 /**
  * @author Greg Newitt
- *
  */
 package com.eulersbridge.iEngage.rest.domain;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import com.eulersbridge.iEngage.rest.controller.UserController;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
@@ -20,223 +16,206 @@ import org.springframework.hateoas.ResourceSupport;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class UserProfile extends ResourceSupport
-{
-	private Long userId;
-	private String givenName;
-	private String familyName;
-	private String gender;
-	private String nationality;
-	private String contactNumber;
-	private Long institutionId;
-	private String email;
-	private String profilePhoto;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-    private Long numOfCompTasks;
-    private Long totalTasks;
-    private Long numOfCompBadges;
-    private Long totalBadges;
-    private Long numOfContacts;
+public class UserProfile extends ResourceSupport {
+  private Long userId;
+  private String givenName;
+  private String familyName;
+  private String gender;
+  private String nationality;
+  private String contactNumber;
+  private Long institutionId;
+  private String email;
+  private String profilePhoto;
 
-    private Long experience;
-	private Long level;
+  private Long numOfCompTasks;
+  private Long totalTasks;
+  private Long numOfCompBadges;
+  private Long totalBadges;
+  private Long numOfContacts;
 
-	private static Logger LOG = LoggerFactory.getLogger(User.class);
+  private Long experience;
+  private Long level;
 
-	public String getEmail()
-	{
-		return email;
-	}
+  private static Logger LOG = LoggerFactory.getLogger(User.class);
 
-	public void setEmail(String email)
-	{
-		this.email = email;
-	}
+  public String getEmail() {
+    return email;
+  }
 
-	public String getGivenName()
-	{
-		return givenName;
-	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-	public void setGivenName(String givenName)
-	{
-		this.givenName = givenName;
-	}
+  public String getGivenName() {
+    return givenName;
+  }
 
-	public String getFamilyName()
-	{
-		return familyName;
-	}
+  public void setGivenName(String givenName) {
+    this.givenName = givenName;
+  }
 
-	public void setFamilyName(String familyName)
-	{
-		this.familyName = familyName;
-	}
+  public String getFamilyName() {
+    return familyName;
+  }
 
-	public String getGender()
-	{
-		return gender;
-	}
+  public void setFamilyName(String familyName) {
+    this.familyName = familyName;
+  }
 
-	public void setGender(String gender)
-	{
-		this.gender = gender;
-	}
+  public String getGender() {
+    return gender;
+  }
 
-	public String getNationality()
-	{
-		return nationality;
-	}
+  public void setGender(String gender) {
+    this.gender = gender;
+  }
 
-	public void setNationality(String nationality)
-	{
-		this.nationality = nationality;
-	}
+  public String getNationality() {
+    return nationality;
+  }
 
-    public Long getTotalTasks() {
-        return totalTasks;
-    }
+  public void setNationality(String nationality) {
+    this.nationality = nationality;
+  }
 
-    public void setTotalTasks(Long totalTasks) {
-        this.totalTasks = totalTasks;
-    }
+  public Long getTotalTasks() {
+    return totalTasks;
+  }
 
-    public Long getTotalBadges() {
-        return totalBadges;
-    }
+  public void setTotalTasks(Long totalTasks) {
+    this.totalTasks = totalTasks;
+  }
 
-    public void setTotalBadges(Long totalBadges) {
-        this.totalBadges = totalBadges;
-    }
+  public Long getTotalBadges() {
+    return totalBadges;
+  }
 
-    public Long getNumOfContacts() {
-        return numOfContacts;
-    }
+  public void setTotalBadges(Long totalBadges) {
+    this.totalBadges = totalBadges;
+  }
 
-    public void setNumOfContacts(Long numOfContacts) {
-        this.numOfContacts = numOfContacts;
-    }
+  public Long getNumOfContacts() {
+    return numOfContacts;
+  }
 
-    public Long getExperience() {
-        return experience;
-    }
+  public void setNumOfContacts(Long numOfContacts) {
+    this.numOfContacts = numOfContacts;
+  }
 
-    public void setExperience(Long experience) {
-        this.experience = experience;
-    }
+  public Long getExperience() {
+    return experience;
+  }
 
-	public Long getUserId() {
-		return userId;
-	}
+  public void setExperience(Long experience) {
+    this.experience = experience;
+  }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+  public Long getUserId() {
+    return userId;
+  }
 
-	public Long getLevel() {
-		return level;
-	}
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
 
-	public void setLevel(Long level) {
-		this.level = level;
-	}
+  public Long getLevel() {
+    return level;
+  }
 
-	/**
-	 * @return the contactNumber
-	 */
-	public String getContactNumber()
-	{
-		return contactNumber;
-	}
+  public void setLevel(Long level) {
+    this.level = level;
+  }
 
-	/**
-	 * @param contactNumber
-	 *            the contactNumber to set
-	 */
-	public void setContactNumber(String contactNumber)
-	{
-		this.contactNumber = contactNumber;
-	}
+  /**
+   * @return the contactNumber
+   */
+  public String getContactNumber() {
+    return contactNumber;
+  }
 
-	public Long getInstitutionId()
-	{
-		return institutionId;
-	}
+  /**
+   * @param contactNumber
+   *            the contactNumber to set
+   */
+  public void setContactNumber(String contactNumber) {
+    this.contactNumber = contactNumber;
+  }
 
-	public void setInstitutionId(Long institutionId)
-	{
-		this.institutionId = institutionId;
-	}
+  public Long getInstitutionId() {
+    return institutionId;
+  }
 
-	/**
-	 * @return the profilePhoto
-	 */
-	public String getProfilePhoto()
-	{
-		return profilePhoto;
-	}
+  public void setInstitutionId(Long institutionId) {
+    this.institutionId = institutionId;
+  }
 
-    public Long getNumOfCompTasks() {
-        return numOfCompTasks;
-    }
+  /**
+   * @return the profilePhoto
+   */
+  public String getProfilePhoto() {
+    return profilePhoto;
+  }
 
-    public void setNumOfCompTasks(Long numOfCompTasks) {
-        this.numOfCompTasks = numOfCompTasks;
-    }
+  public Long getNumOfCompTasks() {
+    return numOfCompTasks;
+  }
 
-    public Long getNumOfCompBadges() {
-        return numOfCompBadges;
-    }
+  public void setNumOfCompTasks(Long numOfCompTasks) {
+    this.numOfCompTasks = numOfCompTasks;
+  }
 
-    public void setNumOfCompBadges(Long numOfCompBadges) {
-        this.numOfCompBadges = numOfCompBadges;
-    }
+  public Long getNumOfCompBadges() {
+    return numOfCompBadges;
+  }
 
-    /**
-	 * @param profilePhoto the profilePhoto to set
-	 */
-	public void setProfilePhoto(String profilePhoto)
-	{
-		this.profilePhoto = profilePhoto;
-	}
+  public void setNumOfCompBadges(Long numOfCompBadges) {
+    this.numOfCompBadges = numOfCompBadges;
+  }
 
-	public UserDetails toUserDetails()
-	{
-		UserDetails details = new UserDetails(email);
+  /**
+   * @param profilePhoto the profilePhoto to set
+   */
+  public void setProfilePhoto(String profilePhoto) {
+    this.profilePhoto = profilePhoto;
+  }
 
-		details.setGivenName(getGivenName());
-		details.setFamilyName(getFamilyName());
-		details.setGender(getGender());
-		details.setNationality(getNationality());
-		details.setContactNumber(getContactNumber());
-		details.setInstitutionId(getInstitutionId());
+  public UserDetails toUserDetails() {
+    UserDetails details = new UserDetails(email);
 
-		return details;
-	}
+    details.setGivenName(getGivenName());
+    details.setFamilyName(getFamilyName());
+    details.setGender(getGender());
+    details.setNationality(getNationality());
+    details.setContactNumber(getContactNumber());
+    details.setInstitutionId(getInstitutionId());
 
-	// {!begin fromUserDetails}
-	public static UserProfile fromUserDetails(UserDetails readUser)
-	{
-		UserProfile user = new UserProfile();
+    return details;
+  }
 
-		user.setUserId(readUser.getUserId());
-		user.email = readUser.getEmail();
-		user.givenName = readUser.getGivenName();
-		user.familyName = readUser.getFamilyName();
-		user.gender = readUser.getGender();
-		user.nationality = readUser.getNationality();
-		user.contactNumber = readUser.getContactNumber();
-		user.institutionId = readUser.getInstitutionId();
-        user.numOfCompTasks = readUser.getNumOfCompTasks();
-        user.numOfCompBadges = readUser.getNumOfCompBadges();
-        user.totalTasks = readUser.getTotalTasks();
-        user.totalBadges = readUser.getTotalBadges();
-        user.numOfContacts = readUser.getNumOfContacts();
-        user.experience = readUser.getExperience();
+  // {!begin fromUserDetails}
+  public static UserProfile fromUserDetails(UserDetails readUser) {
+    UserProfile user = new UserProfile();
 
-		Iterable<PhotoDetails> photos=readUser.getPhotos();
-		user.profilePhoto = readUser.getProfilePhoto();
-		user.setLevel(User.calculateUserLevel(readUser.getExperience()));
+    user.setUserId(readUser.getUserId());
+    user.email = readUser.getEmail();
+    user.givenName = readUser.getGivenName();
+    user.familyName = readUser.getFamilyName();
+    user.gender = readUser.getGender();
+    user.nationality = readUser.getNationality();
+    user.contactNumber = readUser.getContactNumber();
+    user.institutionId = readUser.getInstitutionId();
+    user.numOfCompTasks = readUser.getNumOfCompTasks();
+    user.numOfCompBadges = readUser.getNumOfCompBadges();
+    user.totalTasks = readUser.getTotalTasks();
+    user.totalBadges = readUser.getTotalBadges();
+    user.numOfContacts = readUser.getNumOfContacts();
+    user.experience = readUser.getExperience();
+
+    Iterable<PhotoDetails> photos = readUser.getPhotos();
+    user.profilePhoto = readUser.getProfilePhoto();
+    user.setLevel(User.calculateUserLevel(readUser.getExperience()));
 //		if (photos!=null)
 //		{
 //			Iterator<PhotoDetails> iterator=photos.iterator();
@@ -246,73 +225,68 @@ public class UserProfile extends ResourceSupport
 //			}
 //		}
 
-		// TODOCUMENT. Adding the library, the above extends ResourceSupport and
-		// this section is all that is actually needed in our model to add
-		// hateoas support.
+    // TODOCUMENT. Adding the library, the above extends ResourceSupport and
+    // this section is all that is actually needed in our model to add
+    // hateoas support.
 
-		// Much of the rest of the framework is helping deal with the blending
-		// of domains that happens in many spring apps
-		// We have explicitly avoided that.
-		// {!begin selfRel}
-		String details=null;
-		if (user.email!=null)
-			details=user.email;
-		else details=user.contactNumber;
-		user.add(new Link(linkTo(UserController.class).slash(ControllerConstants.CONTACT_LABEL).slash(details).toUriComponentsBuilder().build().toUriString() + "/","self"));
-		// {!end selfRel}
-		return user;
-	}
+    // Much of the rest of the framework is helping deal with the blending
+    // of domains that happens in many spring apps
+    // We have explicitly avoided that.
+    // {!begin selfRel}
+    String details = null;
+    if (user.email != null)
+      details = user.email;
+    else details = user.contactNumber;
+    user.add(new Link(linkTo(UserController.class).slash(ControllerConstants.CONTACT_LABEL).slash(details).toUriComponentsBuilder().build().toUriString() + "/", "self"));
+    // {!end selfRel}
+    return user;
+  }
 
-	public String toString()
-	{
-		StringBuffer buff = new StringBuffer("[ email = ");
-		String retValue;
-		buff.append(getEmail());
-		buff.append(", givenName = ");
-		buff.append(getGivenName());
-		buff.append(", familyName = ");
-		buff.append(getFamilyName());
-		buff.append(", gender = ");
-		buff.append(getGender());
-		buff.append(", nationality = ");
-		buff.append(getNationality());
-		buff.append(", contactNumber = ");
-		buff.append(getContactNumber());
-		buff.append(", institutionId = ");
-		buff.append(getInstitutionId());
-		buff.append(" ]");
-		retValue = buff.toString();
-		if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
-		return retValue;
-	}
+  public String toString() {
+    StringBuffer buff = new StringBuffer("[ email = ");
+    String retValue;
+    buff.append(getEmail());
+    buff.append(", givenName = ");
+    buff.append(getGivenName());
+    buff.append(", familyName = ");
+    buff.append(getFamilyName());
+    buff.append(", gender = ");
+    buff.append(getGender());
+    buff.append(", nationality = ");
+    buff.append(getNationality());
+    buff.append(", contactNumber = ");
+    buff.append(getContactNumber());
+    buff.append(", institutionId = ");
+    buff.append(getInstitutionId());
+    buff.append(" ]");
+    retValue = buff.toString();
+    if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
+    return retValue;
+  }
 
-	public static Iterator<LikeInfo> toLikesIterator(Iterator<UserDetails> iter)
-	{
-		if (null == iter) return null;
-		ArrayList<LikeInfo> likes = new ArrayList<LikeInfo>();
-		while (iter.hasNext())
-		{
-			UserDetails userDetails = iter.next();
-			LikeInfo likeInfo = LikeInfo.fromUserDetails(userDetails);
-			likes.add(likeInfo);
-		}
-		return likes.iterator();
-	}
-	
-	public static Iterator<UserProfile> toUserProfilesIterator(
-			Iterator<? extends Details> iter)
-	{
-		if (null==iter) return null;
-		ArrayList <UserProfile> userProfiles=new ArrayList<UserProfile>();
-		while(iter.hasNext())
-		{
-			UserDetails dets=(UserDetails)iter.next();
-			UserProfile thisUserProfile=UserProfile.fromUserDetails(dets);
-			Link self = thisUserProfile.getLink("self");
-			thisUserProfile.removeLinks();
-			thisUserProfile.add(self);
-			userProfiles.add(thisUserProfile);		
-		}
-		return userProfiles.iterator();
-	}
+  public static Iterator<LikeInfo> toLikesIterator(Iterator<UserDetails> iter) {
+    if (null == iter) return null;
+    ArrayList<LikeInfo> likes = new ArrayList<LikeInfo>();
+    while (iter.hasNext()) {
+      UserDetails userDetails = iter.next();
+      LikeInfo likeInfo = LikeInfo.fromUserDetails(userDetails);
+      likes.add(likeInfo);
+    }
+    return likes.iterator();
+  }
+
+  public static Iterator<UserProfile> toUserProfilesIterator(
+    Iterator<? extends Details> iter) {
+    if (null == iter) return null;
+    ArrayList<UserProfile> userProfiles = new ArrayList<UserProfile>();
+    while (iter.hasNext()) {
+      UserDetails dets = (UserDetails) iter.next();
+      UserProfile thisUserProfile = UserProfile.fromUserDetails(dets);
+      Link self = thisUserProfile.getLink("self");
+      thisUserProfile.removeLinks();
+      thisUserProfile.add(self);
+      userProfiles.add(thisUserProfile);
+    }
+    return userProfiles.iterator();
+  }
 }

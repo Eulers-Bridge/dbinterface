@@ -1,10 +1,9 @@
 package com.eulersbridge.iEngage.core.events.institutions;
 
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
 
 import static org.junit.Assert.*;
 

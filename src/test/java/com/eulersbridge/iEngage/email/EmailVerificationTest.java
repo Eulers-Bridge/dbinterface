@@ -1,10 +1,9 @@
 package com.eulersbridge.iEngage.email;
 
-import static org.junit.Assert.*;
-
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
+import com.eulersbridge.iEngage.config.TestEmailConfig;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VerificationToken;
+import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
 import org.apache.velocity.app.VelocityEngine;
 import org.junit.After;
 import org.junit.Before;
@@ -19,10 +18,10 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.eulersbridge.iEngage.config.TestEmailConfig;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.VerificationToken;
-import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestEmailConfig.class})

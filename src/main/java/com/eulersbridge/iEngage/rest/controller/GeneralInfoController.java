@@ -1,14 +1,13 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
+import com.eulersbridge.iEngage.rest.domain.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
-import com.eulersbridge.iEngage.rest.domain.Country;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)

@@ -1,5 +1,16 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.events.users.*;
+import com.eulersbridge.iEngage.core.events.voteRecord.*;
+import com.eulersbridge.iEngage.core.events.voteReminder.*;
+import com.eulersbridge.iEngage.core.services.ContactRequestService;
+import com.eulersbridge.iEngage.core.services.EmailService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.email.EmailVerification;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestEventFixtures;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -11,52 +22,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doNothing;
-
-import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
-import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDeletedEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDeletedEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
-import com.eulersbridge.iEngage.core.services.ContactRequestService;
-import com.eulersbridge.iEngage.core.services.EmailService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.email.EmailVerification;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestEventFixtures;
 
 
 public class UserControllerTest 

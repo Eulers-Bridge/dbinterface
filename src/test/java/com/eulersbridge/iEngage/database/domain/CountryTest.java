@@ -3,17 +3,16 @@
  */
 package com.eulersbridge.iEngage.database.domain;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt
@@ -112,14 +111,14 @@ public class CountryTest {
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Country#setInstitutions(java.lang.String)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Country(java.lang.String)}.
 	 */
 	@Test
 	public void testSetInstitutions() 
 	{
 		ArrayList <Institution> institutions=new ArrayList<Institution>();
 		institutions.add(DatabaseDataFixture.populateInstUniMelb());
-		country.setInstitutions(institutions);
+		country.setInstitutions(Node.castList(institutions));
 		assertTrue("Institutions doesn't match.",compareInstitutions(country.getInstitutions(),institutions));
 	}
 
@@ -178,7 +177,7 @@ public class CountryTest {
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Country#equals(com.eulersbridge.iEngage.database.domain.Country)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Country(com.eulersbridge.iEngage.database.domain.Country)}.
 	 */
 	@Test
 	public void testEqualsCountry() 
@@ -218,7 +217,7 @@ public class CountryTest {
 		countryTest.setInstitutions(null);
 		assertNotEquals(country, countryTest);
 		assertNotEquals(countryTest,country);
-		countryTest.setInstitutions(DatabaseDataFixture.populateInstitutions().values());
+		countryTest.setInstitutions(Node.castList(DatabaseDataFixture.populateInstitutions()));
 		checkNotEquals(countryTest, country);
 		countryTest.setCountryName(country.getCountryName());
 	}

@@ -3,26 +3,11 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.ticket.*;
-
+import com.eulersbridge.iEngage.core.services.TicketService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -35,14 +20,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.services.TicketService;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Greg Newitt
@@ -278,18 +267,18 @@ public class TicketControllerTest
 		when (ticketService.readTickets(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-		.andExpect(jsonPath("$totalPages",is(numPages)))
-		.andExpect(jsonPath("$foundObjects[0].name",is(ticketDets.get(0).getName())))
-		.andExpect(jsonPath("$foundObjects[0].information",is(ticketDets.get(0).getInformation())))
-		.andExpect(jsonPath("$foundObjects[0].ticketId",is(ticketDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].logo",is(ticketDets.get(0).getLogo())))
-		.andExpect(jsonPath("$foundObjects[0].links[0].rel",is("self")))
-		.andExpect(jsonPath("$foundObjects[1].name",is(ticketDets.get(1).getName())))
-		.andExpect(jsonPath("$foundObjects[1].information",is(ticketDets.get(1).getInformation())))
-		.andExpect(jsonPath("$foundObjects[1].ticketId",is(ticketDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].logo",is(ticketDets.get(1).getLogo())))
-		.andExpect(jsonPath("$foundObjects[1].links[0].rel",is("self")))
+		.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("totalPages",is(numPages)))
+		.andExpect(jsonPath("foundObjects[0].name",is(ticketDets.get(0).getName())))
+		.andExpect(jsonPath("foundObjects[0].information",is(ticketDets.get(0).getInformation())))
+		.andExpect(jsonPath("foundObjects[0].ticketId",is(ticketDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].logo",is(ticketDets.get(0).getLogo())))
+		.andExpect(jsonPath("foundObjects[0].links[0].rel",is("self")))
+		.andExpect(jsonPath("foundObjects[1].name",is(ticketDets.get(1).getName())))
+		.andExpect(jsonPath("foundObjects[1].information",is(ticketDets.get(1).getInformation())))
+		.andExpect(jsonPath("foundObjects[1].ticketId",is(ticketDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].logo",is(ticketDets.get(1).getLogo())))
+		.andExpect(jsonPath("foundObjects[1].links[0].rel",is("self")))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}

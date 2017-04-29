@@ -3,13 +3,12 @@
  */
 package com.eulersbridge.iEngage.core.events.contacts;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.database.domain.Contact;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.database.domain.Contact;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt

@@ -3,13 +3,6 @@
  */
 package com.eulersbridge.iEngage.database.domain.notifications;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.repository.GraphRepository;
-
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationHelper;
@@ -18,6 +11,12 @@ import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.repository.GraphRepository;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

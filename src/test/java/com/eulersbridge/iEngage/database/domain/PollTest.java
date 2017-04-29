@@ -3,13 +3,12 @@
  */
 package com.eulersbridge.iEngage.database.domain;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.core.events.polls.PollDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.polls.PollDetails;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt
@@ -61,7 +60,7 @@ public class PollTest
 		assertEquals("",poll.getStart(),dets.getStart());
 		assertEquals("",poll.getDuration(),dets.getDuration());
 		assertEquals("",poll.getAnswers(),dets.getAnswers());
-		assertEquals("",poll.getOwner().getNodeId(),dets.getOwnerId());
+		assertEquals("",poll.getInstitution().getNodeId(),dets.getOwnerId());
 		assertEquals("",poll.getCreator().getNodeId(),dets.getCreatorId());
 	}
 
@@ -78,7 +77,7 @@ public class PollTest
 		assertEquals("",dets.getStart(),pollTest.getStart());
 		assertEquals("",dets.getDuration(),pollTest.getDuration());
 		assertEquals("",dets.getAnswers(),pollTest.getAnswers());
-		assertEquals("",dets.getOwnerId(),pollTest.getOwner().getNodeId());
+		assertEquals("",dets.getOwnerId(),pollTest.getInstitution().getNodeId());
 		assertEquals("",dets.getCreatorId(),pollTest.getCreator().getNodeId());
 	}
 
@@ -209,12 +208,12 @@ public class PollTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#getOwner()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#getInstitution()}.
 	 */
 	@Test
 	public final void testGetOwner()
 	{
-		assertEquals(poll.getOwner().getNodeId(),dets.getOwnerId());
+		assertEquals(poll.getInstitution().getNodeId(),dets.getOwnerId());
 	}
 
 	/**
@@ -224,9 +223,9 @@ public class PollTest
 	public final void testSetOwner()
 	{
 		Institution owner=new Institution(43254l);
-		assertNotEquals(poll.getOwner(),owner);
-		poll.setOwner(owner);
-		assertEquals(poll.getOwner(),owner);
+		assertNotEquals(poll.getInstitution(),owner);
+		poll.setInstitution(owner);
+		assertEquals(poll.getInstitution(),owner);
 	}
 
 	/**
@@ -271,10 +270,10 @@ public class PollTest
 		assertNotEquals(poll.hashCode(), pollTest.hashCode());
 		assertNotEquals(pollTest.hashCode(), poll.hashCode());
 		pollTest.setCreator(poll.getCreator());
-		pollTest.setOwner(null);
+		pollTest.setInstitution(null);
 		assertNotEquals(poll.hashCode(), pollTest.hashCode());
 		assertNotEquals(pollTest.hashCode(), poll.hashCode());
-		pollTest.setOwner(poll.getOwner());
+		pollTest.setInstitution(poll.getInstitution());
 	}
 
 	/**
@@ -329,12 +328,12 @@ public class PollTest
 		assertNotEquals(pollTest, poll);
 		pollTest.setAnswers(poll.getAnswers());
 		
-		pollTest.setOwner(new Institution(23l));
+		pollTest.setInstitution(new Institution(23l));
 		assertNotEquals(poll, pollTest);
-		pollTest.setOwner(null);
+		pollTest.setInstitution(null);
 		assertNotEquals(poll, pollTest);
 		assertNotEquals(pollTest, poll);
-		pollTest.setOwner(poll.getOwner());
+		pollTest.setInstitution(poll.getInstitution());
 		
 		pollTest.setCreator(new User(22l));
 		assertNotEquals(poll, pollTest);

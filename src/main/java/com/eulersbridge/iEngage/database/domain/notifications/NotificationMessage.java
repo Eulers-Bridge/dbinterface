@@ -3,14 +3,14 @@
  */
 package com.eulersbridge.iEngage.database.domain.notifications;
 
-import java.util.Iterator;
-
 import com.eulersbridge.iEngage.core.events.notifications.Message;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationHelper;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

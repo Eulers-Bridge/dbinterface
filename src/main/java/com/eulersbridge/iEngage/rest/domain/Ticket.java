@@ -4,7 +4,6 @@ import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.rest.controller.TicketController;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
@@ -30,7 +29,7 @@ public class Ticket extends ResourceSupport{
     private Iterable<String> candidateNames=null;
     private Long electionId=null;
     private String code = null;
-    private Long numberOfSupporters = null;
+    private Integer numberOfSupporters = null;
 
     private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
@@ -130,11 +129,11 @@ public class Ticket extends ResourceSupport{
         this.candidateNames = candidateNames;
     }
 
-    public Long getNumberOfSupporters() {
+    public Integer getNumberOfSupporters() {
         return numberOfSupporters;
     }
 
-    public void setNumberOfSupporters(Long numberOfSupporters) {
+    public void setNumberOfSupporters(Integer numberOfSupporters) {
         this.numberOfSupporters = numberOfSupporters;
     }
 

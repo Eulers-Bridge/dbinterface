@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.config;
 
-import java.util.Properties;
-
+import com.eulersbridge.iEngage.core.services.EmailEventHandler;
+import com.eulersbridge.iEngage.core.services.EmailService;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.view.WebappResourceLoader;
 import org.slf4j.Logger;
@@ -14,11 +14,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
-import com.eulersbridge.iEngage.core.services.EmailEventHandler;
-import com.eulersbridge.iEngage.core.services.EmailService;
+import java.util.Properties;
 
 //import org.springframework.core.io.Resource;
-@PropertySource("classpath:email.properties")
 @Configuration
 public class EmailConfig 
 {
@@ -65,7 +63,8 @@ public class EmailConfig
 		return sender;
 		
 	}
-	
+
+	// TODO: Witch to FreeMarker as Spring in favor of
 	@Bean
 	public VelocityEngineFactoryBean velocityEngine()
 	{

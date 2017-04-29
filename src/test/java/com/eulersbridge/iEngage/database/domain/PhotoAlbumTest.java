@@ -3,13 +3,12 @@
  */
 package com.eulersbridge.iEngage.database.domain;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt

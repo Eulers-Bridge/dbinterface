@@ -1,12 +1,11 @@
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
-import java.util.Calendar;
-
+import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.core.events.Details;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import java.util.Calendar;
 
 public class NewsArticleDetails extends Details
 {

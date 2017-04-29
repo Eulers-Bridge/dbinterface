@@ -1,9 +1,8 @@
 package com.eulersbridge.iEngage.core.events.polls;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.eulersbridge.iEngage.core.events.Details;
 
 /**
  * @author Yikai Gong
@@ -19,8 +18,8 @@ public class PollDetails extends Details
     private Long creatorId;
 	private String creatorEmail;
 
-    private Long numOfComments;
-    private Long numOfAnswers;
+    private Integer numOfComments;
+    private Integer numOfAnswers;
     
     private static Logger LOG = LoggerFactory.getLogger(PollDetails.class);
 
@@ -69,18 +68,18 @@ public class PollDetails extends Details
         this.duration = duration;
     }
 
-    public Long getNumOfComments() {
+    public Integer getNumOfComments() {
         return numOfComments;
     }
 
-    public void setNumOfComments(Long numOfComments) {
+    public void setNumOfComments(Integer numOfComments) {
         this.numOfComments = numOfComments;
     }
 
     /**
 	 * @return the numOfAnswers
 	 */
-	public Long getNumOfAnswers()
+	public Integer getNumOfAnswers()
 	{
 		return numOfAnswers;
 	}
@@ -88,7 +87,7 @@ public class PollDetails extends Details
 	/**
 	 * @param numOfAnswers the numOfAnswers to set
 	 */
-	public void setNumOfAnswers(Long numOfAnswers)
+	public void setNumOfAnswers(Integer numOfAnswers)
 	{
 		this.numOfAnswers = numOfAnswers;
 	}

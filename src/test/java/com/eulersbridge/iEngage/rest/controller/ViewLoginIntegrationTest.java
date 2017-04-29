@@ -1,18 +1,15 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
+import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.NewsService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -30,16 +27,19 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.services.NewsService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 public class ViewLoginIntegrationTest {
 
@@ -109,26 +109,26 @@ public class ViewLoginIntegrationTest {
 		when (newsService.readNewsArticles(any(ReadAllEvent.class), any(Direction.class), any(int.class), any(int.class))).thenReturn(value);
 		this.mockMvc.perform(get("/api/login").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$articles.[0].title",is(coll.get(0).getTitle())))
-		.andExpect(jsonPath("$articles.[0].date",is(coll.get(0).getDate())))
-		.andExpect(jsonPath("$articles.[0].creatorEmail",is(coll.get(0).getCreatorEmail())))
-		.andExpect(jsonPath("$articles.[0].content",is(coll.get(0).getContent())))
-		.andExpect(jsonPath("$articles.[0].articleId",is(coll.get(0).getNewsArticleId().intValue())))
-		.andExpect(jsonPath("$articles.[0].institutionId",is(coll.get(0).getInstitutionId().intValue())))
-		.andExpect(jsonPath("$articles.[1].title",is(coll.get(1).getTitle())))
-		.andExpect(jsonPath("$articles.[1].date",is(coll.get(1).getDate())))
-		.andExpect(jsonPath("$articles.[1].creatorEmail",is(coll.get(1).getCreatorEmail())))
-		.andExpect(jsonPath("$articles.[1].content",is(coll.get(1).getContent())))
-		.andExpect(jsonPath("$articles.[1].articleId",is(coll.get(1).getNewsArticleId().intValue())))
-		.andExpect(jsonPath("$articles.[1].institutionId",is(coll.get(1).getInstitutionId().intValue())))
-		.andExpect(jsonPath("$user.givenName",is(userDets.getGivenName())))
-		.andExpect(jsonPath("$user.familyName",is(userDets.getFamilyName())))
-		.andExpect(jsonPath("$user.gender",is(userDets.getGender())))
-		.andExpect(jsonPath("$user.nationality",is(userDets.getNationality())))
-		.andExpect(jsonPath("$user.yearOfBirth",is(userDets.getYearOfBirth())))
-		.andExpect(jsonPath("$user.accountVerified",is(userDets.isAccountVerified())))
-		.andExpect(jsonPath("$user.institutionId",is(userDets.getInstitutionId().intValue())))
-		.andExpect(jsonPath("$user.email",is(userDets.getEmail())))
+		.andExpect(jsonPath("articles.[0].title",is(coll.get(0).getTitle())))
+		.andExpect(jsonPath("articles.[0].date",is(coll.get(0).getDate())))
+		.andExpect(jsonPath("articles.[0].creatorEmail",is(coll.get(0).getCreatorEmail())))
+		.andExpect(jsonPath("articles.[0].content",is(coll.get(0).getContent())))
+		.andExpect(jsonPath("articles.[0].articleId",is(coll.get(0).getNewsArticleId().intValue())))
+		.andExpect(jsonPath("articles.[0].institutionId",is(coll.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("articles.[1].title",is(coll.get(1).getTitle())))
+		.andExpect(jsonPath("articles.[1].date",is(coll.get(1).getDate())))
+		.andExpect(jsonPath("articles.[1].creatorEmail",is(coll.get(1).getCreatorEmail())))
+		.andExpect(jsonPath("articles.[1].content",is(coll.get(1).getContent())))
+		.andExpect(jsonPath("articles.[1].articleId",is(coll.get(1).getNewsArticleId().intValue())))
+		.andExpect(jsonPath("articles.[1].institutionId",is(coll.get(1).getInstitutionId().intValue())))
+		.andExpect(jsonPath("user.givenName",is(userDets.getGivenName())))
+		.andExpect(jsonPath("user.familyName",is(userDets.getFamilyName())))
+		.andExpect(jsonPath("user.gender",is(userDets.getGender())))
+		.andExpect(jsonPath("user.nationality",is(userDets.getNationality())))
+		.andExpect(jsonPath("user.yearOfBirth",is(userDets.getYearOfBirth())))
+		.andExpect(jsonPath("user.accountVerified",is(userDets.isAccountVerified())))
+		.andExpect(jsonPath("user.institutionId",is(userDets.getInstitutionId().intValue())))
+		.andExpect(jsonPath("user.email",is(userDets.getEmail())))
 		.andExpect(status().isOk())	;
 	}
 

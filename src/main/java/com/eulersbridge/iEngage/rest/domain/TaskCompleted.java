@@ -3,18 +3,17 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
+import com.eulersbridge.iEngage.rest.controller.TaskController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
-import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
-import com.eulersbridge.iEngage.rest.controller.TaskController;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @author Greg Newitt

@@ -3,14 +3,13 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
+import com.eulersbridge.iEngage.rest.controller.PollController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.ResourceSupport;
 
-import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
-import com.eulersbridge.iEngage.rest.controller.PollController;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @author Greg Newitt

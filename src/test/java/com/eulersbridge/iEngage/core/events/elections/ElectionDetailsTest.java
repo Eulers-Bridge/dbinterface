@@ -1,10 +1,9 @@
 package com.eulersbridge.iEngage.core.events.elections;
 
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import static org.junit.Assert.*;
 

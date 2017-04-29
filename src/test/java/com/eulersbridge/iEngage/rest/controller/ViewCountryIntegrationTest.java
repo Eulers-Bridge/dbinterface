@@ -1,20 +1,12 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.countrys.*;
+import com.eulersbridge.iEngage.core.services.CountryService;
+import com.eulersbridge.iEngage.rest.domain.Country;
+import com.eulersbridge.iEngage.rest.domain.Institution;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -26,22 +18,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryDeletedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
-import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
-import com.eulersbridge.iEngage.core.services.CountryService;
-import com.eulersbridge.iEngage.rest.domain.Institution;
-import com.eulersbridge.iEngage.rest.domain.Country;
+import java.util.ArrayList;
+
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 public class ViewCountryIntegrationTest 
 {

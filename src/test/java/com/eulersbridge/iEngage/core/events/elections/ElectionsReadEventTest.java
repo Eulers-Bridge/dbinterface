@@ -3,15 +3,12 @@
  */
 package com.eulersbridge.iEngage.core.events.elections;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
-import com.eulersbridge.iEngage.core.events.elections.ElectionsReadEvent;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt

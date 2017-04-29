@@ -3,10 +3,9 @@
  */
 package com.eulersbridge.iEngage.database.domain.converters;
 
-import org.springframework.core.convert.converter.Converter;
-
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.database.domain.Ticket;
+import org.springframework.core.convert.converter.Converter;
 
 /**
  * @author Greg Newitt

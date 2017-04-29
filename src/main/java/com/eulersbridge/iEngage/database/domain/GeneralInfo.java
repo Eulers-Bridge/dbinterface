@@ -1,20 +1,20 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import org.neo4j.ogm.annotation.Property;
 import org.springframework.data.neo4j.annotation.QueryResult;
-import org.springframework.data.neo4j.annotation.ResultColumn;
 
-@QueryResult()
-	public interface GeneralInfo
-	{
-		@ResultColumn ("institutionNames")
-		Iterable<String> getInstitutionNames();
-		
-		@ResultColumn ("institutionIds")
-		Iterable<Long> getInstitutionIds();
-		
-		@ResultColumn ("countryName")
-		String getCountryName();
-		
-		@ResultColumn ("countryId")
-		Long getCountryId();
+@QueryResult
+public interface GeneralInfo {
+
+  @Property(name = "institutionNames")
+  Iterable<String> getInstitutionNames();
+
+  @Property(name = "institutionIds")
+  Iterable<Long> getInstitutionIds();
+
+  @Property(name = "countryName")
+  String getCountryName();
+
+  @Property(name = "countryId")
+  Long getCountryId();
 }

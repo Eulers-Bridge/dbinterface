@@ -1,25 +1,13 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.PollService;
 import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.rest.domain.LikeInfo;
-import com.eulersbridge.iEngage.rest.domain.Poll;
-import com.eulersbridge.iEngage.rest.domain.PollAnswer;
-import com.eulersbridge.iEngage.rest.domain.Polls;
-import com.eulersbridge.iEngage.rest.domain.Response;
-import com.eulersbridge.iEngage.rest.domain.User;
-
+import com.eulersbridge.iEngage.rest.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

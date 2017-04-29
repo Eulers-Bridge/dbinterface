@@ -3,15 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.forumQuestions.*;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.ForumQuestion;
+import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,22 +24,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.CreateForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.DeleteForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionDetails;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionReadEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionsReadEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ReadForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ReadForumQuestionsEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.UpdateForumQuestionEvent;
-import com.eulersbridge.iEngage.database.domain.ForumQuestion;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Greg Newitt
@@ -120,7 +111,7 @@ public class ForumQuestionEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("ReadingForumQuestion()");
 		ForumQuestion testData=DatabaseDataFixture.populateForumQuestion1();
 		when(fqRepository.findOne(any(Long.class))).thenReturn(testData);
-		ReadForumQuestionEvent readForumQuestionEvent=new ReadForumQuestionEvent(testData.getForumQuestionId());
+		ReadForumQuestionEvent readForumQuestionEvent=new ReadForumQuestionEvent(testData.getNodeId());
 		ForumQuestionReadEvent evtData = (ForumQuestionReadEvent) service.readForumQuestion(readForumQuestionEvent);
 		ForumQuestionDetails returnedDets = (ForumQuestionDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toForumQuestionDetails());
@@ -172,11 +163,11 @@ public class ForumQuestionEventHandlerTest
 		ForumQuestion testData=DatabaseDataFixture.populateForumQuestion1();
 		when(fqRepository.findOne(any(Long.class))).thenReturn(testData);
 		doNothing().when(fqRepository).delete((any(Long.class)));
-		DeleteForumQuestionEvent deleteForumQuestionEvent=new DeleteForumQuestionEvent(testData.getForumQuestionId());
+		DeleteForumQuestionEvent deleteForumQuestionEvent=new DeleteForumQuestionEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteForumQuestion(deleteForumQuestionEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
-		assertEquals(testData.getForumQuestionId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 	@Test
 	public final void testDeleteForumQuestionNotFound() 
@@ -185,11 +176,11 @@ public class ForumQuestionEventHandlerTest
 		ForumQuestion testData=DatabaseDataFixture.populateForumQuestion1();
 		when(fqRepository.findOne(any(Long.class))).thenReturn(null);
 		doNothing().when(fqRepository).delete((any(Long.class)));
-		DeleteForumQuestionEvent deleteForumQuestionEvent=new DeleteForumQuestionEvent(testData.getForumQuestionId());
+		DeleteForumQuestionEvent deleteForumQuestionEvent=new DeleteForumQuestionEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteForumQuestion(deleteForumQuestionEvent);
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isDeletionCompleted());
-		assertEquals(testData.getForumQuestionId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 
 	/**

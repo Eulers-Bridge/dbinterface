@@ -1,9 +1,8 @@
 package com.eulersbridge.iEngage.core.events.badge;
 
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 
 import static org.junit.Assert.*;
 

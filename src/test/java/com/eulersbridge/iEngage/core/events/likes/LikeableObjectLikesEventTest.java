@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.core.events.likes;
 
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.database.domain.Like;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

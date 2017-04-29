@@ -2,7 +2,6 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Yikai Gong

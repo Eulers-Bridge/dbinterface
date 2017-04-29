@@ -3,13 +3,12 @@
  */
 package com.eulersbridge.iEngage.core.events.forumQuestions;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.ForumQuestion;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.database.domain.ForumQuestion;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt

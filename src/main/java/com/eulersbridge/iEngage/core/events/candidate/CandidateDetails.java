@@ -1,8 +1,8 @@
 package com.eulersbridge.iEngage.core.events.candidate;
+
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,14 +1,13 @@
 package com.eulersbridge.iEngage.core.events.generalInfo;
 
-import java.util.ArrayList;
-
-import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Yikai Gong

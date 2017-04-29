@@ -1,30 +1,13 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDeletedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.services.LikesService;
 import com.eulersbridge.iEngage.core.services.NewsService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.NewsArticle;
 import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,18 +21,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
@@ -218,7 +201,7 @@ public class NewsControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-        .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+        .andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -233,7 +216,7 @@ public class NewsControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-        .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+        .andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -279,7 +262,7 @@ public class NewsControllerTest
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 
@@ -294,7 +277,7 @@ public class NewsControllerTest
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 
@@ -412,20 +395,20 @@ if (LOG.isDebugEnabled()) LOG.debug("dets.getPhotos = "+dets.getPhotos());
 		NewsArticlesReadEvent testData=new NewsArticlesReadEvent(instId,artDets,numElements,numPages);
 		when (newsService.readNewsArticles(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-		.andExpect(jsonPath("$totalPages",is(numPages)))
-		.andExpect(jsonPath("$foundObjects[0].title",is(artDets.get(0).getTitle())))
-		.andExpect(jsonPath("$foundObjects[0].date",is(artDets.get(0).getDate())))
-		.andExpect(jsonPath("$foundObjects[0].creatorEmail",is(artDets.get(0).getCreatorEmail())))
-		.andExpect(jsonPath("$foundObjects[0].content",is(artDets.get(0).getContent())))
-		.andExpect(jsonPath("$foundObjects[0].articleId",is(artDets.get(0).getNewsArticleId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].institutionId",is(artDets.get(0).getInstitutionId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].title",is(artDets.get(1).getTitle())))
-		.andExpect(jsonPath("$foundObjects[1].date",is(artDets.get(1).getDate())))
-		.andExpect(jsonPath("$foundObjects[1].creatorEmail",is(artDets.get(1).getCreatorEmail())))
-		.andExpect(jsonPath("$foundObjects[1].content",is(artDets.get(1).getContent())))
-		.andExpect(jsonPath("$foundObjects[1].articleId",is(artDets.get(1).getNewsArticleId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].institutionId",is(artDets.get(1).getInstitutionId().intValue())))
+		.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("totalPages",is(numPages)))
+		.andExpect(jsonPath("foundObjects[0].title",is(artDets.get(0).getTitle())))
+		.andExpect(jsonPath("foundObjects[0].date",is(artDets.get(0).getDate())))
+		.andExpect(jsonPath("foundObjects[0].creatorEmail",is(artDets.get(0).getCreatorEmail())))
+		.andExpect(jsonPath("foundObjects[0].content",is(artDets.get(0).getContent())))
+		.andExpect(jsonPath("foundObjects[0].articleId",is(artDets.get(0).getNewsArticleId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].institutionId",is(artDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].title",is(artDets.get(1).getTitle())))
+		.andExpect(jsonPath("foundObjects[1].date",is(artDets.get(1).getDate())))
+		.andExpect(jsonPath("foundObjects[1].creatorEmail",is(artDets.get(1).getCreatorEmail())))
+		.andExpect(jsonPath("foundObjects[1].content",is(artDets.get(1).getContent())))
+		.andExpect(jsonPath("foundObjects[1].articleId",is(artDets.get(1).getNewsArticleId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].institutionId",is(artDets.get(1).getInstitutionId().intValue())))
 //TODO
 /*		.andExpect(jsonPath("$.picture",is(dets.getPicture())))
 		.andExpect(jsonPath("$.likers",is(dets.getLikers())))

@@ -1,37 +1,23 @@
 package com.eulersbridge.iEngage.core.services;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
-import com.eulersbridge.iEngage.core.events.positions.CreatePositionEvent;
-import com.eulersbridge.iEngage.core.events.positions.DeletePositionEvent;
-import com.eulersbridge.iEngage.core.events.positions.PositionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.positions.PositionDeletedEvent;
-import com.eulersbridge.iEngage.core.events.positions.PositionDetails;
-import com.eulersbridge.iEngage.core.events.positions.PositionReadEvent;
-import com.eulersbridge.iEngage.core.events.positions.PositionUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.positions.RequestReadPositionEvent;
-import com.eulersbridge.iEngage.core.events.positions.UpdatePositionEvent;
+import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.database.domain.Candidate;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
 import com.eulersbridge.iEngage.database.repository.CandidateRepository;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.PositionRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author Yikai Gong

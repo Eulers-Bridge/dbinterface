@@ -4,17 +4,14 @@ import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
 import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
-/**
- * Created by darcular on 21/09/14.
- */
+import java.util.List;
+
 public interface PollRepository extends GraphRepository<Poll>
 {
 	@Query ("MATCH (p:`"+DatabaseDomainConstants.POLL+"`)-[r:`"+DatabaseDomainConstants.HAS_POLL_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
@@ -37,6 +34,6 @@ public interface PollRepository extends GraphRepository<Poll>
 	
 	@Query("MATCH (a:`User`)-[r:`"+DatabaseDomainConstants.APQ_LABEL+"`]->(b:`"+DatabaseDomainConstants.POLL+"`) WHERE id(b)={pollId} WITH collect(distinct r.answerIndex) as answers "+
 			"unwind answers as x match (u:`User`)-[t:`"+DatabaseDomainConstants.APQ_LABEL+"`]-(p:`"+DatabaseDomainConstants.POLL+"`) where t.answerIndex=x and id(p)={pollId} return x as answer,count(t) as frequency order by x")
-	Result <PollResultTemplate> getPollResults(@Param("pollId") Long pollId);
+	List<PollResultTemplate> getPollResults(@Param("pollId") Long pollId);
 
 }

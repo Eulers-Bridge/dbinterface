@@ -3,7 +3,6 @@ package com.eulersbridge.iEngage.database.repository;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.BadgeComplete;
 import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;

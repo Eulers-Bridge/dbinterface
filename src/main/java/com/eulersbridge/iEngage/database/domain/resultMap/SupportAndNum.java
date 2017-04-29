@@ -1,8 +1,8 @@
 package com.eulersbridge.iEngage.database.domain.resultMap;
 
 import com.eulersbridge.iEngage.database.domain.Support;
+import org.neo4j.ogm.annotation.Property;
 import org.springframework.data.neo4j.annotation.QueryResult;
-import org.springframework.data.neo4j.annotation.ResultColumn;
 
 /**
  * @author Yikai Gong
@@ -13,9 +13,9 @@ import org.springframework.data.neo4j.annotation.ResultColumn;
 
 @QueryResult
 public class SupportAndNum {
-    @ResultColumn("support")
+    @Property(name = "support")
     Support support;
-    @ResultColumn("numOfSupport")
+    @Property(name = "numOfSupport")
     Long numOfSupport;
 
     public Support getSupport() {

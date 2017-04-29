@@ -3,10 +3,10 @@
  */
 package com.eulersbridge.iEngage.core.events.forumQuestions;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+
 import java.util.ArrayList;
 import java.util.Collection;
-
-import com.eulersbridge.iEngage.core.events.ReadEvent;
 
 /**
  * @author Greg Newitt

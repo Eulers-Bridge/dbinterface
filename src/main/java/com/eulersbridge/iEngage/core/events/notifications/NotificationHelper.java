@@ -3,19 +3,13 @@
  */
 package com.eulersbridge.iEngage.core.events.notifications;
 
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.database.domain.notifications.*;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.database.domain.notifications.Notification;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactAccepted;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactRejected;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactRequest;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationMessage;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

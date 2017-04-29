@@ -1,12 +1,9 @@
 package com.eulersbridge.iEngage.core.events.newsFeed;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
-import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedReadEvent;
 
 import static org.junit.Assert.*;
 

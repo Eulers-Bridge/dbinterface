@@ -3,6 +3,11 @@
  */
 package com.eulersbridge.iEngage.config;
 
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
+import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
+import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +26,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
-
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
-import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
-import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;
-import com.eulersbridge.iEngage.security.SecurityConstants;
 
 /**
  * @author Greg Newitt

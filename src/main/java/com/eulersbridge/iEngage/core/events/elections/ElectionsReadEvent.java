@@ -4,7 +4,6 @@
 package com.eulersbridge.iEngage.core.events.elections;
 
 import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 
 /**
  * @author Greg Newitt

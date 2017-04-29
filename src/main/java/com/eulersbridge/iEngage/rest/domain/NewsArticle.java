@@ -1,18 +1,17 @@
 package com.eulersbridge.iEngage.rest.domain;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import com.eulersbridge.iEngage.rest.controller.NewsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-import com.eulersbridge.iEngage.rest.controller.NewsController;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 public class NewsArticle extends ResourceSupport
 {

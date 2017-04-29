@@ -1,28 +1,18 @@
 package com.eulersbridge.iEngage.core.services;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.conversion.Result;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryCreatedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
-import com.eulersbridge.iEngage.core.events.countrys.CountryReadEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountryUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CountrysReadEvent;
-import com.eulersbridge.iEngage.core.events.countrys.CreateCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.DeleteCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.ReadCountryEvent;
-import com.eulersbridge.iEngage.core.events.countrys.UpdateCountryEvent;
+import com.eulersbridge.iEngage.core.events.countrys.*;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CountryEventHandler implements CountryService 
 {
@@ -108,7 +98,7 @@ public class CountryEventHandler implements CountryService
 	public CountrysReadEvent readCountrys(ReadAllEvent rce) 
 	{
 	    if (LOG.isDebugEnabled()) LOG.debug("readCountrys()");
-		Result<Country> returned=countryRepository.findAll();
+		Iterable<Country> returned=countryRepository.findAll();
 		ArrayList<CountryDetails> countryList=new ArrayList<CountryDetails>();
 		Iterator<Country> iter=returned.iterator();
 		while (iter.hasNext())

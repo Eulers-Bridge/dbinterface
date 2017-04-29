@@ -3,19 +3,18 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.springframework.hateoas.ResourceSupport;
-
 import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
 import com.eulersbridge.iEngage.core.events.generalInfo.GiCountry;
 import com.eulersbridge.iEngage.core.events.generalInfo.GiInstitution;
 import com.eulersbridge.iEngage.rest.controller.InstitutionController;
 import com.eulersbridge.iEngage.rest.domain.GeneralInfo.RestCountry.RestInst;
+import org.springframework.hateoas.ResourceSupport;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @author Greg Newitt

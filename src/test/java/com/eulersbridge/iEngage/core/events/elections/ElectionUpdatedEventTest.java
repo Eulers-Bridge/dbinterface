@@ -1,10 +1,9 @@
 package com.eulersbridge.iEngage.core.events.elections;
 
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 
 import static org.junit.Assert.*;
 

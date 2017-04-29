@@ -3,13 +3,7 @@
  */
 package com.eulersbridge.iEngage.core.events.notifications;
 
-import java.io.IOException;
-
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactAccepted;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactRejected;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactRequest;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationMessage;
+import com.eulersbridge.iEngage.database.domain.notifications.*;
 import com.eulersbridge.iEngage.rest.domain.Notification;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,9 +11,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * @author Greg Newitt

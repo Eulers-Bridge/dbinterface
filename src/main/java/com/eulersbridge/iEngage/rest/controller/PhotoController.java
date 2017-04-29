@@ -3,56 +3,24 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
+import com.eulersbridge.iEngage.core.events.photo.*;
+import com.eulersbridge.iEngage.core.events.photoAlbums.*;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.core.services.PhotoService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.RequestReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
-import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
-import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.services.LikesService;
-import com.eulersbridge.iEngage.core.services.PhotoService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.rest.domain.FindsParent;
-import com.eulersbridge.iEngage.rest.domain.LikeInfo;
-import com.eulersbridge.iEngage.rest.domain.Photo;
-import com.eulersbridge.iEngage.rest.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.rest.domain.Photos;
-import com.eulersbridge.iEngage.rest.domain.Response;
-import com.eulersbridge.iEngage.rest.domain.User;
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

@@ -3,10 +3,10 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import static org.junit.Assert.*;
-
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.core.events.users.LoginDetails;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,10 +17,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.users.LoginDetails;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import java.util.Iterator;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Greg Newitt

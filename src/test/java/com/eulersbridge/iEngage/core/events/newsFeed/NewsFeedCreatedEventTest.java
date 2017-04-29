@@ -4,9 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
-
 import static org.junit.Assert.*;
 
 /**

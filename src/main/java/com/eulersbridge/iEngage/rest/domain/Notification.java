@@ -3,15 +3,6 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
-
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDeserializer;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
@@ -21,6 +12,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.ResourceSupport;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

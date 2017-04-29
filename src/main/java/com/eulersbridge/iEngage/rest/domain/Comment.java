@@ -4,14 +4,13 @@ import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.CommentController;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 

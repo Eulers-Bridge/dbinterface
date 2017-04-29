@@ -3,15 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
+import com.eulersbridge.iEngage.database.repository.EventRepository;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,24 +23,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
-import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
-import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
-import com.eulersbridge.iEngage.core.events.events.EventDetails;
-import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
-import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
-import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
-import com.eulersbridge.iEngage.database.domain.Event;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.EventRepository;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Greg Newitt
@@ -70,7 +59,7 @@ public class EventEventHandlerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#EventEventHandler(com.eulersbridge.iEngage.database.repository.EventRepository)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler(com.eulersbridge.iEngage.database.repository.EventRepository)}.
 	 */
 	@Test
 	public final void testEventEventHandler()
@@ -117,7 +106,7 @@ public class EventEventHandlerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#requestReadEvent(com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler(com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent)}.
 	 */
 	@Test
 	public final void testReadEvent()
@@ -125,7 +114,7 @@ public class EventEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("ReadingEvent()");
 		Event testData=DatabaseDataFixture.populateEvent1();
 		when(eventRepository.findOne(any(Long.class))).thenReturn(testData);
-		RequestReadEventEvent readElectionEvent=new RequestReadEventEvent(testData.getEventId());
+		RequestReadEventEvent readElectionEvent=new RequestReadEventEvent(testData.getNodeId());
 		ReadEventEvent evtData = (ReadEventEvent) service.readEvent(readElectionEvent);
 		EventDetails returnedDets = (EventDetails)evtData.getDetails();
 		assertEquals(returnedDets,testData.toEventDetails());
@@ -177,7 +166,7 @@ public class EventEventHandlerTest
 		UpdateEventEvent createEventEvent=new UpdateEventEvent(dets.getEventId(), dets);
 		UpdatedEvent evtData = service.updateEvent(createEventEvent);
 		assertNull(evtData.getDetails());
-		assertEquals(evtData.getNodeId(),testData.getEventId());
+		assertEquals(evtData.getNodeId(),testData.getNodeId());
 		assertFalse(evtData.isEntityFound());
 		assertNotNull(evtData.getNodeId());
 	}
@@ -192,11 +181,11 @@ public class EventEventHandlerTest
 		Event testData=DatabaseDataFixture.populateEvent1();
 		when(eventRepository.findOne(any(Long.class))).thenReturn(testData);
 		doNothing().when(eventRepository).delete((any(Long.class)));
-		DeleteEventEvent deleteEventEvent=new DeleteEventEvent(testData.getEventId());
+		DeleteEventEvent deleteEventEvent=new DeleteEventEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteEvent(deleteEventEvent);
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isDeletionCompleted());
-		assertEquals(testData.getEventId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 	@Test
 	public final void testDeleteElectionNotFound() 
@@ -205,16 +194,13 @@ public class EventEventHandlerTest
 		Event testData=DatabaseDataFixture.populateEvent1();
 		when(eventRepository.findOne(any(Long.class))).thenReturn(null);
 		doNothing().when(eventRepository).delete((any(Long.class)));
-		DeleteEventEvent deleteEventEvent=new DeleteEventEvent(testData.getEventId());
+		DeleteEventEvent deleteEventEvent=new DeleteEventEvent(testData.getNodeId());
 		DeletedEvent evtData = service.deleteEvent(deleteEventEvent);
 		assertFalse(evtData.isEntityFound());
 		assertFalse(evtData.isDeletionCompleted());
-		assertEquals(testData.getEventId(),evtData.getNodeId());
+		assertEquals(testData.getNodeId(),evtData.getNodeId());
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#readEvents(com.eulersbridge.iEngage.core.events.events.ReadAllEvent,Direction,int,int)}.
-	 */
 	@Test
 	public final void testReadEvents()
 	{

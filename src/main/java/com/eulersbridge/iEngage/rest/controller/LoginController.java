@@ -1,8 +1,18 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicLong;
-
+import com.eulersbridge.iEngage.core.domain.Logout;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
+import com.eulersbridge.iEngage.core.events.users.LoginDetails;
+import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.NewsService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.domain.LogIn;
+import com.eulersbridge.iEngage.rest.domain.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
@@ -15,20 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.core.domain.Logout;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.users.LoginDetails;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.services.NewsService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.rest.domain.LogIn;
-import com.eulersbridge.iEngage.rest.domain.Response;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)

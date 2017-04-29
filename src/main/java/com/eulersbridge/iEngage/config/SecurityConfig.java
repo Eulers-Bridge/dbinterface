@@ -3,6 +3,12 @@
  */
 package com.eulersbridge.iEngage.config;
 
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
+import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
+import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;
+import com.eulersbridge.iEngage.security.Neo4jAuthenticationProvider;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,13 +26,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
-
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
-import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
-import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;
-import com.eulersbridge.iEngage.security.Neo4jAuthenticationProvider;
-import com.eulersbridge.iEngage.security.SecurityConstants;
 
 /**
  * @author Greg Newitt
@@ -40,19 +38,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
     private static Logger LOG = LoggerFactory.getLogger(SecurityConfig.class);
     
-    @Autowired
-    UserService userService;
+    final
+		UserService userService;
     
-    @Autowired
-    UserDetailsService userDetailsService;
+    final
+		UserDetailsService userDetailsService;
        
-    @Autowired
-    DigestAuthenticationEntryPoint digestEntryPoint;
+    final
+		DigestAuthenticationEntryPoint digestEntryPoint;
     
-    @Autowired
-    PermissionEvaluator permissionEvaluator;
+    final
+		PermissionEvaluator permissionEvaluator;
 
-    @Override
+	@Autowired
+	public SecurityConfig(UserService userService, DigestAuthenticationEntryPoint digestEntryPoint, PermissionEvaluator permissionEvaluator) {
+		this.userService = userService;
+		this.digestEntryPoint = digestEntryPoint;
+		this.permissionEvaluator = permissionEvaluator;
+		this.userDetailsService = (UserDetailsService) userService;
+	}
+
+	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("configure()");

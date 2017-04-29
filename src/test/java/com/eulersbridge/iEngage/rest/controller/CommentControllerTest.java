@@ -7,7 +7,6 @@ import com.eulersbridge.iEngage.database.domain.Comment;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.Owner;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -25,14 +24,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
@@ -300,21 +297,21 @@ public class CommentControllerTest {
                 any(int.class), any(int.class))).thenReturn(commentsReadEvent);
         this.mockMvc.perform(get(urlPrefix+"s/{targetId}/",targetId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-				.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-				.andExpect(jsonPath("$totalPages",is(numPages)))
-                .andExpect(jsonPath("$foundObjects[0].commentId", is(commentDets.get(0).getNodeId().intValue())))
-                .andExpect(jsonPath("$foundObjects[0].targetId", is(commentDets.get(0).getTargetId().intValue())))
-                .andExpect(jsonPath("$foundObjects[0].userName", is(commentDets.get(0).getUserName())))
-                .andExpect(jsonPath("$foundObjects[0].userEmail", is(commentDets.get(0).getUserEmail())))
-                .andExpect(jsonPath("$foundObjects[0].timestamp", is(commentDets.get(0).getTimestamp().intValue())))
-                .andExpect(jsonPath("$foundObjects[0].content", is(commentDets.get(0).getContent())))
+				.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+				.andExpect(jsonPath("totalPages",is(numPages)))
+                .andExpect(jsonPath("foundObjects[0].commentId", is(commentDets.get(0).getNodeId().intValue())))
+                .andExpect(jsonPath("foundObjects[0].targetId", is(commentDets.get(0).getTargetId().intValue())))
+                .andExpect(jsonPath("foundObjects[0].userName", is(commentDets.get(0).getUserName())))
+                .andExpect(jsonPath("foundObjects[0].userEmail", is(commentDets.get(0).getUserEmail())))
+                .andExpect(jsonPath("foundObjects[0].timestamp", is(commentDets.get(0).getTimestamp().intValue())))
+                .andExpect(jsonPath("foundObjects[0].content", is(commentDets.get(0).getContent())))
 //                .andExpect(jsonPath("$foundObjects[0].profilePhotoDetails", is(commentDets.get(0).getProfilePhotoDetails())))
-                .andExpect(jsonPath("$foundObjects[1].commentId", is(commentDets.get(1).getNodeId().intValue())))
-                .andExpect(jsonPath("$foundObjects[1].targetId", is(commentDets.get(1).getTargetId().intValue())))
-                .andExpect(jsonPath("$foundObjects[1].userName", is(commentDets.get(1).getUserName())))
-                .andExpect(jsonPath("$foundObjects[1].userEmail", is(commentDets.get(1).getUserEmail())))
-                .andExpect(jsonPath("$foundObjects[1].timestamp", is(commentDets.get(1).getTimestamp().intValue())))
-                .andExpect(jsonPath("$foundObjects[1].content", is(commentDets.get(1).getContent())))
+                .andExpect(jsonPath("foundObjects[1].commentId", is(commentDets.get(1).getNodeId().intValue())))
+                .andExpect(jsonPath("foundObjects[1].targetId", is(commentDets.get(1).getTargetId().intValue())))
+                .andExpect(jsonPath("foundObjects[1].userName", is(commentDets.get(1).getUserName())))
+                .andExpect(jsonPath("foundObjects[1].userEmail", is(commentDets.get(1).getUserEmail())))
+                .andExpect(jsonPath("foundObjects[1].timestamp", is(commentDets.get(1).getTimestamp().intValue())))
+                .andExpect(jsonPath("foundObjects[1].content", is(commentDets.get(1).getContent())))
   //              .andExpect(jsonPath("$foundObjects[1].profilePhotoDetails", is(commentDets.get(1).getProfilePhotoDetails())))
                 .andExpect(status().isOk());
     }

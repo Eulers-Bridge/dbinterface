@@ -3,26 +3,19 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
+import com.eulersbridge.iEngage.core.events.polls.*;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.core.services.PollService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.Poll;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -32,44 +25,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
-import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
-import com.eulersbridge.iEngage.core.events.polls.CreatePollEvent;
-import com.eulersbridge.iEngage.core.events.polls.DeletePollEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollAnswerCreatedEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
-import com.eulersbridge.iEngage.core.events.polls.PollCreatedEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollDeletedEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollDetails;
-import com.eulersbridge.iEngage.core.events.polls.PollResultDetails;
-import com.eulersbridge.iEngage.core.events.polls.PollResultReadEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.polls.ReadPollEvent;
-import com.eulersbridge.iEngage.core.events.polls.ReadPollResultEvent;
-import com.eulersbridge.iEngage.core.events.polls.RequestReadPollEvent;
-import com.eulersbridge.iEngage.core.events.polls.UpdatePollEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.services.LikesService;
-import com.eulersbridge.iEngage.core.services.PollService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.Poll;
-import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import java.util.*;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 
 /**
@@ -187,7 +156,7 @@ public class PollControllerTest
 		String answers[]=poll.getAnswers().split(",");
 		int numAnswers=answers.length;
 
-		Result<PollResultTemplate> prd = DatabaseDataFixture.populatePollResultDetails1();
+		List<PollResultTemplate> prd = DatabaseDataFixture.populatePollResultDetails1();
 		List<com.eulersbridge.iEngage.core.events.polls.PollResult> other=PollResultDetails.toPollResultList(prd.iterator(), numAnswers);
 		PollResultDetails dets=new PollResultDetails(pollId,other );
 		PollResultReadEvent testData=new PollResultReadEvent(dets.getPollId(),dets);
@@ -230,8 +199,6 @@ public class PollControllerTest
 	{
 		LOG.debug("performingCreatePoll()");
 		Poll poll=DatabaseDataFixture.populatePoll1();
-		poll.setNumberOfAnswers(623432l);
-		poll.setNumberOfComments(543543l);
 		PollDetails dets=poll.toPollDetails();
 		PollCreatedEvent testData=new PollCreatedEvent(dets);
 		String content="{\"question\":\"http://localhost:8080/\",\"answers\":\"Test Photo\",\"duration\":12345,\"start\":123456,\"ownerId\":3214}";
@@ -339,8 +306,6 @@ public class PollControllerTest
 		LOG.debug("performingUpdatePoll()");
 		Long id=1L;
 		Poll poll=DatabaseDataFixture.populatePoll1();
-		poll.setNumberOfAnswers(5l);
-		poll.setNumberOfComments(3l);
 		PollDetails dets=poll.toPollDetails();
 		dets.setQuestion("New Question");
 		PollUpdatedEvent testData=new PollUpdatedEvent(id, dets);
@@ -435,7 +400,7 @@ public class PollControllerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PollController#answerPoll(com.eulersbridge.iEngage.rest.domain.PollAnswer)}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.PollController#(com.eulersbridge.iEngage.rest.domain.PollAnswer)}.
 	 * @throws Exception 
 	 */
 	@Test
@@ -560,7 +525,7 @@ public class PollControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -575,7 +540,7 @@ public class PollControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -622,7 +587,7 @@ public class PollControllerTest
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 
@@ -637,7 +602,7 @@ public class PollControllerTest
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 
@@ -735,22 +700,22 @@ public class PollControllerTest
 		when (pollService.findPolls(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalPolls",is(testData.getTotalItems().intValue())))
-		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
-		.andExpect(jsonPath("$polls[0].nodeId",is(pollDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$polls[0].question",is(pollDets.get(0).getQuestion())))
-		.andExpect(jsonPath("$polls[0].answers",is(pollDets.get(0).getAnswers())))
-		.andExpect(jsonPath("$polls[0].start",is(pollDets.get(0).getStart().intValue())))
-		.andExpect(jsonPath("$polls[0].duration",is(pollDets.get(0).getDuration().intValue())))
-		.andExpect(jsonPath("$polls[0].creatorId",is(pollDets.get(0).getCreatorId().intValue())))
-		.andExpect(jsonPath("$polls[0].ownerId",is(pollDets.get(0).getOwnerId().intValue())))
-		.andExpect(jsonPath("$polls[1].nodeId",is(pollDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$polls[1].question",is(pollDets.get(1).getQuestion())))
-		.andExpect(jsonPath("$polls[1].answers",is(pollDets.get(1).getAnswers())))
-		.andExpect(jsonPath("$polls[1].start",is(pollDets.get(1).getStart().intValue())))
-		.andExpect(jsonPath("$polls[1].duration",is(pollDets.get(1).getDuration().intValue())))
-		.andExpect(jsonPath("$polls[1].creatorId",is(pollDets.get(1).getCreatorId().intValue())))
-		.andExpect(jsonPath("$polls[1].ownerId",is(pollDets.get(1).getOwnerId().intValue())))
+		.andExpect(jsonPath("totalPolls",is(testData.getTotalItems().intValue())))
+		.andExpect(jsonPath("totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("polls[0].nodeId",is(pollDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("polls[0].question",is(pollDets.get(0).getQuestion())))
+		.andExpect(jsonPath("polls[0].answers",is(pollDets.get(0).getAnswers())))
+		.andExpect(jsonPath("polls[0].start",is(pollDets.get(0).getStart().intValue())))
+		.andExpect(jsonPath("polls[0].duration",is(pollDets.get(0).getDuration().intValue())))
+		.andExpect(jsonPath("polls[0].creatorId",is(pollDets.get(0).getCreatorId().intValue())))
+		.andExpect(jsonPath("polls[0].ownerId",is(pollDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("polls[1].nodeId",is(pollDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("polls[1].question",is(pollDets.get(1).getQuestion())))
+		.andExpect(jsonPath("polls[1].answers",is(pollDets.get(1).getAnswers())))
+		.andExpect(jsonPath("polls[1].start",is(pollDets.get(1).getStart().intValue())))
+		.andExpect(jsonPath("polls[1].duration",is(pollDets.get(1).getDuration().intValue())))
+		.andExpect(jsonPath("polls[1].creatorId",is(pollDets.get(1).getCreatorId().intValue())))
+		.andExpect(jsonPath("polls[1].ownerId",is(pollDets.get(1).getOwnerId().intValue())))
 		.andExpect(status().isOk())	;
 	}
 
@@ -765,8 +730,8 @@ public class PollControllerTest
 		AllReadEvent testData=new AllReadEvent(instId,pollDets,numElements,numPages);
 		when (pollService.findPolls(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$totalPolls",is(testData.getTotalItems().intValue())))
-		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("totalPolls",is(testData.getTotalItems().intValue())))
+		.andExpect(jsonPath("totalPages",is(testData.getTotalPages())))
 		.andExpect(status().isOk())	;
 	}
 

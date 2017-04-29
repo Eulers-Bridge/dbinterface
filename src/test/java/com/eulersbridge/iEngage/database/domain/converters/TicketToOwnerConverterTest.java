@@ -3,14 +3,13 @@
  */
 package com.eulersbridge.iEngage.database.domain.converters;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Ticket;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Ticket;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Greg Newitt

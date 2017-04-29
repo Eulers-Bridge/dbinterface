@@ -6,12 +6,12 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Yikai Gong
- *
  */
-
-import static org.junit.Assert.*;
 
 public class CountrysReadEventTest {
     CountrysReadEvent countrysReadEvent = null;

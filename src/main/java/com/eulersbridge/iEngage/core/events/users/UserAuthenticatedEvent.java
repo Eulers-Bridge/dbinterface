@@ -3,11 +3,11 @@
  */
 package com.eulersbridge.iEngage.core.events.users;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
 
 /**
  * @author Greg Newitt

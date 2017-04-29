@@ -1,13 +1,12 @@
 package com.eulersbridge.iEngage.database.repository;
 
+import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
-
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
 
 public interface NewsFeedRepository extends GraphRepository<NewsFeed> 
 {

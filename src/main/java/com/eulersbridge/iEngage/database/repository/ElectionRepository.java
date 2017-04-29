@@ -1,13 +1,11 @@
 package com.eulersbridge.iEngage.database.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.neo4j.repository.GraphRepository;
-
 import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
 import com.eulersbridge.iEngage.database.domain.Election;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface ElectionRepository extends GraphRepository<Election>

@@ -3,12 +3,15 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.Calendar;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.contactRequest.*;
+import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
+import com.eulersbridge.iEngage.database.domain.Contact;
+import com.eulersbridge.iEngage.database.domain.ContactRequest;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,23 +19,11 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.Details;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdateEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
-import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
-import com.eulersbridge.iEngage.database.domain.Contact;
-import com.eulersbridge.iEngage.database.domain.ContactRequest;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
+import java.util.Calendar;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Greg Newitt

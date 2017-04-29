@@ -3,8 +3,6 @@ package com.eulersbridge.iEngage.core.events.events;
 import org.junit.After;
 import org.junit.Before;
 
-import static org.junit.Assert.*;
-
 /**
  * @author Yikai Gong
  */

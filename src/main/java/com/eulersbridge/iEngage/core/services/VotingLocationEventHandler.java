@@ -3,9 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.votingLocation.*;
+import com.eulersbridge.iEngage.database.domain.Election;
+import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.VotingLocation;
+import com.eulersbridge.iEngage.database.repository.ElectionRepository;
+import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.VotingLocationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,31 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.CreateVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.DeleteVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationAddedEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationCreatedEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDeletedEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationReadEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationRemovedEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationUpdatedEvent;
-import com.eulersbridge.iEngage.database.domain.Election;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.VotingLocation;
-import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
-import com.eulersbridge.iEngage.database.repository.VotingLocationRepository;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

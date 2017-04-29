@@ -3,22 +3,11 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.votingLocation.*;
+import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.CreateVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.DeleteVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.UpdateVotingLocationEvent;
-import com.eulersbridge.iEngage.security.SecurityConstants;
 
 /**
  * @author Greg Newitt

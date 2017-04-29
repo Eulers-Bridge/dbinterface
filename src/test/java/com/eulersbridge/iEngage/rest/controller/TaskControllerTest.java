@@ -3,25 +3,12 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.task.*;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.TaskService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -34,28 +21,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.task.CompletedTaskEvent;
-import com.eulersbridge.iEngage.core.events.task.CreateTaskEvent;
-import com.eulersbridge.iEngage.core.events.task.DeleteTaskEvent;
-import com.eulersbridge.iEngage.core.events.task.ReadCompletedTasksEvent;
-import com.eulersbridge.iEngage.core.events.task.ReadTaskEvent;
-import com.eulersbridge.iEngage.core.events.task.RequestReadTaskEvent;
-import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
-import com.eulersbridge.iEngage.core.events.task.TaskCreatedEvent;
-import com.eulersbridge.iEngage.core.events.task.TaskDeletedEvent;
-import com.eulersbridge.iEngage.core.events.task.TaskDetails;
-import com.eulersbridge.iEngage.core.events.task.TaskUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.task.UpdateTaskEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.services.TaskService;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Greg Newitt
@@ -286,17 +264,17 @@ public class TaskControllerTest
 		when (taskService.readTasks(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-		.andExpect(jsonPath("$totalPages",is(numPages)))
-		.andExpect(jsonPath("$foundObjects[0].action",is(taskDets.get(0).getAction())))
-		.andExpect(jsonPath("$foundObjects[0].description",is(taskDets.get(0).getDescription())))
-		.andExpect(jsonPath("$foundObjects[0].xpValue",is(taskDets.get(0).getXpValue())))
-		.andExpect(jsonPath("$foundObjects[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].action",is(taskDets.get(1).getAction())))
-		.andExpect(jsonPath("$foundObjects[1].description",is(taskDets.get(1).getDescription())))
-		.andExpect(jsonPath("$foundObjects[1].xpValue",is(taskDets.get(1).getXpValue())))
-		.andExpect(jsonPath("$foundObjects[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].links[0].rel",is("self")))
+		.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("totalPages",is(numPages)))
+		.andExpect(jsonPath("foundObjects[0].action",is(taskDets.get(0).getAction())))
+		.andExpect(jsonPath("foundObjects[0].description",is(taskDets.get(0).getDescription())))
+		.andExpect(jsonPath("foundObjects[0].xpValue",is(taskDets.get(0).getXpValue())))
+		.andExpect(jsonPath("foundObjects[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].action",is(taskDets.get(1).getAction())))
+		.andExpect(jsonPath("foundObjects[1].description",is(taskDets.get(1).getDescription())))
+		.andExpect(jsonPath("foundObjects[1].xpValue",is(taskDets.get(1).getXpValue())))
+		.andExpect(jsonPath("foundObjects[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
 
@@ -332,17 +310,17 @@ public class TaskControllerTest
 		when (taskService.readCompletedTasks(any(ReadCompletedTasksEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/complete/{userId}",userId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-		.andExpect(jsonPath("$totalPages",is(numPages)))
-		.andExpect(jsonPath("$foundObjects[0].action",is(taskDets.get(0).getAction())))
-		.andExpect(jsonPath("$foundObjects[0].description",is(taskDets.get(0).getDescription())))
-		.andExpect(jsonPath("$foundObjects[0].xpValue",is(taskDets.get(0).getXpValue())))
-		.andExpect(jsonPath("$foundObjects[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].action",is(taskDets.get(1).getAction())))
-		.andExpect(jsonPath("$foundObjects[1].description",is(taskDets.get(1).getDescription())))
-		.andExpect(jsonPath("$foundObjects[1].xpValue",is(taskDets.get(1).getXpValue())))
-		.andExpect(jsonPath("$foundObjects[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].links[0].rel",is("self")))
+		.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("totalPages",is(numPages)))
+		.andExpect(jsonPath("foundObjects[0].action",is(taskDets.get(0).getAction())))
+		.andExpect(jsonPath("foundObjects[0].description",is(taskDets.get(0).getDescription())))
+		.andExpect(jsonPath("foundObjects[0].xpValue",is(taskDets.get(0).getXpValue())))
+		.andExpect(jsonPath("foundObjects[0].taskId",is(taskDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].action",is(taskDets.get(1).getAction())))
+		.andExpect(jsonPath("foundObjects[1].description",is(taskDets.get(1).getDescription())))
+		.andExpect(jsonPath("foundObjects[1].xpValue",is(taskDets.get(1).getXpValue())))
+		.andExpect(jsonPath("foundObjects[1].taskId",is(taskDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
 

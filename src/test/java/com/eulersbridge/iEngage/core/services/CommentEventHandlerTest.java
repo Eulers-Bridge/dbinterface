@@ -1,10 +1,5 @@
 package com.eulersbridge.iEngage.core.services;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.*;
 import com.eulersbridge.iEngage.database.domain.Comment;
@@ -14,7 +9,6 @@ import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.CommentRepository;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Yikai Gong

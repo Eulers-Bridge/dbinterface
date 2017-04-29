@@ -3,13 +3,16 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.photo.*;
+import com.eulersbridge.iEngage.core.events.photoAlbums.*;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Photo;
+import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
+import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,35 +25,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.Details;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
-import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Photo;
-import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
-import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
-import com.eulersbridge.iEngage.database.repository.PhotoRepository;
+import java.util.ArrayList;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Greg Newitt

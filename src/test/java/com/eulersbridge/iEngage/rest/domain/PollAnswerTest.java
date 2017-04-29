@@ -3,8 +3,8 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -13,8 +13,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author Greg Newitt

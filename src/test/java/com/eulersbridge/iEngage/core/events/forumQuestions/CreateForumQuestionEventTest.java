@@ -3,10 +3,11 @@
  */
 package com.eulersbridge.iEngage.core.events.forumQuestions;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Greg Newitt

@@ -1,703 +1,528 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import java.util.Set;
-
-import javax.validation.constraints.NotNull;
-
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
-import org.neo4j.graphdb.Direction;
+import org.neo4j.ogm.annotation.Index;
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.neo4j.annotation.*;
 
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @NodeEntity
-public class User 
-{
-	@GraphId Long nodeId;
-	@NotNull @NotBlank @Email@Indexed(unique=true) private String email;
-	private String givenName;
-	private String familyName;
-	private String gender;
-	private String nationality;
-	private String yearOfBirth;
-	@RelatedTo(type = DatabaseDomainConstants.HAS_PERSONALITY_LABEL, direction=Direction.OUTGOING)
-	private Personality personality;
-	private String password;
-	private String contactNumber;
-	private String roles;
-	private Boolean accountVerified;
-	private Boolean optOutDataCollection;
-	private Boolean trackingOff;
-	private Boolean consentGiven;
-	private String profilePhoto;
-	@RelatedTo(type = DatabaseDomainConstants.USERS_LABEL, direction=Direction.OUTGOING)
-	@Fetch private Institution institution;
-	@RelatedTo(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction=Direction.BOTH)
-	private Iterable<VerificationToken> verificationToken;
-	@RelatedTo(type = DatabaseDomainConstants.CONTACT_LABEL, direction=Direction.BOTH)
-	private Iterable<User> contacts;
-	@RelatedToVia(direction=Direction.BOTH, type=DatabaseDomainConstants.LIKES_LABEL)
-	private Set<Like> likes;
-    @Fetch
-    @RelatedTo(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction=Direction.BOTH)
-	private Iterable<Photo> photos;
+public class User extends Node {
+  private static final Logger LOG = LoggerFactory.getLogger(User.class);
+  @NotNull
+  @NotBlank
+  @Email
+  @Index(unique = true, primary = true)
+  private String email;
+  private String givenName;
+  private String familyName;
+  private String gender;
+  private String nationality;
+  private String yearOfBirth;
+  private String password;
+  private String contactNumber;
+  private String roles;
+  private Boolean accountVerified;
+  private Boolean optOutDataCollection;
+  private Boolean trackingOff;
+  private Boolean consentGiven;
+  private String profilePhoto;
+  private Long experience;
 
-    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL+"]-(a:"+DatabaseDomainConstants.TASK+") RETURN count(DISTINCT a) ")
-    private Long numOfCompTasks;
+  @Relationship(type = DatabaseDomainConstants.HAS_PERSONALITY_LABEL, direction = Relationship.OUTGOING)
+  private Node personality;
+  @Relationship(type = DatabaseDomainConstants.USERS_LABEL, direction = Relationship.OUTGOING)
+  private Node institution;
+  @Relationship(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction = Relationship.UNDIRECTED)
+  private List<Node> verificationToken;
+  @Relationship(type = DatabaseDomainConstants.CONTACT_LABEL, direction = Relationship.UNDIRECTED)
+  private List<Node> contacts;
+  @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
+  private List<Node> photos;
+  @Relationship(type = DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.UNDIRECTED)
+  private List<Node> completedTasks;
+  @Relationship(type = DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.UNDIRECTED)
+  private List<Node> completedBadges;
 
-    @Query("match (n:"+ DatabaseDomainConstants.TASK+") return count(n)")
-    private Long totalTasks;
+//  @Query("match (n:" + DatabaseDomainConstants.TASK + ") return count(n)")
+//  private Long totalTasks;
+//
 
-    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL+"]-(a:"+DatabaseDomainConstants.BADGE+") RETURN count(DISTINCT a) ")
-    private Long numOfCompBadges;
+//  @Query("match (n:" + DatabaseDomainConstants.BADGE + ") return count(n)")
+//  private Long totalBadges;
+//
 
-    @Query("match (n:"+ DatabaseDomainConstants.BADGE+") return count(n)")
-    private Long totalBadges;
+  public User() {
+    if (LOG.isDebugEnabled()) LOG.debug("Constructor");
+  }
 
-    @Query("START n = node({self}) MATCH (n)-[r:"+DatabaseDomainConstants.CONTACT_LABEL+"]-(a:"+DatabaseDomainConstants.USER+") RETURN count(DISTINCT a)")
-    private Long numOfContacts;
+  public User(Long userId) {
+    this.nodeId = userId;
+  }
 
-    private Long experience;
+  public User(String email, String givenName, String familyName, String gender, String nationality, String yearOfBirth, String password, String contactNumber) {
+    if (LOG.isTraceEnabled())
+      LOG.trace("Constructor(" + email + ',' + givenName + ',' + familyName + ',' + gender + ',' + nationality + ',' + yearOfBirth + ')');
+    this.email = email;
+    this.givenName = givenName;
+    this.familyName = familyName;
+    this.gender = gender;
+    this.nationality = nationality;
+    this.yearOfBirth = yearOfBirth;
+    this.password = password;
+    this.contactNumber = contactNumber;
+  }
 
-    private static Logger LOG = LoggerFactory.getLogger(User.class);
-    
-	public User()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("Constructor");
-	}
-	
-	public User(Long userId)
-	{
-		this.nodeId=userId;
-	}
+  public String getEmail() {
+    return email;
+  }
 
-	public User(String email,String givenName,String familyName,String gender, String nationality, String yearOfBirth, String password, String contactNumber)
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor("+email+','+givenName+','+familyName+','+gender+','+nationality+','+yearOfBirth+')');
-		this.email=email;
-		this.givenName=givenName;
-		this.familyName=familyName;
-		this.gender=gender;
-		this.nationality=nationality;
-		this.yearOfBirth=yearOfBirth;
-		this.password=password;
-		this.contactNumber=contactNumber;
-	}
-	
-	public String getEmail()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("getEmail() = "+email);
-		return email;
-	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
+  public String getGivenName() {
+    return givenName;
+  }
 
-	public String getGivenName()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("getGivenName() = "+givenName);
-		return givenName;
-	}
-	
-	public String getFamilyName()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("getFamilyName() = "+familyName);
-		return familyName;
-	}
-	
-	public String getGender()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("getGender() = "+gender);
-		return gender;
-	}
-	
-	public String getNationality()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("getNationality() = "+nationality);
-		return nationality;
-	}
-	
-	public String getYearOfBirth()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("getYearOfBirth() = "+yearOfBirth);
-		return yearOfBirth;
-	}
-	
-	public boolean comparePassword(String password)
-	{
-		return password.equals(this.password);
-	}
-	
-	public Long getNodeId()
-	{
-		return nodeId;
-	}
-	
-	public void setNodeId(Long nodeId)
-	{
-		this.nodeId=nodeId;
-	}
-	
-	public String toString()
-	{
-		StringBuffer buff=new StringBuffer("[ nodeId = ");
-		String retValue;
-		buff.append(getNodeId());
-		buff.append(", email = ");
-		buff.append(getEmail());
-		buff.append(", givenName = ");
-		buff.append(getGivenName());
-		buff.append(", familyName = ");
-		buff.append(getFamilyName());
-		buff.append(", gender = ");
-		buff.append(getGender());
-		buff.append(", nationality = ");
-		buff.append(getNationality());
-		buff.append(", yearOfBirth = ");
-		buff.append(getYearOfBirth());
-		buff.append(", personality = ");
-		buff.append(getPersonality());
-		buff.append(", photos = ");
-		buff.append(getPhotos());
-		buff.append(", accountVerified = ");
-		buff.append(isAccountVerified());
-		buff.append(", consentGiven = ");
-		buff.append(isConsentGiven());
-		buff.append(", optOutDataCollection = ");
-		buff.append(isOptOutDataCollection());
-		buff.append(", trackingOff = ");
-		buff.append(isTrackingOff());
-		buff.append(" ]");
-		retValue=buff.toString();
-		if (LOG.isTraceEnabled()) LOG.trace("toString() = "+retValue);
-		return retValue;
-	}
+  public void setGivenName(String givenName) {
+    this.givenName = givenName;
+  }
 
-	public Institution getInstitution() {
-		return institution;
-	}
+  public String getFamilyName() {
+    return familyName;
+  }
 
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
-	}
-	
-//	public Password getPassword()
-	public String getPassword()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("getPassword() = "+password);
-		return password;
-	}
-	
-//	public void setPassword(Password password) 
-	public void setPassword(String password) 
-	{
-		this.password = password;
-	}
+  public void setFamilyName(String familyName) {
+    this.familyName = familyName;
+  }
 
-	/**
-	 * @return the contactNumber
-	 */
-	public String getContactNumber()
-	{
-		return contactNumber;
-	}
+  public String getGender() {
+    return gender;
+  }
 
-	/**
-	 * @param contactNumber the contactNumber to set
-	 */
-	public void setContactNumber(String contactNumber)
-	{
-		this.contactNumber = contactNumber;
-	}
+  public void setGender(String gender) {
+    this.gender = gender;
+  }
 
-	/**
-	 * @return the roles
-	 */
-	public String getRoles() {
-		return roles;
-	}
+  public String getNationality() {
+    return nationality;
+  }
 
-	/**
-	 * @param roles the roles to set
-	 */
-	public void setRoles(String roles) {
-		this.roles = roles;
-	}
+  public void setNationality(String nationality) {
+    this.nationality = nationality;
+  }
 
-	/**
-	 * @return the verified
-	 */
-	public Boolean isAccountVerified() {
-		return accountVerified;
-	}
+  public String getYearOfBirth() {
+    return yearOfBirth;
+  }
 
-	/**
-	 * @param verified the verified to set
-	 */
-	public void setAccountVerified(Boolean accountVerified) {
-		this.accountVerified = accountVerified;
-	}
-	
-	/**
-	 * @return the verificationToken
-	 */
-	public Iterable<VerificationToken> getVerificationToken() {
-		return verificationToken;
-	}
+  public void setYearOfBirth(String yearOfBirth) {
+    this.yearOfBirth = yearOfBirth;
+  }
 
-	/**
-	 * @param verificationToken the verificationToken to set
-	 */
-	public void setVerificationToken(Iterable<VerificationToken> verificationToken) {
-		this.verificationToken = verificationToken;
-	}
+  public String getPassword() {
+    return password;
+  }
 
-	/**
-	 * @return the likes
-	 */
-	public Set<Like> getLikes() {
-		return likes;
-	}
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-	/**
-	 * @param likes the likes to set
-	 */
-	public void setLikes(Set<Like> likes) {
-		this.likes = likes;
-	}
+  public String getContactNumber() {
+    return contactNumber;
+  }
 
-	/**
-	 * @param adds the like to set
-	 */
-	public boolean addLike(Like like) 
-	{
-		boolean result=this.likes.add(like);
-		return result;
-	}
+  public void setContactNumber(String contactNumber) {
+    this.contactNumber = contactNumber;
+  }
 
-	/**
-	 * @param givenName the givenName to set
-	 */
-	public void setGivenName(String givenName) {
-		this.givenName = givenName;
-	}
+  public String getRoles() {
+    return roles;
+  }
 
-	/**
-	 * @param familyName the familyName to set
-	 */
-	public void setFamilyName(String familyName) {
-		this.familyName = familyName;
-	}
+  public void setRoles(String roles) {
+    this.roles = roles;
+  }
 
-	/**
-	 * @param gender the gender to set
-	 */
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+  public Boolean getAccountVerified() {
+    return accountVerified;
+  }
 
-	/**
-	 * @param nationality the nationality to set
-	 */
-	public void setNationality(String nationality) {
-		this.nationality = nationality;
-	}
+  public void setAccountVerified(Boolean accountVerified) {
+    this.accountVerified = accountVerified;
+  }
 
-	/**
-	 * @param yearOfBirth the yearOfBirth to set
-	 */
-	public void setYearOfBirth(String yearOfBirth) {
-		this.yearOfBirth = yearOfBirth;
-	}
+  public Boolean getOptOutDataCollection() {
+    return optOutDataCollection;
+  }
 
-	/**
-	 * @return the personality
-	 */
-	public Personality getPersonality()
-	{
-		return personality;
-	}
+  public void setOptOutDataCollection(Boolean optOutDataCollection) {
+    this.optOutDataCollection = optOutDataCollection;
+  }
 
-	/**
-	 * @param personality the personality to set
-	 */
-	public void setPersonality(Personality personality)
-	{
-		this.personality = personality;
-	}
+  public Boolean getTrackingOff() {
+    return trackingOff;
+  }
 
-	/**
-	 * @return the photos
-	 */
-	public Iterable<Photo> getPhotos()
-	{
-		return photos;
-	}
+  public void setTrackingOff(Boolean trackingOff) {
+    this.trackingOff = trackingOff;
+  }
 
-	/**
-	 * @param photos the photos to set
-	 */
-	public void setPhotos(Iterable<Photo> photos)
-	{
-		this.photos = photos;
-	}
+  public Boolean getConsentGiven() {
+    return consentGiven;
+  }
 
-	/**
-	 * @return the optOutDataCollection
-	 */
-	public Boolean isOptOutDataCollection()
-	{
-		return optOutDataCollection;
-	}
+  public void setConsentGiven(Boolean consentGiven) {
+    this.consentGiven = consentGiven;
+  }
 
-	/**
-	 * @param optOutDataCollection the optOutDataCollection to set
-	 */
-	public void setOptOutDataCollection(Boolean optOutDataCollection)
-	{
-		this.optOutDataCollection = optOutDataCollection;
-	}
+  public String getProfilePhoto() {
+    return profilePhoto;
+  }
 
-	/**
-	 * @return the trackingOff
-	 */
-	public Boolean isTrackingOff()
-	{
-		return trackingOff;
-	}
+  public void setProfilePhoto(String profilePhoto) {
+    this.profilePhoto = profilePhoto;
+  }
 
-	/**
-	 * @param trackingOff the trackingOff to set
-	 */
-	public void setTrackingOff(Boolean trackingOn)
-	{
-		this.trackingOff = trackingOn;
-	}
+  public Long getExperience() {
+    return experience;
+  }
 
-	/**
-	 * @return the consentGiven
-	 */
-	public Boolean isConsentGiven()
-	{
-		return consentGiven;
-	}
+  public void setExperience(Long experience) {
+    this.experience = experience;
+  }
 
-	/**
-	 * @param consentGiven the consentGiven to set
-	 */
-	public void setConsentGiven(Boolean consentGiven)
-	{
-		this.consentGiven = consentGiven;
-	}
 
-	/**
-	 * @return the contacts
-	 */
-	public Iterable<User> getContacts()
-	{
-		return contacts;
-	}
+  //=============================================
 
-	/**
-	 * @param contacts the contacts to set
-	 */
-	public void setContacts(Iterable<User> contacts)
-	{
-		this.contacts = contacts;
-	}
+  public List<Task> getCompletedTasks() {
+    return castList(completedTasks, Task.class);
+  }
 
-    public Long getNumOfCompTasks() {
-        return numOfCompTasks;
+  public List<Badge> getCompletedBadges() {
+    return castList(completedBadges, Badge.class);
+  }
+
+  public void setCompletedTasks(List<Node> completedTasks) {
+    this.completedTasks = completedTasks;
+  }
+
+  public void setCompletedBadges(List<Node> completedBadges) {
+    this.completedBadges = completedBadges;
+  }
+
+  public Integer getNumOfCompTasks() {
+    if (completedTasks == null)
+      return 0;
+    return completedTasks.size();
+  }
+
+  public Integer getNumOfCompBadges() {
+    if (completedBadges == null)
+      return 0;
+    return completedBadges.size();
+  }
+
+  public Integer getNumOfContacts() {
+    if (contacts == null)
+      return 0;
+    else
+      return contacts.size();
+  }
+
+  public Institution getInstitution() {
+    return (Institution) institution;
+  }
+
+  public void setInstitution(Node institution) {
+    this.institution = institution;
+  }
+
+  public List<VerificationToken> getVerificationToken() {
+    return castList(verificationToken, VerificationToken.class);
+  }
+
+  public void setVerificationToken(List<Node> verificationToken) {
+    this.verificationToken = verificationToken;
+  }
+
+  public Personality getPersonality() {
+    return (Personality) personality;
+  }
+
+  public void setPersonality(Node personality) {
+    this.personality = personality;
+  }
+
+  public List<Photo> getPhotos() {
+    return castList(photos, Photo.class);
+  }
+
+  public void setPhotos(List<Node> photos) {
+    this.photos = photos;
+  }
+
+  public List<User> getContacts() {
+    return contacts.stream()
+      .map(node -> (User) node)
+      .collect(Collectors.toList());
+  }
+
+  public void setContacts(List<Node> contacts) {
+    this.contacts = contacts;
+  }
+
+  public UserDetails toUserDetails() {
+    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
+
+    UserDetails details = new UserDetails();
+    if (LOG.isTraceEnabled()) LOG.trace("user " + this);
+
+    BeanUtils.copyProperties(this, details);
+
+    details.setUserId(nodeId);
+
+    details.setInstitutionId(this.getInstitution().getNodeId());
+    Boolean personality = false;
+    Personality thisPersonality = getPersonality();
+    if (thisPersonality != null) {
+      if (LOG.isDebugEnabled()) LOG.debug("personality = " + getPersonality());
+      personality = true;
+    } else {
+      if (LOG.isDebugEnabled()) LOG.debug("personality = " + getPersonality());
     }
+    details.setHasPersonality(personality);
+    if (null == getAccountVerified())
+      details.setAccountVerified(DatabaseDomainConstants.AccountVerifiedDefault);
+    else
+      details.setAccountVerified(getAccountVerified());
+    if (null == getConsentGiven())
+      details.setConsentGiven(DatabaseDomainConstants.ConsentGivenDefault);
+    else
+      details.setConsentGiven(getConsentGiven());
+    if (null == getTrackingOff())
+      details.setTrackingOff(DatabaseDomainConstants.TrackingOffDefault);
+    else
+      details.setTrackingOff(getTrackingOff());
+    if (null == getOptOutDataCollection())
+      details.setOptOutDataCollection(DatabaseDomainConstants.OptOutDataCollectionDefault);
+    else
+      details.setOptOutDataCollection(getOptOutDataCollection());
+    details.setPhotos(Photo.photosToPhotoDetails(getPhotos()));
 
-    public void setNumOfCompTasks(Long numOfCompTasks) {
-        this.numOfCompTasks = numOfCompTasks;
-    }
+    if (LOG.isTraceEnabled()) LOG.trace("userDetails " + details);
 
-    public Long getNumOfCompBadges() {
-        return numOfCompBadges;
-    }
+    return details;
+  }
 
-    public void setNumOfCompBadges(Long numOfCompBadges) {
-        this.numOfCompBadges = numOfCompBadges;
-    }
-
-    public Long getTotalTasks() {
-        return totalTasks;
-    }
-
-    public void setTotalTasks(Long totalTasks) {
-        this.totalTasks = totalTasks;
-    }
-
-    public Long getTotalBadges() {
-        return totalBadges;
-    }
-
-    public void setTotalBadges(Long totalBadges) {
-        this.totalBadges = totalBadges;
-    }
-
-    public Long getNumOfContacts() {
-        return numOfContacts;
-    }
-
-    public void setNumOfContacts(Long numOfContacts) {
-        this.numOfContacts = numOfContacts;
-    }
-
-    public Long getExperience() {
-        return experience;
-    }
-
-    public void setExperience(Long experience) {
-        this.experience = experience;
-    }
-
-	public String getProfilePhoto() {
-		return profilePhoto;
-	}
-
-	public void setProfilePhoto(String profilePhoto) {
-		this.profilePhoto = profilePhoto;
-	}
-
-	public UserDetails toUserDetails()
-	{
-	    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
-
-		UserDetails details = new UserDetails();
-	    if (LOG.isTraceEnabled()) LOG.trace("user "+this);
-
-	    BeanUtils.copyProperties(this, details);
-
-		details.setUserId(nodeId);
-
-	    details.setInstitutionId(this.getInstitution().getNodeId());
-	    Boolean personality=false;
-	    Personality thisPersonality = getPersonality();
-	    if (thisPersonality!=null)
-	    {
-	    	if (LOG.isDebugEnabled()) LOG.debug("personality = "+getPersonality());
-	    	personality=true;
-	    }
-	    else
-	    {
-	    	if (LOG.isDebugEnabled()) LOG.debug("personality = "+getPersonality());
-	    }
-	    details.setHasPersonality(personality);
-	    if (null==isAccountVerified())
-	    	details.setAccountVerified(DatabaseDomainConstants.AccountVerifiedDefault);
-	    else
-	    	details.setAccountVerified(isAccountVerified());
-	    if (null==isConsentGiven())
-	    	details.setConsentGiven(DatabaseDomainConstants.ConsentGivenDefault);
-	    else
-	    	details.setConsentGiven(isConsentGiven());
-	    if (null==isTrackingOff())
-	    	details.setTrackingOff(DatabaseDomainConstants.TrackingOffDefault);
-	    else
-	    	details.setTrackingOff(isTrackingOff());
-	    if (null==isOptOutDataCollection())
-	    	details.setOptOutDataCollection(DatabaseDomainConstants.OptOutDataCollectionDefault);
-	    else
-	    	details.setOptOutDataCollection(isOptOutDataCollection());
-	    details.setPhotos(Photo.photosToPhotoDetails(getPhotos()));	
-	    
-	    if (LOG.isTraceEnabled()) LOG.trace("userDetails "+details);
-
-	    return details;
-	}
-
-	  public static User fromUserDetails(UserDetails userDetails) 
-	  {
-		    if (LOG.isTraceEnabled()) LOG.trace("fromUserDetails()");
-
-		    User user = new User();
-		    if (LOG.isTraceEnabled()) LOG.trace("userDetails "+userDetails);
-		    user.email=userDetails.getEmail();
-		    user.givenName=userDetails.getGivenName();
-		    user.gender=userDetails.getGender();
-		    userDetails.getInstitutionId();
-		    user.familyName=userDetails.getFamilyName();
-		    user.nationality=userDetails.getNationality();
-		    user.password=userDetails.getPassword();
-		    user.setContactNumber(userDetails.getContactNumber());
-		    user.setYearOfBirth(userDetails.getYearOfBirth());
-		    user.setAccountVerified(userDetails.isAccountVerified());
-		    user.setConsentGiven(userDetails.isConsentGiven());
-		    user.setTrackingOff(userDetails.isTrackingOff());
-		    user.setOptOutDataCollection(userDetails.isOptOutDataCollection());
-		    user.setProfilePhoto(userDetails.getProfilePhoto());
-		    Institution inst=new Institution();
-		    inst.setNodeId(userDetails.getInstitutionId());
-		    user.institution=inst;
+  public static User fromUserDetails(UserDetails userDetails) {
+    if (LOG.isTraceEnabled()) LOG.trace("fromUserDetails()");
+    User user = new User();
+    if (LOG.isTraceEnabled()) LOG.trace("userDetails " + userDetails);
+    user.email = userDetails.getEmail();
+    user.givenName = userDetails.getGivenName();
+    user.gender = userDetails.getGender();
+    userDetails.getInstitutionId();
+    user.familyName = userDetails.getFamilyName();
+    user.nationality = userDetails.getNationality();
+    user.password = userDetails.getPassword();
+    user.setContactNumber(userDetails.getContactNumber());
+    user.setYearOfBirth(userDetails.getYearOfBirth());
+    user.setAccountVerified(userDetails.isAccountVerified());
+    user.setConsentGiven(userDetails.isConsentGiven());
+    user.setTrackingOff(userDetails.isTrackingOff());
+    user.setOptOutDataCollection(userDetails.isOptOutDataCollection());
+    user.setProfilePhoto(userDetails.getProfilePhoto());
+    Institution inst = new Institution();
+    inst.setNodeId(userDetails.getInstitutionId());
+    user.institution = inst;
 //		    BeanUtils.copyProperties( userDetails,user);
-		    if (LOG.isTraceEnabled()) LOG.trace("user "+user);
-        user.setExperience(userDetails.getExperience());
+    if (LOG.isTraceEnabled()) LOG.trace("user " + user);
+    user.setExperience(userDetails.getExperience());
 
-		    return user;
-		  }
+    return user;
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		if (nodeId!=null)
-		{
-			result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
-		}
-		else
-		{
-			result = prime * result + ((accountVerified == null) ? 0 : accountVerified.hashCode());
-			result = prime * result + ((consentGiven == null) ? 0 : consentGiven.hashCode());
-			result = prime * result + ((trackingOff == null) ? 0 : trackingOff.hashCode());
-			result = prime * result + ((optOutDataCollection == null) ? 0 : optOutDataCollection.hashCode());
-			result = prime * result + ((email == null) ? 0 : email.hashCode());
-			result = prime * result
-					+ ((familyName == null) ? 0 : familyName.hashCode());
-			result = prime * result + ((gender == null) ? 0 : gender.hashCode());
-			result = prime * result
-					+ ((givenName == null) ? 0 : givenName.hashCode());
-			result = prime * result
-					+ ((institution == null) ? 0 : institution.hashCode());
-			result = prime * result + ((likes == null) ? 0 : likes.hashCode());
-			result = prime * result
-					+ ((nationality == null) ? 0 : nationality.hashCode());
-			result = prime * result
-					+ ((password == null) ? 0 : password.hashCode());
-			result = prime * result
-					+ ((contactNumber == null) ? 0 : contactNumber.hashCode());
-			result = prime * result
-					+ ((personality == null) ? 0 : personality.hashCode());
-			result = prime * result + ((roles == null) ? 0 : roles.hashCode());
-			result = prime * result + ((photos == null) ? 0 : photos.hashCode());
-			result = prime
-					* result
-					+ ((verificationToken == null) ? 0 : verificationToken
-							.hashCode());
-			result = prime * result
-					+ ((yearOfBirth == null) ? 0 : yearOfBirth.hashCode());
-		}
-		return result;
-	}
+  public String toString() {
+    StringBuffer buff = new StringBuffer("[ nodeId = ");
+    String retValue;
+    buff.append(getNodeId());
+    buff.append(", email = ");
+    buff.append(getEmail());
+    buff.append(", givenName = ");
+    buff.append(getGivenName());
+    buff.append(", familyName = ");
+    buff.append(getFamilyName());
+    buff.append(", gender = ");
+    buff.append(getGender());
+    buff.append(", nationality = ");
+    buff.append(getNationality());
+    buff.append(", yearOfBirth = ");
+    buff.append(getYearOfBirth());
+    buff.append(", personality = ");
+    buff.append(getPersonality());
+    buff.append(", photos = ");
+    buff.append(getPhotos());
+    buff.append(", accountVerified = ");
+    buff.append(getAccountVerified());
+    buff.append(", consentGiven = ");
+    buff.append(getConsentGiven());
+    buff.append(", optOutDataCollection = ");
+    buff.append(getOptOutDataCollection());
+    buff.append(", trackingOff = ");
+    buff.append(getTrackingOff());
+    buff.append(" ]");
+    retValue = buff.toString();
+    if (LOG.isTraceEnabled()) LOG.trace("toString() = " + retValue);
+    return retValue;
+  }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		if (nodeId != null)
-		{
-			if (nodeId.equals(other.nodeId))
-				return true;
-			else return false;
-		}
-		else
-		{
-			if (other.nodeId != null)
-				return false;
-			if (accountVerified != other.accountVerified)
-				return false;
-			if (consentGiven != other.consentGiven)
-				return false;
-			if (trackingOff != other.trackingOff)
-				return false;
-			if (optOutDataCollection != other.optOutDataCollection)
-				return false;
-			if (email == null) {
-				if (other.email != null)
-					return false;
-			} else if (!email.equals(other.email))
-				return false;
-			if (familyName == null) {
-				if (other.familyName != null)
-					return false;
-			} else if (!familyName.equals(other.familyName))
-				return false;
-			if (gender == null) {
-				if (other.gender != null)
-					return false;
-			} else if (!gender.equals(other.gender))
-				return false;
-			if (givenName == null) {
-				if (other.givenName != null)
-					return false;
-			} else if (!givenName.equals(other.givenName))
-				return false;
-			if (institution == null) {
-				if (other.institution != null)
-					return false;
-			} else if (!institution.equals(other.institution))
-				return false;
-			if (likes == null) {
-				if (other.likes != null)
-					return false;
-			} else if (!likes.equals(other.likes))
-				return false;
-			if (nationality == null) {
-				if (other.nationality != null)
-					return false;
-			} else if (!nationality.equals(other.nationality))
-				return false;
-			if (password == null) {
-				if (other.password != null)
-					return false;
-			} else if (!password.equals(other.password))
-				return false;
-			if (contactNumber == null) {
-				if (other.contactNumber != null)
-					return false;
-			} else if (!contactNumber.equals(other.contactNumber))
-				return false;
-			if (personality == null) {
-				if (other.personality != null)
-					return false;
-			} else if (!personality.equals(other.personality))
-				return false;
-			if (roles == null) {
-				if (other.roles != null)
-					return false;
-			} else if (!roles.equals(other.roles))
-				return false;
-			if (photos == null) {
-				if (other.photos != null)
-					return false;
-			} else if (!photos.equals(other.photos))
-				return false;
-			if (verificationToken == null) {
-				if (other.verificationToken != null)
-					return false;
-			} else if (!verificationToken.equals(other.verificationToken))
-				return false;
-			if (yearOfBirth == null) {
-				if (other.yearOfBirth != null)
-					return false;
-			} else if (!yearOfBirth.equals(other.yearOfBirth))
-				return false;
-		}
-		return true;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    if (nodeId != null) {
+      result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
+    } else {
+      result = prime * result + ((accountVerified == null) ? 0 : accountVerified.hashCode());
+      result = prime * result + ((consentGiven == null) ? 0 : consentGiven.hashCode());
+      result = prime * result + ((trackingOff == null) ? 0 : trackingOff.hashCode());
+      result = prime * result + ((optOutDataCollection == null) ? 0 : optOutDataCollection.hashCode());
+      result = prime * result + ((email == null) ? 0 : email.hashCode());
+      result = prime * result
+        + ((familyName == null) ? 0 : familyName.hashCode());
+      result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+      result = prime * result
+        + ((givenName == null) ? 0 : givenName.hashCode());
+      result = prime * result
+        + ((institution == null) ? 0 : institution.hashCode());
+      result = prime * result
+        + ((nationality == null) ? 0 : nationality.hashCode());
+      result = prime * result
+        + ((password == null) ? 0 : password.hashCode());
+      result = prime * result
+        + ((contactNumber == null) ? 0 : contactNumber.hashCode());
+      result = prime * result
+        + ((personality == null) ? 0 : personality.hashCode());
+      result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+      result = prime * result + ((photos == null) ? 0 : photos.hashCode());
+      result = prime
+        * result
+        + ((verificationToken == null) ? 0 : verificationToken
+        .hashCode());
+      result = prime * result
+        + ((yearOfBirth == null) ? 0 : yearOfBirth.hashCode());
+    }
+    return result;
+  }
 
-	public static void copyUntweakablePropoties(User origin, User target){
-		target.setExperience(origin.getExperience());
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    User other = (User) obj;
+    if (nodeId != null) {
+      if (nodeId.equals(other.nodeId))
+        return true;
+      else return false;
+    } else {
+      if (other.nodeId != null)
+        return false;
+      if (accountVerified != other.accountVerified)
+        return false;
+      if (consentGiven != other.consentGiven)
+        return false;
+      if (trackingOff != other.trackingOff)
+        return false;
+      if (optOutDataCollection != other.optOutDataCollection)
+        return false;
+      if (email == null) {
+        if (other.email != null)
+          return false;
+      } else if (!email.equals(other.email))
+        return false;
+      if (familyName == null) {
+        if (other.familyName != null)
+          return false;
+      } else if (!familyName.equals(other.familyName))
+        return false;
+      if (gender == null) {
+        if (other.gender != null)
+          return false;
+      } else if (!gender.equals(other.gender))
+        return false;
+      if (givenName == null) {
+        if (other.givenName != null)
+          return false;
+      } else if (!givenName.equals(other.givenName))
+        return false;
+      if (institution == null) {
+        if (other.institution != null)
+          return false;
+      } else if (!institution.equals(other.institution))
+        return false;
+      if (nationality == null) {
+        if (other.nationality != null)
+          return false;
+      } else if (!nationality.equals(other.nationality))
+        return false;
+      if (password == null) {
+        if (other.password != null)
+          return false;
+      } else if (!password.equals(other.password))
+        return false;
+      if (contactNumber == null) {
+        if (other.contactNumber != null)
+          return false;
+      } else if (!contactNumber.equals(other.contactNumber))
+        return false;
+      if (personality == null) {
+        if (other.personality != null)
+          return false;
+      } else if (!personality.equals(other.personality))
+        return false;
+      if (roles == null) {
+        if (other.roles != null)
+          return false;
+      } else if (!roles.equals(other.roles))
+        return false;
+      if (photos == null) {
+        if (other.photos != null)
+          return false;
+      } else if (!photos.equals(other.photos))
+        return false;
+      if (verificationToken == null) {
+        if (other.verificationToken != null)
+          return false;
+      } else if (!verificationToken.equals(other.verificationToken))
+        return false;
+      if (yearOfBirth == null) {
+        if (other.yearOfBirth != null)
+          return false;
+      } else if (!yearOfBirth.equals(other.yearOfBirth))
+        return false;
+    }
+    return true;
+  }
+
+  public boolean comparePassword(String password) {
+    return password.equals(this.password);
+  }
+
+  public static void copyUntweakablePropoties(User origin, User target) {
+    target.setExperience(origin.getExperience());
+  }
 }

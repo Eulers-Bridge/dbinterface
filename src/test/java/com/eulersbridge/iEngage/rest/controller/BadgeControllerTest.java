@@ -1,60 +1,36 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdateEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.BadgeCompleteDetails;
-import com.eulersbridge.iEngage.core.events.badge.BadgeCreatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.BadgeDeletedEvent;
-import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
-import com.eulersbridge.iEngage.core.events.badge.BadgeUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.DeleteBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.badge.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.BadgeService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Yikai Gong
@@ -234,16 +210,16 @@ public class BadgeControllerTest {
 		when (badgeService.readBadges(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-		.andExpect(jsonPath("$totalPages",is(numPages)))
-		.andExpect(jsonPath("$foundObjects[0].badgeId",is(badgeDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].name",is(badgeDets.get(0).getName())))
-		.andExpect(jsonPath("$foundObjects[0].xpValue",is(badgeDets.get(0).getXpValue().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].description",is(badgeDets.get(0).getDescription())))
-		.andExpect(jsonPath("$foundObjects[1].badgeId",is(badgeDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].name",is(badgeDets.get(1).getName())))
-		.andExpect(jsonPath("$foundObjects[1].xpValue",is(badgeDets.get(1).getXpValue().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].description",is(badgeDets.get(1).getDescription())))
+		.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("totalPages",is(numPages)))
+		.andExpect(jsonPath("foundObjects[0].badgeId",is(badgeDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].name",is(badgeDets.get(0).getName())))
+		.andExpect(jsonPath("foundObjects[0].xpValue",is(badgeDets.get(0).getXpValue().intValue())))
+		.andExpect(jsonPath("foundObjects[0].description",is(badgeDets.get(0).getDescription())))
+		.andExpect(jsonPath("foundObjects[1].badgeId",is(badgeDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].name",is(badgeDets.get(1).getName())))
+		.andExpect(jsonPath("foundObjects[1].xpValue",is(badgeDets.get(1).getXpValue().intValue())))
+		.andExpect(jsonPath("foundObjects[1].description",is(badgeDets.get(1).getDescription())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}

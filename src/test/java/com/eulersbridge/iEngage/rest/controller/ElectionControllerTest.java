@@ -3,24 +3,15 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.elections.*;
+import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
+import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
+import com.eulersbridge.iEngage.core.services.ElectionService;
+import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.core.services.VotingLocationService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -33,28 +24,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionDeletedEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
-import com.eulersbridge.iEngage.core.events.elections.ElectionUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionsReadEvent;
-import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.AddVotingLocationEvent;
-import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
-import com.eulersbridge.iEngage.core.services.ElectionService;
-import com.eulersbridge.iEngage.core.services.InstitutionService;
-import com.eulersbridge.iEngage.core.services.VotingLocationService;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Greg Newitt
@@ -452,22 +433,22 @@ public class ElectionControllerTest
 		when (electionService.readElections(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-		.andExpect(jsonPath("$totalPages",is(numPages)))
-		.andExpect(jsonPath("$foundObjects[0].title",is(eleDets.get(0).getTitle())))
-		.andExpect(jsonPath("$foundObjects[0].start",is(eleDets.get(0).getStart().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].end",is(eleDets.get(0).getEnd().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].startVoting",is(eleDets.get(0).getStartVoting().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].endVoting",is(eleDets.get(0).getEndVoting().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].electionId",is(eleDets.get(0).getElectionId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].institutionId",is(eleDets.get(0).getInstitutionId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].title",is(eleDets.get(1).getTitle())))
-		.andExpect(jsonPath("$foundObjects[1].start",is(eleDets.get(1).getStart().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].end",is(eleDets.get(1).getEnd().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].startVoting",is(eleDets.get(1).getStartVoting().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].endVoting",is(eleDets.get(1).getEndVoting().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].electionId",is(eleDets.get(1).getElectionId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].institutionId",is(eleDets.get(1).getInstitutionId().intValue())))
+		.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("totalPages",is(numPages)))
+		.andExpect(jsonPath("foundObjects[0].title",is(eleDets.get(0).getTitle())))
+		.andExpect(jsonPath("foundObjects[0].start",is(eleDets.get(0).getStart().intValue())))
+		.andExpect(jsonPath("foundObjects[0].end",is(eleDets.get(0).getEnd().intValue())))
+		.andExpect(jsonPath("foundObjects[0].startVoting",is(eleDets.get(0).getStartVoting().intValue())))
+		.andExpect(jsonPath("foundObjects[0].endVoting",is(eleDets.get(0).getEndVoting().intValue())))
+		.andExpect(jsonPath("foundObjects[0].electionId",is(eleDets.get(0).getElectionId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].institutionId",is(eleDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].title",is(eleDets.get(1).getTitle())))
+		.andExpect(jsonPath("foundObjects[1].start",is(eleDets.get(1).getStart().intValue())))
+		.andExpect(jsonPath("foundObjects[1].end",is(eleDets.get(1).getEnd().intValue())))
+		.andExpect(jsonPath("foundObjects[1].startVoting",is(eleDets.get(1).getStartVoting().intValue())))
+		.andExpect(jsonPath("foundObjects[1].endVoting",is(eleDets.get(1).getEndVoting().intValue())))
+		.andExpect(jsonPath("foundObjects[1].electionId",is(eleDets.get(1).getElectionId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].institutionId",is(eleDets.get(1).getInstitutionId().intValue())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
@@ -483,8 +464,8 @@ public class ElectionControllerTest
 		AllReadEvent testData=new AllReadEvent(null,eleDets,numElements,numPages);
 		when (electionService.readElections(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-		.andExpect(jsonPath("$totalPages",is(numPages)))
+		.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("totalPages",is(numPages)))
 		.andDo(print())
 		.andExpect(status().isOk())	;
 	}

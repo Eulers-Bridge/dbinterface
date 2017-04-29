@@ -3,10 +3,9 @@
  */
 package com.eulersbridge.iEngage.core.events.notifications;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.eulersbridge.iEngage.core.events.Details;
 
 /**
  * @author Greg Newitt

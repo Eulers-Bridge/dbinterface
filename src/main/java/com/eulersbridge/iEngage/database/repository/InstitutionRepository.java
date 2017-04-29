@@ -1,16 +1,16 @@
 package com.eulersbridge.iEngage.database.repository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.conversion.Result;
-import org.springframework.data.neo4j.repository.GraphRepository;
-import org.springframework.data.repository.query.Param;
-
 import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
 import com.eulersbridge.iEngage.database.domain.GeneralInfo;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface InstitutionRepository extends GraphRepository<Institution> 
 {
@@ -25,13 +25,13 @@ public interface InstitutionRepository extends GraphRepository<Institution>
 	NewsFeed findNewsFeed(@Param("instId") Long institutionId);
 
 	@Query("MATCH (i:`Institution`)-[]-(c:`Country`) where id(c)={countryId} return i")
-	Result<Institution> findByCountryId(@Param("countryId") Long countryId);
+	List<Institution> findByCountryId(@Param("countryId") Long countryId);
 
 	@Query("match (c:Country)-[r:HAS_INSTITUTIONS]-(i:Institution) "+
 	       "return id(c) as countryId,c.countryName as countryName"
 			+",COLLECT(i.name) as institutionNames,COLLECT(id(i)) as institutionIds"
 	       )
-	Result<GeneralInfo> getGeneralInfo();
+	List<GeneralInfo> getGeneralInfo();
 	
 
 }

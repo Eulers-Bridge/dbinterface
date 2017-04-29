@@ -1,20 +1,13 @@
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.io.StringWriter;
-import java.util.*;
-
-import javax.servlet.ServletContext;
-
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.users.*;
-import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent.VerificationErrorType;
+import com.eulersbridge.iEngage.core.events.voteRecord.*;
+import com.eulersbridge.iEngage.core.events.voteReminder.*;
+import com.eulersbridge.iEngage.core.services.*;
+import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.rest.domain.*;
-
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.LongValidator;
 import org.apache.velocity.Template;
@@ -22,6 +15,8 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.VelocityException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
@@ -29,25 +24,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent.VerificationErrorType;
-import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
-import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
-import com.eulersbridge.iEngage.core.services.ContactRequestService;
-import com.eulersbridge.iEngage.core.services.EmailService;
-import com.eulersbridge.iEngage.core.services.NotificationService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.email.EmailConstants;
+import javax.servlet.ServletContext;
+import java.io.StringWriter;
+import java.util.*;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)

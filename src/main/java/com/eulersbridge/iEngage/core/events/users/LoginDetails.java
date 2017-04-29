@@ -3,10 +3,10 @@
  */
 package com.eulersbridge.iEngage.core.events.users;
 
-import java.util.Iterator;
-
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

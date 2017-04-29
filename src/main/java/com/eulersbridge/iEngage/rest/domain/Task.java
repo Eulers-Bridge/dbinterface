@@ -1,16 +1,15 @@
 package com.eulersbridge.iEngage.rest.domain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
 import com.eulersbridge.iEngage.rest.controller.TaskController;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 

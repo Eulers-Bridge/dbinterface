@@ -1,13 +1,16 @@
 package com.eulersbridge.iEngage.rest.controller.fixture;
 
-import com.eulersbridge.iEngage.core.events.users.*;
+import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
 import com.eulersbridge.iEngage.email.EmailVerification;
 
-import static com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture.*;
+import static com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture.customEmailUser;
 
 public class RestEventFixtures 
 {

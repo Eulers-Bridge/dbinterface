@@ -3,15 +3,14 @@
  */
 package com.eulersbridge.iEngage.database.domain;
 
-import static org.junit.Assert.*;
-
-import java.util.Calendar;
-
+import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.polls.PollAnswerDetails;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import java.util.Calendar;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt

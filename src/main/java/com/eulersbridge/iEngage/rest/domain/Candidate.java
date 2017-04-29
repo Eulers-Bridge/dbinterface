@@ -4,7 +4,6 @@ import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.CandidateController;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;

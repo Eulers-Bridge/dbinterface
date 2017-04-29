@@ -1,28 +1,19 @@
 package com.eulersbridge.iEngage.config;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.core.events.users.*;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.AfterClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
-import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes=ApplicationTest.class)
 //@ContextConfiguration(classes = {ApplicationTest.class})
 //@ContextConfiguration("/test-application-context.xml")
 public class CoreDomainITCase 

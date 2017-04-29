@@ -3,24 +3,16 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.photo.*;
+import com.eulersbridge.iEngage.core.events.photoAlbums.*;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.core.services.PhotoService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.Photo;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -33,39 +25,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDeletedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
-import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumsEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.services.LikesService;
-import com.eulersbridge.iEngage.core.services.PhotoService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.Photo;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Greg Newitt
@@ -588,20 +559,20 @@ public class PhotoControllerTest
 		when (photoService.findPhotos(any(ReadPhotosEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix1+"s/{ownerEmail}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalPhotos",is(testData.getTotalPhotos().intValue())))
-		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
-		.andExpect(jsonPath("$photos[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$photos[0].url",is(photoDets.get(0).getUrl())))
-		.andExpect(jsonPath("$photos[0].title",is(photoDets.get(0).getTitle())))
-		.andExpect(jsonPath("$photos[0].description",is(photoDets.get(0).getDescription())))
-		.andExpect(jsonPath("$photos[0].date",is(photoDets.get(0).getDate())))
-		.andExpect(jsonPath("$photos[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
-		.andExpect(jsonPath("$photos[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$photos[1].url",is(photoDets.get(1).getUrl())))
-		.andExpect(jsonPath("$photos[1].title",is(photoDets.get(1).getTitle())))
-		.andExpect(jsonPath("$photos[1].description",is(photoDets.get(1).getDescription())))
-		.andExpect(jsonPath("$photos[1].date",is(photoDets.get(1).getDate())))
-		.andExpect(jsonPath("$photos[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
+		.andExpect(jsonPath("totalPhotos",is(testData.getTotalPhotos().intValue())))
+		.andExpect(jsonPath("totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("photos[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("photos[0].url",is(photoDets.get(0).getUrl())))
+		.andExpect(jsonPath("photos[0].title",is(photoDets.get(0).getTitle())))
+		.andExpect(jsonPath("photos[0].description",is(photoDets.get(0).getDescription())))
+		.andExpect(jsonPath("photos[0].date",is(photoDets.get(0).getDate())))
+		.andExpect(jsonPath("photos[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("photos[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("photos[1].url",is(photoDets.get(1).getUrl())))
+		.andExpect(jsonPath("photos[1].title",is(photoDets.get(1).getTitle())))
+		.andExpect(jsonPath("photos[1].description",is(photoDets.get(1).getDescription())))
+		.andExpect(jsonPath("photos[1].date",is(photoDets.get(1).getDate())))
+		.andExpect(jsonPath("photos[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
 		.andExpect(status().isOk())	;
 	}
 
@@ -656,24 +627,24 @@ public class PhotoControllerTest
 		when (photoService.findPhotos(any(ReadPhotosEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalPhotos",is(testData.getTotalPhotos().intValue())))
-		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
-		.andExpect(jsonPath("$photos[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$photos[0].url",is(photoDets.get(0).getUrl())))
-		.andExpect(jsonPath("$photos[0].title",is(photoDets.get(0).getTitle())))
-		.andExpect(jsonPath("$photos[0].description",is(photoDets.get(0).getDescription())))
-		.andExpect(jsonPath("$photos[0].date",is(photoDets.get(0).getDate())))
-		.andExpect(jsonPath("$photos[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
-		.andExpect(jsonPath("$photos[0].inappropriateContent",is(photoDets.get(0).isInappropriateContent())))
-		.andExpect(jsonPath("$photos[0].numOfLikes",is(photoDets.get(0).getNumOfLikes().intValue())))
-		.andExpect(jsonPath("$photos[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$photos[1].url",is(photoDets.get(1).getUrl())))
-		.andExpect(jsonPath("$photos[1].title",is(photoDets.get(1).getTitle())))
-		.andExpect(jsonPath("$photos[1].description",is(photoDets.get(1).getDescription())))
-		.andExpect(jsonPath("$photos[1].date",is(photoDets.get(1).getDate())))
-		.andExpect(jsonPath("$photos[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
-		.andExpect(jsonPath("$photos[1].inappropriateContent",is(photoDets.get(1).isInappropriateContent())))
-		.andExpect(jsonPath("$photos[1].numOfLikes",is(photoDets.get(1).getNumOfLikes().intValue())))
+		.andExpect(jsonPath("totalPhotos",is(testData.getTotalPhotos().intValue())))
+		.andExpect(jsonPath("totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("photos[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("photos[0].url",is(photoDets.get(0).getUrl())))
+		.andExpect(jsonPath("photos[0].title",is(photoDets.get(0).getTitle())))
+		.andExpect(jsonPath("photos[0].description",is(photoDets.get(0).getDescription())))
+		.andExpect(jsonPath("photos[0].date",is(photoDets.get(0).getDate())))
+		.andExpect(jsonPath("photos[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("photos[0].inappropriateContent",is(photoDets.get(0).isInappropriateContent())))
+		.andExpect(jsonPath("photos[0].numOfLikes",is(photoDets.get(0).getNumOfLikes().intValue())))
+		.andExpect(jsonPath("photos[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("photos[1].url",is(photoDets.get(1).getUrl())))
+		.andExpect(jsonPath("photos[1].title",is(photoDets.get(1).getTitle())))
+		.andExpect(jsonPath("photos[1].description",is(photoDets.get(1).getDescription())))
+		.andExpect(jsonPath("photos[1].date",is(photoDets.get(1).getDate())))
+		.andExpect(jsonPath("photos[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
+		.andExpect(jsonPath("photos[1].inappropriateContent",is(photoDets.get(1).isInappropriateContent())))
+		.andExpect(jsonPath("photos[1].numOfLikes",is(photoDets.get(1).getNumOfLikes().intValue())))
 		.andExpect(status().isOk())	;
 	}
 
@@ -789,22 +760,22 @@ public class PhotoControllerTest
 		when (photoService.findPhotoAlbums(any(ReadPhotoAlbumsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalElements",is(testData.getTotalItems().intValue())))
-		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
-		.andExpect(jsonPath("$foundObjects[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].name",is(photoDets.get(0).getName())))
-		.andExpect(jsonPath("$foundObjects[0].description",is(photoDets.get(0).getDescription())))
-		.andExpect(jsonPath("$foundObjects[0].location",is(photoDets.get(0).getLocation())))
-		.andExpect(jsonPath("$foundObjects[0].created",is(photoDets.get(0).getCreated())))
-		.andExpect(jsonPath("$foundObjects[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].modified",is(photoDets.get(0).getModified())))
-		.andExpect(jsonPath("$foundObjects[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].name",is(photoDets.get(1).getName())))
-		.andExpect(jsonPath("$foundObjects[1].description",is(photoDets.get(1).getDescription())))
-		.andExpect(jsonPath("$foundObjects[1].location",is(photoDets.get(1).getLocation())))
-		.andExpect(jsonPath("$foundObjects[1].created",is(photoDets.get(1).getCreated())))
-		.andExpect(jsonPath("$foundObjects[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].modified",is(photoDets.get(1).getModified())))
+		.andExpect(jsonPath("totalElements",is(testData.getTotalItems().intValue())))
+		.andExpect(jsonPath("totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("foundObjects[0].nodeId",is(photoDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].name",is(photoDets.get(0).getName())))
+		.andExpect(jsonPath("foundObjects[0].description",is(photoDets.get(0).getDescription())))
+		.andExpect(jsonPath("foundObjects[0].location",is(photoDets.get(0).getLocation())))
+		.andExpect(jsonPath("foundObjects[0].created",is(photoDets.get(0).getCreated())))
+		.andExpect(jsonPath("foundObjects[0].ownerId",is(photoDets.get(0).getOwnerId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].modified",is(photoDets.get(0).getModified())))
+		.andExpect(jsonPath("foundObjects[1].nodeId",is(photoDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].name",is(photoDets.get(1).getName())))
+		.andExpect(jsonPath("foundObjects[1].description",is(photoDets.get(1).getDescription())))
+		.andExpect(jsonPath("foundObjects[1].location",is(photoDets.get(1).getLocation())))
+		.andExpect(jsonPath("foundObjects[1].created",is(photoDets.get(1).getCreated())))
+		.andExpect(jsonPath("foundObjects[1].ownerId",is(photoDets.get(1).getOwnerId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].modified",is(photoDets.get(1).getModified())))
 		.andExpect(status().isOk())	;
 	}
 
@@ -853,7 +824,7 @@ public class PhotoControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(event.isResultSuccess())))
+		.andExpect(jsonPath("success",is(event.isResultSuccess())))
 		.andExpect(status().isOk());
 	}
 	@Test
@@ -868,7 +839,7 @@ public class PhotoControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(event.isResultSuccess())))
+		.andExpect(jsonPath("success",is(event.isResultSuccess())))
 		.andExpect(status().isOk());
 	}
 	@Test
@@ -911,7 +882,7 @@ public class PhotoControllerTest
 
 		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(event.isResultSuccess())))
+		.andExpect(jsonPath("success",is(event.isResultSuccess())))
 		.andExpect(status().isOk());
 	}
 	@Test
@@ -926,7 +897,7 @@ public class PhotoControllerTest
 
 		this.mockMvc.perform(delete(urlPrefix+"/{photoId}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",photoId,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(event.isResultSuccess())))
+		.andExpect(jsonPath("success",is(event.isResultSuccess())))
 		.andExpect(status().isOk());
 	}
 	@Test

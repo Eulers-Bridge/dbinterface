@@ -3,9 +3,8 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import org.springframework.hateoas.ResourceSupport;
-
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
+import org.springframework.hateoas.ResourceSupport;
 
 /**
  * @author Greg Newitt

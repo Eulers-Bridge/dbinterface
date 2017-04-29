@@ -3,12 +3,12 @@
  */
 package com.eulersbridge.iEngage.core.events.polls;
 
+import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.eulersbridge.iEngage.core.events.Details;
-import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 
 /**
  * @author Greg Newitt

@@ -3,21 +3,19 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.users.*;
+import com.eulersbridge.iEngage.core.events.voteRecord.*;
+import com.eulersbridge.iEngage.core.events.voteReminder.*;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
+import com.eulersbridge.iEngage.security.SecurityConstants;
+import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
@@ -32,52 +30,15 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
-import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.CreateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.DeleteUserEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
-import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UpdateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserCreatedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDeletedEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.events.users.UserUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.users.VerifyUserAccountEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordDetails;
-import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordReadEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderAddedEvent;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderDetails;
-import com.eulersbridge.iEngage.core.events.voteReminder.VoteReminderReadEvent;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Personality;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.VerificationToken;
-import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
-import com.eulersbridge.iEngage.database.domain.VoteRecord;
-import com.eulersbridge.iEngage.database.domain.VoteReminder;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
-import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.security.SecurityConstants;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Greg Newitt

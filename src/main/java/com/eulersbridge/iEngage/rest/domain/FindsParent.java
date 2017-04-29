@@ -3,9 +3,9 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import java.util.Iterator;
-
 import org.springframework.hateoas.ResourceSupport;
+
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

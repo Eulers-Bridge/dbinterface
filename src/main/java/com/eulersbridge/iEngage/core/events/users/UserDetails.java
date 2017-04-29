@@ -3,11 +3,10 @@
  */
 package com.eulersbridge.iEngage.core.events.users;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Greg Newitt

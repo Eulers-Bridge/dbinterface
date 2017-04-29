@@ -4,7 +4,6 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.configuration.*;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**

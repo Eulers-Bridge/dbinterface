@@ -6,7 +6,6 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.configuration.*;
 import com.eulersbridge.iEngage.core.services.ConfigurationService;
 import com.eulersbridge.iEngage.rest.domain.Configuration;
-
 import com.eulersbridge.iEngage.rest.domain.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

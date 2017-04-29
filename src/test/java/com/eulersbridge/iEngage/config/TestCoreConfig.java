@@ -1,45 +1,6 @@
 package com.eulersbridge.iEngage.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.eulersbridge.iEngage.core.services.CountryEventHandler;
-import com.eulersbridge.iEngage.core.services.CountryService;
-import com.eulersbridge.iEngage.core.services.ElectionEventHandler;
-import com.eulersbridge.iEngage.core.services.ElectionService;
-import com.eulersbridge.iEngage.core.services.EventEventHandler;
-import com.eulersbridge.iEngage.core.services.EventService;
-import com.eulersbridge.iEngage.core.services.ForumQuestionEventHandler;
-import com.eulersbridge.iEngage.core.services.ForumQuestionService;
-import com.eulersbridge.iEngage.core.services.InstitutionEventHandler;
-import com.eulersbridge.iEngage.core.services.InstitutionService;
-import com.eulersbridge.iEngage.core.services.NewsEventHandler;
-import com.eulersbridge.iEngage.core.services.NewsService;
-import com.eulersbridge.iEngage.core.services.PollEventHandler;
-import com.eulersbridge.iEngage.core.services.PollService;
-import com.eulersbridge.iEngage.core.services.PositionEventHandler;
-import com.eulersbridge.iEngage.core.services.PositionService;
-import com.eulersbridge.iEngage.core.services.UserEventHandler;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.repository.CountryRepository;
-import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-import com.eulersbridge.iEngage.database.repository.EventRepository;
-import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
-import com.eulersbridge.iEngage.database.repository.NewsFeedRepository;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
-import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
-import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
-import com.eulersbridge.iEngage.database.repository.PollRepository;
-import com.eulersbridge.iEngage.database.repository.PositionRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
-import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
-import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
-import com.eulersbridge.iEngage.rest.domain.stubCountryFactory;
 
 @Configuration
 public class TestCoreConfig 

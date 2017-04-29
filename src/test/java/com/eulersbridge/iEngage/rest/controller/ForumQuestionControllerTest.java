@@ -3,25 +3,17 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.forumQuestions.*;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.ForumQuestionService;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -35,31 +27,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.CreateForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.DeleteForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionDeletedEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionDetails;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionReadEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionsReadEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ReadForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.ReadForumQuestionsEvent;
-import com.eulersbridge.iEngage.core.events.forumQuestions.UpdateForumQuestionEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.services.ForumQuestionService;
-import com.eulersbridge.iEngage.core.services.LikesService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Greg Newitt
@@ -215,12 +195,12 @@ public class ForumQuestionControllerTest
 		when (service.findForumQuestions(any(ReadForumQuestionsEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix2+"/{nfId}",nfId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalForumQuestions",is(testData.getTotalEvents().intValue())))
-		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
-		.andExpect(jsonPath("$forumQuestions[0].forumQuestionId",is(fqDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$forumQuestions[0].question",is(fqDets.get(0).getQuestion())))
-		.andExpect(jsonPath("$forumQuestions[1].forumQuestionId",is(fqDets.get(1).getNodeId().intValue())))
-		.andExpect(jsonPath("$forumQuestions[1].question",is(fqDets.get(1).getQuestion())))
+		.andExpect(jsonPath("totalForumQuestions",is(testData.getTotalEvents().intValue())))
+		.andExpect(jsonPath("totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("forumQuestions[0].forumQuestionId",is(fqDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("forumQuestions[0].question",is(fqDets.get(0).getQuestion())))
+		.andExpect(jsonPath("forumQuestions[1].forumQuestionId",is(fqDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("forumQuestions[1].question",is(fqDets.get(1).getQuestion())))
 		.andExpect(status().isOk())	;
 	}
 
@@ -408,7 +388,7 @@ public class ForumQuestionControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -423,7 +403,7 @@ public class ForumQuestionControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -470,7 +450,7 @@ public class ForumQuestionControllerTest
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 
@@ -485,7 +465,7 @@ public class ForumQuestionControllerTest
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 

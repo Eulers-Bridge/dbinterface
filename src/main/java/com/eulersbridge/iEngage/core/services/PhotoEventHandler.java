@@ -3,9 +3,15 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.photo.*;
+import com.eulersbridge.iEngage.core.events.photoAlbums.*;
+import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Photo;
+import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
+import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,37 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.RequestReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.CreatePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.DeletePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDeletedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotoUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photo.PhotosReadEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotoEvent;
-import com.eulersbridge.iEngage.core.events.photo.ReadPhotosEvent;
-import com.eulersbridge.iEngage.core.events.photo.UpdatePhotoEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDeletedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumReadEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.Photo;
-import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
-import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
-import com.eulersbridge.iEngage.database.repository.PhotoRepository;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

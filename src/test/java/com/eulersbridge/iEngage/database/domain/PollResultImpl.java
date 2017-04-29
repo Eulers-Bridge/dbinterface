@@ -7,7 +7,7 @@ package com.eulersbridge.iEngage.database.domain;
  * @author Greg Newitt
  *
  */
-public class PollResultImpl implements PollResultTemplate
+public class PollResultImpl extends PollResultTemplate
 {
 	Integer answers;
 	Integer frequency;

@@ -1,87 +1,67 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.forumQuestions.ForumQuestionDetails;
-
+import org.neo4j.ogm.annotation.NodeEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.NodeEntity;
 
 /**
  * @author Yikai Gong
  */
 
 @NodeEntity
-public class ForumQuestion extends Likeable
-{
-	@GraphId
-	private Long forumQuestionId;
-	private String question;
+public class ForumQuestion extends Likeable {
 
-	private static Logger LOG = LoggerFactory.getLogger(ForumQuestion.class);
+  private String question;
 
-	public ForumQuestion()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("Constructor");
-	}
+  private static Logger LOG = LoggerFactory.getLogger(ForumQuestion.class);
 
-	public static ForumQuestion fromForumQuestionDetails(
-			ForumQuestionDetails forumQuestionDetails)
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("fromForumQuestionDetails()");
-		ForumQuestion forumQuestion = new ForumQuestion();
-		if (LOG.isTraceEnabled()) LOG.trace("forumQuestionDetails " + forumQuestionDetails);
-		forumQuestion.setForumQuestionId(forumQuestionDetails
-				.getNodeId());
-		forumQuestion.setQuestion(forumQuestionDetails.getQuestion());
+  public ForumQuestion() {
+    if (LOG.isTraceEnabled()) LOG.trace("Constructor");
+  }
 
-		if (LOG.isTraceEnabled()) LOG.trace("forumQuestion " + forumQuestion);
-		return forumQuestion;
-	}
+  public static ForumQuestion fromForumQuestionDetails(
+    ForumQuestionDetails forumQuestionDetails) {
+    if (LOG.isTraceEnabled()) LOG.trace("fromForumQuestionDetails()");
+    ForumQuestion forumQuestion = new ForumQuestion();
+    if (LOG.isTraceEnabled())
+      LOG.trace("forumQuestionDetails " + forumQuestionDetails);
+    forumQuestion.setNodeId(forumQuestionDetails
+      .getNodeId());
+    forumQuestion.setQuestion(forumQuestionDetails.getQuestion());
 
-	public ForumQuestionDetails toForumQuestionDetails()
-	{
-		if (LOG.isTraceEnabled()) LOG.trace("toForumQuestionDetails()");
-		ForumQuestionDetails forumQuestionDetails = new ForumQuestionDetails();
-		if (LOG.isTraceEnabled()) LOG.trace("forumQuestion " + this);
-		forumQuestionDetails.setNodeId(this.getForumQuestionId());
-		forumQuestionDetails.setQuestion(getQuestion());
+    if (LOG.isTraceEnabled()) LOG.trace("forumQuestion " + forumQuestion);
+    return forumQuestion;
+  }
 
-		if (LOG.isTraceEnabled()) LOG.trace("forumQuestionDetails; " + forumQuestionDetails);
-		return forumQuestionDetails;
-	}
+  public ForumQuestionDetails toForumQuestionDetails() {
+    if (LOG.isTraceEnabled()) LOG.trace("toForumQuestionDetails()");
+    ForumQuestionDetails forumQuestionDetails = new ForumQuestionDetails();
+    if (LOG.isTraceEnabled()) LOG.trace("forumQuestion " + this);
+    forumQuestionDetails.setNodeId(this.getNodeId());
+    forumQuestionDetails.setQuestion(getQuestion());
 
-	@Override
-	public String toString()
-	{
-		StringBuffer buff = new StringBuffer("[ nodeId = ");
-		String retValue;
-		buff.append(getForumQuestionId());
-		buff.append(", question = ");
-		buff.append(getQuestion());
-		buff.append(" ]");
-		retValue = buff.toString();
-		if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
-		return retValue;
-	}
+    if (LOG.isTraceEnabled())
+      LOG.trace("forumQuestionDetails; " + forumQuestionDetails);
+    return forumQuestionDetails;
+  }
 
-	public Long getForumQuestionId()
-	{
-		return forumQuestionId;
-	}
+  @Override
+  public String toString() {
+    String buff = "[ nodeId = " + getNodeId() +
+      ", question = " +
+      getQuestion() +
+      " ]";
+    if (LOG.isDebugEnabled()) LOG.debug("toString() = " + buff);
+    return buff;
+  }
 
-	public void setForumQuestionId(Long forumQuestionId)
-	{
-		this.forumQuestionId = forumQuestionId;
-	}
 
-	public String getQuestion()
-	{
-		return question;
-	}
+  public String getQuestion() {
+    return question;
+  }
 
-	public void setQuestion(String question)
-	{
-		this.question = question;
-	}
+  public void setQuestion(String question) {
+    this.question = question;
+  }
 }

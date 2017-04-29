@@ -1,8 +1,16 @@
 
 package com.eulersbridge.iEngage.rest.controller;
 
-import java.util.ArrayList;
-
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.generalInfo.*;
+import com.eulersbridge.iEngage.core.events.institutions.*;
+import com.eulersbridge.iEngage.core.events.newsFeed.*;
+import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -14,45 +22,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+import java.util.ArrayList;
+
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoDetails;
-import com.eulersbridge.iEngage.core.events.generalInfo.GeneralInfoReadEvent;
-import com.eulersbridge.iEngage.core.events.generalInfo.GiCountry;
-import com.eulersbridge.iEngage.core.events.generalInfo.GiInstitution;
-import com.eulersbridge.iEngage.core.events.generalInfo.ReadGeneralInfoEvent;
-import com.eulersbridge.iEngage.core.events.institutions.CreateInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.DeleteInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDeletedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.institutions.InstitutionsReadEvent;
-import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.ReadInstitutionsEvent;
-import com.eulersbridge.iEngage.core.events.institutions.RequestReadInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.institutions.UpdateInstitutionEvent;
-import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
-import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
-import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedReadEvent;
-import com.eulersbridge.iEngage.core.events.newsFeed.ReadNewsFeedEvent;
-import com.eulersbridge.iEngage.core.services.InstitutionService;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 
 public class ViewInstitutionIntegrationTest

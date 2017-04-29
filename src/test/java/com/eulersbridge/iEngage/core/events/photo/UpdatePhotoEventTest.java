@@ -3,13 +3,13 @@
  */
 package com.eulersbridge.iEngage.core.events.photo;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.Photo;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.database.domain.Photo;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Greg Newitt

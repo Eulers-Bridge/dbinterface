@@ -3,13 +3,12 @@
  */
 package com.eulersbridge.iEngage.database.domain;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.core.events.events.EventDetails;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.events.EventDetails;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt
@@ -48,7 +47,7 @@ public class EventTest
 	{
 		Event evt2=Event.fromEventDetails(dets);
 		assertEquals(dets.getName(),evt2.getName());
-		assertEquals(dets.getEventId(),evt2.getEventId());
+		assertEquals(dets.getEventId(),evt2.getNodeId());
 		assertEquals(dets.getCreated(),evt2.getCreated());
 		assertEquals(dets.getDescription(),evt2.getDescription());
 		assertEquals(dets.getEnds(),evt2.getEnds());
@@ -71,7 +70,7 @@ public class EventTest
 	{
 		EventDetails dets2=event.toEventDetails();
 		assertEquals(dets2.getName(),event.getName());
-		assertEquals(dets2.getEventId(),event.getEventId());
+		assertEquals(dets2.getEventId(),event.getNodeId());
 		assertEquals(dets2.getCreated(),event.getCreated());
 		assertEquals(dets2.getDescription(),event.getDescription());
 		assertEquals(dets2.getEnds(),event.getEnds());
@@ -96,23 +95,23 @@ public class EventTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#getEventId()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#getNodeId()}.
 	 */
 	@Test
 	public final void testGetEventId()
 	{
-		assertEquals(dets.getEventId(),event.getEventId());
+		assertEquals(dets.getEventId(),event.getNodeId());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#setEventId(java.lang.Long)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#setNodeId(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetEventId()
 	{
 		Long id=34l;
-		event.setEventId(id);
-		assertEquals(id, event.getEventId());
+		event.setNodeId(id);
+		assertEquals(id, event.getNodeId());
 	}
 
 	/**
@@ -331,16 +330,13 @@ public class EventTest
 		assertEquals(modified, event.getModified());
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#getInstitution()}.
-	 */
 	@Test
 	public final void testGetInstitution() {
 		assertEquals(dets.getInstitutionId(),event.getNewsFeed().getInstitution().getNodeId());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#setInstitution(com.eulersbridge.iEngage.database.domain.Institution)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Event(com.eulersbridge.iEngage.database.domain.Institution)}.
 	 */
 	@Test
 	public final void testSetInstitution()
@@ -372,9 +368,9 @@ public class EventTest
 		Event eventTest=DatabaseDataFixture.populateEvent1();
 		assertEquals(eventTest.hashCode(),eventTest.hashCode());
 		assertEquals(eventTest.hashCode(),event.hashCode());
-		eventTest.setEventId(null);
+		eventTest.setNodeId(null);
 		checkHashCode(event,eventTest);
-		event.setEventId(null);
+		event.setNodeId(null);
 		eventTest.setStarts(null);
 		checkHashCode(event,eventTest);
 		eventTest.setStarts(event.getStarts());
@@ -421,11 +417,11 @@ public class EventTest
 		eventTest=DatabaseDataFixture.populateEvent1();
 		assertEquals(eventTest,eventTest);
 		assertEquals(eventTest,event);
-		eventTest.setEventId(54l);
+		eventTest.setNodeId(54l);
 		checkNotEquals(event,eventTest);
-		event.setEventId(null);
+		event.setNodeId(null);
 		checkNotEquals(event,eventTest);
-		eventTest.setEventId(null);
+		eventTest.setNodeId(null);
 		assertEquals(event, eventTest);
 		assertEquals(eventTest, event);
 		eventTest.setCreated(4321l);

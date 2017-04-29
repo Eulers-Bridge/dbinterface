@@ -1,19 +1,17 @@
 package com.eulersbridge.iEngage.rest.domain;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.rest.controller.ElectionController;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 
 /**

@@ -1,17 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-
+import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.users.*;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.AuthenticationException;
-
 import com.eulersbridge.iEngage.core.events.voteRecord.AddVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.DeleteVoteRecordEvent;
 import com.eulersbridge.iEngage.core.events.voteRecord.ReadVoteRecordEvent;
@@ -20,9 +10,13 @@ import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.security.SecurityConstants;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 //All methods are guaranteed to return something, null will never be returned.
-public interface UserService 
+public interface UserService extends UserDetailsService
 {
 	public UserCreatedEvent signUpNewUser(CreateUserEvent createUserEvent);
 	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #requestReadUserEvent.getEmail()==authentication.name)")

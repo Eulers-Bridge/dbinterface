@@ -3,12 +3,12 @@
  */
 package com.eulersbridge.iEngage.database.domain.notifications;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-
+import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
+import com.eulersbridge.iEngage.database.domain.ContactRequest;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,12 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
-import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
-import com.eulersbridge.iEngage.database.domain.ContactRequest;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
+import java.util.HashMap;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Greg Newitt

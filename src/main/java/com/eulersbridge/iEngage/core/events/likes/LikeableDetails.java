@@ -11,7 +11,7 @@ import com.eulersbridge.iEngage.core.events.Details;
  */
 public class LikeableDetails extends Details
 {
-	private Long numOfLikes;
+	private Integer numOfLikes;
 
 	public LikeableDetails(Long nodeId)
 	{
@@ -21,7 +21,7 @@ public class LikeableDetails extends Details
 	/**
 	 * @return the numOfLikes
 	 */
-	public Long getNumOfLikes()
+	public Integer getNumOfLikes()
 	{
 		return numOfLikes;
 	}
@@ -29,7 +29,7 @@ public class LikeableDetails extends Details
 	/**
 	 * @param numOfLikes the numOfLikes to set
 	 */
-	public void setNumOfLikes(Long numOfLikes)
+	public void setNumOfLikes(Integer numOfLikes)
 	{
 		this.numOfLikes = numOfLikes;
 	}

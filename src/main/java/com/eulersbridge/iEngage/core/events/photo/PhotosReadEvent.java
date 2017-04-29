@@ -3,10 +3,10 @@
  */
 package com.eulersbridge.iEngage.core.events.photo;
 
+import com.eulersbridge.iEngage.core.events.ReadEvent;
+
 import java.util.ArrayList;
 import java.util.Collection;
-
-import com.eulersbridge.iEngage.core.events.ReadEvent;
 
 /**
  * @author Greg Newitt

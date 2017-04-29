@@ -3,17 +3,17 @@
  */
 package com.eulersbridge.iEngage.rest.domain;
 
-import static org.junit.Assert.*;
-
-import org.springframework.mock.web.MockHttpServletRequest;
+import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.eulersbridge.iEngage.core.events.users.PersonalityDetails;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Greg Newitt

@@ -3,16 +3,16 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import com.eulersbridge.iEngage.core.events.ReadAllEvent;
+import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.newsArticles.*;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.NewsArticle;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
+import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
@@ -21,25 +21,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.CreateNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.DeleteNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleCreatedEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.ReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent;
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
 
 /**
  * @author Greg Newitt

@@ -3,9 +3,9 @@
  */
 package com.eulersbridge.iEngage.database.domain.notifications;
 
-import java.util.HashMap;
-
 import org.springframework.data.neo4j.repository.GraphRepository;
+
+import java.util.HashMap;
 
 /**
  * @author Greg Newitt

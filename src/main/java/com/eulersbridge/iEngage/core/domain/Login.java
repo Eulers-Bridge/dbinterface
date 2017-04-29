@@ -1,9 +1,8 @@
 package com.eulersbridge.iEngage.core.domain;
 
+import com.eulersbridge.iEngage.rest.domain.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.eulersbridge.iEngage.rest.domain.Response;
 
 public class Login 
 {

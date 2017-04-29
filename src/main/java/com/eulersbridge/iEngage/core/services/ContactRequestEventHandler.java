@@ -3,10 +3,15 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.contactRequest.*;
+import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
+import com.eulersbridge.iEngage.database.domain.Contact;
+import com.eulersbridge.iEngage.database.domain.ContactRequest;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,26 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdateEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestCreatedEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
-import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestReadEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
-import com.eulersbridge.iEngage.database.domain.Contact;
-import com.eulersbridge.iEngage.database.domain.ContactRequest;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
-
-import org.apache.commons.validator.routines.EmailValidator;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 
 /**
  * @author Greg Newitt

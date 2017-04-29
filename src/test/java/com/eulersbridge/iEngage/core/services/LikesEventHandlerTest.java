@@ -4,16 +4,11 @@ import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
-import com.eulersbridge.iEngage.database.domain.Event;
-import com.eulersbridge.iEngage.database.domain.Like;
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.Owner;
-import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.OwnerRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -58,7 +53,7 @@ public class LikesEventHandlerTest
     }
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.LikesEventHandler#LikesEventHandler(com.eulersbridge.iEngage.database.repository.UserRepository)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.LikesEventHandler(com.eulersbridge.iEngage.database.repository.UserRepository)}.
 	 */
 	@Test
 	public final void testLikesEventHandler()
@@ -125,7 +120,7 @@ public class LikesEventHandlerTest
 	}
 	
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#likeEvent(com.eulersbridge.iEngage.core.events.events.LikeEvent)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#(com.eulersbridge.iEngage.core.events.events)}.
 	 */
 	@Test
 	public final void testLikeEvent()
@@ -134,13 +129,13 @@ public class LikesEventHandlerTest
 		User liker=DatabaseDataFixture.populateUserGnewitt();
 		Event liked=DatabaseDataFixture.populateEvent1();
 		Like testData=new Like(liker, liked);
-		LikeEvent evt=new LikeEvent(liked.getEventId(), liker.getEmail());
+		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getEventId()));
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getNodeId()));
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		
 		LikedEvent evtData = service.like(evt);
-		assertEquals(evtData.getNodeId(),liked.getEventId());
+		assertEquals(evtData.getNodeId(),liked.getNodeId());
 		assertEquals(evtData.getUserEmail(),liker.getEmail());
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isUserFound());
@@ -153,13 +148,13 @@ public class LikesEventHandlerTest
 		User liker=DatabaseDataFixture.populateUserGnewitt();
 		Event liked=DatabaseDataFixture.populateEvent1();
 		Like testData=new Like(liker, liked);
-		LikeEvent evt=new LikeEvent(liked.getEventId(), liker.getEmail());
+		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getEventId()));
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getNodeId()));
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		
 		LikedEvent evtData = service.like(evt);
-		assertEquals(evtData.getNodeId(),liked.getEventId());
+		assertEquals(evtData.getNodeId(),liked.getNodeId());
 		assertEquals(evtData.getUserEmail(),liker.getEmail());
 		assertTrue(evtData.isEntityFound());
 		assertFalse(evtData.isUserFound());
@@ -172,13 +167,13 @@ public class LikesEventHandlerTest
 		User liker=DatabaseDataFixture.populateUserGnewitt();
 		Event liked=DatabaseDataFixture.populateEvent1();
 		Like testData=new Like(liker, liked);
-		LikeEvent evt=new LikeEvent(liked.getEventId(), liker.getEmail());
+		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
 		when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		
 		LikedEvent evtData = service.like(evt);
-		assertEquals(evtData.getNodeId(),liked.getEventId());
+		assertEquals(evtData.getNodeId(),liked.getNodeId());
 		assertEquals(evtData.getUserEmail(),liker.getEmail());
 		assertFalse(evtData.isEntityFound());
 		assertTrue(evtData.isUserFound());
@@ -191,13 +186,13 @@ public class LikesEventHandlerTest
 		User liker=DatabaseDataFixture.populateUserGnewitt();
 		Event liked=DatabaseDataFixture.populateEvent1();
 		Like testData=null;
-		LikeEvent evt=new LikeEvent(liked.getEventId(), liker.getEmail());
+		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getEventId()));
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getNodeId()));
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		
 		LikedEvent evtData = service.like(evt);
-		assertEquals(evtData.getNodeId(),liked.getEventId());
+		assertEquals(evtData.getNodeId(),liked.getNodeId());
 		assertEquals(evtData.getUserEmail(),liker.getEmail());
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isUserFound());
@@ -205,7 +200,7 @@ public class LikesEventHandlerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler#unLikeEvent(com.eulersbridge.iEngage.core.events.events.LikeEvent)}.
+	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler(com.eulersbridge.iEngage.core.events.events)}.
 	 */
 	@Test
 	public final void testUnlikeEvent()
@@ -213,13 +208,13 @@ public class LikesEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("UnlikingEvent()");
 		User liker=DatabaseDataFixture.populateUserGnewitt();
 		Event liked=DatabaseDataFixture.populateEvent1();
-		LikeEvent evt=new LikeEvent(liked.getEventId(), liker.getEmail());
+		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getEventId()));
+		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getNodeId()));
 		doNothing().when(userRepository).unlike(any(String.class),any(Long.class));
 		
 		LikedEvent evtData = service.unlike(evt);
-		assertEquals(evtData.getNodeId(),liked.getEventId());
+		assertEquals(evtData.getNodeId(),liked.getNodeId());
 		assertEquals(evtData.getUserEmail(),liker.getEmail());
 		assertTrue(evtData.isEntityFound());
 		assertTrue(evtData.isUserFound());

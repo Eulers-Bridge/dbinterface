@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.config;
 
-import java.util.Properties;
-
+import com.eulersbridge.iEngage.core.services.EmailEventHandler;
+import com.eulersbridge.iEngage.core.services.EmailService;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
-import com.eulersbridge.iEngage.core.services.EmailEventHandler;
-import com.eulersbridge.iEngage.core.services.EmailService;
+import java.util.Properties;
 
 @Configuration
 @EnableAutoConfiguration

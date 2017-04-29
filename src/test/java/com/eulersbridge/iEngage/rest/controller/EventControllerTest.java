@@ -3,25 +3,18 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.EventService;
+import com.eulersbridge.iEngage.core.services.InstitutionService;
 import com.eulersbridge.iEngage.core.services.LikesService;
-
+import com.eulersbridge.iEngage.database.domain.Event;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -35,32 +28,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.events.CreateEventEvent;
-import com.eulersbridge.iEngage.core.events.events.DeleteEventEvent;
-import com.eulersbridge.iEngage.core.events.events.EventCreatedEvent;
-import com.eulersbridge.iEngage.core.events.events.EventDeletedEvent;
-import com.eulersbridge.iEngage.core.events.events.EventDetails;
-import com.eulersbridge.iEngage.core.events.events.EventUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.events.ReadEventEvent;
-import com.eulersbridge.iEngage.core.events.events.RequestReadEventEvent;
-import com.eulersbridge.iEngage.core.events.events.UpdateEventEvent;
-import com.eulersbridge.iEngage.core.services.EventService;
-import com.eulersbridge.iEngage.core.services.InstitutionService;
-import com.eulersbridge.iEngage.database.domain.Event;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Greg Newitt
@@ -318,34 +298,34 @@ public class EventControllerTest
 
 		this.mockMvc.perform(get(urlPrefix+"s/{instId}/",instId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalElements",is(numElements.intValue())))
-		.andExpect(jsonPath("$totalPages",is(numPages)))
-		.andExpect(jsonPath("$foundObjects[0].eventId",is(eventDets.get(0).getEventId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].name",is(eventDets.get(0).getName())))
-		.andExpect(jsonPath("$foundObjects[0].location",is(eventDets.get(0).getLocation())))
-		.andExpect(jsonPath("$foundObjects[0].starts",is(eventDets.get(0).getStarts().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].ends",is(eventDets.get(0).getEnds().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].description",is(eventDets.get(0).getDescription())))
+		.andExpect(jsonPath("totalElements",is(numElements.intValue())))
+		.andExpect(jsonPath("totalPages",is(numPages)))
+		.andExpect(jsonPath("foundObjects[0].eventId",is(eventDets.get(0).getEventId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].name",is(eventDets.get(0).getName())))
+		.andExpect(jsonPath("foundObjects[0].location",is(eventDets.get(0).getLocation())))
+		.andExpect(jsonPath("foundObjects[0].starts",is(eventDets.get(0).getStarts().intValue())))
+		.andExpect(jsonPath("foundObjects[0].ends",is(eventDets.get(0).getEnds().intValue())))
+		.andExpect(jsonPath("foundObjects[0].description",is(eventDets.get(0).getDescription())))
 //		.andExpect(jsonPath("$events[0].photos",is(eventDets.get(0).getPhotos())))
-		.andExpect(jsonPath("$foundObjects[0].volunteerPositions",is(eventDets.get(0).getVolunteerPositions())))
-		.andExpect(jsonPath("$foundObjects[0].created",is(eventDets.get(0).getCreated().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].modified",is(eventDets.get(0).getModified().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].organizer",is(eventDets.get(0).getOrganizer())))
-		.andExpect(jsonPath("$foundObjects[0].organizerEmail",is(eventDets.get(0).getOrganizerEmail())))
-		.andExpect(jsonPath("$foundObjects[0].institutionId",is(eventDets.get(0).getInstitutionId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].eventId",is(eventDets.get(1).getEventId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].name",is(eventDets.get(1).getName())))
-		.andExpect(jsonPath("$foundObjects[1].location",is(eventDets.get(1).getLocation())))
-		.andExpect(jsonPath("$foundObjects[1].starts",is(eventDets.get(1).getStarts().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].ends",is(eventDets.get(1).getEnds().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].description",is(eventDets.get(1).getDescription())))
+		.andExpect(jsonPath("foundObjects[0].volunteerPositions",is(eventDets.get(0).getVolunteerPositions())))
+		.andExpect(jsonPath("foundObjects[0].created",is(eventDets.get(0).getCreated().intValue())))
+		.andExpect(jsonPath("foundObjects[0].modified",is(eventDets.get(0).getModified().intValue())))
+		.andExpect(jsonPath("foundObjects[0].organizer",is(eventDets.get(0).getOrganizer())))
+		.andExpect(jsonPath("foundObjects[0].organizerEmail",is(eventDets.get(0).getOrganizerEmail())))
+		.andExpect(jsonPath("foundObjects[0].institutionId",is(eventDets.get(0).getInstitutionId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].eventId",is(eventDets.get(1).getEventId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].name",is(eventDets.get(1).getName())))
+		.andExpect(jsonPath("foundObjects[1].location",is(eventDets.get(1).getLocation())))
+		.andExpect(jsonPath("foundObjects[1].starts",is(eventDets.get(1).getStarts().intValue())))
+		.andExpect(jsonPath("foundObjects[1].ends",is(eventDets.get(1).getEnds().intValue())))
+		.andExpect(jsonPath("foundObjects[1].description",is(eventDets.get(1).getDescription())))
 //		.andExpect(jsonPath("$events[1].photos",is(eventDets.get(1).getPhotos())))
-		.andExpect(jsonPath("$foundObjects[1].volunteerPositions",is(eventDets.get(1).getVolunteerPositions())))
-		.andExpect(jsonPath("$foundObjects[1].created",is(eventDets.get(1).getCreated().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].modified",is(eventDets.get(1).getModified().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].organizer",is(eventDets.get(1).getOrganizer())))
-		.andExpect(jsonPath("$foundObjects[1].organizerEmail",is(eventDets.get(1).getOrganizerEmail())))
-		.andExpect(jsonPath("$foundObjects[1].institutionId",is(eventDets.get(1).getInstitutionId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].volunteerPositions",is(eventDets.get(1).getVolunteerPositions())))
+		.andExpect(jsonPath("foundObjects[1].created",is(eventDets.get(1).getCreated().intValue())))
+		.andExpect(jsonPath("foundObjects[1].modified",is(eventDets.get(1).getModified().intValue())))
+		.andExpect(jsonPath("foundObjects[1].organizer",is(eventDets.get(1).getOrganizer())))
+		.andExpect(jsonPath("foundObjects[1].organizerEmail",is(eventDets.get(1).getOrganizerEmail())))
+		.andExpect(jsonPath("foundObjects[1].institutionId",is(eventDets.get(1).getInstitutionId().intValue())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
@@ -497,7 +477,7 @@ public class EventControllerTest
 		when (likesService.like(any(LikeEvent.class))).thenReturn(evt);
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 	
@@ -512,7 +492,7 @@ public class EventControllerTest
 		when (likesService.like(any(LikeEvent.class))).thenReturn(evt);
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 	
@@ -555,7 +535,7 @@ public class EventControllerTest
         when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
     }
 
@@ -570,7 +550,7 @@ public class EventControllerTest
         when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
     }
 

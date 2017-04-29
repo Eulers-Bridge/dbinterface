@@ -3,12 +3,11 @@
  */
 package com.eulersbridge.iEngage.core.events.photoAlbums;
 
-import static org.junit.Assert.*;
-
+import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
+import static org.junit.Assert.*;
 
 /**
  * @author Greg Newitt

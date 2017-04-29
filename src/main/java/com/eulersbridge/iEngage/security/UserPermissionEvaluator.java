@@ -3,12 +3,12 @@
  */
 package com.eulersbridge.iEngage.security;
 
-import java.io.Serializable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+
+import java.io.Serializable;
 
 /**
  * @author Greg Newitt

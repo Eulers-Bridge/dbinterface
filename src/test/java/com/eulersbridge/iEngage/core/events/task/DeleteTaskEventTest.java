@@ -2,7 +2,7 @@ package com.eulersbridge.iEngage.core.events.task;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Yikai Gong

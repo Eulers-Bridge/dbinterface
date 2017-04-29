@@ -3,25 +3,18 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.candidate.*;
+import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
+import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.CandidateService;
+import com.eulersbridge.iEngage.core.services.LikesService;
+import com.eulersbridge.iEngage.core.services.PositionService;
+import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -35,32 +28,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.LikeEvent;
-import com.eulersbridge.iEngage.core.events.LikedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateCreatedEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateDeletedEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateReadEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CandidateUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.candidate.CreateCandidateEvent;
-import com.eulersbridge.iEngage.core.events.candidate.DeleteCandidateEvent;
-import com.eulersbridge.iEngage.core.events.candidate.RequestReadCandidateEvent;
-import com.eulersbridge.iEngage.core.events.candidate.UpdateCandidateEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
-import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.core.services.CandidateService;
-import com.eulersbridge.iEngage.core.services.LikesService;
-import com.eulersbridge.iEngage.core.services.PositionService;
-import com.eulersbridge.iEngage.core.services.UserService;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Greg Newitt
@@ -356,16 +336,16 @@ public class CandidateControllerTest
 		when (candidateService.readCandidates(any(ReadAllEvent.class),any(Direction.class),any(int.class),any(int.class))).thenReturn(testData);
 		this.mockMvc.perform(get(urlPrefix+"s/{parentId}/",electionId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$totalElements",is(testData.getTotalItems().intValue())))
-		.andExpect(jsonPath("$totalPages",is(testData.getTotalPages())))
-		.andExpect(jsonPath("$foundObjects[0].information",is(candidateDets.get(0).getInformation())))
-		.andExpect(jsonPath("$foundObjects[0].policyStatement",is(candidateDets.get(0).getPolicyStatement())))
-		.andExpect(jsonPath("$foundObjects[0].positionId",is(candidateDets.get(0).getPositionId().intValue())))
-		.andExpect(jsonPath("$foundObjects[0].candidateId",is(candidateDets.get(0).getNodeId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].information",is(candidateDets.get(1).getInformation())))
-		.andExpect(jsonPath("$foundObjects[1].policyStatement",is(candidateDets.get(1).getPolicyStatement())))
-		.andExpect(jsonPath("$foundObjects[1].positionId",is(candidateDets.get(1).getPositionId().intValue())))
-		.andExpect(jsonPath("$foundObjects[1].candidateId",is(candidateDets.get(1).getNodeId().intValue())))
+		.andExpect(jsonPath("totalElements",is(testData.getTotalItems().intValue())))
+		.andExpect(jsonPath("totalPages",is(testData.getTotalPages())))
+		.andExpect(jsonPath("foundObjects[0].information",is(candidateDets.get(0).getInformation())))
+		.andExpect(jsonPath("foundObjects[0].policyStatement",is(candidateDets.get(0).getPolicyStatement())))
+		.andExpect(jsonPath("foundObjects[0].positionId",is(candidateDets.get(0).getPositionId().intValue())))
+		.andExpect(jsonPath("foundObjects[0].candidateId",is(candidateDets.get(0).getNodeId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].information",is(candidateDets.get(1).getInformation())))
+		.andExpect(jsonPath("foundObjects[1].policyStatement",is(candidateDets.get(1).getPolicyStatement())))
+		.andExpect(jsonPath("foundObjects[1].positionId",is(candidateDets.get(1).getPositionId().intValue())))
+		.andExpect(jsonPath("foundObjects[1].candidateId",is(candidateDets.get(1).getNodeId().intValue())))
 //		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
@@ -540,7 +520,7 @@ public class CandidateControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -555,7 +535,7 @@ public class CandidateControllerTest
 
 		this.mockMvc.perform(put(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
-		.andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+		.andExpect(jsonPath("success",is(evt.isResultSuccess())))
 		.andExpect(status().isOk())	;		
 	}
 
@@ -601,7 +581,7 @@ public class CandidateControllerTest
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 
@@ -616,7 +596,7 @@ public class CandidateControllerTest
 		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
         this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$success",is(evt.isResultSuccess())))
+                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
                 .andExpect(status().isOk())	;
 	}
 

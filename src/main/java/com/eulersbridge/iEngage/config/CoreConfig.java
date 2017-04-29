@@ -2,229 +2,228 @@ package com.eulersbridge.iEngage.config;
 
 import com.eulersbridge.iEngage.core.services.*;
 import com.eulersbridge.iEngage.database.repository.*;
-
-import org.aspectj.lang.annotation.Aspect;
+import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
+import com.eulersbridge.iEngage.rest.domain.stubCountryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
-import com.eulersbridge.iEngage.rest.domain.stubCountryFactory;
-
 @Configuration
-public class CoreConfig 
-{
-    @Autowired
-    BadgeRepository badgeRepository;
-    @Autowired
-    CandidateRepository candidateRepository;
-    @Autowired
-    CommentRepository commentRepository;
-	@Autowired
-	ContactRequestRepository contactRequestRepository;
-    @Autowired
-    ConfigurationRepository configurationRepository;
-	@Autowired
-	CountryRepository countryRepo;
-    @Autowired
-    ElectionRepository electionRepo;
-    @Autowired
-    EventRepository eventRepository;
-    @Autowired
-    ForumQuestionRepository forumQuestionRepository;
-	@Autowired
-	InstitutionRepository institutionRepository;
-	@Autowired
-	NewsArticleRepository newsRepo;
-	@Autowired
-	NewsFeedRepository newsFeedRepository;
-    @Autowired
-    NotificationRepository notificationRepository;
-    @Autowired
-    OwnerRepository ownerRepository;
-    @Autowired
-    PersonalityRepository personRepo;
-    @Autowired
-    PollRepository pollRepository;
-    @Autowired
-    PollAnswerRepository pollAnswerRepository;
-    @Autowired
-    PhotoRepository photoRepository;
-    @Autowired
-    PhotoAlbumRepository photoAlbumRepository;
-    @Autowired
-    PositionRepository positionRepository;
-    @Autowired
-    TicketRepository ticketRepository;
-    @Autowired
-    TaskRepository taskRepository;
-	@Autowired
-	UserRepository userRepo;
-	@Autowired
-	VerificationTokenRepository tokenRepo;
-    @Autowired
-    VotingLocationRepository votingLocationRepository;
+public class CoreConfig {
+  BadgeRepository badgeRepository;
+  CandidateRepository candidateRepository;
+  CommentRepository commentRepository;
+  ContactRequestRepository contactRequestRepository;
+  ConfigurationRepository configurationRepository;
+  CountryRepository countryRepo;
+  ElectionRepository electionRepo;
+  EventRepository eventRepository;
+  ForumQuestionRepository forumQuestionRepository;
+  InstitutionRepository institutionRepository;
+  NewsArticleRepository newsRepo;
+  NewsFeedRepository newsFeedRepository;
+  NotificationRepository notificationRepository;
+  OwnerRepository ownerRepository;
+  PersonalityRepository personRepo;
+  PollRepository pollRepository;
+  PollAnswerRepository pollAnswerRepository;
+  PhotoRepository photoRepository;
+  PhotoAlbumRepository photoAlbumRepository;
+  PositionRepository positionRepository;
+  TicketRepository ticketRepository;
+  TaskRepository taskRepository;
+  UserRepository userRepo;
+  VerificationTokenRepository tokenRepo;
+  VotingLocationRepository votingLocationRepository;
 
-    private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
+  private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
-	public CoreConfig()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("CoreConfig()");
-	}
+  @Autowired
+  public CoreConfig(TaskRepository taskRepository,
+                    ElectionRepository electionRepo,
+                    PhotoRepository photoRepository,
+                    PositionRepository positionRepository,
+                    EventRepository eventRepository,
+                    NewsArticleRepository newsRepo,
+                    InstitutionRepository institutionRepository,
+                    NewsFeedRepository newsFeedRepository,
+                    CandidateRepository candidateRepository,
+                    ForumQuestionRepository forumQuestionRepository,
+                    PollRepository pollRepository,
+                    CountryRepository countryRepo,
+                    CommentRepository commentRepository,
+                    VerificationTokenRepository tokenRepo,
+                    OwnerRepository ownerRepository,
+                    TicketRepository ticketRepository,
+                    PhotoAlbumRepository photoAlbumRepository,
+                    BadgeRepository badgeRepository,
+                    VotingLocationRepository votingLocationRepository,
+                    PersonalityRepository personRepo,
+                    ConfigurationRepository configurationRepository,
+                    PollAnswerRepository pollAnswerRepository,
+                    UserRepository userRepo,
+                    NotificationRepository notificationRepository,
+                    ContactRequestRepository contactRequestRepository) {
+    if (LOG.isDebugEnabled()) LOG.debug("CoreConfig()");
+    this.taskRepository = taskRepository;
+    this.electionRepo = electionRepo;
+    this.photoRepository = photoRepository;
+    this.positionRepository = positionRepository;
+    this.eventRepository = eventRepository;
+    this.newsRepo = newsRepo;
+    this.institutionRepository = institutionRepository;
+    this.newsFeedRepository = newsFeedRepository;
+    this.candidateRepository = candidateRepository;
+    this.forumQuestionRepository = forumQuestionRepository;
+    this.pollRepository = pollRepository;
+    this.countryRepo = countryRepo;
+    this.commentRepository = commentRepository;
+    this.tokenRepo = tokenRepo;
+    this.ownerRepository = ownerRepository;
+    this.ticketRepository = ticketRepository;
+    this.photoAlbumRepository = photoAlbumRepository;
+    this.badgeRepository = badgeRepository;
+    this.votingLocationRepository = votingLocationRepository;
+    this.personRepo = personRepo;
+    this.configurationRepository = configurationRepository;
+    this.pollAnswerRepository = pollAnswerRepository;
+    this.userRepo = userRepo;
+    this.notificationRepository = notificationRepository;
+    this.contactRequestRepository = contactRequestRepository;
+  }
 
-	@Bean
-	public UserService createUserService() 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("createUserService()");
-	    return new UserEventHandler(userRepo,personRepo,institutionRepository,tokenRepo);
-	}
-	
-	@Bean
-	public InstitutionService createInstitutionService()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("createInstitutionService()");
-		return new InstitutionEventHandler(institutionRepository,countryRepo,newsFeedRepository);
-	}
+  @Bean
+  public UserService createUserService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createUserService()");
+    return new UserEventHandler(userRepo, personRepo, institutionRepository, tokenRepo);
+  }
 
-	@Bean
-	public ContactRequestService createContactRequestService()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("createContactRequestService()");
-		return new ContactRequestEventHandler(contactRequestRepository,userRepo);
-	}
+  @Bean
+  public InstitutionService createInstitutionService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createInstitutionService()");
+    return new InstitutionEventHandler(institutionRepository, countryRepo, newsFeedRepository);
+  }
 
-	@Bean
-	public CountryService createCountryService()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("createCountryService()");
-		return new CountryEventHandler(countryRepo);
-	}
+  @Bean
+  public ContactRequestService createContactRequestService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createContactRequestService()");
+    return new ContactRequestEventHandler(contactRequestRepository, userRepo);
+  }
 
-	@Bean
-	public NewsService createNewsService()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("createNewsService()");
-		return new NewsEventHandler(newsRepo,userRepo, institutionRepository);
-	}
-	
-	@Bean
-	public CountriesFactory createCountryFactory()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("createCountryFactory()");
-		return new stubCountryFactory();
-		
-	}
+  @Bean
+  public CountryService createCountryService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createCountryService()");
+    return new CountryEventHandler(countryRepo);
+  }
 
-    @Bean
-    public ElectionService createElectionService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createElectionService()");
-        return new ElectionEventHandler(electionRepo,institutionRepository);
-    }
+  @Bean
+  public NewsService createNewsService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createNewsService()");
+    return new NewsEventHandler(newsRepo, userRepo, institutionRepository);
+  }
 
-    @Bean
-    public PollService createPollService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
-        return new PollEventHandler(pollRepository,pollAnswerRepository,
-                ownerRepository, institutionRepository);
-    }
+  @Bean
+  public CountriesFactory createCountryFactory() {
+    if (LOG.isDebugEnabled()) LOG.debug("createCountryFactory()");
+    return new stubCountryFactory();
 
-    @Bean
-    public EventService createEventService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createEventService()");
-        return new EventEventHandler(eventRepository,institutionRepository);
-    }
+  }
 
-    @Bean
-    public PhotoService createPhotoService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createPhotoService()");
-        return new PhotoEventHandler(photoRepository,photoAlbumRepository,ownerRepository);
-    }
+  @Bean
+  public ElectionService createElectionService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createElectionService()");
+    return new ElectionEventHandler(electionRepo, institutionRepository);
+  }
 
-    @Bean
-    public ForumQuestionService createForumQuestionService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createForumQuestionService()");
-        return new ForumQuestionEventHandler(forumQuestionRepository);
-    }
+  @Bean
+  public PollService createPollService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
+    return new PollEventHandler(pollRepository, pollAnswerRepository,
+      ownerRepository, institutionRepository);
+  }
 
-    @Bean
-    public PositionService createPositionService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createPositionService()");
-        return new PositionEventHandler(positionRepository,electionRepo,candidateRepository);
-    }
+  @Bean
+  public EventService createEventService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createEventService()");
+    return new EventEventHandler(eventRepository, institutionRepository);
+  }
 
-    @Bean
-    public ConfigurationService createConfigurationService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createConfigurationService()");
-        return new ConfigurationEventHandler(configurationRepository);
-    }
+  @Bean
+  public PhotoService createPhotoService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createPhotoService()");
+    return new PhotoEventHandler(photoRepository, photoAlbumRepository, ownerRepository);
+  }
 
-    @Bean
-    public LikesService createLikesService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createLikesService()");
-        return new LikesEventHandler(userRepo,ownerRepository);
-    }
+  @Bean
+  public ForumQuestionService createForumQuestionService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createForumQuestionService()");
+    return new ForumQuestionEventHandler(forumQuestionRepository);
+  }
 
-    @Bean
-    public CandidateService createCandidateService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createCandidateService()");
-        return new CandidateEventHandler(candidateRepository,userRepo,positionRepository,electionRepo, ticketRepository);
-    }
+  @Bean
+  public PositionService createPositionService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createPositionService()");
+    return new PositionEventHandler(positionRepository, electionRepo, candidateRepository);
+  }
 
-    @Bean
-    public TicketService createTicketService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createTicketService()");
-        return new TicketEventHandler(ticketRepository,electionRepo,userRepo,candidateRepository);
-    }
+  @Bean
+  public ConfigurationService createConfigurationService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createConfigurationService()");
+    return new ConfigurationEventHandler(configurationRepository);
+  }
 
-    @Bean
-    public TaskService createTaskService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createTaskService()");
-        return new TaskEventHandler(taskRepository,userRepo);
-    }
+  @Bean
+  public LikesService createLikesService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createLikesService()");
+    return new LikesEventHandler(userRepo, ownerRepository);
+  }
 
-    @Bean
-    public BadgeService createBadgeService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createBadgeService()");
-        return new BadgeEventHandler(badgeRepository,userRepo);
-    }
+  @Bean
+  public CandidateService createCandidateService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createCandidateService()");
+    return new CandidateEventHandler(candidateRepository, userRepo, positionRepository, electionRepo, ticketRepository);
+  }
 
-    @Bean
-    public VotingLocationService createVotingLocationService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createVotingLocationService()");
-        return new VotingLocationEventHandler(votingLocationRepository,electionRepo,ownerRepository);
-    }
+  @Bean
+  public TicketService createTicketService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createTicketService()");
+    return new TicketEventHandler(ticketRepository, electionRepo, userRepo, candidateRepository);
+  }
 
-    @Bean
-    public NotificationService createNotificationService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createNotificationService()");
-        return new NotificationEventHandler(notificationRepository,userRepo,contactRequestRepository);
-    }
+  @Bean
+  public TaskService createTaskService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createTaskService()");
+    return new TaskEventHandler(taskRepository, userRepo);
+  }
 
-    @Bean
-    public CommentService createCommentService()
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("createCommentService()");
-        return new CommentEventHandler(userRepo, commentRepository, ownerRepository);
-    }
+  @Bean
+  public BadgeService createBadgeService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createBadgeService()");
+    return new BadgeEventHandler(badgeRepository, userRepo);
+  }
 
-    @Bean
-    public AspectService createAspectService(){
-        return new AspectService();
-    }
+  @Bean
+  public VotingLocationService createVotingLocationService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createVotingLocationService()");
+    return new VotingLocationEventHandler(votingLocationRepository, electionRepo, ownerRepository);
+  }
+
+  @Bean
+  public NotificationService createNotificationService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createNotificationService()");
+    return new NotificationEventHandler(notificationRepository, userRepo, contactRequestRepository);
+  }
+
+  @Bean
+  public CommentService createCommentService() {
+    if (LOG.isDebugEnabled()) LOG.debug("createCommentService()");
+    return new CommentEventHandler(userRepo, commentRepository, ownerRepository);
+  }
+
+  @Bean
+  public AspectService createAspectService() {
+    return new AspectService();
+  }
 }

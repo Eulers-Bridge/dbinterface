@@ -1,13 +1,28 @@
 package com.eulersbridge.iEngage.database.domain;
+
 import org.springframework.data.neo4j.annotation.QueryResult;
-import org.springframework.data.neo4j.annotation.ResultColumn;
 
 @QueryResult()
-public interface PollResultTemplate
-{
-	@ResultColumn ("answer")
-	Integer getAnswer();
+public class PollResultTemplate {
+  Integer answer;
+  Integer frequency;
 
-	@ResultColumn ("frequency")
-	Integer getFrequency();
+  public PollResultTemplate() {
+  }
+
+  public Integer getAnswer() {
+    return answer;
+  }
+
+  public void setAnswer(Integer answer) {
+    this.answer = answer;
+  }
+
+  public Integer getFrequency() {
+    return frequency;
+  }
+
+  public void setFrequency(Integer frequency) {
+    this.frequency = frequency;
+  }
 }

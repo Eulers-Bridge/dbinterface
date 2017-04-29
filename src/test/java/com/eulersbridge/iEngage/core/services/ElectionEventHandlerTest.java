@@ -3,15 +3,13 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.elections.*;
+import com.eulersbridge.iEngage.database.domain.Election;
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
+import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.repository.ElectionRepository;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,23 +22,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.DeleteElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionCreatedEvent;
-import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
-import com.eulersbridge.iEngage.core.events.elections.ReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent;
-import com.eulersbridge.iEngage.core.events.elections.UpdateElectionEvent;
-import com.eulersbridge.iEngage.database.domain.Election;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Greg Newitt

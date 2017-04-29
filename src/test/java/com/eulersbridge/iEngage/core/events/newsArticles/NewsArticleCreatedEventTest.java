@@ -1,10 +1,9 @@
 package com.eulersbridge.iEngage.core.events.newsArticles;
 
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 
 import java.util.HashSet;
 

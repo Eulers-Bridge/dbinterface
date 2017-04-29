@@ -1,36 +1,21 @@
 package com.eulersbridge.iEngage.core.services;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import com.eulersbridge.iEngage.core.events.AllReadEvent;
-import com.eulersbridge.iEngage.core.events.CreatedEvent;
-import com.eulersbridge.iEngage.core.events.DeleteEvent;
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdateEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.BadgeCompleteDetails;
-import com.eulersbridge.iEngage.core.events.badge.BadgeCreatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
-import com.eulersbridge.iEngage.core.events.badge.BadgeUpdatedEvent;
-import com.eulersbridge.iEngage.core.events.badge.CreateBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.ReadBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.RequestReadBadgeEvent;
-import com.eulersbridge.iEngage.core.events.badge.UpdateBadgeEvent;
+import com.eulersbridge.iEngage.core.events.*;
+import com.eulersbridge.iEngage.core.events.badge.*;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.BadgeComplete;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author Yikai Gong

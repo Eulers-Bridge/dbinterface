@@ -1,12 +1,12 @@
 package com.eulersbridge.iEngage.core.events.candidate;
 
+import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Yikai Gong

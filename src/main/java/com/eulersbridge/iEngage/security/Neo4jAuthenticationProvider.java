@@ -4,6 +4,9 @@
 package com.eulersbridge.iEngage.security;
 
 
+import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
+import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
+import com.eulersbridge.iEngage.core.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -12,10 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-
-import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
-import com.eulersbridge.iEngage.core.services.UserService;
 
 /**
  * @author Greg Newitt

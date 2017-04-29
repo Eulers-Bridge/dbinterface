@@ -1,11 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.UUID;
-
+import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.junit.After;
 import org.junit.Before;
@@ -13,7 +8,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eulersbridge.iEngage.database.domain.VerificationToken.VerificationTokenType;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.UUID;
+
+import static org.junit.Assert.*;
 
 public class VerificationTokenTest 
 {
