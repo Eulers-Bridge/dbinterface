@@ -170,6 +170,8 @@ public class NewsEventHandlerTest {
     int pageNumber = 0;
 
     ArrayList<NewsArticle> evts = new ArrayList<>();
+    evts.add(DatabaseDataFixture.populateNewsArticle1());
+    evts.add(DatabaseDataFixture.populateNewsArticle2());
 
     Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "a.date");
     Page<NewsArticle> value = new PageImpl<>(evts, pageable, evts.size());
