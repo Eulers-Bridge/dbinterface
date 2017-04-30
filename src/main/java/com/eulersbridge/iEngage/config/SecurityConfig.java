@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.eulersbridge.iEngage.config;
 
@@ -29,108 +29,95 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationF
 
 /**
  * @author Greg Newitt
- *
  */
 //@EnableWebSecurity
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled=true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter 
-{
-    private static Logger LOG = LoggerFactory.getLogger(SecurityConfig.class);
-    
-    final
-		UserService userService;
-    
-    final
-		UserDetailsService userDetailsService;
-       
-    final
-		DigestAuthenticationEntryPoint digestEntryPoint;
-    
-    final
-		PermissionEvaluator permissionEvaluator;
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+  private static Logger LOG = LoggerFactory.getLogger(SecurityConfig.class);
 
-	@Autowired
-	public SecurityConfig(UserService userService, DigestAuthenticationEntryPoint digestEntryPoint, PermissionEvaluator permissionEvaluator) {
-		this.userService = userService;
-		this.digestEntryPoint = digestEntryPoint;
-		this.permissionEvaluator = permissionEvaluator;
-		this.userDetailsService = (UserDetailsService) userService;
-	}
+  @Autowired
+  UserService userService;
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("configure()");
+  @Autowired
+  UserDetailsService userDetailsService;
+
+  @Autowired
+  DigestAuthenticationEntryPoint digestEntryPoint;
+
+  @Autowired
+  PermissionEvaluator permissionEvaluator;
+
+
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    if (LOG.isDebugEnabled()) LOG.debug("configure()");
 //		DaoAuthenticationProvider authProv=new DaoAuthenticationProvider();
 //		authProv.setUserDetailsService(userDetailsService);
-		Neo4jAuthenticationProvider authProv=new Neo4jAuthenticationProvider(userService);
-		auth.authenticationProvider(authProv);
-	}
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception
-	{
-	    AppBasicAuthenticationEntryPoint entryPoint=new AppBasicAuthenticationEntryPoint();
-		AppBasicAuthenticationSuccessHandler successHandler=new AppBasicAuthenticationSuccessHandler();
-		http.authorizeRequests()
-        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.GENERAL_INFO_LABEL).permitAll()
-        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
-        	.antMatchers(ControllerConstants.API_PREFIX+ControllerConstants.EMAIL_VERIFICATION_LABEL+"/**").permitAll()
-        	.antMatchers(ControllerConstants.API_PREFIX+"/displayParams/**").permitAll()
-        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.GENERAL_INFO_LABEL).permitAll()
-        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.SIGNUP_LABEL).permitAll()
-        	.antMatchers(ControllerConstants.DBINTERFACE_PREFIX+ControllerConstants.API_PREFIX+ControllerConstants.EMAIL_VERIFICATION_LABEL+"/**").permitAll()
-        	.antMatchers("/**").hasRole("USER").anyRequest().fullyAuthenticated()
-        .and()
-        	.exceptionHandling().authenticationEntryPoint(digestEntryPoint())
-        .and()
-        	.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        	.addFilterAfter(digestFilter(), BasicAuthenticationFilter.class)
-        	.httpBasic().authenticationEntryPoint(entryPoint)
-        .and()
-        	.formLogin().successHandler(successHandler)//.loginPage(loginPage)
-        		.permitAll()
-        .and()
-        	.logout()
-        		.permitAll()
- //TODO reenable CSRF security??
-       .and().csrf().disable()
-        ;
+    Neo4jAuthenticationProvider authProv = new Neo4jAuthenticationProvider(userService);
+    auth.authenticationProvider(authProv);
+  }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    AppBasicAuthenticationEntryPoint entryPoint = new AppBasicAuthenticationEntryPoint();
+    AppBasicAuthenticationSuccessHandler successHandler = new AppBasicAuthenticationSuccessHandler();
+    http.authorizeRequests()
+      .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.GENERAL_INFO_LABEL).permitAll()
+      .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.SIGNUP_LABEL).permitAll()
+      .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.EMAIL_VERIFICATION_LABEL + "/**").permitAll()
+      .antMatchers(ControllerConstants.API_PREFIX + "/displayParams/**").permitAll()
+      .antMatchers(ControllerConstants.DBINTERFACE_PREFIX + ControllerConstants.API_PREFIX + ControllerConstants.GENERAL_INFO_LABEL).permitAll()
+      .antMatchers(ControllerConstants.DBINTERFACE_PREFIX + ControllerConstants.API_PREFIX + ControllerConstants.SIGNUP_LABEL).permitAll()
+      .antMatchers(ControllerConstants.DBINTERFACE_PREFIX + ControllerConstants.API_PREFIX + ControllerConstants.EMAIL_VERIFICATION_LABEL + "/**").permitAll()
+      .antMatchers("/**").hasRole("USER").anyRequest().fullyAuthenticated()
+      .and()
+      .exceptionHandling().authenticationEntryPoint(digestEntryPoint())
+      .and()
+      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+      .and()
+      .addFilterAfter(digestFilter(), BasicAuthenticationFilter.class)
+      .httpBasic().authenticationEntryPoint(entryPoint)
+      .and()
+      .formLogin().successHandler(successHandler)//.loginPage(loginPage)
+      .permitAll()
+      .and()
+      .logout()
+      .permitAll()
+      //TODO reenable CSRF security??
+      .and().csrf().disable()
+    ;
 /*		
-		http.authorizeRequests().antMatchers("/*").authenticated().and()
+    http.authorizeRequests().antMatchers("/*").authenticated().and()
 		.anonymous().
 		http.authorizeRequests().anyRequest().fullyAuthenticated().and().formLogin().loginPage(loginPage).permitAll();
-*/	}
+*/
+  }
 
-	@Bean
-	public DigestAuthenticationFilter digestFilter()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("digestFilter()");
-		DigestAuthenticationFilter digestFilter=new DigestAuthenticationFilter();
-		digestFilter.setAuthenticationEntryPoint(digestEntryPoint);
-		digestFilter.setUserDetailsService(userDetailsService);
-		return digestFilter;
-	}
-	
-	@Bean
-	public DigestAuthenticationEntryPoint digestEntryPoint()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("digestEntryPoint()");
-		DigestAuthenticationEntryPoint digestEntryPoint = new DigestAuthenticationEntryPoint();
-		digestEntryPoint.setRealmName(SecurityConstants.REALM_NAME);
-		digestEntryPoint.setKey(SecurityConstants.DIGEST_KEY);
-		digestEntryPoint.setNonceValiditySeconds(SecurityConstants.NonceValiditySeconds);
-		return digestEntryPoint;
-	}
-	
-	@Bean
-	public MethodSecurityExpressionHandler expressionHandler() 
-	{
-		DefaultMethodSecurityExpressionHandler bean = new DefaultMethodSecurityExpressionHandler();
-		bean.setPermissionEvaluator(permissionEvaluator);
-		return bean;
-	}
+  @Bean
+  public DigestAuthenticationFilter digestFilter() {
+    if (LOG.isDebugEnabled()) LOG.debug("digestFilter()");
+    DigestAuthenticationFilter digestFilter = new DigestAuthenticationFilter();
+    digestFilter.setAuthenticationEntryPoint(digestEntryPoint);
+    digestFilter.setUserDetailsService(userDetailsService);
+    return digestFilter;
+  }
+
+  @Bean
+  public DigestAuthenticationEntryPoint digestEntryPoint() {
+    if (LOG.isDebugEnabled()) LOG.debug("digestEntryPoint()");
+    DigestAuthenticationEntryPoint digestEntryPoint = new DigestAuthenticationEntryPoint();
+    digestEntryPoint.setRealmName(SecurityConstants.REALM_NAME);
+    digestEntryPoint.setKey(SecurityConstants.DIGEST_KEY);
+    digestEntryPoint.setNonceValiditySeconds(SecurityConstants.NonceValiditySeconds);
+    return digestEntryPoint;
+  }
+
+  @Bean
+  public MethodSecurityExpressionHandler expressionHandler() {
+    DefaultMethodSecurityExpressionHandler bean = new DefaultMethodSecurityExpressionHandler();
+    bean.setPermissionEvaluator(permissionEvaluator);
+    return bean;
+  }
 
 }

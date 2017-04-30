@@ -129,7 +129,7 @@ public class NewsFeedTest {
   @Test
   public void testSetNews() {
     List<NewsArticle> news = nf.getNews();
-    nf.setNews(null);
+    nf.setNews((List<Node>) null);
     assertNull(nf.getNews());
     nf.setNews(Node.castList(news));
     assertEquals(nf.getNews(), news);
@@ -169,7 +169,7 @@ public class NewsFeedTest {
     checkHashCode(nf, nfTest);
     nfTest.setInstitution(nf.getInstitution());
 
-    nfTest.setNews(null);
+    nfTest.setNews((List<Node>) null);
     checkHashCode(nf, nfTest);
     nfTest.setNews(Node.castList(nf.getNews()));
 
@@ -205,7 +205,7 @@ public class NewsFeedTest {
     checkNotEquals(nfTest, nf);
     nfTest.setInstitution(nf.getInstitution());
 
-    nfTest.setNews(null);
+    nfTest.setNews((List<Node>) null);
     assertNotEquals(nf, nfTest);
     nfTest.setNews(Node.castList(nf.getNews()));
   }

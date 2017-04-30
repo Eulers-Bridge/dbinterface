@@ -38,8 +38,8 @@ public class SDNConfig extends Neo4jDataAutoConfiguration {
   @Override
   public org.neo4j.ogm.config.Configuration configuration(Neo4jProperties properties) {
     org.neo4j.ogm.config.Configuration configuration =  super.configuration(properties);
-    // Can using "assert" during dev
-    configuration.autoIndexConfiguration().setAutoIndex("validate");
+    // Can using "assert" during dev validate
+    configuration.autoIndexConfiguration().setAutoIndex("assert");
     return configuration;
   }
 

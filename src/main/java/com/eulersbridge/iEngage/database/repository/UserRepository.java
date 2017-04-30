@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.neo4j.annotation.Depth;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +17,8 @@ public interface UserRepository extends GraphRepository<User>
     static Logger LOG = LoggerFactory.getLogger(UserRepository.class);
 	
  	User findByEmail(String email);
+	User findByEmail(String email, @Depth int i);
+
  	@Query("MATCH (u:`"+DatabaseDomainConstants.USER+"`)-[r:"+DatabaseDomainConstants.VERIFIED_BY_LABEL+
  			"]-(v:`VerificationToken`) where ID(u)={userId} AND ID(v)={tokenId} set u.accountVerified={isVerified} set v.verified={isVerified} ")
 	void verifyUser(@Param("userId") Long userId, @Param("tokenId") Long tokenId, @Param("isVerified") boolean isVerified);

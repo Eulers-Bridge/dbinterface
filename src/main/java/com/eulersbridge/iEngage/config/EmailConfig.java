@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.config;
 
 import com.eulersbridge.iEngage.core.services.EmailEventHandler;
 import com.eulersbridge.iEngage.core.services.EmailService;
+import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.view.WebappResourceLoader;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public class EmailConfig
 
 	// TODO: Witch to FreeMarker as Spring in favor of
 	@Bean
-	public VelocityEngineFactoryBean velocityEngine()
+	public VelocityEngine velocityEngine()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("velocityEngine()");
 		VelocityEngineFactoryBean ve=new VelocityEngineFactoryBean();
@@ -75,7 +76,7 @@ public class EmailConfig
 		velocityProperties.setProperty("webapp.resource.loader.path", "/");
 		velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
 		ve.setVelocityProperties(velocityProperties);
-		return ve;
+		return ve.getObject();
 	}
 	
 	private Properties getSmtpMailProperties()

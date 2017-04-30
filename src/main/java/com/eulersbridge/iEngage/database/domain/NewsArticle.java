@@ -65,7 +65,7 @@ public class NewsArticle extends Likeable {
   }
 
   public String getContent() {
-    if (LOG.isDebugEnabled()) LOG.debug("getContent() = " + content);
+    if (LOG.isDebugEnabled()) LOG.debug("getContent() = " );
     return content;
   }
 
@@ -171,13 +171,9 @@ public class NewsArticle extends Likeable {
       if (getNewsFeed().getInstitution().getNodeId() != null)
         details.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
     }
-    if (getNumOfLikes() != null)
-      details.setLikes(0);
-    else details.setLikes(getNumOfLikes().intValue());
+    details.setLikes(getNumOfLikes().intValue());
     details.setPhotos(Photo.photosToPhotoDetails(getPhotos()));
-
     if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails " + details);
-
     return details;
   }
 

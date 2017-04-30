@@ -16,6 +16,8 @@ import com.eulersbridge.iEngage.rest.domain.UserProfile;
 import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.tools.view.WebappResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +34,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 public class UserEventHandler implements UserService {
 
@@ -47,8 +51,8 @@ public class UserEventHandler implements UserService {
   private PersonalityRepository personRepository;
   private InstitutionRepository instRepository;
   private VerificationTokenRepository tokenRepository;
-  @Autowired
-  private VelocityEngine velocityEngine;
+//  @Autowired
+  private VelocityEngine velocityEngine = null;
 
   public UserEventHandler(final UserRepository userRepository,
                           final PersonalityRepository personRepository,
@@ -58,6 +62,14 @@ public class UserEventHandler implements UserService {
     this.personRepository = personRepository;
     this.instRepository = instRepo;
     this.tokenRepository = tokenRepo;
+
+    VelocityEngineFactoryBean ve=new VelocityEngineFactoryBean();
+		Properties velocityProperties=new Properties();
+		velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
+		velocityProperties.setProperty("webapp.resource.loader.path", "/");
+		velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
+		ve.setVelocityProperties(velocityProperties);
+    velocityEngine = ve.getObject();
   }
 
   @Override
@@ -500,7 +512,7 @@ public class UserEventHandler implements UserService {
     String password = authUserEvent.getPassword();
     String emailAddress = userName;
     UserAuthenticatedEvent evt;
-    User user = userRepository.findByEmail(emailAddress);
+    User user = userRepository.findByEmail(emailAddress, 0);
     if (user != null) {
       if (user.getAccountVerified()) {
         String dbHash = user.getPassword();
