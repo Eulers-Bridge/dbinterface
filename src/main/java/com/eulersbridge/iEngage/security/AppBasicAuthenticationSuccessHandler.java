@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.eulersbridge.iEngage.security;
 
@@ -19,39 +19,34 @@ import java.io.IOException;
 
 /**
  * @author Greg Newitt
- *
  */
 public class AppBasicAuthenticationSuccessHandler extends
-		SimpleUrlAuthenticationSuccessHandler 
-{
-	private RequestCache requestCache = new HttpSessionRequestCache();
-	
-    private static Logger LOG = LoggerFactory.getLogger(AppBasicAuthenticationSuccessHandler.class);
-	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) 
-			throws ServletException, IOException 
-	{
-		SavedRequest savedRequest = requestCache.getRequest(request, response);
-		if (savedRequest == null) 
-		{
-			if (LOG.isDebugEnabled()) LOG.debug("No saved request.");
-			clearAuthenticationAttributes(request);
-			return;
-		}
-		String targetUrlParam = getTargetUrlParameter();
-		if (isAlwaysUseDefaultTargetUrl() ||
-		(targetUrlParam != null && StringUtils.hasText(request.getParameter(targetUrlParam)))) 
-		{
-			if (LOG.isDebugEnabled()) LOG.debug("Target URL param exists.");
-			requestCache.removeRequest(request, response);
-			clearAuthenticationAttributes(request);
-			return;
-		}
-		clearAuthenticationAttributes(request);
-	}
-	
-	public void setRequestCache(RequestCache requestCache) 
-	{
-		this.requestCache = requestCache;
-	}
+  SimpleUrlAuthenticationSuccessHandler {
+  private RequestCache requestCache = new HttpSessionRequestCache();
+
+  private static Logger LOG = LoggerFactory.getLogger(AppBasicAuthenticationSuccessHandler.class);
+
+  @Override
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+    throws ServletException, IOException {
+    SavedRequest savedRequest = requestCache.getRequest(request, response);
+    if (savedRequest == null) {
+      if (LOG.isDebugEnabled()) LOG.debug("No saved request.");
+      clearAuthenticationAttributes(request);
+      return;
+    }
+    String targetUrlParam = getTargetUrlParameter();
+    if (isAlwaysUseDefaultTargetUrl() ||
+      (targetUrlParam != null && StringUtils.hasText(request.getParameter(targetUrlParam)))) {
+      if (LOG.isDebugEnabled()) LOG.debug("Target URL param exists.");
+      requestCache.removeRequest(request, response);
+      clearAuthenticationAttributes(request);
+      return;
+    }
+    clearAuthenticationAttributes(request);
+  }
+
+  public void setRequestCache(RequestCache requestCache) {
+    this.requestCache = requestCache;
+  }
 }

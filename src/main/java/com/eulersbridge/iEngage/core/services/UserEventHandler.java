@@ -3,9 +3,11 @@ package com.eulersbridge.iEngage.core.services;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.users.*;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.events.voteRecord.*;
 import com.eulersbridge.iEngage.core.events.voteReminder.*;
 import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
@@ -15,6 +17,7 @@ import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.rest.domain.UserProfile;
 import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
+import com.eulersbridge.iEngage.security.UserCredentialDetails;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.view.WebappResourceLoader;
@@ -32,7 +35,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
@@ -51,7 +54,7 @@ public class UserEventHandler implements UserService {
   private PersonalityRepository personRepository;
   private InstitutionRepository instRepository;
   private VerificationTokenRepository tokenRepository;
-//  @Autowired
+  //  @Autowired
   private VelocityEngine velocityEngine = null;
 
   public UserEventHandler(final UserRepository userRepository,
@@ -63,12 +66,12 @@ public class UserEventHandler implements UserService {
     this.instRepository = instRepo;
     this.tokenRepository = tokenRepo;
 
-    VelocityEngineFactoryBean ve=new VelocityEngineFactoryBean();
-		Properties velocityProperties=new Properties();
-		velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
-		velocityProperties.setProperty("webapp.resource.loader.path", "/");
-		velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
-		ve.setVelocityProperties(velocityProperties);
+    VelocityEngineFactoryBean ve = new VelocityEngineFactoryBean();
+    Properties velocityProperties = new Properties();
+    velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
+    velocityProperties.setProperty("webapp.resource.loader.path", "/");
+    velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
+    ve.setVelocityProperties(velocityProperties);
     velocityEngine = ve.getObject();
   }
 
@@ -632,22 +635,11 @@ public class UserEventHandler implements UserService {
   }
 
   @Override
-  public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(
-    String username) throws UsernameNotFoundException {
-    User user = userRepository.findByEmail(username);
-    if (user != null) {
-      boolean notLocked = true;
-      boolean enabled = user.getAccountVerified();
-      boolean acctNotExpired = true;
-      boolean credsNotExpired = true;
-      org.springframework.security.core.userdetails.UserDetails dets = new org.springframework.security.core.userdetails.User(
-        username, user.getPassword(), enabled, acctNotExpired,
-        credsNotExpired, notLocked,
-        authsFromString(user.getRoles()));
-      return dets;
-    } else {
-      throw new UsernameNotFoundException(username + " not found.");
-    }
+  public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    User user = userRepository.findByEmail(s, 0);
+    if (user == null)
+      throw new UsernameNotFoundException("User: " + s + " not found");
+    return new UserCredentialDetails(user);
   }
 
   @Override

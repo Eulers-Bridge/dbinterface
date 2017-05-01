@@ -31,69 +31,72 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
-public class LoginController 
-{
-    @Autowired UserService userService;
-	@Autowired NewsService newsService;
+public class LoginController {
+  @Autowired
+  UserService userService;
+  @Autowired
+  NewsService newsService;
 
-    private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
+  private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
-    private final AtomicLong counter = new AtomicLong();
+  private final AtomicLong counter = new AtomicLong();
 
 
-    @RequestMapping(value=ControllerConstants.LOGIN_LABEL,method=RequestMethod.GET)
-  	public @ResponseBody ResponseEntity<LogIn>  login() 
-    {
-    	SecurityContext context=SecurityContextHolder.getContext();
-    	Authentication authentication=context.getAuthentication();
-    	String username=authentication.getName();
-    	String password="*******";
-    	Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
-    	if (authentication.getCredentials()!=null) password=authentication.getCredentials().toString();
-    	if (LOG.isInfoEnabled()) LOG.info(username+" attempting to login. ");
-    	if (LOG.isDebugEnabled()) LOG.debug("auth - "+authentication+" username - "+username+" credentails - "+password+" roles - "+roles);
-    	
-		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. "+username);
-		ReadUserEvent userEvent=userService.readUser(new RequestReadUserEvent(username));
-		if (!userEvent.isEntityFound())
-		{
-			return new ResponseEntity<LogIn>(HttpStatus.NOT_FOUND);
-		}
+  @RequestMapping(value = ControllerConstants.LOGIN_LABEL, method = RequestMethod.GET)
+  public @ResponseBody
+  ResponseEntity<LogIn> login() {
+    SecurityContext context = SecurityContextHolder.getContext();
+    Authentication authentication = context.getAuthentication();
+    String username = authentication.getName();
+    String password = "*******";
+    Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
+    if (authentication.getCredentials() != null)
+      password = authentication.getCredentials().toString();
+    if (LOG.isInfoEnabled()) LOG.info(username + " attempting to login. ");
+    if (LOG.isDebugEnabled())
+      LOG.debug("auth - " + authentication + " username - " + username + " credentails - " + password + " roles - " + roles);
 
-		UserDetails userDetails=(UserDetails) userEvent.getDetails();
-		
-		int pageNumber=0;
-		int pageLength=10;
-		pageNumber=Integer.parseInt(ControllerConstants.PAGE_NUMBER);
-		pageLength=Integer.parseInt(ControllerConstants.PAGE_LENGTH);
-
-		Long institutionId=userDetails.getInstitutionId();
-		Long userId=userDetails.getNodeId();
-		ReadAllEvent rnae=new ReadAllEvent(institutionId);
-		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institutionId. "+institutionId);
-		Direction sortDirection=Direction.DESC;
-		NewsArticlesReadEvent articleEvent=newsService.readNewsArticles(rnae,sortDirection, pageNumber,pageLength);
-  	
-		if (!articleEvent.isEntityFound())
-		{
-			return new ResponseEntity<LogIn>(HttpStatus.NOT_FOUND);
-		}		
-		
-		LoginDetails result=new LoginDetails(articleEvent.getArticles().iterator(), userDetails,userId);
-		
-		LogIn response=LogIn.fromLoginDetails(result);
-		
-		return new ResponseEntity<LogIn>(response,HttpStatus.OK);
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to retrieve user. " + username);
+    ReadUserEvent userEvent = userService.readUser(new RequestReadUserEvent(username));
+    if (!userEvent.isEntityFound()) {
+      return new ResponseEntity<LogIn>(HttpStatus.NOT_FOUND);
     }
-    
-    @RequestMapping(value=ControllerConstants.LOGOUT_LABEL)
-    public @ResponseBody Response logout() 
-    {
-    	String username=SecurityContextHolder.getContext().getAuthentication().getName();
-    	if (LOG.isInfoEnabled()) LOG.info(username+" attempting to logout. ");
-    	Logout logout=new Logout(counter.incrementAndGet(),username);
-    	SecurityContextHolder.clearContext();
-    	Response response=logout.process();
-        return response;
+
+    UserDetails userDetails = (UserDetails) userEvent.getDetails();
+
+    int pageNumber = 0;
+    int pageLength = 10;
+    pageNumber = Integer.parseInt(ControllerConstants.PAGE_NUMBER);
+    pageLength = Integer.parseInt(ControllerConstants.PAGE_LENGTH);
+
+    Long institutionId = userDetails.getInstitutionId();
+    Long userId = userDetails.getNodeId();
+    ReadAllEvent rnae = new ReadAllEvent(institutionId);
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to retrieve news articles from institutionId. " + institutionId);
+    Direction sortDirection = Direction.DESC;
+    NewsArticlesReadEvent articleEvent = newsService.readNewsArticles(rnae, sortDirection, pageNumber, pageLength);
+
+    if (!articleEvent.isEntityFound()) {
+      return new ResponseEntity<LogIn>(HttpStatus.NOT_FOUND);
     }
+
+    LoginDetails result = new LoginDetails(articleEvent.getArticles().iterator(), userDetails, userId);
+
+    LogIn response = LogIn.fromLoginDetails(result);
+
+    return new ResponseEntity<LogIn>(response, HttpStatus.OK);
+  }
+
+  @RequestMapping(value = ControllerConstants.LOGOUT_LABEL)
+  public @ResponseBody
+  Response logout() {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    if (LOG.isInfoEnabled()) LOG.info(username + " attempting to logout. ");
+    Logout logout = new Logout(counter.incrementAndGet(), username);
+    SecurityContextHolder.clearContext();
+    Response response = logout.process();
+    return response;
+  }
 }

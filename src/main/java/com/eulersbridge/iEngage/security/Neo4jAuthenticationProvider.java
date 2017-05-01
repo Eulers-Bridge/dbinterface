@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
 import com.eulersbridge.iEngage.core.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,7 @@ public class Neo4jAuthenticationProvider implements AuthenticationProvider {
     super();
   }
 
+  @Autowired
   public Neo4jAuthenticationProvider(UserService userService) {
     super();
     this.userService = userService;
@@ -57,9 +59,7 @@ public class Neo4jAuthenticationProvider implements AuthenticationProvider {
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.springframework.security.authentication.AuthenticationProvider#supports(java.lang.Class)
-   */
+
   @Override
   public boolean supports(Class<?> authentication) {
     return authentication.equals(UsernamePasswordAuthenticationToken.class);
