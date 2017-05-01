@@ -36,18 +36,17 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationF
 //@EnableWebSecurity
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private static Logger LOG = LoggerFactory.getLogger(SecurityConfig.class);
 
   @Autowired
   UserService userService;
 
-  @Autowired
-  DigestAuthenticationEntryPoint digestEntryPoint;
-
-  @Autowired
-  PermissionEvaluator permissionEvaluator;
+//  @Autowired
+//  DigestAuthenticationEntryPoint digestEntryPoint;
+//
+//  @Autowired
+//  PermissionEvaluator permissionEvaluator;
 
 
   @Override
@@ -61,8 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    AppBasicAuthenticationEntryPoint entryPoint = new AppBasicAuthenticationEntryPoint();
-    AppBasicAuthenticationSuccessHandler successHandler = new AppBasicAuthenticationSuccessHandler();
+//    AppBasicAuthenticationEntryPoint entryPoint = new AppBasicAuthenticationEntryPoint();
+//    AppBasicAuthenticationSuccessHandler successHandler = new AppBasicAuthenticationSuccessHandler();
     http.authorizeRequests()
       .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.GENERAL_INFO_LABEL).permitAll()
       .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.SIGNUP_LABEL).permitAll()
@@ -71,51 +70,52 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatchers(ControllerConstants.DBINTERFACE_PREFIX + ControllerConstants.API_PREFIX + ControllerConstants.GENERAL_INFO_LABEL).permitAll()
       .antMatchers(ControllerConstants.DBINTERFACE_PREFIX + ControllerConstants.API_PREFIX + ControllerConstants.SIGNUP_LABEL).permitAll()
       .antMatchers(ControllerConstants.DBINTERFACE_PREFIX + ControllerConstants.API_PREFIX + ControllerConstants.EMAIL_VERIFICATION_LABEL + "/**").permitAll()
-      .antMatchers("/**").hasRole("USER").anyRequest().fullyAuthenticated()
-      .and()
-      .exceptionHandling().authenticationEntryPoint(digestEntryPoint())
-      .and()
-      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-      .and()
-      .addFilterAfter(digestFilter(), BasicAuthenticationFilter.class)
-      .httpBasic().authenticationEntryPoint(entryPoint)
-      .and()
-      .formLogin().permitAll().successHandler(successHandler)//.loginPage(loginPage)
-      .and()
-      .logout().permitAll()
+      .anyRequest().fullyAuthenticated();
+
+    http.httpBasic();
+//      .formLogin().permitAll()//.successHandler(successHandler)//.loginPage(loginPage)
+//        .and()
+//      .logout().permitAll();
+
+    http
+      .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+//      .addFilterAfter(digestFilter(), BasicAuthenticationFilter.class)
+//        .httpBasic()
+//        .authenticationEntryPoint(entryPoint)
+//        .and()
+//      .exceptionHandling()
+//        .authenticationEntryPoint(digestEntryPoint())
+//        .and()
       //TODO reenable CSRF security??
-      .and().csrf().disable();
-/*		
-    http.authorizeRequests().antMatchers("/*").authenticated().and()
-		.anonymous().
-		http.authorizeRequests().anyRequest().fullyAuthenticated().and().formLogin().loginPage(loginPage).permitAll();
-*/
+      .csrf().disable();
   }
 
-  @Bean
-  public DigestAuthenticationFilter digestFilter() {
-    if (LOG.isDebugEnabled()) LOG.debug("digestFilter()");
-    DigestAuthenticationFilter digestFilter = new DigestAuthenticationFilter();
-    digestFilter.setAuthenticationEntryPoint(digestEntryPoint);
-    digestFilter.setUserDetailsService(userService);
-    return digestFilter;
-  }
-
-  @Bean
-  public DigestAuthenticationEntryPoint digestEntryPoint() {
-    if (LOG.isDebugEnabled()) LOG.debug("digestEntryPoint()");
-    DigestAuthenticationEntryPoint digestEntryPoint = new DigestAuthenticationEntryPoint();
-    digestEntryPoint.setRealmName(SecurityConstants.REALM_NAME);
-    digestEntryPoint.setKey(SecurityConstants.DIGEST_KEY);
-    digestEntryPoint.setNonceValiditySeconds(SecurityConstants.NonceValiditySeconds);
-    return digestEntryPoint;
-  }
-
-  @Bean
-  public MethodSecurityExpressionHandler expressionHandler() {
-    DefaultMethodSecurityExpressionHandler bean = new DefaultMethodSecurityExpressionHandler();
-    bean.setPermissionEvaluator(permissionEvaluator);
-    return bean;
-  }
+//  @Bean
+//  public DigestAuthenticationFilter digestFilter() {
+//    if (LOG.isDebugEnabled()) LOG.debug("digestFilter()");
+//    DigestAuthenticationFilter digestFilter = new DigestAuthenticationFilter();
+//    digestFilter.setAuthenticationEntryPoint(digestEntryPoint);
+//    digestFilter.setUserDetailsService(userService);
+//    return digestFilter;
+//  }
+//
+//  @Bean
+//  public DigestAuthenticationEntryPoint digestEntryPoint() {
+//    if (LOG.isDebugEnabled()) LOG.debug("digestEntryPoint()");
+//    DigestAuthenticationEntryPoint digestEntryPoint = new DigestAuthenticationEntryPoint();
+//    digestEntryPoint.setRealmName(SecurityConstants.REALM_NAME);
+//    digestEntryPoint.setKey(SecurityConstants.DIGEST_KEY);
+//    digestEntryPoint.setNonceValiditySeconds(SecurityConstants.NonceValiditySeconds);
+//    return digestEntryPoint;
+//  }
+//
+//  @Bean
+//  public MethodSecurityExpressionHandler expressionHandler() {
+//    DefaultMethodSecurityExpressionHandler bean = new DefaultMethodSecurityExpressionHandler();
+//    bean.setPermissionEvaluator(permissionEvaluator);
+//    return bean;
+//  }
 
 }
