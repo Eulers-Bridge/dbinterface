@@ -976,7 +976,7 @@ public class UserEventHandlerTest {
   @Test
   public void shouldLoadUserByUsername() {
     User userData = DatabaseDataFixture.populateUserGnewitt();
-    when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+    when(uRepo.findByEmail(any(String.class),anyInt())).thenReturn(userData);
 
     org.springframework.security.core.userdetails.UserDetails nace = userServiceMocked.loadUserByUsername(userData.getEmail());
     assertNotNull(nace);
