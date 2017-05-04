@@ -6,10 +6,12 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.Transient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
+import javax.activation.DataContentHandler;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,16 +45,18 @@ public class User extends Node {
   private Node institution;
   @Relationship(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> verificationToken;
-  @Relationship(type = DatabaseDomainConstants.CONTACT_LABEL, direction = Relationship.UNDIRECTED)
-  private List<Node> contacts;
   @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> photos;
-  @Relationship(type = DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.UNDIRECTED)
-  private List<Node> completedTasks;
-  @Relationship(type = DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.UNDIRECTED)
-  private List<Node> completedBadges;
 
-//  @Query("match (n:" + DatabaseDomainConstants.TASK + ") return count(n)")
+  @Relationship(type = DatabaseDomainConstants.CONTACT_LABEL, direction = Relationship.UNDIRECTED)
+  private List<Contact> contacts;
+  @Relationship(type = DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.UNDIRECTED)
+  private List<TaskComplete> completedTasks;
+  @Relationship(type = DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.UNDIRECTED)
+  private List<BadgeComplete> completedBadges;
+
+
+  //  @Query("match (n:" + DatabaseDomainConstants.TASK + ") return count(n)")
 //  private Long totalTasks;
 //
 
@@ -204,19 +208,19 @@ public class User extends Node {
 
   //=============================================
 
-  public List<Task> getCompletedTasks() {
-    return castList(completedTasks, Task.class);
+  public List<TaskComplete> getCompletedTasks() {
+    return completedTasks;
   }
 
-  public List<Badge> getCompletedBadges() {
-    return castList(completedBadges, Badge.class);
+  public List<BadgeComplete> getCompletedBadges() {
+    return completedBadges;
   }
 
-  public void setCompletedTasks(List<Node> completedTasks) {
+  public void setCompletedTasks(List<TaskComplete> completedTasks) {
     this.completedTasks = completedTasks;
   }
 
-  public void setCompletedBadges(List<Node> completedBadges) {
+  public void setCompletedBadges(List<BadgeComplete> completedBadges) {
     this.completedBadges = completedBadges;
   }
 
@@ -271,13 +275,11 @@ public class User extends Node {
     this.photos = photos;
   }
 
-  public List<User> getContacts() {
-    return contacts.stream()
-      .map(node -> (User) node)
-      .collect(Collectors.toList());
+  public List<Contact> getContacts() {
+    return contacts;
   }
 
-  public void setContacts(List<Node> contacts) {
+  public void setContacts(List<Contact> contacts) {
     this.contacts = contacts;
   }
 

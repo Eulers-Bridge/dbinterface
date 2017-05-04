@@ -19,15 +19,11 @@ public class Poll extends Likeable implements Commentable {
   private Long start;
   private Long duration;
   @Relationship(type = DatabaseDomainConstants.CREATED_BY_LABEL)
-//	@Fetch
   private Node creator;
   @Relationship(type = DatabaseDomainConstants.HAS_POLL_LABEL)
-//	@Fetch
   private Node institution;
-
   @Relationship(type = DatabaseDomainConstants.HAS_COMMENT, direction = Relationship.UNDIRECTED)
   private List<Node> comments;
-
   @Relationship(type = DatabaseDomainConstants.APQ_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> answeredUsers;
 
@@ -128,7 +124,7 @@ public class Poll extends Likeable implements Commentable {
   }
 
   public Integer getNumberOfComments() {
-    if(comments==null)
+    if (comments == null)
       return 0;
     return comments.size();
   }
