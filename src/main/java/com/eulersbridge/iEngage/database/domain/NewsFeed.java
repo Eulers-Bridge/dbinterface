@@ -33,11 +33,10 @@ public class NewsFeed extends Node {
 
   public NewsFeedDetails toDetails() {
     NewsFeedDetails sfd = new NewsFeedDetails();
+    sfd.setNodeId(getNodeId());
     if (getInstitution() != null)
-      sfd.setNodeId(getNodeId());
-    {
       sfd.setInstitutionId(getInstitution().getNodeId());
-    }
+
     return sfd;
   }
 

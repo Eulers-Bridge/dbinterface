@@ -189,6 +189,8 @@ public class InstitutionEventHandler implements InstitutionService {
     ReadNewsFeedEvent readNewsFeedEvent) {
 //		NewsFeed sy=newsFeedRepository.findOne(readNewsFeedEvent.getNewsFeedId());
     NewsFeed newsFeed = newsFeedRepository.findNewsFeed(readNewsFeedEvent.getNodeId());
+    // Fixme: institution should be read from database rather than inject it after query
+    newsFeed.setInstitution(new Institution(readNewsFeedEvent.getNodeId()));
     ReadEvent result;
     if (newsFeed != null) {
       result = new NewsFeedReadEvent(readNewsFeedEvent.getNodeId(), newsFeed.toDetails());
