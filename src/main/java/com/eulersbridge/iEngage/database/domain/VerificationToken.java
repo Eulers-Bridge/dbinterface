@@ -20,7 +20,6 @@ public class VerificationToken extends Node {
   private String tokenType;
   private boolean verified = false;
   @Relationship(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction = Relationship.UNDIRECTED)
-//  @Fetch
   private Node user;
 
   private static Logger LOG = LoggerFactory.getLogger(VerificationToken.class);

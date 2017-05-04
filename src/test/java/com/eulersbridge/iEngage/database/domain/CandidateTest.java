@@ -61,6 +61,10 @@ public class CandidateTest
 	public final void testFromCandidateDetails()
 	{
 		Candidate candidateTest=Candidate.fromCandidateDetails(dets);
+		Position position = new Position(dets.getPositionId());
+		User user = new User(dets.getUserId());
+		candidateTest.setPosition(position);
+		candidateTest.setUser(user);
 		assertEquals("electionTest not of Election class",candidateTest.getClass(),Candidate.class);
 		assertEquals("",dets.getNodeId(),candidateTest.getNodeId());
 		assertEquals("",dets.getInformation(),candidateTest.getInformation());

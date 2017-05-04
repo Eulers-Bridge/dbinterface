@@ -101,7 +101,7 @@ public class UserEventHandler implements UserService {
       if ((inst != null) && (null == existingUser)) {
         if (LOG.isDebugEnabled())
           LOG.debug("Found institution = " + inst);
-        userToInsert.setInstitution(inst);
+        userToInsert.setInstitution(inst.toNode());
         userToInsert.setAccountVerified(false);
         userToInsert.setRoles(SecurityConstants.USER_ROLE);
         if (LOG.isDebugEnabled())
@@ -418,7 +418,7 @@ public class UserEventHandler implements UserService {
     if (inst != null) {
       if (LOG.isDebugEnabled()) LOG.debug("Found institution = " + inst);
       userToUpdate.setInstitution(inst);
-      result = userRepository.save(userToUpdate);
+      result = userRepository.save(userToUpdate, 0);
       if (LOG.isDebugEnabled()) LOG.debug("test = " + result);
     } else {
       return UserUpdatedEvent.instituteNotFound(updateUserEvent
@@ -495,11 +495,11 @@ public class UserEventHandler implements UserService {
     } else {
       user.setAccountVerified(true);
       if (LOG.isDebugEnabled()) LOG.debug("userToVerify :" + user);
-      resultUser = userRepository.save(user);
+      resultUser = userRepository.save(user, 0);
 
       token.setVerified(true);
       if (LOG.isDebugEnabled()) LOG.debug("tokenToVerify :" + token);
-      resultToken = tokenRepository.save(token);
+      resultToken = tokenRepository.save(token, 0);
 
       verificationResult = new UserAccountVerifiedEvent(emailToVerify,
         resultUser.toUserDetails(), resultToken.isVerified());
@@ -609,7 +609,7 @@ public class UserEventHandler implements UserService {
         personality.setNodeId(user.getPersonality().getNodeId());
       }
 
-      personalityAdded = personRepository.save(personality);
+      personalityAdded = personRepository.save(personality, 0);
       if (personalityAdded != null) {
         if (!existingPersonality) {
           Long personalityId = personalityAdded.getNodeId();

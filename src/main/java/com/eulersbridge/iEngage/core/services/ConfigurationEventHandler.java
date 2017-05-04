@@ -69,7 +69,7 @@ public class ConfigurationEventHandler implements ConfigurationService {
         LOG.debug("configuration entity not found " + configId);
       return ConfigurationUpdatedEvent.notFound(configId);
     } else {
-      Configuration result = configurationRepository.save(configuration);
+      Configuration result = configurationRepository.save(configuration, 0);
       if (LOG.isDebugEnabled())
         LOG.debug("updated successfully" + result.getNodeId());
       return new ConfigurationUpdatedEvent(result.getNodeId()

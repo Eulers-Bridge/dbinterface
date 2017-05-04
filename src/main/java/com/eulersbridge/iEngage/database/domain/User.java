@@ -68,8 +68,8 @@ public class User extends Node {
     if (LOG.isDebugEnabled()) LOG.debug("Constructor");
   }
 
-  public User(Long userId) {
-    this.nodeId = userId;
+  public User(Long nodeId) {
+    super(nodeId);
   }
 
   public User(String email, String givenName, String familyName, String gender, String nationality, String yearOfBirth, String password, String contactNumber) {
@@ -293,7 +293,7 @@ public class User extends Node {
 
     details.setUserId(nodeId);
 
-    details.setInstitutionId(this.getInstitution().getNodeId());
+    details.setInstitutionId(this.institution.getNodeId());
     Boolean personality = false;
     Personality thisPersonality = getPersonality();
     if (thisPersonality != null) {
@@ -333,7 +333,6 @@ public class User extends Node {
     user.email = userDetails.getEmail();
     user.givenName = userDetails.getGivenName();
     user.gender = userDetails.getGender();
-    userDetails.getInstitutionId();
     user.familyName = userDetails.getFamilyName();
     user.nationality = userDetails.getNationality();
     user.password = userDetails.getPassword();
@@ -346,8 +345,7 @@ public class User extends Node {
     user.setProfilePhoto(userDetails.getProfilePhoto());
     Institution inst = new Institution();
     inst.setNodeId(userDetails.getInstitutionId());
-    user.institution = inst;
-//		    BeanUtils.copyProperties( userDetails,user);
+    user.institution = inst.toNode();
     if (LOG.isTraceEnabled()) LOG.trace("user " + user);
     user.setExperience(userDetails.getExperience());
 

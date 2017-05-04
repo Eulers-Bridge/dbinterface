@@ -67,8 +67,8 @@ public class CandidateEventHandler implements CandidateService {
       if (positionId != null) position = positionRepository.findOne(positionId);
       if (position != null) {
         Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
-        candidate.setUser(user);
-        candidate.setPosition(position);
+        candidate.setUser(user.toNode());
+        candidate.setPosition(position.toNode());
         Candidate result = candidateRepository.save(candidate);
         if ((null == result) || (null == result.getNodeId()))
           candidateCreatedEvent = CreatedEvent.failed(candidateDetails);
@@ -155,17 +155,17 @@ public class CandidateEventHandler implements CandidateService {
           candidate.setInformation(candidateOld.getInformation());
         if (null == candidate.getPolicyStatement())
           candidate.setPolicyStatement(candidateOld.getPolicyStatement());
-        if (null == candidate.getPosition())
-          candidate.setPosition(candidateOld.getPosition());
-        if (null == candidate.getUser())
-          candidate.setUser(candidateOld.getUser());
-        if (null == candidate.getTicket())
-          candidate.setTicket(candidateOld.getTicket());
-        if (null == candidate.getPhotos())
-          candidate.setPhotos(Node.castList(candidateOld.getPhotos()));
+//        if (null == candidate.getPosition())
+//          candidate.setPosition(candidateOld.getPosition());
+//        if (null == candidate.getUser())
+//          candidate.setUser(candidateOld.getUser());
+//        if (null == candidate.getTicket())
+//          candidate.setTicket(candidateOld.getTicket());
+//        if (null == candidate.getPhotos())
+//          candidate.setPhotos(Node.castList(candidateOld.getPhotos()));
 
 
-        Candidate result = candidateRepository.save(candidate);
+        Candidate result = candidateRepository.save(candidate, 0);
         if (result != null) {
           if (LOG.isDebugEnabled())
             LOG.debug("updated successfully" + result.getNodeId());
@@ -204,7 +204,8 @@ public class CandidateEventHandler implements CandidateService {
     else if (ticket == null)
       ticketAddedEvent = UpdatedEvent.notFound(addTicketEvent.getTicketId());
     else {
-      candidate.setTicket(ticket);
+      candidate.prune();
+      candidate.setTicket(ticket.toNode());
       Candidate savedCandidate = candidateRepository.save(candidate);
       if (savedCandidate == null)
         ticketAddedEvent = UpdatedEvent.failed(addTicketEvent.getCandidateId());
@@ -221,6 +222,7 @@ public class CandidateEventHandler implements CandidateService {
     if (candidate == null)
       ticketRemovedEvent = UpdatedEvent.notFound(removeTicketEvent.getNodeId());
     else {
+      candidate.prune();
       candidate.setTicket(null);
       Candidate savedCandidate = candidateRepository.save(candidate);
       if (savedCandidate != null)

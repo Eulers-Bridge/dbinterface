@@ -115,6 +115,8 @@ public class UserEventHandlerTest {
     Institution inst = DatabaseDataFixture.populateInstUniMelb();
     User user = User.fromUserDetails(nADs);
     User user2 = User.fromUserDetails(nADs);
+    user.setInstitution(new Institution(nADs.getInstitutionId()));
+    user2.setInstitution(new Institution(nADs.getInstitutionId()));
     user2.setNodeId(543l);
 
     when(iRepo.findOne(any(Long.class))).thenReturn(inst);
@@ -151,6 +153,7 @@ public class UserEventHandlerTest {
     createUserEvent = new CreateUserEvent(nADs);
     Institution inst = DatabaseDataFixture.populateInstUniMelb();
     User user = User.fromUserDetails(nADs);
+    user.setInstitution(new Institution(nADs.getInstitutionId()));
     user.setNodeId(543l);
 
     when(iRepo.findOne(any(Long.class))).thenReturn(inst);
@@ -269,8 +272,8 @@ public class UserEventHandlerTest {
     VerificationToken tokData = new VerificationToken(VerificationTokenType.emailVerification, userData, 60);
     when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
     when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
-    when(uRepo.save(any(User.class))).thenReturn(userData);
-    when(tRepo.save(any(VerificationToken.class))).thenReturn(tokData);
+    when(uRepo.save(any(User.class), anyInt())).thenReturn(userData);
+    when(tRepo.save(any(VerificationToken.class), anyInt())).thenReturn(tokData);
 
     UserAccountVerifiedEvent nace = userServiceMocked.validateUserAccount(verifyUserAccountEvent);
     assertNotNull(nace);
@@ -341,6 +344,7 @@ public class UserEventHandlerTest {
     String token = "testToken";
     verifyUserAccountEvent = new VerifyUserAccountEvent(userData.getEmail(), token);
     VerificationToken tokData = new VerificationToken(VerificationTokenType.emailVerification, userData, 60);
+    tokData.setUser(userData);
     tokData.setVerified(true);
     when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
     when(tRepo.findByToken(any(String.class))).thenReturn(tokData);
@@ -475,10 +479,13 @@ public class UserEventHandlerTest {
     nADs.setInstitutionId((long) 1);
     nADs.setPassword("123");
 
+    User user1 = User.fromUserDetails(nADs);
+    user1.setInstitution(new Institution(nADs.getInstitutionId()));
+
     UpdateUserEvent updateUserEvent = new UpdateUserEvent(nADs.getEmail(), nADs);
     when(uRepo.findByEmail(any(String.class))).thenReturn(user);
     when(iRepo.findOne(any(Long.class))).thenReturn(inst);
-    when(uRepo.save(any(User.class))).thenReturn(User.fromUserDetails(nADs));
+    when(uRepo.save(any(User.class), anyInt())).thenReturn(user1);
 
     UserUpdatedEvent nude = (UserUpdatedEvent) userServiceMocked.updateUser(updateUserEvent);
     assertNotNull("UserUpdatedEvent returned null", nude);
@@ -529,11 +536,13 @@ public class UserEventHandlerTest {
     nADs.setGender("Female");
     nADs.setInstitutionId((long) 1);
     nADs.setPassword("123");
+    User user = User.fromUserDetails(nADs);
+    user.setInstitution(new Institution(nADs.getInstitutionId()));
 
     UpdateUserEvent updateUserEvent = new UpdateUserEvent(nADs.getEmail(), nADs);
     when(uRepo.findByEmail(any(String.class))).thenReturn(null);
     when(iRepo.findOne(any(Long.class))).thenReturn(inst);
-    when(uRepo.save(any(User.class))).thenReturn(User.fromUserDetails(nADs));
+    when(uRepo.save(any(User.class), anyInt())).thenReturn(user);
 
     UserUpdatedEvent nude = (UserUpdatedEvent) userServiceMocked.updateUser(updateUserEvent);
     assertNotNull("UserUpdatedEvent returned null", nude);
@@ -673,7 +682,7 @@ public class UserEventHandlerTest {
       details);
     Personality personality = Personality.fromPersonalityDetails(details);
     when(uRepo.findByEmail(any(String.class))).thenReturn(user);
-    when(pRepo.save(any(Personality.class))).thenReturn(personality);
+    when(pRepo.save(any(Personality.class), anyInt())).thenReturn(personality);
     when(uRepo.addPersonality(any(Long.class), any(Long.class))).thenReturn(personality);
     PersonalityAddedEvent evtAdd = userServiceMocked.addPersonality(addEvt);
     assertNotNull("", evtAdd.getPersonalityDetails().getPersonalityId());

@@ -23,6 +23,7 @@ import java.util.Calendar;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 /**
@@ -391,7 +392,7 @@ public class ContactRequestEventHandlerTest
 		when(userRepository.findByContactNumber(any(String.class))).thenReturn(userData);
 		Contact value=DatabaseDataFixture.populateContact1();
 		when(userRepository.addContact(any(Long.class), any(Long.class))).thenReturn(value);
-		when(contactRequestRepository.save(any(ContactRequest.class))).thenReturn(respData);
+		when(contactRequestRepository.save(any(ContactRequest.class), anyInt())).thenReturn(respData);
 		Details details=new Details();
 		UpdateEvent rejectContactRequestEvent=new UpdateEvent(testData.getNodeId(), details);
 		UpdatedEvent uEvt=service.rejectContactRequest(rejectContactRequestEvent);

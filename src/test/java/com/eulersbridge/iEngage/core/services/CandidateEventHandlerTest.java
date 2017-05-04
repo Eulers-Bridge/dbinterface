@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -337,7 +338,7 @@ public class CandidateEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("UpdatingCandidate()");
 		Candidate testData=DatabaseDataFixture.populateCandidate1();
 		when(candidateRepository.findOne(any(Long.class))).thenReturn(testData);
-		when(candidateRepository.save(any(Candidate.class))).thenReturn(testData);
+		when(candidateRepository.save(any(Candidate.class), anyInt())).thenReturn(testData);
 		CandidateDetails dets=testData.toCandidateDetails();
 		UpdateCandidateEvent createElectionEvent=new UpdateCandidateEvent(dets.getNodeId(), dets);
 		UpdatedEvent evtData = service.updateCandidate(createElectionEvent);

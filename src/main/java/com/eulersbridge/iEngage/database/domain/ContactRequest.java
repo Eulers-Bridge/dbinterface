@@ -52,7 +52,7 @@ public class ContactRequest extends Node {
     contactRequest.setResponseDate(dets.getResponseDate());
     User user = new User();
     user.setNodeId(dets.getUserId());
-    contactRequest.setUser(user);
+    contactRequest.setUser(user.toNode());
     contactRequest.setAccepted(dets.getAccepted());
     contactRequest.setRejected(dets.getRejected());
 

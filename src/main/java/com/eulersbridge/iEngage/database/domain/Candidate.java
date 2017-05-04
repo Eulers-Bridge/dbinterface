@@ -66,10 +66,10 @@ public class Candidate extends Likeable {
       user.setNodeId(userId);
     else if (email != null)
       user.setEmail(email);
-    candidate.setUser(user);
+    candidate.setUser(user.toNode());
     Position position = new Position();
     position.setNodeId(candidateDetails.getPositionId());
-    candidate.setPosition(position);
+    candidate.setPosition(position.toNode());
 
 //        candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
 
@@ -138,7 +138,7 @@ public class Candidate extends Likeable {
    * @return the user
    */
   public User getUser() {
-    return (User)user;
+    return (User) user;
   }
 
   /**
@@ -171,7 +171,7 @@ public class Candidate extends Likeable {
   }
 
   public Ticket getTicket() {
-    return (Ticket)ticket;
+    return (Ticket) ticket;
   }
 
   public void setTicket(Node ticket) {
@@ -251,5 +251,14 @@ public class Candidate extends Likeable {
       } else if (!photos.equals(other.photos)) return false;
     }
     return true;
+  }
+
+  public void prune() {
+    this.position = position == null ? null : position.toNode();
+    this.user = user == null ? null : user.toNode();
+    this.ticket = ticket == null ? null : ticket.toNode();
+    if (photos != null){
+      this.photos = toNodeList(photos);
+    }
   }
 }

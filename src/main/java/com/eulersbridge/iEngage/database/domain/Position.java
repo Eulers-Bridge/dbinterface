@@ -26,6 +26,10 @@ public class Position extends Node {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");
   }
 
+  public Position(Long nodeId) {
+    super(nodeId);
+  }
+
   public static Position fromPositionDetails(PositionDetails positionDetails) {
     if (LOG.isTraceEnabled()) LOG.trace("fromPositionDetails()");
     Position position = new Position();

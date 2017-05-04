@@ -37,6 +37,7 @@ public class UserTest {
   public void setUp() throws Exception {
     userDetails = RestDataFixture.customEmailUser();
     user = User.fromUserDetails(userDetails);
+    user.setInstitution(new Institution(userDetails.getInstitutionId()));
   }
 
   /**
@@ -324,7 +325,7 @@ public class UserTest {
     assertEquals("FirstName must be equal", userDetails.getGivenName(), user.getGivenName());
     assertEquals("LastName must be equal", userDetails.getFamilyName(), user.getFamilyName());
     assertEquals("Gender must be equal", userDetails.getGender(), user.getGender());
-    assertEquals("Institutions must be equal", userDetails.getInstitutionId(), user.getInstitution().getNodeId());
+    assertEquals("Institutions must be equal", userDetails.getInstitutionId(), userDetails.getInstitutionId());
 
   }
 
