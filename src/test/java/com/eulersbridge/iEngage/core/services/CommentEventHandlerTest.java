@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -296,7 +297,7 @@ public class CommentEventHandlerTest {
         when(userRepository.findByEmail(any(String.class))).thenReturn(testUser);
         when(ownerRepository.findOne(any(Long.class))).thenReturn(testObject);
         when(commentRepository.findOne(any(Long.class))).thenReturn(testComment);
-        when(commentRepository.save(any(Comment.class))).thenReturn(testComment1);
+        when(commentRepository.save(any(Comment.class), anyInt())).thenReturn(testComment1);
 
         UpdatedEvent commentUpdatedEvent = service.updateComment(new UpdateCommentEvent(testComment1.getNodeId(),
                 testComment1.toCommentDetails()));
