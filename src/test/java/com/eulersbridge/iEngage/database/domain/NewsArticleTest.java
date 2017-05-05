@@ -8,8 +8,6 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import org.junit.*;
 
 import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -202,6 +200,9 @@ public class NewsArticleTest {
   public void testFromNewsArticleDetails() {
     NewsArticleDetails dets = news.toNewsArticleDetails();
     NewsArticle news2 = NewsArticle.fromNewsArticleDetails(dets);
+    User creator = new User();
+    creator.setEmail(news.getCreator().getEmail());
+    news2.setCreator(creator);
     assertEquals("Titles don't match.", news2.getTitle(), news.getTitle());
     assertEquals("Contents don't match.", news2.getContent(), news.getContent());
     assertEquals("Dates don't match.", news2.getDate(), news.getDate());

@@ -11,15 +11,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 //All methods are guaranteed to return something, null will never be returned.
 public interface CountryService {
-    @PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"')")
-	public CountryCreatedEvent createCountry(CreateCountryEvent createCountryEvent);
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public ReadEvent readCountry(ReadCountryEvent readCountryEvent);
-    @PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"')")
-	public UpdatedEvent updateCountry(UpdateCountryEvent updateCountryEvent);
-    @PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"')")
-	public DeletedEvent deleteCountry(DeleteCountryEvent deleteCountryEvent);
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public CountrysReadEvent readCountrys(ReadAllEvent readCountrysEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "')")
+  public CountryCreatedEvent createCountry(CreateCountryEvent createCountryEvent);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public ReadEvent readCountry(ReadCountryEvent readCountryEvent);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "')")
+  public UpdatedEvent updateCountry(UpdateCountryEvent updateCountryEvent);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "')")
+  public DeletedEvent deleteCountry(DeleteCountryEvent deleteCountryEvent);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public CountrysReadEvent readCountrys(ReadAllEvent readCountrysEvent);
 
 }

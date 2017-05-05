@@ -41,13 +41,13 @@ public class EventEventHandler implements EventService {
 
     if (LOG.isDebugEnabled())
       LOG.debug("Finding institution with instId = " + instId);
-    Institution inst = institutionRepository.findOne(instId);
-    NewsFeed nf = institutionRepository.findNewsFeed(instId);
+    Institution inst = institutionRepository.findOne(instId, 0);
+    NewsFeed nf = institutionRepository.findNewsFeedByInstitutionId(instId);
     if (LOG.isDebugEnabled()) LOG.debug("news feed - " + nf);
 
     EventCreatedEvent eventCreatedEvent;
     if ((inst != null) && (nf != null)) {
-      event.setNewsFeed(nf);
+      event.setNewsFeed(nf.toNode());
       Event result = eventRepository.save(event);
       eventCreatedEvent = new EventCreatedEvent(result.getNodeId(),
         result.toEventDetails());
@@ -81,9 +81,10 @@ public class EventEventHandler implements EventService {
     if (LOG.isDebugEnabled())
       LOG.debug("Finding institution with id = "
         + eventDetails.getInstitutionId());
-    NewsFeed nf = institutionRepository.findNewsFeed(eventDetails
+    NewsFeed nf = institutionRepository.findNewsFeedByInstitutionId(eventDetails
       .getInstitutionId());
-    event.setNewsFeed(nf);
+    if (nf != null)
+      event.setNewsFeed(nf.toNode());
     if (LOG.isDebugEnabled())
       LOG.debug("news feed - " + nf + ",event Id is " + eventId);
 
@@ -93,7 +94,7 @@ public class EventEventHandler implements EventService {
         LOG.debug("event entity not found " + eventId);
       return EventUpdatedEvent.notFound(eventId);
     } else {
-      Event result = eventRepository.save(event);
+      Event result = eventRepository.save(event, 0);
       if (LOG.isDebugEnabled())
         LOG.debug("updated successfully" + result.getNodeId());
       return new EventUpdatedEvent(result.getNodeId(),

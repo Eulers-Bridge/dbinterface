@@ -62,9 +62,9 @@ public class PollEventHandler implements PollService {
 
     if (LOG.isDebugEnabled())
       LOG.debug("Finding owner with ownerId = " + pollDetails.getOwnerId());
-    Institution owner = institutionRepository.findOne(pollDetails.getOwnerId());
+    Institution institution = institutionRepository.findOne(pollDetails.getOwnerId());
     PollCreatedEvent pollCreatedEvent;
-    if (null == owner)
+    if (null == institution)
       pollCreatedEvent = PollCreatedEvent.ownerNotFound(pollDetails.getOwnerId());
     else {
 
@@ -75,8 +75,8 @@ public class PollEventHandler implements PollService {
       if (null == creator)
         pollCreatedEvent = PollCreatedEvent.creatorNotFound(pollDetails.getCreatorId());
       else {
-        poll.setInstitution(owner);
-        poll.setCreator(new User(creator.getNodeId()));
+        poll.setInstitution(institution.toNode());
+        poll.setCreator((new User(creator.getNodeId())).toNode());
         Poll result = pollRepository.save(poll);
         pollCreatedEvent = new PollCreatedEvent(result.toPollDetails());
       }
@@ -117,10 +117,10 @@ public class PollEventHandler implements PollService {
     } else {
       if (LOG.isDebugEnabled())
         LOG.debug("Finding owner with ownerId = " + pollDetails.getOwnerId());
-      Institution owner = null;
+      Institution institution = null;
       if (null != pollDetails.getOwnerId())
-        owner = institutionRepository.findOne(pollDetails.getOwnerId());
-      if (null == owner)
+        institution = institutionRepository.findOne(pollDetails.getOwnerId());
+      if (null == institution)
         resultEvt = PollUpdatedEvent.ownerNotFound(pollDetails.getOwnerId());
       else {
 
@@ -133,9 +133,9 @@ public class PollEventHandler implements PollService {
         if (null == creator)
           resultEvt = PollUpdatedEvent.creatorNotFound(pollDetails.getCreatorId());
         else {
-          poll.setInstitution(owner);
-          poll.setCreator(new User(creator.getNodeId()));
-          Poll result = pollRepository.save(poll);
+          poll.setInstitution(institution.toNode());
+          poll.setCreator((new User(creator.getNodeId())).toNode());
+          Poll result = pollRepository.save(poll, 0);
           resultEvt = new PollUpdatedEvent(result.getNodeId(), result.toPollDetails());
         }
       }

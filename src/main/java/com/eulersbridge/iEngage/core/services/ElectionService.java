@@ -9,29 +9,28 @@ import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * Created by darcular on 4/09/14.
  */
-public interface ElectionService
-{
+public interface ElectionService {
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent);
 
-    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.RETURNING_OFFICER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public ReadEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public ReadEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public ReadEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public ReadEvent readNextElection(RequestReadElectionEvent requestReadElectionEvent);
 
-    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public DeletedEvent deleteElection(DeleteElectionEvent deleteElectionEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.RETURNING_OFFICER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public DeletedEvent deleteElection(DeleteElectionEvent deleteElectionEvent);
 
-    @PreAuthorize("hasAnyRole('"+SecurityConstants.RETURNING_OFFICER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public UpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.RETURNING_OFFICER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public UpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public AllReadEvent readElections(ReadAllEvent readElectionsEvent,
-				Direction sortDirection,int pageNumber, int pageLength);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public AllReadEvent readElections(ReadAllEvent readElectionsEvent,
+                                    Direction sortDirection, int pageNumber, int pageLength);
 
 }

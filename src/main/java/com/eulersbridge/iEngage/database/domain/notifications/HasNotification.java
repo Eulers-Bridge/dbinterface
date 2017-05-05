@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain.notifications;
 
 import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
@@ -17,9 +18,9 @@ public class HasNotification {
   @GraphId
   private Long id;
   @StartNode
-  private User user;
+  private Node user;
   @EndNode
-  private Notification notification;
+  private Node notification;
 
   private Boolean read = false;
 
@@ -34,19 +35,27 @@ public class HasNotification {
     this.id = id;
   }
 
-  public User getUser() {
-    return user;
+  public User getUser$() {
+    return (User) user;
   }
 
-  public void setUser(User user) {
+  public void setUser(Node user) {
     this.user = user;
   }
 
-  public Notification getNotification() {
+  public Notification getNotification$() {
+    return (Notification) notification;
+  }
+
+  public Node getUser() {
+    return user;
+  }
+
+  public Node getNotification() {
     return notification;
   }
 
-  public void setNotification(Notification notification) {
+  public void setNotification(Node notification) {
     this.notification = notification;
   }
 

@@ -29,9 +29,9 @@ public class Notification extends Node implements NotificationInterface {
   Long timestamp;
   String type;
   @Relationship(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction = Relationship.INCOMING)
-  Node user;
-  @Relationship(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction = Relationship.INCOMING)
   HasNotification hasNotificationRelationship;
+  @Relationship(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction = Relationship.INCOMING)
+  Node user;
 
   public Boolean isRead() {
     if (hasNotificationRelationship != null && hasNotificationRelationship.getRead() != null)
@@ -46,38 +46,30 @@ public class Notification extends Node implements NotificationInterface {
     UserRepository userRepo = (UserRepository) repos.get(UserRepository.class.getSimpleName());
     if (userRepo != null) {
       if (LOG.isDebugEnabled()) LOG.debug("User Repository available.");
-      if (getUser() != null) {
-        if (LOG.isDebugEnabled()) LOG.debug("User available." + getUser());
-        User result = null;
-        if (getUser().getNodeId() != null)
-          result = userRepo.findOne(getUser().getNodeId());
-        else if (getUser().getEmail() != null)
-          result = userRepo.findByEmail(getUser().getEmail());
 
-
+      User result = null;
+      if (hasNotificationRelationship != null
+        && hasNotificationRelationship.getUser() != null) {
+        result = userRepo.findOne(hasNotificationRelationship.getUser().getNodeId());
         if (result != null) {
-          // shift user to HasNotification obj
-          // set Notification level user to null to avoid duplicated relationship link during save
-          user = null;
-          hasNotificationRelationship.setUser(result);
           response = true;
         }
       } else {
         if (LOG.isErrorEnabled())
-          LOG.error("An issue with supplied user." + getUser());
+          LOG.error("An issue with supplied user.");
       }
+
     }
     return response;
   }
 
   public NotificationDetails toNotificationDetails() {
     if (LOG.isDebugEnabled()) LOG.debug("toNotificationDetails()");
-
     Long userId = null;
-    if (user != null) userId = user.getNodeId();
-
-    NotificationDetails dets = new NotificationDetails(nodeId, userId, timestamp, isRead(), type, null);
-    return dets;
+    if (hasNotificationRelationship != null && hasNotificationRelationship.getUser() != null)
+      userId = hasNotificationRelationship.getUser().getNodeId();
+    NotificationDetails details = new NotificationDetails(nodeId, userId, timestamp, isRead(), type, null);
+    return details;
   }
 
   public static Notification fromNotificationDetails(NotificationDetails nDets) {
@@ -86,14 +78,14 @@ public class Notification extends Node implements NotificationInterface {
       notif = NotificationHelper.notificationFactory(nDets);
       notif.setType(nDets.getType());
       notif.setNodeId(nDets.getNodeId());
-      User user = new User(nDets.getUserId());
-      notif.setUser(user);
 
+      User user = new User(nDets.getUserId());
       HasNotification hasNotification = new HasNotification();
       hasNotification.setNotification(notif);
-      hasNotification.setUser(user);
-      notif.setHasNotificationRelationship(hasNotification);
+      hasNotification.setUser(user.toNode());
 
+      notif.setHasNotificationRelationship(hasNotification);
+      notif.setUser(user.toNode());
       notif.setRead(nDets.getRead());
       notif.setTimestamp(nDets.getTimestamp());
 
@@ -168,30 +160,11 @@ public class Notification extends Node implements NotificationInterface {
     this.type = type;
   }
 
-
-  /**
-   * @return the user
-   */
-  public User getUser() {
-    return (User) user;
-  }
-
-
-  /**
-   * @param user the user to set
-   */
-  public void setUser(Node user) {
-    this.user = user;
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     return "Notification [nodeId=" + nodeId + ", read=" + hasNotificationRelationship.getRead()
-      + ", timestamp=" + timestamp + ", type=" + type + ", user="
-      + user + ", hasNotification=" + hasNotificationRelationship.getId() + "]";
+      + ", timestamp=" + timestamp + ", type=" + type +
+      ", hasNotification=" + hasNotificationRelationship.getId() + "]";
   }
 
   public HasNotification getHasNotificationRelationship() {
@@ -200,5 +173,17 @@ public class Notification extends Node implements NotificationInterface {
 
   public void setHasNotificationRelationship(HasNotification hasNotificationRelationship) {
     this.hasNotificationRelationship = hasNotificationRelationship;
+  }
+
+  public Node getUser() {
+    return user;
+  }
+
+  public User getUser$(){
+    return (User) user;
+  }
+
+  public void setUser(Node user) {
+    this.user = user;
   }
 }

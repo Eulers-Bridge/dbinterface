@@ -63,7 +63,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
         LOG.debug("forumQuestion entity not found " + forumQuestionId);
       return ForumQuestionUpdatedEvent.notFound(forumQuestionId);
     } else {
-      ForumQuestion result = forumQuestionRepository.save(forumQuestion);
+      ForumQuestion result = forumQuestionRepository.save(forumQuestion, 0);
       if (LOG.isDebugEnabled())
         LOG.debug("updated successfully" + result.getNodeId());
       return new ForumQuestionUpdatedEvent(result.getNodeId(), result.toForumQuestionDetails());

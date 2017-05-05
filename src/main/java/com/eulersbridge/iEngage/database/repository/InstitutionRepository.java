@@ -22,7 +22,7 @@ public interface InstitutionRepository extends GraphRepository<Institution>
 //+" WITH q, m MATCH m-[:HAS_STUDENT_YEAR]-x RETURN m")
 	@Query("Match (i:`"+DatabaseDomainConstants.INSTITUTION+"`)-["+DatabaseDomainConstants.HAS_NEWS_FEED_LABEL+"]-(n:`"+
 			DatabaseDomainConstants.NEWS_FEED+"`) where id(i)={instId} RETURN n")
-	NewsFeed findNewsFeed(@Param("instId") Long institutionId);
+	NewsFeed findNewsFeedByInstitutionId(@Param("instId") Long institutionId);
 
 	@Query("MATCH (i:`Institution`)-[]-(c:`Country`) where id(c)={countryId} return i")
 	List<Institution> findByCountryId(@Param("countryId") Long countryId);

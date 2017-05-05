@@ -10,32 +10,31 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * @author Yikai Gong
  */
 
-public interface TaskService
-{
-    @PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public CreatedEvent createTask(CreateTaskEvent createTaskEvent);
+public interface TaskService {
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.CONTENT_MANAGER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public CreatedEvent createTask(CreateTaskEvent createTaskEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public ReadEvent requestReadTask(RequestReadTaskEvent requestReadTaskEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public ReadEvent requestReadTask(RequestReadTaskEvent requestReadTaskEvent);
 
-    @PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public UpdatedEvent updateTask(UpdateTaskEvent updateTaskEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.CONTENT_MANAGER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public UpdatedEvent updateTask(UpdateTaskEvent updateTaskEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public UpdatedEvent completedTask(CompletedTaskEvent updateTaskEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public UpdatedEvent completedTask(CompletedTaskEvent updateTaskEvent);
 
-    	@PreAuthorize("hasAnyRole('"+SecurityConstants.CONTENT_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public DeletedEvent deleteTask(DeleteTaskEvent deleteTaskEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.CONTENT_MANAGER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public DeletedEvent deleteTask(DeleteTaskEvent deleteTaskEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public AllReadEvent readTasks(ReadAllEvent readTasksEvent,
-			Direction sortDirection, int pageNumber, int pageLength);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public AllReadEvent readTasks(ReadAllEvent readTasksEvent,
+                                Direction sortDirection, int pageNumber, int pageLength);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public AllReadEvent readCompletedTasks(ReadAllEvent readCompletedTasksEvent,
-			Direction sortDirection, int pageNumber, int pageLength);
-    
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public AllReadEvent readRemainingTasks(ReadAllEvent readCompletedTasksEvent,
-			Direction sortDirection, int pageNumber, int pageLength);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public AllReadEvent readCompletedTasks(ReadAllEvent readCompletedTasksEvent,
+                                         Direction sortDirection, int pageNumber, int pageLength);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public AllReadEvent readRemainingTasks(ReadAllEvent readCompletedTasksEvent,
+                                         Direction sortDirection, int pageNumber, int pageLength);
 }

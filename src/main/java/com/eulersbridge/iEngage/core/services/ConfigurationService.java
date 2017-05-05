@@ -11,16 +11,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface ConfigurationService {
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public ConfigurationCreatedEvent createConfiguration(CreateConfigurationEvent createConfigurationEvent);
+  @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+  public ConfigurationCreatedEvent createConfiguration(CreateConfigurationEvent createConfigurationEvent);
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ReadEvent requestReadConfiguration(RequestReadConfigurationEvent requestReadConfigurationEvent);
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public ReadEvent requestReadConfiguration(RequestReadConfigurationEvent requestReadConfigurationEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public UpdatedEvent updateConfiguration(UpdateConfigurationEvent updateConfigurationEvent);
+  @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+  public UpdatedEvent updateConfiguration(UpdateConfigurationEvent updateConfigurationEvent);
 
-    @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
-    public DeletedEvent deleteConfiguration(DeleteConfigurationEvent deleteConfigurationEvent);
+  @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','ROLE_ADMIN')")
+  public DeletedEvent deleteConfiguration(DeleteConfigurationEvent deleteConfigurationEvent);
 
 }

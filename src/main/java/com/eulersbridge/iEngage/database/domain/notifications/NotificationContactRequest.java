@@ -25,8 +25,7 @@ import java.util.Iterator;
  */
 public class NotificationContactRequest extends Notification implements NotificationInterface {
   @Relationship(type = DatabaseDomainConstants.HAS_NOTIFICATION_DETAILS_LABEL, direction = Relationship.OUTGOING)
-//	@Fetch
-    ContactRequest contactRequest;
+  ContactRequest contactRequest;
 
   static Logger LOG = LoggerFactory.getLogger(NotificationContactRequest.class);
 
@@ -75,12 +74,10 @@ public class NotificationContactRequest extends Notification implements Notifica
 
   @Override
   public NotificationDetails toNotificationDetails() {
-    if (LOG.isDebugEnabled()) LOG.debug("toNotificationDetails()");
-    Long userId = null;
-    if (user != null) userId = user.getNodeId();
+    NotificationDetails details = super.toNotificationDetails();
     ContactRequestDetails contactRequestDetails = contactRequest.toContactRequestDetails();
-    NotificationDetails dets = new NotificationDetails(nodeId, userId, timestamp, isRead(), type, contactRequestDetails);
-    return dets;
+    details.setNotificationBody(contactRequestDetails);
+    return details;
   }
 
   public static NotificationContactRequest fromNotificationDetails(NotificationDetails nDets) {
@@ -94,7 +91,11 @@ public class NotificationContactRequest extends Notification implements Notifica
       notif.setType(nDets.getType());
       notif.setNodeId(nDets.getNodeId());
       User user = new User(nDets.getUserId());
-      notif.setUser(user);
+      HasNotification hasNotification = new HasNotification();
+      hasNotification.setNotification(notif);
+      hasNotification.setUser(user.toNode());
+      notif.setHasNotificationRelationship(hasNotification);
+      notif.setUser(user.toNode());
       notif.setRead(nDets.getRead());
       notif.setTimestamp(nDets.getTimestamp());
     }
@@ -141,7 +142,7 @@ public class NotificationContactRequest extends Notification implements Notifica
   public String toString() {
     return "NotificationContactRequest [contactRequest=" + contactRequest
       + ", nodeId=" + nodeId + ", read=" + isRead() + ", timestamp="
-      + timestamp + ", type=" + type + ", user=" + user + "]";
+      + timestamp + ", type=" + type + "]";
   }
 
 }

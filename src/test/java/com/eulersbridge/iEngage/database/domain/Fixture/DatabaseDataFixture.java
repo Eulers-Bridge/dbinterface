@@ -1,10 +1,7 @@
 package com.eulersbridge.iEngage.database.domain.Fixture;
 
 import com.eulersbridge.iEngage.database.domain.*;
-import com.eulersbridge.iEngage.database.domain.notifications.Notification;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationContactRequest;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationMessage;
+import com.eulersbridge.iEngage.database.domain.notifications.*;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 import java.util.*;
@@ -841,7 +838,9 @@ public class DatabaseDataFixture {
     notification.setRead(read);
     notification.setTimestamp(timestamp);
     notification.setType(type);
-    notification.setUser(user);
+    HasNotification hasNotification = new HasNotification();
+    hasNotification.setUser(user);
+    notification.setHasNotificationRelationship(hasNotification);
     return notification;
   }
 
@@ -851,7 +850,9 @@ public class DatabaseDataFixture {
     notification.setRead(read);
     notification.setTimestamp(timestamp);
     notification.setType(type);
-    notification.setUser(user);
+    HasNotification hasNotification = new HasNotification();
+    hasNotification.setUser(user);
+    notification.setHasNotificationRelationship(hasNotification);
     notification.setMessage(message);
     return notification;
   }
@@ -882,7 +883,9 @@ public class DatabaseDataFixture {
     ncr.setRead(read);
     ncr.setTimestamp(timestamp);
     ncr.setType(type);
-    ncr.setUser(user);
+    HasNotification hasNotification = new HasNotification();
+    hasNotification.setUser(user);
+    ncr.setHasNotificationRelationship(hasNotification);
 
     return ncr;
   }

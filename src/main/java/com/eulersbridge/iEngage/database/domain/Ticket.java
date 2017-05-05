@@ -47,7 +47,7 @@ public class Ticket extends Likeable {
       ticket.setInformation(ticketDetails.getInformation());
       Election election = new Election();
       election.setNodeId(ticketDetails.getElectionId());
-      ticket.setElection(election);
+      ticket.setElection(election.toNode());
       ticket.setColour(ticketDetails.getColour());
       ticket.setCode(ticketDetails.getChararcterCode());
 

@@ -68,9 +68,9 @@ public class Poll extends Likeable implements Commentable {
 //		Owner institution = new Owner(pollDetails.getOwnerId());
     Institution owner = new Institution();
     owner.setNodeId(pollDetails.getOwnerId());
-    poll.setInstitution(owner);
+    poll.setInstitution(owner.toNode());
     User creator = new User(pollDetails.getCreatorId());
-    poll.setCreator(creator);
+    poll.setCreator(creator.toNode());
     if (LOG.isTraceEnabled()) LOG.trace("poll " + poll);
     return poll;
   }

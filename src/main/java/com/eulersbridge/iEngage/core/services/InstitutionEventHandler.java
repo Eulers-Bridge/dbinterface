@@ -51,7 +51,7 @@ public class InstitutionEventHandler implements InstitutionService {
     Institution createdInst = null;
 
     if (country != null) {
-      instToInsert.setCountry(country);
+      instToInsert.setCountry(country.toNode());
       if (LOG.isDebugEnabled()) LOG.debug("instToInsert :" + instToInsert);
       createdInst = instRepository.save(instToInsert);
       //TODO what happens if this fails?
@@ -67,7 +67,7 @@ public class InstitutionEventHandler implements InstitutionService {
       }
     } else {
       if (LOG.isErrorEnabled()) LOG.error("Country returned was null.");
-      result = InstitutionCreatedEvent.countryNotFound(new Long(0));
+      result = InstitutionCreatedEvent.countryNotFound(0L);
     }
     return result;
   }
@@ -104,7 +104,7 @@ public class InstitutionEventHandler implements InstitutionService {
       LOG.debug("Finding country with countryName = " + updInst.getCountryName());
     Country country = countryRepository.findByCountryName(updInst.getCountryName());
     if (country != null) {
-      instToUpdate.setCountry(country);
+      instToUpdate.setCountry(country.toNode());
       if (LOG.isDebugEnabled()) LOG.debug("instToUpdate :" + instToUpdate);
 
 

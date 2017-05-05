@@ -44,16 +44,16 @@ public class NewsEventHandler implements NewsService {
 
     if (LOG.isDebugEnabled())
       LOG.debug("Finding institution with id = " + nADs.getInstitutionId());
-    NewsFeed nf = instRepo.findNewsFeed(nADs.getInstitutionId());
+    NewsFeed nf = instRepo.findNewsFeedByInstitutionId(nADs.getInstitutionId());
     if (LOG.isDebugEnabled()) LOG.debug("news feed - " + nf);
     if (LOG.isDebugEnabled())
       LOG.debug("Finding user with email = " + nADs.getCreatorEmail());
-    User creator = userRepository.findByEmail(nADs.getCreatorEmail());
+    User creator = userRepository.findByEmail(nADs.getCreatorEmail(), 0);
     if (LOG.isDebugEnabled()) LOG.debug("User Details :" + creator);
     NewsArticleCreatedEvent nACE;
     if ((creator != null) && (nf != null)) {
-      na.setCreator(creator);
-      na.setNewsFeed(nf);
+      na.setCreator(creator.toNode());
+      na.setNewsFeed(nf.toNode());
       NewsArticle result = newsRepo.save(na);
       nACE = new NewsArticleCreatedEvent(result.getNodeId(), result.toNewsArticleDetails());
     } else {
@@ -83,17 +83,7 @@ public class NewsEventHandler implements NewsService {
     UpdateNewsArticleEvent updateNewsArticleEvent) {
     NewsArticleDetails nADs = (NewsArticleDetails) updateNewsArticleEvent.getDetails();
     NewsArticle na = NewsArticle.fromNewsArticleDetails(nADs);
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding institution with id = " + nADs.getInstitutionId());
-    NewsFeed nf = instRepo.findNewsFeed(nADs.getInstitutionId());
-    na.setNewsFeed(nf);
-    if (LOG.isDebugEnabled()) LOG.debug("news feed - " + nf);
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding user with email = " + nADs.getCreatorEmail());
-    User creator = userRepository.findByEmail(nADs.getCreatorEmail());
-    na.setCreator(creator);
-    if (LOG.isDebugEnabled()) LOG.debug("User Details :" + creator);
-    NewsArticle result = newsRepo.save(na);
+    NewsArticle result = newsRepo.save(na, 0);
     NewsArticleUpdatedEvent nACE = new NewsArticleUpdatedEvent(result.getNodeId(), result.toNewsArticleDetails());
     return nACE;
   }

@@ -117,7 +117,7 @@ public class NotificationContactRequestTest
 		assertEquals("",notification.getType(),dets.getType());
 		assertEquals("",notification.getRead(),dets.getRead());
 		assertEquals("",notification.getTimestamp(),dets.getTimestamp());
-		assertEquals("",notification.getUser().getNodeId(),dets.getUserId());
+		assertEquals("",notification.getHasNotificationRelationship().getUser().getNodeId(),dets.getUserId());
 		assertEquals("",notification.getContactRequest().toContactRequestDetails(),dets.getNotificationBody());
 	}
 
@@ -142,7 +142,7 @@ public class NotificationContactRequestTest
 		assertEquals(ncr.getTimestamp(),notification.getTimestamp());
 		assertEquals(ncr.getType(),notification.getType());
 		assertEquals(ncr.getContactRequest(),notification.getContactRequest());
-		assertEquals(ncr.getUser().getNodeId(),notification.getUser().getNodeId());
+		assertEquals(ncr.getHasNotificationRelationship().getUser().getNodeId(),notification.getHasNotificationRelationship().getUser().getNodeId());
 	}
 
 	/**

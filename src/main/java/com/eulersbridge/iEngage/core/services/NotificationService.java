@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.eulersbridge.iEngage.core.services;
 
@@ -10,22 +10,20 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * @author Greg Newitt
- *
  */
-public interface NotificationService
-{
+public interface NotificationService {
 
-	CreatedEvent createNotification(CreateEvent createNotificationEvent);
+  CreatedEvent createNotification(CreateEvent createNotificationEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	ReadEvent readNotification(RequestReadEvent requestReadNotificationEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  ReadEvent readNotification(RequestReadEvent requestReadNotificationEvent);
 
-	DeletedEvent deleteNotification(DeleteEvent deleteNotificationEvent);
-	
-	UpdatedEvent updateNotification(UpdateEvent updateNotificationEvent);
+  DeletedEvent deleteNotification(DeleteEvent deleteNotificationEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	AllReadEvent readNotifications(ReadAllEvent readAllEvent,
-			Direction sortDirection, int pageNumber, int pageLength);
+  UpdatedEvent updateNotification(UpdateEvent updateNotificationEvent);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  AllReadEvent readNotifications(ReadAllEvent readAllEvent,
+                                 Direction sortDirection, int pageNumber, int pageLength);
 
 }

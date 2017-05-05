@@ -57,11 +57,6 @@ public class Event extends Likeable {
     event.setOrganizer(eventDetails.getOrganizer());
     event.setOrganizerEmail(eventDetails.getOrganizerEmail());
     event.setModified(eventDetails.getModified());
-    Institution inst = new Institution();
-    inst.setNodeId(eventDetails.getInstitutionId());
-    NewsFeed nf = new NewsFeed();
-    nf.setInstitution(inst);
-    event.setNewsFeed(nf);
 
     if (LOG.isTraceEnabled()) LOG.trace("event " + event);
     return event;

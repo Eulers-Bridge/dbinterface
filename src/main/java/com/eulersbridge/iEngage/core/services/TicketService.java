@@ -13,32 +13,32 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 
 public interface TicketService {
-    @PreAuthorize("hasAnyRole('"+SecurityConstants.TICKET_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public CreatedEvent createTicket(CreateTicketEvent createTicketEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.TICKET_MANAGER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public CreatedEvent createTicket(CreateTicketEvent createTicketEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public ReadEvent requestReadTicket(RequestReadTicketEvent requestReadTicketEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public ReadEvent requestReadTicket(RequestReadTicketEvent requestReadTicketEvent);
 
-    @PreAuthorize("hasAnyRole('"+SecurityConstants.TICKET_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public UpdatedEvent updateTicket(UpdateTicketEvent updateTicketEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.TICKET_MANAGER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public UpdatedEvent updateTicket(UpdateTicketEvent updateTicketEvent);
 
-    @PreAuthorize("hasAnyRole('"+SecurityConstants.TICKET_MANAGER_ROLE+"','"+SecurityConstants.ADMIN_ROLE+"')")
-    public DeletedEvent deleteTicket(DeleteTicketEvent deleteTicketEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.TICKET_MANAGER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public DeletedEvent deleteTicket(DeleteTicketEvent deleteTicketEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public AllReadEvent readTickets(ReadAllEvent readTicketsEvent,
-			Direction sortDirection, int pageNumber, int pageLength);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public AllReadEvent readTickets(ReadAllEvent readTicketsEvent,
+                                  Direction sortDirection, int pageNumber, int pageLength);
 
-	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #supportTicketEvent.getEmailAddress()==authentication.name)")
-    public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #supportTicketEvent.getEmailAddress()==authentication.name)")
+  public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent);
 
-	@PreAuthorize("hasRole('"+SecurityConstants.ADMIN_ROLE+"') or (hasRole('"+SecurityConstants.USER_ROLE+"') and #supportTicketEvent.getEmailAddress()==authentication.name)")
-    public TicketSupportedEvent withdrawSupportTicket(SupportTicketEvent supportTicketEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #supportTicketEvent.getEmailAddress()==authentication.name)")
+  public TicketSupportedEvent withdrawSupportTicket(SupportTicketEvent supportTicketEvent);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public LikeableObjectLikesEvent findSupporters(LikesLikeableObjectEvent likesLikeableObjectEvent, Direction sortDirection, int pageNumber, int pageSize );
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public LikeableObjectLikesEvent findSupporters(LikesLikeableObjectEvent likesLikeableObjectEvent, Direction sortDirection, int pageNumber, int pageSize);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public AllReadEvent readCandidates(ReadAllEvent readAllEvent,
-			Direction sortDirection, int pageNumber, int pageLength);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public AllReadEvent readCandidates(ReadAllEvent readAllEvent,
+                                     Direction sortDirection, int pageNumber, int pageLength);
 }

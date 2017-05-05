@@ -26,6 +26,7 @@ import java.util.Iterator;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 /**
@@ -93,8 +94,8 @@ public class NewsEventHandlerTest {
     NewsArticle article = DatabaseDataFixture.populateNewsArticle1();
     NewsArticleDetails nADs = article.toNewsArticleDetails();
     createNewsArticleEvent = new CreateNewsArticleEvent(nADs);
-    when(userRepos.findByEmail(any(String.class))).thenReturn(DatabaseDataFixture.populateUserGnewitt());
-    when(institutionRepos.findNewsFeed(any(Long.class))).thenReturn(DatabaseDataFixture.populateNewsFeed1());
+    when(userRepos.findByEmail(any(String.class), anyInt())).thenReturn(DatabaseDataFixture.populateUserGnewitt());
+    when(institutionRepos.findNewsFeedByInstitutionId(any(Long.class))).thenReturn(DatabaseDataFixture.populateNewsFeed1());
     when(newsRepos.save(any(NewsArticle.class))).thenReturn(article);
     NewsArticleCreatedEvent nace = service.createNewsArticle(createNewsArticleEvent);
     assertNotNull("News article created event null.", nace);
@@ -128,8 +129,8 @@ public class NewsEventHandlerTest {
     nADs = article.toNewsArticleDetails();
 
     when(userRepos.findByEmail(any(String.class))).thenReturn(DatabaseDataFixture.populateUserGnewitt());
-    when(institutionRepos.findNewsFeed(any(Long.class))).thenReturn(DatabaseDataFixture.populateNewsFeed1());
-    when(newsRepos.save(any(NewsArticle.class))).thenReturn(article);
+    when(institutionRepos.findNewsFeedByInstitutionId(any(Long.class))).thenReturn(DatabaseDataFixture.populateNewsFeed1());
+    when(newsRepos.save(any(NewsArticle.class), anyInt())).thenReturn(article);
 
     UpdateNewsArticleEvent updateNewsArticleEvent = new UpdateNewsArticleEvent(nADs.getNewsArticleId(), nADs);
     UpdatedEvent nude = service.updateNewsArticle(updateNewsArticleEvent);

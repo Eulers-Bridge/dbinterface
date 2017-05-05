@@ -24,124 +24,111 @@ import java.util.Iterator;
  * @author Yikai Gong
  */
 
-public class LikesEventHandler implements LikesService
-{
+public class LikesEventHandler implements LikesService {
 
-    UserRepository userRepository;
-    OwnerRepository ownerRepository;
+  UserRepository userRepository;
+  OwnerRepository ownerRepository;
 
-    private static Logger LOG = LoggerFactory.getLogger(LikesEventHandler.class);
+  private static Logger LOG = LoggerFactory.getLogger(LikesEventHandler.class);
 
-    public LikesEventHandler(UserRepository userRepository, OwnerRepository ownerRepository)
-    {
-        this.userRepository = userRepository;
-        this.ownerRepository = ownerRepository;
+  public LikesEventHandler(UserRepository userRepository, OwnerRepository ownerRepository) {
+    this.userRepository = userRepository;
+    this.ownerRepository = ownerRepository;
+  }
+
+  @Override
+  public LikedEvent isLikedBy(LikeEvent likeEvent) {
+    boolean result = true;
+    LikedEvent retValue;
+    String email = likeEvent.getEmailAddress();
+    Long nodeId = likeEvent.getNodeId();
+
+    retValue = checkParams(email, nodeId);
+    if (null == retValue) {
+      Like like = userRepository.isLikedBy(email, nodeId);
+      if (like != null)
+        result = true;
+      else result = false;
+      retValue = new LikedEvent(nodeId, email, result);
     }
-    
-	@Override
-	public LikedEvent isLikedBy(LikeEvent likeEvent)
-	{
-		boolean result = true;
-		LikedEvent retValue;
-		String email = likeEvent.getEmailAddress();
-		Long nodeId = likeEvent.getNodeId();
-		
-		retValue=checkParams(email,nodeId);
-		if (null==retValue)
-		{
-			Like like = userRepository.isLikedBy(email, nodeId);
-			if (like != null)
-				result = true;
-			else result = false;
-			retValue = new LikedEvent(nodeId, email, result);
-		}
-		return retValue;
-	}
+    return retValue;
+  }
 
-	@Override
-	public LikedEvent like(LikeEvent likeEvent)
-	{
-		boolean result = true;
-		LikedEvent retValue;
-		String email = likeEvent.getEmailAddress();
-		Long nodeId = likeEvent.getNodeId();
-		
-		retValue=checkParams(email,nodeId);
-		if (null==retValue)
-		{
-			Like like = userRepository.like(email, nodeId);
-			if (like != null)
-				result = true;
-			else result = false;
-			retValue = new LikedEvent(nodeId, email, result);
-		}
-		return retValue;
-	}
-	
-	@Override
-	public LikedEvent unlike(LikeEvent unlikeEvent)
-	{
-		boolean result = true;
-		LikedEvent retValue=null;
-		String email = unlikeEvent.getEmailAddress();
-		Long nodeId = unlikeEvent.getNodeId();
-		
-		retValue=checkParams(email,nodeId);
-		if (null==retValue)
-		{
-			userRepository.unlike(email, nodeId);
-			retValue = new LikedEvent(nodeId, email, result);
-		}
-		return retValue;
-	}
-	
-	private LikedEvent checkParams(String email,Long nodeId)
-	{
-		User user=userRepository.findByEmail(email);
-		if (null==user)
-		{
-			return LikedEvent.userNotFound(nodeId, email);
-		}
-		Owner item=ownerRepository.findOne(nodeId);
-		if (null==item)
-		{
-			return LikedEvent.entityNotFound(nodeId, email);
-		}
-		return null;
-	}
+  @Override
+  public LikedEvent like(LikeEvent likeEvent) {
+    boolean result = true;
+    LikedEvent retValue;
+    String email = likeEvent.getEmailAddress();
+    Long nodeId = likeEvent.getNodeId();
 
-    @Override
-    public LikeableObjectLikesEvent likes(LikesLikeableObjectEvent likesLikeableObjectEvent, Sort.Direction sortDirection, int pageNumber, int pageSize) {
-
-        Long objId = likesLikeableObjectEvent.getLikeableObjId();
-        ArrayList<UserDetails> userDetailses = new ArrayList<UserDetails>();
-        LikeableObjectLikesEvent likeableObjectLikesEvent;
-
-        if (LOG.isDebugEnabled()) LOG.debug("objId "+objId);
-        Pageable pageable = new PageRequest(pageNumber,pageSize,sortDirection,"a.date");
-        Page<User> users = userRepository.findByLikeableObjId(objId, pageable);
-        if (users != null)
-        {
-            Iterator<User> iter = users.iterator();
-            while (iter.hasNext())
-            {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Total elements = "+users.getTotalElements()+" total pages ="+users.getTotalPages());
-
-                User user =iter.next();
-                if (LOG.isTraceEnabled()) LOG.trace("Converting to details - "+user.getEmail());
-                UserDetails userDetails = user.toUserDetails();
-                userDetailses.add(userDetails);
-            }
-
-            likeableObjectLikesEvent = new LikeableObjectLikesEvent(objId, userDetailses);
-
-        }
-        else
-        {
-            if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByLikeableObjId");
-            likeableObjectLikesEvent = LikeableObjectLikesEvent.objectNotFound(objId);
-        }
-        return likeableObjectLikesEvent;
+    retValue = checkParams(email, nodeId);
+    if (null == retValue) {
+      Like like = userRepository.like(email, nodeId);
+      if (like != null)
+        result = true;
+      else result = false;
+      retValue = new LikedEvent(nodeId, email, result);
     }
+    return retValue;
+  }
+
+  @Override
+  public LikedEvent unlike(LikeEvent unlikeEvent) {
+    boolean result = true;
+    LikedEvent retValue = null;
+    String email = unlikeEvent.getEmailAddress();
+    Long nodeId = unlikeEvent.getNodeId();
+
+    retValue = checkParams(email, nodeId);
+    if (null == retValue) {
+      userRepository.unlike(email, nodeId);
+      retValue = new LikedEvent(nodeId, email, result);
+    }
+    return retValue;
+  }
+
+  private LikedEvent checkParams(String email, Long nodeId) {
+    User user = userRepository.findByEmail(email);
+    if (null == user) {
+      return LikedEvent.userNotFound(nodeId, email);
+    }
+    Owner item = ownerRepository.findOne(nodeId);
+    if (null == item) {
+      return LikedEvent.entityNotFound(nodeId, email);
+    }
+    return null;
+  }
+
+  @Override
+  public LikeableObjectLikesEvent likes(LikesLikeableObjectEvent likesLikeableObjectEvent, Sort.Direction sortDirection, int pageNumber, int pageSize) {
+
+    Long objId = likesLikeableObjectEvent.getLikeableObjId();
+    ArrayList<UserDetails> userDetailses = new ArrayList<UserDetails>();
+    LikeableObjectLikesEvent likeableObjectLikesEvent;
+
+    if (LOG.isDebugEnabled()) LOG.debug("objId " + objId);
+    Pageable pageable = new PageRequest(pageNumber, pageSize, sortDirection, "a.date");
+    Page<User> users = userRepository.findByLikeableObjId(objId, pageable);
+    if (users != null) {
+      Iterator<User> iter = users.iterator();
+      while (iter.hasNext()) {
+        if (LOG.isDebugEnabled())
+          LOG.debug("Total elements = " + users.getTotalElements() + " total pages =" + users.getTotalPages());
+
+        User user = iter.next();
+        if (LOG.isTraceEnabled())
+          LOG.trace("Converting to details - " + user.getEmail());
+        UserDetails userDetails = user.toUserDetails();
+        userDetailses.add(userDetails);
+      }
+
+      likeableObjectLikesEvent = new LikeableObjectLikesEvent(objId, userDetailses);
+
+    } else {
+      if (LOG.isDebugEnabled())
+        LOG.debug("Null returned by findByLikeableObjId");
+      likeableObjectLikesEvent = LikeableObjectLikesEvent.objectNotFound(objId);
+    }
+    return likeableObjectLikesEvent;
+  }
 }

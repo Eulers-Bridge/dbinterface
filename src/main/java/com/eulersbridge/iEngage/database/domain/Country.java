@@ -72,7 +72,6 @@ public class Country extends Node{
 
   public static Country fromCountryDetails(CountryDetails countryDetails) {
     if (LOG.isTraceEnabled()) LOG.trace("fromCountryDetails()");
-
     if (LOG.isTraceEnabled()) LOG.trace("countryDetails " + countryDetails);
     Country country = new Country();
     country.setNodeId(countryDetails.getCountryId());

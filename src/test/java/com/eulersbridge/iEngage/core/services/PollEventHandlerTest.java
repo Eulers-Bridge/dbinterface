@@ -25,6 +25,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -198,7 +199,7 @@ public class PollEventHandlerTest {
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
     when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
-    when(pollRepository.save(any(Poll.class))).thenReturn(testData);
+    when(pollRepository.save(any(Poll.class), anyInt())).thenReturn(testData);
     PollDetails dets = testData.toPollDetails();
     UpdatePollEvent createPollEvent = new UpdatePollEvent(dets.getNodeId(), dets);
     UpdatedEvent evtData = service.updatePoll(createPollEvent);

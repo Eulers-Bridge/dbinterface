@@ -12,15 +12,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * Created by darcular on 5/11/14.
  */
 public interface LikesService {
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public LikeableObjectLikesEvent likes(LikesLikeableObjectEvent likesLikeableObjectEvent, Sort.Direction sortDirection, int pageNumber, int pageSize);
-    
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public LikedEvent like(LikeEvent likeEvent);
-    
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-    public LikedEvent unlike(LikeEvent likeEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public LikeableObjectLikesEvent likes(LikesLikeableObjectEvent likesLikeableObjectEvent, Sort.Direction sortDirection, int pageNumber, int pageSize);
 
-    @PreAuthorize("hasRole('"+SecurityConstants.USER_ROLE+"')")
-	public LikedEvent isLikedBy(LikeEvent likeEvent);
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public LikedEvent like(LikeEvent likeEvent);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public LikedEvent unlike(LikeEvent likeEvent);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public LikedEvent isLikedBy(LikeEvent likeEvent);
 }

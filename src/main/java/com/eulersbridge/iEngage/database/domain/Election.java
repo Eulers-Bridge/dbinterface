@@ -173,7 +173,7 @@ public class Election extends Likeable {
     election.setVotingEnd(electionDetails.getEndVoting());
     Institution inst = new Institution();
     inst.setNodeId(electionDetails.getInstitutionId());
-    election.setInstitution(inst);
+    election.setInstitution(inst.toNode());
     election.setIntroduction(electionDetails.getIntroduction());
     election.setProcess(electionDetails.getProcess());
     if (LOG.isTraceEnabled()) LOG.trace("election " + election);

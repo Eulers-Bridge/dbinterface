@@ -58,6 +58,9 @@ public class TicketTest {
   @Test
   public final void testFromTicketDetails() {
     Ticket evt2 = Ticket.fromTicketDetails(dets);
+    Election election = new Election();
+    election.setNodeId(dets.getElectionId());
+    evt2.setElection(election);
     assertEquals(dets.getName(), evt2.getName());
     assertEquals(dets.getNodeId(), evt2.getNodeId());
     assertEquals(dets.getInformation(), evt2.getInformation());

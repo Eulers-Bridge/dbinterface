@@ -73,7 +73,7 @@ public class Institution extends Likeable {
     return (Country) country;
   }
 
-  public void setCountry(Country country) {
+  public void setCountry(Node country) {
     this.country = country;
   }
 
@@ -101,7 +101,7 @@ public class Institution extends Likeable {
   /**
    * @param newsFeed the studentYears to set
    */
-  public void setNewsFeed(NewsFeed newsFeed) {
+  public void setNewsFeed(Node newsFeed) {
     this.newsFeed = newsFeed;
   }
 
@@ -150,8 +150,6 @@ public class Institution extends Likeable {
       inst.nodeId = instDetails.getNodeId();
       inst.name = instDetails.getName();
       inst.campus = instDetails.getCampus();
-      inst.country = new Country();
-      inst.getCountry().setCountryName(instDetails.getCountryName());
       inst.state = instDetails.getState();
       if (LOG.isTraceEnabled()) LOG.trace("inst " + inst);
     }

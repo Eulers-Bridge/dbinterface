@@ -17,7 +17,6 @@ public class NewsArticle extends Likeable {
   private String title;
   private String content;
   @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL)
-//  @Fetch
   private List<Node> photos;
   @Index
   @NotNull
@@ -186,10 +185,6 @@ public class NewsArticle extends Likeable {
     newsArt.title = newsArtDetails.getTitle();
     newsArt.content = newsArtDetails.getContent();
     newsArt.date = newsArtDetails.getDate();
-    User creator = new User(newsArtDetails.getCreatorEmail(), null, null, null, null, null, null, null);
-    newsArt.creator = creator;
-    NewsFeed nf = new NewsFeed();
-    newsArt.newsFeed = nf;
     newsArt.setInappropriateContent(newsArtDetails.isInappropriateContent());
     if (LOG.isTraceEnabled()) LOG.trace("newsArt " + newsArt);
 

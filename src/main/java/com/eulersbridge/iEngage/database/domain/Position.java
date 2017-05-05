@@ -37,7 +37,8 @@ public class Position extends Node {
     position.setNodeId(positionDetails.getNodeId());
     position.setName(positionDetails.getName());
     position.setDescription(positionDetails.getDescription());
-    position.election = new Election(positionDetails.getElectionId(), null, null, null, null, null, null, null, null);
+    Node election = new Node(positionDetails.getElectionId());
+    position.setElection(election);
 
     if (LOG.isTraceEnabled()) LOG.trace("position " + position);
     return position;
