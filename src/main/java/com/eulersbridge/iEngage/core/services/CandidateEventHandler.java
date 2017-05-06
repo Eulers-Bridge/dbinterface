@@ -157,8 +157,8 @@ public class CandidateEventHandler implements CandidateService {
           candidate.setPolicyStatement(candidateOld.getPolicyStatement());
 //        if (null == candidate.getPosition())
 //          candidate.setPosition(candidateOld.getPosition());
-//        if (null == candidate.getUser())
-//          candidate.setUser(candidateOld.getUser());
+//        if (null == candidate.getUser$())
+//          candidate.setUser(candidateOld.getUser$());
 //        if (null == candidate.getTicket())
 //          candidate.setTicket(candidateOld.getTicket());
 //        if (null == candidate.getPhotos())

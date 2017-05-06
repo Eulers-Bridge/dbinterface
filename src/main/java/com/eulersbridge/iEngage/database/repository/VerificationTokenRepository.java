@@ -5,9 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
-public interface VerificationTokenRepository extends GraphRepository<VerificationToken> 
-{
-static Logger LOG = LoggerFactory.getLogger(VerificationTokenRepository.class);
-//TODO Fix this.	
- 	VerificationToken findByToken(String token);
+public interface VerificationTokenRepository extends GraphRepository<VerificationToken> {
+  static Logger LOG = LoggerFactory.getLogger(VerificationTokenRepository.class);
+
+  //TODO Fix this.
+  VerificationToken findByToken(String token);
 }

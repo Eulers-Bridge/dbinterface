@@ -11,7 +11,6 @@ import java.util.List;
 @NodeEntity
 public class NewsFeed extends Node {
   @Relationship(type = DatabaseDomainConstants.HAS_NEWS_FEED_LABEL, direction = Relationship.INCOMING)
-//  @Fetch
   private Node institution;
   @Relationship(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction = Relationship.OUTGOING)
   private List<Node> news;

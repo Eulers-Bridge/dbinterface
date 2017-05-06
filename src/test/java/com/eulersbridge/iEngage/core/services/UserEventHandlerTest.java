@@ -79,7 +79,7 @@ public class UserEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    userServiceMocked = new UserEventHandler(uRepo, pRepo, iRepo, tRepo);
+    userServiceMocked = new UserEventHandler(uRepo, pRepo, iRepo, tRepo, null);
   }
 
   /**
@@ -90,11 +90,11 @@ public class UserEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#UserEventHandler(com.eulersbridge.iEngage.database.repository.UserRepository, com.eulersbridge.iEngage.database.repository.InstitutionRepository, com.eulersbridge.iEngage.database.repository.VerificationTokenRepository)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#(com.eulersbridge.iEngage.database.repository.UserRepository, com.eulersbridge.iEngage.database.repository.InstitutionRepository, com.eulersbridge.iEngage.database.repository.VerificationTokenRepository)}.
    */
   @Test
   public void testUserEventHandler() {
-    UserEventHandler userService2 = new UserEventHandler(uRepo, pRepo, iRepo, tRepo);
+    UserEventHandler userService2 = new UserEventHandler(uRepo, pRepo, iRepo, tRepo, null);
     assertNotNull("newsService not being created by constructor.", userService2);
   }
 
@@ -156,7 +156,7 @@ public class UserEventHandlerTest {
     user.setInstitution(new Institution(nADs.getInstitutionId()));
     user.setNodeId(543l);
 
-    when(iRepo.findOne(any(Long.class))).thenReturn(inst);
+    when(iRepo.findOne(any(Long.class), anyInt())).thenReturn(inst);
     when(uRepo.findByEmail(any(String.class))).thenReturn(null);
     when(uRepo.save(any(User.class))).thenReturn(user);
     when(uRepo.findOne(any(Long.class))).thenReturn(user);
@@ -253,8 +253,8 @@ public class UserEventHandlerTest {
     createUserEvent = new CreateUserEvent(nADs);
     Institution instData = DatabaseDataFixture.populateInstUniMelb();
     User userData = DatabaseDataFixture.populateUserGnewitt();
-    when(iRepo.findOne(any(Long.class))).thenReturn(instData);
-    when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
+    when(iRepo.findOne(any(Long.class), anyInt())).thenReturn(instData);
+    when(uRepo.findByEmail(any(String.class), anyInt())).thenReturn(userData);
 
     UserCreatedEvent nace = userServiceMocked.signUpNewUser(createUserEvent);
     assertNotNull(nace);
@@ -985,7 +985,7 @@ public class UserEventHandlerTest {
   @Test
   public void shouldLoadUserByUsername() {
     User userData = DatabaseDataFixture.populateUserGnewitt();
-    when(uRepo.findByEmail(any(String.class),anyInt())).thenReturn(userData);
+    when(uRepo.findByEmail(any(String.class), anyInt())).thenReturn(userData);
 
     org.springframework.security.core.userdetails.UserDetails nace = userServiceMocked.loadUserByUsername(userData.getEmail());
     assertNotNull(nace);

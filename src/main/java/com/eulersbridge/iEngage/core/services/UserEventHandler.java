@@ -17,8 +17,6 @@ import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import com.eulersbridge.iEngage.security.UserCredentialDetails;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.tools.view.WebappResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -34,14 +32,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 public class UserEventHandler implements UserService {
 
@@ -51,25 +47,27 @@ public class UserEventHandler implements UserService {
   private PersonalityRepository personRepository;
   private InstitutionRepository instRepository;
   private VerificationTokenRepository tokenRepository;
-  //  @Autowired
-  private VelocityEngine velocityEngine = null;
 
-  public UserEventHandler(final UserRepository userRepository,
-                          final PersonalityRepository personRepository,
-                          final InstitutionRepository instRepo,
-                          final VerificationTokenRepository tokenRepo) {
+  private VelocityEngine velocityEngine;
+
+  public UserEventHandler(UserRepository userRepository,
+                          PersonalityRepository personRepository,
+                          InstitutionRepository instRepo,
+                          VerificationTokenRepository tokenRepo,
+                          VelocityEngine velocityEngine) {
     this.userRepository = userRepository;
     this.personRepository = personRepository;
     this.instRepository = instRepo;
     this.tokenRepository = tokenRepo;
+    this.velocityEngine = velocityEngine;
 
-    VelocityEngineFactoryBean ve = new VelocityEngineFactoryBean();
-    Properties velocityProperties = new Properties();
-    velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
-    velocityProperties.setProperty("webapp.resource.loader.path", "/");
-    velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
-    ve.setVelocityProperties(velocityProperties);
-    velocityEngine = ve.getObject();
+//    VelocityEngineFactoryBean ve = new VelocityEngineFactoryBean();
+//    Properties velocityProperties = new Properties();
+//    velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
+//    velocityProperties.setProperty("webapp.resource.loader.path", "/");
+//    velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
+//    ve.setVelocityProperties(velocityProperties);
+//    velocityEngine = ve.getObject();
   }
 
   @Override
@@ -86,13 +84,13 @@ public class UserEventHandler implements UserService {
         LOG.debug("Finding institution with instId = "
           + newUser.getInstitutionId());
       Institution inst = instRepository.findOne(newUser
-        .getInstitutionId());
+        .getInstitutionId(), 0);
       if (LOG.isDebugEnabled()) LOG.debug("User Details :" + newUser);
       User userToInsert = User.fromUserDetails(newUser);
 
       User createdUser = null, existingUser = null;
 
-      existingUser = userRepository.findByEmail(userToInsert.getEmail());
+      existingUser = userRepository.findByEmail(userToInsert.getEmail(), 0);
       // TODO potentially check if existing user is verified. User might
       // want another verification email
       if ((inst != null) && (null == existingUser)) {
@@ -113,7 +111,8 @@ public class UserEventHandler implements UserService {
           test, EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS);
         if (LOG.isDebugEnabled())
           LOG.debug("Verification token = " + token.toString());
-        tokenRepository.save(token);
+        VerificationToken t = tokenRepository.save(token);
+        System.out.println("velocityEngine="+velocityEngine);
         EmailVerification verifyEmail = new EmailVerification(
           velocityEngine, createdUser, token);
         result = new UserCreatedEvent(createdUser.getEmail(),

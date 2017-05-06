@@ -20,7 +20,7 @@ public class Poll extends Likeable implements Commentable {
   private Long duration;
   @Relationship(type = DatabaseDomainConstants.CREATED_BY_LABEL)
   private Node creator;
-  @Relationship(type = DatabaseDomainConstants.HAS_POLL_LABEL)
+  @Relationship(type = DatabaseDomainConstants.HAS_POLL_LABEL, direction = Relationship.OUTGOING)
   private Node institution;
   @Relationship(type = DatabaseDomainConstants.HAS_COMMENT, direction = Relationship.UNDIRECTED)
   private List<Node> comments;

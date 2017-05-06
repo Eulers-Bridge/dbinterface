@@ -15,9 +15,9 @@ public class Institution extends Likeable {
   private String campus;
   private String state;
   // @Fetch
-  @Relationship(type = DatabaseDomainConstants.INSTITUTIONS_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DatabaseDomainConstants.INSTITUTIONS_LABEL, direction = Relationship.OUTGOING)
   private Node country;
-  @Relationship(type = DatabaseDomainConstants.USERS_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DatabaseDomainConstants.USERS_LABEL, direction = Relationship.INCOMING)
   private List<Node> students;
   @Relationship(type = DatabaseDomainConstants.HAS_NEWS_FEED_LABEL, direction = Relationship.OUTGOING)
   private Node newsFeed;

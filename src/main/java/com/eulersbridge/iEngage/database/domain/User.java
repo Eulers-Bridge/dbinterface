@@ -22,7 +22,7 @@ public class User extends Node {
   @NotNull
   @NotBlank
   @Email
-  @Index(unique = true, primary = true)
+  @Index(unique = true, primary = false)
   private String email;
   private String givenName;
   private String familyName;

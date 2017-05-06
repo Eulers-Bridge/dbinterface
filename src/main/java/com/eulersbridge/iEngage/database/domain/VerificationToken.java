@@ -15,33 +15,23 @@ import java.util.UUID;
 @NodeEntity
 public class VerificationToken extends Node {
 
-  private UUID token;
+  private String token;
   private Long expiryDate;
   private String tokenType;
   private boolean verified = false;
-  @Relationship(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction = Relationship.OUTGOING)
   private Node user;
 
   private static Logger LOG = LoggerFactory.getLogger(VerificationToken.class);
 
   public VerificationToken() {
-
-    this.token = UUID.randomUUID();
-    this.expiryDate = calculateExpiryDate(EmailConstants.DEFAULT_EXPIRY_TIME_IN_MINS);
-    if (LOG.isTraceEnabled())
-      LOG.trace("Constructor(" + token + ',' + expiryDate.toString() + ',' + verified + ')');
   }
 
   public VerificationToken(VerificationTokenType tokenType, User user, int expirationTimeInMinutes) {
-
-    this.token = UUID.randomUUID();
-    if (LOG.isTraceEnabled())
-      LOG.trace("Constructor(" + token + ',' + expirationTimeInMinutes + ',' + tokenType + ')');
+    this.token = UUID.randomUUID().toString();
     this.tokenType = tokenType.name();
-    this.user = user;
+    this.user = user.toNode();
     this.expiryDate = calculateExpiryDate(expirationTimeInMinutes);
-    if (LOG.isTraceEnabled())
-      LOG.trace("Constructor(" + token + ',' + expiryDate.toString() + ',' + tokenType + ',' + verified + ')');
   }
 
   public String getTokenType() {
@@ -68,16 +58,32 @@ public class VerificationToken extends Node {
     return convertVTokentoEncoded64URLString(this);
   }
 
-  public UUID getToken() {
+  public String getToken() {
     return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
+
+  public void setExpiryDate(Long expiryDate) {
+    this.expiryDate = expiryDate;
+  }
+
+  public void setTokenType(String tokenType) {
+    this.tokenType = tokenType;
   }
 
   public void setUser(Node user) {
     this.user = user;
   }
 
-  public User getUser() {
+  public User getUser$() {
     return (User) user;
+  }
+
+  public Node getUser() {
+    return user;
   }
 
   private Long calculateExpiryDate(int expiryTimeInMinutes) {
@@ -122,6 +128,7 @@ public class VerificationToken extends Node {
 
   public byte[] toByteArray() {
     ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+    UUID token = UUID.fromString(this.token);
     bb.putLong(token.getMostSignificantBits());
     bb.putLong(token.getLeastSignificantBits());
     byte[] tokenByteArray = bb.array();

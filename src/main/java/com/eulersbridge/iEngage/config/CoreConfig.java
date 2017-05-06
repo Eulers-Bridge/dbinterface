@@ -4,6 +4,7 @@ import com.eulersbridge.iEngage.core.services.*;
 import com.eulersbridge.iEngage.database.repository.*;
 import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
 import com.eulersbridge.iEngage.rest.domain.stubCountryFactory;
+import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class CoreConfig {
   UserRepository userRepo;
   VerificationTokenRepository tokenRepo;
   VotingLocationRepository votingLocationRepository;
+  VelocityEngine velocityEngine;
 
   private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -65,7 +67,8 @@ public class CoreConfig {
                     PollAnswerRepository pollAnswerRepository,
                     UserRepository userRepo,
                     NotificationRepository notificationRepository,
-                    ContactRequestRepository contactRequestRepository) {
+                    ContactRequestRepository contactRequestRepository,
+                    VelocityEngine velocityEngine) {
     if (LOG.isDebugEnabled()) LOG.debug("CoreConfig()");
     this.taskRepository = taskRepository;
     this.electionRepo = electionRepo;
@@ -92,12 +95,13 @@ public class CoreConfig {
     this.userRepo = userRepo;
     this.notificationRepository = notificationRepository;
     this.contactRequestRepository = contactRequestRepository;
+    this.velocityEngine = velocityEngine;
   }
 
   @Bean
   public UserService createUserService() {
     if (LOG.isDebugEnabled()) LOG.debug("createUserService()");
-    return new UserEventHandler(userRepo, personRepo, institutionRepository, tokenRepo);
+    return new UserEventHandler(userRepo, personRepo, institutionRepository, tokenRepo, velocityEngine);
   }
 
   @Bean

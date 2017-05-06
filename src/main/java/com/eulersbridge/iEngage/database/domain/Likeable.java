@@ -8,7 +8,7 @@ import java.util.List;
 // Ticket Pull User Likeable have numOfEntity method
 public class Likeable extends Node {
   //    @Query("START n = node({self}) match (n)-[r:"+ DatabaseDomainConstants.LIKES_LABEL+"]-(c) RETURN count(c) ")
-  @Relationship(type = DatabaseDomainConstants.LIKES_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DatabaseDomainConstants.LIKES_LABEL, direction = Relationship.INCOMING)
   private List<Node> likedUser;
 
   public Integer getNumOfLikes() {
