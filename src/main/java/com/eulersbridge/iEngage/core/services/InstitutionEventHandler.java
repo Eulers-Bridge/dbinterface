@@ -8,7 +8,7 @@ import com.eulersbridge.iEngage.core.events.generalInfo.*;
 import com.eulersbridge.iEngage.core.events.institutions.*;
 import com.eulersbridge.iEngage.core.events.newsFeed.*;
 import com.eulersbridge.iEngage.database.domain.Country;
-import com.eulersbridge.iEngage.database.domain.GeneralInfo;
+import com.eulersbridge.iEngage.database.domain.GeneralInfoData;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
@@ -208,11 +208,11 @@ public class InstitutionEventHandler implements InstitutionService {
 
   @Override
   public GeneralInfoReadEvent getGeneralInfo(ReadGeneralInfoEvent readGeneralInfoEvent) {
-    Iterator<GeneralInfo> countryIter = instRepository.getGeneralInfo().iterator();
+    Iterator<GeneralInfoData> countryIter = instRepository.getGeneralInfo().iterator();
 
     ArrayList<GiCountry> countries = new ArrayList<GiCountry>();
     while (countryIter.hasNext()) {
-      GeneralInfo country = countryIter.next();
+      GeneralInfoData country = countryIter.next();
 
       Long countryId = country.getCountryId();
       String countryName = country.getCountryName();
@@ -220,10 +220,11 @@ public class InstitutionEventHandler implements InstitutionService {
         LOG.debug("CountryId - " + countryId);
         LOG.debug("CountryName - " + countryName);
       }
+      System.out.println("!"+country.getInstitutionIds());
 
       Iterator<Long> instIdIter = country.getInstitutionIds().iterator();
       Iterator<String> instNameIter = country.getInstitutionNames().iterator();
-      ArrayList<GiInstitution> insts = new ArrayList<GiInstitution>();
+      ArrayList<GiInstitution> insts = new ArrayList<>();
       while (instIdIter.hasNext() && (instNameIter.hasNext())) {
         Long instId = instIdIter.next();
         String instName = instNameIter.next();

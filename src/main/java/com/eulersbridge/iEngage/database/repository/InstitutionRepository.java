@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.database.repository;
 
 import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
-import com.eulersbridge.iEngage.database.domain.GeneralInfo;
+import com.eulersbridge.iEngage.database.domain.GeneralInfoData;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public interface InstitutionRepository extends GraphRepository<Institution>
 	       "return id(c) as countryId,c.countryName as countryName"
 			+",COLLECT(i.name) as institutionNames,COLLECT(id(i)) as institutionIds"
 	       )
-	List<GeneralInfo> getGeneralInfo();
+	List<GeneralInfoData> getGeneralInfo();
 	
 
 }

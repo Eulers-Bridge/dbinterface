@@ -21,7 +21,7 @@ public class GeneralInfoController {
 	    {
 	    	if (LOG.isInfoEnabled()) LOG.info("general info called. ");
 	    	
-	    	Country[] retValue=countryFactory.getCountries();
+	    	Country[] retValue= countryFactory.getCountries();
 	    	return retValue;
 	    }
 	    
