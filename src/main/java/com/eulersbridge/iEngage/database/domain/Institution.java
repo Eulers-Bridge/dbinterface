@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
@@ -95,7 +96,7 @@ public class Institution extends Likeable {
    * @return the studentYears
    */
   public NewsFeed getNewsFeed() {
-    return (NewsFeed) newsFeed;
+    return (NewsFeed) newsFeed ;
   }
 
   /**
@@ -132,11 +133,12 @@ public class Institution extends Likeable {
     if (LOG.isTraceEnabled()) LOG.trace("institution " + this);
 
     BeanUtils.copyProperties(this, details);
-    details.setCountryName(getCountry().getCountryName());
-    if (getNewsFeed() != null)
-      details.setNewsFeedId(getNewsFeed().getNodeId());
+     if (country instanceof Country)
+        details.setCountryName(getCountry().getCountryName());
+    if (newsFeed != null){
+      details.setNewsFeedId(newsFeed.getNodeId());
+    }
     if (LOG.isTraceEnabled()) LOG.trace("instDetails " + details);
-
     return details;
   }
 

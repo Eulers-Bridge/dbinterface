@@ -191,7 +191,7 @@ public class ElectionEventHandlerTest {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingElection()");
     Election testData = DatabaseDataFixture.populateElection1();
     Institution testInst = DatabaseDataFixture.populateInstUniMelb();
-    when(institutionRepository.findOne(any(Long.class))).thenReturn(testInst);
+    when(institutionRepository.findOne(any(Long.class), anyInt())).thenReturn(testInst);
     when(electionRepository.save(any(Election.class))).thenReturn(testData);
     ElectionDetails dets = testData.toElectionDetails();
     CreateElectionEvent createElectionEvent = new CreateElectionEvent(dets);

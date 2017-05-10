@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -14,6 +17,7 @@ public class InstitutionDetailsTest
 {
 	final Long institutionId = new Long(1);
 	final Long newsFeedId = new Long(12);
+	List<Long> newsFeedIds = new ArrayList<>();
 	final String name = new String("University of Melbourne");
 	final String campus = new String("Parkville");
 	final String state = new String("Victroia");
@@ -23,6 +27,7 @@ public class InstitutionDetailsTest
 	@Before
 	public void setUp() throws Exception
 	{
+		newsFeedIds.add(institutionId);
 		institutionDetails = new InstitutionDetails(institutionId);
 		institutionDetails.setName(name);
 		institutionDetails.setCampus(campus);
@@ -72,6 +77,8 @@ public class InstitutionDetailsTest
 	public void testSetNewsFeedId() throws Exception
 	{
 		Long newsFeedId2 = new Long(2);
+		List<Long> idLists = new ArrayList<>();
+		idLists.add(newsFeedId2);
 		institutionDetails.setNewsFeedId(newsFeedId2);
 		assertEquals("newsFeedId does not match", newsFeedId2,
 				institutionDetails.getNewsFeedId());

@@ -17,12 +17,17 @@ public class Institution extends ResourceSupport
 	String campus;
 	String country;
 
-	/**
-	 * @return the newsFeedId
-	 */
 	public Long getNewsFeedId()
 	{
 		return newsFeedId;
+	}
+
+	public void setInstitutionId(Long institutionId) {
+		this.institutionId = institutionId;
+	}
+
+	public void setNewsFeedId(Long newsFeedId) {
+		this.newsFeedId = newsFeedId;
 	}
 
 	private static Logger LOG = LoggerFactory.getLogger(Institution.class);
@@ -59,7 +64,6 @@ public class Institution extends ResourceSupport
 	public void setCampus(String campus)
 	{
 		this.campus = campus;
-
 	}
 
 	public String getCampus()
@@ -141,7 +145,7 @@ public class Institution extends ResourceSupport
 		StringBuffer buff = new StringBuffer("[ id = ");
 		String retValue;
 		buff.append(getId());
-		buff.append(", newsFeedId = ");
+		buff.append(", newsFeedIds = ");
 		buff.append(getNewsFeedId());
 		buff.append(", name = ");
 		buff.append(getName());

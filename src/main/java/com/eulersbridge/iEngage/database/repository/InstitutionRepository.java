@@ -21,7 +21,7 @@ public interface InstitutionRepository extends GraphRepository<Institution>
 //" MATCH q-[:HAS_STUDENT_YEAR]-m WHERE m.year = max "  // find the max m for each q
 //+" WITH q, m MATCH m-[:HAS_STUDENT_YEAR]-x RETURN m")
 	@Query("Match (i:`"+DatabaseDomainConstants.INSTITUTION+"`)-["+DatabaseDomainConstants.HAS_NEWS_FEED_LABEL+"]-(n:`"+
-			DatabaseDomainConstants.NEWS_FEED+"`) where id(i)={instId} RETURN n")
+			DatabaseDomainConstants.NEWS_FEED+"`) where id(i)={instId} RETURN n Limit 1")
 	NewsFeed findNewsFeedByInstitutionId(@Param("instId") Long institutionId);
 
 	@Query("MATCH (i:`Institution`)-[]-(c:`Country`) where id(c)={countryId} return i")

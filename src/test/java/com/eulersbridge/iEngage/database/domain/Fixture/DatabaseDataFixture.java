@@ -72,6 +72,8 @@ public class DatabaseDataFixture {
     NewsFeed newsFeed = new NewsFeed();
     newsFeed.setInstitution(inst);
     newsFeed.setNodeId(nodeId + 100);
+    List<Node> newsFeeds = new ArrayList<>();
+    newsFeeds.add(newsFeed);
     inst.setNewsFeed(newsFeed);
     return inst;
   }

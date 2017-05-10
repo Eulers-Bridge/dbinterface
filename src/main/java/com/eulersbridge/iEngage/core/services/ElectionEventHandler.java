@@ -51,7 +51,7 @@ public class ElectionEventHandler implements ElectionService {
 
     if (LOG.isDebugEnabled())
       LOG.debug("Finding institution with instId = " + electionDetails.getInstitutionId());
-    Institution inst = instRepository.findOne(electionDetails.getInstitutionId());
+    Institution inst = instRepository.findOne(electionDetails.getInstitutionId(), 0);
     ElectionCreatedEvent electionCreatedEvent;
     if (inst != null) {
       election.setInstitution(inst.toNode());

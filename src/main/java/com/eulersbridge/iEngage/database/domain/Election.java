@@ -18,6 +18,7 @@ public class Election extends Likeable {
   private String introduction;
   private String process;
 
+
   private static Logger LOG = LoggerFactory.getLogger(Election.class);
 
   public Election() {
@@ -49,7 +50,7 @@ public class Election extends Likeable {
     return end;
   }
 
-  Long getVotingStart() {
+  public Long getVotingStart() {
     if (LOG.isDebugEnabled()) LOG.debug("getVotingStart() = " + votingStart);
     return votingStart;
   }
@@ -59,7 +60,7 @@ public class Election extends Likeable {
     return this.title;
   }
 
-  Long getVotingEnd() {
+  public Long getVotingEnd() {
     if (LOG.isDebugEnabled()) LOG.debug("getVotingEnd() = " + votingEnd);
     return votingEnd;
   }
@@ -152,8 +153,8 @@ public class Election extends Likeable {
     electionDetails.setEnd(this.getEnd());
     electionDetails.setStartVoting(this.getVotingStart());
     electionDetails.setEndVoting(this.getVotingEnd());
-    if (getInstitution() != null)
-      electionDetails.setInstitutionId(this.getInstitution().getNodeId());
+    if (institution != null)
+      electionDetails.setInstitutionId(institution.getNodeId());
     else electionDetails.setInstitutionId(null);
     electionDetails.setIntroduction(getIntroduction());
     electionDetails.setProcess(this.getProcess());

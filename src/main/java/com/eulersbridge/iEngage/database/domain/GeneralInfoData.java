@@ -1,9 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import org.neo4j.ogm.annotation.Property;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
-import java.util.List;
 import java.util.Set;
 
 @QueryResult
