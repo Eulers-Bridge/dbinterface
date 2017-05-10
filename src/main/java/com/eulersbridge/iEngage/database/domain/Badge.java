@@ -24,6 +24,10 @@ public class Badge extends Node {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");
   }
 
+  public Badge(Long nodeId) {
+    super(nodeId);
+  }
+
   public static Badge fromBadgeDetails(BadgeDetails badgeDetails) {
     if (LOG.isTraceEnabled()) LOG.trace("fromBadgeDetails()");
     Badge badge = new Badge();

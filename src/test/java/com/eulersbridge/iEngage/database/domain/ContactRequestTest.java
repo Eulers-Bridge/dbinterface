@@ -59,7 +59,7 @@ public class ContactRequestTest {
     assertEquals("", contactRequest.getRejected(), dets.getRejected());
     assertEquals("", contactRequest.getRequestDate(), dets.getRequestDate());
     assertEquals("", contactRequest.getResponseDate(), dets.getResponseDate());
-    assertEquals("", contactRequest.getUser().getNodeId(), dets.getUserId());
+    assertEquals("", contactRequest.getUser$().getNodeId(), dets.getUserId());
   }
 
   /**
@@ -77,7 +77,7 @@ public class ContactRequestTest {
     assertEquals("", dets.getRejected(), contactRequestTest.getRejected());
     assertEquals("", dets.getRequestDate(), contactRequestTest.getRequestDate());
     assertEquals("", dets.getResponseDate(), contactRequestTest.getResponseDate());
-    assertEquals("", dets.getUserId(), contactRequestTest.getUser().getNodeId());
+    assertEquals("", dets.getUserId(), contactRequestTest.getUser$().getNodeId());
   }
 
   /**
@@ -195,11 +195,11 @@ public class ContactRequestTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.ContactRequest#getUser()}.
+   * Test method for {@link ContactRequest#getUser$()}.
    */
   @Test
   public final void testGetUser() {
-    assertEquals("", contactRequest.getUser().getNodeId(), dets.getUserId());
+    assertEquals("", contactRequest.getUser$().getNodeId(), dets.getUserId());
   }
 
   /**
@@ -208,9 +208,9 @@ public class ContactRequestTest {
   @Test
   public final void testSetUser() {
     User user = new User(234234l);
-    assertNotEquals("", contactRequest.getUser(), user);
+    assertNotEquals("", contactRequest.getUser$(), user);
     contactRequest.setUser(user);
-    assertEquals("", user, contactRequest.getUser());
+    assertEquals("", user, contactRequest.getUser$());
   }
 
   /**
@@ -239,7 +239,7 @@ public class ContactRequestTest {
 
     contactRequestTest.setUser(null);
     checkHashCode(contactRequest, contactRequestTest);
-    contactRequestTest.setUser(contactRequest.getUser());
+    contactRequestTest.setUser(contactRequest.getUser$());
 
     contactRequestTest.setRequestDate(null);
     checkHashCode(contactRequest, contactRequestTest);
@@ -306,7 +306,7 @@ public class ContactRequestTest {
 
     contactRequestTest.setUser(null);
     checkNotEquals(contactRequest, contactRequestTest);
-    contactRequestTest.setUser(contactRequest.getUser());
+    contactRequestTest.setUser(contactRequest.getUser$());
 
     contactRequestTest.setAccepted(true);
     assertNotEquals(contactRequest, contactRequestTest);

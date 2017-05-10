@@ -6,7 +6,9 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -71,39 +73,56 @@ public class Candidate extends Likeable {
     position.setNodeId(candidateDetails.getPositionId());
     candidate.setPosition(position.toNode());
 
-//        candidate.setTicket(Ticket.fromTicketDetails(candidateDetails.getTicketDetails()));
-
     if (LOG.isTraceEnabled()) LOG.trace("candidate " + candidate);
     return candidate;
   }
 
   public CandidateDetails toCandidateDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toCandidateDetails()");
     CandidateDetails candidateDetails = new CandidateDetails();
-    if (LOG.isTraceEnabled()) LOG.trace("candidate " + this);
     candidateDetails.setNodeId(getNodeId());
-    if (null == getUser()) {
+    candidateDetails.setInformation(getInformation());
+    candidateDetails.setPolicyStatement(getPolicyStatement());
+
+    if (user == null) {
       candidateDetails.setUserId(null);
       candidateDetails.setFamilyName(null);
       candidateDetails.setGivenName(null);
       candidateDetails.setEmail(null);
+    } else if (user instanceof User) {
+      candidateDetails.setUserId(getUser$().getNodeId());
+      candidateDetails.setFamilyName(getUser$().getFamilyName());
+      candidateDetails.setGivenName(getUser$().getGivenName());
+      candidateDetails.setEmail(getUser$().getEmail());
     } else {
-      candidateDetails.setUserId(getUser().getNodeId());
-      candidateDetails.setFamilyName(getUser().getFamilyName());
-      candidateDetails.setGivenName(getUser().getGivenName());
-      candidateDetails.setEmail(getUser().getEmail());
+      candidateDetails.setUserId(user.nodeId);
     }
-    candidateDetails.setInformation(getInformation());
-    candidateDetails.setPolicyStatement(getPolicyStatement());
-    if (null == getPosition())
+
+    if (position == null)
       candidateDetails.setPositionId(null);
-    else candidateDetails.setPositionId(getPosition().getNodeId());
+    else
+      candidateDetails.setPositionId(position.nodeId);
 
-    if (null == getTicket())
+    if (ticket == null)
       candidateDetails.setTicketDetails(null);
-    else candidateDetails.setTicketDetails(getTicket().toTicketDetails());
+    else if (ticket instanceof Ticket)
+      candidateDetails.setTicketDetails(getTicket$().toTicketDetails());
+    else {
+      Ticket t = new Ticket(this.ticket.nodeId);
+      candidateDetails.setTicketDetails(t.toTicketDetails());
+    }
 
-    candidateDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos()));
+    if (photos != null) {
+      if (photos.isEmpty()) {
+        candidateDetails.setPhotos(new HashSet<>());
+      } else if (photos.get(0) instanceof Photo) {
+        candidateDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos$()));
+      } else {
+        Set<Photo> photos = new HashSet<>();
+        photos.forEach(node-> photos.add(new Photo(node.nodeId)));
+        candidateDetails.setPhotos(Photo.photosToPhotoDetails(photos));
+      }
+    }
+
 
     if (LOG.isTraceEnabled())
       LOG.trace("candidateDetails; " + candidateDetails);
@@ -118,9 +137,9 @@ public class Candidate extends Likeable {
       ", policyStatement = " +
       getPolicyStatement() +
       ", ticket = " +
-      getTicket() +
+      getTicket$() +
       ", photos = " +
-      getPhotos() +
+      getPhotos$() +
       " ]";
     if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
     return retValue;
@@ -137,7 +156,7 @@ public class Candidate extends Likeable {
   /**
    * @return the user
    */
-  public User getUser() {
+  public User getUser$() {
     return (User) user;
   }
 
@@ -151,7 +170,7 @@ public class Candidate extends Likeable {
   /**
    * @return the position
    */
-  public Position getPosition() {
+  public Position getPosition$() {
     return (Position) position;
   }
 
@@ -170,7 +189,7 @@ public class Candidate extends Likeable {
     this.policyStatement = policyStatement;
   }
 
-  public Ticket getTicket() {
+  public Ticket getTicket$() {
     return (Ticket) ticket;
   }
 
@@ -178,8 +197,7 @@ public class Candidate extends Likeable {
     this.ticket = ticket;
   }
 
-  public List<Photo> getPhotos() {
-    if (LOG.isDebugEnabled()) LOG.debug("getPhotos() = " + photos);
+  public List<Photo> getPhotos$() {
     return castList(photos, Photo.class);
   }
 
@@ -187,11 +205,22 @@ public class Candidate extends Likeable {
     this.photos = picture;
   }
 
-  /*
-       * (non-Javadoc)
-       *
-       * @see java.lang.Object#hashCode()
-       */
+  public Node getUser() {
+    return user;
+  }
+
+  public Node getPosition() {
+    return position;
+  }
+
+  public Node getTicket() {
+    return ticket;
+  }
+
+  public List<Node> getPhotos() {
+    return photos;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -257,7 +286,7 @@ public class Candidate extends Likeable {
     this.position = position == null ? null : position.toNode();
     this.user = user == null ? null : user.toNode();
     this.ticket = ticket == null ? null : ticket.toNode();
-    if (photos != null){
+    if (photos != null) {
       this.photos = toNodeList(photos);
     }
   }

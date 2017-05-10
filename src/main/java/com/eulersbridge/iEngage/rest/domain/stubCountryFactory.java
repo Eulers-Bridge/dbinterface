@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class stubCountryFactory extends CountriesFactory {
   Country cs[] = new Country[1];
@@ -25,8 +26,8 @@ public class stubCountryFactory extends CountriesFactory {
     ozUnis = ozUniversities.toArray(ozUnis);
     Institution[] ukUnis = new Institution[1];
     ukUnis = ukUniversities.toArray(ukUnis);
-    Country australia = new Country(new Long(61), "Australia", ozUnis);
-    Country uk = new Country(new Long(44), "United Kingdom", ukUnis);
+    Country australia = new Country(new Long(61), "Australia", Arrays.asList(ozUnis));
+    Country uk = new Country(new Long(44), "United Kingdom", Arrays.asList(ukUnis));
     ArrayList<Country> cList = new ArrayList<Country>();
     cList.add(australia);
     cList.add(uk);

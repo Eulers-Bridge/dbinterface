@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.eulersbridge.iEngage.rest.controller;
 
@@ -35,352 +35,319 @@ import java.util.Iterator;
 
 /**
  * @author Greg Newitt
- *
  */
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
-public class ContactController
-{
-    @Autowired UserService userService;
-	@Autowired ContactRequestService contactRequestService;
-    @Autowired NotificationService notificationService;
+public class ContactController {
+  @Autowired
+  UserService userService;
+  @Autowired
+  ContactRequestService contactRequestService;
+  @Autowired
+  NotificationService notificationService;
 
-	    private static Logger LOG = LoggerFactory.getLogger(ContactController.class);
-		private EmailValidator emailValidator;
-		private LongValidator longValidator;
+  private static Logger LOG = LoggerFactory.getLogger(ContactController.class);
+  private EmailValidator emailValidator;
+  private LongValidator longValidator;
 
-	    public ContactController()
-	    {
-			if (LOG.isDebugEnabled()) LOG.debug("ContactController()");
-			emailValidator=EmailValidator.getInstance();
-			longValidator=LongValidator.getInstance();
-	    }
+  public ContactController() {
+    if (LOG.isDebugEnabled()) LOG.debug("ContactController()");
+    emailValidator = EmailValidator.getInstance();
+    longValidator = LongValidator.getInstance();
+  }
 
-	    private ReadUserEvent getUser(String contactInfo)
-	    {
-			ReadUserEvent userEvent=null;
+  private ReadUserEvent getUser(String contactInfo) {
+    ReadUserEvent userEvent = null;
 
-			if (contactInfo!=null)
-			{
-				boolean isEmail=emailValidator.isValid(contactInfo);
-				String email=null;
-			
-				if (isEmail)
-				{
-					email=contactInfo;
-					userEvent=userService.readUserByContactEmail(new RequestReadUserEvent(email));
-				}
-				else
-					userEvent=userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
-			}
-			return userEvent;
-	    }
-	    /**
-	     * Is passed all the necessary data to add a contact from the database.
-	     * The request must be a PUT with the contact email or phone number presented
-	     * as the final portion of the URL.
-	     * <p/>
-	     * This method will return a 200 ok if nothing has gone wrong.
-	     * 
-	     * @param contactInfo the email address or phone number of the contact to be added.
-	     * @return userProfile.
-	     * 
+    if (contactInfo != null) {
+      boolean isEmail = emailValidator.isValid(contactInfo);
+      String email = null;
 
-		*/
-		@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.USER_LABEL+"/{userId}"+ControllerConstants.CONTACT_LABEL+"/{contactInfo}")
-		public @ResponseBody ResponseEntity<ContactRequest> addContact(@PathVariable Long userId,@PathVariable String contactInfo) 
-		{
-			if (LOG.isInfoEnabled()) LOG.info("Attempting to add contact "+contactInfo+" for "+userId);
+      if (isEmail) {
+        email = contactInfo;
+        userEvent = userService.readUserByContactEmail(new RequestReadUserEvent(email));
+      } else
+        userEvent = userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+    }
+    return userEvent;
+  }
 
-			ReadUserEvent userEvent;
-			ResponseEntity<ContactRequest> result;
-			boolean isEmail=emailValidator.isValid(contactInfo);
-			
-			userEvent=getUser(contactInfo);
-			if (((UserDetails)userEvent.getDetails()).getUserId() == userId){
-				if (LOG.isDebugEnabled()) LOG.debug("Trying to add self as contact. UserId: " + userId);
-				return new ResponseEntity<ContactRequest>(HttpStatus.BAD_REQUEST);
-			}
-				 	
-			// Look for existing contact request.
-			ContactRequestDetails fr=new ContactRequestDetails(contactInfo,userId);
-			
-			ReadContactRequestEvent readContactRequestEvent=new ReadContactRequestEvent(fr);
-			ReadEvent crEvt=contactRequestService.readContactRequestByUserIdContactNumber(readContactRequestEvent);
-			ContactRequest restContactRequest;
+  /**
+   * Is passed all the necessary data to add a contact from the database.
+   * The request must be a PUT with the contact email or phone number presented
+   * as the final portion of the URL.
+   * <p/>
+   * This method will return a 200 ok if nothing has gone wrong.
+   *
+   * @param contactInfo the email address or phone number of the contact to be added.
+   * @return userProfile.
+   */
+  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_LABEL + "/{contactInfo}")
+  public @ResponseBody
+  ResponseEntity<ContactRequest> addContact(@PathVariable Long userId, @PathVariable String contactInfo) {
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to add contact " + contactInfo + " for " + userId);
 
-			if (crEvt.isEntityFound())
-			{
-				if (LOG.isDebugEnabled()) LOG.debug("Contact Request details returned - "+(crEvt.getDetails()));
-				restContactRequest=ContactRequest.fromContactRequestDetails((ContactRequestDetails)(crEvt.getDetails()));
-				// Request already exists, bounce out of here.
-				if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContactRequest);
-				// Has it been denied?  TODO
-				result = new ResponseEntity<ContactRequest>(restContactRequest,HttpStatus.ACCEPTED);
-			}
-			else
-			{
-				CreateContactRequestEvent createEvt=new CreateContactRequestEvent(fr);
-				CreatedEvent evt=contactRequestService.createContactRequest(createEvt);
-				if (!evt.isFailed())
-				{	
-					if (!userEvent.isEntityFound())
-					{
-						// TODO They are not already users.  Need to deal with that.
-						ContactRequestDetails dets=(ContactRequestDetails) evt.getDetails();
-						restContactRequest=ContactRequest.fromContactRequestDetails(dets);
-						
-						// Create a ContactRequest.
-						result = new ResponseEntity<ContactRequest>(restContactRequest,HttpStatus.CREATED);
-					}
-					else
-					{
-						ContactRequestDetails dets=(ContactRequestDetails) evt.getDetails();
-						
-						restContactRequest=ContactRequest.fromContactRequestDetails(dets);
-						UserDetails userDets=(UserDetails)userEvent.getDetails();
-						Long contacteeId=userService.findUserId(userDets.getEmail());
-						// Create a new contact request.
-						Notification notification=new Notification(contacteeId, NotificationConstants.CONTACT_REQUEST, dets);
-						
-						
-						if (LOG.isDebugEnabled())
-						{
-							LOG.debug("userEvent - "+userEvent);
-							LOG.debug("Notification - "+notification);
-							LOG.debug("Notification details - "+notification.toNotificationDetails());
-						}
-				        CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
-				        CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
-				        if (notificationCreatedEvent.isFailed())
-				        {
-				        	if (LOG.isDebugEnabled()) LOG.debug("Notification failed.");
-				        }
+    ReadUserEvent userEvent;
+    ResponseEntity<ContactRequest> result;
+    boolean isEmail = emailValidator.isValid(contactInfo);
 
-						result = new ResponseEntity<ContactRequest>(restContactRequest,HttpStatus.OK);
-					}
-				}
-				else
-				{
-					result = new ResponseEntity<ContactRequest>(HttpStatus.BAD_REQUEST);
-				}
-			}
-			return result;
-		}
-	    
-	    /**
-	     * Is passed all the necessary data to add a contact from the database.
-	     * The request must be a PUT with the contact email or phone number presented
-	     * as the final portion of the URL.
-	     * <p/>
-	     * This method will return a 200 ok if nothing has gone wrong.
-	     * 
-	     * @param contactInfo the email address or phone number of the contact to be added.
-	     * @return userProfile.
-	     * 
+    userEvent = getUser(contactInfo);
+    if (((UserDetails) userEvent.getDetails()).getUserId() == userId) {
+      if (LOG.isDebugEnabled())
+        LOG.debug("Trying to add self as contact. UserId: " + userId);
+      return new ResponseEntity<ContactRequest>(HttpStatus.BAD_REQUEST);
+    }
 
-		*/
-		@RequestMapping(method=RequestMethod.PUT,value=ControllerConstants.CONTACT_LABEL+"/{contactRequestId}")
-		public @ResponseBody ResponseEntity<Contact> acceptContact(@PathVariable Long contactRequestId) 
-		{
-			if (LOG.isInfoEnabled()) LOG.info("Attempting to add contact from "+contactRequestId);
+    // Look for existing contact request.
+    ContactRequestDetails fr = new ContactRequestDetails(contactInfo, userId);
 
-			ResponseEntity<Contact> result;
-			Contact restContact;
+    ReadContactRequestEvent readContactRequestEvent = new ReadContactRequestEvent(fr);
+    ReadEvent crEvt = contactRequestService.readContactRequestByUserIdContactNumber(readContactRequestEvent);
+    ContactRequest restContactRequest;
 
-			ReadContactRequestEvent readContactRequestEvent=new ReadContactRequestEvent(contactRequestId);
-			ReadEvent rEvt=contactRequestService.readContactRequest(readContactRequestEvent);
-			
-			if (rEvt.isEntityFound())
-			{
-				ContactRequestDetails crDets=(ContactRequestDetails)rEvt.getDetails();
-				if (LOG.isDebugEnabled()) LOG.debug("Contact Request details returned - "+crDets);
+    if (crEvt.isEntityFound()) {
+      if (LOG.isDebugEnabled())
+        LOG.debug("Contact Request details returned - " + (crEvt.getDetails()));
+      restContactRequest = ContactRequest.fromContactRequestDetails((ContactRequestDetails) (crEvt.getDetails()));
+      // Request already exists, bounce out of here.
+      if (LOG.isDebugEnabled())
+        LOG.debug("Contact Request returned - " + restContactRequest);
+      // Has it been denied?  TODO
+      result = new ResponseEntity<ContactRequest>(restContactRequest, HttpStatus.ACCEPTED);
+    } else {
+      CreateContactRequestEvent createEvt = new CreateContactRequestEvent(fr);
+      CreatedEvent evt = contactRequestService.createContactRequest(createEvt);
+      if (!evt.isFailed()) {
+        if (!userEvent.isEntityFound()) {
+          // TODO They are not already users.  Need to deal with that.
+          ContactRequestDetails dets = (ContactRequestDetails) evt.getDetails();
+          restContactRequest = ContactRequest.fromContactRequestDetails(dets);
 
-				
-				AcceptContactRequestEvent acceptContactRequestEvent=new AcceptContactRequestEvent(contactRequestId);
-				UpdatedEvent uEvt=contactRequestService.acceptContactRequest(acceptContactRequestEvent);
-				if (uEvt.isEntityFound())
-				{
-					if (LOG.isDebugEnabled()) LOG.debug("uEvt - "+uEvt);
-					ContactDetails cDets=(ContactDetails)uEvt.getDetails();
-					restContact=Contact.fromContactDetails(cDets);
-					result = new ResponseEntity<Contact>(restContact,HttpStatus.CREATED);
-					if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
-					if (LOG.isDebugEnabled()) LOG.debug("Contact Details - "+cDets);
-					
-					crDets.getContactDetails();
-					ReadUserEvent contacteeEvt=getUser(crDets.getContactDetails());
-					UserDetails contacteeDets=(UserDetails)contacteeEvt.getDetails();
-					String givenName=contacteeDets.getGivenName(); 
-					String familyName=contacteeDets.getFamilyName();
-					// Create a new contact request.
-					Message message = new Message(null, givenName+' '+familyName+" accepted your contact request.");
-					Notification notification=new Notification(crDets.getUserId(), NotificationConstants.MESSAGE, message);
-					
-			        CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
-			        CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
-			        if (notificationCreatedEvent.isFailed())
-			        {
-			        	if (LOG.isDebugEnabled()) LOG.debug("Notification failed.");
-			        }
-				}
-				else
-				{
-					result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
-				}
-			}
-			else
-			{
-				result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
-			}
-			return result;
-		}
-		
-	    /**
-	     * Is passed all the necessary data to reject a contact  request.
-	     * The request must be a DELETE with the contact request ID presented
-	     * as the final portion of the URL.
-	     * <p/>
-	     * This method will return a 200 ok if nothing has gone wrong.
-	     * 
-	     * @param contactInfo the email address or phone number of the contact to be rejected.
-	     * @return userProfile.
-	     * 
+          // Create a ContactRequest.
+          result = new ResponseEntity<ContactRequest>(restContactRequest, HttpStatus.CREATED);
+        } else {
+          ContactRequestDetails dets = (ContactRequestDetails) evt.getDetails();
 
-		*/
-		@RequestMapping(method=RequestMethod.DELETE,value=ControllerConstants.CONTACT_LABEL+"/{contactRequestId}")
-		public @ResponseBody ResponseEntity<ContactRequest> rejectContact(@PathVariable Long contactRequestId) 
-		{
-			if (LOG.isInfoEnabled()) LOG.info("Attempting to reject contact request from "+contactRequestId);
+          restContactRequest = ContactRequest.fromContactRequestDetails(dets);
+          UserDetails userDets = (UserDetails) userEvent.getDetails();
+          Long contacteeId = userService.findUserId(userDets.getEmail());
+          // Create a new contact request.
+          Notification notification = new Notification(contacteeId, NotificationConstants.CONTACT_REQUEST, dets);
 
-			ResponseEntity<ContactRequest> result;
-			ContactRequest restContact;
 
-			ReadContactRequestEvent readContactRequestEvent=new ReadContactRequestEvent(contactRequestId);
-			ReadEvent rEvt=contactRequestService.readContactRequest(readContactRequestEvent);
-			
-			if (rEvt.isEntityFound())
-			{
-				ContactRequestDetails crDets=(ContactRequestDetails)rEvt.getDetails();
-				if (LOG.isDebugEnabled()) LOG.debug("Contact Request details returned - "+crDets);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("userEvent - " + userEvent);
+            LOG.debug("Notification - " + notification);
+            LOG.debug("Notification details - " + notification.toNotificationDetails());
+          }
+          CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
+          CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
+          if (notificationCreatedEvent.isFailed()) {
+            if (LOG.isDebugEnabled()) LOG.debug("Notification failed.");
+          }
 
-				
-				UpdateEvent acceptContactRequestEvent=new UpdateEvent(contactRequestId,crDets);
-				UpdatedEvent uEvt=contactRequestService.rejectContactRequest(acceptContactRequestEvent);
-				if (uEvt.isEntityFound())
-				{
-					ContactRequestDetails cDets=(ContactRequestDetails)uEvt.getDetails();
-					restContact=ContactRequest.fromContactRequestDetails(cDets);
-					result = new ResponseEntity<ContactRequest>(restContact,HttpStatus.OK);
-					if (LOG.isDebugEnabled()) LOG.debug("Contact Request returned - "+restContact);
-				}
-				else
-				{
-					result = new ResponseEntity<ContactRequest>(HttpStatus.NOT_FOUND);
-				}
-			}
-			else
-			{
-				result = new ResponseEntity<ContactRequest>(HttpStatus.NOT_FOUND);
-			}
-			return result;
-		}
-	    
-		/**
-		 * Is passed all the necessary data to read contactRequests received from the database. The
-		 * request must be a GET with the userId of the receiver presented as the final
-		 * portion of the URL.
-		 * <p/>
-		 * This method will return the contactRequests received from the database.
-		 * 
-		 * @param userId
-		 *            the userId whose contactRequests are to be read.
-		 * @return the contactRequests.
-		 * 
-		 */
-		@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACT_REQUESTS_LABEL
-				+ "/{userId}")
-		public @ResponseBody ResponseEntity<FindsParent> findContactRequestsReceived(
-				@PathVariable(value = "") Long userId,
-				@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
-				@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
-				@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
-		{
-			int pageNumber = 0;
-			int pageLength = 10;
-			pageNumber = Integer.parseInt(page);
-			pageLength = Integer.parseInt(pageSize);
-			ResponseEntity<FindsParent> response;
-			if (LOG.isInfoEnabled())
-				LOG.info("Attempting to retrieve contactRequests for user "
-						+ userId + '.');
+          result = new ResponseEntity<ContactRequest>(restContactRequest, HttpStatus.OK);
+        }
+      } else {
+        result = new ResponseEntity<ContactRequest>(HttpStatus.BAD_REQUEST);
+      }
+    }
+    return result;
+  }
 
-			Direction sortDirection = Direction.DESC;
-			if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-			AllReadEvent contactRequestEvent = contactRequestService.readContactRequestsReceived(
-					new ReadAllEvent(userId), sortDirection,
-					pageNumber, pageLength);
+  /**
+   * Is passed all the necessary data to add a contact from the database.
+   * The request must be a PUT with the contact email or phone number presented
+   * as the final portion of the URL.
+   * <p/>
+   * This method will return a 200 ok if nothing has gone wrong.
+   *
+   * @param contactInfo the email address or phone number of the contact to be added.
+   * @return userProfile.
+   */
+  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CONTACT_LABEL + "/{contactRequestId}")
+  public @ResponseBody
+  ResponseEntity<Contact> acceptContact(@PathVariable Long contactRequestId) {
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to add contact from " + contactRequestId);
 
-			if (!contactRequestEvent.isEntityFound())
-			{
-				response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
-			}
-			else
-			{
-				Iterator<ContactRequest> contactRequests = ContactRequest
-						.toContactRequestsIterator(contactRequestEvent.getDetails().iterator());
-				FindsParent theContactRequests = FindsParent.fromArticlesIterator(contactRequests, contactRequestEvent.getTotalItems(), contactRequestEvent.getTotalPages());
-				response = new ResponseEntity<FindsParent>(theContactRequests, HttpStatus.OK);
-			}
-			return response;
-		}
+    ResponseEntity<Contact> result;
+    Contact restContact;
 
-		/**
-		 * Is passed all the necessary data to read contactRequests sent from the database. The
-		 * request must be a GET with the userId of the sender presented as the final
-		 * portion of the URL.
-		 * <p/>
-		 * This method will return the contactRequests sent from the database.
-		 * 
-		 * @param userId
-		 *            the userId whose contactRequests are to be read.
-		 * @return the contactRequests.
-		 * 
-		 */
-		@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL+"/{userId}"+ControllerConstants.CONTACT_REQUESTS_LABEL)
-		public @ResponseBody ResponseEntity<FindsParent> findContactRequestsMade(
-				@PathVariable(value = "") Long userId,
-				@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
-				@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
-				@RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize)
-		{
-			int pageNumber = 0;
-			int pageLength = 10;
-			pageNumber = Integer.parseInt(page);
-			pageLength = Integer.parseInt(pageSize);
-			ResponseEntity<FindsParent> response;
-			if (LOG.isInfoEnabled())
-				LOG.info("Attempting to retrieve contactRequests for user "
-						+ userId + '.');
+    ReadContactRequestEvent readContactRequestEvent = new ReadContactRequestEvent(contactRequestId);
+    ReadEvent rEvt = contactRequestService.readContactRequest(readContactRequestEvent);
 
-			Direction sortDirection = Direction.DESC;
-			if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-			AllReadEvent contactRequestEvent = contactRequestService.readContactRequestsMade(
-					new ReadAllEvent(userId), sortDirection,
-					pageNumber, pageLength);
+    if (rEvt.isEntityFound()) {
+      ContactRequestDetails crDets = (ContactRequestDetails) rEvt.getDetails();
+      if (LOG.isDebugEnabled())
+        LOG.debug("Contact Request details returned - " + crDets);
 
-			if (!contactRequestEvent.isEntityFound())
-			{
-				response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
-			}
-			else
-			{
-				Iterator<ContactRequest> contactRequests = ContactRequest
-						.toContactRequestsIterator(contactRequestEvent.getDetails().iterator());
-				FindsParent theContactRequests = FindsParent.fromArticlesIterator(contactRequests, contactRequestEvent.getTotalItems(), contactRequestEvent.getTotalPages());
-				response = new ResponseEntity<FindsParent>(theContactRequests, HttpStatus.OK);
-			}
-			return response;
-		}
+
+      AcceptContactRequestEvent acceptContactRequestEvent = new AcceptContactRequestEvent(contactRequestId);
+      UpdatedEvent uEvt = contactRequestService.acceptContactRequest(acceptContactRequestEvent);
+      if (uEvt.isEntityFound()) {
+        if (LOG.isDebugEnabled()) LOG.debug("uEvt - " + uEvt);
+        ContactDetails cDets = (ContactDetails) uEvt.getDetails();
+        restContact = Contact.fromContactDetails(cDets);
+        result = new ResponseEntity<Contact>(restContact, HttpStatus.CREATED);
+        if (LOG.isDebugEnabled())
+          LOG.debug("Contact Request returned - " + restContact);
+        if (LOG.isDebugEnabled()) LOG.debug("Contact Details - " + cDets);
+
+        crDets.getContactDetails();
+        ReadUserEvent contacteeEvt = getUser(crDets.getContactDetails());
+        UserDetails contacteeDets = (UserDetails) contacteeEvt.getDetails();
+        String givenName = contacteeDets.getGivenName();
+        String familyName = contacteeDets.getFamilyName();
+        // Create a new contact request.
+        Message message = new Message(null, givenName + ' ' + familyName + " accepted your contact request.");
+        Notification notification = new Notification(crDets.getUserId(), NotificationConstants.MESSAGE, message);
+
+        CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
+        CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
+        if (notificationCreatedEvent.isFailed()) {
+          if (LOG.isDebugEnabled()) LOG.debug("Notification failed.");
+        }
+      } else {
+        result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
+      }
+    } else {
+      result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
+    }
+    return result;
+  }
+
+  /**
+   * Is passed all the necessary data to reject a contact  request.
+   * The request must be a DELETE with the contact request ID presented
+   * as the final portion of the URL.
+   * <p/>
+   * This method will return a 200 ok if nothing has gone wrong.
+   *
+   * @param contactInfo the email address or phone number of the contact to be rejected.
+   * @return userProfile.
+   */
+  @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CONTACT_LABEL + "/{contactRequestId}")
+  public @ResponseBody
+  ResponseEntity<ContactRequest> rejectContact(@PathVariable Long contactRequestId) {
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to reject contact request from " + contactRequestId);
+
+    ResponseEntity<ContactRequest> result;
+    ContactRequest restContact;
+
+    ReadContactRequestEvent readContactRequestEvent = new ReadContactRequestEvent(contactRequestId);
+    ReadEvent rEvt = contactRequestService.readContactRequest(readContactRequestEvent);
+
+    if (rEvt.isEntityFound()) {
+      ContactRequestDetails crDets = (ContactRequestDetails) rEvt.getDetails();
+      if (LOG.isDebugEnabled())
+        LOG.debug("Contact Request details returned - " + crDets);
+
+
+      UpdateEvent acceptContactRequestEvent = new UpdateEvent(contactRequestId, crDets);
+      UpdatedEvent uEvt = contactRequestService.rejectContactRequest(acceptContactRequestEvent);
+      if (uEvt.isEntityFound()) {
+        ContactRequestDetails cDets = (ContactRequestDetails) uEvt.getDetails();
+        restContact = ContactRequest.fromContactRequestDetails(cDets);
+        result = new ResponseEntity<ContactRequest>(restContact, HttpStatus.OK);
+        if (LOG.isDebugEnabled())
+          LOG.debug("Contact Request returned - " + restContact);
+      } else {
+        result = new ResponseEntity<ContactRequest>(HttpStatus.NOT_FOUND);
+      }
+    } else {
+      result = new ResponseEntity<ContactRequest>(HttpStatus.NOT_FOUND);
+    }
+    return result;
+  }
+
+  /**
+   * Is passed all the necessary data to read contactRequests received from the database. The
+   * request must be a GET with the userId of the receiver presented as the final
+   * portion of the URL.
+   * <p/>
+   * This method will return the contactRequests received from the database.
+   *
+   * @param userId the userId whose contactRequests are to be read.
+   * @return the contactRequests.
+   */
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACT_REQUESTS_LABEL
+    + "/{userId}")
+  public @ResponseBody
+  ResponseEntity<FindsParent> findContactRequestsReceived(
+    @PathVariable(value = "") Long userId,
+    @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+    @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+    @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize) {
+    int pageNumber = 0;
+    int pageLength = 10;
+    pageNumber = Integer.parseInt(page);
+    pageLength = Integer.parseInt(pageSize);
+    ResponseEntity<FindsParent> response;
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to retrieve contactRequests for user "
+        + userId + '.');
+
+    Direction sortDirection = Direction.DESC;
+    if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+    AllReadEvent contactRequestEvent = contactRequestService.readContactRequestsReceived(
+      new ReadAllEvent(userId), sortDirection,
+      pageNumber, pageLength);
+
+    if (!contactRequestEvent.isEntityFound()) {
+      response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+    } else {
+      Iterator<ContactRequest> contactRequests = ContactRequest
+        .toContactRequestsIterator(contactRequestEvent.getDetails().iterator());
+      FindsParent theContactRequests = FindsParent.fromArticlesIterator(contactRequests, contactRequestEvent.getTotalItems(), contactRequestEvent.getTotalPages());
+      response = new ResponseEntity<FindsParent>(theContactRequests, HttpStatus.OK);
+    }
+    return response;
+  }
+
+  /**
+   * Is passed all the necessary data to read contactRequests sent from the database. The
+   * request must be a GET with the userId of the sender presented as the final
+   * portion of the URL.
+   * <p/>
+   * This method will return the contactRequests sent from the database.
+   *
+   * @param userId the userId whose contactRequests are to be read.
+   * @return the contactRequests.
+   */
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUESTS_LABEL)
+  public @ResponseBody
+  ResponseEntity<FindsParent> findContactRequestsMade(
+    @PathVariable(value = "") Long userId,
+    @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+    @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+    @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize) {
+    int pageNumber = 0;
+    int pageLength = 10;
+    pageNumber = Integer.parseInt(page);
+    pageLength = Integer.parseInt(pageSize);
+    ResponseEntity<FindsParent> response;
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to retrieve contactRequests for user "
+        + userId + '.');
+
+    Direction sortDirection = Direction.DESC;
+    if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
+    AllReadEvent contactRequestEvent = contactRequestService.readContactRequestsMade(
+      new ReadAllEvent(userId), sortDirection,
+      pageNumber, pageLength);
+
+    if (!contactRequestEvent.isEntityFound()) {
+      response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+    } else {
+      Iterator<ContactRequest> contactRequests = ContactRequest
+        .toContactRequestsIterator(contactRequestEvent.getDetails().iterator());
+      FindsParent theContactRequests = FindsParent.fromArticlesIterator(contactRequests, contactRequestEvent.getTotalItems(), contactRequestEvent.getTotalPages());
+      response = new ResponseEntity<FindsParent>(theContactRequests, HttpStatus.OK);
+    }
+    return response;
+  }
 
 }

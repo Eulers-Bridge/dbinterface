@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
+import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.neo4j.ogm.annotation.Index;
@@ -8,19 +9,20 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @NodeEntity
-public class Country extends Node{
+public class Country extends Node {
   @NotNull
   @NotBlank
   @Email
   @Index(unique = true)
   private String countryName;
-  @Relationship(type = DatabaseDomainConstants.INSTITUTIONS_LABEL)
+  @Relationship(type = DatabaseDomainConstants.INSTITUTIONS_LABEL, direction = Relationship.INCOMING)
   private List<Node> institutions;
 
   private static Logger LOG = LoggerFactory.getLogger(Country.class);
@@ -40,8 +42,12 @@ public class Country extends Node{
   /**
    * @return the institutions
    */
-  public Iterable<Institution> getInstitutions() {
+  public List<Institution> getInstitutions$() {
     return castList(institutions, Institution.class);
+  }
+
+  public List<Node> getInstitutions() {
+    return institutions;
   }
 
   /**
@@ -60,12 +66,20 @@ public class Country extends Node{
   }
 
   public CountryDetails toCountryDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toCountryDetails(" + this + ")");
-
     CountryDetails details = new CountryDetails(getNodeId());
+    details.setCountryName(countryName);
 
-    BeanUtils.copyProperties(this, details);
-    if (LOG.isTraceEnabled()) LOG.trace("countryDetails " + details);
+    Set<InstitutionDetails> institutionDetails = new HashSet<>();
+    if (institutions != null) {
+      institutions.forEach(institution -> {
+        System.out.println("InsId:" + institution.getNodeId());//
+        if (institution instanceof Institution)
+          institutionDetails.add(((Institution) institution).toInstDetails());
+        else
+          institutionDetails.add(new InstitutionDetails(institution.getNodeId()));
+      });
+      details.setInstitutions(institutionDetails);
+    }
 
     return details;
   }

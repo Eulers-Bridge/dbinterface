@@ -121,7 +121,7 @@ public class ContactControllerTest
 		.andExpect(jsonPath("$.responseDate",is(crd.getResponseDate())))
 		.andExpect(jsonPath("$.accepted",is(crd.getAccepted())))
 		.andExpect(jsonPath("$.rejected",is(crd.getRejected())))
-		.andExpect(jsonPath("$.userId",is(crd.getUser().getNodeId().intValue())))
+		.andExpect(jsonPath("$.userId",is(crd.getUser$().getNodeId().intValue())))
 		.andExpect(status().isAccepted());
 	}
 	
@@ -149,7 +149,7 @@ public class ContactControllerTest
 		.andExpect(jsonPath("$.responseDate",is(crd.getResponseDate())))
 		.andExpect(jsonPath("$.accepted",is(crd.getAccepted())))
 		.andExpect(jsonPath("$.rejected",is(crd.getRejected())))
-		.andExpect(jsonPath("$.userId",is(crd.getUser().getNodeId().intValue())))
+		.andExpect(jsonPath("$.userId",is(crd.getUser$().getNodeId().intValue())))
 		.andExpect(status().isAccepted());
 	}
 	
@@ -163,7 +163,7 @@ public class ContactControllerTest
 		if (LOG.isDebugEnabled()) LOG.debug("acceptingContact()");
 		ContactRequest cr = DatabaseDataFixture.populateContactRequest1();
 		Long timeStamp=Calendar.getInstance().getTimeInMillis();
-		ContactDetails cDets = new ContactDetails(453l, cr.getUser().getNodeId(), 432l, timeStamp);
+		ContactDetails cDets = new ContactDetails(453l, cr.getUser$().getNodeId(), 432l, timeStamp);
 		Long contactRequestId=cr.getNodeId();
 		ContactRequestDetails crDets = cr.toContactRequestDetails();
 		

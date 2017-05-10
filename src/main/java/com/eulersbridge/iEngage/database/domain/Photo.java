@@ -42,6 +42,10 @@ public class Photo extends Likeable {
     if (LOG.isDebugEnabled()) LOG.debug("Constructor");
   }
 
+  public Photo(Long nodeId) {
+    super(nodeId);
+  }
+
   /**
    * @return the owner
    */
@@ -197,7 +201,7 @@ public class Photo extends Likeable {
   }
 
   public static Iterable<PhotoDetails> photosToPhotoDetails(Iterable<Photo> photos) {
-    HashSet<PhotoDetails> pictures = new HashSet<PhotoDetails>();
+    HashSet<PhotoDetails> pictures = new HashSet<>();
     if (photos != null) {
       Iterator<Photo> iter = photos.iterator();
       while (iter.hasNext()) {

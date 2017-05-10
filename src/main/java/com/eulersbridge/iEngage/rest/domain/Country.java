@@ -4,78 +4,87 @@ import com.eulersbridge.iEngage.core.events.countrys.CountryDetails;
 import com.eulersbridge.iEngage.rest.controller.CountryController;
 import org.springframework.hateoas.ResourceSupport;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-public class Country extends ResourceSupport
-{
-	Long countryId;
-	String countryName;
-	Institution institutions[];
-	
-	public Country(Long id,String name,Institution insts[])
-	{
-		countryId=id;
-		countryName=name;
-		institutions=insts;
-	}
-	
-	public Country() 
-	{
+public class Country extends ResourceSupport {
+  Long countryId;
+  String countryName;
+  Iterable<Institution> institutions;
 
-	}
+  public Country(Long id, String name, Iterable<Institution> institutions) {
+    countryId = id;
+    countryName = name;
+    this.institutions = institutions;
+  }
 
-	public Long getCountryId()
-	{
-		return countryId;
-	}
-	
-	public String getCountryName()
-	{
-		return countryName;
-	}
-	
-	public Institution[] getInstitutions()
-	{
-		return institutions;
-	}
-	
-	public CountryDetails toCountryDetails() 
-	  {
-		CountryDetails details = new CountryDetails(countryId);
+  public Country() {
+  }
 
-	    details.setCountryName(getCountryName());
+  public Long getCountryId() {
+    return countryId;
+  }
 
-	    return details;
-	  }
+  public String getCountryName() {
+    return countryName;
+  }
 
-	  // {!begin fromOrderDetails}
-	  public static Country fromCountryDetails(CountryDetails readCountry) 
-	  {
-		  Country country = new Country();
+  public CountryDetails toCountryDetails() {
+    CountryDetails details = new CountryDetails(countryId);
+    details.setCountryName(countryName);
+    return details;
+  }
 
-		country.countryId = readCountry.getCountryId();
-		country.countryName = readCountry.getCountryName();
-	    String simpleName=Country.class.getSimpleName();
-	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
-	    
-	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
-	    //this section is all that is actually needed in our model to add hateoas support.
+  // {!begin fromOrderDetails}
+  public static Country fromCountryDetails(CountryDetails readCountry) {
+    Country country = new Country();
+    country.countryId = readCountry.getCountryId();
+    country.countryName = readCountry.getCountryName();
+    if (readCountry.getInstitutions() != null){
+      Set<Institution> institutions = new HashSet<>();
+      readCountry.getInstitutions().forEach(institutionDetails -> {
+        institutions.add(Institution.fromInstDetails(institutionDetails));
+      });
+      country.setInstitutions(institutions);
+    } else {
+      country.setInstitutions(null);
+    }
 
-	    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
-	    //We have explicitly avoided that.
-	    // {!begin selfRel}
-	    country.add(linkTo(CountryController.class).slash(name).slash(country.countryId).withSelfRel());
-	    // {!end selfRel}
-	    // {!begin readAll}
-	    country.add(linkTo(CountryController.class).slash(name+'s').withRel(RestDomainConstants.READALL_LABEL));
-	    // {!end readAll}
+    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
+    //this section is all that is actually needed in our model to add hateoas support.
+    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
+    //We have explicitly avoided that.
+    String simpleName = Country.class.getSimpleName();
+    String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
+    // {!begin selfRel}
+    country.add(linkTo(CountryController.class).slash(name).slash(country.countryId).withSelfRel());
+    // {!end selfRel}
+    // {!begin readAll}
+    country.add(linkTo(CountryController.class).slash(name + 's').withRel(RestDomainConstants.READALL_LABEL));
+    // {!end readAll}
 
-	    return country;
-	  }
+    return country;
+  }
 
-	public void setId(Long countryId) 
-	{
-		this.countryId=countryId;		
-	}
+  public void setId(Long countryId) {
+    this.countryId = countryId;
+  }
 
+  public Iterable<Institution> getInstitutions() {
+    return institutions;
+  }
+
+  public void setCountryId(Long countryId) {
+    this.countryId = countryId;
+  }
+
+  public void setCountryName(String countryName) {
+    this.countryName = countryName;
+  }
+
+  public void setInstitutions(Iterable<Institution> institutions) {
+    this.institutions = institutions;
+  }
 }

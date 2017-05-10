@@ -19,18 +19,7 @@ public class PhotoDetails extends LikeableDetails
 	Long date;
 	Long ownerId;
 	private boolean inappropriateContent;
-	
-	/**
-	 * @param nodeId
-	 * @param url
-	 * @param thumbNailUrl
-	 * @param title
-	 * @param description
-	 * @param date
-	 * @param sequence 
-	 * @param ownerId
-	 * @param numberOfLikes 
-	 */
+
 	public PhotoDetails(Long nodeId, String url, String thumbNailUrl, String title,
 			String description, Long date, Integer sequence, Long ownerId, boolean inappropriateContent)
 	{
@@ -43,6 +32,9 @@ public class PhotoDetails extends LikeableDetails
 		this.ownerId = ownerId;
 		this.sequence = sequence;
 		this.inappropriateContent = inappropriateContent;
+	}
+
+	public PhotoDetails() {
 	}
 
 	/**

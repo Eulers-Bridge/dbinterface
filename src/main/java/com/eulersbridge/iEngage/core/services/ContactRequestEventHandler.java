@@ -115,7 +115,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
       else
         contactee = userRepository.findByContactNumber(cr.getContactDetails());
       if (contactee != null) {
-        contactor = cr.getUser();
+        contactor = cr.getUser$();
         cr.setAccepted(true);
         cr.setRejected(false);
         cr.setResponseDate(Calendar.getInstance().getTimeInMillis());
@@ -229,7 +229,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
         while (iter.hasNext()) {
           ContactRequest na = iter.next();
           if (LOG.isTraceEnabled())
-            LOG.trace("Converting to details - " + na.getUser());
+            LOG.trace("Converting to details - " + na.getUser$());
           ContactRequestDetails det = na.toContactRequestDetails();
           dets.add(det);
         }
@@ -273,7 +273,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
         while (iter.hasNext()) {
           ContactRequest na = iter.next();
           if (LOG.isTraceEnabled())
-            LOG.trace("Converting to details - " + na.getUser());
+            LOG.trace("Converting to details - " + na.getUser$());
           ContactRequestDetails det = na.toContactRequestDetails();
           User requestReceiver = userRepository.findByEmail(det.getContactDetails());
           det.setRequestReceiverDetails(requestReceiver.toUserDetails());

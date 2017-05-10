@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
  */
 @NodeEntity
 public class ContactRequest extends Node {
+  private static Logger LOG = LoggerFactory.getLogger(ContactRequest.class);
 
   private String contactDetails;
   private Long requestDate;
@@ -20,23 +21,18 @@ public class ContactRequest extends Node {
   private Boolean accepted;
   private Boolean rejected;
   @Relationship(type = DatabaseDomainConstants.CONTACT_REQUEST_LABEL, direction = Relationship.INCOMING)
-//    @Fetch
   private Node user;
 
-  private static Logger LOG = LoggerFactory.getLogger(ContactRequest.class);
-
   public ContactRequestDetails toContactRequestDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toContactRequestDetails()");
-
     Long userId = null;
     UserDetails requesterDetails = null;
-    if (getUser() != null) {
-      userId = getUser().getNodeId();
-      requesterDetails = getUser().toUserDetails();
+    if (user != null) {
+      userId = user.getNodeId();
+      if(user instanceof User)
+        requesterDetails = getUser$().toUserDetails();
     }
     ContactRequestDetails details = new ContactRequestDetails(getNodeId(), getContactDetails(),
       getRequestDate(), getResponseDate(), getAccepted(), getRejected(), userId, requesterDetails);
-    if (LOG.isTraceEnabled()) LOG.trace("contactRequest " + this);
 
     BeanUtils.copyProperties(this, details);
     return details;
@@ -134,8 +130,12 @@ public class ContactRequest extends Node {
   /**
    * @return the user
    */
-  public User getUser() {
+  public User getUser$() {
     return (User) user;
+  }
+
+  public Node getUser() {
+    return user;
   }
 
   /**

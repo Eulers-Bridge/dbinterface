@@ -2,6 +2,8 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import org.junit.*;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 
 public class TestCountry {
@@ -42,7 +44,7 @@ public class TestCountry {
 	{
 		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
-		Country testObj=new Country(new Long(61), name, unis);
+		Country testObj=new Country(new Long(61), name, Arrays.asList(unis));
 		assertEquals("Country constructor does not return a class of type Country.",Country.class,testObj.getClass()); 
 	}
 
@@ -55,7 +57,7 @@ public class TestCountry {
 		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		Long countryId=new Long(61);
 		String name="Australia";
-		Country testObj=new Country(countryId, name, unis);
+		Country testObj=new Country(countryId, name, Arrays.asList(unis));
 		assertEquals("Id returned does not match id object created with.",countryId,testObj.getCountryId());
 	}
 
@@ -67,7 +69,7 @@ public class TestCountry {
 	{
 		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
-		Country testObj=new Country(new Long(61), name, unis);
+		Country testObj=new Country(new Long(61), name, Arrays.asList(unis));
 		assertEquals("Name returned does not match name object created with.",name,testObj.getCountryName());
 	}
 
@@ -79,8 +81,8 @@ public class TestCountry {
 	{
 		Institution institutions[]={new Institution(new Long(1), "University of Melbourne")};
 		String name="Australia";
-		Country testObj=new Country(new Long(61), name, institutions);
-		assertEquals("Name returned does not match name object created with.",institutions[0],testObj.getInstitutions()[0]);
+		Country testObj=new Country(new Long(61), name, Arrays.asList(institutions));
+		assertEquals("Name returned does not match name object created with.",institutions[0],testObj.getInstitutions().iterator().next());
 	}
 
 

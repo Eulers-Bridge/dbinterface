@@ -83,12 +83,12 @@ public class CountryTest {
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Country#getInstitutions()}.
+	 * Test method for {@link Country#getInstitutions$()}.
 	 */
 	@Test
 	public void testGetInstitutions() 
 	{
-		assertNull("Node id doesn't match.",country.getInstitutions());
+		assertNull("Node id doesn't match.",country.getInstitutions$());
 	}
 	
 	public boolean compareInstitutions(Iterable<Institution> insts1,Iterable<Institution> insts2)
@@ -119,7 +119,7 @@ public class CountryTest {
 		ArrayList <Institution> institutions=new ArrayList<Institution>();
 		institutions.add(DatabaseDataFixture.populateInstUniMelb());
 		country.setInstitutions(Node.castList(institutions));
-		assertTrue("Institutions doesn't match.",compareInstitutions(country.getInstitutions(),institutions));
+		assertTrue("Institutions doesn't match.",compareInstitutions(country.getInstitutions$(),institutions));
 	}
 
 	/**

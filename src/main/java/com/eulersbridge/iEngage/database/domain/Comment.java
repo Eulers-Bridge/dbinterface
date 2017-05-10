@@ -1,12 +1,11 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
+import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
 
 /**
  * @author Yikai Gong
@@ -14,19 +13,23 @@ import java.util.Iterator;
 
 @NodeEntity
 public class Comment extends Node {
+  private static Logger LOG = LoggerFactory.getLogger(Comment.class);
+
+  private Long timestamp;
+  private String content;
 
   @Relationship(type = DatabaseDomainConstants.POST_COMMENT, direction = Relationship.INCOMING)
-//    @Fetch
   private Node user;
 
   @Relationship(type = DatabaseDomainConstants.HAS_COMMENT, direction = Relationship.INCOMING)
   private Owner target;
 
-  private Long timestamp;
-  private String content;
+  public Comment() {
+  }
 
-  private static Logger LOG = LoggerFactory.getLogger(Comment.class);
-
+  public Comment(Long nodeId) {
+    super(nodeId);
+  }
 
   public static Comment fromCommentDetails(CommentDetails commentDetails) {
     Comment comment = null;
@@ -46,16 +49,18 @@ public class Comment extends Node {
     if (LOG.isTraceEnabled()) LOG.trace("toCommentDetails(" + this + ")");
     CommentDetails commentDetails = new CommentDetails();
     commentDetails.setNodeId(getNodeId());
-    commentDetails.setUserName(getUser().getGivenName());
-    commentDetails.setUserEmail(getUser().getEmail());
-    commentDetails.setTargetId(target.getNodeId());
     commentDetails.setTimestamp(getTimestamp());
     commentDetails.setContent(getContent());
-    Iterator<Photo> photos;
-    if (getUser().getPhotos() != null) {
-      photos = getUser().getPhotos().iterator();
-      if (photos.hasNext())
-        commentDetails.setProfilePhotoDetails(photos.next().toPhotoDetails());
+
+    commentDetails.setTargetId(target.nodeId);
+
+    if (user != null && user instanceof User) {
+      commentDetails.setUserName(getUser$().getGivenName());
+      commentDetails.setUserEmail(getUser$().getEmail());
+      PhotoDetails photoDetails = new PhotoDetails();
+      photoDetails.setOwnerId(getUser$().nodeId);
+      photoDetails.setUrl(getUser$().getProfilePhoto());
+      commentDetails.setProfilePhotoDetails(photoDetails);
     }
 
     return commentDetails;
@@ -69,8 +74,12 @@ public class Comment extends Node {
     this.target = target;
   }
 
-  public User getUser() {
+  public User getUser$() {
     return (User) user;
+  }
+
+  public Node getUser() {
+    return user;
   }
 
   public void setUser(Node user) {

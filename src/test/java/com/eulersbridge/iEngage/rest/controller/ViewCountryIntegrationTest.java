@@ -19,6 +19,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
@@ -213,7 +214,7 @@ public class ViewCountryIntegrationTest
 		ArrayList<CountryDetails> countrys=new ArrayList<CountryDetails>();
 		Institution institution=new Institution(id, "University of Melbourne");
 		Institution institutions[]={institution};
-		Country country=new Country(id, countryName, institutions);
+		Country country=new Country(id, countryName, Arrays.asList(institutions));
 		CountryDetails countryDetails=country.toCountryDetails();
 		countrys.add(countryDetails);
 		CountrysReadEvent testData=new CountrysReadEvent(countrys);

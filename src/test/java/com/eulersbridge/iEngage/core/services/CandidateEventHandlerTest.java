@@ -135,7 +135,7 @@ public class CandidateEventHandlerTest
 		CreateCandidateEvent createPositionEvent=new CreateCandidateEvent(dets);
 		CandidateCreatedEvent evtData = (CandidateCreatedEvent) service.createCandidate(createPositionEvent);
 		assertFalse(evtData.isPositionFound());
-		assertEquals(evtData.getFailedId(),testData.getPosition().getNodeId());
+		assertEquals(evtData.getFailedId(),testData.getPosition$().getNodeId());
 		assertNull(evtData.getDetails());
 	}
 
@@ -144,7 +144,7 @@ public class CandidateEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CreatingCandidate()");
 		Candidate testData=DatabaseDataFixture.populateCandidate1();
-		Position testPosition=testData.getPosition();
+		Position testPosition=testData.getPosition$();
 		testPosition.setNodeId(null);
 		testData.setPosition(testPosition);
 		User testUser=DatabaseDataFixture.populateUserGnewitt();
@@ -155,7 +155,7 @@ public class CandidateEventHandlerTest
 		CreateCandidateEvent createPositionEvent=new CreateCandidateEvent(dets);
 		CandidateCreatedEvent evtData = (CandidateCreatedEvent) service.createCandidate(createPositionEvent);
 		assertFalse(evtData.isPositionFound());
-		assertEquals(evtData.getFailedId(),testData.getPosition().getNodeId());
+		assertEquals(evtData.getFailedId(),testData.getPosition$().getNodeId());
 		assertNull(evtData.getDetails());
 	}
 
@@ -174,7 +174,7 @@ public class CandidateEventHandlerTest
 		CreateCandidateEvent createPositionEvent=new CreateCandidateEvent(dets);
 		CandidateCreatedEvent evtData = (CandidateCreatedEvent) service.createCandidate(createPositionEvent);
 		assertFalse(evtData.isUserFound());
-		assertEquals(evtData.getFailedId(),testData.getUser().getNodeId());
+		assertEquals(evtData.getFailedId(),testData.getUser$().getNodeId());
 		assertNull(evtData.getDetails());
 	}
 
@@ -186,7 +186,7 @@ public class CandidateEventHandlerTest
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("CreatingCandidate()");
 		Candidate testData=DatabaseDataFixture.populateCandidate1();
-		User user=testData.getUser();
+		User user=testData.getUser$();
 		user.setNodeId(null);
 		testData.setUser(user);
 		when(candidateRepository.save(any(Candidate.class))).thenReturn(testData);
@@ -194,7 +194,7 @@ public class CandidateEventHandlerTest
 		CreateCandidateEvent createPositionEvent=new CreateCandidateEvent(dets);
 		CandidateCreatedEvent evtData = (CandidateCreatedEvent) service.createCandidate(createPositionEvent);
 		assertFalse(evtData.isUserFound());
-		assertEquals(evtData.getFailedId(),testData.getUser().getNodeId());
+		assertEquals(evtData.getFailedId(),testData.getUser$().getNodeId());
 		assertNull(evtData.getDetails());
 	}
 

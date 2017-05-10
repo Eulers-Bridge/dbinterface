@@ -57,10 +57,10 @@ public class NotificationContactRequest extends Notification implements Notifica
           if (getContactRequest().getNodeId() != null) {
             if (LOG.isDebugEnabled()) LOG.debug("NodeId present. - ");
             result = crRepo.findOne(getContactRequest().getNodeId());
-          } else if ((getContactRequest().getUser() != null) && (getContactRequest().getUser().getNodeId() != null) && (getContactRequest().getContactDetails() != null)) {
+          } else if ((getContactRequest().getUser$() != null) && (getContactRequest().getUser$().getNodeId() != null) && (getContactRequest().getContactDetails() != null)) {
             if (LOG.isDebugEnabled())
-              LOG.debug("other info present - " + getContactRequest().getUser().getNodeId() + " , " + getContactRequest().getContactDetails());
-            result = crRepo.findContactRequestByUserIdContactInfo(getContactRequest().getUser().getNodeId(), getContactRequest().getContactDetails());
+              LOG.debug("other info present - " + getContactRequest().getUser$().getNodeId() + " , " + getContactRequest().getContactDetails());
+            result = crRepo.findContactRequestByUserIdContactInfo(getContactRequest().getUser$().getNodeId(), getContactRequest().getContactDetails());
           }
           if (result != null) {
             setContactRequest(result);

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 public class Contact {
   @GraphId
   private Long nodeId;
-//  @Fetch
   @StartNode
   private User contactor;
   @EndNode

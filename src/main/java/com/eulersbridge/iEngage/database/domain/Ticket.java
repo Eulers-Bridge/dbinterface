@@ -16,6 +16,8 @@ import java.util.List;
 
 @NodeEntity
 public class Ticket extends Likeable {
+  private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
+
   private String name;
   private String logo;
   private String information;
@@ -33,7 +35,8 @@ public class Ticket extends Likeable {
   @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> photos;
 
-  private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
+
+
 
   public static Ticket fromTicketDetails(TicketDetails ticketDetails) {
     Ticket ticket = null;
@@ -92,7 +95,7 @@ public class Ticket extends Likeable {
     LinkedList<String> candidateNames = new LinkedList<String>();
     if (candidates != null) {
       for (Candidate candidate : candidates) {
-        candidateNames.add(candidate.getUser().getEmail());
+        candidateNames.add(candidate.getUser$().getEmail());
       }
     }
     return candidateNames;
@@ -135,6 +138,10 @@ public class Ticket extends Likeable {
     this.candidates = candidates;
     this.election = election;
     this.code = characterCode;
+  }
+
+  public Ticket(Long nodeId) {
+    super(nodeId);
   }
 
   public String getName() {

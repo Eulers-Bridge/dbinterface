@@ -45,13 +45,13 @@ public class CandidateTest
 	@Test
 	public final void testCandidateLongStringStringUserPosition()
 	{
-		Candidate candidateTest=new Candidate(candidate.getNodeId(),candidate.getInformation(),candidate.getPolicyStatement(),candidate.getUser(),candidate.getPosition(), null);
+		Candidate candidateTest=new Candidate(candidate.getNodeId(),candidate.getInformation(),candidate.getPolicyStatement(),candidate.getUser$(),candidate.getPosition$(), null);
 		assertEquals("electionTest not of Election class",candidateTest.getClass(),Candidate.class);
 		assertEquals("",candidate.getNodeId(),candidateTest.getNodeId());
 		assertEquals("",candidate.getInformation(),candidateTest.getInformation());
 		assertEquals("",candidate.getPolicyStatement(),candidateTest.getPolicyStatement());
-		assertEquals("",candidate.getPosition(),candidateTest.getPosition());
-		assertEquals("",candidate.getUser(),candidateTest.getUser());
+		assertEquals("",candidate.getPosition$(),candidateTest.getPosition$());
+		assertEquals("",candidate.getUser$(),candidateTest.getUser$());
 	}
 
 	/**
@@ -69,8 +69,8 @@ public class CandidateTest
 		assertEquals("",dets.getNodeId(),candidateTest.getNodeId());
 		assertEquals("",dets.getInformation(),candidateTest.getInformation());
 		assertEquals("",dets.getPolicyStatement(),candidateTest.getPolicyStatement());
-		assertEquals("",dets.getPositionId(),candidateTest.getPosition().getNodeId());
-		assertEquals("",dets.getUserId(),candidateTest.getUser().getNodeId());
+		assertEquals("",dets.getPositionId(),candidateTest.getPosition$().getNodeId());
+		assertEquals("",dets.getUserId(),candidateTest.getUser$().getNodeId());
 	}
 
 	/**
@@ -84,8 +84,8 @@ public class CandidateTest
 		assertEquals("",candidate.getNodeId(),dets.getNodeId());
 		assertEquals("",candidate.getInformation(),dets.getInformation());
 		assertEquals("",candidate.getPolicyStatement(),dets.getPolicyStatement());
-		assertEquals("",candidate.getPosition().getNodeId(),dets.getPositionId());
-		assertEquals("",candidate.getUser().getNodeId(),dets.getUserId());
+		assertEquals("",candidate.getPosition$().getNodeId(),dets.getPositionId());
+		assertEquals("",candidate.getUser$().getNodeId(),dets.getUserId());
 	}
 	@Test
 	public final void testToCandidateDetailsPositionNull()
@@ -98,7 +98,7 @@ public class CandidateTest
 		assertEquals("",candidate.getInformation(),dets.getInformation());
 		assertEquals("",candidate.getPolicyStatement(),dets.getPolicyStatement());
 		assertEquals("",position,dets.getPositionId());
-		assertEquals("",candidate.getUser().getNodeId(),dets.getUserId());
+		assertEquals("",candidate.getUser$().getNodeId(),dets.getUserId());
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class CandidateTest
 		assertEquals("",candidate.getNodeId(),dets.getNodeId());
 		assertEquals("",candidate.getInformation(),dets.getInformation());
 		assertEquals("",candidate.getPolicyStatement(),dets.getPolicyStatement());
-		assertEquals("",candidate.getPosition().getNodeId(),dets.getPositionId());
+		assertEquals("",candidate.getPosition$().getNodeId(),dets.getPositionId());
 		assertEquals("",user,dets.getUserId());
 	}
 
@@ -167,13 +167,13 @@ public class CandidateTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Candidate#getUser()}.
+	 * Test method for {@link Candidate#getUser$()}.
 	 */
 	@Test
 	public final void testGetUser()
 	{
-		assertEquals("",candidate.getUser().getNodeId(),dets.getUserId());
-		assertEquals("",candidate.getUser(),DatabaseDataFixture.populateUserGnewitt());
+		assertEquals("",candidate.getUser$().getNodeId(),dets.getUserId());
+		assertEquals("",candidate.getUser$(),DatabaseDataFixture.populateUserGnewitt());
 	}
 
 	/**
@@ -183,19 +183,19 @@ public class CandidateTest
 	public final void testSetUser()
 	{
 		User user=DatabaseDataFixture.populateUserGnewitt2();
-		assertNotEquals("",candidate.getUser(),user);
+		assertNotEquals("",candidate.getUser$(),user);
 		candidate.setUser(user);
-		assertEquals("",user,candidate.getUser());
+		assertEquals("",user,candidate.getUser$());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Candidate#getPosition()}.
+	 * Test method for {@link Candidate#getPosition$()}.
 	 */
 	@Test
 	public final void testGetPosition()
 	{
-		assertEquals("",candidate.getPosition().getNodeId(),dets.getPositionId());
-		assertEquals("",candidate.getPosition(),DatabaseDataFixture.populatePosition1());
+		assertEquals("",candidate.getPosition$().getNodeId(),dets.getPositionId());
+		assertEquals("",candidate.getPosition$(),DatabaseDataFixture.populatePosition1());
 	}
 
 	/**
@@ -205,9 +205,9 @@ public class CandidateTest
 	public final void testSetPosition()
 	{
 		Position position=DatabaseDataFixture.populatePosition2();
-		assertNotEquals("",candidate.getPosition(),position);
+		assertNotEquals("",candidate.getPosition$(),position);
 		candidate.setPosition(position);
-		assertEquals("",position,candidate.getPosition());
+		assertEquals("",position,candidate.getPosition$());
 	}
 
 	/**
@@ -266,11 +266,11 @@ public class CandidateTest
 		
 		candidateTest.setPosition(null);;
 		checkHashCode(candidate,candidateTest);
-		candidateTest.setPosition(candidate.getPosition());
+		candidateTest.setPosition(candidate.getPosition$());
 		
 		candidateTest.setUser(null);;
 		checkHashCode(candidate,candidateTest);
-		candidateTest.setUser(candidate.getUser());
+		candidateTest.setUser(candidate.getUser$());
 
 	}
 
@@ -312,10 +312,10 @@ public class CandidateTest
 		
 		candidateTest.setUser(null);
 		checkNotEquals(candidate, candidateTest);
-		candidateTest.setUser(candidate.getUser());
+		candidateTest.setUser(candidate.getUser$());
 		
 		candidateTest.setPosition(null);
 		checkNotEquals(candidate, candidateTest);
-		candidateTest.setPosition(candidate.getPosition());
+		candidateTest.setPosition(candidate.getPosition$());
 	}
 }

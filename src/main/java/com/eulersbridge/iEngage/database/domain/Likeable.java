@@ -11,6 +11,13 @@ public class Likeable extends Node {
   @Relationship(type = DatabaseDomainConstants.LIKES_LABEL, direction = Relationship.INCOMING)
   private Iterable<Node> likedUser;
 
+  public Likeable() {
+  }
+
+  public Likeable(Long nodeId) {
+    super(nodeId);
+  }
+
   public Integer getNumOfLikes() {
     if (likedUser == null)
       return 0;
