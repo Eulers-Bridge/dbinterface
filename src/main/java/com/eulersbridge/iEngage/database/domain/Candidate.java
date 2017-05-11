@@ -17,25 +17,20 @@ import java.util.Set;
 
 @NodeEntity
 public class Candidate extends Likeable {
+  private static final Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
   private String information;
   private String policyStatement;
-  //    @Fetch
-  @Relationship(type = DatabaseDomainConstants.IS_CANDIDATE_LABEL, direction = Relationship.INCOMING)
+
+  @Relationship(type = DataConstants.IS_CANDIDATE_LABEL, direction = Relationship.INCOMING)
   private Node user;
-
-  @Relationship(type = DatabaseDomainConstants.HAS_CANDIDATE_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.HAS_CANDIDATE_LABEL, direction = Relationship.OUTGOING)
   private Node position;
-
-  //    @Fetch
-  @Relationship(type = DatabaseDomainConstants.IS_ON_TICKET_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.IS_ON_TICKET_LABEL, direction = Relationship.OUTGOING)
   private Node ticket;
-
-  //    @Fetch
-  @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.HAS_PHOTO_LABEL, direction = Relationship.OUTGOING)
   private List<Node> photos;
 
-  private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
 
   public Candidate() {
     super();
@@ -137,9 +132,9 @@ public class Candidate extends Likeable {
       ", policyStatement = " +
       getPolicyStatement() +
       ", ticket = " +
-      getTicket$() +
+      getTicket() +
       ", photos = " +
-      getPhotos$() +
+      getPhotos() +
       " ]";
     if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
     return retValue;

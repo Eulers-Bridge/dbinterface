@@ -52,13 +52,13 @@ public class EventTest {
     assertEquals(dets.getDescription(), evt2.getDescription());
     assertEquals(dets.getEnds(), evt2.getEnds());
     System.out.println(dets.getInstitutionId());
-    System.out.println(evt2.getNewsFeed());
-    assertEquals(dets.getInstitutionId(), evt2.getNewsFeed().getInstitution().getNodeId());
+    System.out.println(evt2.getNewsFeed$());
+    assertEquals(dets.getInstitutionId(), evt2.getNewsFeed$().getInstitution$().getNodeId());
     assertEquals(dets.getLocation(), evt2.getLocation());
     assertEquals(dets.getModified(), evt2.getModified());
     assertEquals(dets.getOrganizer(), evt2.getOrganizer());
     assertEquals(dets.getOrganizerEmail(), evt2.getOrganizerEmail());
-    assertNull(evt2.getPhotos());
+    assertNull(evt2.getPhotos$());
     assertEquals(dets.getStarts(), evt2.getStarts());
     assertArrayEquals(dets.getVolunteerPositions(), evt2.getVolunteerPositions());
 
@@ -75,7 +75,7 @@ public class EventTest {
     assertEquals(dets2.getCreated(), event.getCreated());
     assertEquals(dets2.getDescription(), event.getDescription());
     assertEquals(dets2.getEnds(), event.getEnds());
-    assertEquals(dets2.getInstitutionId(), event.getNewsFeed().getInstitution().getNodeId());
+    assertEquals(dets2.getInstitutionId(), event.getNewsFeed$().getInstitution$().getNodeId());
     assertEquals(dets2.getLocation(), event.getLocation());
     assertEquals(dets2.getModified(), event.getModified());
     assertEquals(dets2.getOrganizer(), event.getOrganizer());
@@ -203,7 +203,7 @@ public class EventTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Event#getPhotos()}.
+   * Test method for {@link Event#getPhotos$()}.
    */
 //TODO
   /*
@@ -322,7 +322,7 @@ public class EventTest {
 
   @Test
   public final void testGetInstitution() {
-    assertEquals(dets.getInstitutionId(), event.getNewsFeed().getInstitution().getNodeId());
+    assertEquals(dets.getInstitutionId(), event.getNewsFeed$().getInstitution$().getNodeId());
   }
 
   /**
@@ -333,7 +333,7 @@ public class EventTest {
     Institution institution = DatabaseDataFixture.populateInstUniMelb();
     NewsFeed newsFeed = DatabaseDataFixture.populateNewsFeed1();
     event.setNewsFeed(newsFeed);
-    assertEquals(institution, event.getNewsFeed().getInstitution());
+    assertEquals(institution, event.getNewsFeed$().getInstitution$());
   }
 
   private void checkHashCode(Event test1, Event test2) {
@@ -371,7 +371,7 @@ public class EventTest {
     eventTest.setDescription(event.getDescription());
     eventTest.setNewsFeed(null);
     checkHashCode(event, eventTest);
-    eventTest.setNewsFeed(event.getNewsFeed());
+    eventTest.setNewsFeed(event.getNewsFeed$());
     eventTest.setLocation(null);
     checkHashCode(event, eventTest);
     eventTest.setLocation(event.getLocation());
@@ -476,7 +476,7 @@ public class EventTest {
     eventTest.setNewsFeed(null);
     assertNotEquals(event, eventTest);
     assertNotEquals(eventTest, event);
-    eventTest.setNewsFeed(event.getNewsFeed());
+    eventTest.setNewsFeed(event.getNewsFeed$());
   }
 
 }

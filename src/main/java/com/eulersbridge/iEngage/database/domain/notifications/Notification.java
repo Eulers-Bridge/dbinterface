@@ -5,7 +5,7 @@ package com.eulersbridge.iEngage.database.domain.notifications;
 
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationHelper;
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
@@ -28,9 +28,9 @@ public class Notification extends Node implements NotificationInterface {
 //	Boolean read=false;
   Long timestamp;
   String type;
-  @Relationship(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.HAS_NOTIFICATION_LABEL, direction = Relationship.INCOMING)
   HasNotification hasNotificationRelationship;
-  @Relationship(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.HAS_NOTIFICATION_LABEL, direction = Relationship.INCOMING)
   Node user;
 
   public Boolean isRead() {

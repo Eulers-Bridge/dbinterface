@@ -16,27 +16,22 @@ import java.util.List;
 
 @NodeEntity
 public class Ticket extends Likeable {
-  private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
   private String name;
   private String logo;
   private String information;
-  @Relationship(type = DatabaseDomainConstants.HAS_MEMBER_LABEL, direction = Relationship.INCOMING)
-  private List<Node> candidates;
-  @Relationship(type = DatabaseDomainConstants.HAS_TICKET_LABEL, direction = Relationship.INCOMING)
-  private Node election;
   private String colour;
   private String code;
 
-  @Relationship(type = DatabaseDomainConstants.SUPPORT_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.HAS_TICKET_LABEL, direction = Relationship.INCOMING)
+  private Node election;
+  @Relationship(type = DataConstants.HAS_MEMBER_LABEL, direction = Relationship.INCOMING)
+  private List<Node> candidates;
+  @Relationship(type = DataConstants.SUPPORT_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> supporters;
-
-  //  @Fetch
-  @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> photos;
-
-
-
 
   public static Ticket fromTicketDetails(TicketDetails ticketDetails) {
     Ticket ticket = null;
@@ -60,24 +55,25 @@ public class Ticket extends Likeable {
   }
 
   public TicketDetails toTicketDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toTicketDetails(" + this + ")");
     TicketDetails ticketDetails = new TicketDetails();
     ticketDetails.setNodeId(getNodeId());
     ticketDetails.setName(getName());
     ticketDetails.setLogo(getLogo());
     ticketDetails.setInformation(getInformation());
-    ticketDetails.setElectionId(getElection().getNodeId());
     ticketDetails.setColour(getColour());
     ticketDetails.setChararcterCode(getCode());
 
     ticketDetails.setNumberOfSupporters(getNumberOfSupporters());
 
-    ticketDetails.setCandidateNames(toCandidateNames(getCandidates()));
+    if (election != null)
+      ticketDetails.setElectionId(election.getNodeId());
 
-    ticketDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos()));
+    if (candidates != null && candidates.size() > 0 && candidates.iterator().next() instanceof Candidate)
+      ticketDetails.setCandidateNames(toCandidateNames(getCandidates$()));
 
+    if (photos != null && photos.size() > 0 && photos.iterator().next() instanceof Photo)
+      ticketDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos$()));
 
-    if (LOG.isTraceEnabled()) LOG.trace("ticketDetails; " + ticketDetails);
     return ticketDetails;
   }
 
@@ -92,10 +88,11 @@ public class Ticket extends Likeable {
   }
 
   static protected Iterable<String> toCandidateNames(Iterable<Candidate> candidates) {
-    LinkedList<String> candidateNames = new LinkedList<String>();
+    LinkedList<String> candidateNames = new LinkedList<>();
     if (candidates != null) {
       for (Candidate candidate : candidates) {
-        candidateNames.add(candidate.getUser$().getEmail());
+        if (candidate.getUser() instanceof User)
+          candidateNames.add(candidate.getUser$().getEmail());
       }
     }
     return candidateNames;
@@ -125,7 +122,6 @@ public class Ticket extends Likeable {
 
   public Ticket() {
     super();
-    if (LOG.isTraceEnabled()) LOG.trace("Constructor");
   }
 
   public Ticket(Long ticketId, String name, String logo, String information,
@@ -188,8 +184,12 @@ public class Ticket extends Likeable {
     this.candidates = candidates;
   }
 
-  public List<User> getSupporters() {
+  public List<User> getSupporters$() {
     return castList(supporters, User.class);
+  }
+
+  public List<Node> getSupporters() {
+    return supporters;
   }
 
   public void setSupporters(List<Node> supporters) {
@@ -206,15 +206,23 @@ public class Ticket extends Likeable {
   /**
    * @return the candidate
    */
-  public List<Candidate> getCandidates() {
+  public List<Candidate> getCandidates$() {
     return castList(candidates, Candidate.class);
+  }
+
+  public List<Node> getCandidates() {
+    return candidates;
   }
 
   /**
    * @return the photos
    */
-  public List<Photo> getPhotos() {
+  public List<Photo> getPhotos$() {
     return castList(photos, Photo.class);
+  }
+
+  public List<Node> getPhotos() {
+    return photos;
   }
 
   /**
@@ -227,8 +235,12 @@ public class Ticket extends Likeable {
   /**
    * @return the election
    */
-  public Election getElection() {
+  public Election getElection$() {
     return (Election) election;
+  }
+
+  public Node getElection() {
+    return election;
   }
 
   /**

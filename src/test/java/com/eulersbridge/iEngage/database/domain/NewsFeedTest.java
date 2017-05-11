@@ -11,9 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -48,8 +46,8 @@ public class NewsFeedTest {
       LOG.debug("dets node id " + dets.getNodeId() + " nf inst id " + nf.getNodeId());
     assertEquals("NodeIds don't match", dets.getNodeId(), nf.getNodeId());
     if (LOG.isDebugEnabled())
-      LOG.debug("dets inst id " + dets.getInstitutionId() + " nf inst id " + nf.getInstitution().getNodeId());
-    assertEquals("InstitutionIds don't match", dets.getInstitutionId(), nf.getInstitution().getNodeId());
+      LOG.debug("dets inst id " + dets.getInstitutionId() + " nf inst id " + nf.getInstitution$().getNodeId());
+    assertEquals("InstitutionIds don't match", dets.getInstitutionId(), nf.getInstitution$().getNodeId());
   }
 
   /**
@@ -61,8 +59,8 @@ public class NewsFeedTest {
     NewsFeed nf2 = NewsFeed.fromDetails(dets);
     assertEquals("NodeIds don't match", dets.getNodeId(), nf2.getNodeId());
     if (LOG.isDebugEnabled())
-      LOG.debug("dets inst id " + dets.getInstitutionId() + " nf inst id " + nf.getInstitution().getNodeId());
-    assertEquals("InstitutionIds don't match", dets.getInstitutionId(), nf2.getInstitution().getNodeId());
+      LOG.debug("dets inst id " + dets.getInstitutionId() + " nf inst id " + nf.getInstitution$().getNodeId());
+    assertEquals("InstitutionIds don't match", dets.getInstitutionId(), nf2.getInstitution$().getNodeId());
   }
 
   /**
@@ -85,15 +83,15 @@ public class NewsFeedTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#getInstitution()}.
+   * Test method for {@link NewsFeed#getInstitution$()}.
    */
   @Test
   public void testGetInstitution() {
-    Institution inst = nf.getInstitution(), ddfinst = DatabaseDataFixture.populateNewsFeed2().getInstitution();
+    Institution inst = nf.getInstitution$(), ddfinst = DatabaseDataFixture.populateNewsFeed2().getInstitution$();
     assertEquals(inst.getName(), ddfinst.getName());
     assertEquals(inst.getCampus(), ddfinst.getCampus());
     assertEquals(inst.getState(), ddfinst.getState());
-    assertEquals(inst.getCountry().getCountryName(), ddfinst.getCountry().getCountryName());
+    assertEquals(inst.getCountry$().getCountryName(), ddfinst.getCountry$().getCountryName());
   }
 
   /**
@@ -101,7 +99,7 @@ public class NewsFeedTest {
    */
   @Test
   public void testSetInstitution() {
-    Institution inst = nf.getInstitution();
+    Institution inst = nf.getInstitution$();
     String name = "UCLA", campus = "LA", state = "California";
     Long nodeId = 23l;
     Institution inst2 = DatabaseDataFixture.populateInst(nodeId, name, campus, state, DatabaseDataFixture.populateCountryAust());
@@ -109,17 +107,17 @@ public class NewsFeedTest {
     assertEquals("", inst2.getName(), name);
     assertEquals("", inst2.getCampus(), campus);
     assertEquals("", inst2.getState(), state);
-    assertEquals("", inst2.getCountry().getCountryName(), "Australia");
+    assertEquals("", inst2.getCountry$().getCountryName(), "Australia");
     nf.setInstitution(inst);
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsFeed#getNews()}.
+   * Test method for {@link NewsFeed#getNews$()}.
    */
   @Test
   public void testGetNews() {
     List<NewsArticle> news;
-    news = nf.getNews();
+    news = nf.getNews$();
     assertEquals(this.news, news);
   }
 
@@ -128,11 +126,11 @@ public class NewsFeedTest {
    */
   @Test
   public void testSetNews() {
-    List<NewsArticle> news = nf.getNews();
+    List<NewsArticle> news = nf.getNews$();
     nf.setNews((List<Node>) null);
-    assertNull(nf.getNews());
+    assertNull(nf.getNews$());
     nf.setNews(Node.castList(news));
-    assertEquals(nf.getNews(), news);
+    assertEquals(nf.getNews$(), news);
   }
 
   /**
@@ -167,11 +165,11 @@ public class NewsFeedTest {
 
     nfTest.setInstitution(null);
     checkHashCode(nf, nfTest);
-    nfTest.setInstitution(nf.getInstitution());
+    nfTest.setInstitution(nf.getInstitution$());
 
     nfTest.setNews((List<Node>) null);
     checkHashCode(nf, nfTest);
-    nfTest.setNews(Node.castList(nf.getNews()));
+    nfTest.setNews(Node.castList(nf.getNews$()));
 
   }
 
@@ -203,11 +201,11 @@ public class NewsFeedTest {
     assertNotEquals(nf, nfTest);
     nfTest.setInstitution(null);
     checkNotEquals(nfTest, nf);
-    nfTest.setInstitution(nf.getInstitution());
+    nfTest.setInstitution(nf.getInstitution$());
 
     nfTest.setNews((List<Node>) null);
     assertNotEquals(nf, nfTest);
-    nfTest.setNews(Node.castList(nf.getNews()));
+    nfTest.setNews(Node.castList(nf.getNews$()));
   }
 
 

@@ -11,20 +11,19 @@ import org.slf4j.LoggerFactory;
  */
 @NodeEntity
 public class PhotoAlbum extends Likeable {
+  private static Logger LOG = LoggerFactory.getLogger(PhotoAlbum.class);
+
   private String name;
   private String description;
   private String location;
   private String thumbNailUrl;
-  @Relationship(type = DatabaseDomainConstants.CREATED_BY_LABEL)
-//  @Fetch
-  private Owner creator;
-  private Long created;
-  @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_ALBUM_LABEL)
-//  @Fetch
-  private Owner owner;
   private Long modified;
+  private Long created;
 
-  private static Logger LOG = LoggerFactory.getLogger(PhotoAlbum.class);
+  @Relationship(type = DataConstants.CREATED_BY_LABEL)
+  private Owner creator;
+  @Relationship(type = DataConstants.HAS_PHOTO_ALBUM_LABEL)
+  private Owner owner;
 
   public PhotoAlbum(String name, String description, String location, String thumbNailUrl, Owner creator, Long created, Owner owner, Long modified) {
     super();

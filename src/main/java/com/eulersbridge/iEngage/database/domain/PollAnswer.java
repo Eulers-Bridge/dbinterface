@@ -8,8 +8,10 @@ import org.neo4j.ogm.annotation.StartNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RelationshipEntity(type = DatabaseDomainConstants.APQ_LABEL)
+@RelationshipEntity(type = DataConstants.APQ_LABEL)
 public class PollAnswer {
+  private static final Logger LOG = LoggerFactory.getLogger(PollAnswer.class);
+
   @GraphId
   private Long id;
   @StartNode
@@ -18,8 +20,6 @@ public class PollAnswer {
   private Poll poll;
   Integer answerIndex;
   private Long timeStamp;
-
-  private static Logger LOG = LoggerFactory.getLogger(PollAnswer.class);
 
   public PollAnswer() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");

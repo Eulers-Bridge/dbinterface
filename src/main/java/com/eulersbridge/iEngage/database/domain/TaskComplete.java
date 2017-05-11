@@ -12,7 +12,7 @@ import org.springframework.beans.BeanUtils;
 import java.util.Calendar;
 
 
-@RelationshipEntity(type = DatabaseDomainConstants.TASK_COMPLETE_LABEL)
+@RelationshipEntity(type = DataConstants.TASK_COMPLETE_LABEL)
 public class TaskComplete {
   @GraphId
   private Long nodeId;

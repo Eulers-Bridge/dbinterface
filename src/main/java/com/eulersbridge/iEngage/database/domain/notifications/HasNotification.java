@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.database.domain.notifications;
 
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import org.neo4j.ogm.annotation.EndNode;
@@ -13,7 +13,7 @@ import org.neo4j.ogm.annotation.StartNode;
  * @author Yikai Gong
  */
 
-@RelationshipEntity(type = DatabaseDomainConstants.HAS_NOTIFICATION_LABEL)
+@RelationshipEntity(type = DataConstants.HAS_NOTIFICATION_LABEL)
 public class HasNotification {
   @GraphId
   private Long id;

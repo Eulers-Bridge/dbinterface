@@ -11,12 +11,13 @@ import org.slf4j.LoggerFactory;
  */
 @NodeEntity
 public class VotingLocation extends Location {
+  private static final Logger LOG = LoggerFactory.getLogger(VotingLocation.class);
+
   private String name;
   private String information;
-  @Relationship(type = DatabaseDomainConstants.HAS_VOTING_LOCATION_LABEL, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.HAS_VOTING_LOCATION_LABEL, direction = Relationship.INCOMING)
   private Owner owner;
 
-  private static Logger LOG = LoggerFactory.getLogger(VotingLocation.class);
 
   public VotingLocation() {
     super();

@@ -137,7 +137,7 @@ public class InstitutionEventHandlerTest {
     if (LOG.isDebugEnabled()) LOG.debug("UpdatingInstitution()");
 
     Institution inst = DatabaseDataFixture.populateInstUniMelb();
-    when(countryRepository.findByCountryName(any(String.class))).thenReturn(inst.getCountry());
+    when(countryRepository.findByCountryName(any(String.class))).thenReturn(inst.getCountry$());
     when(institutionRepository.save(any(Institution.class))).thenReturn(inst);
     InstitutionDetails dets = inst.toInstDetails();
     UpdateInstitutionEvent updateInstitutionEvent = new UpdateInstitutionEvent(dets.getNodeId(), dets);

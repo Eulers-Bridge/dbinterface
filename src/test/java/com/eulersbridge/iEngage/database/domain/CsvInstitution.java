@@ -81,7 +81,7 @@ public class CsvInstitution extends Institution {
             		LOG.debug(String.format("lineNo=%s, rowNo=%s, institution=%s", beanReader.getLineNumber(),
                             beanReader.getRowNumber(), inst));
                 System.out.println(String.format("CREATE ({name:'%s', Campus:'%s', State:'%s', Country:'%s'})", 
-                            inst.getName(), inst.getCampus(), inst.getState(), inst.getCountry()));
+                            inst.getName(), inst.getCampus(), inst.getState(), inst.getCountry$()));
             }
             
         }

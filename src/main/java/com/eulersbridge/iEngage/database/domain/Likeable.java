@@ -7,8 +7,7 @@ import org.neo4j.ogm.annotation.Relationship;
 // Ticket Pull User Likeable have numOfEntity method
 public class Likeable extends Node {
   //    @Query("START n = node({self}) match (n)-[r:"+ DatabaseDomainConstants.LIKES_LABEL+"]-(c) RETURN count(c) ")
-  // TODO: Set<> seems more flexible for mapping graph into nested pojo
-  @Relationship(type = DatabaseDomainConstants.LIKES_LABEL, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.LIKES_LABEL, direction = Relationship.INCOMING)
   private Iterable<Node> likedUser;
 
   public Likeable() {

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Depth;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
-import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -20,68 +19,68 @@ public interface UserRepository extends GraphRepository<User> {
 
   User findByEmail(String email, @Depth int i);
 
-  @Query("MATCH (u:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.VERIFIED_BY_LABEL +
+  @Query("MATCH (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.VERIFIED_BY_LABEL +
     "]-(v:`VerificationToken`) where ID(u)={userId} AND ID(v)={tokenId} set u.accountVerified={isVerified} set v.verified={isVerified} ")
   void verifyUser(@Param("userId") Long userId, @Param("tokenId") Long tokenId, @Param("isVerified") boolean isVerified);
 
-  @Query("MATCH (u:`" + DatabaseDomainConstants.USER + "`) where ID(u)={userId} MATCH (p:`Personality`) where ID(p)={personalityId} create unique (u)-[r:" + DatabaseDomainConstants.HAS_PERSONALITY_LABEL +
+  @Query("MATCH (u:`" + DataConstants.USER + "`) where ID(u)={userId} MATCH (p:`Personality`) where ID(p)={personalityId} create unique (u)-[r:" + DataConstants.HAS_PERSONALITY_LABEL +
     "]->(p) return p;")
   Personality addPersonality(@Param("userId") Long userId, @Param("personalityId") Long personalityId);
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE (a)-[r:" + DatabaseDomainConstants.VREMINDER_LABEL +
+  @Query("Match (a:`" + DataConstants.USER + "`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE (a)-[r:" + DataConstants.VREMINDER_LABEL +
     "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='VoteReminder',r.location={location},r.date={date} return r")
   VoteReminder addVoteReminder(@Param("userId") Long userId, @Param("electionId") Long electionId,
                                @Param("date") Long date, @Param("location") String location);
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE (a)-[r:" + DatabaseDomainConstants.VRECORD_LABEL +
+  @Query("Match (a:`" + DataConstants.USER + "`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE (a)-[r:" + DataConstants.VRECORD_LABEL +
     "]->(b) SET r.date=coalesce(r.date,timestamp()),r.__type__='VoteRecord',r.location={location} return r")
   VoteRecord addVoteRecord(@Param("userId") Long userId, @Param("electionId") Long electionId, @Param("location") String location);
 
-  @Query("Match (u:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.VRECORD_LABEL + "]-(e:`Election`) where id(r)={id} return r")
+  @Query("Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(e:`Election`) where id(r)={id} return r")
   VoteRecord readVoteRecord(@Param("id") Long id);
 
-  @Query("Match (u:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.VREMINDER_LABEL + "]-(e:`Election`) where id(r)={id} return r")
+  @Query("Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(e:`Election`) where id(r)={id} return r")
   VoteReminder readVoteReminder(@Param("id") Long id);
 
-  @Query("Match (u:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.VRECORD_LABEL + "]-(e:`Election`) where id(r)={id} delete r return r")
+  @Query("Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(e:`Election`) where id(r)={id} delete r return r")
   VoteRecord deleteVoteRecord(@Param("id") Long id);
 
-  @Query("Match (u:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.VREMINDER_LABEL + "]-(e:`Election`) where id(r)={id} delete r return r")
+  @Query("Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(e:`Election`) where id(r)={id} delete r return r")
   VoteReminder deleteVoteReminder(@Param("id") Long id);
 
-  @Query("Match (" + DatabaseDomainConstants.USER + ")-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a:`NewsArticle`) WHERE id(a)={articleId} RETURN u")
+  @Query("Match (" + DataConstants.USER + ")-[r:" + DataConstants.LIKES_LABEL + "]-(a:`NewsArticle`) WHERE id(a)={articleId} RETURN u")
   Page<User> findByArticleId(@Param("articleId") Long id, Pageable p);
 
-  @Query("Match (u:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]-(a) WHERE id(a)={objId} RETURN u")
+  @Query("Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.LIKES_LABEL + "]-(a) WHERE id(a)={objId} RETURN u")
   Page<User> findByLikeableObjId(@Param("objId") Long id, Pageable p);
 
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`)-[r:`" + DatabaseDomainConstants.LIKES_LABEL + "`]-(b) where a.email={email} and id(b)={likedId} return r")
+  @Query("Match (a:`" + DataConstants.USER + "`)-[r:`" + DataConstants.LIKES_LABEL + "`]-(b) where a.email={email} and id(b)={likedId} return r")
   Like isLikedBy(@Param("email") String email, @Param("likedId") Long likedId);
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE (a)-[r:" + DatabaseDomainConstants.LIKES_LABEL + "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
+  @Query("Match (a:`" + DataConstants.USER + "`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE (a)-[r:" + DataConstants.LIKES_LABEL + "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
   Like like(@Param("email") String email, @Param("likedId") Long likedId);
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
+  @Query("Match (a:`" + DataConstants.USER + "`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
   void unlike(@Param("email") String email, @Param("likedId") Long likedId);
 
   User findByContactNumber(String contactNumber);
 
-  @Query("Match (a),(b) where id(a)={contactorId} and id(b)={contacteeId} CREATE UNIQUE (a)-[r:" + DatabaseDomainConstants.CONTACT_LABEL +
+  @Query("Match (a),(b) where id(a)={contactorId} and id(b)={contacteeId} CREATE UNIQUE (a)-[r:" + DataConstants.CONTACT_LABEL +
     "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Contact' return r")
   Contact addContact(@Param("contactorId") Long contactorId, @Param("contacteeId") Long contacteeId);
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.CONTACT_LABEL + "]-(b:`" + DatabaseDomainConstants.USER +
+  @Query("Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.CONTACT_LABEL + "]-(b:`" + DataConstants.USER +
     "`) where id(a)={userId} return b")
   Page<User> findContacts(@Param("userId") Long userId, Pageable pageable);
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.SUPPORT_LABEL + "]-(b:`" + DatabaseDomainConstants.TICKET + "`) where id(a)={userId} return b")
+  @Query("Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.SUPPORT_LABEL + "]-(b:`" + DataConstants.TICKET + "`) where id(a)={userId} return b")
   Page<Ticket> findSupports(@Param("userId") Long userId, Pageable pageable);
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.VREMINDER_LABEL + "]-(b:`" + DatabaseDomainConstants.ELECTION + "`) where id(a)={userId} return r")
+  @Query("Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r")
   Page<VoteReminder> findVoteReminders(@Param("userId") Long userId, Pageable pageable);
 
-  @Query("Match (a:`" + DatabaseDomainConstants.USER + "`)-[r:" + DatabaseDomainConstants.VRECORD_LABEL + "]-(b:`" + DatabaseDomainConstants.ELECTION + "`) where id(a)={userId} return r")
+  @Query("Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r")
   Page<VoteRecord> findVoteRecords(@Param("userId") Long userId, Pageable pageable);
 
   @Query("Match (a:`User`) WHERE a.email={userEmail} RETURN id(a)")
@@ -93,7 +92,7 @@ public interface UserRepository extends GraphRepository<User> {
   @Query("Match (u:User) WHERE lower(u.givenName) STARTS WITH {pattern1} OR lower(u.familyName) STARTS WITH {pattern2} return u limit 20")
   List<User> searchUserByName2(@Param("pattern1") String pattern1, @Param("pattern2") String pattern2);
 
-  @Query("MATCH (u:`" + DatabaseDomainConstants.USER + "`) WHERE u.email={userEmail} SET u.experience=u.experience+{expValue}")
+  @Query("MATCH (u:`" + DataConstants.USER + "`) WHERE u.email={userEmail} SET u.experience=u.experience+{expValue}")
   void addExpPoint(@Param("userEmail") String userEmail, @Param("expValue") Long expValue);
 
 }

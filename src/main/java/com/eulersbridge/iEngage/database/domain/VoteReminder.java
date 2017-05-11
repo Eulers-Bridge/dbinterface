@@ -11,8 +11,9 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.Calendar;
 
-@RelationshipEntity(type = DatabaseDomainConstants.VREMINDER_LABEL)
+@RelationshipEntity(type = DataConstants.VREMINDER_LABEL)
 public class VoteReminder {
+  private static final Logger LOG = LoggerFactory.getLogger(VoteReminder.class);
 
   @GraphId
   private Long nodeId;
@@ -24,8 +25,6 @@ public class VoteReminder {
   private Long date;
   private String location;
   private Long timestamp;
-
-  private static Logger LOG = LoggerFactory.getLogger(VoteReminder.class);
 
   public VoteReminder() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");

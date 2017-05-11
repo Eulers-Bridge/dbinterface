@@ -17,15 +17,15 @@ import java.util.Set;
 
 @NodeEntity
 public class Country extends Node {
+  private static final Logger LOG = LoggerFactory.getLogger(Country.class);
+
   @NotNull
   @NotBlank
   @Email
   @Index(unique = true)
   private String countryName;
-  @Relationship(type = DatabaseDomainConstants.INSTITUTIONS_LABEL, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.INSTITUTIONS_LABEL, direction = Relationship.INCOMING)
   private List<Node> institutions;
-
-  private static Logger LOG = LoggerFactory.getLogger(Country.class);
 
   public Country() {
     if (LOG.isDebugEnabled()) LOG.debug("Constructor()");
@@ -72,7 +72,6 @@ public class Country extends Node {
     Set<InstitutionDetails> institutionDetails = new HashSet<>();
     if (institutions != null) {
       institutions.forEach(institution -> {
-        System.out.println("InsId:" + institution.getNodeId());//
         if (institution instanceof Institution)
           institutionDetails.add(((Institution) institution).toInstDetails());
         else

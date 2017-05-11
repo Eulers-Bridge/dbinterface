@@ -96,7 +96,7 @@ public class EventEventHandlerTest {
     CreateEventEvent createEventEvent = new CreateEventEvent(dets);
     EventCreatedEvent evtData = service.createEvent(createEventEvent);
     assertFalse(evtData.isInstitutionFound());
-    assertEquals(evtData.getEventId(), testData.getNewsFeed().getInstitution().getNodeId());
+    assertEquals(evtData.getEventId(), testData.getNewsFeed$().getInstitution$().getNodeId());
     assertNull(evtData.getDetails());
   }
 

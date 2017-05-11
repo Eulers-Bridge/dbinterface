@@ -6,11 +6,10 @@ import org.slf4j.LoggerFactory;
 
 @NodeEntity
 public class Volunteer extends Node {
+  private static final Logger LOG = LoggerFactory.getLogger(Volunteer.class);
 
   private String title;
   private String description;
-
-  private static Logger LOG = LoggerFactory.getLogger(Volunteer.class);
 
   public Volunteer() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");

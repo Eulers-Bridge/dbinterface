@@ -18,10 +18,10 @@ public class Comment extends Node {
   private Long timestamp;
   private String content;
 
-  @Relationship(type = DatabaseDomainConstants.POST_COMMENT, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.POST_COMMENT, direction = Relationship.INCOMING)
   private Node user;
 
-  @Relationship(type = DatabaseDomainConstants.HAS_COMMENT, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.HAS_COMMENT, direction = Relationship.INCOMING)
   private Owner target;
 
   public Comment() {

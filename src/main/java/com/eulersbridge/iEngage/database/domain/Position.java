@@ -13,14 +13,13 @@ import org.slf4j.LoggerFactory;
 
 @NodeEntity
 public class Position extends Node {
+  private static final Logger LOG = LoggerFactory.getLogger(Position.class);
 
   private String name;
   private String description;
-  //    @Fetch
-  @Relationship(type = DatabaseDomainConstants.HAS_POSITION_LABEL, direction = Relationship.UNDIRECTED)
-  private Node election;
 
-  private static Logger LOG = LoggerFactory.getLogger(Position.class);
+  @Relationship(type = DataConstants.HAS_POSITION_LABEL, direction = Relationship.UNDIRECTED)
+  private Node election;
 
   public Position() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");
@@ -45,17 +44,16 @@ public class Position extends Node {
   }
 
   public PositionDetails toPositionDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toPositionDetails()");
     PositionDetails positionDetails = new PositionDetails();
-    if (LOG.isTraceEnabled()) LOG.trace("position " + this);
     positionDetails.setNodeId(getNodeId());
     positionDetails.setName(getName());
     positionDetails.setDescription(getDescription());
+
     if (election != null)
       positionDetails.setElectionId(election.getNodeId());
-    else positionDetails.setElectionId(null);
+    else
+      positionDetails.setElectionId(null);
 
-    if (LOG.isTraceEnabled()) LOG.trace("positionDetails; " + positionDetails);
     return positionDetails;
   }
 
@@ -91,8 +89,12 @@ public class Position extends Node {
     this.description = description;
   }
 
-  public Election getElection() {
+  public Election getElection$() {
     return (Election) election;
+  }
+
+  public Node getElection() {
+    return election;
   }
 
   public void setElection(Node election) {

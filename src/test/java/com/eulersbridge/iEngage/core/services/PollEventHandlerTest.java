@@ -102,9 +102,9 @@ public class PollEventHandlerTest {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingPoll()");
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
-    testOwner.setNodeId(testData.getInstitution().getNodeId());
+    testOwner.setNodeId(testData.getInstitution$().getNodeId());
     Owner testCreator = new Owner();
-    testCreator.setNodeId(testData.getCreator().getNodeId());
+    testCreator.setNodeId(testData.getCreator$().getNodeId());
     when(pollRepository.save(any(Poll.class))).thenReturn(testData);
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
@@ -123,13 +123,13 @@ public class PollEventHandlerTest {
     Poll testData = DatabaseDataFixture.populatePoll1();
     Owner testOwner = null;
     Owner testCreator = new Owner();
-    testCreator.setNodeId(testData.getCreator().getNodeId());
+    testCreator.setNodeId(testData.getCreator$().getNodeId());
     when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(pollRepository.save(any(Poll.class))).thenReturn(testData);
     PollDetails dets = testData.toPollDetails();
     CreatePollEvent createPollEvent = new CreatePollEvent(dets);
     PollCreatedEvent evtData = service.createPoll(createPollEvent);
-    assertEquals(evtData.getFailedNodeId(), testData.getInstitution().getNodeId());
+    assertEquals(evtData.getFailedNodeId(), testData.getInstitution$().getNodeId());
     assertFalse(evtData.isOwnerFound());
     assertNull(evtData.getDetails());
   }
@@ -139,7 +139,7 @@ public class PollEventHandlerTest {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingPoll()");
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
-    testOwner.setNodeId(testData.getInstitution().getNodeId());
+    testOwner.setNodeId(testData.getInstitution$().getNodeId());
     Owner testCreator = null;
     when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
@@ -147,7 +147,7 @@ public class PollEventHandlerTest {
     PollDetails dets = testData.toPollDetails();
     CreatePollEvent createPollEvent = new CreatePollEvent(dets);
     PollCreatedEvent evtData = service.createPoll(createPollEvent);
-    assertEquals(evtData.getFailedNodeId(), testData.getCreator().getNodeId());
+    assertEquals(evtData.getFailedNodeId(), testData.getCreator$().getNodeId());
     assertFalse(evtData.isCreatorFound());
     assertNull(evtData.getDetails());
   }
@@ -193,9 +193,9 @@ public class PollEventHandlerTest {
     if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
-    testOwner.setNodeId(testData.getInstitution().getNodeId());
+    testOwner.setNodeId(testData.getInstitution$().getNodeId());
     Owner testCreator = new Owner();
-    testCreator.setNodeId(testData.getCreator().getNodeId());
+    testCreator.setNodeId(testData.getCreator$().getNodeId());
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
     when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
@@ -236,7 +236,7 @@ public class PollEventHandlerTest {
     PollDetails dets = testData.toPollDetails();
     UpdatePollEvent createPollEvent = new UpdatePollEvent(dets.getNodeId(), dets);
     UpdatedEvent evtData = service.updatePoll(createPollEvent);
-    assertEquals(evtData.getNodeId(), testData.getInstitution().getNodeId());
+    assertEquals(evtData.getNodeId(), testData.getInstitution$().getNodeId());
     assertFalse(((PollUpdatedEvent) evtData).isOwnerFound());
     assertNull(evtData.getDetails());
   }
@@ -252,7 +252,7 @@ public class PollEventHandlerTest {
     PollDetails dets = testData.toPollDetails();
     UpdatePollEvent createPollEvent = new UpdatePollEvent(dets.getNodeId(), dets);
     UpdatedEvent evtData = service.updatePoll(createPollEvent);
-    assertEquals(evtData.getNodeId(), testData.getInstitution().getNodeId());
+    assertEquals(evtData.getNodeId(), testData.getInstitution$().getNodeId());
     assertFalse(((PollUpdatedEvent) evtData).isOwnerFound());
     assertNull(evtData.getDetails());
   }
@@ -262,7 +262,7 @@ public class PollEventHandlerTest {
     if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
-    testOwner.setNodeId(testData.getInstitution().getNodeId());
+    testOwner.setNodeId(testData.getInstitution$().getNodeId());
     Owner testCreator = null;
     when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
     when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
@@ -272,7 +272,7 @@ public class PollEventHandlerTest {
     UpdatePollEvent createPollEvent = new UpdatePollEvent(dets.getNodeId(), dets);
     UpdatedEvent evtData = service.updatePoll(createPollEvent);
     assertNotNull(evtData.getNodeId());
-    assertEquals(evtData.getNodeId(), testData.getCreator().getNodeId());
+    assertEquals(evtData.getNodeId(), testData.getCreator$().getNodeId());
     assertFalse(((PollUpdatedEvent) evtData).isCreatorFound());
     assertNull(evtData.getDetails());
   }
@@ -282,7 +282,7 @@ public class PollEventHandlerTest {
     if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
-    testOwner.setNodeId(testData.getInstitution().getNodeId());
+    testOwner.setNodeId(testData.getInstitution$().getNodeId());
     Owner testCreator = new Owner(null);
     testData.setCreator(new User(testCreator.getNodeId()));
     when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
@@ -292,7 +292,7 @@ public class PollEventHandlerTest {
     PollDetails dets = testData.toPollDetails();
     UpdatePollEvent createPollEvent = new UpdatePollEvent(dets.getNodeId(), dets);
     UpdatedEvent evtData = service.updatePoll(createPollEvent);
-    assertEquals(evtData.getNodeId(), testData.getCreator().getNodeId());
+    assertEquals(evtData.getNodeId(), testData.getCreator$().getNodeId());
     assertFalse(((PollUpdatedEvent) evtData).isCreatorFound());
     assertNull(evtData.getDetails());
   }

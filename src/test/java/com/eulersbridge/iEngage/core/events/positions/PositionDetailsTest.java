@@ -203,7 +203,7 @@ public class PositionDetailsTest
 	@Test
 	public final void testGetElectionId()
 	{
-		assertEquals(dets.getElectionId(),position.getElection().getNodeId());
+		assertEquals(dets.getElectionId(),position.getElection$().getNodeId());
 	}
 
 	/**

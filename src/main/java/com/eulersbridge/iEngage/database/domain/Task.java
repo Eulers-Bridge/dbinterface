@@ -12,16 +12,13 @@ import org.slf4j.LoggerFactory;
 
 @NodeEntity
 public class Task extends Node{
+  private static final Logger LOG = LoggerFactory.getLogger(Task.class);
 
   private String action;
   private String description;
   private Integer xpValue;
 
-  private static Logger LOG = LoggerFactory.getLogger(Task.class);
-
-  public Task() {
-    if (LOG.isTraceEnabled()) LOG.trace("Constructor");
-  }
+  public Task() {}
 
   public Task(Long taskId, String action, String description, Integer xpValue) {
     super();
@@ -45,14 +42,11 @@ public class Task extends Node{
   }
 
   public TaskDetails toTaskDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toTaskDetails()");
     TaskDetails taskDetails = new TaskDetails();
-    if (LOG.isTraceEnabled()) LOG.trace("task " + this);
     taskDetails.setNodeId(getNodeId());
     taskDetails.setAction(getAction());
     taskDetails.setDescription(getDescription());
     taskDetails.setXpValue(getXpValue());
-    if (LOG.isTraceEnabled()) LOG.trace("taskDetails; " + taskDetails);
     return taskDetails;
   }
 

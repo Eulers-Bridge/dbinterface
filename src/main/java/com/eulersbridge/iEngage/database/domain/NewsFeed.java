@@ -10,12 +10,13 @@ import java.util.List;
 
 @NodeEntity
 public class NewsFeed extends Node {
-  @Relationship(type = DatabaseDomainConstants.HAS_NEWS_FEED_LABEL, direction = Relationship.INCOMING)
+  private static Logger LOG = LoggerFactory.getLogger(NewsFeed.class);
+
+  @Relationship(type = DataConstants.HAS_NEWS_FEED_LABEL, direction = Relationship.INCOMING)
   private Node institution;
-  @Relationship(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.HAS_NEWS_LABEL, direction = Relationship.OUTGOING)
   private List<Node> news;
 
-  private static Logger LOG = LoggerFactory.getLogger(NewsFeed.class);
 
   public NewsFeed() {
     if (LOG.isDebugEnabled()) LOG.debug("Constructor");
@@ -33,8 +34,8 @@ public class NewsFeed extends Node {
   public NewsFeedDetails toDetails() {
     NewsFeedDetails sfd = new NewsFeedDetails();
     sfd.setNodeId(getNodeId());
-    if (getInstitution() != null)
-      sfd.setInstitutionId(getInstitution().getNodeId());
+    if (institution != null)
+      sfd.setInstitutionId(institution.getNodeId());
 
     return sfd;
   }
@@ -42,8 +43,12 @@ public class NewsFeed extends Node {
   /**
    * @return the institution
    */
-  public Institution getInstitution() {
+  public Institution getInstitution$() {
     return (Institution) institution;
+  }
+
+  public Node getInstitution() {
+    return institution;
   }
 
   public void setInstitution(Institution inst) {
@@ -53,8 +58,12 @@ public class NewsFeed extends Node {
   /**
    * @return the news
    */
-  public List<NewsArticle> getNews() {
+  public List<NewsArticle> getNews$() {
     return castList(news, NewsArticle.class);
+  }
+
+  public List<Node> getNews() {
+    return news;
   }
 
   /**

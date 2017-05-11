@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
-public class DatabaseDomainConstants {
+public class DataConstants {
   public static final String APQ_LABEL = "hasAnsweredPollQuestion";
   public static final String VRECORD_LABEL = "hasVoted";
   public static final String VREMINDER_LABEL = "hasVoteReminder";

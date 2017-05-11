@@ -8,6 +8,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.*;
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
 import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
@@ -109,13 +110,14 @@ public class ContactRequestEventHandler implements ContactRequestService {
     if ((cr != null) && (cr.getNodeId() != null) && (null == cr.getResponseDate())) {
       EmailValidator emailValidator = EmailValidator.getInstance();
       boolean isEmail = emailValidator.isValid(cr.getContactDetails());
-      User contactee, contactor;
+      User contactee;
+      Node contactor;
       if (isEmail)
         contactee = userRepository.findByEmail(cr.getContactDetails());
       else
         contactee = userRepository.findByContactNumber(cr.getContactDetails());
       if (contactee != null) {
-        contactor = cr.getUser$();
+        contactor = cr.getUser();
         cr.setAccepted(true);
         cr.setRejected(false);
         cr.setResponseDate(Calendar.getInstance().getTimeInMillis());
@@ -228,8 +230,6 @@ public class ContactRequestEventHandler implements ContactRequestService {
         Iterator<ContactRequest> iter = contactRequests.iterator();
         while (iter.hasNext()) {
           ContactRequest na = iter.next();
-          if (LOG.isTraceEnabled())
-            LOG.trace("Converting to details - " + na.getUser$());
           ContactRequestDetails det = na.toContactRequestDetails();
           dets.add(det);
         }
@@ -272,8 +272,6 @@ public class ContactRequestEventHandler implements ContactRequestService {
         Iterator<ContactRequest> iter = contactRequests.iterator();
         while (iter.hasNext()) {
           ContactRequest na = iter.next();
-          if (LOG.isTraceEnabled())
-            LOG.trace("Converting to details - " + na.getUser$());
           ContactRequestDetails det = na.toContactRequestDetails();
           User requestReceiver = userRepository.findByEmail(det.getContactDetails());
           det.setRequestReceiverDetails(requestReceiver.toUserDetails());

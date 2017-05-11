@@ -8,7 +8,7 @@ import org.neo4j.ogm.annotation.StartNode;
 import java.util.Calendar;
 
 
-@RelationshipEntity(type = DatabaseDomainConstants.LIKES_LABEL)
+@RelationshipEntity(type = DataConstants.LIKES_LABEL)
 public class Like {
   @GraphId
   private Long id;

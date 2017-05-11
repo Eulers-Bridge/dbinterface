@@ -48,7 +48,7 @@ public class PositionTest {
     assertEquals("", dets.getNodeId(), positionTest.getNodeId());
     assertEquals("", dets.getDescription(), positionTest.getDescription());
     assertEquals("", dets.getName(), positionTest.getName());
-    assertEquals("", dets.getElectionId(), positionTest.getElection().getNodeId());
+    assertEquals("", dets.getElectionId(), positionTest.getElection$().getNodeId());
   }
 
   /**
@@ -61,7 +61,7 @@ public class PositionTest {
     assertEquals("", position.getNodeId(), dets.getNodeId());
     assertEquals("", position.getDescription(), dets.getDescription());
     assertEquals("", position.getName(), dets.getName());
-    assertEquals("", position.getElection().getNodeId(), dets.getElectionId());
+    assertEquals("", position.getElection$().getNodeId(), dets.getElectionId());
   }
 
   @Test
@@ -142,11 +142,11 @@ public class PositionTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Position#getElection()}.
+   * Test method for {@link Position#getElection$()}.
    */
   @Test
   public final void testGetElection() {
-    assertEquals("", position.getElection().getNodeId(), dets.getElectionId());
+    assertEquals("", position.getElection$().getNodeId(), dets.getElectionId());
   }
 
   /**
@@ -155,9 +155,9 @@ public class PositionTest {
   @Test
   public final void testSetElection() {
     Election election = DatabaseDataFixture.populateElection2();
-    assertNotEquals("", position.getElection(), election);
+    assertNotEquals("", position.getElection$(), election);
     position.setElection(election);
-    assertEquals("", election, position.getElection());
+    assertEquals("", election, position.getElection$());
   }
 
   /**
@@ -183,7 +183,7 @@ public class PositionTest {
     positionTest.setElection(null);
     ;
     checkHashCode(position, positionTest);
-    positionTest.setElection(position.getElection());
+    positionTest.setElection(position.getElection$());
   }
 
   private void checkHashCode(Position test1, Position test2) {
@@ -233,7 +233,7 @@ public class PositionTest {
 
     positionTest.setElection(null);
     checkNotEquals(position, positionTest);
-    positionTest.setElection(position.getElection());
+    positionTest.setElection(position.getElection$());
   }
 
 }

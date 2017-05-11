@@ -1024,7 +1024,7 @@ public class UserEventHandlerTest {
     assertEquals(dets.getGivenName(), user.getGivenName());
     assertEquals(dets.getGender(), user.getGender());
     assertEquals(dets.getNationality(), user.getNationality());
-    assertEquals(dets.getInstitutionId(), user.getInstitution().getNodeId());
+    assertEquals(dets.getInstitutionId(), user.getInstitution$().getNodeId());
     assertNull(dets.getPassword());
     assertNull(dets.getYearOfBirth());
     assertNull(dets.getContactNumber());
@@ -1056,7 +1056,7 @@ public class UserEventHandlerTest {
     assertEquals(dets.getGivenName(), user.getGivenName());
     assertEquals(dets.getGender(), user.getGender());
     assertEquals(dets.getNationality(), user.getNationality());
-    assertEquals(dets.getInstitutionId(), user.getInstitution().getNodeId());
+    assertEquals(dets.getInstitutionId(), user.getInstitution$().getNodeId());
     assertNull(dets.getPassword());
     assertNull(dets.getYearOfBirth());
     assertEquals(dets.getEmail(), user.getEmail());

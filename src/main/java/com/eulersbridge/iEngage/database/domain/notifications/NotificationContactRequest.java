@@ -7,7 +7,7 @@ import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationHelper;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -24,7 +24,7 @@ import java.util.Iterator;
  * @author Greg Newitt
  */
 public class NotificationContactRequest extends Notification implements NotificationInterface {
-  @Relationship(type = DatabaseDomainConstants.HAS_NOTIFICATION_DETAILS_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.HAS_NOTIFICATION_DETAILS_LABEL, direction = Relationship.OUTGOING)
   ContactRequest contactRequest;
 
   static Logger LOG = LoggerFactory.getLogger(NotificationContactRequest.class);
@@ -57,10 +57,10 @@ public class NotificationContactRequest extends Notification implements Notifica
           if (getContactRequest().getNodeId() != null) {
             if (LOG.isDebugEnabled()) LOG.debug("NodeId present. - ");
             result = crRepo.findOne(getContactRequest().getNodeId());
-          } else if ((getContactRequest().getUser$() != null) && (getContactRequest().getUser$().getNodeId() != null) && (getContactRequest().getContactDetails() != null)) {
+          } else if ((getContactRequest().getUser() != null) && (getContactRequest().getUser().getNodeId() != null) && (getContactRequest().getContactDetails() != null)) {
             if (LOG.isDebugEnabled())
-              LOG.debug("other info present - " + getContactRequest().getUser$().getNodeId() + " , " + getContactRequest().getContactDetails());
-            result = crRepo.findContactRequestByUserIdContactInfo(getContactRequest().getUser$().getNodeId(), getContactRequest().getContactDetails());
+              LOG.debug("other info present - " + getContactRequest().getUser().getNodeId() + " , " + getContactRequest().getContactDetails());
+            result = crRepo.findContactRequestByUserIdContactInfo(getContactRequest().getUser().getNodeId(), getContactRequest().getContactDetails());
           }
           if (result != null) {
             setContactRequest(result);

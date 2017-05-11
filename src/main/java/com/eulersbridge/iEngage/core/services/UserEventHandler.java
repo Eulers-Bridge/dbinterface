@@ -112,7 +112,7 @@ public class UserEventHandler implements UserService {
         if (LOG.isDebugEnabled())
           LOG.debug("Verification token = " + token.toString());
         VerificationToken t = tokenRepository.save(token);
-        System.out.println("velocityEngine="+velocityEngine);
+        System.out.println("velocityEngine=" + velocityEngine);
         EmailVerification verifyEmail = new EmailVerification(
           velocityEngine, createdUser, token);
         result = new UserCreatedEvent(createdUser.getEmail(),
@@ -132,8 +132,8 @@ public class UserEventHandler implements UserService {
     String userEmail = createUserEvent.getEmail();
     UserCreatedEvent result;
     User createdUser = userRepository.findByEmail(createUserEvent.getEmail());
-    if (createdUser != null) {
-      Iterable<VerificationToken> tokens = createdUser.getVerificationToken();
+    if (createdUser != null && createdUser.getVerificationToken() != null && createdUser.getVerificationToken() instanceof VerificationToken) {
+      Iterable<VerificationToken> tokens = createdUser.getVerificationToken$();
       Iterator<VerificationToken> tokenIter = tokens.iterator();
       VerificationToken token = null;
 
@@ -398,8 +398,11 @@ public class UserEventHandler implements UserService {
       if (null == userToUpdate.getOptOutDataCollection())
         userToUpdate.setOptOutDataCollection(user.getOptOutDataCollection());
       if (null == newUser.getInstitutionId()) {
-        userToUpdate.setInstitution(user.getInstitution());
-        newUser.setInstitutionId(user.getInstitution().getNodeId());
+        if (user.getInstitution() != null)
+          newUser.setInstitutionId(user.getInstitution().getNodeId());
+        if (user.getInstitution() instanceof Institution) {
+          userToUpdate.setInstitution(user.getInstitution$());
+        }
       }
       User.copyUntweakablePropoties(user, userToUpdate);
 

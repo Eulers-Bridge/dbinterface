@@ -5,9 +5,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
@@ -16,11 +14,11 @@ public class Institution extends Likeable {
   private String campus;
   private String state;
   // @Fetch
-  @Relationship(type = DatabaseDomainConstants.INSTITUTIONS_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.INSTITUTIONS_LABEL, direction = Relationship.OUTGOING)
   private Node country;
-  @Relationship(type = DatabaseDomainConstants.USERS_LABEL, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.USERS_LABEL, direction = Relationship.INCOMING)
   private List<Node> students;
-  @Relationship(type = DatabaseDomainConstants.HAS_NEWS_FEED_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.HAS_NEWS_FEED_LABEL, direction = Relationship.OUTGOING)
   private Node newsFeed;
 
   private static Logger LOG = LoggerFactory.getLogger(Institution.class);
@@ -69,9 +67,13 @@ public class Institution extends Likeable {
     this.state = state;
   }
 
-  public Country getCountry() {
+  public Country getCountry$() {
     if (LOG.isDebugEnabled()) LOG.debug("getCountry() = " + country);
     return (Country) country;
+  }
+
+  public Node getCountry() {
+    return country;
   }
 
   public void setCountry(Node country) {
@@ -81,8 +83,12 @@ public class Institution extends Likeable {
   /**
    * @return the students
    */
-  public List<User> getStudents() {
+  public List<User> getStudents$() {
     return castList(students, User.class);
+  }
+
+  public List<Node> getStudents() {
+    return students;
   }
 
   /**
@@ -95,8 +101,12 @@ public class Institution extends Likeable {
   /**
    * @return the studentYears
    */
-  public NewsFeed getNewsFeed() {
-    return (NewsFeed) newsFeed ;
+  public NewsFeed getNewsFeed$() {
+    return (NewsFeed) newsFeed;
+  }
+
+  public Node getNewsFeed() {
+    return newsFeed;
   }
 
   /**
@@ -127,18 +137,18 @@ public class Institution extends Likeable {
   }
 
   public InstitutionDetails toInstDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toInstDetails()");
+    InstitutionDetails details = new InstitutionDetails(nodeId);
+    details.setName(name);
+    details.setCampus(campus);
+    details.setState(state);
+//    BeanUtils.copyProperties(this, details);
+    if (country != null && country instanceof Country)
+      details.setCountryName(getCountry$().getCountryName());
 
-    InstitutionDetails details = new InstitutionDetails(getNodeId());
-    if (LOG.isTraceEnabled()) LOG.trace("institution " + this);
-
-    BeanUtils.copyProperties(this, details);
-     if (country instanceof Country)
-        details.setCountryName(getCountry().getCountryName());
-    if (newsFeed != null){
-      details.setNewsFeedId(newsFeed.getNodeId());
+    if (newsFeed != null) {
+      details.setNewsFeedId(newsFeed.nodeId);
     }
-    if (LOG.isTraceEnabled()) LOG.trace("instDetails " + details);
+
     return details;
   }
 

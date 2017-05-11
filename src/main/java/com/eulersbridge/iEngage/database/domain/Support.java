@@ -12,7 +12,7 @@ import java.util.Calendar;
  * @author Yikai Gong
  */
 
-@RelationshipEntity(type = DatabaseDomainConstants.SUPPORT_LABEL)
+@RelationshipEntity(type = DataConstants.SUPPORT_LABEL)
 public class Support {
   @GraphId
   private Long id;

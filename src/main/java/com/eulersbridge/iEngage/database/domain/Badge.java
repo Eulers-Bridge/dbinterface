@@ -12,13 +12,12 @@ import org.slf4j.LoggerFactory;
 
 @NodeEntity
 public class Badge extends Node {
+  private static final Logger LOG = LoggerFactory.getLogger(Badge.class);
 
   private String name;
   private String description;
   private Integer level;
   private Long xpValue;
-
-  private static Logger LOG = LoggerFactory.getLogger(Badge.class);
 
   public Badge() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");

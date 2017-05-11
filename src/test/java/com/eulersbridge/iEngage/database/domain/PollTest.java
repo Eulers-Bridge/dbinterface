@@ -55,8 +55,8 @@ public class PollTest {
     assertEquals("", poll.getStart(), dets.getStart());
     assertEquals("", poll.getDuration(), dets.getDuration());
     assertEquals("", poll.getAnswers(), dets.getAnswers());
-    assertEquals("", poll.getInstitution().getNodeId(), dets.getOwnerId());
-    assertEquals("", poll.getCreator().getNodeId(), dets.getCreatorId());
+    assertEquals("", poll.getInstitution$().getNodeId(), dets.getOwnerId());
+    assertEquals("", poll.getCreator$().getNodeId(), dets.getCreatorId());
   }
 
   /**
@@ -73,8 +73,8 @@ public class PollTest {
     assertEquals("", dets.getStart(), pollTest.getStart());
     assertEquals("", dets.getDuration(), pollTest.getDuration());
     assertEquals("", dets.getAnswers(), pollTest.getAnswers());
-    assertEquals("", dets.getOwnerId(), pollTest.getInstitution().getNodeId());
-    assertEquals("", dets.getCreatorId(), pollTest.getCreator().getNodeId());
+    assertEquals("", dets.getOwnerId(), pollTest.getInstitution$().getNodeId());
+    assertEquals("", dets.getCreatorId(), pollTest.getCreator$().getNodeId());
   }
 
   /**
@@ -173,11 +173,11 @@ public class PollTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#getCreator()}.
+   * Test method for {@link Poll#getCreator$()}.
    */
   @Test
   public final void testGetCreator() {
-    assertEquals(poll.getCreator().getNodeId(), dets.getCreatorId());
+    assertEquals(poll.getCreator$().getNodeId(), dets.getCreatorId());
   }
 
   /**
@@ -186,17 +186,17 @@ public class PollTest {
   @Test
   public final void testSetCreator() {
     Owner creator = new Owner(4325l);
-    assertNotEquals(poll.getCreator(), creator);
+    assertNotEquals(poll.getCreator$(), creator);
     poll.setCreator(new User(creator.getNodeId()));
-    assertEquals(poll.getCreator(), new User(creator.getNodeId()));
+    assertEquals(poll.getCreator$(), new User(creator.getNodeId()));
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#getInstitution()}.
+   * Test method for {@link Poll#getInstitution$()}.
    */
   @Test
   public final void testGetOwner() {
-    assertEquals(poll.getInstitution().getNodeId(), dets.getOwnerId());
+    assertEquals(poll.getInstitution$().getNodeId(), dets.getOwnerId());
   }
 
   /**
@@ -205,9 +205,9 @@ public class PollTest {
   @Test
   public final void testSetOwner() {
     Institution owner = new Institution(43254l);
-    assertNotEquals(poll.getInstitution(), owner);
+    assertNotEquals(poll.getInstitution$(), owner);
     poll.setInstitution(owner);
-    assertEquals(poll.getInstitution(), owner);
+    assertEquals(poll.getInstitution$(), owner);
   }
 
   /**
@@ -249,11 +249,11 @@ public class PollTest {
     pollTest.setCreator(null);
     assertNotEquals(poll.hashCode(), pollTest.hashCode());
     assertNotEquals(pollTest.hashCode(), poll.hashCode());
-    pollTest.setCreator(poll.getCreator());
+    pollTest.setCreator(poll.getCreator$());
     pollTest.setInstitution(null);
     assertNotEquals(poll.hashCode(), pollTest.hashCode());
     assertNotEquals(pollTest.hashCode(), poll.hashCode());
-    pollTest.setInstitution(poll.getInstitution());
+    pollTest.setInstitution(poll.getInstitution$());
   }
 
   /**
@@ -312,14 +312,14 @@ public class PollTest {
     pollTest.setInstitution(null);
     assertNotEquals(poll, pollTest);
     assertNotEquals(pollTest, poll);
-    pollTest.setInstitution(poll.getInstitution());
+    pollTest.setInstitution(poll.getInstitution$());
 
     pollTest.setCreator(new User(22l));
     assertNotEquals(poll, pollTest);
     pollTest.setCreator(null);
     assertNotEquals(poll, pollTest);
     assertNotEquals(pollTest, poll);
-    pollTest.setCreator(poll.getCreator());
+    pollTest.setCreator(poll.getCreator$());
   }
 
 }

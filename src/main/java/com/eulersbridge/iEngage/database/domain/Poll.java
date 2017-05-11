@@ -14,22 +14,27 @@ import java.util.List;
 
 @NodeEntity
 public class Poll extends Likeable implements Commentable {
+  private static final Logger LOG = LoggerFactory.getLogger(Poll.class);
+
   private String question;
   private String answers;
   private Long start;
   private Long duration;
-  @Relationship(type = DatabaseDomainConstants.CREATED_BY_LABEL)
+
+  @Relationship(type = DataConstants.CREATED_BY_LABEL)
   private Node creator;
-  @Relationship(type = DatabaseDomainConstants.HAS_POLL_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.HAS_POLL_LABEL, direction = Relationship.OUTGOING)
   private Node institution;
-  @Relationship(type = DatabaseDomainConstants.HAS_COMMENT, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.HAS_COMMENT, direction = Relationship.UNDIRECTED)
   private List<Node> comments;
-  @Relationship(type = DatabaseDomainConstants.APQ_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.APQ_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> answeredUsers;
 
-  private static Logger LOG = LoggerFactory.getLogger(Poll.class);
-
   public Poll() {
+  }
+
+  public Poll(Long nodeId) {
+    super(nodeId);
   }
 
   public Poll(String question, String answers, Long start, Long duration) {
@@ -41,19 +46,26 @@ public class Poll extends Likeable implements Commentable {
   }
 
   public PollDetails toPollDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toPollDetails()");
     PollDetails pollDetails = new PollDetails();
     pollDetails.setPollId(this.getNodeId());
     pollDetails.setQuestion(this.getQuestion());
     pollDetails.setAnswers(this.getAnswers());
     pollDetails.setStart(this.getStart());
     pollDetails.setDuration(this.getDuration());
-    pollDetails.setOwnerId((institution == null) ? null : institution.getNodeId());
-    pollDetails.setCreatorId((creator == null) ? null : creator.getNodeId());
-    pollDetails.setCreatorEmail((creator == null) ? null : getCreator().getEmail());
+
+    if (institution != null)
+      pollDetails.setOwnerId(institution.getNodeId());
+    else
+      pollDetails.setCreatorId(null);
+
+    if (creator != null){
+      pollDetails.setCreatorId(creator.getNodeId());
+      if (creator instanceof User)
+        pollDetails.setCreatorEmail(getCreator$().getEmail());
+    }
+
     pollDetails.setNumOfComments(getNumberOfComments());
     pollDetails.setNumOfAnswers(getNumberOfAnswers());
-    if (LOG.isTraceEnabled()) LOG.trace("pollDetails; " + pollDetails);
     return pollDetails;
   }
 
@@ -107,16 +119,24 @@ public class Poll extends Likeable implements Commentable {
     this.duration = duration;
   }
 
-  public List<Comment> getComments() {
+  public List<Comment> getComments$() {
     return castList(comments, Comment.class);
+  }
+
+  public List<Node> getComments() {
+    return comments;
   }
 
   public void setComments(List<Node> comments) {
     this.comments = comments;
   }
 
-  public List<User> getAnsweredUsers() {
+  public List<User> getAnsweredUsers$() {
     return castList(answeredUsers, User.class);
+  }
+
+  public List<Node> getAnsweredUsers() {
+    return answeredUsers;
   }
 
   public void setAnsweredUsers(List<Node> answeredUsers) {
@@ -139,8 +159,12 @@ public class Poll extends Likeable implements Commentable {
   /**
    * @return the creator
    */
-  public User getCreator() {
+  public User getCreator$() {
     return (User) creator;
+  }
+
+  public Node getCreator() {
+    return creator;
   }
 
   /**
@@ -153,8 +177,12 @@ public class Poll extends Likeable implements Commentable {
   /**
    * @return the institution
    */
-  public Institution getInstitution() {
+  public Institution getInstitution$() {
     return (Institution) institution;
+  }
+
+  public Node getInstitution() {
+    return institution;
   }
 
   /**

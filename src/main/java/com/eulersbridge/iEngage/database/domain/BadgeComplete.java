@@ -12,8 +12,10 @@ import org.springframework.beans.BeanUtils;
 import java.util.Calendar;
 
 
-@RelationshipEntity(type = DatabaseDomainConstants.BADGE_COMPLETE_LABEL)
+@RelationshipEntity(type = DataConstants.BADGE_COMPLETE_LABEL)
 public class BadgeComplete {
+  private static final Logger LOG = LoggerFactory.getLogger(BadgeComplete.class);
+
   @GraphId
   private Long nodeId;
   @StartNode
@@ -21,8 +23,6 @@ public class BadgeComplete {
   @EndNode
   private Badge badge;
   private Long date;
-
-  private static Logger LOG = LoggerFactory.getLogger(BadgeComplete.class);
 
   public BadgeComplete() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor()");

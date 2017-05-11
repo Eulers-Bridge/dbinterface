@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.database.repository;
 
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,8 @@ public interface PositionRepository extends GraphRepository<Position>
 {
     static Logger LOG = LoggerFactory.getLogger(PositionRepository.class);
 
-	@Query("Match (n:`"+DatabaseDomainConstants.ELECTION+"`)-[r:"+DatabaseDomainConstants.HAS_POSITION_LABEL+
-			"]-(e:`"+DatabaseDomainConstants.POSITION+"`) where id(n)={electionId} return e")
+	@Query("Match (n:`"+ DataConstants.ELECTION+"`)-[r:"+ DataConstants.HAS_POSITION_LABEL+
+			"]-(e:`"+ DataConstants.POSITION+"`) where id(n)={electionId} return e")
 	Page<Position> findByElectionId(@Param("electionId")Long electionId, Pageable pageable);
 
 }

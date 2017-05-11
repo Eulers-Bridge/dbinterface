@@ -99,7 +99,7 @@ public class PositionEventHandlerTest {
     CreatePositionEvent createElectionEvent = new CreatePositionEvent(dets);
     CreatedEvent evtData = service.createPosition(createElectionEvent);
     assertFalse(((PositionCreatedEvent) evtData).isElectionFound());
-    assertEquals(((PositionCreatedEvent) evtData).getFailedNodeId(), testData.getElection().getNodeId());
+    assertEquals(((PositionCreatedEvent) evtData).getFailedNodeId(), testData.getElection$().getNodeId());
     assertNull(evtData.getDetails());
   }
 

@@ -3,7 +3,7 @@
  */
 package com.eulersbridge.iEngage.database.repository;
 
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,10 +17,10 @@ import org.springframework.data.repository.query.Param;
  */
 public interface PhotoAlbumRepository extends GraphRepository<PhotoAlbum>
 {
-	@Query ("MATCH (p:`"+DatabaseDomainConstants.PHOTO_ALBUM+"`)-[r:`"+DatabaseDomainConstants.HAS_PHOTO_ALBUM_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
+	@Query ("MATCH (p:`"+ DataConstants.PHOTO_ALBUM+"`)-[r:`"+ DataConstants.HAS_PHOTO_ALBUM_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
 	Page<PhotoAlbum> findByOwnerId(@Param("ownerId")Long ownerId,Pageable p);
 
-	@Query ("MATCH (p:`"+DatabaseDomainConstants.PHOTO_ALBUM+"`)-[r:`"+DatabaseDomainConstants.CREATED_BY_LABEL+"`]-(o) where id(o)={creatorId} RETURN p")
+	@Query ("MATCH (p:`"+ DataConstants.PHOTO_ALBUM+"`)-[r:`"+ DataConstants.CREATED_BY_LABEL+"`]-(o) where id(o)={creatorId} RETURN p")
 	Page<PhotoAlbum> findByCreatorId(@Param("creatorId")Long creatorId,Pageable p);
 
 }

@@ -5,19 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Depth;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.annotation.QueryResult;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 public interface NewsArticleRepository extends GraphRepository<NewsArticle> 
 {
 	Iterable<NewsArticle> findByCreator(User creator);
 
 	@Depth(value = 2)
-	@Query("Match (n:`"+DatabaseDomainConstants.INSTITUTION+"`)-[r:"+DatabaseDomainConstants.HAS_NEWS_FEED_LABEL+
-			"]-(f:`"+DatabaseDomainConstants.NEWS_FEED+"`)-[s:"+DatabaseDomainConstants.HAS_NEWS_LABEL+
+	@Query("Match (n:`"+ DataConstants.INSTITUTION+"`)-[r:"+ DataConstants.HAS_NEWS_FEED_LABEL+
+			"]-(f:`"+ DataConstants.NEWS_FEED+"`)-[s:"+ DataConstants.HAS_NEWS_LABEL+
 			"]-(a:`NewsArticle`) where id(n)={instId} return distinct (a)-[*0..1]-(), (a)")
 	Page<NewsArticle> findByInstitutionId(@Param("instId")Long instId, Pageable p);
 

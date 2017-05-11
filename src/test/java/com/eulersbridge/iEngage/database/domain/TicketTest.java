@@ -64,7 +64,7 @@ public class TicketTest {
     assertEquals(dets.getName(), evt2.getName());
     assertEquals(dets.getNodeId(), evt2.getNodeId());
     assertEquals(dets.getInformation(), evt2.getInformation());
-    assertEquals(dets.getElectionId(), evt2.getElection().getNodeId());
+    assertEquals(dets.getElectionId(), evt2.getElection$().getNodeId());
     assertEquals(dets.getLogo(), evt2.getLogo());
 // Following test unnecessary because we are not interested in setting candidates from a create.  Will be done individually. At candidate creation
 // Time
@@ -88,7 +88,7 @@ public class TicketTest {
     TicketDetails dets2 = ticket.toTicketDetails();
     assertEquals(dets2.getName(), ticket.getName());
     assertEquals(dets2.getNodeId(), ticket.getNodeId());
-    assertEquals(dets2.getElectionId(), ticket.getElection().getNodeId());
+    assertEquals(dets2.getElectionId(), ticket.getElection$().getNodeId());
     assertEquals(dets2.getInformation(), ticket.getInformation());
     assertEquals(dets2.getLogo(), ticket.getLogo());
   }
@@ -124,8 +124,8 @@ public class TicketTest {
     assertEquals(dets.getLogo(), taskTest.getLogo());
     assertEquals(dets.getInformation(), taskTest.getInformation());
     assertEquals(dets.getChararcterCode(), taskTest.getCode());
-    assertNull(taskTest.getCandidates());
-    assertEquals(election, taskTest.getElection());
+    assertNull(taskTest.getCandidates$());
+    assertEquals(election, taskTest.getElection$());
   }
 
   /**
@@ -205,12 +205,12 @@ public class TicketTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Ticket#getCandidates()}.
+   * Test method for {@link Ticket#getCandidates$()}.
    */
   @Test
   public final void testGetCandidates() {
-    Iterable<Candidate> candidates = DatabaseDataFixture.populateTicket1().getCandidates();
-    assertEquals(candidates, ticket.getCandidates());
+    Iterable<Candidate> candidates = DatabaseDataFixture.populateTicket1().getCandidates$();
+    assertEquals(candidates, ticket.getCandidates$());
   }
 
   /**
@@ -218,19 +218,19 @@ public class TicketTest {
    */
   @Test
   public final void testSetCandidate() {
-    List<Candidate> candidates = DatabaseDataFixture.populateTicket2().getCandidates();
-    assertNotEquals(candidates, ticket.getCandidates());
+    List<Candidate> candidates = DatabaseDataFixture.populateTicket2().getCandidates$();
+    assertNotEquals(candidates, ticket.getCandidates$());
     ticket.setCandidates(Node.castList(candidates));
-    assertEquals(candidates, ticket.getCandidates());
+    assertEquals(candidates, ticket.getCandidates$());
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Ticket#getElection()}.
+   * Test method for {@link Ticket#getElection$()}.
    */
   @Test
   public final void testGetElection() {
-    Election election = DatabaseDataFixture.populateTicket1().getElection();
-    assertEquals(election, ticket.getElection());
+    Election election = DatabaseDataFixture.populateTicket1().getElection$();
+    assertEquals(election, ticket.getElection$());
   }
 
   /**
@@ -238,11 +238,11 @@ public class TicketTest {
    */
   @Test
   public final void testSetElection() {
-    Election election = DatabaseDataFixture.populateTicket2().getElection();
+    Election election = DatabaseDataFixture.populateTicket2().getElection$();
     ;
-    assertNotEquals(election, ticket.getElection());
+    assertNotEquals(election, ticket.getElection$());
     ticket.setElection(election);
-    assertEquals(election, ticket.getElection());
+    assertEquals(election, ticket.getElection$());
   }
 
   private void checkHashCode(Ticket test1, Ticket test2) {
@@ -277,11 +277,11 @@ public class TicketTest {
     ticketTest.setInformation(ticket.getInformation());
     ticketTest.setElection(null);
     checkHashCode(ticket, ticketTest);
-    ticketTest.setElection(ticket.getElection());
+    ticketTest.setElection(ticket.getElection$());
     ticketTest.setCandidates(null);
     ;
     checkHashCode(ticket, ticketTest);
-    ticketTest.setCandidates(Node.castList(ticket.getCandidates()));
+    ticketTest.setCandidates(Node.castList(ticket.getCandidates$()));
   }
 
   /**
@@ -323,16 +323,16 @@ public class TicketTest {
     checkNotEquals(ticket, ticketTest);
     ticketTest.setLogo(ticket.getLogo());
 
-    ticketTest.setElection(DatabaseDataFixture.populateTicket2().getElection());
+    ticketTest.setElection(DatabaseDataFixture.populateTicket2().getElection$());
     assertNotEquals(ticket, ticketTest);
     ticketTest.setElection(null);
     checkNotEquals(ticket, ticketTest);
-    ticketTest.setElection(ticket.getElection());
+    ticketTest.setElection(ticket.getElection$());
 
-    ticketTest.setCandidates(Node.castList(DatabaseDataFixture.populateTicket2().getCandidates()));
+    ticketTest.setCandidates(Node.castList(DatabaseDataFixture.populateTicket2().getCandidates$()));
     assertNotEquals(ticket, ticketTest);
     ticketTest.setCandidates(null);
     checkNotEquals(ticket, ticketTest);
-    ticketTest.setCandidates(Node.castList(ticket.getCandidates()));
+    ticketTest.setCandidates(Node.castList(ticket.getCandidates$()));
   }
 }

@@ -6,15 +6,12 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.neo4j.ogm.annotation.Transient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
-import javax.activation.DataContentHandler;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NodeEntity
 public class User extends Node {
@@ -39,30 +36,21 @@ public class User extends Node {
   private String profilePhoto;
   private Long experience;
 
-  @Relationship(type = DatabaseDomainConstants.HAS_PERSONALITY_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.HAS_PERSONALITY_LABEL, direction = Relationship.OUTGOING)
   private Node personality;
-  @Relationship(type = DatabaseDomainConstants.USERS_LABEL, direction = Relationship.OUTGOING)
+  @Relationship(type = DataConstants.USERS_LABEL, direction = Relationship.OUTGOING)
   private Node institution;
-  @Relationship(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.VERIFIED_BY_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> verificationToken;
-  @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> photos;
 
-  @Relationship(type = DatabaseDomainConstants.CONTACT_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.CONTACT_LABEL, direction = Relationship.UNDIRECTED)
   private List<Contact> contacts;
-  @Relationship(type = DatabaseDomainConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.UNDIRECTED)
   private List<TaskComplete> completedTasks;
-  @Relationship(type = DatabaseDomainConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.UNDIRECTED)
   private List<BadgeComplete> completedBadges;
-
-
-  //  @Query("match (n:" + DatabaseDomainConstants.TASK + ") return count(n)")
-//  private Long totalTasks;
-//
-
-//  @Query("match (n:" + DatabaseDomainConstants.BADGE + ") return count(n)")
-//  private Long totalBadges;
-//
 
   public User() {
     if (LOG.isDebugEnabled()) LOG.debug("Constructor");
@@ -243,32 +231,48 @@ public class User extends Node {
       return contacts.size();
   }
 
-  public Institution getInstitution() {
+  public Institution getInstitution$() {
     return (Institution) institution;
+  }
+
+  public Node getInstitution() {
+    return institution;
   }
 
   public void setInstitution(Node institution) {
     this.institution = institution;
   }
 
-  public List<VerificationToken> getVerificationToken() {
+  public List<VerificationToken> getVerificationToken$() {
     return castList(verificationToken, VerificationToken.class);
+  }
+
+  public List<Node> getVerificationToken() {
+    return verificationToken;
   }
 
   public void setVerificationToken(List<Node> verificationToken) {
     this.verificationToken = verificationToken;
   }
 
-  public Personality getPersonality() {
+  public Personality getPersonality$() {
     return (Personality) personality;
+  }
+
+  public Node getPersonality() {
+    return personality;
   }
 
   public void setPersonality(Node personality) {
     this.personality = personality;
   }
 
-  public List<Photo> getPhotos() {
+  public List<Photo> getPhotos$() {
     return castList(photos, Photo.class);
+  }
+
+  public List<Node> getPhotos() {
+    return photos;
   }
 
   public void setPhotos(List<Node> photos) {
@@ -284,44 +288,35 @@ public class User extends Node {
   }
 
   public UserDetails toUserDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toUserDetails()");
-
     UserDetails details = new UserDetails();
-    if (LOG.isTraceEnabled()) LOG.trace("user " + this);
-
+    details.setUserId(nodeId);
     BeanUtils.copyProperties(this, details);
 
-    details.setUserId(nodeId);
+    details.setHasPersonality(personality != null);
+    if (accountVerified == null)
+      details.setAccountVerified(DataConstants.AccountVerifiedDefault);
+    else
+      details.setAccountVerified(accountVerified);
+    if (consentGiven == null)
+      details.setConsentGiven(DataConstants.ConsentGivenDefault);
+    else
+      details.setConsentGiven(consentGiven);
+    if (trackingOff == null)
+      details.setTrackingOff(DataConstants.TrackingOffDefault);
+    else
+      details.setTrackingOff(trackingOff);
+    if (optOutDataCollection == null)
+      details.setOptOutDataCollection(DataConstants.OptOutDataCollectionDefault);
+    else
+      details.setOptOutDataCollection(optOutDataCollection);
+    if (institution != null)
+      details.setInstitutionId(this.institution.getNodeId());
 
-    details.setInstitutionId(this.institution.getNodeId());
-    Boolean personality = false;
-    Personality thisPersonality = getPersonality();
-    if (thisPersonality != null) {
-      if (LOG.isDebugEnabled()) LOG.debug("personality = " + getPersonality());
-      personality = true;
-    } else {
-      if (LOG.isDebugEnabled()) LOG.debug("personality = " + getPersonality());
-    }
-    details.setHasPersonality(personality);
-    if (null == getAccountVerified())
-      details.setAccountVerified(DatabaseDomainConstants.AccountVerifiedDefault);
-    else
-      details.setAccountVerified(getAccountVerified());
-    if (null == getConsentGiven())
-      details.setConsentGiven(DatabaseDomainConstants.ConsentGivenDefault);
-    else
-      details.setConsentGiven(getConsentGiven());
-    if (null == getTrackingOff())
-      details.setTrackingOff(DatabaseDomainConstants.TrackingOffDefault);
-    else
-      details.setTrackingOff(getTrackingOff());
-    if (null == getOptOutDataCollection())
-      details.setOptOutDataCollection(DatabaseDomainConstants.OptOutDataCollectionDefault);
-    else
-      details.setOptOutDataCollection(getOptOutDataCollection());
-    details.setPhotos(Photo.photosToPhotoDetails(getPhotos()));
+    if (institution != null)
+      details.setInstitutionId(this.institution.getNodeId());
 
-    if (LOG.isTraceEnabled()) LOG.trace("userDetails " + details);
+    if (photos != null && photos.size() > 0 && photos.iterator().next() instanceof Photo)
+      details.setPhotos(Photo.photosToPhotoDetails(getPhotos$()));
 
     return details;
   }

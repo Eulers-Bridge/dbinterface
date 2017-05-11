@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Greg Newitt
  */
-@RelationshipEntity(type = DatabaseDomainConstants.CONTACT_LABEL)
+@RelationshipEntity(type = DataConstants.CONTACT_LABEL)
 public class Contact {
   @GraphId
   private Long nodeId;

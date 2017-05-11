@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import com.eulersbridge.iEngage.email.EmailConstants;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -14,15 +13,15 @@ import java.util.UUID;
 
 @NodeEntity
 public class VerificationToken extends Node {
+  private static final Logger LOG = LoggerFactory.getLogger(VerificationToken.class);
 
   private String token;
   private Long expiryDate;
   private String tokenType;
   private boolean verified = false;
-  @Relationship(type = DatabaseDomainConstants.VERIFIED_BY_LABEL, direction = Relationship.OUTGOING)
-  private Node user;
 
-  private static Logger LOG = LoggerFactory.getLogger(VerificationToken.class);
+  @Relationship(type = DataConstants.VERIFIED_BY_LABEL, direction = Relationship.OUTGOING)
+  private Node user;
 
   public VerificationToken() {
   }

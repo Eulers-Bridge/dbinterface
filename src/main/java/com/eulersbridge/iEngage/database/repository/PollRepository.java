@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.database.repository;
 
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollAnswer;
 import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
@@ -14,26 +14,26 @@ import java.util.List;
 
 public interface PollRepository extends GraphRepository<Poll>
 {
-	@Query ("MATCH (p:`"+DatabaseDomainConstants.POLL+"`)-[r:`"+DatabaseDomainConstants.HAS_POLL_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
+	@Query ("MATCH (p:`"+ DataConstants.POLL+"`)-[r:`"+ DataConstants.HAS_POLL_LABEL+"`]-(o) where id(o)={ownerId} RETURN p")
 	Page<Poll> findByOwnerId(@Param("ownerId")Long ownerId,Pageable p);
 
-	@Query ("MATCH (p:`"+DatabaseDomainConstants.POLL+"`)-[r:`"+DatabaseDomainConstants.CREATED_BY_LABEL+"`]-(o) where id(o)={creatorId} RETURN p")
+	@Query ("MATCH (p:`"+ DataConstants.POLL+"`)-[r:`"+ DataConstants.CREATED_BY_LABEL+"`]-(o) where id(o)={creatorId} RETURN p")
 	Page<Poll> findByCreatorId(@Param("creatorId")Long creatorId,Pageable p);
 
-	@Query("Match (a:`User`),(b) where id(a)={userId} and id(b)={pollId} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.APQ_LABEL+
-			"]->b SET r.timeStamp=coalesce(r.timeStamp,timestamp()),r.__type__='"+DatabaseDomainConstants.APQ_LABEL+"',r.answerIndex={answerIndex} return r")
+	@Query("Match (a:`User`),(b) where id(a)={userId} and id(b)={pollId} CREATE UNIQUE a-[r:"+ DataConstants.APQ_LABEL+
+			"]->b SET r.timeStamp=coalesce(r.timeStamp,timestamp()),r.__type__='"+ DataConstants.APQ_LABEL+"',r.answerIndex={answerIndex} return r")
 	PollAnswer addPollAnswer(@Param("userId")Long userId,@Param("pollId")Long pollId,
 								 @Param("answerIndex")Integer answerIndex);
 
-	@Query("Match (a:`User`),(b) where id(a)={pollAnswer.getAnswererId} and id(b)={pollAnswer.getPollId()} CREATE UNIQUE a-[r:"+DatabaseDomainConstants.APQ_LABEL+
-			"]->b SET r.timeStamp=coalesce(r.timeStamp,timestamp()),r.__type__='"+DatabaseDomainConstants.APQ_LABEL+"',r.answerIndex={pollAnswer.getAnswerIndex()} return r")
+	@Query("Match (a:`User`),(b) where id(a)={pollAnswer.getAnswererId} and id(b)={pollAnswer.getPollId()} CREATE UNIQUE a-[r:"+ DataConstants.APQ_LABEL+
+			"]->b SET r.timeStamp=coalesce(r.timeStamp,timestamp()),r.__type__='"+ DataConstants.APQ_LABEL+"',r.answerIndex={pollAnswer.getAnswerIndex()} return r")
 	PollAnswer addPollAnswer2(@Param("pollAnswer")PollAnswer pollAnswer);
 
-	@Query("Match (a:`User`)-[r:"+DatabaseDomainConstants.APQ_LABEL+"]-(b) where id(a)={userId} and id(b)={pollId} return r")
+	@Query("Match (a:`User`)-[r:"+ DataConstants.APQ_LABEL+"]-(b) where id(a)={userId} and id(b)={pollId} return r")
 	PollAnswer getPollAnswer(@Param("userId") Long answererId, @Param("pollId") Long pollId);
 	
-	@Query("MATCH (a:`User`)-[r:`"+DatabaseDomainConstants.APQ_LABEL+"`]->(b:`"+DatabaseDomainConstants.POLL+"`) WHERE id(b)={pollId} WITH collect(distinct r.answerIndex) as answers "+
-			"unwind answers as x match (u:`User`)-[t:`"+DatabaseDomainConstants.APQ_LABEL+"`]-(p:`"+DatabaseDomainConstants.POLL+"`) where t.answerIndex=x and id(p)={pollId} return x as answer,count(t) as frequency order by x")
+	@Query("MATCH (a:`User`)-[r:`"+ DataConstants.APQ_LABEL+"`]->(b:`"+ DataConstants.POLL+"`) WHERE id(b)={pollId} WITH collect(distinct r.answerIndex) as answers "+
+			"unwind answers as x match (u:`User`)-[t:`"+ DataConstants.APQ_LABEL+"`]-(p:`"+ DataConstants.POLL+"`) where t.answerIndex=x and id(p)={pollId} return x as answer,count(t) as frequency order by x")
 	List<PollResultTemplate> getPollResults(@Param("pollId") Long pollId);
 
 }

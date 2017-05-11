@@ -8,18 +8,18 @@ import org.slf4j.LoggerFactory;
 
 @NodeEntity
 public class Election extends Likeable {
+  private static final Logger LOG = LoggerFactory.getLogger(Election.class);
+
   private String title;
   private Long start;
   private Long end;
   private Long votingStart;
   private Long votingEnd;
-  @Relationship(type = DatabaseDomainConstants.HAS_ELECTION_LABEL, direction = Relationship.OUTGOING)
-  private Node institution;
   private String introduction;
   private String process;
 
-
-  private static Logger LOG = LoggerFactory.getLogger(Election.class);
+  @Relationship(type = DataConstants.HAS_ELECTION_LABEL, direction = Relationship.OUTGOING)
+  private Node institution;
 
   public Election() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");
@@ -88,8 +88,12 @@ public class Election extends Likeable {
   /**
    * @return the institution
    */
-  public Institution getInstitution() {
+  public Institution getInstitution$() {
     return (Institution) institution;
+  }
+
+  public Node getInstitution() {
+    return institution;
   }
 
   /**
@@ -143,22 +147,21 @@ public class Election extends Likeable {
   }
 
   public ElectionDetails toElectionDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toElectionDetails()");
-
     ElectionDetails electionDetails = new ElectionDetails();
-    if (LOG.isTraceEnabled()) LOG.trace("election " + this);
-    electionDetails.setElectionId(this.getNodeId());
-    electionDetails.setTitle(this.getTitle());
-    electionDetails.setStart(this.getStart());
-    electionDetails.setEnd(this.getEnd());
-    electionDetails.setStartVoting(this.getVotingStart());
-    electionDetails.setEndVoting(this.getVotingEnd());
+    electionDetails.setElectionId(getNodeId());
+    electionDetails.setTitle(getTitle());
+    electionDetails.setStart(getStart());
+    electionDetails.setEnd(getEnd());
+    electionDetails.setStartVoting(getVotingStart());
+    electionDetails.setEndVoting(getVotingEnd());
+    electionDetails.setIntroduction(getIntroduction());
+    electionDetails.setProcess(getProcess());
+
     if (institution != null)
       electionDetails.setInstitutionId(institution.getNodeId());
-    else electionDetails.setInstitutionId(null);
-    electionDetails.setIntroduction(getIntroduction());
-    electionDetails.setProcess(this.getProcess());
-    if (LOG.isTraceEnabled()) LOG.trace("electionDetail; " + electionDetails);
+    else
+      electionDetails.setInstitutionId(null);
+
     return electionDetails;
   }
 

@@ -20,7 +20,7 @@ public class ContactRequest extends Node {
   private Long responseDate;
   private Boolean accepted;
   private Boolean rejected;
-  @Relationship(type = DatabaseDomainConstants.CONTACT_REQUEST_LABEL, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.CONTACT_REQUEST_LABEL, direction = Relationship.INCOMING)
   private Node user;
 
   public ContactRequestDetails toContactRequestDetails() {

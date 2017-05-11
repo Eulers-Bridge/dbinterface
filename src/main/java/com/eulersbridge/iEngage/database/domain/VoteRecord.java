@@ -11,8 +11,10 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.Calendar;
 
-@RelationshipEntity(type = DatabaseDomainConstants.VRECORD_LABEL)
+@RelationshipEntity(type = DataConstants.VRECORD_LABEL)
 public class VoteRecord {
+  private static final Logger LOG = LoggerFactory.getLogger(VoteRecord.class);
+
   @GraphId
   private Long nodeId;
   //	@Fetch
@@ -23,8 +25,6 @@ public class VoteRecord {
   private Long date;
   private String location;
   private String qrCode;
-
-  private static Logger LOG = LoggerFactory.getLogger(VoteRecord.class);
 
   public VoteRecord() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");

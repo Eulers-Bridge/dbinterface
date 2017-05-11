@@ -106,7 +106,7 @@ public class TicketEventHandlerTest {
     assertNull(returnedDets);
     assertTrue(evtData.isFailed());
     assertFalse(((TicketCreatedEvent) evtData).isElectionFound());
-    assertEquals(testData.getElection().getNodeId(), ((TicketCreatedEvent) evtData).getFailedId());
+    assertEquals(testData.getElection$().getNodeId(), ((TicketCreatedEvent) evtData).getFailedId());
   }
 
   /**

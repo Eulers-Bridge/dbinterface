@@ -16,16 +16,17 @@ import java.util.List;
 public class NewsArticle extends Likeable {
   private String title;
   private String content;
-  @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL)
-  private List<Node> photos;
   @Index
   @NotNull
   private Long date;
-  @Relationship(type = DatabaseDomainConstants.CREATED_BY_LABEL, direction = Relationship.OUTGOING)
-  private Node creator;
-  @Relationship(type = DatabaseDomainConstants.HAS_NEWS_LABEL, direction = Relationship.INCOMING)
-  private Node newsFeed;
   private boolean inappropriateContent;
+
+  @Relationship(type = DataConstants.HAS_PHOTO_LABEL)
+  private List<Node> photos;
+  @Relationship(type = DataConstants.CREATED_BY_LABEL, direction = Relationship.OUTGOING)
+  private Node creator;
+  @Relationship(type = DataConstants.HAS_NEWS_LABEL, direction = Relationship.INCOMING)
+  private Node newsFeed;
 
 //  @Query("START n = node({self}) match (n)-[r:" + DatabaseDomainConstants.CREATED_BY_LABEL + "]-(c) RETURN c.email ")
 //  private String creatorEmail;
@@ -64,7 +65,7 @@ public class NewsArticle extends Likeable {
   }
 
   public String getContent() {
-    if (LOG.isDebugEnabled()) LOG.debug("getContent() = " );
+    if (LOG.isDebugEnabled()) LOG.debug("getContent() = ");
     return content;
   }
 
@@ -75,9 +76,13 @@ public class NewsArticle extends Likeable {
     this.content = content;
   }
 
-  public Iterable<Photo> getPhotos() {
+  public Iterable<Photo> getPhotos$() {
     if (LOG.isDebugEnabled()) LOG.debug("getPhotos() = " + photos);
     return castList(photos, Photo.class);
+  }
+
+  public List<Node> getPhotos() {
+    return photos;
   }
 
   public void setPhotos(List<Node> picture) {
@@ -97,9 +102,12 @@ public class NewsArticle extends Likeable {
     this.date = date;
   }
 
-  public User getCreator() {
-    if (LOG.isDebugEnabled()) LOG.debug("getCreator() = " + creator);
+  public User getCreator$() {
     return (User) creator;
+  }
+
+  public Node getCreator() {
+    return creator;
   }
 
   public void setCreator(Node creator) {
@@ -109,8 +117,12 @@ public class NewsArticle extends Likeable {
   /**
    * @return the studentYear
    */
-  public NewsFeed getNewsFeed() {
+  public NewsFeed getNewsFeed$() {
     return (NewsFeed) newsFeed;
+  }
+
+  public Node getNewsFeed() {
+    return newsFeed;
   }
 
   /**
@@ -158,21 +170,24 @@ public class NewsArticle extends Likeable {
   }
 
   public NewsArticleDetails toNewsArticleDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toNewsArtDetails()");
-
     NewsArticleDetails details = new NewsArticleDetails();
     details.setNewsArticleId(getNodeId());
-    if (LOG.isTraceEnabled()) LOG.trace("newsArticle " + this);
-
     BeanUtils.copyProperties(this, details);
-    if (getCreator() != null) details.setCreatorEmail(getCreator().getEmail());
-    if (getNewsFeed() != null) {
-      if (getNewsFeed().getInstitution().getNodeId() != null)
-        details.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
+
+    if (creator != null && creator instanceof User)
+      details.setCreatorEmail(getCreator$().getEmail());
+
+    if (newsFeed != null && newsFeed instanceof NewsFeed) {
+      NewsFeed newsFeed = getNewsFeed$();
+      if (newsFeed.getInstitution() != null)
+        details.setInstitutionId(newsFeed.getInstitution().getNodeId());
     }
+
+    if (photos!=null && photos.size()>0 && photos.iterator().next() instanceof Photo)
+      details.setPhotos(Photo.photosToPhotoDetails(getPhotos$()));
+
     details.setLikes(getNumOfLikes().intValue());
-    details.setPhotos(Photo.photosToPhotoDetails(getPhotos()));
-    if (LOG.isTraceEnabled()) LOG.trace("newsArticleDetails " + details);
+
     return details;
   }
 

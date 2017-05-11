@@ -146,7 +146,7 @@ public class InstitutionTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Institution#getCountry()}.
+   * Test method for {@link Institution#getCountry$()}.
    */
   @Test
   public final void testGetCountry() {
@@ -157,7 +157,7 @@ public class InstitutionTest {
     Country country = new Country();
     country.setCountryName("Australia");
     Institution testObj = new Institution(name, campus, state, country);
-    assertEquals("getCountry() does not return the value class was constructed with.", testObj.getCountry().getCountryName(), country.getCountryName());
+    assertEquals("getCountry() does not return the value class was constructed with.", testObj.getCountry$().getCountryName(), country.getCountryName());
   }
 
   /**
@@ -175,7 +175,7 @@ public class InstitutionTest {
     Country country2 = new Country();
     country2.setCountryName("Australia");
     testObj.setCountry(country2);
-    assertEquals("getCountry() does not return the value that setter should have set it to.", testObj.getCountry().getCountryName(), country2.getCountryName());
+    assertEquals("getCountry() does not return the value that setter should have set it to.", testObj.getCountry$().getCountryName(), country2.getCountryName());
   }
 
   /**
@@ -193,7 +193,7 @@ public class InstitutionTest {
     assertEquals("Names don't match.", dets.getName(), inst.getName());
     assertEquals("Campuses don't match.", dets.getCampus(), inst.getCampus());
     assertEquals("States don't match.", dets.getState(), inst.getState());
-    assertEquals("Countrys don't match.", dets.getCountryName(), inst.getCountry().getCountryName());
+    assertEquals("Countrys don't match.", dets.getCountryName(), inst.getCountry$().getCountryName());
   }
 
   @Test
@@ -201,12 +201,12 @@ public class InstitutionTest {
     Institution inst = DatabaseDataFixture.populateInstUniMelb();
     Institution inst2 = Institution.fromInstDetails(inst.toInstDetails());
     Country country = new Country();
-    country.setCountryName(inst.getCountry().getCountryName());
+    country.setCountryName(inst.getCountry$().getCountryName());
     inst2.setCountry(country);
     assertEquals("Names don't match.", inst2.getName(), inst.getName());
     assertEquals("Campuses don't match.", inst2.getCampus(), inst.getCampus());
     assertEquals("States don't match.", inst2.getState(), inst.getState());
-    assertEquals("Countrys don't match.", inst2.getCountry().getCountryName(), inst.getCountry().getCountryName());
+    assertEquals("Countrys don't match.", inst2.getCountry$().getCountryName(), inst.getCountry$().getCountryName());
   }
 
   @Test
@@ -251,7 +251,7 @@ public class InstitutionTest {
 
     institutionTest.setCountry(null);
     checkHashCode(institution, institutionTest);
-    institutionTest.setCountry(institution.getCountry());
+    institutionTest.setCountry(institution.getCountry$());
 
   }
 
@@ -297,6 +297,6 @@ public class InstitutionTest {
 
     institutionTest.setCountry(null);
     checkNotEquals(institution, institutionTest);
-    institutionTest.setCountry(institution.getCountry());
+    institutionTest.setCountry(institution.getCountry$());
   }
 }

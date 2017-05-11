@@ -1,6 +1,6 @@
 package com.eulersbridge.iEngage.database.repository;
 
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.GeneralInfoData;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
@@ -20,8 +20,8 @@ public interface InstitutionRepository extends GraphRepository<Institution>
 //" WITH DISTINCT n MATCH q-[:HAS_STUDENT_YEAR]-m WITH q, max(m.year) as max "+
 //" MATCH q-[:HAS_STUDENT_YEAR]-m WHERE m.year = max "  // find the max m for each q
 //+" WITH q, m MATCH m-[:HAS_STUDENT_YEAR]-x RETURN m")
-	@Query("Match (i:`"+DatabaseDomainConstants.INSTITUTION+"`)-["+DatabaseDomainConstants.HAS_NEWS_FEED_LABEL+"]-(n:`"+
-			DatabaseDomainConstants.NEWS_FEED+"`) where id(i)={instId} RETURN n Limit 1")
+	@Query("Match (i:`"+ DataConstants.INSTITUTION+"`)-["+ DataConstants.HAS_NEWS_FEED_LABEL+"]-(n:`"+
+			DataConstants.NEWS_FEED+"`) where id(i)={instId} RETURN n Limit 1")
 	NewsFeed findNewsFeedByInstitutionId(@Param("instId") Long institutionId);
 
 	@Query("MATCH (i:`Institution`)-[]-(c:`Country`) where id(c)={countryId} return i")

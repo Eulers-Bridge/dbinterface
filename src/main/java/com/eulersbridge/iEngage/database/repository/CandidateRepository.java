@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.database.repository;
 
 import com.eulersbridge.iEngage.database.domain.Candidate;
-import com.eulersbridge.iEngage.database.domain.DatabaseDomainConstants;
+import com.eulersbridge.iEngage.database.domain.DataConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
@@ -15,16 +15,16 @@ import org.springframework.data.repository.query.Param;
 public interface CandidateRepository extends GraphRepository<Candidate>
 {
 
-	@Query("Match (n:`"+DatabaseDomainConstants.ELECTION+"`)-[r:"+DatabaseDomainConstants.HAS_POSITION_LABEL+
-			"]-(p:`"+DatabaseDomainConstants.POSITION+"`)-[q:"+DatabaseDomainConstants.HAS_CANDIDATE_LABEL+
-				"]-(e:`"+DatabaseDomainConstants.CANDIDATE+"`) where id(n)={electionId} return e")
+	@Query("Match (n:`"+ DataConstants.ELECTION+"`)-[r:"+ DataConstants.HAS_POSITION_LABEL+
+			"]-(p:`"+ DataConstants.POSITION+"`)-[q:"+ DataConstants.HAS_CANDIDATE_LABEL+
+				"]-(e:`"+ DataConstants.CANDIDATE+"`) where id(n)={electionId} return e")
 	Page<Candidate> findByElectionId(@Param("electionId")Long electionId, Pageable pageable);
 
-	@Query("Match (n:`"+DatabaseDomainConstants.POSITION+"`)-[r:"+DatabaseDomainConstants.HAS_CANDIDATE_LABEL+
-			"]-(e:`"+DatabaseDomainConstants.CANDIDATE+"`) where id(n)={positionId} return e")
+	@Query("Match (n:`"+ DataConstants.POSITION+"`)-[r:"+ DataConstants.HAS_CANDIDATE_LABEL+
+			"]-(e:`"+ DataConstants.CANDIDATE+"`) where id(n)={positionId} return e")
 	Page<Candidate> findByPositionId(@Param("positionId")Long positionId, Pageable pageable);
 
-	@Query("Match (n:`"+DatabaseDomainConstants.CANDIDATE+"`)-[r:"+DatabaseDomainConstants.IS_ON_TICKET_LABEL+
-			"]-(e:`"+DatabaseDomainConstants.TICKET+"`) where id(e)={ticketId} return n")
+	@Query("Match (n:`"+ DataConstants.CANDIDATE+"`)-[r:"+ DataConstants.IS_ON_TICKET_LABEL+
+			"]-(e:`"+ DataConstants.TICKET+"`) where id(e)={ticketId} return n")
 	Page<Candidate> findByTicketId(@Param("ticketId")Long ticketId, Pageable pageable);
 }

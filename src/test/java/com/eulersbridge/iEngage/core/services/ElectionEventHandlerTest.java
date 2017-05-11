@@ -216,7 +216,7 @@ public class ElectionEventHandlerTest {
     CreateElectionEvent createElectionEvent = new CreateElectionEvent(dets);
     ElectionCreatedEvent evtData = service.createElection(createElectionEvent);
     assertFalse(evtData.isInstitutionFound());
-    assertEquals(evtData.getElectionId(), testData.getInstitution().getNodeId());
+    assertEquals(evtData.getElectionId(), testData.getInstitution$().getNodeId());
     assertNull(evtData.getDetails());
   }
 

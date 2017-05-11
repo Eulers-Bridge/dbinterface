@@ -127,11 +127,11 @@ public class NewsArticleTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#getPhotos()}.
+   * Test method for {@link NewsArticle#getPhotos$()}.
    */
   @Test
   public void testGetPicture() {
-    assertNull("pictures don't match.", news.getPhotos());
+    assertNull("pictures don't match.", news.getPhotos$());
   }
 
   /**
@@ -160,11 +160,11 @@ public class NewsArticleTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.NewsArticle#getCreator()}.
+   * Test method for {@link NewsArticle#getCreator$()}.
    */
   @Test
   public void testGetCreator() {
-    assertEquals("", news.getCreator(), creator);
+    assertEquals("", news.getCreator$(), creator);
   }
 
   /**
@@ -174,8 +174,8 @@ public class NewsArticleTest {
   public void testSetCreator() {
     User creator2 = DatabaseDataFixture.populateUserGnewitt();
     news.setCreator(creator2);
-    assertNotEquals("", news.getCreator(), creator);
-    assertEquals("", news.getCreator(), creator2);
+    assertNotEquals("", news.getCreator$(), creator);
+    assertEquals("", news.getCreator$(), creator2);
   }
 
   /**
@@ -187,7 +187,7 @@ public class NewsArticleTest {
     assertEquals("Titles don't match.", dets.getTitle(), news.getTitle());
     assertEquals("Contents don't match.", dets.getContent(), news.getContent());
     assertEquals("Dates don't match.", dets.getDate(), news.getDate());
-    assertEquals("Creator emails don't match.", dets.getCreatorEmail(), news.getCreator().getEmail());
+    assertEquals("Creator emails don't match.", dets.getCreatorEmail(), news.getCreator$().getEmail());
     assertEquals("IDs don't match.", dets.getNewsArticleId(), news.getNodeId());
 //TODO		assertEquals("Pictures don't match.",dets.getPicture().size(),0);
     assertEquals("Likes don't match.", dets.getLikes().intValue(), news.getNumOfLikes().intValue());
@@ -201,12 +201,12 @@ public class NewsArticleTest {
     NewsArticleDetails dets = news.toNewsArticleDetails();
     NewsArticle news2 = NewsArticle.fromNewsArticleDetails(dets);
     User creator = new User();
-    creator.setEmail(news.getCreator().getEmail());
+    creator.setEmail(news.getCreator$().getEmail());
     news2.setCreator(creator);
     assertEquals("Titles don't match.", news2.getTitle(), news.getTitle());
     assertEquals("Contents don't match.", news2.getContent(), news.getContent());
     assertEquals("Dates don't match.", news2.getDate(), news.getDate());
-    assertEquals("Creator emails don't match.", news2.getCreator().getEmail(), news.getCreator().getEmail());
+    assertEquals("Creator emails don't match.", news2.getCreator$().getEmail(), news.getCreator$().getEmail());
     assertEquals("IDs don't match.", news2.getNodeId(), news.getNodeId());
 //TODO		assertEquals("Pictures don't match.",news2.getPicture(),dets.getPicture());
     assertEquals("Likers don't match.", 0, news2.getNumOfLikes().intValue());
@@ -228,11 +228,11 @@ public class NewsArticleTest {
     articleTest.setCreator(null);
     assertNotEquals(newsTest.hashCode(), articleTest.hashCode());
     assertNotEquals(articleTest.hashCode(), newsTest.hashCode());
-    articleTest.setCreator(newsTest.getCreator());
+    articleTest.setCreator(newsTest.getCreator$());
     articleTest.setNewsFeed(null);
     assertNotEquals(newsTest.hashCode(), articleTest.hashCode());
     assertNotEquals(articleTest.hashCode(), newsTest.hashCode());
-    articleTest.setNewsFeed(newsTest.getNewsFeed());
+    articleTest.setNewsFeed(newsTest.getNewsFeed$());
   }
 
   /**
@@ -265,7 +265,7 @@ public class NewsArticleTest {
     news2.setCreator(null);
     assertNotEquals(news1, news2);
     assertNotEquals(news2, news1);
-    news2.setCreator(news1.getCreator());
+    news2.setCreator(news1.getCreator$());
 
     news2.setDate(415l);
     assertNotEquals(news1, news2);
@@ -293,7 +293,7 @@ public class NewsArticleTest {
     news2.setNewsFeed(null);
     assertNotEquals(news1, news2);
     assertNotEquals(news2, news1);
-    news2.setNewsFeed(news1.getNewsFeed());
+    news2.setNewsFeed(news1.getNewsFeed$());
   }
 
   @Test

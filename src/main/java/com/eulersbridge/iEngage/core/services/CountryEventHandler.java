@@ -53,8 +53,6 @@ public class CountryEventHandler implements CountryService {
       return CountryReadEvent.notFound(readCountryEvent.getNodeId());
     }
 
-//	    template.fetch(user.getInstitution());
-
     CountryDetails result = country.toCountryDetails();
     if (LOG.isDebugEnabled()) LOG.debug("Result - " + result);
     return new CountryReadEvent(readCountryEvent.getNodeId(), result);

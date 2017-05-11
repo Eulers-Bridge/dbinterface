@@ -28,12 +28,12 @@ public class Event extends Likeable {
   private Long created;
   private String organizer;
   //@Fetch
-  @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL)
+  @Relationship(type = DataConstants.HAS_PHOTO_LABEL)
   private List<Node> photos;
   private String organizerEmail;
   private Long modified;
   //@Fetch
-  @Relationship(type = DatabaseDomainConstants.HAS_EVENT_LABEL)
+  @Relationship(type = DataConstants.HAS_EVENT_LABEL)
   private Node newsFeed;
 
   private static Logger LOG = LoggerFactory.getLogger(Event.class);
@@ -63,27 +63,28 @@ public class Event extends Likeable {
   }
 
   public EventDetails toEventDetails() {
-    if (LOG.isTraceEnabled()) LOG.trace("toEventDetails()");
     EventDetails eventDetails = new EventDetails();
-    if (LOG.isTraceEnabled()) LOG.trace("event " + this);
+
     eventDetails.setEventId(this.getNodeId());
     eventDetails.setName(getName());
     eventDetails.setLocation(getLocation());
     eventDetails.setStarts(getStarts());
     eventDetails.setEnds(getEnds());
-    if (getNewsFeed() != null) {
-      if (getNewsFeed().getInstitution() != null)
-        eventDetails.setInstitutionId(getNewsFeed().getInstitution().getNodeId());
-    }
-    eventDetails.setDescription(getDescription());
-    eventDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos()));
     eventDetails.setVolunteerPositions(getVolunteerPositions());
     eventDetails.setCreated(getCreated());
     eventDetails.setOrganizer(getOrganizer());
     eventDetails.setOrganizerEmail(getOrganizerEmail());
     eventDetails.setModified(getModified());
+    eventDetails.setDescription(getDescription());
 
-    if (LOG.isTraceEnabled()) LOG.trace("eventDetails; " + eventDetails);
+    if (newsFeed != null && newsFeed instanceof NewsFeed) {
+      NewsFeed newsFeed = getNewsFeed$();
+      if (newsFeed.getInstitution() != null)
+        eventDetails.setInstitutionId(newsFeed.getInstitution().getNodeId());
+    }
+    if (photos != null && photos.size()>0 && photos.get(0) instanceof Photo)
+      eventDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos$()));
+
     return eventDetails;
   }
 
@@ -163,9 +164,12 @@ public class Event extends Likeable {
     this.description = description;
   }
 
-  public Iterable<Photo> getPhotos() {
-    if (LOG.isDebugEnabled()) LOG.debug("getPhotos() = " + photos);
+  public Iterable<Photo> getPhotos$() {
     return castList(photos, Photo.class);
+  }
+
+  public List<Node> getPhotos() {
+    return photos;
   }
 
   public void setPhotos(List<Node> picture) {
@@ -216,8 +220,12 @@ public class Event extends Likeable {
   /**
    * @return the institution
    */
-  public NewsFeed getNewsFeed() {
+  public NewsFeed getNewsFeed$() {
     return (NewsFeed) newsFeed;
+  }
+
+  public Node getNewsFeed() {
+    return newsFeed;
   }
 
   /**
@@ -253,7 +261,7 @@ public class Event extends Likeable {
       result = prime * result
         + ((organizerEmail == null) ? 0 : organizerEmail.hashCode());
       result = prime * result
-        + ((getPhotos() == null) ? 0 : getPhotos().hashCode());
+        + ((getPhotos$() == null) ? 0 : getPhotos$().hashCode());
       result = prime * result + ((starts == null) ? 0 : starts.hashCode());
       result = prime * result + Arrays.hashCode(volunteerPositions);
     }
@@ -322,10 +330,10 @@ public class Event extends Likeable {
           return false;
       } else if (!organizerEmail.equals(other.organizerEmail))
         return false;
-      if (getPhotos() == null) {
-        if (other.getPhotos() != null)
+      if (getPhotos$() == null) {
+        if (other.getPhotos$() != null)
           return false;
-      } else if (!getPhotos().equals(other.getPhotos()))
+      } else if (!getPhotos$().equals(other.getPhotos$()))
         return false;
       if (starts == null) {
         if (other.starts != null)

@@ -202,7 +202,7 @@ public class UserTest {
    */
   @Test
   public final void testGetVerificationToken() {
-    Iterable<VerificationToken> token = user.getVerificationToken();
+    Iterable<VerificationToken> token = user.getVerificationToken$();
     assertNull("token not null", token);
   }
 
@@ -210,7 +210,7 @@ public class UserTest {
   public final void testSetVerificationToken() {
     ArrayList<VerificationToken> tokens = (new ArrayList<VerificationToken>());
     user.setVerificationToken(Node.castList(tokens));
-    assertEquals("setVerificationToken not working.", user.getVerificationToken(), tokens);
+    assertEquals("setVerificationToken not working.", user.getVerificationToken$(), tokens);
   }
 
   /**
@@ -234,14 +234,14 @@ public class UserTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.User#getInstitution()}.
+   * Test method for {@link User#getInstitution$()}.
    */
   @Test
   public final void testGetInstitution() {
-    assertEquals("GetInstitution not working", user.getInstitution().getNodeId(), userDetails.getInstitutionId());
-    assertNull(user.getInstitution().getCampus());
-    assertNull(user.getInstitution().getCountry());
-    assertNull(user.getInstitution().getName());
+    assertEquals("GetInstitution not working", user.getInstitution$().getNodeId(), userDetails.getInstitutionId());
+    assertNull(user.getInstitution$().getCampus());
+    assertNull(user.getInstitution$().getCountry$());
+    assertNull(user.getInstitution$().getName());
   }
 
   /**
@@ -252,11 +252,11 @@ public class UserTest {
     Institution inst = DatabaseDataFixture.populateInstUniMelb();
     user = new User();
     user.setInstitution(inst);
-    assertEquals("Institution does not match.", user.getInstitution(), inst);
-    assertEquals("Campus does not match.", user.getInstitution().getCampus(), inst.getCampus());
-    assertEquals("Name does not match.", user.getInstitution().getName(), inst.getName());
-    assertEquals("State does not match.", user.getInstitution().getState(), inst.getState());
-    assertEquals("Country does not match.", user.getInstitution().getCountry(), inst.getCountry());
+    assertEquals("Institution does not match.", user.getInstitution$(), inst);
+    assertEquals("Campus does not match.", user.getInstitution$().getCampus(), inst.getCampus());
+    assertEquals("Name does not match.", user.getInstitution$().getName(), inst.getName());
+    assertEquals("State does not match.", user.getInstitution$().getState(), inst.getState());
+    assertEquals("Country does not match.", user.getInstitution$().getCountry$(), inst.getCountry$());
   }
 
   /**

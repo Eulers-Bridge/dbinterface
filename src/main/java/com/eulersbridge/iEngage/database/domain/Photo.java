@@ -14,17 +14,19 @@ import java.util.Iterator;
  */
 @NodeEntity
 public class Photo extends Likeable {
+  private static Logger LOG = LoggerFactory.getLogger(Photo.class);
+
   private String url;
   private String thumbNailUrl;
   private String title;
   private String description;
   private Integer sequence;
-  Long date;
-  @Relationship(type = DatabaseDomainConstants.HAS_PHOTO_LABEL, direction = Relationship.INCOMING)
-  private Owner owner;
   private boolean inappropriateContent;
+  private Long date;
 
-  private static Logger LOG = LoggerFactory.getLogger(Photo.class);
+  @Relationship(type = DataConstants.HAS_PHOTO_LABEL, direction = Relationship.INCOMING)
+  private Owner owner;
+
 
   public Photo(String url, String thumbNailUrl, String title, String description, Long date,
                Integer sequence, boolean inappropriateContent) {
