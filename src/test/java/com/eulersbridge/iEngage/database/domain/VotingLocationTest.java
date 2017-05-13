@@ -154,12 +154,12 @@ public class VotingLocationTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.VotingLocation#setOwner(com.eulersbridge.iEngage.database.domain.Owner)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.VotingLocation#(com.eulersbridge.iEngage.database.domain)}.
 	 */
 	@Test
 	public final void testSetOwner()
 	{
-		Owner owner=new Owner(321l);
+		Node owner=new Node(321l);
 		assertNotEquals("",votingLocation.getOwner(),owner);
 		votingLocation.setOwner(owner);
 		assertEquals("",owner,votingLocation.getOwner());

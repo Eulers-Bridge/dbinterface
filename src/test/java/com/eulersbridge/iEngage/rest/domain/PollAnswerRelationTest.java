@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNotEquals;
  * @author Greg Newitt
  *
  */
-public class PollAnswerTest
+public class PollAnswerRelationTest
 {
 	@Mock
 	private ServletRequestAttributes attrs;

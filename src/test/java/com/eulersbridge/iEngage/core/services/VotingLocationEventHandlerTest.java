@@ -8,10 +8,10 @@ import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.core.events.votingLocation.*;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.VotingLocation;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.VotingLocationRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class VotingLocationEventHandlerTest {
   @Mock
   VotingLocationRepository votingLocationRepository;
   @Mock
-  OwnerRepository ownerRepository;
+  NodeRepository nodeRepository;
   @Mock
   ElectionRepository electionRepository;
 
@@ -58,11 +58,11 @@ public class VotingLocationEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    service = new VotingLocationEventHandler(votingLocationRepository, electionRepository, ownerRepository);
+    service = new VotingLocationEventHandler(votingLocationRepository, electionRepository, nodeRepository);
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#VotingLocationEventHandler(com.eulersbridge.iEngage.database.repository.VotingLocationRepository, com.eulersbridge.iEngage.database.repository.OwnerRepository)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#(com.eulersbridge.iEngage.database.repository.VotingLocationRepository, com.eulersbridge.iEngage.database.repository)}.
    */
   @Test
   public final void testVotingLocationEventHandler() {
@@ -86,7 +86,7 @@ public class VotingLocationEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#requestReadVotingLocation(com.eulersbridge.iEngage.core.events.votingLocation.RequestReadVotingLocationEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#(com.eulersbridge.iEngage.core.events.votingLocation)}.
    */
   @Test
   public final void testReadVotingLocationNotFound() {
@@ -109,8 +109,8 @@ public class VotingLocationEventHandlerTest {
   public final void testCreateVotingLocation() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingVotingLocation()");
     VotingLocation testData = DatabaseDataFixture.populateVotingLocation1();
-    Owner testOwner = new Owner(DatabaseDataFixture.populateUserGnewitt().getNodeId());
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    Node testOwner = new Node(DatabaseDataFixture.populateUserGnewitt().getNodeId());
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(votingLocationRepository.save(any(VotingLocation.class))).thenReturn(testData);
     VotingLocationDetails dets = testData.toVotingLocationDetails();
     CreateVotingLocationEvent createPositionEvent = new CreateVotingLocationEvent(dets);
@@ -128,8 +128,8 @@ public class VotingLocationEventHandlerTest {
   public final void testCreateVotingLocationFailed() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingVotingLocation()");
     VotingLocation testData = DatabaseDataFixture.populateVotingLocation1();
-    Owner testOwner = new Owner(DatabaseDataFixture.populateUserGnewitt().getNodeId());
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    Node testOwner = new Node(DatabaseDataFixture.populateUserGnewitt().getNodeId());
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(votingLocationRepository.save(any(VotingLocation.class))).thenReturn(null);
     VotingLocationDetails dets = testData.toVotingLocationDetails();
     CreateVotingLocationEvent createPositionEvent = new CreateVotingLocationEvent(dets);
@@ -146,8 +146,8 @@ public class VotingLocationEventHandlerTest {
   public final void testCreateVotingLocationOwnerNotFound() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingVotingLocation()");
     VotingLocation testData = DatabaseDataFixture.populateVotingLocation1();
-    Owner testInst = null;
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testInst);
+    Node testInst = null;
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(testInst);
     when(votingLocationRepository.save(any(VotingLocation.class))).thenReturn(testData);
     VotingLocationDetails dets = testData.toVotingLocationDetails();
     CreateVotingLocationEvent createPositionEvent = new CreateVotingLocationEvent(dets);
@@ -164,7 +164,7 @@ public class VotingLocationEventHandlerTest {
   public final void testCreateVotingLocationOwnerIDNull() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingVotingLocation()");
     VotingLocation testData = DatabaseDataFixture.populateVotingLocation1();
-    Owner user = testData.getOwner();
+    Node user = testData.getOwner();
     user.setNodeId(null);
     testData.setOwner(user);
     when(votingLocationRepository.save(any(VotingLocation.class))).thenReturn(testData);
@@ -193,7 +193,7 @@ public class VotingLocationEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#deleteVotingLocation(com.eulersbridge.iEngage.core.events.votingLocations.DeleteVotingLocationEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#(com.eulersbridge.iEngage.core.events)}.
    */
   @Test
   public final void testDeleteVotingLocationNotFound() {
@@ -228,7 +228,7 @@ public class VotingLocationEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#updateVotingLocation(com.eulersbridge.iEngage.core.events.votingLocations.UpdateVotingLocationEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.VotingLocationEventHandler#(com.eulersbridge.iEngage.core.events)}.
    */
   @Test
   public final void testUpdateVotingLocationNotFound() {
@@ -288,8 +288,8 @@ public class VotingLocationEventHandlerTest {
     Pageable pageable = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<VotingLocation> testData = new PageImpl<VotingLocation>(evts, pageable, evts.size());
     when(votingLocationRepository.findByInstitutionId(any(Long.class), any(Pageable.class))).thenReturn(testData);
-    Owner inst = new Owner(DatabaseDataFixture.populateElection1().getNodeId());
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(inst);
+    Node inst = new Node(DatabaseDataFixture.populateElection1().getNodeId());
+    when(nodeRepository.findOne(any(Long.class), anyInt())).thenReturn(inst);
 
     AllReadEvent evtData = service.findVotingLocations(evt, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
@@ -310,7 +310,7 @@ public class VotingLocationEventHandlerTest {
     Pageable pageable = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<VotingLocation> testData = new PageImpl<VotingLocation>(evts, pageable, evts.size());
     when(votingLocationRepository.findByInstitutionId(any(Long.class), any(Pageable.class))).thenReturn(testData);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(null);
 
     AllReadEvent evtData = service.findVotingLocations(evt, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
@@ -379,8 +379,8 @@ public class VotingLocationEventHandlerTest {
     Pageable pageable = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<VotingLocation> testData = new PageImpl<VotingLocation>(evts, pageable, evts.size());
     when(votingLocationRepository.findByElectionId(any(Long.class), any(Pageable.class))).thenReturn(testData);
-    Owner inst = new Owner(DatabaseDataFixture.populateElection1().getNodeId());
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(inst);
+    Node inst = new Node(DatabaseDataFixture.populateElection1().getNodeId());
+    when(nodeRepository.findOne(any(Long.class), anyInt())).thenReturn(inst);
 
     AllReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
@@ -401,7 +401,7 @@ public class VotingLocationEventHandlerTest {
     Pageable pageable = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<VotingLocation> testData = new PageImpl<VotingLocation>(evts, pageable, evts.size());
     when(votingLocationRepository.findByElectionId(any(Long.class), any(Pageable.class))).thenReturn(testData);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(null);
 
     AllReadEvent evtData = service.findVotingBooths(evt, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
@@ -428,7 +428,7 @@ public class VotingLocationEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#addVotingLocationToElection(com.eulersbridge.iEngage.core.events.votingLocations.AddVotingLocationEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#(com.eulersbridge.iEngage.core.events)}.
    */
   @Test
   public final void testAddVotingLocationToElection() {
@@ -449,7 +449,7 @@ public class VotingLocationEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#removeVotingLocationFromElection(com.eulersbridge.iEngage.core.events.votingLocations.RemoveVotingLocationEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#(com.eulersbridge.iEngage.core.events)}.
    */
   @Test
   public final void testRemoveVotingLocationFromElection() {

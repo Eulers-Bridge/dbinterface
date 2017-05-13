@@ -6,10 +6,10 @@ package com.eulersbridge.iEngage.core.services;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.votingLocation.*;
 import com.eulersbridge.iEngage.database.domain.Election;
-import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.VotingLocation;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.VotingLocationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +30,14 @@ public class VotingLocationEventHandler implements VotingLocationService {
     .getLogger(VotingLocationEventHandler.class);
 
   private VotingLocationRepository votingLocationRepository;
-  private OwnerRepository ownerRepository;
+  private NodeRepository nodeRepository;
   private ElectionRepository electionRepository;
 
   public VotingLocationEventHandler(
     VotingLocationRepository locationRepository, ElectionRepository electionRepository,
-    OwnerRepository ownerRepository) {
+    NodeRepository nodeRepository) {
     this.votingLocationRepository = locationRepository;
-    this.ownerRepository = ownerRepository;
+    this.nodeRepository = nodeRepository;
     this.electionRepository = electionRepository;
   }
 
@@ -71,10 +71,10 @@ public class VotingLocationEventHandler implements VotingLocationService {
       LOG.debug("Finding owner with nodeId = " + ownerId);
     CreatedEvent votingLocationCreatedEvent;
     if (ownerId != null) {
-      Owner owner = ownerRepository.findOne(ownerId);
+      Node owner = nodeRepository.findOne(ownerId);
 
       if (owner != null) {
-        votingLocation.setOwner(new Owner(owner.getNodeId()));
+        votingLocation.setOwner(new Node(owner.getNodeId()));
         VotingLocation result = votingLocationRepository.save(votingLocation);
         if ((null == result) || (null == result.getNodeId()))
           votingLocationCreatedEvent = CreatedEvent.failed(votingLocationDetails);
@@ -166,7 +166,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        Owner elec = ownerRepository.findOne(ownerId);
+        Node elec = nodeRepository.findOne(ownerId, 0);
         if (null == elec) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");
@@ -223,7 +223,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        Owner elec = ownerRepository.findOne(ownerId);
+        Node elec = nodeRepository.findOne(ownerId, 0);
         if (null == elec) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");

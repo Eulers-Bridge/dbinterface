@@ -6,9 +6,9 @@ import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.database.domain.Like;
-import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +27,13 @@ import java.util.Iterator;
 public class LikesEventHandler implements LikesService {
 
   UserRepository userRepository;
-  OwnerRepository ownerRepository;
+  NodeRepository nodeRepository;
 
   private static Logger LOG = LoggerFactory.getLogger(LikesEventHandler.class);
 
-  public LikesEventHandler(UserRepository userRepository, OwnerRepository ownerRepository) {
+  public LikesEventHandler(UserRepository userRepository, NodeRepository nodeRepository) {
     this.userRepository = userRepository;
-    this.ownerRepository = ownerRepository;
+    this.nodeRepository = nodeRepository;
   }
 
   @Override
@@ -92,7 +92,7 @@ public class LikesEventHandler implements LikesService {
     if (null == user) {
       return LikedEvent.userNotFound(nodeId, email);
     }
-    Owner item = ownerRepository.findOne(nodeId);
+    Node item = nodeRepository.findOne(nodeId);
     if (null == item) {
       return LikedEvent.entityNotFound(nodeId, email);
     }

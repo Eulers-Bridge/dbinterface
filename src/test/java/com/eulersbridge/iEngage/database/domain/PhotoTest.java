@@ -38,7 +38,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#Photo(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#(java.lang.String, java.lang.String, java.lang.String, java.lang.Long)}.
 	 */
 	@Test
 	public final void testPhoto2()
@@ -89,7 +89,7 @@ public class PhotoTest
 	@Test
 	public final void testSetOwner()
 	{
-		Owner owner=new Owner(23l);
+		Node owner=new Node(23l);
 		testPhoto2=new Photo(testPhoto.getUrl(), testPhoto.getThumbNailUrl(), testPhoto.getTitle(), testPhoto.getDescription(), testPhoto.getDate(),testPhoto.getSequence(),testPhoto.isInappropriateContent());
 		assertNull(testPhoto2.getOwner());
 		testPhoto2.setOwner(owner);;
@@ -108,7 +108,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#setURL(java.lang.String)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetURL()
@@ -133,7 +133,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#setURL(java.lang.String)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Photo#(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetThumbNailURL()

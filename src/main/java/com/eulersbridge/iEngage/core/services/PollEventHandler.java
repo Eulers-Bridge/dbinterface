@@ -4,11 +4,13 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
 import com.eulersbridge.iEngage.database.repository.PollRepository;
+import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,17 +30,21 @@ public class PollEventHandler implements PollService {
   // @Autowired
   private PollRepository pollRepository;
   private PollAnswerRepository answerRepository;
-  private OwnerRepository ownerRepository;
+  private NodeRepository nodeRepository;
   private InstitutionRepository institutionRepository;
 
+  private Session session;
+
+  @Autowired
   public PollEventHandler(PollRepository pollRepository,
                           PollAnswerRepository answerRepository,
-                          OwnerRepository ownerRepository,
-                          InstitutionRepository institutionRepository) {
+                          NodeRepository nodeRepository,
+                          InstitutionRepository institutionRepository, Session session) {
     this.pollRepository = pollRepository;
     this.answerRepository = answerRepository;
-    this.ownerRepository = ownerRepository;
+    this.nodeRepository = nodeRepository;
     this.institutionRepository = institutionRepository;
+    this.session = session;
   }
 
   @Override
@@ -70,7 +76,7 @@ public class PollEventHandler implements PollService {
 
       if (LOG.isDebugEnabled())
         LOG.debug("Finding creator with creatorId = " + pollDetails.getCreatorId());
-      Owner creator = ownerRepository.findOne(pollDetails.getCreatorId());
+      Node creator = nodeRepository.findOne(pollDetails.getCreatorId());
 
       if (null == creator)
         pollCreatedEvent = PollCreatedEvent.creatorNotFound(pollDetails.getCreatorId());
@@ -126,9 +132,9 @@ public class PollEventHandler implements PollService {
 
         if (LOG.isDebugEnabled())
           LOG.debug("Finding creator with creatorId = " + pollDetails.getCreatorId());
-        Owner creator = null;
+        Node creator = null;
         if (null != pollDetails.getCreatorId())
-          creator = ownerRepository.findOne(pollDetails.getCreatorId());
+          creator = nodeRepository.findOne(pollDetails.getCreatorId());
 
         if (null == creator)
           resultEvt = PollUpdatedEvent.creatorNotFound(pollDetails.getCreatorId());
@@ -147,36 +153,41 @@ public class PollEventHandler implements PollService {
   public PollAnswerCreatedEvent answerPoll(
     CreatePollAnswerEvent pollAnswerEvent) {
     PollAnswerDetails answerDetails = (PollAnswerDetails) pollAnswerEvent.getDetails();
-    PollAnswer pollAnswer = PollAnswer.fromPollAnswerDetails(answerDetails);
+    PollAnswerRelation pollAnswerRelation = PollAnswerRelation.fromPollAnswerDetails(answerDetails);
 
     if (LOG.isDebugEnabled())
       LOG.debug("Finding owner with answererId = " + answerDetails.getAnswererId());
-    Owner owner = ownerRepository.findOne(answerDetails.getAnswererId());
+    Node owner = nodeRepository.findOne(answerDetails.getAnswererId(), 0);
     PollAnswerCreatedEvent answerCreatedEvent;
-    if (null == owner)
+    System.out.println("Owner = " + owner);
+    if (owner == null)
       answerCreatedEvent = PollAnswerCreatedEvent.answererNotFound(answerDetails.getAnswererId());
     else {
       if (LOG.isDebugEnabled())
         LOG.debug("Finding poll with pollId = " + answerDetails.getPollId());
-      Poll poll = pollRepository.findOne(answerDetails.getPollId());
+      Poll poll = pollRepository.findOne(answerDetails.getPollId(), 0);
 
       if (null == poll)
         answerCreatedEvent = PollAnswerCreatedEvent.pollNotFound(answerDetails.getPollId());
       else {
-        pollAnswer.setUser(owner);
-        pollAnswer.setPoll(poll);
-        Integer answerIndex = pollAnswer.getAnswer();
+        pollAnswerRelation.setUser(owner);
+        pollAnswerRelation.setPoll(poll);
+        Integer answerIndex = pollAnswerRelation.getAnswer();
         String answers = poll.getAnswers();
         String[] answerArray = answers.split(",");
         int numAnswers = answerArray.length;
         if ((answerIndex == null) || (answerIndex < 0) || (answerIndex > numAnswers))
           answerCreatedEvent = PollAnswerCreatedEvent.badAnswer(answerDetails.getAnswerIndex());
         else {
-          if (LOG.isDebugEnabled()) LOG.debug("pollAnswer - " + pollAnswer);
+          if (LOG.isDebugEnabled())
+            LOG.debug("pollAnswer - " + pollAnswerRelation);
           if (LOG.isDebugEnabled())
             LOG.debug("userId - " + answerDetails.getAnswererId() + " pollId - " + answerDetails.getPollId() + " answer Index - " + answerDetails.getAnswerIndex());
 //	    			PollAnswer result = answerRepository.save(pollAnswer);
-          PollAnswer result = pollRepository.addPollAnswer(answerDetails.getAnswererId(), answerDetails.getPollId(), answerDetails.getAnswerIndex());
+          Long answerId = answerRepository.addPollAnswer(answerDetails.getAnswererId(), answerDetails.getPollId(), answerDetails.getAnswerIndex());
+          if (session != null)
+            session.clear();
+          PollAnswerRelation result = answerRepository.findOne(answerId);
           if (LOG.isDebugEnabled()) LOG.debug("result - " + result);
           answerCreatedEvent = new PollAnswerCreatedEvent(result.toPollAnswerDetails());
         }
@@ -243,7 +254,7 @@ public class PollEventHandler implements PollService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found ownerId.
-        Owner inst = ownerRepository.findOne(ownerId);
+        Node inst = nodeRepository.findOne(ownerId);
         if ((null == inst) || (null == inst.getNodeId())) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");

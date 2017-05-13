@@ -7,7 +7,7 @@ import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class LikesEventHandlerTest
     @Mock
     UserRepository userRepository;
     @Mock
-    OwnerRepository ownerRepository;
+		NodeRepository nodeRepository;
     @Mock
     EventRepository eventRepository;
 
@@ -49,7 +49,7 @@ public class LikesEventHandlerTest
     {
 		MockitoAnnotations.initMocks(this);
 
-        service = new LikesEventHandler(userRepository,ownerRepository);
+        service = new LikesEventHandler(userRepository, nodeRepository);
     }
 
 	/**
@@ -84,7 +84,7 @@ public class LikesEventHandlerTest
 		Like testData=new Like(user, newsArticle);
 		LikeEvent likeNewsArticlesEvent=new LikeEvent(newsArticle.getNodeId(),user.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(user);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(newsArticle.getNodeId()));
+		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(newsArticle.getNodeId()));
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		LikedEvent res = service.like(likeNewsArticlesEvent);
 		assertNotNull(res);
@@ -131,7 +131,7 @@ public class LikesEventHandlerTest
 		Like testData=new Like(liker, liked);
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getNodeId()));
+		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(liked.getNodeId()));
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		
 		LikedEvent evtData = service.like(evt);
@@ -150,7 +150,7 @@ public class LikesEventHandlerTest
 		Like testData=new Like(liker, liked);
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getNodeId()));
+		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(liked.getNodeId()));
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		
 		LikedEvent evtData = service.like(evt);
@@ -169,7 +169,7 @@ public class LikesEventHandlerTest
 		Like testData=new Like(liker, liked);
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
+		when(nodeRepository.findOne(any(Long.class))).thenReturn(null);
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		
 		LikedEvent evtData = service.like(evt);
@@ -188,7 +188,7 @@ public class LikesEventHandlerTest
 		Like testData=null;
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getNodeId()));
+		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(liked.getNodeId()));
 		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
 		
 		LikedEvent evtData = service.like(evt);
@@ -210,7 +210,7 @@ public class LikesEventHandlerTest
 		Event liked=DatabaseDataFixture.populateEvent1();
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(ownerRepository.findOne(any(Long.class))).thenReturn(new Owner(liked.getNodeId()));
+		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(liked.getNodeId()));
 		doNothing().when(userRepository).unlike(any(String.class),any(Long.class));
 		
 		LikedEvent evtData = service.unlike(evt);

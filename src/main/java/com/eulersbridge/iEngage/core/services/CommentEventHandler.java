@@ -3,10 +3,10 @@ package com.eulersbridge.iEngage.core.services;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.*;
 import com.eulersbridge.iEngage.database.domain.Comment;
-import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.CommentRepository;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +29,12 @@ public class CommentEventHandler implements CommentService {
 
   private UserRepository userRepository;
   private CommentRepository commentRepository;
-  private OwnerRepository ownerRepository;
+  private NodeRepository nodeRepository;
 
-  public CommentEventHandler(UserRepository userRepository, CommentRepository commentRepository, OwnerRepository ownerRepository) {
+  public CommentEventHandler(UserRepository userRepository, CommentRepository commentRepository, NodeRepository nodeRepository) {
     this.userRepository = userRepository;
     this.commentRepository = commentRepository;
-    this.ownerRepository = ownerRepository;
+    this.nodeRepository = nodeRepository;
   }
 
   @Override
@@ -47,7 +47,7 @@ public class CommentEventHandler implements CommentService {
     if (user == null) {
       commentCreatedEvent = CommentCreatedEvent.userNotFound();
     } else {
-      Owner object = ownerRepository.findOne(targetId);
+      Node object = nodeRepository.findOne(targetId, 0);
       if (object == null) {
         commentCreatedEvent = CommentCreatedEvent.targetNotFound(targetId);
       } else {
@@ -116,7 +116,7 @@ public class CommentEventHandler implements CommentService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found instId.
-        Owner owner = ownerRepository.findOne(targetId);
+        Node owner = nodeRepository.findOne(targetId, 0);
         if ((null == owner) || (null == owner.getNodeId())) {
           if (LOG.isDebugEnabled()) LOG.debug("Comment-able Object not found");
           commentsReadEvent = AllReadEvent.notFound(targetId);
@@ -142,7 +142,7 @@ public class CommentEventHandler implements CommentService {
     String userEmail = commentDetails.getUserEmail();
 
     User user = userRepository.findByEmail(userEmail);
-    Owner object = ownerRepository.findOne(targetId);
+    Node object = nodeRepository.findOne(targetId, 0);
 
     if (LOG.isDebugEnabled()) LOG.debug("commentId is " + commentId);
     Comment commentOld = commentRepository.findOne(commentId);

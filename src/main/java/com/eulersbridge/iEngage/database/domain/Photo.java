@@ -25,7 +25,7 @@ public class Photo extends Likeable {
   private Long date;
 
   @Relationship(type = DataConstants.HAS_PHOTO_LABEL, direction = Relationship.INCOMING)
-  private Owner owner;
+  private Node owner;
 
 
   public Photo(String url, String thumbNailUrl, String title, String description, Long date,
@@ -51,14 +51,14 @@ public class Photo extends Likeable {
   /**
    * @return the owner
    */
-  public Owner getOwner() {
+  public Node getOwner() {
     return owner;
   }
 
   /**
    * @param owner the owner to set
    */
-  public void setOwner(Owner owner) {
+  public void setOwner(Node owner) {
     this.owner = owner;
   }
 
@@ -193,7 +193,7 @@ public class Photo extends Likeable {
     if (photoDetails.getNodeId() != null)
       photo.setNodeId(photoDetails.getNodeId());
     if (photoDetails.getOwnerId() != null) {
-      Owner owner = new Owner(photoDetails.getOwnerId());
+      Node owner = new Node(photoDetails.getOwnerId());
       photo.setOwner(owner);
     }
     if (LOG.isTraceEnabled()) LOG.trace("photoDetails " + photoDetails);

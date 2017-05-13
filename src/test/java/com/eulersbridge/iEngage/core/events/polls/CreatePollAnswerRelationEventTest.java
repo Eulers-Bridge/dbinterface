@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Greg Newitt
  *
  */
-public class CreatePollAnswerEventTest
+public class CreatePollAnswerRelationEventTest
 {
 	CreatePollAnswerEvent evt;
 	PollAnswerDetails dets;

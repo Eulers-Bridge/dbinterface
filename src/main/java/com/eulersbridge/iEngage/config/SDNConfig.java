@@ -1,6 +1,5 @@
 package com.eulersbridge.iEngage.config;
 
-import com.eulersbridge.iEngage.database.domain.converters.*;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jProperties;
@@ -25,12 +24,12 @@ public class SDNConfig extends Neo4jDataAutoConfiguration {
     ConversionService service =
       new MetaDataDrivenConversionService(sessionFactory.metaData());
     ConverterRegistry reg = (ConverterRegistry) service;
-    reg.addConverter(new EventToOwnerConverter());
-    reg.addConverter(new NewsArticleToOwnerConverter());
-    reg.addConverter(new PhotoAlbumToOwnerConverter());
-    reg.addConverter(new UserToOwnerConverter());
-    reg.addConverter(new CandidateToOwnerConverter());
-    reg.addConverter(new TicketToOwnerConverter());
+//    reg.addConverter(new EventToOwnerConverter());
+//    reg.addConverter(new NewsArticleToOwnerConverter());
+//    reg.addConverter(new PhotoAlbumToOwnerConverter());
+//    reg.addConverter(new UserToOwnerConverter());
+//    reg.addConverter(new CandidateToOwnerConverter());
+//    reg.addConverter(new TicketToOwnerConverter());
     return service;
   }
 

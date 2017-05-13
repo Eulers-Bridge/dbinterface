@@ -181,11 +181,11 @@ public class PollTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#setCreator(com.eulersbridge.iEngage.database.domain.Owner)}.
+   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#(com.eulersbridge.iEngage.database.domain)}.
    */
   @Test
   public final void testSetCreator() {
-    Owner creator = new Owner(4325l);
+    Node creator = new Node(4325l);
     assertNotEquals(poll.getCreator$(), creator);
     poll.setCreator(new User(creator.getNodeId()));
     assertEquals(poll.getCreator$(), new User(creator.getNodeId()));
@@ -200,7 +200,7 @@ public class PollTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#setOwner(com.eulersbridge.iEngage.database.domain.Owner)}.
+   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#(com.eulersbridge.iEngage.database.domain)}.
    */
   @Test
   public final void testSetOwner() {

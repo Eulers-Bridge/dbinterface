@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.database.repository.*;
 import com.eulersbridge.iEngage.rest.domain.CountriesFactory;
 import com.eulersbridge.iEngage.rest.domain.stubCountryFactory;
 import org.apache.velocity.app.VelocityEngine;
+import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ public class CoreConfig {
   NewsArticleRepository newsRepo;
   NewsFeedRepository newsFeedRepository;
   NotificationRepository notificationRepository;
-  OwnerRepository ownerRepository;
   PersonalityRepository personRepo;
   PollRepository pollRepository;
   PollAnswerRepository pollAnswerRepository;
@@ -38,6 +38,7 @@ public class CoreConfig {
   UserRepository userRepo;
   VerificationTokenRepository tokenRepo;
   VotingLocationRepository votingLocationRepository;
+  NodeRepository nodeRepository;
   VelocityEngine velocityEngine;
 
   private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
@@ -57,7 +58,6 @@ public class CoreConfig {
                     CountryRepository countryRepo,
                     CommentRepository commentRepository,
                     VerificationTokenRepository tokenRepo,
-                    OwnerRepository ownerRepository,
                     TicketRepository ticketRepository,
                     PhotoAlbumRepository photoAlbumRepository,
                     BadgeRepository badgeRepository,
@@ -68,7 +68,8 @@ public class CoreConfig {
                     UserRepository userRepo,
                     NotificationRepository notificationRepository,
                     ContactRequestRepository contactRequestRepository,
-                    VelocityEngine velocityEngine) {
+                    VelocityEngine velocityEngine,
+                    NodeRepository nodeRepository) {
     if (LOG.isDebugEnabled()) LOG.debug("CoreConfig()");
     this.taskRepository = taskRepository;
     this.electionRepo = electionRepo;
@@ -84,7 +85,6 @@ public class CoreConfig {
     this.countryRepo = countryRepo;
     this.commentRepository = commentRepository;
     this.tokenRepo = tokenRepo;
-    this.ownerRepository = ownerRepository;
     this.ticketRepository = ticketRepository;
     this.photoAlbumRepository = photoAlbumRepository;
     this.badgeRepository = badgeRepository;
@@ -96,6 +96,7 @@ public class CoreConfig {
     this.notificationRepository = notificationRepository;
     this.contactRequestRepository = contactRequestRepository;
     this.velocityEngine = velocityEngine;
+    this.nodeRepository = nodeRepository;
   }
 
   @Bean
@@ -141,11 +142,12 @@ public class CoreConfig {
     return new ElectionEventHandler(electionRepo, institutionRepository);
   }
 
+  @SuppressWarnings("SpringJavaAutowiringInspection")
   @Bean
-  public PollService createPollService() {
+  public PollService createPollService(Session session) {
     if (LOG.isDebugEnabled()) LOG.debug("createPollService()");
     return new PollEventHandler(pollRepository, pollAnswerRepository,
-      ownerRepository, institutionRepository);
+      nodeRepository, institutionRepository, session);
   }
 
   @Bean
@@ -157,7 +159,7 @@ public class CoreConfig {
   @Bean
   public PhotoService createPhotoService() {
     if (LOG.isDebugEnabled()) LOG.debug("createPhotoService()");
-    return new PhotoEventHandler(photoRepository, photoAlbumRepository, ownerRepository);
+    return new PhotoEventHandler(photoRepository, photoAlbumRepository, nodeRepository);
   }
 
   @Bean
@@ -181,7 +183,7 @@ public class CoreConfig {
   @Bean
   public LikesService createLikesService() {
     if (LOG.isDebugEnabled()) LOG.debug("createLikesService()");
-    return new LikesEventHandler(userRepo, ownerRepository);
+    return new LikesEventHandler(userRepo, nodeRepository);
   }
 
   @Bean
@@ -211,7 +213,7 @@ public class CoreConfig {
   @Bean
   public VotingLocationService createVotingLocationService() {
     if (LOG.isDebugEnabled()) LOG.debug("createVotingLocationService()");
-    return new VotingLocationEventHandler(votingLocationRepository, electionRepo, ownerRepository);
+    return new VotingLocationEventHandler(votingLocationRepository, electionRepo, nodeRepository);
   }
 
   @Bean
@@ -223,7 +225,7 @@ public class CoreConfig {
   @Bean
   public CommentService createCommentService() {
     if (LOG.isDebugEnabled()) LOG.debug("createCommentService()");
-    return new CommentEventHandler(userRepo, commentRepository, ownerRepository);
+    return new CommentEventHandler(userRepo, commentRepository, nodeRepository);
   }
 
   @Bean

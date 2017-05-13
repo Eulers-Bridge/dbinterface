@@ -16,7 +16,7 @@ public class VotingLocation extends Location {
   private String name;
   private String information;
   @Relationship(type = DataConstants.HAS_VOTING_LOCATION_LABEL, direction = Relationship.INCOMING)
-  private Owner owner;
+  private Node owner;
 
 
   public VotingLocation() {
@@ -24,7 +24,7 @@ public class VotingLocation extends Location {
   }
 
   public VotingLocation(Long nodeId, String name, String information,
-                        Owner owner) {
+                        Node owner) {
     super(nodeId);
     this.name = name;
     this.information = information;
@@ -39,7 +39,7 @@ public class VotingLocation extends Location {
     location.setNodeId(locationDetails.getNodeId());
     location.setName(locationDetails.getName());
     location.setInformation(locationDetails.getInformation());
-    Owner owner = new Owner(locationDetails.getOwnerId());
+    Node owner = new Node(locationDetails.getOwnerId());
     location.setOwner(owner);
     if (LOG.isTraceEnabled()) LOG.trace("votingLocation " + location);
     return location;
@@ -90,14 +90,14 @@ public class VotingLocation extends Location {
   /**
    * @return the owner
    */
-  public Owner getOwner() {
+  public Node getOwner() {
     return owner;
   }
 
   /**
    * @param owner the owner to set
    */
-  public void setOwner(Owner owner) {
+  public void setOwner(Node owner) {
     this.owner = owner;
   }
 

@@ -160,7 +160,7 @@ public class DatabaseDataFixture {
     Photo photo = new Photo(url, thumbNailUrl, title, content, date, sequence, inappropriateContent);
     Long nodeId = id;
     photo.setNodeId(nodeId);
-    Owner owner = new Owner(ownerId);
+    Node owner = new Node(ownerId);
     photo.setOwner(owner);
     return photo;
   }
@@ -191,8 +191,8 @@ public class DatabaseDataFixture {
   }
 
   public static PhotoAlbum populatePhotoAlbum(Long nodeId, String name, String description, String location, String thumbNailUrl, Long creatorId, Long created, Long modified, Long ownerId) {
-    Owner owner = new Owner(ownerId);
-    Owner creator = new Owner(creatorId);
+    Node owner = new Node(ownerId);
+    Node creator = new Node(creatorId);
     PhotoAlbum photoAlbum = new PhotoAlbum(name, description, location, thumbNailUrl, creator, created, owner, modified);
     photoAlbum.setNodeId(nodeId);
     photoAlbum.setOwner(owner);
@@ -384,7 +384,7 @@ public class DatabaseDataFixture {
 
   public static Poll populatePoll(Long nodeId, String question, String answers, Long duration, Long start, Long creatorId, Long ownerId) {
     Poll poll = new Poll(question, answers, start, duration);
-    Owner creator = new Owner(creatorId);
+    Node creator = new Node(creatorId);
     Institution owner = new Institution(ownerId);
     poll.setCreator(new User(creator.getNodeId()));
     poll.setInstitution(owner);
@@ -425,7 +425,7 @@ public class DatabaseDataFixture {
     return forumQuestions;
   }
 
-  public static PollAnswer populatePollAnswer1() {
+  public static PollAnswerRelation populatePollAnswer1() {
     Long nodeId = 9l;
     Integer answer = 1;
     User answerer = populateUserGnewitt();
@@ -434,7 +434,7 @@ public class DatabaseDataFixture {
     return populatePollAnswer(nodeId, poll, answerer, answer, timestamp);
   }
 
-  public static PollAnswer populatePollAnswer2() {
+  public static PollAnswerRelation populatePollAnswer2() {
     Long nodeId = 9l;
     Integer answer = 1;
     User answerer = populateUserGnewitt();
@@ -443,8 +443,8 @@ public class DatabaseDataFixture {
     return populatePollAnswer(nodeId, poll, answerer, answer, timestamp);
   }
 
-  public static PollAnswer populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp) {
-    PollAnswer fq = new PollAnswer(new Owner(answerer.getNodeId()), poll, answer);
+  public static PollAnswerRelation populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp) {
+    PollAnswerRelation fq = new PollAnswerRelation(new Node(answerer.getNodeId()), poll, answer);
     fq.setNodeId(id);
     return fq;
   }
@@ -623,21 +623,21 @@ public class DatabaseDataFixture {
   }
 
   public static VotingLocation populateVotingLocation1() {
-    Owner owner = new Owner(populateInstUniMelb().getNodeId());
+    Node owner = new Node(populateInstUniMelb().getNodeId());
     return populateVotingLocation(237l, "Union Building", "Ground Floor of the Union Building", owner);
   }
 
   public static VotingLocation populateVotingLocation2() {
-    Owner owner = new Owner(populateInstUniMelb().getNodeId());
+    Node owner = new Node(populateInstUniMelb().getNodeId());
     return populateVotingLocation(238l, "Baillieu Library", "Ground Floor of the Baillieu Library", owner);
   }
 
   public static VotingLocation populateVotingLocation3() {
-    Owner owner = new Owner(populateInstUniMelb().getNodeId());
+    Node owner = new Node(populateInstUniMelb().getNodeId());
     return populateVotingLocation(239l, "ERC Library", "Ground Floor of the ERC Library", owner);
   }
 
-  public static VotingLocation populateVotingLocation(Long locationId, String name, String description, Owner owner) {
+  public static VotingLocation populateVotingLocation(Long locationId, String name, String description, Node owner) {
     VotingLocation votingLocation = new VotingLocation(locationId, name, description, owner);
     return votingLocation;
   }
@@ -892,31 +892,31 @@ public class DatabaseDataFixture {
     return ncr;
   }
 
-  public static Owner populateOwner1() {
-    Owner object = new Owner(44l);
+  public static Node populateOwner1() {
+    Node object = new Node(44l);
     return object;
   }
 
-  public static Owner populateOwner2() {
-    Owner object = new Owner(4443l);
+  public static Node populateOwner2() {
+    Node object = new Node(4443l);
     return object;
   }
 
   public static Comment populateComment1() {
-    Owner object = populateOwner1();
+    Node object = populateOwner1();
     User user = populateUserGnewitt();
     Comment comment = populateComment(243l, user, object, "A comment", 453l);
     return comment;
   }
 
   public static Comment populateComment2() {
-    Owner object = populateOwner2();
+    Node object = populateOwner2();
     User user = populateUserYikai();
     Comment comment = populateComment(251l, user, object, "Another comment", 4655l);
     return comment;
   }
 
-  public static Comment populateComment(Long nodeId, User user, Owner object, String contents, Long timestamp) {
+  public static Comment populateComment(Long nodeId, User user, Node object, String contents, Long timestamp) {
     Comment comment = new Comment();
     comment.setNodeId(nodeId);
     comment.setUser(user);

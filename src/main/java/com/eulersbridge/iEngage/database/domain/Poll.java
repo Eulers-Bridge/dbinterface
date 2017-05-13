@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Yikai Gong
@@ -27,8 +28,10 @@ public class Poll extends Likeable implements Commentable {
   private Node institution;
   @Relationship(type = DataConstants.HAS_COMMENT, direction = Relationship.UNDIRECTED)
   private List<Node> comments;
+  //  @Relationship(type = DataConstants.APQ_LABEL, direction = Relationship.UNDIRECTED)
+//  private List<Node> answeredUsers;
   @Relationship(type = DataConstants.APQ_LABEL, direction = Relationship.UNDIRECTED)
-  private List<Node> answeredUsers;
+  private List<PollAnswerRelation> pollAnswers;
 
   public Poll() {
   }
@@ -58,7 +61,7 @@ public class Poll extends Likeable implements Commentable {
     else
       pollDetails.setCreatorId(null);
 
-    if (creator != null){
+    if (creator != null) {
       pollDetails.setCreatorId(creator.getNodeId());
       if (creator instanceof User)
         pollDetails.setCreatorEmail(getCreator$().getEmail());
@@ -85,6 +88,14 @@ public class Poll extends Likeable implements Commentable {
     poll.setCreator(creator.toNode());
     if (LOG.isTraceEnabled()) LOG.trace("poll " + poll);
     return poll;
+  }
+
+  public List<PollAnswerRelation> getPollAnswers() {
+    return pollAnswers;
+  }
+
+  public void setPollAnswers(List<PollAnswerRelation> pollAnswers) {
+    this.pollAnswers = pollAnswers;
   }
 
   public String getQuestion() {
@@ -132,16 +143,21 @@ public class Poll extends Likeable implements Commentable {
   }
 
   public List<User> getAnsweredUsers$() {
-    return castList(answeredUsers, User.class);
+    return castList(getAnsweredUsers(), User.class);
   }
 
   public List<Node> getAnsweredUsers() {
-    return answeredUsers;
+    if (pollAnswers != null)
+      return pollAnswers.stream()
+        .map(pollAnswerRelation -> pollAnswerRelation.getUser())
+        .collect(Collectors.toList());
+    else
+      return null;
   }
 
-  public void setAnsweredUsers(List<Node> answeredUsers) {
-    this.answeredUsers = answeredUsers;
-  }
+//  public void setAnsweredUsers(List<Node> answeredUsers) {
+//    this.answeredUsers = answeredUsers;
+//  }
 
   public Integer getNumberOfComments() {
     if (comments == null)
@@ -150,9 +166,9 @@ public class Poll extends Likeable implements Commentable {
   }
 
   public Integer getNumberOfAnswers() {
-    if (answeredUsers == null)
+    if (pollAnswers == null)
       return 0;
-    return answeredUsers.size();
+    return pollAnswers.size();
   }
 
 

@@ -6,10 +6,10 @@ package com.eulersbridge.iEngage.core.services;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.photo.*;
 import com.eulersbridge.iEngage.core.events.photoAlbums.*;
-import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 import org.slf4j.Logger;
@@ -30,14 +30,14 @@ public class PhotoEventHandler implements PhotoService {
 
   private PhotoRepository photoRepository;
   private PhotoAlbumRepository photoAlbumRepository;
-  private OwnerRepository ownerRepository;
+  private NodeRepository nodeRepository;
 
 
-  public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository, OwnerRepository ownerRepository) {
+  public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository, NodeRepository nodeRepository) {
     super();
     this.photoRepository = photoRepository;
     this.photoAlbumRepository = photoAlbumRepository;
-    this.ownerRepository = ownerRepository;
+    this.nodeRepository = nodeRepository;
   }
 
   @Override
@@ -48,14 +48,14 @@ public class PhotoEventHandler implements PhotoService {
     Long ownerId = photoDetails.getOwnerId();
     if (LOG.isDebugEnabled())
       LOG.debug("Finding owner with ownerId = " + ownerId);
-    Owner owner = null;
-    if (ownerId != null) owner = ownerRepository.findOne(ownerId);
+    Node owner = null;
+    if (ownerId != null) owner = nodeRepository.findOne(ownerId);
 
     PhotoCreatedEvent photoCreatedEvent;
     if (null == owner) {
       photoCreatedEvent = PhotoCreatedEvent.ownerNotFound(photoDetails.getOwnerId());
     } else {
-      photo.setOwner(new Owner(owner.getNodeId()));
+      photo.setOwner(new Node(owner.getNodeId()));
       Photo result = photoRepository.save(photo);
       photoCreatedEvent = new PhotoCreatedEvent(result.getNodeId(), result.toPhotoDetails());
     }
@@ -182,24 +182,24 @@ public class PhotoEventHandler implements PhotoService {
     Long ownerId = photoAlbumDetails.getOwnerId();
     if (LOG.isDebugEnabled())
       LOG.debug("Finding owner with ownerId = " + ownerId);
-    Owner owner = null;
-    if (ownerId != null) owner = ownerRepository.findOne(ownerId);
+    Node owner = null;
+    if (ownerId != null) owner = nodeRepository.findOne(ownerId);
 
     PhotoAlbumCreatedEvent photoAlbumCreatedEvent;
     if (null == owner) {
       photoAlbumCreatedEvent = PhotoAlbumCreatedEvent.ownerNotFound(photoAlbumDetails.getOwnerId());
     } else {
-      photoAlbum.setOwner(new Owner(owner.getNodeId()));
+      photoAlbum.setOwner(new Node(owner.getNodeId()));
 
       Long creatorId = photoAlbumDetails.getCreatorId();
       if (LOG.isDebugEnabled())
         LOG.debug("Finding owner with creatorId = " + creatorId);
-      Owner creator = null;
-      if (creatorId != null) creator = ownerRepository.findOne(creatorId);
+      Node creator = null;
+      if (creatorId != null) creator = nodeRepository.findOne(creatorId);
       if (null == creator) {
         photoAlbumCreatedEvent = PhotoAlbumCreatedEvent.creatorNotFound(photoAlbumDetails.getCreatorId());
       } else {
-        photoAlbum.setCreator(new Owner(creator.getNodeId()));
+        photoAlbum.setCreator(new Node(creator.getNodeId()));
         PhotoAlbum result = photoAlbumRepository.save(photoAlbum);
         photoAlbumCreatedEvent = new PhotoAlbumCreatedEvent(result.toPhotoAlbumDetails());
       }
@@ -290,7 +290,7 @@ public class PhotoEventHandler implements PhotoService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found ownerId.
-        Owner owner = ownerRepository.findOne(ownerId);
+        Node owner = nodeRepository.findOne(ownerId);
         if ((null == owner) || (null == owner.getNodeId())) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");

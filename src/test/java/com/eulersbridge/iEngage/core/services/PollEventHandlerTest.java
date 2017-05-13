@@ -9,9 +9,11 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -40,13 +42,15 @@ public class PollEventHandlerTest {
   @Mock
   PollAnswerRepository answerRepository;
   @Mock
-  OwnerRepository ownerRepository;
+  NodeRepository nodeRepo;
   @Mock
   UserRepository userRepository;
   @Mock
   InstitutionRepository institutionRepository;
 
   PollEventHandler service;
+  @Mock
+  Session session;
 
   /**
    * @throws java.lang.Exception
@@ -55,7 +59,7 @@ public class PollEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    service = new PollEventHandler(pollRepository, answerRepository, ownerRepository, institutionRepository);
+    service = new PollEventHandler(pollRepository, answerRepository, nodeRepo, institutionRepository, session);
   }
 
   @Test
@@ -103,11 +107,11 @@ public class PollEventHandlerTest {
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
     testOwner.setNodeId(testData.getInstitution$().getNodeId());
-    Owner testCreator = new Owner();
+    Node testCreator = new Node();
     testCreator.setNodeId(testData.getCreator$().getNodeId());
     when(pollRepository.save(any(Poll.class))).thenReturn(testData);
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testCreator);
     PollDetails dets = testData.toPollDetails();
     CreatePollEvent createPollEvent = new CreatePollEvent(dets);
     PollCreatedEvent evtData = service.createPoll(createPollEvent);
@@ -121,10 +125,10 @@ public class PollEventHandlerTest {
   public final void testCreatePollOwnerNotFound() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingPoll()");
     Poll testData = DatabaseDataFixture.populatePoll1();
-    Owner testOwner = null;
-    Owner testCreator = new Owner();
+    Node testOwner = null;
+    Node testCreator = new Node();
     testCreator.setNodeId(testData.getCreator$().getNodeId());
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testOwner);
     when(pollRepository.save(any(Poll.class))).thenReturn(testData);
     PollDetails dets = testData.toPollDetails();
     CreatePollEvent createPollEvent = new CreatePollEvent(dets);
@@ -140,8 +144,8 @@ public class PollEventHandlerTest {
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
     testOwner.setNodeId(testData.getInstitution$().getNodeId());
-    Owner testCreator = null;
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
+    Node testCreator = null;
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testCreator);
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(pollRepository.save(any(Poll.class))).thenReturn(testData);
     PollDetails dets = testData.toPollDetails();
@@ -194,10 +198,10 @@ public class PollEventHandlerTest {
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
     testOwner.setNodeId(testData.getInstitution$().getNodeId());
-    Owner testCreator = new Owner();
+    Node testCreator = new Node();
     testCreator.setNodeId(testData.getCreator$().getNodeId());
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testCreator);
     when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
     when(pollRepository.save(any(Poll.class), anyInt())).thenReturn(testData);
     PollDetails dets = testData.toPollDetails();
@@ -229,9 +233,9 @@ public class PollEventHandlerTest {
   public final void testUpdatePollOwnerNotFound() {
     if (LOG.isDebugEnabled()) LOG.debug("UpdatingPoll()");
     Poll testData = DatabaseDataFixture.populatePoll1();
-    Owner testOwner = null;
+    Node testOwner = null;
     when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testOwner);
     when(pollRepository.save(any(Poll.class))).thenReturn(testData);
     PollDetails dets = testData.toPollDetails();
     UpdatePollEvent createPollEvent = new UpdatePollEvent(dets.getNodeId(), dets);
@@ -263,9 +267,9 @@ public class PollEventHandlerTest {
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
     testOwner.setNodeId(testData.getInstitution$().getNodeId());
-    Owner testCreator = null;
+    Node testCreator = null;
     when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testCreator);
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(pollRepository.save(any(Poll.class))).thenReturn(testData);
     PollDetails dets = testData.toPollDetails();
@@ -283,10 +287,10 @@ public class PollEventHandlerTest {
     Poll testData = DatabaseDataFixture.populatePoll1();
     Institution testOwner = new Institution();
     testOwner.setNodeId(testData.getInstitution$().getNodeId());
-    Owner testCreator = new Owner(null);
+    Node testCreator = new Node(null);
     testData.setCreator(new User(testCreator.getNodeId()));
     when(pollRepository.findOne(any(Long.class))).thenReturn(testData);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testCreator);
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testCreator);
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(pollRepository.save(any(Poll.class))).thenReturn(testData);
     PollDetails dets = testData.toPollDetails();
@@ -301,15 +305,17 @@ public class PollEventHandlerTest {
    * Test method for {@link com.eulersbridge.iEngage.core.services.PollEventHandler#answerPoll(com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent)}.
    */
   @Test
+//  @Ignore
   public final void testAnswerPoll() {
     if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
-    PollAnswer testData = DatabaseDataFixture.populatePollAnswer1();
-    Owner testOwner = testData.getUser();
+    PollAnswerRelation testData = DatabaseDataFixture.populatePollAnswer1();
+    Node testOwner = testData.getUser();
     Poll testPoll = testData.getPoll();
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
-    when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
-    when(pollRepository.addPollAnswer(testOwner.getNodeId(), testPoll.getNodeId(), testData.getAnswer())).thenReturn(testData);
-    when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+    when(nodeRepo.findOne(any(Long.class), anyInt())).thenReturn(testOwner);
+    when(pollRepository.findOne(any(Long.class), anyInt())).thenReturn(testPoll);
+    when(answerRepository.addPollAnswer(testOwner.getNodeId(), testPoll.getNodeId(), testData.getAnswer())).thenReturn(testData.getNodeId());
+    when(answerRepository.save(any(PollAnswerRelation.class))).thenReturn(testData);
+    when(answerRepository.findOne(any(Long.class))).thenReturn(testData);
     PollAnswerDetails dets = testData.toPollAnswerDetails();
     CreatePollAnswerEvent createPollEvent = new CreatePollAnswerEvent(dets);
     PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
@@ -321,12 +327,12 @@ public class PollEventHandlerTest {
   @Test
   public final void testAnswerPollOwnerNotFound() {
     if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
-    PollAnswer testData = DatabaseDataFixture.populatePollAnswer1();
-    Owner testOwner = null;
+    PollAnswerRelation testData = DatabaseDataFixture.populatePollAnswer1();
+    Node testOwner = null;
     Poll testPoll = testData.getPoll();
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testOwner);
     when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
-    when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+    when(answerRepository.save(any(PollAnswerRelation.class))).thenReturn(testData);
     PollAnswerDetails dets = testData.toPollAnswerDetails();
     CreatePollAnswerEvent createPollEvent = new CreatePollAnswerEvent(dets);
     PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
@@ -339,12 +345,12 @@ public class PollEventHandlerTest {
   @Test
   public final void testAnswerPollPollNotFound() {
     if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
-    PollAnswer testData = DatabaseDataFixture.populatePollAnswer1();
-    Owner testOwner = testData.getUser();
+    PollAnswerRelation testData = DatabaseDataFixture.populatePollAnswer1();
+    Node testOwner = testData.getUser();
     Poll testPoll = null;
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner).thenReturn(testOwner);
+    when(nodeRepo.findOne(any(Long.class), anyInt())).thenReturn(testOwner).thenReturn(testOwner);
     when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
-    when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+    when(answerRepository.save(any(PollAnswerRelation.class))).thenReturn(testData);
     PollAnswerDetails dets = testData.toPollAnswerDetails();
     CreatePollAnswerEvent createPollEvent = new CreatePollAnswerEvent(dets);
     PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
@@ -357,13 +363,13 @@ public class PollEventHandlerTest {
   @Test
   public final void testAnswerPollNullAnswerIndex() {
     if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
-    PollAnswer testData = DatabaseDataFixture.populatePollAnswer1();
+    PollAnswerRelation testData = DatabaseDataFixture.populatePollAnswer1();
     testData.setAnswer(null);
-    Owner testOwner = testData.getUser();
+    Node testOwner = testData.getUser();
     Poll testPoll = testData.getPoll();
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
-    when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
-    when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+    when(nodeRepo.findOne(any(Long.class), anyInt())).thenReturn(testOwner);
+    when(pollRepository.findOne(any(Long.class), anyInt())).thenReturn(testPoll);
+    when(answerRepository.save(any(PollAnswerRelation.class))).thenReturn(testData);
     PollAnswerDetails dets = testData.toPollAnswerDetails();
     CreatePollAnswerEvent createPollEvent = new CreatePollAnswerEvent(dets);
     PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
@@ -376,13 +382,13 @@ public class PollEventHandlerTest {
   @Test
   public final void testAnswerPollLowAnswerIndex() {
     if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
-    PollAnswer testData = DatabaseDataFixture.populatePollAnswer1();
+    PollAnswerRelation testData = DatabaseDataFixture.populatePollAnswer1();
     testData.setAnswer(-1);
-    Owner testOwner = testData.getUser();
+    Node testOwner = testData.getUser();
     Poll testPoll = testData.getPoll();
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
-    when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
-    when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+    when(nodeRepo.findOne(any(Long.class), anyInt())).thenReturn(testOwner);
+    when(pollRepository.findOne(any(Long.class), anyInt())).thenReturn(testPoll);
+    when(answerRepository.save(any(PollAnswerRelation.class))).thenReturn(testData);
     PollAnswerDetails dets = testData.toPollAnswerDetails();
     CreatePollAnswerEvent createPollEvent = new CreatePollAnswerEvent(dets);
     PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
@@ -395,13 +401,13 @@ public class PollEventHandlerTest {
   @Test
   public final void testAnswerPollHighAnswerIndex() {
     if (LOG.isDebugEnabled()) LOG.debug("AnsweringPoll()");
-    PollAnswer testData = DatabaseDataFixture.populatePollAnswer1();
+    PollAnswerRelation testData = DatabaseDataFixture.populatePollAnswer1();
     testData.setAnswer(15);
-    Owner testOwner = testData.getUser();
+    Node testOwner = testData.getUser();
     Poll testPoll = testData.getPoll();
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
-    when(pollRepository.findOne(any(Long.class))).thenReturn(testPoll);
-    when(answerRepository.save(any(PollAnswer.class))).thenReturn(testData);
+    when(nodeRepo.findOne(any(Long.class), anyInt())).thenReturn(testOwner);
+    when(pollRepository.findOne(any(Long.class), anyInt())).thenReturn(testPoll);
+    when(answerRepository.save(any(PollAnswerRelation.class))).thenReturn(testData);
     PollAnswerDetails dets = testData.toPollAnswerDetails();
     CreatePollAnswerEvent createPollEvent = new CreatePollAnswerEvent(dets);
     PollAnswerCreatedEvent evtData = service.answerPoll(createPollEvent);
@@ -513,12 +519,12 @@ public class PollEventHandlerTest {
     int pageLength = 10;
     int pageNumber = 0;
     Poll testPoll = DatabaseDataFixture.populatePoll1();
-    Owner testOwner = new Owner(testPoll.getNodeId());
+    Node testOwner = new Node(testPoll.getNodeId());
 
     Pageable p = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<Poll> testData = new PageImpl<Poll>(evts, p, evts.size());
     when(pollRepository.findByOwnerId(any(Long.class), any(Pageable.class))).thenReturn(testData);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    when(nodeRepo.findOne(any(Long.class))).thenReturn(testOwner);
     AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
     assertEquals(evtData.getTotalPages(), new Integer(0));

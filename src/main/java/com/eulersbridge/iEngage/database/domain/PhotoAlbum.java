@@ -21,11 +21,11 @@ public class PhotoAlbum extends Likeable {
   private Long created;
 
   @Relationship(type = DataConstants.CREATED_BY_LABEL)
-  private Owner creator;
+  private Node creator;
   @Relationship(type = DataConstants.HAS_PHOTO_ALBUM_LABEL)
-  private Owner owner;
+  private Node owner;
 
-  public PhotoAlbum(String name, String description, String location, String thumbNailUrl, Owner creator, Long created, Owner owner, Long modified) {
+  public PhotoAlbum(String name, String description, String location, String thumbNailUrl, Node creator, Long created, Node owner, Long modified) {
     super();
     this.name = name;
     this.description = description;
@@ -100,14 +100,18 @@ public class PhotoAlbum extends Likeable {
   /**
    * @return the creator
    */
-  public Owner getCreator() {
+  public Node getCreator() {
     return creator;
+  }
+
+  public User getCreator$(){
+    return (User) creator;
   }
 
   /**
    * @param creator the creator to set
    */
-  public void setCreator(Owner creator) {
+  public void setCreator(Node creator) {
     this.creator = creator;
   }
 
@@ -128,14 +132,14 @@ public class PhotoAlbum extends Likeable {
   /**
    * @return the owner
    */
-  public Owner getOwner() {
+  public Node getOwner() {
     return owner;
   }
 
   /**
    * @param owner the creator to set
    */
-  public void setOwner(Owner owner) {
+  public void setOwner(Node owner) {
     this.owner = owner;
   }
 
@@ -165,10 +169,10 @@ public class PhotoAlbum extends Likeable {
     photoAlbum.setThumbNailUrl(photoAlbumDetails.getThumbNailUrl());
     photoAlbum.setCreated(photoAlbumDetails.getCreated());
     photoAlbum.setModified(photoAlbumDetails.getModified());
-    Owner thisOwner = new Owner();
+    Node thisOwner = new Node();
     thisOwner.setNodeId(photoAlbumDetails.getOwnerId());
     photoAlbum.setOwner(thisOwner);
-    Owner thisCreator = new Owner();
+    Node thisCreator = new Node();
     thisCreator.setNodeId(photoAlbumDetails.getCreatorId());
     photoAlbum.setCreator(thisCreator);
 

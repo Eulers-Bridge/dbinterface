@@ -9,23 +9,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RelationshipEntity(type = DataConstants.APQ_LABEL)
-public class PollAnswer {
-  private static final Logger LOG = LoggerFactory.getLogger(PollAnswer.class);
+public class PollAnswerRelation {
+  private static final Logger LOG = LoggerFactory.getLogger(PollAnswerRelation.class);
 
   @GraphId
   private Long id;
   @StartNode
-  private Owner user;
+  private Node user;
   @EndNode
   private Poll poll;
+
   Integer answerIndex;
   private Long timeStamp;
 
-  public PollAnswer() {
+  public PollAnswerRelation() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");
   }
 
-  public PollAnswer(Owner answerer, Poll poll, Integer answer) {
+  public PollAnswerRelation(Node answerer, Poll poll, Integer answer) {
     this.user = answerer;
     this.poll = poll;
     this.answerIndex = answer;
@@ -48,14 +49,18 @@ public class PollAnswer {
   /**
    * @return the user
    */
-  public Owner getUser() {
+  public Node getUser() {
     return user;
+  }
+
+  public User getUser$() {
+    return (User) user;
   }
 
   /**
    * @param answerer the user to set
    */
-  public void setUser(Owner answerer) {
+  public void setUser(Node answerer) {
     this.user = answerer;
   }
 
@@ -109,10 +114,10 @@ public class PollAnswer {
     return dets;
   }
 
-  static public PollAnswer fromPollAnswerDetails(PollAnswerDetails dets) {
-    PollAnswer answer = new PollAnswer();
+  static public PollAnswerRelation fromPollAnswerDetails(PollAnswerDetails dets) {
+    PollAnswerRelation answer = new PollAnswerRelation();
     answer.setAnswer(dets.getAnswerIndex());
-    Owner answerer = new Owner();
+    Node answerer = new Node();
     answerer.setNodeId(dets.getAnswererId());
     answer.setUser(answerer);
     Poll poll = new Poll();
@@ -159,7 +164,7 @@ public class PollAnswer {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    PollAnswer other = (PollAnswer) obj;
+    PollAnswerRelation other = (PollAnswerRelation) obj;
     if (id != null) {
       if (id.equals(other.id))
         return true;

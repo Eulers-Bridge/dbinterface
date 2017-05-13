@@ -5,7 +5,7 @@ import com.eulersbridge.iEngage.core.events.comments.*;
 import com.eulersbridge.iEngage.core.services.CommentService;
 import com.eulersbridge.iEngage.database.domain.Comment;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;
 import org.junit.Test;
@@ -269,7 +269,7 @@ public class CommentControllerTest {
   @Test
   public void testFindComments() throws Exception {
     if (LOG.isDebugEnabled()) LOG.debug("performingFindComments()");
-    Owner testObject = DatabaseDataFixture.populateOwner1();
+    Node testObject = DatabaseDataFixture.populateOwner1();
     Long targetId = testObject.getNodeId();
     HashMap<Long, Comment> dets = DatabaseDataFixture.populateComments();
 
@@ -313,7 +313,7 @@ public class CommentControllerTest {
   @Test
   public void testFindCommentsZeroComments() throws Exception {
     if (LOG.isDebugEnabled()) LOG.debug("performingFindComments()");
-    Owner testObject = DatabaseDataFixture.populateOwner1();
+    Node testObject = DatabaseDataFixture.populateOwner1();
     Long targetId = testObject.getNodeId();
     ArrayList<CommentDetails> testCommentsDetails = new ArrayList<>();
     Long numElements = (long) testCommentsDetails.size();
@@ -330,7 +330,7 @@ public class CommentControllerTest {
   @Test
   public void testFindCommentsTargetNotFound() throws Exception {
     if (LOG.isDebugEnabled()) LOG.debug("performingFindComments()");
-    Owner testObject = DatabaseDataFixture.populateOwner1();
+    Node testObject = DatabaseDataFixture.populateOwner1();
     Long targetId = testObject.getNodeId();
     AllReadEvent commentsReadEvent = AllReadEvent.notFound(targetId);
     when(commentService.readComments(any(RequestReadCommentsEvent.class), any(Sort.Direction.class),

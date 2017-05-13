@@ -44,6 +44,7 @@ public class EmailVerificationTest
 		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
 		User user=new User("gnewitt@bigfoot.com","Greg","Newitt","","","","","");
 		token=new VerificationToken(tokenType,user, 60);
+		token.setNodeId(44l);
 		email=new EmailVerification(velocityEngine,user, token);
 		if (LOG.isDebugEnabled()) LOG.debug("verification email - "+email);
 	}

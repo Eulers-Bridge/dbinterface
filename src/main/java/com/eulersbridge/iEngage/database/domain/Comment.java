@@ -22,7 +22,7 @@ public class Comment extends Node {
   private Node user;
 
   @Relationship(type = DataConstants.HAS_COMMENT, direction = Relationship.INCOMING)
-  private Owner target;
+  private Node target;
 
   public Comment() {
   }
@@ -66,11 +66,11 @@ public class Comment extends Node {
     return commentDetails;
   }
 
-  public Owner getTarget() {
+  public Node getTarget() {
     return target;
   }
 
-  public void setTarget(Owner target) {
+  public void setTarget(Node target) {
     this.target = target;
   }
 

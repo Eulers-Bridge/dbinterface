@@ -7,10 +7,10 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.photo.*;
 import com.eulersbridge.iEngage.core.events.photoAlbums.*;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
-import com.eulersbridge.iEngage.database.domain.Owner;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.database.repository.OwnerRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class PhotoEventHandlerTest {
   @Mock
   PhotoAlbumRepository photoAlbumRepository;
   @Mock
-  OwnerRepository ownerRepository;
+  NodeRepository nodeRepository;
 
   PhotoEventHandler service;
 
@@ -55,11 +55,11 @@ public class PhotoEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    service = new PhotoEventHandler(photoRepository, photoAlbumRepository, ownerRepository);
+    service = new PhotoEventHandler(photoRepository, photoAlbumRepository, nodeRepository);
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#PhotoEventHandler(com.eulersbridge.iEngage.database.repository.PhotoRepository)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#(com.eulersbridge.iEngage.database.repository.PhotoRepository)}.
    */
   @Test
   public final void testPhotoEventHandler() {
@@ -73,9 +73,9 @@ public class PhotoEventHandlerTest {
   public final void testCreatePhoto() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingPhoto()");
     Photo testData = DatabaseDataFixture.populatePhoto1();
-    Owner testOwner = new Owner();
+    Node testOwner = new Node();
     testOwner.setNodeId(testData.getOwner().getNodeId());
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(photoRepository.save(any(Photo.class))).thenReturn(testData);
     PhotoDetails dets = testData.toPhotoDetails();
     CreatePhotoEvent createPhotoEvent = new CreatePhotoEvent(dets);
@@ -90,7 +90,7 @@ public class PhotoEventHandlerTest {
   public final void testCreatePhotoNullOwnerId() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingPhoto()");
     Photo testData = DatabaseDataFixture.populatePhoto1();
-    Owner testOwner = new Owner(null);
+    Node testOwner = new Node(null);
     testData.setOwner(testOwner);
     PhotoDetails dets = testData.toPhotoDetails();
     CreatePhotoEvent createPhotoEvent = new CreatePhotoEvent(dets);
@@ -105,8 +105,8 @@ public class PhotoEventHandlerTest {
   public final void testCreatePhotoOwnerNotFound() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingPhoto()");
     Photo testData = DatabaseDataFixture.populatePhoto1();
-    Owner testOwner = null;
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    Node testOwner = null;
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(testOwner);
     PhotoDetails dets = testData.toPhotoDetails();
     CreatePhotoEvent createPhotoEvent = new CreatePhotoEvent(dets);
     PhotoCreatedEvent evtData = service.createPhoto(createPhotoEvent);
@@ -123,9 +123,9 @@ public class PhotoEventHandlerTest {
   public final void testCreatePhotoAlbum() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingPhotoAlbum()");
     PhotoAlbum testData = DatabaseDataFixture.populatePhotoAlbum1();
-    Owner testOwner = new Owner();
+    Node testOwner = new Node();
     testOwner.setNodeId(testData.getOwner().getNodeId());
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(testOwner);
     when(photoAlbumRepository.save(any(PhotoAlbum.class))).thenReturn(testData);
     PhotoAlbumDetails dets = testData.toPhotoAlbumDetails();
     CreatePhotoAlbumEvent createPhotoAlbumEvent = new CreatePhotoAlbumEvent(dets);
@@ -140,8 +140,8 @@ public class PhotoEventHandlerTest {
   public final void testCreatePhotoAlbumOwnerNotFound() {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingPhotoAlbum()");
     PhotoAlbum testData = DatabaseDataFixture.populatePhotoAlbum1();
-    Owner testOwner = null;
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(testOwner);
+    Node testOwner = null;
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(testOwner);
     PhotoAlbumDetails dets = testData.toPhotoAlbumDetails();
     CreatePhotoAlbumEvent createPhotoAlbumEvent = new CreatePhotoAlbumEvent(dets);
     PhotoAlbumCreatedEvent evtData = service.createPhotoAlbum(createPhotoAlbumEvent);
@@ -184,7 +184,7 @@ public class PhotoEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#readPhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#(com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent)}.
    */
   @Test
   public final void testReadPhotoAlbum() {
@@ -200,7 +200,7 @@ public class PhotoEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#readPhotoAlbum(com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#(com.eulersbridge.iEngage.core.events.photoAlbums.ReadPhotoAlbumEvent)}.
    */
   @Test
   public final void testReadPhotoAlbumNotFound() {
@@ -306,7 +306,7 @@ public class PhotoEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#deletePhoto(com.eulersbridge.iEngage.core.events.photos.DeletePhotoEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#(com.eulersbridge.iEngage.core.events)}.
    */
   @Test
   public final void testDeletePhotoNotFound() {
@@ -354,7 +354,7 @@ public class PhotoEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#findPhotos(com.eulersbridge.iEngage.core.events.photo.findPhotosEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#(com.eulersbridge.iEngage.core.events.photo.PhotoDetails)}.
    */
   @Test
   public final void testFindPhotos() {
@@ -458,7 +458,7 @@ public class PhotoEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#deletePhotos(com.eulersbridge.iEngage.core.events.photo.deletePhotosEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#}.
    */
   @Test
   public final void testDeletePhotos() {
@@ -484,7 +484,7 @@ public class PhotoEventHandlerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#findPhotoAlbums(com.eulersbridge.iEngage.core.events.photo.findPhotoAlbumsEvent)}.
+   * Test method for {@link com.eulersbridge.iEngage.core.services.PhotoEventHandler#(com.eulersbridge.iEngage.core.events.photo)}.
    */
   @Test
   public final void testFindPhotoAlbums() {
@@ -526,8 +526,8 @@ public class PhotoEventHandlerTest {
     Pageable pageable = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<PhotoAlbum> testData = new PageImpl<PhotoAlbum>(evts, pageable, evts.size());
     when(photoAlbumRepository.findByOwnerId(any(Long.class), any(Pageable.class))).thenReturn(testData);
-    Owner inst = new Owner(DatabaseDataFixture.populatePhotoAlbum1().getNodeId());
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(inst);
+    Node inst = new Node(DatabaseDataFixture.populatePhotoAlbum1().getNodeId());
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(inst);
 
     AllReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
@@ -570,7 +570,7 @@ public class PhotoEventHandlerTest {
     Pageable pageable = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<PhotoAlbum> testData = new PageImpl<PhotoAlbum>(evts, pageable, evts.size());
     when(photoAlbumRepository.findByOwnerId(any(Long.class), any(Pageable.class))).thenReturn(testData);
-    when(ownerRepository.findOne(any(Long.class))).thenReturn(null);
+    when(nodeRepository.findOne(any(Long.class))).thenReturn(null);
 
     AllReadEvent evtData = service.findPhotoAlbums(evt, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
