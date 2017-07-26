@@ -26,6 +26,7 @@ public class UserDetails extends Details {
   private String contactNumber;
   private Boolean accountVerified;
   private Boolean hasPersonality;
+  private Boolean hasPPSEQuestions;
   private Boolean consentGiven;
   private Boolean optOutDataCollection;
   private Boolean trackingOff;
@@ -281,6 +282,16 @@ public class UserDetails extends Details {
   public void setTrackingOff(Boolean trackingOff) {
     this.trackingOff = trackingOff;
   }
+
+  public Boolean getHasPPSEQuestions() {
+    return hasPPSEQuestions;
+  }
+
+  public void setHasPPSEQuestions(Boolean hasPPSEQuestions) {
+    this.hasPPSEQuestions = hasPPSEQuestions;
+  }
+
+
 
   @Override
   public String toString() {

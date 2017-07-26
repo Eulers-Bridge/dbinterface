@@ -143,6 +143,22 @@ public class UserController {
     return result;
   }
 
+  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{email}/PPSEQuestions")
+  public @ResponseBody
+  ResponseEntity<PPSEQuestions> addUserPPSEQuestions(@PathVariable String email, @RequestBody PPSEQuestions ppseQuestions) {
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to add PPSEQuestions to user: " + email);
+    if (LOG.isDebugEnabled()) LOG.debug("PPSEQuestions - " + ppseQuestions);
+
+    RequestHandledEvent<PPSEQuestions> requestHandledEvent = userService.addPPSEQuestions(email, ppseQuestions);
+    if (requestHandledEvent.getUserNotFound())
+      return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+    if (requestHandledEvent.getBadRequest() || !requestHandledEvent.getSuccess())
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    return new ResponseEntity<>(requestHandledEvent.getResponseEntity(), HttpStatus.CREATED);
+  }
+
   /**
    * Is passed all the necessary data to create a vote reminder.
    * The request must be a PUT with the necessary parameters in the

@@ -40,6 +40,7 @@ public class CoreConfig {
   VotingLocationRepository votingLocationRepository;
   NodeRepository nodeRepository;
   VelocityEngine velocityEngine;
+  PPSEQuestionsRepository ppseQuestionsRepository;
 
   private static Logger LOG = LoggerFactory.getLogger(CoreConfig.class);
 
@@ -69,7 +70,8 @@ public class CoreConfig {
                     NotificationRepository notificationRepository,
                     ContactRequestRepository contactRequestRepository,
                     VelocityEngine velocityEngine,
-                    NodeRepository nodeRepository) {
+                    NodeRepository nodeRepository,
+                    PPSEQuestionsRepository ppseQuestionsRepository) {
     if (LOG.isDebugEnabled()) LOG.debug("CoreConfig()");
     this.taskRepository = taskRepository;
     this.electionRepo = electionRepo;
@@ -97,12 +99,13 @@ public class CoreConfig {
     this.contactRequestRepository = contactRequestRepository;
     this.velocityEngine = velocityEngine;
     this.nodeRepository = nodeRepository;
+    this.ppseQuestionsRepository = ppseQuestionsRepository;
   }
 
   @Bean
   public UserService createUserService() {
     if (LOG.isDebugEnabled()) LOG.debug("createUserService()");
-    return new UserEventHandler(userRepo, personRepo, institutionRepository, tokenRepo, velocityEngine);
+    return new UserEventHandler(userRepo, personRepo, institutionRepository, tokenRepo, velocityEngine, ppseQuestionsRepository);
   }
 
   @Bean

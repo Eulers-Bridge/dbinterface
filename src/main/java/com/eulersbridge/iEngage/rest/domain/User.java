@@ -27,6 +27,7 @@ public class User extends ResourceSupport {
   private String contactNumber;
   private Boolean accountVerified;
   private Boolean hasPersonality;
+  private Boolean hasPPSEQuestions;
   private Long institutionId;
   private String email;
   private Iterable<PhotoDetails> photos;
@@ -132,6 +133,14 @@ public class User extends ResourceSupport {
 
   public void setAccountVerified(Boolean accountVerified) {
     this.accountVerified = accountVerified;
+  }
+
+  public Boolean getHasPPSEQuestions() {
+    return hasPPSEQuestions;
+  }
+
+  public void setHasPPSEQuestions(Boolean hasPPSEQuestions) {
+    this.hasPPSEQuestions = hasPPSEQuestions;
   }
 
   /**
@@ -266,6 +275,7 @@ public class User extends ResourceSupport {
     user.setAccountVerified(readUser.isAccountVerified());
     user.setInstitutionId(readUser.getInstitutionId());
     user.setHasPersonality(readUser.hasPersonality());
+    user.setHasPPSEQuestions(readUser.getHasPPSEQuestions());
     user.setTrackingOff(readUser.isTrackingOff());
     user.setOptOutDataCollection(readUser.isOptOutDataCollection());
     user.setConsentGiven(readUser.isConsentGiven());

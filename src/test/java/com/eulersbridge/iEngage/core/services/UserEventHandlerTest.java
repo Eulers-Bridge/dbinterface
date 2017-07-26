@@ -79,7 +79,7 @@ public class UserEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    userServiceMocked = new UserEventHandler(uRepo, pRepo, iRepo, tRepo, null);
+    userServiceMocked = new UserEventHandler(uRepo, pRepo, iRepo, tRepo, null, null);
   }
 
   /**
@@ -94,7 +94,7 @@ public class UserEventHandlerTest {
    */
   @Test
   public void testUserEventHandler() {
-    UserEventHandler userService2 = new UserEventHandler(uRepo, pRepo, iRepo, tRepo, null);
+    UserEventHandler userService2 = new UserEventHandler(uRepo, pRepo, iRepo, tRepo, null, null);
     assertNotNull("newsService not being created by constructor.", userService2);
   }
 

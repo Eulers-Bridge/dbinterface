@@ -6,13 +6,17 @@ import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.events.voteRecord.*;
 import com.eulersbridge.iEngage.core.events.voteReminder.*;
 import com.eulersbridge.iEngage.database.domain.*;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.PersonalityRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
-import com.eulersbridge.iEngage.database.repository.VerificationTokenRepository;
+import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Personality;
+import com.eulersbridge.iEngage.database.domain.Ticket;
+import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.VoteRecord;
+import com.eulersbridge.iEngage.database.domain.VoteReminder;
+import com.eulersbridge.iEngage.database.repository.*;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.email.EmailVerification;
-import com.eulersbridge.iEngage.rest.domain.UserProfile;
+import com.eulersbridge.iEngage.rest.domain.*;
+import com.eulersbridge.iEngage.rest.domain.PPSEQuestions;
 import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import com.eulersbridge.iEngage.security.UserCredentialDetails;
@@ -46,6 +50,7 @@ public class UserEventHandler implements UserService {
   private UserRepository userRepository;
   private PersonalityRepository personRepository;
   private InstitutionRepository instRepository;
+  private PPSEQuestionsRepository ppseQuestionsRepository;
   private VerificationTokenRepository tokenRepository;
 
   private VelocityEngine velocityEngine;
@@ -54,12 +59,14 @@ public class UserEventHandler implements UserService {
                           PersonalityRepository personRepository,
                           InstitutionRepository instRepo,
                           VerificationTokenRepository tokenRepo,
-                          VelocityEngine velocityEngine) {
+                          VelocityEngine velocityEngine,
+                          PPSEQuestionsRepository ppseQuestionsRepository) {
     this.userRepository = userRepository;
     this.personRepository = personRepository;
     this.instRepository = instRepo;
     this.tokenRepository = tokenRepo;
     this.velocityEngine = velocityEngine;
+    this.ppseQuestionsRepository = ppseQuestionsRepository;
 
 //    VelocityEngineFactoryBean ve = new VelocityEngineFactoryBean();
 //    Properties velocityProperties = new Properties();
@@ -631,6 +638,22 @@ public class UserEventHandler implements UserService {
       evt = PersonalityAddedEvent.userNotFound();
     }
     return evt;
+  }
+
+  @Override
+  public RequestHandledEvent addPPSEQuestions(String userEmail,
+                                              PPSEQuestions ppseQuestions) {
+    User user = userRepository.findByEmail(userEmail);
+    if (user == null)
+      return RequestHandledEvent.userNotFound();
+    PPSEQuestionsNode p = PPSEQuestionsNode.fromRestDomain(ppseQuestions);
+    // Overwrite previous question node if exists
+    if (user.getpPSEQuestions() != null)
+      p.setNodeId(user.getpPSEQuestions().getNodeId());
+    p.setUser(user.toNode());
+    PPSEQuestionsNode r = ppseQuestionsRepository.save(p);
+    return r == null ? RequestHandledEvent.badRequest()
+                     : new RequestHandledEvent<>(r.toRestDomain());
   }
 
   @Override

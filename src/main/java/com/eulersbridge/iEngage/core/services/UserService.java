@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
+import com.eulersbridge.iEngage.rest.domain.PPSEQuestions;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,6 +49,9 @@ public interface UserService extends UserDetailsService {
 
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
   public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public RequestHandledEvent addPPSEQuestions(String userEmail, PPSEQuestions ppseQuestions);
 
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #addVoteReminderEvent.getVoteReminderDetails().getUserId()==authentication.name)")
   public CreatedEvent addVoteReminder(AddVoteReminderEvent addVoteReminderEvent);

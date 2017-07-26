@@ -38,6 +38,8 @@ public class User extends Node {
 
   @Relationship(type = DataConstants.HAS_PERSONALITY_LABEL, direction = Relationship.OUTGOING)
   private Node personality;
+  @Relationship(type = DataConstants.HAS_PPSEQuestions_LABEL, direction = Relationship.OUTGOING)
+  private Node pPSEQuestions;
   @Relationship(type = DataConstants.USERS_LABEL, direction = Relationship.OUTGOING)
   private Node institution;
   @Relationship(type = DataConstants.VERIFIED_BY_LABEL, direction = Relationship.UNDIRECTED)
@@ -193,6 +195,13 @@ public class User extends Node {
     this.experience = experience;
   }
 
+  public Node getpPSEQuestions() {
+    return pPSEQuestions;
+  }
+
+  public void setpPSEQuestions(Node pPSEQuestions) {
+    this.pPSEQuestions = pPSEQuestions;
+  }
 
   //=============================================
 
@@ -293,6 +302,7 @@ public class User extends Node {
     BeanUtils.copyProperties(this, details);
 
     details.setHasPersonality(personality != null);
+    details.setHasPPSEQuestions(pPSEQuestions != null);
     if (accountVerified == null)
       details.setAccountVerified(DataConstants.AccountVerifiedDefault);
     else
