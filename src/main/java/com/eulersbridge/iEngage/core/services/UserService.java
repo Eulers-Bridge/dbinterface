@@ -93,5 +93,9 @@ public interface UserService extends UserDetailsService {
   public AllReadEvent readVoteRecordsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection, int pageNumber, int pageLength);
 
   UserCreatedEvent resendVerificationEmail(RequestReadUserEvent createUserEvent);
+
+  public RequestHandledEvent requestResetPWD(String email);
+
+  public RequestHandledEvent resetPwd(String email, String token, String newPwd);
 }
 

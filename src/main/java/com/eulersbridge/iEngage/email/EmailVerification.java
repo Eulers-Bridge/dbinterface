@@ -54,48 +54,46 @@ public class EmailVerification extends Email implements Serializable {
 
   @Override
   public MimeMessagePreparator generatePreparator() throws MessagingException {
-    MimeMessagePreparator preparator = new MimeMessagePreparator() {
-      public void prepare(MimeMessage mimeMessage) throws Exception {
-        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
-        message.setTo(new InternetAddress(getRecipientEmailAddress()));
-        String body = null;
-        message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
-        message.setFrom(new InternetAddress(getSenderEmailAddress()));
-        message.setSubject(getSubject());
-        final Map<String, Object> hTemplateVariables = new HashMap<String, Object>();
+    MimeMessagePreparator preparator = mimeMessage -> {
+      MimeMessageHelper message = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
+      message.setTo(new InternetAddress(getRecipientEmailAddress()));
+      String body = null;
+      message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
+      message.setFrom(new InternetAddress(getSenderEmailAddress(), "Eulersbridge"));
+      message.setSubject(getSubject());
+      final Map<String, Object> hTemplateVariables = new HashMap<String, Object>();
 
 //    			hTemplateVariables.put("email", this);
-        hTemplateVariables.put("recipientName", getRecipientName());
-        hTemplateVariables.put("emailAddress", getRecipientEmailAddress());
-        hTemplateVariables.put("verificationToken", getEncodedToken());
+      hTemplateVariables.put("recipientName", getRecipientName());
+      hTemplateVariables.put("emailAddress", getRecipientEmailAddress());
+      hTemplateVariables.put("verificationToken", getEncodedToken());
 
-        if (LOG.isDebugEnabled())
-          LOG.debug("Velocity engine :" + velocityEngine);
-        if (LOG.isDebugEnabled())
-          body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, resourceName, "UTF-8", hTemplateVariables);
+      if (LOG.isDebugEnabled())
+        LOG.debug("Velocity engine :" + velocityEngine);
+
+        body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, resourceName, "UTF-8", hTemplateVariables);
 //    			body="Dear "+getRecipientName()+", your token is "+getToken()+" your url is \nhttp://eulersbridge.com:8080/dbInterface/api/emailVerification/"+getRecipientEmailAddress()+"/"+getToken()+" Thankyou.";
-        if (LOG.isDebugEnabled()) LOG.debug("body={}", body);
-        message.setText(body, true);
+      if (LOG.isDebugEnabled()) LOG.debug("body={}", body);
+      message.setText(body, true);
 
-        ClassPathResource logoResource = new ClassPathResource("templates/images/logo.png");
-        if (LOG.isDebugEnabled())
-          LOG.debug("class path resource exists" + logoResource.exists());
-        message.addInline("logo", logoResource);
+      ClassPathResource logoResource = new ClassPathResource("templates/images/logo.png");
+      if (LOG.isDebugEnabled())
+        LOG.debug("class path resource exists" + logoResource.exists());
+      message.addInline("logo", logoResource);
 
-        ClassPathResource watermarkResource = new ClassPathResource("templates/images/watermark.png");
-        if (LOG.isDebugEnabled())
-          LOG.debug("class path resource exists" + watermarkResource.exists());
-        message.addInline("watermark", watermarkResource);
+      ClassPathResource watermarkResource = new ClassPathResource("templates/images/watermark.png");
+      if (LOG.isDebugEnabled())
+        LOG.debug("class path resource exists" + watermarkResource.exists());
+      message.addInline("watermark", watermarkResource);
 
-           /*for(String resourceIdentifier: hTemplateVariables.keySet()) {
-          	 //Inline resources are added to the mime message using the specified Content-ID. 
-          	  //The order in which you are adding the text and the resource are very important. 
-          	  //Be sure to first add the text and after that the resources. 
-          	  //If you are doing it the other way around, it won't work!
-        	   addInlineResource(message, hTemplateVariables.get(resourceIdentifier).toString(), resourceIdentifier);
-           }*/
+         /*for(String resourceIdentifier: hTemplateVariables.keySet()) {
+           //Inline resources are added to the mime message using the specified Content-ID.
+            //The order in which you are adding the text and the resource are very important.
+            //Be sure to first add the text and after that the resources.
+            //If you are doing it the other way around, it won't work!
+           addInlineResource(message, hTemplateVariables.get(resourceIdentifier).toString(), resourceIdentifier);
+         }*/
 
-      }
     };
 
     return preparator;

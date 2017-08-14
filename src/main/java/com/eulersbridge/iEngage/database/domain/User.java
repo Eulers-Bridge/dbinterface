@@ -35,6 +35,7 @@ public class User extends Node {
   private Boolean consentGiven;
   private String profilePhoto;
   private Long experience;
+  private String resetPwdToken;
 
   @Relationship(type = DataConstants.HAS_PERSONALITY_LABEL, direction = Relationship.OUTGOING)
   private Node personality;
@@ -73,6 +74,14 @@ public class User extends Node {
     this.yearOfBirth = yearOfBirth;
     this.password = password;
     this.contactNumber = contactNumber;
+  }
+
+  public String getResetPwdToken() {
+    return resetPwdToken;
+  }
+
+  public void setResetPwdToken(String resetPwdToken) {
+    this.resetPwdToken = resetPwdToken;
   }
 
   public String getEmail() {

@@ -7,7 +7,9 @@ import com.eulersbridge.iEngage.core.events.voteRecord.*;
 import com.eulersbridge.iEngage.core.events.voteReminder.*;
 import com.eulersbridge.iEngage.core.services.*;
 import com.eulersbridge.iEngage.email.EmailConstants;
+import com.eulersbridge.iEngage.email.EmailResetPWD;
 import com.eulersbridge.iEngage.rest.domain.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.LongValidator;
 import org.apache.velocity.Template;
@@ -21,11 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
 
@@ -727,6 +732,58 @@ public class UserController {
       response = new ResponseEntity<User>(restUser, HttpStatus.OK);
     }
     return response;
+  }
+
+  @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.REQUEST_RESET_PWD + "/{email}")
+  public @ResponseBody
+  ResponseEntity<String> requestResetUserPassword(@PathVariable String email) {
+    if (email == null || !EmailValidator.getInstance().isValid(email))
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    RequestHandledEvent<EmailResetPWD> r = userService.requestResetPWD(email);
+    if (r.getUserNotFound())
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    if (!r.getSuccess())
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    EmailResetPWD emailResetPWD = r.getResponseEntity();
+    try {
+      emailSender.send(emailResetPWD.generatePreparator());
+    } catch (MessagingException | MailException e) {
+      LOG.error(e.toString());
+      return new ResponseEntity<>("Email service failed", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return new ResponseEntity<>("An email has been sent to your inbox", HttpStatus.OK);
+  }
+
+  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.RESET_PWD)
+  public @ResponseBody
+  ResponseEntity<String> resetUserPassword(@RequestBody String body) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    Map reqMap = objectMapper.readValue(body, HashMap.class);
+    String email = String.valueOf(reqMap.get("email"));
+    String token = String.valueOf(reqMap.get("token"));
+    String password = String.valueOf(reqMap.get("password"));
+    // Check request parameters
+    if (email.equals("null") || token.equals("null") || password.equals("null"))
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    if (email.isEmpty() || token.isEmpty() || password.isEmpty())
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    if (!EmailValidator.getInstance().isValid(email))
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    RequestHandledEvent result = userService.resetPwd(email, token, password);
+    if(!result.getSuccess()){
+      if (result.getUserNotFound())
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      if (result.getNotAllowed())
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+      if (result.getBadRequest())
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      if (result.getPremissionExpired())
+        return new ResponseEntity<>(HttpStatus.GONE);
+      return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   /**

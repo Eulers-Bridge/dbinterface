@@ -42,20 +42,18 @@ public class Email implements Serializable {
   }
 
   public MimeMessagePreparator generatePreparator() throws MessagingException {
-    MimeMessagePreparator preparator = new MimeMessagePreparator() {
-      public void prepare(MimeMessage mimeMessage) throws Exception {
-        MimeMessageHelper message = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
-        message.setTo(new InternetAddress(getRecipientEmailAddress()));
-        String body = null;
-        message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
-        message.setFrom(new InternetAddress(getSenderEmailAddress()));
-        message.setSubject(getSubject());
+    MimeMessagePreparator preparator = mimeMessage -> {
+      MimeMessageHelper message = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
+      message.setTo(new InternetAddress(getRecipientEmailAddress()));
+      String body = null;
+      message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
+      message.setFrom(new InternetAddress(getSenderEmailAddress()));
+      message.setSubject(getSubject());
 
-        body = "This is a test email.";
+      body = "This is a test email.";
 
-        if (LOG.isDebugEnabled()) LOG.debug("body={}", body);
-        message.setText(body, true);
-      }
+      if (LOG.isDebugEnabled()) LOG.debug("body={}", body);
+      message.setText(body, true);
     };
 
     return preparator;

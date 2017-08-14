@@ -10,6 +10,8 @@ public class RequestHandledEvent<T> {
 
   private Boolean userNotFound = false;
   private Boolean badRequest = false;
+  private Boolean notAllowed = false;
+  private Boolean premissionExpired = false;
 
   private T responseEntity;
 
@@ -35,6 +37,23 @@ public class RequestHandledEvent<T> {
   public static RequestHandledEvent badRequest() {
     RequestHandledEvent r = new RequestHandledEvent(false);
     r.setBadRequest(Boolean.TRUE);
+    return r;
+  }
+
+  public static RequestHandledEvent failed(){
+    RequestHandledEvent r = new RequestHandledEvent(false);
+    return r;
+  }
+
+  public static RequestHandledEvent notAllowed(){
+    RequestHandledEvent r = new RequestHandledEvent(false);
+    r.setNotAllowed(true);
+    return r;
+  }
+
+  public static RequestHandledEvent premissionExpired(){
+    RequestHandledEvent r = new RequestHandledEvent(false);
+    r.setPremissionExpired(true);
     return r;
   }
 
@@ -68,5 +87,21 @@ public class RequestHandledEvent<T> {
 
   public void setResponseEntity(T responseEntity) {
     this.responseEntity = responseEntity;
+  }
+
+  public Boolean getNotAllowed() {
+    return notAllowed;
+  }
+
+  public void setNotAllowed(Boolean notAllowed) {
+    this.notAllowed = notAllowed;
+  }
+
+  public Boolean getPremissionExpired() {
+    return premissionExpired;
+  }
+
+  public void setPremissionExpired(Boolean premissionExpired) {
+    this.premissionExpired = premissionExpired;
   }
 }

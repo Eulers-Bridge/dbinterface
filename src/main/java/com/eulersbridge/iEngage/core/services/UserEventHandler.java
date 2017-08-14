@@ -6,17 +6,12 @@ import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.events.voteRecord.*;
 import com.eulersbridge.iEngage.core.events.voteReminder.*;
 import com.eulersbridge.iEngage.database.domain.*;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Personality;
-import com.eulersbridge.iEngage.database.domain.Ticket;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.domain.VoteRecord;
-import com.eulersbridge.iEngage.database.domain.VoteReminder;
 import com.eulersbridge.iEngage.database.repository.*;
 import com.eulersbridge.iEngage.email.EmailConstants;
+import com.eulersbridge.iEngage.email.EmailResetPWD;
 import com.eulersbridge.iEngage.email.EmailVerification;
-import com.eulersbridge.iEngage.rest.domain.*;
 import com.eulersbridge.iEngage.rest.domain.PPSEQuestions;
+import com.eulersbridge.iEngage.rest.domain.UserProfile;
 import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import com.eulersbridge.iEngage.security.UserCredentialDetails;
@@ -39,9 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class UserEventHandler implements UserService {
 
@@ -652,8 +645,53 @@ public class UserEventHandler implements UserService {
       p.setNodeId(user.getpPSEQuestions().getNodeId());
     p.setUser(user.toNode());
     PPSEQuestionsNode r = ppseQuestionsRepository.save(p);
-    return r == null ? RequestHandledEvent.badRequest()
-                     : new RequestHandledEvent<>(r.toRestDomain());
+    return r == null
+      ? RequestHandledEvent.badRequest()
+      : new RequestHandledEvent<>(r.toRestDomain());
+  }
+
+  @Override
+  public RequestHandledEvent requestResetPWD(String email) {
+    User user = userRepository.findByEmail(email, 0);
+    if (user == null)
+      return RequestHandledEvent.userNotFound();
+    String uuid = UUID.randomUUID().toString();
+    String timestamp = Long.toString(new Date().getTime());
+    String token = timestamp + "-" + uuid;
+    user.setResetPwdToken(token);
+    User savedUser = userRepository.save(user, 0);
+    if (savedUser == null || savedUser.getResetPwdToken() == null)
+      return RequestHandledEvent.failed();
+    EmailResetPWD emailResetPWD =
+      new EmailResetPWD(velocityEngine, savedUser, savedUser.getResetPwdToken());
+
+    return new RequestHandledEvent<>(emailResetPWD);
+  }
+
+  @Override
+  public RequestHandledEvent resetPwd(String email, String token, String newPwd) {
+    User user = userRepository.findByEmail(email, 0);
+    if (user == null)
+      return RequestHandledEvent.userNotFound();
+    if (!token.equals(user.getResetPwdToken()))
+      return RequestHandledEvent.notAllowed();
+    Long timestamp;
+    try {
+      timestamp = Long.valueOf(user.getResetPwdToken().split("-")[0]);
+    } catch (NumberFormatException e) {
+      return RequestHandledEvent.badRequest();
+    }
+    Long currentTimestamp = new Date().getTime();
+    Long diff = currentTimestamp - timestamp;
+    Long validTime = 86400000L; // 24×60×60×1000 - 24 hour in milic
+    if (diff > validTime)
+      return RequestHandledEvent.premissionExpired();
+
+    user.setPassword(newPwd);
+    User savedUser = userRepository.save(user, 0);
+    if (savedUser == null)
+      return RequestHandledEvent.failed();
+    return new RequestHandledEvent<>(savedUser);
   }
 
   @Override
