@@ -688,6 +688,7 @@ public class UserEventHandler implements UserService {
       return RequestHandledEvent.premissionExpired();
 
     user.setPassword(newPwd);
+    user.setResetPwdToken("null");
     User savedUser = userRepository.save(user, 0);
     if (savedUser == null)
       return RequestHandledEvent.failed();
