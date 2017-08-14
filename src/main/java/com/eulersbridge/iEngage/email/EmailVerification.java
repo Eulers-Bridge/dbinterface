@@ -59,7 +59,7 @@ public class EmailVerification extends Email implements Serializable {
       message.setTo(new InternetAddress(getRecipientEmailAddress()));
       String body = null;
       message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
-      message.setFrom(new InternetAddress(getSenderEmailAddress(), "Eulersbridge"));
+      message.setFrom(new InternetAddress(getSenderEmailAddress(), "Eulers Bridge"));
       message.setSubject(getSubject());
       final Map<String, Object> hTemplateVariables = new HashMap<String, Object>();
 

@@ -43,7 +43,7 @@ public class EmailResetPWD extends Email implements Serializable {
           MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
       message.setTo(new InternetAddress(getRecipientEmailAddress()));
       message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
-      message.setFrom(new InternetAddress(getSenderEmailAddress(), "Eulersbridge"));
+      message.setFrom(new InternetAddress(getSenderEmailAddress(), "Eulers Bridge"));
       message.setSubject(getSubject());
 
       VelocityContext vc = new VelocityContext();
