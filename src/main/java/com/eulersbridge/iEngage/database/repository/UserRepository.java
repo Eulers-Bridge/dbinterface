@@ -55,11 +55,11 @@ public interface UserRepository extends GraphRepository<User> {
   Page<User> findByLikeableObjId(@Param("objId") Long id, Pageable p);
 
 
-  @Query("Match (a:`" + DataConstants.USER + "`)-[r:`" + DataConstants.LIKES_LABEL + "`]-(b) where a.email={email} and id(b)={likedId} return r")
-  Like isLikedBy(@Param("email") String email, @Param("likedId") Long likedId);
+  @Query("Match (a:`" + DataConstants.USER + "`)-[r:`" + DataConstants.LIKES_LABEL + "`]-(b) where a.email={email} and id(b)={likedId} return count(r)")
+  Long isLikedBy(@Param("email") String email, @Param("likedId") Long likedId);
 
-  @Query("Match (a:`" + DataConstants.USER + "`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE (a)-[r:" + DataConstants.LIKES_LABEL + "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return r")
-  Like like(@Param("email") String email, @Param("likedId") Long likedId);
+  @Query("Match (a:`" + DataConstants.USER + "`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE (a)-[r:" + DataConstants.LIKES_LABEL + "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return count(r)")
+  Long like(@Param("email") String email, @Param("likedId") Long likedId);
 
   @Query("Match (a:`" + DataConstants.USER + "`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
   void unlike(@Param("email") String email, @Param("likedId") Long likedId);

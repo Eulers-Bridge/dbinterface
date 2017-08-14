@@ -47,7 +47,7 @@ public class TaskCompleteTest
 	public final void testToTaskCompleteDetails()
 	{
 		TaskCompleteDetails dets2=taskComplete.toTaskCompleteDetails();
-		assertEquals(dets2.getDate(),taskComplete.getDate());
+//		assertEquals(dets2.getDate(),taskComplete.getDate());
 		assertEquals(dets2.getNodeId(),taskComplete.getNodeId());
 		assertEquals(dets2.getUserId(),taskComplete.getUser().getNodeId());
 		assertEquals(dets2.getTaskId(),taskComplete.getTask().getNodeId());
@@ -60,7 +60,7 @@ public class TaskCompleteTest
 	public final void testFromTaskCompleteDetails()
 	{
 		TaskComplete evt2=TaskComplete.fromTaskCompleteDetails(dets);
-		assertEquals(dets.getDate(),evt2.getDate());
+//		assertEquals(dets.getDate(),evt2.getDate());
 		assertEquals(dets.getNodeId(),evt2.getNodeId());
 		assertEquals(dets.getUserId(),evt2.getUser().getNodeId());
 		assertEquals(dets.getTaskId(),evt2.getTask().getNodeId());
@@ -87,26 +87,7 @@ public class TaskCompleteTest
 		assertEquals(id, taskComplete.getNodeId());
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.TaskComplete#getDate()}.
-	 */
-	@Test
-	public final void testGetDate()
-	{
-		assertEquals(dets.getDate(),taskComplete.getDate());
-	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.TaskComplete#setDate(java.lang.Long)}.
-	 */
-	@Test
-	public final void testSetDate()
-	{
-		Long date=taskComplete.getDate()+54;
-		assertNotEquals(date,taskComplete.getDate());
-		taskComplete.setDate(date);
-		assertEquals(date, taskComplete.getDate());
-	}
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.database.domain.TaskComplete#getUser()}.
@@ -183,9 +164,7 @@ public class TaskCompleteTest
 		taskTest.setUser(null);;
 		checkHashCode(taskComplete,taskTest);
 		taskTest.setUser(taskComplete.getUser());
-		taskTest.setDate(null);;
-		checkHashCode(taskComplete,taskTest);
-		taskTest.setDate(taskComplete.getDate());
+//		checkHashCode(taskComplete,taskTest);
 	}
 
 	private void checkNotEquals(TaskComplete test1,TaskComplete test2)
@@ -226,11 +205,8 @@ public class TaskCompleteTest
 		checkNotEquals(taskTest, taskComplete);
 		taskTest.setUser(taskComplete.getUser());
 		
-		taskTest.setDate(taskComplete.getDate()+54);
-		assertNotEquals(taskComplete, taskTest);
-		taskTest.setDate(null);
-		checkNotEquals(taskComplete, taskTest);
-		taskTest.setDate(taskComplete.getDate());
+//		assertNotEquals(taskComplete, taskTest);
+//		checkNotEquals(taskComplete, taskTest);
 	}
 
 }

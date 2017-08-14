@@ -34,9 +34,12 @@ public interface TaskRepository extends GraphRepository<Task>
 			" not (u)-[:"+ DataConstants.HAS_COMPLETED_TASK_LABEL+"]-(t) return t")
 	Page<Task> findRemainingTasks(@Param("userId") Long userId, Pageable pageable);
 
-    @Query("Match (a:`User`)-[r:`"+ DataConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where a.email={userEmail} and b.action={action} return count(r)")
+    @Query("Match (a:`User`)-[r:`"+ DataConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where a.email={userEmail} and b.action={action} return r.numOfTimes")
     Long getNumOfCompletedASpecificTask(@Param("userEmail") String userEmail, @Param("action") String taskAction);
 
-    @Query("Match (a:`User`)-[r:`"+ DataConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where a.email={userEmail} and b.action={action} and r.tag={targetType} return count(r)")
+    @Query("Match (a:`User`)-[r:`"+ DataConstants.HAS_COMPLETED_TASK_LABEL+"`]-(b:`Task`) where a.email={userEmail} and b.action={action} and r.tag={targetType} return r.numOfTimes")
     Long getNumOfCompletedASpecificTask(@Param("userEmail") String userEmail, @Param("action") String taskAction, @Param("targetType") String targetType);
+
+    @Query("Match (t:`Task`) where t.action={action} return t")
+    Task findByAction(@Param("action") String taskAction);
 }

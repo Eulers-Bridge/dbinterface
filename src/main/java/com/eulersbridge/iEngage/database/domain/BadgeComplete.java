@@ -12,7 +12,7 @@ import org.springframework.beans.BeanUtils;
 import java.util.Calendar;
 
 
-@RelationshipEntity(type = DataConstants.BADGE_COMPLETE_LABEL)
+@RelationshipEntity(type = DataConstants.HAS_COMPLETED_BADGE_LABEL)
 public class BadgeComplete {
   private static final Logger LOG = LoggerFactory.getLogger(BadgeComplete.class);
 

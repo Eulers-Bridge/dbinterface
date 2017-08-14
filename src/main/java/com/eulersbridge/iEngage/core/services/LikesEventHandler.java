@@ -5,7 +5,6 @@ import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.database.domain.Like;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.NodeRepository;
@@ -45,7 +44,7 @@ public class LikesEventHandler implements LikesService {
 
     retValue = checkParams(email, nodeId);
     if (null == retValue) {
-      Like like = userRepository.isLikedBy(email, nodeId);
+      Long like = userRepository.isLikedBy(email, nodeId);
       if (like != null)
         result = true;
       else result = false;
@@ -63,10 +62,12 @@ public class LikesEventHandler implements LikesService {
 
     retValue = checkParams(email, nodeId);
     if (null == retValue) {
-      Like like = userRepository.like(email, nodeId);
+      Long like = userRepository.like(email, nodeId);
+      System.out.println("like:" + like);
       if (like != null)
         result = true;
-      else result = false;
+      else
+        result = false;
       retValue = new LikedEvent(nodeId, email, result);
     }
     return retValue;
@@ -88,13 +89,17 @@ public class LikesEventHandler implements LikesService {
   }
 
   private LikedEvent checkParams(String email, Long nodeId) {
-    User user = userRepository.findByEmail(email);
+    User user = userRepository.findByEmail(email, 0);
     if (null == user) {
       return LikedEvent.userNotFound(nodeId, email);
     }
-    Node item = nodeRepository.findOne(nodeId);
+    Node item = nodeRepository.findOne(nodeId, 0);
     if (null == item) {
       return LikedEvent.entityNotFound(nodeId, email);
+    }
+    Long like = userRepository.isLikedBy(email, nodeId);
+    if (like > 0) {
+      return new LikedEvent(nodeId, email, false);
     }
     return null;
   }

@@ -50,9 +50,9 @@ public class User extends Node {
 
   @Relationship(type = DataConstants.CONTACT_LABEL, direction = Relationship.UNDIRECTED)
   private List<Contact> contacts;
-  @Relationship(type = DataConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.OUTGOING)
   private List<TaskComplete> completedTasks;
-  @Relationship(type = DataConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.UNDIRECTED)
+  @Relationship(type = DataConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.OUTGOING)
   private List<BadgeComplete> completedBadges;
 
   public User() {

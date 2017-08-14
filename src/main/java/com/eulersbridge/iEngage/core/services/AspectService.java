@@ -14,7 +14,9 @@ import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.database.domain.Badge;
+import com.eulersbridge.iEngage.database.domain.Task;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
@@ -27,7 +29,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Yikai Gong
@@ -44,6 +48,41 @@ public class AspectService {
   private TaskRepository taskRepository;
   @Autowired
   private NotificationService notificationService;
+
+  public boolean updateTask(String userEmail, String taskAction, Long gainedExp, String tag) {
+    User user = userRepository.findByEmail(userEmail, 1);
+    List<TaskComplete> taskCompletes = user.getCompletedTasks() == null
+      ? new ArrayList<>()
+      : user.getCompletedTasks();
+    TaskComplete targetTaskComplete = null;
+    for (TaskComplete t : taskCompletes) {
+      if (t.getTask().getAction().equals(taskAction)) {
+        if (tag == null) {
+          targetTaskComplete = t;
+          break;
+        } else if (t.getTag() != null && tag.equals(t.getTag())) {
+          targetTaskComplete = t;
+          break;
+        }
+      }
+    }
+    if (targetTaskComplete == null) {
+      TaskComplete taskComplete = TaskComplete.init();
+      Task task = taskRepository.findByAction(taskAction);
+      taskComplete.setTask(task);
+      taskComplete.setUser(user);
+      if (tag != null)
+        taskComplete.setTag(tag);
+      taskCompletes.add(taskComplete);
+    } else {
+      targetTaskComplete.update();
+    }
+    user.setCompletedTasks(taskCompletes);
+    user.setExperience(user.getExperience() + gainedExp);
+    User savedUser = userRepository.save(user, 1);
+
+    return savedUser == null ? false : true;
+  }
 
   public void buildTaskCompletedNotification(String userEmail, String txt) {
     Message message = new Message(null, txt);
@@ -70,12 +109,10 @@ public class AspectService {
       CommentDetails commentDetails = (CommentDetails) createCommentEvent.getDetails();
       String userEmail = commentDetails.getUserEmail();
       String taskAction = "Post a Comment.";
-      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
-      userRepository.addExpPoint(userEmail, 100l);
-      if (taskComplete != null) {
-//                buildTaskCompletedNotification(userEmail, "Task Completed: Post a Comment.");
+
+      Boolean success = updateTask(userEmail, taskAction, 100L, null);
+      if (success)
         updateCommentBadge(userEmail, taskAction);
-      }
     }
   }
 
@@ -121,10 +158,11 @@ public class AspectService {
         userEmail = auth.getName();
       }
       String taskAction = "Read an Article.";
-      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
-      userRepository.addExpPoint(userEmail, 100l);
-      if (taskComplete != null) {
-//                buildTaskCompletedNotification(userEmail, "Task Completed: Read am Comment.");
+
+      Boolean success = updateTask(userEmail, taskAction, 100L, null);
+
+      if (success) {
+//         buildTaskCompletedNotification(userEmail, "Task Completed: Read am Comment.");
       }
     }
   }
@@ -140,11 +178,9 @@ public class AspectService {
         userEmail = auth.getName();
       }
       String taskAction = "Complete Personality Questions.";
-      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
-      userRepository.addExpPoint(userEmail, 100l);
-      if (taskComplete != null) {
+      Boolean success = updateTask(userEmail, taskAction, 100L, null);
+      if (success)
         updateAddPersonalityBadge(userEmail, taskAction);
-      }
     }
   }
 
@@ -171,9 +207,11 @@ public class AspectService {
       }
       String taskAction = "Share.";
       String targetType = likeEvent.getTargetType().getSimpleName();
-      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail, targetType);
-      userRepository.addExpPoint(userEmail, 100l);
-      if (taskComplete != null) {
+
+//      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail, targetType);
+//      userRepository.addExpPoint(userEmail, 100l);
+      Boolean success = updateTask(userEmail, taskAction, 100L, targetType);
+      if (success) {
         updateShareBadge(userEmail, taskAction, targetType);
       }
     }
@@ -243,9 +281,8 @@ public class AspectService {
         userEmail = auth.getName();
       }
       String taskAction = "Be a Pollster.";
-      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
-      userRepository.addExpPoint(userEmail, 100l);
-      if (taskComplete != null) {
+      Boolean success = updateTask(userEmail, taskAction, 100L, null);
+      if (success) {
         updateVoteInAPollBadge(userEmail, taskAction);
       }
     }
@@ -293,9 +330,8 @@ public class AspectService {
         userEmail = auth.getName();
       }
       String taskAction = "Set Vote Reminder.";
-      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
-      userRepository.addExpPoint(userEmail, 100l);
-      if (taskComplete != null) {
+      Boolean success = updateTask(userEmail, taskAction, 100L, null);
+      if (success) {
         updateAddVoteReminderBadge(userEmail, taskAction);
       }
     }
@@ -324,9 +360,8 @@ public class AspectService {
         userEmail = auth.getName();
       }
       String taskAction = "Invite a Friend.";
-      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
-      userRepository.addExpPoint(userEmail, 100l);
-      if (taskComplete != null) {
+      Boolean success = updateTask(userEmail, taskAction, 100L, null);
+      if (success) {
         updateInviteFriendsBadge(userEmail, taskAction);
       }
     }
@@ -373,9 +408,8 @@ public class AspectService {
         userEmail = auth.getName();
       }
       String taskAction = "Add a Friend.";
-      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail);
-      userRepository.addExpPoint(userEmail, 100l);
-      if (taskComplete != null) {
+      Boolean success = updateTask(userEmail, taskAction, 100L, null);
+      if (success) {
         updateAcceptFriendRequestBadge(userEmail, taskAction);
       }
     }

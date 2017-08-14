@@ -10,9 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Calendar;
+import java.util.Date;
 
 
-@RelationshipEntity(type = DataConstants.TASK_COMPLETE_LABEL)
+@RelationshipEntity(type = DataConstants.HAS_COMPLETED_TASK_LABEL)
 public class TaskComplete {
   @GraphId
   private Long nodeId;
@@ -20,13 +21,35 @@ public class TaskComplete {
   private User user;
   @EndNode
   private Task task;
-  private Long date;
+
+  private long numOfTimes;
+  private String dateList;
+  private String tag;
 
   private static Logger LOG = LoggerFactory.getLogger(TaskComplete.class);
 
+
+
   public TaskComplete() {
+
+  }
+
+  public static TaskComplete init(){
+    TaskComplete taskComplete = new TaskComplete();
     if (LOG.isTraceEnabled()) LOG.trace("Constructor()");
-    date = Calendar.getInstance().getTimeInMillis();
+    Long date = Calendar.getInstance().getTimeInMillis();
+    String dateList = String.valueOf(date);
+    long numOfTimes = 1L;
+    taskComplete.setDateList(dateList);
+    taskComplete.setNumOfTimes(numOfTimes);
+    return taskComplete;
+  }
+
+  public TaskComplete update() {
+    numOfTimes++;
+    Long date = new Date().getTime();
+    dateList = dateList + "," + date;
+    return this;
   }
 
   public TaskCompleteDetails toTaskCompleteDetails() {
@@ -34,7 +57,7 @@ public class TaskComplete {
 
     Long userId = ((getUser() == null) ? null : getUser().getNodeId());
     Long taskId = ((getTask() == null) ? null : getTask().getNodeId());
-    TaskCompleteDetails details = new TaskCompleteDetails(getNodeId(), userId, taskId, getDate());
+    TaskCompleteDetails details = new TaskCompleteDetails(getNodeId(), userId, taskId, null);
     details.setNodeId(getNodeId());
     if (LOG.isTraceEnabled()) LOG.trace("taskComplete " + this);
 
@@ -52,7 +75,7 @@ public class TaskComplete {
 
     TaskComplete taskComplete = new TaskComplete();
     taskComplete.setNodeId(details.getNodeId());
-    taskComplete.setDate(details.getDate());
+//    taskComplete.setDate(details.getDate());
     Task task = new Task();
     task.setNodeId(details.getTaskId());
     taskComplete.setTask(task);
@@ -69,6 +92,15 @@ public class TaskComplete {
     return nodeId;
   }
 
+
+  public String getTag() {
+    return tag;
+  }
+
+  public void setTag(String tag) {
+    this.tag = tag;
+  }
+
   /**
    * @param nodeId the nodeId to set
    */
@@ -76,16 +108,12 @@ public class TaskComplete {
     this.nodeId = nodeId;
   }
 
-  public Long getDate() {
-    if (LOG.isDebugEnabled()) LOG.debug("getDate() = " + date);
-    return date;
+  public String getDateList() {
+    return dateList;
   }
 
-  /**
-   * @param date the date to set
-   */
-  public void setDate(Long date) {
-    this.date = date;
+  public void setDateList(String dateList) {
+    this.dateList = dateList;
   }
 
   /**
@@ -116,13 +144,21 @@ public class TaskComplete {
     this.task = task;
   }
 
+  public long getNumOfTimes() {
+    return numOfTimes;
+  }
+
+  public void setNumOfTimes(long numOfTimes) {
+    this.numOfTimes = numOfTimes;
+  }
+
   /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
+     * @see java.lang.Object#toString()
+     */
   @Override
   public String toString() {
     return "TaskComplete [nodeId=" + nodeId + ", user=" + user
-      + ", task=" + task + ", date=" + date
+      + ", task=" + task
       + "]";
   }
 
@@ -134,7 +170,6 @@ public class TaskComplete {
     final int prime = 31;
     int result = 1;
     if (getNodeId() == null) {
-      result = prime * result + ((date == null) ? 0 : date.hashCode());
       result = prime * result
         + ((task == null) ? 0 : task.hashCode());
       result = prime * result + ((user == null) ? 0 : user.hashCode());
@@ -160,11 +195,6 @@ public class TaskComplete {
       return nodeId.equals(other.nodeId);
     } else {
       if (other.nodeId != null)
-        return false;
-      if (date == null) {
-        if (other.date != null)
-          return false;
-      } else if (!date.equals(other.date))
         return false;
       if (task == null) {
         if (other.task != null)

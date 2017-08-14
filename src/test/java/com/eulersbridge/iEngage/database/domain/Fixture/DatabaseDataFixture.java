@@ -700,7 +700,7 @@ public class DatabaseDataFixture {
     tc.setNodeId(nodeId);
     tc.setUser(user);
     tc.setTask(task);
-    tc.setDate(date);
+//    tc.setDate(date);
     return tc;
   }
 

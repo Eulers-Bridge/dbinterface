@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -83,9 +84,9 @@ public class LikesEventHandlerTest
 		
 		Like testData=new Like(user, newsArticle);
 		LikeEvent likeNewsArticlesEvent=new LikeEvent(newsArticle.getNodeId(),user.getEmail());
-		when(userRepository.findByEmail(any(String.class))).thenReturn(user);
-		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(newsArticle.getNodeId()));
-		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
+		when(userRepository.findByEmail(any(String.class), anyInt())).thenReturn(user);
+		when(nodeRepository.findOne(any(Long.class), anyInt())).thenReturn(new Node(newsArticle.getNodeId()));
+		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(1l);
 		LikedEvent res = service.like(likeNewsArticlesEvent);
 		assertNotNull(res);
 		assertEquals(likeNewsArticlesEvent.getNodeId(),res.getNodeId());
@@ -130,9 +131,9 @@ public class LikesEventHandlerTest
 		Event liked=DatabaseDataFixture.populateEvent1();
 		Like testData=new Like(liker, liked);
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
-		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(liked.getNodeId()));
-		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
+		when(userRepository.findByEmail(any(String.class),anyInt())).thenReturn(liker);
+		when(nodeRepository.findOne(any(Long.class),anyInt())).thenReturn(new Node(liked.getNodeId()));
+		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(1l);
 		
 		LikedEvent evtData = service.like(evt);
 		assertEquals(evtData.getNodeId(),liked.getNodeId());
@@ -151,7 +152,7 @@ public class LikesEventHandlerTest
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
 		when(userRepository.findByEmail(any(String.class))).thenReturn(null);
 		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(liked.getNodeId()));
-		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
+		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(1l);
 		
 		LikedEvent evtData = service.like(evt);
 		assertEquals(evtData.getNodeId(),liked.getNodeId());
@@ -168,9 +169,9 @@ public class LikesEventHandlerTest
 		Event liked=DatabaseDataFixture.populateEvent1();
 		Like testData=new Like(liker, liked);
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
-		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(nodeRepository.findOne(any(Long.class))).thenReturn(null);
-		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
+		when(userRepository.findByEmail(any(String.class),anyInt())).thenReturn(liker);
+		when(nodeRepository.findOne(any(Long.class),anyInt())).thenReturn(null);
+		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(1l);
 		
 		LikedEvent evtData = service.like(evt);
 		assertEquals(evtData.getNodeId(),liked.getNodeId());
@@ -185,11 +186,10 @@ public class LikesEventHandlerTest
 		if (LOG.isDebugEnabled()) LOG.debug("LikingEvent()");
 		User liker=DatabaseDataFixture.populateUserGnewitt();
 		Event liked=DatabaseDataFixture.populateEvent1();
-		Like testData=null;
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
-		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(liked.getNodeId()));
-		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(testData);
+		when(userRepository.findByEmail(any(String.class), anyInt())).thenReturn(liker);
+		when(nodeRepository.findOne(any(Long.class), anyInt())).thenReturn(new Node(liked.getNodeId()));
+		when(userRepository.like(any(String.class),any(Long.class))).thenReturn(null);
 		
 		LikedEvent evtData = service.like(evt);
 		assertEquals(evtData.getNodeId(),liked.getNodeId());
@@ -209,8 +209,8 @@ public class LikesEventHandlerTest
 		User liker=DatabaseDataFixture.populateUserGnewitt();
 		Event liked=DatabaseDataFixture.populateEvent1();
 		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
-		when(userRepository.findByEmail(any(String.class))).thenReturn(liker);
-		when(nodeRepository.findOne(any(Long.class))).thenReturn(new Node(liked.getNodeId()));
+		when(userRepository.findByEmail(any(String.class), anyInt())).thenReturn(liker);
+		when(nodeRepository.findOne(any(Long.class), anyInt())).thenReturn(new Node(liked.getNodeId()));
 		doNothing().when(userRepository).unlike(any(String.class),any(Long.class));
 		
 		LikedEvent evtData = service.unlike(evt);

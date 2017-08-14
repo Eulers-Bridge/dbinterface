@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.task.TaskDetails;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 @NodeEntity
 public class Task extends Node{
   private static final Logger LOG = LoggerFactory.getLogger(Task.class);
-
+  @Index
   private String action;
   private String description;
   private Integer xpValue;

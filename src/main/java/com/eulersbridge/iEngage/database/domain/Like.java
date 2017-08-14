@@ -16,6 +16,7 @@ public class Like {
   private User liker;
   @EndNode
   private Likeable liked;
+
   private Long timeStamp;
 
   public Like() {
