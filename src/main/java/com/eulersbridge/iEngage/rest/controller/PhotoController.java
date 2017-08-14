@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -105,6 +106,7 @@ public class PhotoController
 		}
 		else
 		{
+			photo.setDate(new Date().getTime());
 			PhotoCreatedEvent photoCreatedEvent = photoService
 					.createPhoto(new CreatePhotoEvent(photo.toPhotoDetails()));
 			if (LOG.isDebugEnabled()) LOG.debug("photoCreatedEvent "+photoCreatedEvent);
@@ -243,6 +245,7 @@ public class PhotoController
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to update photo. " + photoId);
+		photo.setDate(new Date().getTime());
 		UpdatedEvent photoUpdatedEvent = photoService
 				.updatePhoto(new UpdatePhotoEvent(photoId, photo
 						.toPhotoDetails()));
