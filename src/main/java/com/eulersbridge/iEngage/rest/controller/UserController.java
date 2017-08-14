@@ -780,7 +780,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
       if (result.getPremissionExpired())
         return new ResponseEntity<>(HttpStatus.GONE);
-      return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return new ResponseEntity<>(HttpStatus.OK);
