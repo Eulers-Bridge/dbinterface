@@ -20,8 +20,7 @@ import java.util.Map;
 
 public class EmailResetPWD extends Email implements Serializable {
   public static final String emailTitle = "Reset your Password - from Eulersbridge";
-  public static final String senderAddress = "greg.newitt@eulersbridge.com";
-  public static final String displayedSenderAddress = "eulersbridge@edulersbridge.com";
+  public static final String senderAddress = "support@eulersbridge.com";
   private static final String templatePath = EmailConstants.EmailResetPWDTemplate;
 
   private final String token;
