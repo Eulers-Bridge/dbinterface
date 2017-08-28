@@ -212,9 +212,9 @@ public class UserEventHandler implements UserService {
     publicDetails.setPhotos(userDetails.getPhotos());
     publicDetails.setProfilePhoto(userDetails.getProfilePhoto());
     publicDetails.setNumOfCompTasks(userDetails.getNumOfCompTasks());
-    publicDetails.setTotalTasks(userDetails.getTotalTasks());
+//    publicDetails.setTotalTasks(userDetails.getTotalTasks());
     publicDetails.setNumOfCompBadges(userDetails.getNumOfCompBadges());
-    publicDetails.setTotalBadges(userDetails.getTotalBadges());
+//    publicDetails.setTotalBadges(userDetails.getTotalBadges());
     publicDetails.setExperience(userDetails.getExperience());
 
     return publicDetails;

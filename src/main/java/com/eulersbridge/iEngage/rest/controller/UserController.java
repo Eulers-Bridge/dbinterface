@@ -37,34 +37,44 @@ import java.util.*;
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
 public class UserController {
+  private static Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-  @Autowired
-  UserService userService;
-  @Autowired
-  EmailService emailService;
-  @Autowired
-  LikesService likesService;
-  @Autowired
-  ContactRequestService contactRequestService;
-  @Autowired
-  NotificationService notificationService;
-  @Autowired
-  ServletContext servletContext;
-  @Autowired
-  VelocityEngine velocityEngine;
-  @Autowired
-  JavaMailSender emailSender;
-
+  final UserService userService;
+  final EmailService emailService;
+  final LikesService likesService;
+  final ContactRequestService contactRequestService;
+  final NotificationService notificationService;
+  final ServletContext servletContext;
+  final VelocityEngine velocityEngine;
+  final JavaMailSender emailSender;
+  final BadgeService badgeService;
+  final TaskService taskService;
   EmailValidator emailValidator;
   LongValidator longValidator;
 
-  public UserController() {
+  @Autowired
+  public UserController(UserService userService, EmailService emailService,
+                        LikesService likesService,
+                        ContactRequestService contactRequestService,
+                        NotificationService notificationService,
+                        ServletContext servletContext,
+                        VelocityEngine velocityEngine,
+                        JavaMailSender emailSender, BadgeService badgeService,
+                        TaskService taskService) {
     if (LOG.isDebugEnabled()) LOG.debug("UserController()");
     emailValidator = EmailValidator.getInstance();
     longValidator = LongValidator.getInstance();
+    this.userService = userService;
+    this.emailService = emailService;
+    this.likesService = likesService;
+    this.contactRequestService = contactRequestService;
+    this.notificationService = notificationService;
+    this.servletContext = servletContext;
+    this.velocityEngine = velocityEngine;
+    this.emailSender = emailSender;
+    this.badgeService = badgeService;
+    this.taskService = taskService;
   }
-
-  private static Logger LOG = LoggerFactory.getLogger(UserController.class);
 
   /**
    * Is passed all the necessary data to update a user.
@@ -525,6 +535,8 @@ public class UserController {
         dets.setEmail(null);
       if (LOG.isDebugEnabled()) LOG.debug("dets - " + dets);
       UserProfile restUser = UserProfile.fromUserDetails(dets);
+      restUser.setTotalTasks(taskService.getTotalNumOfTasks());
+      restUser.setTotalBadges(badgeService.getTotalNumOfBadges());
       result = new ResponseEntity<UserProfile>(restUser, HttpStatus.OK);
       if (LOG.isDebugEnabled()) LOG.debug("result - " + result);
     }
@@ -771,7 +783,7 @@ public class UserController {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     RequestHandledEvent result = userService.resetPwd(email, token, password);
-    if(!result.getSuccess()){
+    if (!result.getSuccess()) {
       if (result.getUserNotFound())
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       if (result.getNotAllowed())

@@ -99,4 +99,15 @@ public class LoginController {
     Response response = logout.process();
     return response;
   }
+
+  public static String getUserIdentity(){
+    SecurityContext context = SecurityContextHolder.getContext();
+    Authentication authentication = context.getAuthentication();
+    String userIdentity = authentication.getName();
+    return userIdentity;
+  }
+
+  public static boolean verifyUserIdentity(String email){
+    return email.equals(getUserIdentity());
+  }
 }

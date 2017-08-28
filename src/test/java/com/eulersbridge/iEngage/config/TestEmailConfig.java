@@ -30,13 +30,6 @@ public class TestEmailConfig
 	private String password;
 	
     private static Logger LOG = LoggerFactory.getLogger(EmailConfig.class);
-    
-	@Bean
-	public EmailService createEmailService()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("createEmailService()");
-		return new EmailEventHandler(null);
-	}
 
 	@Bean
 	public JavaMailSenderImpl mailSender()

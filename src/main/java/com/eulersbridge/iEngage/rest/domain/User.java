@@ -36,6 +36,8 @@ public class User extends ResourceSupport {
   private Boolean optOutDataCollection;
   private String profilePhoto;
 
+  private Integer numOfCompTasks;
+  private Integer numOfCompBadges;
   private Long experience;
   private Long level;
 
@@ -111,6 +113,22 @@ public class User extends ResourceSupport {
 
   public void setLevel(Long level) {
     this.level = level;
+  }
+
+  public Integer getNumOfCompTasks() {
+    return numOfCompTasks;
+  }
+
+  public void setNumOfCompTasks(Integer numOfCompTasks) {
+    this.numOfCompTasks = numOfCompTasks;
+  }
+
+  public Integer getNumOfCompBadges() {
+    return numOfCompBadges;
+  }
+
+  public void setNumOfCompBadges(Integer numOfCompBadges) {
+    this.numOfCompBadges = numOfCompBadges;
   }
 
   /**
@@ -261,16 +279,16 @@ public class User extends ResourceSupport {
     user.setNationality(readUser.getNationality());
     user.setYearOfBirth(readUser.getYearOfBirth());
     String password = readUser.getPassword(), hash = null;
-    if (password != null) {
-      try {
-        hash = PasswordHash.createHash(password);
-      } catch (NoSuchAlgorithmException e) {
-        e.printStackTrace();
-      } catch (InvalidKeySpecException e) {
-        e.printStackTrace();
-      }
-    }
-    user.setPassword(hash);
+//    if (password != null) {
+//      try {
+//        hash = PasswordHash.createHash(password);
+//      } catch (NoSuchAlgorithmException e) {
+//        e.printStackTrace();
+//      } catch (InvalidKeySpecException e) {
+//        e.printStackTrace();
+//      }
+//    }
+//    user.setPassword(hash);
     user.setContactNumber(readUser.getContactNumber());
     user.setAccountVerified(readUser.isAccountVerified());
     user.setInstitutionId(readUser.getInstitutionId());
@@ -283,6 +301,8 @@ public class User extends ResourceSupport {
     user.setProfilePhoto(readUser.getProfilePhoto());
     user.setExperience(readUser.getExperience());
     user.setLevel(calculateUserLevel(readUser.getExperience()));
+    user.setNumOfCompBadges(readUser.getNumOfCompBadges());
+    user.setNumOfCompTasks(readUser.getNumOfCompTasks());
 
     String simpleName = User.class.getSimpleName();
     String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);

@@ -3,9 +3,7 @@ package com.eulersbridge.iEngage.rest.controller;
 import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.events.voteRecord.*;
 import com.eulersbridge.iEngage.core.events.voteReminder.*;
-import com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService;
-import com.eulersbridge.iEngage.core.services.interfacePack.EmailService;
-import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
+import com.eulersbridge.iEngage.core.services.interfacePack.*;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.email.EmailVerification;
@@ -41,6 +39,11 @@ public class UserControllerTest
 	
 	@Mock
 	UserService userService;
+
+	@Mock
+	TaskService taskService;
+	@Mock
+	BadgeService badgeService;
 	
 	@Mock
 	EmailService emailService;
@@ -443,6 +446,8 @@ public class UserControllerTest
 		String email=dets.getEmail();
 		ReadUserEvent testData=new ReadUserEvent(email, dets);
 		when (userService.readUserByContactEmail(any(RequestReadUserEvent.class))).thenReturn(testData);
+		when (taskService.getTotalNumOfTasks()).thenReturn(1);
+		when (badgeService.getTotalNumOfBadges()).thenReturn(1);
 		this.mockMvc.perform(get(urlPrefix2+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andDo(print())
 		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))

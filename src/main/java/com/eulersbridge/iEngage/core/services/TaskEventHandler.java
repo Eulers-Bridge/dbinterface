@@ -8,6 +8,7 @@ import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.google.common.collect.Iterables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,5 +252,10 @@ public class TaskEventHandler implements TaskService {
       nare = AllReadEvent.notFound(null);
     }
     return nare;
+  }
+
+  @Override
+  public Integer getTotalNumOfTasks() {
+    return Iterables.size(taskRepository.findAll(0));
   }
 }

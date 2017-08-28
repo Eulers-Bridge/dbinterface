@@ -29,10 +29,10 @@ public class UserProfile extends ResourceSupport {
   private String email;
   private String profilePhoto;
 
-  private Long numOfCompTasks;
-  private Long totalTasks;
-  private Long numOfCompBadges;
-  private Long totalBadges;
+  private Integer numOfCompTasks;
+  private Integer totalTasks;
+  private Integer numOfCompBadges;
+  private Integer totalBadges;
   private Long numOfContacts;
 
   private Long experience;
@@ -80,19 +80,19 @@ public class UserProfile extends ResourceSupport {
     this.nationality = nationality;
   }
 
-  public Long getTotalTasks() {
+  public Integer getTotalTasks() {
     return totalTasks;
   }
 
-  public void setTotalTasks(Long totalTasks) {
+  public void setTotalTasks(Integer totalTasks) {
     this.totalTasks = totalTasks;
   }
 
-  public Long getTotalBadges() {
+  public Integer getTotalBadges() {
     return totalBadges;
   }
 
-  public void setTotalBadges(Long totalBadges) {
+  public void setTotalBadges(Integer totalBadges) {
     this.totalBadges = totalBadges;
   }
 
@@ -158,19 +158,19 @@ public class UserProfile extends ResourceSupport {
     return profilePhoto;
   }
 
-  public Long getNumOfCompTasks() {
+  public Integer getNumOfCompTasks() {
     return numOfCompTasks;
   }
 
-  public void setNumOfCompTasks(Long numOfCompTasks) {
+  public void setNumOfCompTasks(Integer numOfCompTasks) {
     this.numOfCompTasks = numOfCompTasks;
   }
 
-  public Long getNumOfCompBadges() {
+  public Integer getNumOfCompBadges() {
     return numOfCompBadges;
   }
 
-  public void setNumOfCompBadges(Long numOfCompBadges) {
+  public void setNumOfCompBadges(Integer numOfCompBadges) {
     this.numOfCompBadges = numOfCompBadges;
   }
 
@@ -208,8 +208,8 @@ public class UserProfile extends ResourceSupport {
     user.institutionId = readUser.getInstitutionId();
     user.numOfCompTasks = readUser.getNumOfCompTasks();
     user.numOfCompBadges = readUser.getNumOfCompBadges();
-    user.totalTasks = readUser.getTotalTasks();
-    user.totalBadges = readUser.getTotalBadges();
+//    user.totalTasks = readUser.getTotalTasks();
+//    user.totalBadges = readUser.getTotalBadges();
     user.numOfContacts = readUser.getNumOfContacts();
     user.experience = readUser.getExperience();
 

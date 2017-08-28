@@ -37,4 +37,7 @@ public interface BadgeService {
 
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
   public AllReadEvent readRemainingBadges(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public Integer getTotalNumOfBadges();
 }

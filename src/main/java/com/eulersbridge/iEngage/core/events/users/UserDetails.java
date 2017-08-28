@@ -32,10 +32,10 @@ public class UserDetails extends Details {
   private Boolean trackingOff;
   private Long institutionId;
 
-  private Long numOfCompTasks;
-  private Long totalTasks;
-  private Long numOfCompBadges;
-  private Long totalBadges;
+  private Integer numOfCompTasks;
+//  private Integer totalTasks;
+  private Integer numOfCompBadges;
+//  private Integer totalBadges;
   private Long numOfContacts;
 
   private Long experience = 0l;
@@ -97,37 +97,37 @@ public class UserDetails extends Details {
     this.password = password;
   }
 
-  public Long getNumOfCompTasks() {
+  public Integer getNumOfCompTasks() {
     return numOfCompTasks;
   }
 
-  public void setNumOfCompTasks(Long numOfCompTasks) {
+  public void setNumOfCompTasks(Integer numOfCompTasks) {
     this.numOfCompTasks = numOfCompTasks;
   }
 
-  public Long getNumOfCompBadges() {
+  public Integer getNumOfCompBadges() {
     return numOfCompBadges;
   }
 
-  public void setNumOfCompBadges(Long numOfCompBadges) {
+  public void setNumOfCompBadges(Integer numOfCompBadges) {
     this.numOfCompBadges = numOfCompBadges;
   }
 
-  public Long getTotalTasks() {
-    return totalTasks;
-  }
-
-  public void setTotalTasks(Long totalTasks) {
-    this.totalTasks = totalTasks;
-  }
-
-  public Long getTotalBadges() {
-    return totalBadges;
-  }
-
-  public void setTotalBadges(Long totalBadges) {
-    this.totalBadges = totalBadges;
-  }
+//  public Integer getTotalTasks() {
+//    return totalTasks;
+//  }
+//
+//  public void setTotalTasks(Integer totalTasks) {
+//    this.totalTasks = totalTasks;
+//  }
+//
+//  public Integer getTotalBadges() {
+//    return totalBadges;
+//  }
+//
+//  public void setTotalBadges(Integer totalBadges) {
+//    this.totalBadges = totalBadges;
+//  }
 
   public Long getNumOfContacts() {
     return numOfContacts;

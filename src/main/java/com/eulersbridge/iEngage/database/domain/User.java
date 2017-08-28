@@ -233,6 +233,10 @@ public class User extends Node {
   public Integer getNumOfCompTasks() {
     if (completedTasks == null)
       return 0;
+//    Integer i = 0;
+//    for (TaskComplete t : completedTasks) {
+//      i += Long.valueOf(t.getNumOfTimes()).intValue();
+//    }
     return completedTasks.size();
   }
 
@@ -337,6 +341,8 @@ public class User extends Node {
     if (photos != null && photos.size() > 0 && photos.iterator().next() instanceof Photo)
       details.setPhotos(Photo.photosToPhotoDetails(getPhotos$()));
 
+    details.setNumOfCompBadges(getNumOfCompBadges());
+    details.setNumOfCompTasks(getNumOfCompTasks());
     return details;
   }
 

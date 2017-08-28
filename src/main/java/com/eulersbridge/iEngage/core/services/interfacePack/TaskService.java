@@ -37,4 +37,7 @@ public interface TaskService {
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
   public AllReadEvent readRemainingTasks(ReadAllEvent readCompletedTasksEvent,
                                          Direction sortDirection, int pageNumber, int pageLength);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public Integer getTotalNumOfTasks();
 }
