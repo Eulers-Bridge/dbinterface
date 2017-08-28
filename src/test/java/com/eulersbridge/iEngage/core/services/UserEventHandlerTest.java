@@ -29,6 +29,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class UserEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    userServiceMocked = new UserEventHandler(uRepo, pRepo, iRepo, tRepo, null, null);
+    userServiceMocked = new UserEventHandler(new BCryptPasswordEncoder(), uRepo, pRepo, iRepo, tRepo, null, null);
   }
 
   /**
@@ -94,7 +95,7 @@ public class UserEventHandlerTest {
    */
   @Test
   public void testUserEventHandler() {
-    UserEventHandler userService2 = new UserEventHandler(uRepo, pRepo, iRepo, tRepo, null, null);
+    UserEventHandler userService2 = new UserEventHandler(null, uRepo, pRepo, iRepo, tRepo, null, null);
     assertNotNull("newsService not being created by constructor.", userService2);
   }
 

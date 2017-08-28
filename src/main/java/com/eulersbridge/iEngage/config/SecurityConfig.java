@@ -8,6 +8,7 @@ import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,6 +16,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * @author Greg Newitt
@@ -28,6 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   UserService userService;
 
+  @Autowired
+  PasswordEncoder passwordEncoder;
+
 //  @Autowired
 //  DigestAuthenticationEntryPoint digestEntryPoint;
 //
@@ -40,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     if (LOG.isDebugEnabled()) LOG.debug("configure()");
     DaoAuthenticationProvider authProv = new DaoAuthenticationProvider();
     authProv.setUserDetailsService(userService);
+    authProv.setPasswordEncoder(passwordEncoder);
 //    Neo4jAuthenticationProvider authProv = new Neo4jAuthenticationProvider(userService);
     auth.authenticationProvider(authProv);
   }
@@ -80,6 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       //TODO reenable CSRF security??
       .csrf().disable();
   }
+
 
 //  @Bean
 //  public DigestAuthenticationFilter digestFilter() {

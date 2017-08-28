@@ -30,6 +30,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
@@ -39,6 +41,7 @@ import java.util.*;
 public class UserEventHandler implements UserService {
 
   private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
+  private PasswordEncoder passwordEncoder;
 
   private UserRepository userRepository;
   private PersonalityRepository personRepository;
@@ -48,12 +51,14 @@ public class UserEventHandler implements UserService {
 
   private VelocityEngine velocityEngine;
 
-  public UserEventHandler(UserRepository userRepository,
+  public UserEventHandler(PasswordEncoder passwordEncoder,
+                          UserRepository userRepository,
                           PersonalityRepository personRepository,
                           InstitutionRepository instRepo,
                           VerificationTokenRepository tokenRepo,
                           VelocityEngine velocityEngine,
                           PPSEQuestionsRepository ppseQuestionsRepository) {
+    this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
     this.personRepository = personRepository;
     this.instRepository = instRepo;
@@ -96,6 +101,7 @@ public class UserEventHandler implements UserService {
       if ((inst != null) && (null == existingUser)) {
         if (LOG.isDebugEnabled())
           LOG.debug("Found institution = " + inst);
+        userToInsert.setPassword(passwordEncoder.encode(userToInsert.getPassword()));
         userToInsert.setInstitution(inst.toNode());
         userToInsert.setAccountVerified(false);
         userToInsert.setRoles(SecurityConstants.USER_ROLE);
@@ -370,13 +376,11 @@ public class UserEventHandler implements UserService {
       newUser.setAccountVerified(false);
     } else {
       userToUpdate.setNodeId(user.getNodeId());
+      userToUpdate.setPassword(user.getPassword());
+      userToUpdate.setRoles(user.getRoles());
+
       if (null == userToUpdate.getEmail())
         userToUpdate.setEmail(user.getEmail());
-      //Fixme: Maybe dangerous to allow user to update their roles?
-      if (null == userToUpdate.getRoles())
-        userToUpdate.setRoles(user.getRoles());
-      if (null == userToUpdate.getPassword())
-        userToUpdate.setPassword(user.getPassword());
       if (null == userToUpdate.getContactNumber())
         userToUpdate.setContactNumber(user.getContactNumber());
       if (null == userToUpdate.getFamilyName())
@@ -686,8 +690,8 @@ public class UserEventHandler implements UserService {
     Long validTime = 86400000L; // 24×60×60×1000 - 24 hour in milic
     if (diff > validTime)
       return RequestHandledEvent.premissionExpired();
-
-    user.setPassword(newPwd);
+    String encryptedNewPwd = passwordEncoder.encode(newPwd);
+    user.setPassword(encryptedNewPwd);
     user.setResetPwdToken("null");
     User savedUser = userRepository.save(user, 0);
     if (savedUser == null)

@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage;
 
 import com.eulersbridge.iEngage.core.domain.Login;
+import com.eulersbridge.iEngage.security.ApplicationEventListener;
 import com.eulersbridge.iEngage.security.UserPermissionEvaluator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.security.access.PermissionEvaluator;
+
+import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
@@ -62,5 +65,4 @@ public class Launcher extends SpringBootServletInitializer {
     om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
     return om;
   }
-
 }

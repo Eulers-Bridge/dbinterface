@@ -11,6 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 public class CoreConfig {
@@ -103,9 +107,9 @@ public class CoreConfig {
   }
 
   @Bean
-  public UserService createUserService() {
+  public UserService createUserService(PasswordEncoder passwordEncoder) {
     if (LOG.isDebugEnabled()) LOG.debug("createUserService()");
-    return new UserEventHandler(userRepo, personRepo, institutionRepository, tokenRepo, velocityEngine, ppseQuestionsRepository);
+    return new UserEventHandler(passwordEncoder, userRepo, personRepo, institutionRepository, tokenRepo, velocityEngine, ppseQuestionsRepository);
   }
 
   @Bean
@@ -234,5 +238,10 @@ public class CoreConfig {
   @Bean
   public AspectService createAspectService() {
     return new AspectService();
+  }
+
+  @Bean
+  public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    return new BCryptPasswordEncoder();
   }
 }
