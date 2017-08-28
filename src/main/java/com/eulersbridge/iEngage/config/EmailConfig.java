@@ -1,11 +1,7 @@
 package com.eulersbridge.iEngage.config;
 
-import com.eulersbridge.iEngage.core.services.EmailEventHandler;
-import com.eulersbridge.iEngage.core.services.EmailService;
-import com.eulersbridge.iEngage.email.EmailConstants;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.tools.view.WebappResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 import javax.servlet.ServletContext;
 import java.util.Properties;
@@ -22,6 +17,8 @@ import java.util.Properties;
 //import org.springframework.core.io.Resource;
 @Configuration
 public class EmailConfig {
+  private static Logger LOG = LoggerFactory.getLogger(EmailConfig.class);
+
   @Value("${email.host}")
   private String host;
 
@@ -33,18 +30,6 @@ public class EmailConfig {
 
   @Value("${email.password}")
   private String password;
-
-  private static Logger LOG = LoggerFactory.getLogger(EmailConfig.class);
-
-  @Bean
-  public EmailService createEmailService() {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("createEmailService()");
-      LOG.debug("host - " + host + " username " + username);
-    }
-
-    return new EmailEventHandler();
-  }
 
   @Bean
   public JavaMailSender mailSender() {
@@ -87,16 +72,4 @@ public class EmailConfig {
     javaMailProperties.setProperty("mail.debug", "true");
     return javaMailProperties;
   }
-
-/*	private Properties getAwsMailProperties()
-  {
-		Properties awsMailProperties=new Properties();
-		awsMailProperties.setProperty("mail.transport.protocol", "aws");
-		awsMailProperties.setProperty("mail.aws.user", "true");
-		awsMailProperties.setProperty("mail.aws.password", "true");
-		awsMailProperties.setProperty("mail.debug", "true");
-		return awsMailProperties;
-	}
-*/
-
 }

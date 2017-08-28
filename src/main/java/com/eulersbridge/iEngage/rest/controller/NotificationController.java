@@ -5,7 +5,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
-import com.eulersbridge.iEngage.core.services.NotificationService;
+import com.eulersbridge.iEngage.core.services.interfacePack.NotificationService;
 import com.eulersbridge.iEngage.rest.domain.Notification;
 import com.eulersbridge.iEngage.rest.domain.Response;
 import org.slf4j.Logger;

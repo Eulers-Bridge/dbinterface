@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.config;
 
 import com.eulersbridge.iEngage.core.services.EmailEventHandler;
-import com.eulersbridge.iEngage.core.services.EmailService;
+import com.eulersbridge.iEngage.core.services.interfacePack.EmailService;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class TestEmailConfig
 	public EmailService createEmailService()
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("createEmailService()");
-		return new EmailEventHandler();
+		return new EmailEventHandler(null);
 	}
 
 	@Bean

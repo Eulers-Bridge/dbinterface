@@ -2,7 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.*;
-import com.eulersbridge.iEngage.core.services.CommentService;
+import com.eulersbridge.iEngage.core.services.interfacePack.CommentService;
 import com.eulersbridge.iEngage.rest.domain.Comment;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Response;

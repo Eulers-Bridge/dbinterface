@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.services;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
 import com.eulersbridge.iEngage.core.events.positions.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.PositionService;
 import com.eulersbridge.iEngage.database.domain.Candidate;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Position;
@@ -11,10 +12,12 @@ import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.PositionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,7 +25,7 @@ import java.util.Iterator;
 /**
  * @author Yikai Gong
  */
-
+@Service
 public class PositionEventHandler implements PositionService {
   private static Logger LOG = LoggerFactory.getLogger(PositionEventHandler.class);
 
@@ -30,6 +33,7 @@ public class PositionEventHandler implements PositionService {
   private ElectionRepository electionRepository;
   private CandidateRepository candidateRepository;
 
+  @Autowired
   public PositionEventHandler(PositionRepository positionRepository,
                               ElectionRepository electionRepository, CandidateRepository candidateRepository) {
     this.positionRepository = positionRepository;

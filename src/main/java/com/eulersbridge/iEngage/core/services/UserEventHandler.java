@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.events.voteRecord.*;
 import com.eulersbridge.iEngage.core.events.voteReminder.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.*;
 import com.eulersbridge.iEngage.email.EmailConstants;
@@ -18,6 +19,7 @@ import com.eulersbridge.iEngage.security.UserCredentialDetails;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,14 +32,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
+@Service
 public class UserEventHandler implements UserService {
 
   private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
@@ -51,6 +54,7 @@ public class UserEventHandler implements UserService {
 
   private VelocityEngine velocityEngine;
 
+  @Autowired
   public UserEventHandler(PasswordEncoder passwordEncoder,
                           UserRepository userRepository,
                           PersonalityRepository personRepository,
@@ -65,14 +69,6 @@ public class UserEventHandler implements UserService {
     this.tokenRepository = tokenRepo;
     this.velocityEngine = velocityEngine;
     this.ppseQuestionsRepository = ppseQuestionsRepository;
-
-//    VelocityEngineFactoryBean ve = new VelocityEngineFactoryBean();
-//    Properties velocityProperties = new Properties();
-//    velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
-//    velocityProperties.setProperty("webapp.resource.loader.path", "/");
-//    velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
-//    ve.setVelocityProperties(velocityProperties);
-//    velocityEngine = ve.getObject();
   }
 
   @Override

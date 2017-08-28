@@ -6,7 +6,7 @@ package com.eulersbridge.iEngage.security;
 
 import com.eulersbridge.iEngage.core.events.users.AuthenticateUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserAuthenticatedEvent;
-import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

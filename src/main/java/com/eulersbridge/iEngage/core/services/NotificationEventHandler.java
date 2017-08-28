@@ -5,6 +5,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
+import com.eulersbridge.iEngage.core.services.interfacePack.NotificationService;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.notifications.Notification;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
@@ -12,11 +13,13 @@ import com.eulersbridge.iEngage.database.repository.NotificationRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,8 @@ import java.util.Iterator;
 /**
  * @author Greg Newitt
  */
+
+@Service
 public class NotificationEventHandler implements NotificationService {
   static Logger LOG = LoggerFactory.getLogger(NotificationEventHandler.class);
 
@@ -33,6 +38,7 @@ public class NotificationEventHandler implements NotificationService {
   ContactRequestRepository contactRequestRepository;
   HashMap<String, GraphRepository<?>> repos = new HashMap<>();
 
+  @Autowired
   public NotificationEventHandler(NotificationRepository notificationRepository, UserRepository userRepository, ContactRequestRepository contactRequestRepository) {
     this.notificationRepository = notificationRepository;
     this.userRepository = userRepository;

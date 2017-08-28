@@ -8,7 +8,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.*;
 import com.eulersbridge.iEngage.core.events.institutions.*;
 import com.eulersbridge.iEngage.core.events.newsFeed.*;
-import com.eulersbridge.iEngage.core.services.InstitutionService;
+import com.eulersbridge.iEngage.core.services.interfacePack.InstitutionService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;

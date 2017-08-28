@@ -5,7 +5,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.ticket.*;
-import com.eulersbridge.iEngage.core.services.TicketService;
+import com.eulersbridge.iEngage.core.services.interfacePack.TicketService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.Before;

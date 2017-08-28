@@ -4,21 +4,26 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.configuration.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.ConfigurationService;
 import com.eulersbridge.iEngage.database.domain.Configuration;
 import com.eulersbridge.iEngage.database.repository.ConfigurationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Yikai Gong
  */
 
+@Service
 public class ConfigurationEventHandler implements ConfigurationService {
   private static Logger LOG = LoggerFactory
     .getLogger(ConfigurationService.class);
 
   private ConfigurationRepository configurationRepository;
 
+  @Autowired
   public ConfigurationEventHandler(
     ConfigurationRepository configurationRepository) {
     this.configurationRepository = configurationRepository;

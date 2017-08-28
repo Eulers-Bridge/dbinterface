@@ -5,20 +5,25 @@ import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.CountryService;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.repository.CountryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+@Service
 public class CountryEventHandler implements CountryService {
   private static Logger LOG = LoggerFactory.getLogger(CountryEventHandler.class);
 
   private CountryRepository countryRepository;
 
+  @Autowired
   public CountryEventHandler(final CountryRepository countryRepo) {
     this.countryRepository = countryRepo;
   }

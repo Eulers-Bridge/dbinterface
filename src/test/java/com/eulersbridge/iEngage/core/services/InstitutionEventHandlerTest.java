@@ -11,6 +11,7 @@ import com.eulersbridge.iEngage.core.events.institutions.*;
 import com.eulersbridge.iEngage.core.events.newsFeed.CreateNewsFeedEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedCreatedEvent;
 import com.eulersbridge.iEngage.core.events.newsFeed.NewsFeedDetails;
+import com.eulersbridge.iEngage.core.services.interfacePack.InstitutionService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;

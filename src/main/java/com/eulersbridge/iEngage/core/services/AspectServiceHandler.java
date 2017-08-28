@@ -13,6 +13,7 @@ import com.eulersbridge.iEngage.core.events.polls.PollAnswerCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
+import com.eulersbridge.iEngage.core.services.interfacePack.NotificationService;
 import com.eulersbridge.iEngage.database.domain.Badge;
 import com.eulersbridge.iEngage.database.domain.Task;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
@@ -38,16 +39,23 @@ import java.util.List;
  */
 
 @Aspect
-public class AspectService {
+public class AspectServiceHandler {
+
+  private final UserRepository userRepository;
+  private final BadgeRepository badgeRepository;
+  private final TaskRepository taskRepository;
+  private final NotificationService notificationService;
 
   @Autowired
-  private UserRepository userRepository;
-  @Autowired
-  private BadgeRepository badgeRepository;
-  @Autowired
-  private TaskRepository taskRepository;
-  @Autowired
-  private NotificationService notificationService;
+  public AspectServiceHandler(UserRepository userRepository,
+                              BadgeRepository badgeRepository,
+                              TaskRepository taskRepository,
+                              NotificationService notificationService) {
+    this.userRepository = userRepository;
+    this.badgeRepository = badgeRepository;
+    this.taskRepository = taskRepository;
+    this.notificationService = notificationService;
+  }
 
   public boolean updateTask(String userEmail, String taskAction, Long gainedExp, String tag) {
     User user = userRepository.findByEmail(userEmail, 1);

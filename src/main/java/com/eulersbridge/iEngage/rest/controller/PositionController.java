@@ -2,7 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.positions.*;
-import com.eulersbridge.iEngage.core.services.PositionService;
+import com.eulersbridge.iEngage.core.services.interfacePack.PositionService;
 import com.eulersbridge.iEngage.rest.domain.Candidate;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Position;

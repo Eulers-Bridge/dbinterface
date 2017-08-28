@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.eulersbridge.iEngage.core.services;
+package com.eulersbridge.iEngage.core.services.interfacePack;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.votingLocation.*;

@@ -1,4 +1,4 @@
-package com.eulersbridge.iEngage.core.services;
+package com.eulersbridge.iEngage.core.services.interfacePack;
 
 import com.eulersbridge.iEngage.email.Email;
 import com.eulersbridge.iEngage.email.EmailVerification;

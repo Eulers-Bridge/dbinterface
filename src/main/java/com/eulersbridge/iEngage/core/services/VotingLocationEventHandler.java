@@ -5,6 +5,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.votingLocation.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.VotingLocationService;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.VotingLocation;
@@ -13,10 +14,12 @@ import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.VotingLocationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,8 +27,9 @@ import java.util.Iterator;
 /**
  * @author Greg Newitt
  */
-public class VotingLocationEventHandler implements VotingLocationService {
 
+@Service
+public class VotingLocationEventHandler implements VotingLocationService {
   private static Logger LOG = LoggerFactory
     .getLogger(VotingLocationEventHandler.class);
 
@@ -33,9 +37,10 @@ public class VotingLocationEventHandler implements VotingLocationService {
   private NodeRepository nodeRepository;
   private ElectionRepository electionRepository;
 
-  public VotingLocationEventHandler(
-    VotingLocationRepository locationRepository, ElectionRepository electionRepository,
-    NodeRepository nodeRepository) {
+  @Autowired
+  public VotingLocationEventHandler(VotingLocationRepository locationRepository,
+                                    ElectionRepository electionRepository,
+                                    NodeRepository nodeRepository) {
     this.votingLocationRepository = locationRepository;
     this.nodeRepository = nodeRepository;
     this.electionRepository = electionRepository;
@@ -191,7 +196,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
   /*
    * (non-Javadoc)
    *
-   * @see com.eulersbridge.iEngage.core.services.VotingLocationService#
+   * @see com.eulersbridge.iEngage.core.services.interfacePack.VotingLocationService#
    * findVotingBooths
    * (com.eulersbridge.iEngage.core.events.votingLocation.ReadVotingLocationsEvent
    * , org.springframework.data.domain.Sort.Direction, int, int)

@@ -5,7 +5,7 @@ import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.countrys.*;
-import com.eulersbridge.iEngage.core.services.CountryService;
+import com.eulersbridge.iEngage.core.services.interfacePack.CountryService;
 import com.eulersbridge.iEngage.rest.domain.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

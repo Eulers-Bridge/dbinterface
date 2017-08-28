@@ -4,7 +4,7 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.ticket.*;
-import com.eulersbridge.iEngage.core.services.TicketService;
+import com.eulersbridge.iEngage.core.services.interfacePack.TicketService;
 import com.eulersbridge.iEngage.rest.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

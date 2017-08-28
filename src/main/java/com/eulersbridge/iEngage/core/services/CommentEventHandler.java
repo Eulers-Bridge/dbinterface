@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.CommentService;
 import com.eulersbridge.iEngage.database.domain.Comment;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
@@ -10,10 +11,12 @@ import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +25,7 @@ import java.util.Iterator;
 /**
  * @author Yikai Gong
  */
-
+@Service
 public class CommentEventHandler implements CommentService {
 
   private static Logger LOG = LoggerFactory.getLogger(CommentEventHandler.class);
@@ -31,6 +34,7 @@ public class CommentEventHandler implements CommentService {
   private CommentRepository commentRepository;
   private NodeRepository nodeRepository;
 
+  @Autowired
   public CommentEventHandler(UserRepository userRepository, CommentRepository commentRepository, NodeRepository nodeRepository) {
     this.userRepository = userRepository;
     this.commentRepository = commentRepository;

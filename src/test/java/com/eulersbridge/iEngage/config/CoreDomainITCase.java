@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.config;
 
 import com.eulersbridge.iEngage.core.events.users.*;
-import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
 import org.junit.AfterClass;
 import org.junit.Ignore;

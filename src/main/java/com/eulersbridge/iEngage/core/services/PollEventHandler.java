@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.polls.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.PollService;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NodeRepository;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,10 +26,10 @@ import java.util.List;
  * @author Yikai Gong
  */
 
+@Service
 public class PollEventHandler implements PollService {
-  private static Logger LOG = LoggerFactory
-    .getLogger(ElectionEventHandler.class);
-  // @Autowired
+  private static Logger LOG = LoggerFactory.getLogger(ElectionEventHandler.class);
+
   private PollRepository pollRepository;
   private PollAnswerRepository answerRepository;
   private NodeRepository nodeRepository;
@@ -35,7 +37,9 @@ public class PollEventHandler implements PollService {
 
   private Session session;
 
+  //TODO there is no session bean currently. Why need it?
   @Autowired
+  @SuppressWarnings("SpringJavaAutowiringInspection")
   public PollEventHandler(PollRepository pollRepository,
                           PollAnswerRepository answerRepository,
                           NodeRepository nodeRepository,

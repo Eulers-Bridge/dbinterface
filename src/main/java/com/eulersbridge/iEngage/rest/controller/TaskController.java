@@ -2,7 +2,7 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.task.*;
-import com.eulersbridge.iEngage.core.services.TaskService;
+import com.eulersbridge.iEngage.core.services.interfacePack.TaskService;
 import com.eulersbridge.iEngage.rest.domain.FindsParent;
 import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.Task;

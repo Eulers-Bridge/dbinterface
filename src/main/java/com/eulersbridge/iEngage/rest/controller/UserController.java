@@ -5,7 +5,7 @@ import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent.VerificationErrorType;
 import com.eulersbridge.iEngage.core.events.voteRecord.*;
 import com.eulersbridge.iEngage.core.events.voteReminder.*;
-import com.eulersbridge.iEngage.core.services.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.*;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.email.EmailResetPWD;
 import com.eulersbridge.iEngage.rest.domain.*;

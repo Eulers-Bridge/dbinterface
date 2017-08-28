@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.events.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.EventService;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
@@ -9,17 +10,19 @@ import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
 /**
  * @author Yikai Gong
  */
-
+@Service
 public class EventEventHandler implements EventService {
   private static Logger LOG = LoggerFactory
     .getLogger(EventEventHandler.class);
@@ -27,6 +30,7 @@ public class EventEventHandler implements EventService {
   private EventRepository eventRepository;
   private InstitutionRepository institutionRepository;
 
+  @Autowired
   public EventEventHandler(EventRepository eventRepository,
                            InstitutionRepository institutionRepository) {
     this.eventRepository = eventRepository;

@@ -5,16 +5,19 @@ import com.eulersbridge.iEngage.core.events.LikedEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.interfacePack.LikesService;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,14 +25,14 @@ import java.util.Iterator;
 /**
  * @author Yikai Gong
  */
-
+@Service
 public class LikesEventHandler implements LikesService {
+  private static Logger LOG = LoggerFactory.getLogger(LikesEventHandler.class);
 
   UserRepository userRepository;
   NodeRepository nodeRepository;
 
-  private static Logger LOG = LoggerFactory.getLogger(LikesEventHandler.class);
-
+  @Autowired
   public LikesEventHandler(UserRepository userRepository, NodeRepository nodeRepository) {
     this.userRepository = userRepository;
     this.nodeRepository = nodeRepository;

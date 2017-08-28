@@ -6,6 +6,7 @@ import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.ticket.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.services.interfacePack.TicketService;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.domain.resultMap.SupportAndNum;
 import com.eulersbridge.iEngage.database.repository.CandidateRepository;
@@ -14,10 +15,12 @@ import com.eulersbridge.iEngage.database.repository.TicketRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,6 +29,7 @@ import java.util.Iterator;
  * @author Yikai Gong
  */
 
+@Service
 public class TicketEventHandler implements TicketService {
   private static Logger LOG = LoggerFactory.getLogger(TicketService.class);
 
@@ -34,6 +38,7 @@ public class TicketEventHandler implements TicketService {
   private UserRepository userRepository;
   private CandidateRepository candidateRepository;
 
+  @Autowired
   public TicketEventHandler(TicketRepository ticketRepository,
                             ElectionRepository electionRepository,
                             UserRepository userRepository,

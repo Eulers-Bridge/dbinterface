@@ -4,14 +4,17 @@ import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.forumQuestions.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.ForumQuestionService;
 import com.eulersbridge.iEngage.database.domain.ForumQuestion;
 import com.eulersbridge.iEngage.database.repository.ForumQuestionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,12 +22,13 @@ import java.util.Iterator;
 /**
  * @author Yikai Gong
  */
-
+@Service
 public class ForumQuestionEventHandler implements ForumQuestionService {
   private static Logger LOG = LoggerFactory.getLogger(ForumQuestionService.class);
 
   private ForumQuestionRepository forumQuestionRepository;
 
+  @Autowired
   public ForumQuestionEventHandler(ForumQuestionRepository forumQuestionRepository) {
     this.forumQuestionRepository = forumQuestionRepository;
   }

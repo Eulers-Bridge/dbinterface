@@ -3,7 +3,7 @@
  */
 package com.eulersbridge.iEngage.config;
 
-import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import com.eulersbridge.iEngage.security.AppBasicAuthenticationEntryPoint;
 import com.eulersbridge.iEngage.security.AppBasicAuthenticationSuccessHandler;

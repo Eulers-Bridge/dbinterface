@@ -1,4 +1,4 @@
-package com.eulersbridge.iEngage.core.services;
+package com.eulersbridge.iEngage.core.services.interfacePack;
 
 import com.eulersbridge.iEngage.core.events.DeletedEvent;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;

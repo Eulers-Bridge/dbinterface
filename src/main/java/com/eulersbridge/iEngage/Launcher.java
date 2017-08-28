@@ -25,7 +25,6 @@ import javax.annotation.PostConstruct;
 @EnableAspectJAutoProxy
 @PropertySource("classpath:application.properties")
 public class Launcher extends SpringBootServletInitializer {
-
   private static Logger LOG = LoggerFactory.getLogger(Launcher.class);
 
   public static void main(String[] args) {
@@ -36,33 +35,6 @@ public class Launcher extends SpringBootServletInitializer {
 
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-//    boolean logStartupInfo = true;
-//    builder.logStartupInfo(logStartupInfo);
     return builder.sources(Launcher.class);
-  }
-
-  //Fixme: Unknown beans added by Greg
-  @Bean
-  public Login testLogin2() {
-    return new Login(0, "testlogin", "testlogin in had a test");
-  }
-
-  @Bean
-  public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-    return new PropertySourcesPlaceholderConfigurer();
-  }
-
-  @Bean
-  public PermissionEvaluator permissionEvaluator() {
-    UserPermissionEvaluator bean = new UserPermissionEvaluator();
-    return bean;
-  }
-
-  @Primary
-  @Bean
-  public ObjectMapper objectMapper() {
-    ObjectMapper om = new ObjectMapper();
-    om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-    return om;
   }
 }

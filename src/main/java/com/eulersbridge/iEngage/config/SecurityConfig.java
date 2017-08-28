@@ -3,12 +3,11 @@
  */
 package com.eulersbridge.iEngage.config;
 
-import com.eulersbridge.iEngage.core.services.UserService;
+import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,7 +15,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -28,18 +26,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private static Logger LOG = LoggerFactory.getLogger(SecurityConfig.class);
 
-  @Autowired
-  UserService userService;
+  private final UserService userService;
+
+  private final PasswordEncoder passwordEncoder;
 
   @Autowired
-  PasswordEncoder passwordEncoder;
-
-//  @Autowired
-//  DigestAuthenticationEntryPoint digestEntryPoint;
-//
-//  @Autowired
-//  PermissionEvaluator permissionEvaluator;
-
+  public SecurityConfig(UserService userService, PasswordEncoder passwordEncoder) {
+    this.userService = userService;
+    this.passwordEncoder = passwordEncoder;
+  }
 
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {

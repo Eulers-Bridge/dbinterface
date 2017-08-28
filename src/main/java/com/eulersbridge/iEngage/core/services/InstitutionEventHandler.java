@@ -7,6 +7,7 @@ import com.eulersbridge.iEngage.core.events.UpdatedEvent;
 import com.eulersbridge.iEngage.core.events.generalInfo.*;
 import com.eulersbridge.iEngage.core.events.institutions.*;
 import com.eulersbridge.iEngage.core.events.newsFeed.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.InstitutionService;
 import com.eulersbridge.iEngage.database.domain.Country;
 import com.eulersbridge.iEngage.database.domain.GeneralInfoData;
 import com.eulersbridge.iEngage.database.domain.Institution;
@@ -16,11 +17,14 @@ import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsFeedRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+@Service
 public class InstitutionEventHandler implements InstitutionService {
 
   private static Logger LOG = LoggerFactory.getLogger(InstitutionEventHandler.class);
@@ -29,6 +33,7 @@ public class InstitutionEventHandler implements InstitutionService {
   private CountryRepository countryRepository;
   private NewsFeedRepository newsFeedRepository;
 
+  @Autowired
   public InstitutionEventHandler(final InstitutionRepository instRepo, final CountryRepository countryRepo, final NewsFeedRepository newsFeedRepo) {
     this.instRepository = instRepo;
     this.countryRepository = countryRepo;
@@ -37,6 +42,10 @@ public class InstitutionEventHandler implements InstitutionService {
 
   @Override
   @Transactional
+  //TODO: Re-consider if @Transactional is needed here? Happens or not happens(roll-back).
+  // Transactional is the one that knows about units of work and use cases.
+  // e.g. if you have several DAOs injected into a Service that need to work
+  // together in a single transaction.
   public InstitutionCreatedEvent createInstitution(
     CreateInstitutionEvent createInstitutionEvent) {
     InstitutionDetails newInst = (InstitutionDetails) createInstitutionEvent.getDetails();
@@ -220,7 +229,7 @@ public class InstitutionEventHandler implements InstitutionService {
         LOG.debug("CountryId - " + countryId);
         LOG.debug("CountryName - " + countryName);
       }
-      System.out.println("!"+country.getInstitutionIds());
+      System.out.println("!" + country.getInstitutionIds());
 
       Iterator<Long> instIdIter = country.getInstitutionIds().iterator();
       Iterator<String> instNameIter = country.getInstitutionNames().iterator();

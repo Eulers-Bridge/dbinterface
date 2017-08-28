@@ -6,6 +6,7 @@ package com.eulersbridge.iEngage.core.services;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.photo.*;
 import com.eulersbridge.iEngage.core.events.photoAlbums.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.PhotoService;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
@@ -14,10 +15,12 @@ import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,6 +28,8 @@ import java.util.Iterator;
 /**
  * @author Greg Newitt
  */
+
+@Service
 public class PhotoEventHandler implements PhotoService {
   private static Logger LOG = LoggerFactory.getLogger(PhotoEventHandler.class);
 
@@ -32,7 +37,7 @@ public class PhotoEventHandler implements PhotoService {
   private PhotoAlbumRepository photoAlbumRepository;
   private NodeRepository nodeRepository;
 
-
+  @Autowired
   public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository, NodeRepository nodeRepository) {
     super();
     this.photoRepository = photoRepository;
