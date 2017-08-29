@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.beans.ParamBean;
 import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.CreateCommentEvent;
@@ -26,6 +27,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,14 +48,19 @@ public class AspectServiceHandler {
   private final TaskRepository taskRepository;
   private final NotificationService notificationService;
   private final Util util;
+  private final ParamBean p;
+
+
 
   @Autowired
   public AspectServiceHandler(Util util,
+                              ParamBean paramBean,
                               UserRepository userRepository,
                               BadgeRepository badgeRepository,
                               TaskRepository taskRepository,
                               NotificationService notificationService) {
     this.util = util;
+    this.p = paramBean;
     this.userRepository = userRepository;
     this.badgeRepository = badgeRepository;
     this.taskRepository = taskRepository;
@@ -123,7 +131,7 @@ public class AspectServiceHandler {
       // async block
       util.asyncExecUserTask(userEmail, id -> {
         String taskAction = "Post a Comment.";
-        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        Boolean success = updateTask(userEmail, taskAction, p.expPostComment.longValue(), null);
         if (success)
           updateCommentBadge(userEmail, taskAction);
         return null;
@@ -170,7 +178,7 @@ public class AspectServiceHandler {
       // Async execution block
       util.asyncExecUserTask(userEmail, id -> {
         String taskAction = "Read an Article.";
-        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        Boolean success = updateTask(userEmail, taskAction, p.expReadArticle.longValue(), null);
         return null;
       });
     }
@@ -185,7 +193,7 @@ public class AspectServiceHandler {
       // async block
       util.asyncExecUserTask(userEmail, id -> {
         String taskAction = "Complete Personality Questions.";
-        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        Boolean success = updateTask(userEmail, taskAction, p.expCompPerQuestion.longValue(), null);
         if (success)
           updateAddPersonalityBadge(userEmail, taskAction);
         return null;
@@ -214,7 +222,7 @@ public class AspectServiceHandler {
       util.asyncExecUserTask(userEmail, id -> {
         String taskAction = "Share.";
         String targetType = likeEvent.getTargetType().getSimpleName();
-        Boolean success = updateTask(userEmail, taskAction, 100L, targetType);
+        Boolean success = updateTask(userEmail, taskAction, p.expShare.longValue(), targetType);
         if (success)
           updateShareBadge(userEmail, taskAction, targetType);
         return null;
@@ -222,6 +230,7 @@ public class AspectServiceHandler {
     }
   }
 
+  // FIXME: should not use hard-code node id here!!
   public void updateShareBadge(String userEmail, String taskAction, String tag) {
     Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction, tag);
     Long[] badgeIds = new Long[4];
@@ -284,7 +293,7 @@ public class AspectServiceHandler {
       // async block
       util.asyncExecUserTask(userEmail, id -> {
         String taskAction = "Be a Pollster.";
-        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        Boolean success = updateTask(userEmail, taskAction, p.expVoteInPoll.longValue(), null);
         if (success)
           updateVoteInAPollBadge(userEmail, taskAction);
         return null;
@@ -361,7 +370,7 @@ public class AspectServiceHandler {
       // async block
       util.asyncExecUserTask(userEmail, id -> {
         String taskAction = "Invite a Friend.";
-        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        Boolean success = updateTask(userEmail, taskAction, p.expInviteFriend.longValue(), null);
         if (success)
           updateInviteFriendsBadge(userEmail, taskAction);
         return null;
@@ -408,7 +417,7 @@ public class AspectServiceHandler {
       // async block
       util.asyncExecUserTask(userEmail, id -> {
         String taskAction = "Add a Friend.";
-        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        Boolean success = updateTask(userEmail, taskAction, p.expAddFriend.longValue(), null);
         if (success)
           updateAcceptFriendRequestBadge(userEmail, taskAction);
         return null;

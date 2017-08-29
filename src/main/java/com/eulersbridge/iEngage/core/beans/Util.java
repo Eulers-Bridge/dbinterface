@@ -24,7 +24,6 @@ public class Util {
   @Async(value = "threadPoolTaskExecutor")
   public void asyncExecUserTask(String userId, Function<String, Object> func) {
     try {
-      Thread.sleep(5000);
       LOG.debug("Execute method asynchronously. " + Thread.currentThread().getName());
       func.apply(userId);
     } catch (Exception e) {
