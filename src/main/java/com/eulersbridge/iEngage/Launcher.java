@@ -17,12 +17,15 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.access.PermissionEvaluator;
 
 import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
+@EnableAsync
 @PropertySource("classpath:application.properties")
 public class Launcher extends SpringBootServletInitializer {
   private static Logger LOG = LoggerFactory.getLogger(Launcher.class);

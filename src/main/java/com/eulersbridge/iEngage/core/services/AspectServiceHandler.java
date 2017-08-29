@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
-import com.eulersbridge.iEngage.core.events.comments.CommentDetails;
 import com.eulersbridge.iEngage.core.events.comments.CreateCommentEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
@@ -26,9 +26,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +36,7 @@ import java.util.List;
  * @author Yikai Gong
  */
 
+@Service
 @Aspect
 public class AspectServiceHandler {
 
@@ -45,12 +44,15 @@ public class AspectServiceHandler {
   private final BadgeRepository badgeRepository;
   private final TaskRepository taskRepository;
   private final NotificationService notificationService;
+  private final Util util;
 
   @Autowired
-  public AspectServiceHandler(UserRepository userRepository,
+  public AspectServiceHandler(Util util,
+                              UserRepository userRepository,
                               BadgeRepository badgeRepository,
                               TaskRepository taskRepository,
                               NotificationService notificationService) {
+    this.util = util;
     this.userRepository = userRepository;
     this.badgeRepository = badgeRepository;
     this.taskRepository = taskRepository;
@@ -59,6 +61,8 @@ public class AspectServiceHandler {
 
   public boolean updateTask(String userEmail, String taskAction, Long gainedExp, String tag) {
     User user = userRepository.findByEmail(userEmail, 1);
+    if (user == null)
+      return false;
     List<TaskComplete> taskCompletes = user.getCompletedTasks() == null
       ? new ArrayList<>()
       : user.getCompletedTasks();
@@ -92,6 +96,7 @@ public class AspectServiceHandler {
     return savedUser == null ? false : true;
   }
 
+
   public void buildTaskCompletedNotification(String userEmail, String txt) {
     Message message = new Message(null, txt);
     Long userId = userRepository.getUserId(userEmail);
@@ -114,13 +119,15 @@ public class AspectServiceHandler {
     returning = "result")
   public void updateCommentTask(JoinPoint joinPoint, CreateCommentEvent createCommentEvent, CreatedEvent result) {
     if (!result.isFailed()) {
-      CommentDetails commentDetails = (CommentDetails) createCommentEvent.getDetails();
-      String userEmail = commentDetails.getUserEmail();
-      String taskAction = "Post a Comment.";
-
-      Boolean success = updateTask(userEmail, taskAction, 100L, null);
-      if (success)
-        updateCommentBadge(userEmail, taskAction);
+      String userEmail = Util.getUserEmailFromSession();
+      // async block
+      util.asyncExecUserTask(userEmail, id -> {
+        String taskAction = "Post a Comment.";
+        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        if (success)
+          updateCommentBadge(userEmail, taskAction);
+        return null;
+      });
     }
   }
 
@@ -159,19 +166,13 @@ public class AspectServiceHandler {
     returning = "result")
   public void updateReadArticleTask(JoinPoint joinPoint, RequestReadNewsArticleEvent requestReadNewsArticleEvent, ReadEvent result) {
     if (result.isEntityFound()) {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      String userEmail = "";
-      if (!(auth instanceof AnonymousAuthenticationToken)) {
-//                userDetails = (UserDetails)auth.getPrincipal();
-        userEmail = auth.getName();
-      }
-      String taskAction = "Read an Article.";
-
-      Boolean success = updateTask(userEmail, taskAction, 100L, null);
-
-      if (success) {
-//         buildTaskCompletedNotification(userEmail, "Task Completed: Read am Comment.");
-      }
+      String userEmail = Util.getUserEmailFromSession();
+      // Async execution block
+      util.asyncExecUserTask(userEmail, id -> {
+        String taskAction = "Read an Article.";
+        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        return null;
+      });
     }
   }
 
@@ -180,15 +181,15 @@ public class AspectServiceHandler {
     returning = "result")
   public void updateAddPersonalityTask(JoinPoint joinPoint, AddPersonalityEvent addPersonalityEvent, PersonalityAddedEvent result) {
     if (result.isUserFound()) {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      String userEmail = "";
-      if (!(auth instanceof AnonymousAuthenticationToken)) {
-        userEmail = auth.getName();
-      }
-      String taskAction = "Complete Personality Questions.";
-      Boolean success = updateTask(userEmail, taskAction, 100L, null);
-      if (success)
-        updateAddPersonalityBadge(userEmail, taskAction);
+      String userEmail = Util.getUserEmailFromSession();
+      // async block
+      util.asyncExecUserTask(userEmail, id -> {
+        String taskAction = "Complete Personality Questions.";
+        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        if (success)
+          updateAddPersonalityBadge(userEmail, taskAction);
+        return null;
+      });
     }
   }
 
@@ -208,20 +209,16 @@ public class AspectServiceHandler {
     returning = "result")
   public void updateShareTask(JoinPoint joinPoint, LikeEvent likeEvent, LikedEvent result) {
     if (result.isResultSuccess()) {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      String userEmail = "";
-      if (!(auth instanceof AnonymousAuthenticationToken)) {
-        userEmail = auth.getName();
-      }
-      String taskAction = "Share.";
-      String targetType = likeEvent.getTargetType().getSimpleName();
-
-//      TaskComplete taskComplete = taskRepository.taskCompleted(taskAction, userEmail, targetType);
-//      userRepository.addExpPoint(userEmail, 100l);
-      Boolean success = updateTask(userEmail, taskAction, 100L, targetType);
-      if (success) {
-        updateShareBadge(userEmail, taskAction, targetType);
-      }
+      String userEmail = Util.getUserEmailFromSession();
+      // async block
+      util.asyncExecUserTask(userEmail, id -> {
+        String taskAction = "Share.";
+        String targetType = likeEvent.getTargetType().getSimpleName();
+        Boolean success = updateTask(userEmail, taskAction, 100L, targetType);
+        if (success)
+          updateShareBadge(userEmail, taskAction, targetType);
+        return null;
+      });
     }
   }
 
@@ -283,16 +280,15 @@ public class AspectServiceHandler {
     returning = "result")
   public void updateVoteInAPollTask(JoinPoint joinPoint, CreatePollAnswerEvent createPollAnswerEvent, PollAnswerCreatedEvent result) {
     if (result.isPollFound() && result.isAnswererFound() && result.isAnswerValid()) {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      String userEmail = "";
-      if (!(auth instanceof AnonymousAuthenticationToken)) {
-        userEmail = auth.getName();
-      }
-      String taskAction = "Be a Pollster.";
-      Boolean success = updateTask(userEmail, taskAction, 100L, null);
-      if (success) {
-        updateVoteInAPollBadge(userEmail, taskAction);
-      }
+      String userEmail = Util.getUserEmailFromSession();
+      // async block
+      util.asyncExecUserTask(userEmail, id -> {
+        String taskAction = "Be a Pollster.";
+        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        if (success)
+          updateVoteInAPollBadge(userEmail, taskAction);
+        return null;
+      });
     }
   }
 
@@ -332,16 +328,15 @@ public class AspectServiceHandler {
     returning = "result")
   public void updateAddVoteReminderTask(JoinPoint joinPoint, AddVoteReminderEvent addVoteReminderEvent, CreatedEvent result) {
     if (!result.isFailed()) {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      String userEmail = "";
-      if (!(auth instanceof AnonymousAuthenticationToken)) {
-        userEmail = auth.getName();
-      }
-      String taskAction = "Set Vote Reminder.";
-      Boolean success = updateTask(userEmail, taskAction, 100L, null);
-      if (success) {
-        updateAddVoteReminderBadge(userEmail, taskAction);
-      }
+      String userEmail = Util.getUserEmailFromSession();
+      // async block
+      util.asyncExecUserTask(userEmail, id -> {
+        String taskAction = "Set Vote Reminder.";
+        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        if (success)
+          updateAddVoteReminderBadge(userEmail, taskAction);
+        return null;
+      });
     }
   }
 
@@ -362,16 +357,15 @@ public class AspectServiceHandler {
     returning = "result")
   public void updateInviteAFriendTask(JoinPoint joinPoint, CreateContactRequestEvent createContactRequestEvent, CreatedEvent result) {
     if (!result.isFailed()) {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      String userEmail = "";
-      if (!(auth instanceof AnonymousAuthenticationToken)) {
-        userEmail = auth.getName();
-      }
-      String taskAction = "Invite a Friend.";
-      Boolean success = updateTask(userEmail, taskAction, 100L, null);
-      if (success) {
-        updateInviteFriendsBadge(userEmail, taskAction);
-      }
+      String userEmail = Util.getUserEmailFromSession();
+      // async block
+      util.asyncExecUserTask(userEmail, id -> {
+        String taskAction = "Invite a Friend.";
+        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        if (success)
+          updateInviteFriendsBadge(userEmail, taskAction);
+        return null;
+      });
     }
   }
 
@@ -410,16 +404,15 @@ public class AspectServiceHandler {
     returning = "result")
   public void updateAcceptFriendRequestTask(JoinPoint joinPoint, AcceptContactRequestEvent acceptContactRequestEvent, UpdatedEvent result) {
     if (!result.isFailed()) {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      String userEmail = "";
-      if (!(auth instanceof AnonymousAuthenticationToken)) {
-        userEmail = auth.getName();
-      }
-      String taskAction = "Add a Friend.";
-      Boolean success = updateTask(userEmail, taskAction, 100L, null);
-      if (success) {
-        updateAcceptFriendRequestBadge(userEmail, taskAction);
-      }
+      String userEmail = Util.getUserEmailFromSession();
+      // async block
+      util.asyncExecUserTask(userEmail, id -> {
+        String taskAction = "Add a Friend.";
+        Boolean success = updateTask(userEmail, taskAction, 100L, null);
+        if (success)
+          updateAcceptFriendRequestBadge(userEmail, taskAction);
+        return null;
+      });
     }
   }
 
