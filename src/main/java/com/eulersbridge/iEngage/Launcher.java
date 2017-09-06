@@ -31,7 +31,7 @@ public class Launcher extends SpringBootServletInitializer {
   private static Logger LOG = LoggerFactory.getLogger(Launcher.class);
 
   public static void main(String[] args) {
-    SpringApplication app = new SpringApplication(Launcher.class, args);
+    SpringApplication app = new SpringApplication(Launcher.class);
 //    app.setBannerMode(Banner.Mode.LOG);
     app.run(args);
   }
