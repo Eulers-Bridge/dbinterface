@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.config;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.tools.view.WebappResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,14 +53,18 @@ public class EmailConfig {
   @Bean
   public VelocityEngine velocityEngine(ServletContext servletContext) {
     if (LOG.isDebugEnabled()) LOG.debug("velocityEngine()");
+    
     Properties velocityProperties = new Properties();
-    velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "webapp");
-    velocityProperties.setProperty("webapp.resource.loader.path", "/WEB-INF/classes/templates/");
-    velocityProperties.setProperty("webapp.resource.loader.class", WebappResourceLoader.class.getName());
+    velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "class");
+    velocityProperties.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
     VelocityEngine velocityEngine = new VelocityEngine(velocityProperties);
     velocityEngine.setApplicationAttribute("javax.servlet.ServletContext", servletContext);
-//    velocityEngine.init(velocityProperties);
-    velocityEngine.getTemplate("sign_up_in_progress.vm");
+
+    // Classpath Resource loader is used. templates can be loaded via its absolute path
+    // (Note: java/ and resources/ are merged together as the root entry of class resource loader)
+    // Ref: http://velocity.apache.org/engine/1.7/developer-guide.html#configuring-resource-loaders
+    // Ref: https://stackoverflow.com/questions/9051413/unable-to-find-velocity-template-resources
+    velocityEngine.getTemplate("/templates/sign_up_in_progress.vm");
     return velocityEngine;
 
   }
