@@ -7,17 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-public interface ElectionRepository extends GraphRepository<Election>
-{
-    @Query("START tag=node({id}) MATCH (n:Election) WHERE n.start<tag.start RETURN n ORDER BY n.start DESC LIMIT 1")
-    Election findPreviousElection(@Param("id")Long id);
+@Repository
+public interface ElectionRepository extends GraphRepository<Election> {
+  @Query("START tag=node({id}) MATCH (n:Election) WHERE n.start<tag.start RETURN n ORDER BY n.start DESC LIMIT 1")
+  Election findPreviousElection(@Param("id") Long id);
 
-    @Query("START tag=node({id}) MATCH (n:Election) WHERE n.start>tag.start RETURN n ORDER BY n.start LIMIT 1")
-    Election findNextElection(@Param("id")Long id);
-    
-	@Query("Match (n:`"+ DataConstants.INSTITUTION+"`)-[r:"+ DataConstants.HAS_ELECTION_LABEL+
-			"]-(e:`Election`) where id(n)={instId} return e")
-	Page<Election> findByInstitutionId(@Param("instId")Long instId,Pageable p);
-	
+  @Query("START tag=node({id}) MATCH (n:Election) WHERE n.start>tag.start RETURN n ORDER BY n.start LIMIT 1")
+  Election findNextElection(@Param("id") Long id);
+
+  @Query("Match (n:`" + DataConstants.INSTITUTION + "`)-[r:" + DataConstants.HAS_ELECTION_LABEL +
+    "]-(e:`Election`) where id(n)={instId} return e")
+  Page<Election> findByInstitutionId(@Param("instId") Long instId, Pageable p);
+
 }

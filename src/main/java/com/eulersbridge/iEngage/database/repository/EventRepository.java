@@ -9,17 +9,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author Yikai Gong
  */
+@Repository
+public interface EventRepository extends GraphRepository<Event> {
+  static Logger LOG = LoggerFactory.getLogger(EventRepository.class);
 
-public interface EventRepository extends GraphRepository<Event>
-{
-    static Logger LOG = LoggerFactory.getLogger(EventRepository.class);
-
-	@Query("Match (n:`"+ DataConstants.INSTITUTION+"`)-[r:"+ DataConstants.HAS_NEWS_FEED_LABEL+
-			"]-(f:`"+ DataConstants.NEWS_FEED+"`)-[s:"+ DataConstants.HAS_EVENT_LABEL+
-			"]-(e:`Event`) where id(n)={instId} return e")
-	Page<Event> findByInstitutionId(@Param("instId")Long instId,Pageable p);
+  @Query("Match (n:`" + DataConstants.INSTITUTION + "`)-[r:" + DataConstants.HAS_NEWS_FEED_LABEL +
+    "]-(f:`" + DataConstants.NEWS_FEED + "`)-[s:" + DataConstants.HAS_EVENT_LABEL +
+    "]-(e:`Event`) where id(n)={instId} return e")
+  Page<Event> findByInstitutionId(@Param("instId") Long instId, Pageable p);
 }

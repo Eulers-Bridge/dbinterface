@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface NewsFeedRepository extends GraphRepository<NewsFeed> {
   static Logger LOG = LoggerFactory.getLogger(NewsFeedRepository.class);
 
