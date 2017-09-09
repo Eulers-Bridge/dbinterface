@@ -15,10 +15,7 @@ import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
 import com.eulersbridge.iEngage.core.services.interfacePack.NotificationService;
-import com.eulersbridge.iEngage.database.domain.Badge;
-import com.eulersbridge.iEngage.database.domain.Task;
-import com.eulersbridge.iEngage.database.domain.TaskComplete;
-import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
@@ -31,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +47,6 @@ public class AspectServiceHandler {
   private final NotificationService notificationService;
   private final Util util;
   private final ParamBean p;
-
 
 
   @Autowired
@@ -143,28 +140,28 @@ public class AspectServiceHandler {
     Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
     if (numOfCompCommentTask >= 30) {
       // TODO may not be a good idea to use the badge's nodeId directly (a readable, unique and indexed label instead?)
-      Badge badge = badgeRepository.checkBadgeCompleted(33269l, userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(DataConstants.CreateCommentBadge, 3, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(33269l, userEmail);
+        badgeRepository.badgeCompleted(DataConstants.CreateCommentBadge, 3, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Community Comments - level 3");
       }
     } else if (numOfCompCommentTask >= 20) {
-      Badge badge = badgeRepository.checkBadgeCompleted(33268l, userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(DataConstants.CreateCommentBadge, 2, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(33268l, userEmail);
+        badgeRepository.badgeCompleted(DataConstants.CreateCommentBadge, 2, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Community Comments - level 2");
       }
     } else if (numOfCompCommentTask >= 10) {
-      Badge badge = badgeRepository.checkBadgeCompleted(33267l, userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(DataConstants.CreateCommentBadge, 1, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(33267l, userEmail);
+        badgeRepository.badgeCompleted(DataConstants.CreateCommentBadge, 1, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Community Comments - level 1");
       }
     } else if (numOfCompCommentTask >= 1) {
-      Badge badge = badgeRepository.checkBadgeCompleted(14853l, userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(DataConstants.CreateCommentBadge, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(14853l, userEmail);
-        buildBadgeAwardedNotification(userEmail, "New Badge: Community Comments - level 0");
+        badgeRepository.badgeCompleted(DataConstants.CreateCommentBadge, userEmail);
+        buildBadgeAwardedNotification(userEmail, "New Badge: Community Comments");
       }
     }
   }
@@ -204,9 +201,9 @@ public class AspectServiceHandler {
   public void updateAddPersonalityBadge(String userEmail, String taskAction) {
     Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
     if (numOfCompCommentTask >= 1) {
-      Badge badge = badgeRepository.checkBadgeCompleted(400l, userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(DataConstants.CompPersonalityQuizBadge, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(400l, userEmail);
+        badgeRepository.badgeCompleted(DataConstants.CompPersonalityQuizBadge, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Personality Discovery");
       }
     }
@@ -233,53 +230,45 @@ public class AspectServiceHandler {
   // FIXME: should not use hard-code node id here!!
   public void updateShareBadge(String userEmail, String taskAction, String tag) {
     Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction, tag);
-    Long[] badgeIds = new Long[4];
+//    Long[] badgeIds = new Long[4];
+    String badgeName = "";
     String sharedType = "";
     switch (tag) {
       case "NewsArticle":
-        badgeIds[0] = 14867l;
-        badgeIds[1] = 33252l;
-        badgeIds[2] = 33253l;
-        badgeIds[3] = 33254l;
+        badgeName = DataConstants.ShareNewsBadge;
         sharedType = "News";
         break;
       case "Event":
-        badgeIds[0] = 14868l;
-        badgeIds[1] = 33255l;
-        badgeIds[2] = 33256l;
-        badgeIds[3] = 33257l;
+        badgeName = DataConstants.ShareEventBadge;
         sharedType = "Event";
         break;
       case "Photo":
-        badgeIds[0] = 14869l;
-        badgeIds[1] = 33258l;
-        badgeIds[2] = 33259l;
-        badgeIds[3] = 33260l;
+        badgeName = DataConstants.SharePhtotBadge;
         sharedType = "Photo";
     }
     if (numOfCompCommentTask >= 50) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 3, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[3], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 3, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Shared " + sharedType + " - level 3");
       }
     } else if (numOfCompCommentTask >= 20) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[2], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 2, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[2], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 2, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Shared " + sharedType + " - level 2");
       }
     } else if (numOfCompCommentTask >= 10) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[1], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 1, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[1], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 1, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Shared " + sharedType + " - level 1");
       }
     } else if (numOfCompCommentTask >= 1) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[0], userEmail);
-        buildBadgeAwardedNotification(userEmail, "New Badge: Shared " + sharedType + " - level 0");
+        badgeRepository.badgeCompleted(badgeName, userEmail);
+        buildBadgeAwardedNotification(userEmail, "New Badge: Shared " + sharedType);
       }
     }
   }
@@ -303,30 +292,31 @@ public class AspectServiceHandler {
 
   public void updateVoteInAPollBadge(String userEmail, String taskAction) {
     Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
-    Long[] badgeIds = new Long[]{14873l, 33264l, 33265l, 33266l};
+    String badgeName = DataConstants.VotePollBadge;
+//    Long[] badgeIds = new Long[]{14873l, 33264l, 33265l, 33266l};
     if (numOfCompCommentTask >= 30) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 3, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[3], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 3, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Voted in a Poll - level 3");
       }
     } else if (numOfCompCommentTask >= 20) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[2], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 2, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[2], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 2, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Voted in a Poll - level 2");
       }
     } else if (numOfCompCommentTask >= 10) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[1], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 1, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[1], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 1, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Voted in a Poll - level 1");
       }
     } else if (numOfCompCommentTask >= 1) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[0], userEmail);
-        buildBadgeAwardedNotification(userEmail, "New Badge: Voted in a Poll - level 0");
+        badgeRepository.badgeCompleted(badgeName, userEmail);
+        buildBadgeAwardedNotification(userEmail, "New Badge: Voted in a Poll");
       }
     }
     // TODO award/revoke the badge: Select user with highest poll votes per month
@@ -351,11 +341,12 @@ public class AspectServiceHandler {
 
   public void updateAddVoteReminderBadge(String userEmail, String taskAction) {
     Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
-    Long badgeId = 14854l;
+    String badgeName = DataConstants.SetVoteReminderBadge;
+//    Long badgeId = 14854l;
     if (numOfCompCommentTask >= 1) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeId, userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeId, userEmail);
+        badgeRepository.badgeCompleted(badgeName, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Set Vote Reminder");
       }
     }
@@ -380,30 +371,31 @@ public class AspectServiceHandler {
 
   public void updateInviteFriendsBadge(String userEmail, String taskAction) {
     Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
-    Long[] badgeIds = new Long[]{14857l, 33272l, 33270l, 33271l};
+    String badgeName = DataConstants.InviteFriendBadge;
+//    Long[] badgeIds = new Long[]{14857l, 33272l, 33270l, 33271l};
     if (numOfCompCommentTask >= 25) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 3, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[3], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 3, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Invited a friend - level 3");
       }
     } else if (numOfCompCommentTask >= 10) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[2], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 2, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[2], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 2, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Invited a friend - level 2");
       }
     } else if (numOfCompCommentTask >= 5) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[1], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 1, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[1], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 1, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Invited a friend - level 1");
       }
     } else if (numOfCompCommentTask >= 1) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[0], userEmail);
-        buildBadgeAwardedNotification(userEmail, "New Badge: Invited a friend - level 0");
+        badgeRepository.badgeCompleted(badgeName, userEmail);
+        buildBadgeAwardedNotification(userEmail, "New Badge: Invited a friend");
       }
     }
   }
@@ -427,29 +419,30 @@ public class AspectServiceHandler {
 
   public void updateAcceptFriendRequestBadge(String userEmail, String taskAction) {
     Long numOfCompCommentTask = taskRepository.getNumOfCompletedASpecificTask(userEmail, taskAction);
-    Long[] badgeIds = new Long[]{14856l, 32274l, 32275l, 32276l};
+    String badgeName = DataConstants.AddFriendBadge;
+//    Long[] badgeIds = new Long[]{14856l, 32274l, 32275l, 32276l};
     if (numOfCompCommentTask >= 25) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[3], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 3, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[3], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 3, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Added a friend - level 3");
       }
     } else if (numOfCompCommentTask >= 10) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[2], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 2, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[2], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 2, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Added a friend - level 2");
       }
     } else if (numOfCompCommentTask >= 5) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[1], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, 1, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[1], userEmail);
+        badgeRepository.badgeCompleted(badgeName, 1, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Added a friend - level 1");
       }
     } else if (numOfCompCommentTask >= 1) {
-      Badge badge = badgeRepository.checkBadgeCompleted(badgeIds[0], userEmail);
+      Badge badge = badgeRepository.checkBadgeCompleted(badgeName, userEmail);
       if (badge == null) {
-        badgeRepository.badgeCompleted(badgeIds[0], userEmail);
+        badgeRepository.badgeCompleted(badgeName, userEmail);
         buildBadgeAwardedNotification(userEmail, "New Badge: Added a friend - level 0");
       }
     }

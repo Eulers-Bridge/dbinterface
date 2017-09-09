@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.badge.BadgeDetails;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,10 @@ import org.slf4j.LoggerFactory;
 public class Badge extends Node {
   private static final Logger LOG = LoggerFactory.getLogger(Badge.class);
 
+  @Index
   private String name;
   private String description;
+  @Index
   private Integer level;
   private Long xpValue;
 

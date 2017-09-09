@@ -61,4 +61,25 @@ public class DataConstants {
   public static final Boolean ConsentGivenDefault = false;
   public static final Boolean TrackingOffDefault = true;
   public static final Boolean OptOutDataCollectionDefault = true;
+
+  public static final String CreateAccountBadge = "New Community Member";
+  public static final String ShareNewsBadge = "Sharing News";
+  public static final String LikedBadge = "Eye Catching Content";
+  public static final String ShareEventBadge = "Shared Event";
+  public static final String SharePhtotBadge = "Shared Photo";
+  public static final String VolunteersBadge = "Volunteers Shape Community";
+  public static final String VotePollBadge = "Voted in a Poll";
+  public static final String CreateCommentBadge = "Community Comments";
+  public static final String InviteFriendBadge = "Invited a Friend";
+  public static final String CollectionBadge = "Collection";
+  public static final String AddFriendBadge = "Added a Friend";
+  public static final String SetVoteReminderBadge = "Set Vote Reminder";
+  public static final String ScanQRBadge = "Scanned Voted QR code";
+  public static final String VoteInElectionsBadge = "Voted in Elections";
+  public static final String DailyLoginBadge = "Bommerang";
+  public static final String LoginDayAndNightBadge = "Day and Night";
+  public static final String CompPersonalityQuizBadge = "Personality Discovery";
+  public static final String AddCalenEvent = "Added Calendar Event";
+
+
 }
