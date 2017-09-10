@@ -31,6 +31,10 @@ public class Country extends Node {
     if (LOG.isDebugEnabled()) LOG.debug("Constructor()");
   }
 
+  public Country(String countryName) {
+    this.countryName = countryName;
+  }
+
   public String getCountryName() {
     return countryName;
   }

@@ -40,6 +40,13 @@ public class Institution extends Likeable {
     this.country = country;
   }
 
+  public Institution(String name, String campus, String state, Node country) {
+    this.name = name;
+    this.campus = campus;
+    this.state = state;
+    this.country = country;
+  }
+
   public String getName() {
     if (LOG.isDebugEnabled()) LOG.debug("getName() = " + name);
     return name;

@@ -6,6 +6,7 @@ import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.neo4j.annotation.Depth;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
@@ -33,6 +34,8 @@ public interface InstitutionRepository extends GraphRepository<Institution> {
     + ",COLLECT(i.name) as institutionNames,COLLECT(id(i)) as institutionIds"
   )
   List<GeneralInfoData> getGeneralInfo();
+
+  Institution findByName(String name, @Depth int i);
 
 
 }
