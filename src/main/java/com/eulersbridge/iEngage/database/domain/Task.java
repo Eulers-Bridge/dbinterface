@@ -29,6 +29,13 @@ public class Task extends Node{
     this.xpValue = xpValue;
   }
 
+  public Task(String action, String description, Integer xpValue) {
+    super();
+    this.action = action;
+    this.description = description;
+    this.xpValue = xpValue;
+  }
+
   public static Task fromTaskDetails(TaskDetails taskDetails) {
     if (LOG.isTraceEnabled()) LOG.trace("fromTaskDetails()");
     Task task = new Task();

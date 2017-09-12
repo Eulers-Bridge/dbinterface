@@ -30,6 +30,14 @@ public class Badge extends Node {
     super(nodeId);
   }
 
+  public Badge(String name, String description, Integer level, Long xpValue) {
+    super();
+    this.name = name;
+    this.description = description;
+    this.level = level;
+    this.xpValue = xpValue;
+  }
+
   public static Badge fromBadgeDetails(BadgeDetails badgeDetails) {
     if (LOG.isTraceEnabled()) LOG.trace("fromBadgeDetails()");
     Badge badge = new Badge();

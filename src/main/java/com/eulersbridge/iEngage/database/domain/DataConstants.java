@@ -80,6 +80,9 @@ public class DataConstants {
   public static final String LoginDayAndNightBadge = "Day and Night";
   public static final String CompPersonalityQuizBadge = "Personality Discovery";
   public static final String AddCalenEvent = "Added Calendar Event";
+  public static final String MostActiveWeeklyPollVoterBadge = "Most Active Weekly Poll Voter";
+  public static final String MostConnectedPersonBadge = "Most Connected Person";
+  public static final String MostActiveinSharingBadge = "Most Active in Sharing";
 
 
 }

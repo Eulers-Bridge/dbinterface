@@ -5,6 +5,7 @@ import com.eulersbridge.iEngage.database.domain.Task;
 import com.eulersbridge.iEngage.database.domain.TaskComplete;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.neo4j.annotation.Depth;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +43,6 @@ public interface TaskRepository extends GraphRepository<Task> {
 
   @Query("Match (t:`Task`) where t.action={action} return t")
   Task findByAction(@Param("action") String taskAction);
+
+  Task findByAction(String taskAction, @Depth int i);
 }
