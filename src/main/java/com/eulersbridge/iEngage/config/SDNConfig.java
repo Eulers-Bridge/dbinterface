@@ -1,14 +1,21 @@
 package com.eulersbridge.iEngage.config;
 
+import com.eulersbridge.iEngage.core.beans.PreSaveEventListener;
 import org.neo4j.ogm.session.SessionFactory;
+import org.neo4j.ogm.session.event.EventListener;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.ConverterRegistry;
 import org.springframework.data.neo4j.conversion.MetaDataDrivenConversionService;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
+
+import java.util.List;
 
 /**
  * @author Yikai Gong
@@ -17,6 +24,14 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 @Configuration
 @EnableNeo4jRepositories(basePackages = {"com.eulersbridge.iEngage.database.repository"})
 public class SDNConfig extends Neo4jDataAutoConfiguration {
+
+  final PreSaveEventListener preSaveEventListener;
+
+  @Autowired
+  public SDNConfig(PreSaveEventListener preSaveEventListener) {
+    this.preSaveEventListener = preSaveEventListener;
+  }
+
 
   // Additional mapping service
   @Bean
@@ -40,6 +55,20 @@ public class SDNConfig extends Neo4jDataAutoConfiguration {
     // Can using "assert" during dev validate
     configuration.autoIndexConfiguration().setAutoIndex("assert");
     return configuration;
+  }
+
+  // Added Event listener to Neo4j Session.
+  @Override
+  public SessionFactory sessionFactory(
+    org.neo4j.ogm.config.Configuration configuration,
+    ApplicationContext applicationContext,
+    ObjectProvider<List<EventListener>> eventListeners) {
+
+    SessionFactory sessionFactory =
+      super.sessionFactory(configuration, applicationContext, eventListeners);
+
+    sessionFactory.register(preSaveEventListener);
+    return sessionFactory;
   }
 
 }

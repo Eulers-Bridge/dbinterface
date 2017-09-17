@@ -37,25 +37,5 @@ public class CoreConfig {
     return executor;
   }
 
-  //TODO: Looks not needed.
-//  @Bean
-//  public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-//    return new PropertySourcesPlaceholderConfigurer();
-//  }
 
-  //TODO: PermissionEvaluator has not been implemented. Could use it as an AOP service?
-//  @Bean
-//  public PermissionEvaluator permissionEvaluator() {
-//    UserPermissionEvaluator bean = new UserPermissionEvaluator();
-//    return bean;
-//  }
-
-  //TODO: Remove it. Looks like this is gpt mock service for testing?
-//  @Primary
-//  @Bean
-//  public ObjectMapper objectMapper() {
-//    ObjectMapper om = new ObjectMapper();
-//    om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-//    return om;
-//  }
 }

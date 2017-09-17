@@ -1,4 +1,4 @@
-package com.eulersbridge.iEngage.security;
+package com.eulersbridge.iEngage.core.beans;
 
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.*;

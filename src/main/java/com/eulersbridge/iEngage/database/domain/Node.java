@@ -15,12 +15,20 @@ public class Node {
   @GraphId
   protected Long nodeId;
 
+  protected List<Long> timestampList;
+
   public Node() {
   }
 
   public Node(Long nodeId) {
     this.nodeId = nodeId;
   }
+
+  public Node(Long nodeId, List<Long> timestampList) {
+    this.nodeId = nodeId;
+    this.timestampList = timestampList;
+  }
+
 
   public Long getNodeId() {
     return nodeId;
@@ -30,8 +38,16 @@ public class Node {
     this.nodeId = nodeId;
   }
 
+  public List<Long> getTimestampList() {
+    return timestampList;
+  }
+
+  public void setTimestampList(List<Long> timestampList) {
+    this.timestampList = timestampList;
+  }
+
   public Node toNode() {
-    return new Node(nodeId);
+    return new Node(nodeId, timestampList);
   }
 
   public static <T extends Node> List<T> castList(List<Node> nodeList, Class<T> tClass)
