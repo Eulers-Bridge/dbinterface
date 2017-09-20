@@ -50,7 +50,7 @@ public interface UserService extends UserDetailsService {
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #addPersonalityEvent.getEmail()==authentication.name)")
   public PersonalityAddedEvent addPersonality(AddPersonalityEvent addPersonalityEvent);
 
-  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "') and #ppseQuestions.getEmail()==authentication.name)")
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #userEmail==authentication.name)")
   public RequestHandledEvent addPPSEQuestions(String userEmail, PPSEQuestions ppseQuestions);
 
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #addVoteReminderEvent.getVoteReminderDetails().getUserId()==authentication.name)")
