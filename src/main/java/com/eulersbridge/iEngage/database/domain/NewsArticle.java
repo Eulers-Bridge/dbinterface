@@ -174,8 +174,10 @@ public class NewsArticle extends Likeable {
     details.setNewsArticleId(getNodeId());
     BeanUtils.copyProperties(this, details);
 
-    if (creator != null && creator instanceof User)
+    if (creator != null && creator instanceof User){
       details.setCreatorEmail(getCreator$().getEmail());
+      details.setCreatorDetails(getCreator$().toUserDetails());
+    }
 
     if (newsFeed != null && newsFeed instanceof NewsFeed) {
       NewsFeed newsFeed = getNewsFeed$();

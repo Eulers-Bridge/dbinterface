@@ -35,6 +35,8 @@ public class Event extends Likeable {
   //@Fetch
   @Relationship(type = DataConstants.HAS_EVENT_LABEL)
   private Node newsFeed;
+  @Relationship(type = DataConstants.CREATED_BY_LABEL, direction = Relationship.OUTGOING)
+  private Node creator;
 
   private static Logger LOG = LoggerFactory.getLogger(Event.class);
 
@@ -76,16 +78,33 @@ public class Event extends Likeable {
     eventDetails.setOrganizerEmail(getOrganizerEmail());
     eventDetails.setModified(getModified());
     eventDetails.setDescription(getDescription());
+    if (getCreator$() != null)
+      eventDetails.setCreatorDetails(getCreator$().toUserDetails());
 
     if (newsFeed != null && newsFeed instanceof NewsFeed) {
       NewsFeed newsFeed = getNewsFeed$();
       if (newsFeed.getInstitution() != null)
         eventDetails.setInstitutionId(newsFeed.getInstitution().getNodeId());
     }
-    if (photos != null && photos.size()>0 && photos.get(0) instanceof Photo)
+    if (photos != null && photos.size() > 0 && photos.get(0) instanceof Photo)
       eventDetails.setPhotos(Photo.photosToPhotoDetails(getPhotos$()));
 
     return eventDetails;
+  }
+
+  public Node getCreator() {
+    return creator;
+  }
+
+  public User getCreator$() {
+    if (creator instanceof User)
+      return (User) creator;
+    else
+      return null;
+  }
+
+  public void setCreator(Node creator) {
+    this.creator = creator;
   }
 
   @Override

@@ -6,8 +6,10 @@ import com.eulersbridge.iEngage.core.services.interfacePack.EventService;
 import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,15 @@ public class EventEventHandler implements EventService {
 
   private EventRepository eventRepository;
   private InstitutionRepository institutionRepository;
+  private UserRepository userRepo;
 
   @Autowired
   public EventEventHandler(EventRepository eventRepository,
-                           InstitutionRepository institutionRepository) {
+                           InstitutionRepository institutionRepository,
+                           UserRepository userRepo) {
     this.eventRepository = eventRepository;
     this.institutionRepository = institutionRepository;
+    this.userRepo = userRepo;
   }
 
   @Override
@@ -47,11 +52,16 @@ public class EventEventHandler implements EventService {
       LOG.debug("Finding institution with instId = " + instId);
     Institution inst = institutionRepository.findOne(instId, 0);
     NewsFeed nf = institutionRepository.findNewsFeedByInstitutionId(instId);
+    User creator = userRepo.findByEmail(eventDetails.getOrganizerEmail(), 0);
+    if (creator == null)
+      return EventCreatedEvent.creatorNotFound(eventDetails.getEventId());
+
     if (LOG.isDebugEnabled()) LOG.debug("news feed - " + nf);
 
     EventCreatedEvent eventCreatedEvent;
     if ((inst != null) && (nf != null)) {
       event.setNewsFeed(nf.toNode());
+      event.setCreator(creator.toNode());
       Event result = eventRepository.save(event);
       eventCreatedEvent = new EventCreatedEvent(result.getNodeId(),
         result.toEventDetails());
@@ -98,6 +108,7 @@ public class EventEventHandler implements EventService {
         LOG.debug("event entity not found " + eventId);
       return EventUpdatedEvent.notFound(eventId);
     } else {
+      event.setCreator(eventOld.getCreator());
       Event result = eventRepository.save(event, 0);
       if (LOG.isDebugEnabled())
         LOG.debug("updated successfully" + result.getNodeId());

@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.CreatedEvent;
 public class EventCreatedEvent extends CreatedEvent {
   private Long eventId;
   private boolean institutionFound = true;
+  private boolean creatorFound = true;
 
   public EventCreatedEvent(Long eventId, EventDetails eventDetails) {
     super(eventDetails);
@@ -27,6 +28,14 @@ public class EventCreatedEvent extends CreatedEvent {
     this.eventId = eventId;
   }
 
+  public boolean isCreatorFound() {
+    return creatorFound;
+  }
+
+  public void setCreatorFound(boolean creatorFound) {
+    this.creatorFound = creatorFound;
+  }
+
   /**
    * @return the institutionFound
    */
@@ -41,9 +50,15 @@ public class EventCreatedEvent extends CreatedEvent {
     this.institutionFound = institutionFound;
   }
 
-  public static EventCreatedEvent institutionNotFound(Long institutionId) {
-    EventCreatedEvent evt = new EventCreatedEvent(institutionId);
+  public static EventCreatedEvent institutionNotFound(Long id) {
+    EventCreatedEvent evt = new EventCreatedEvent(id);
     evt.setInstitutionFound(false);
+    return evt;
+  }
+
+  public static EventCreatedEvent creatorNotFound(Long id) {
+    EventCreatedEvent evt = new EventCreatedEvent(id);
+    evt.setCreatorFound(false);
     return evt;
   }
 }

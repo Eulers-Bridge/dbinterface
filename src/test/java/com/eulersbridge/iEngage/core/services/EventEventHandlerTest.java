@@ -9,8 +9,10 @@ import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.NewsFeed;
+import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.EventRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -43,6 +45,8 @@ public class EventEventHandlerTest {
   EventRepository eventRepository;
   @Mock
   InstitutionRepository institutionRepository;
+  @Mock
+  UserRepository userRepo;
 
   EventEventHandler service;
 
@@ -53,7 +57,7 @@ public class EventEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    service = new EventEventHandler(eventRepository, institutionRepository);
+    service = new EventEventHandler(eventRepository, institutionRepository, userRepo);
   }
 
   /**
@@ -73,8 +77,10 @@ public class EventEventHandlerTest {
     Event testData = DatabaseDataFixture.populateEvent1();
     Institution testInst = DatabaseDataFixture.populateInstUniMelb();
     NewsFeed testNf = DatabaseDataFixture.populateNewsFeed1();
+    User testUser = DatabaseDataFixture.populateUserYikai();
     when(institutionRepository.findOne(any(Long.class), anyInt())).thenReturn(testInst);
     when(institutionRepository.findNewsFeedByInstitutionId(any(Long.class))).thenReturn(testNf);
+    when(userRepo.findByEmail(any(String.class), anyInt())).thenReturn(testUser);
     when(eventRepository.save(any(Event.class))).thenReturn(testData);
     EventDetails dets = testData.toEventDetails();
     CreateEventEvent createEventEvent = new CreateEventEvent(dets);
@@ -90,8 +96,10 @@ public class EventEventHandlerTest {
     if (LOG.isDebugEnabled()) LOG.debug("CreatingEvent()");
     Event testData = DatabaseDataFixture.populateEvent1();
     Institution testInst = null;
+    User testUser = DatabaseDataFixture.populateUserYikai();
     when(institutionRepository.findOne(any(Long.class))).thenReturn(testInst);
     when(eventRepository.save(any(Event.class))).thenReturn(testData);
+    when(userRepo.findByEmail(any(String.class), anyInt())).thenReturn(testUser);
     EventDetails dets = testData.toEventDetails();
     CreateEventEvent createEventEvent = new CreateEventEvent(dets);
     EventCreatedEvent evtData = service.createEvent(createEventEvent);
