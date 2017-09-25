@@ -11,8 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * @author Yikai Gong
@@ -50,14 +49,14 @@ public class EmailResetPWD extends Email implements Serializable {
       vc.put("emailAddress", getRecipientEmailAddress());
       vc.put("token", token);
       StringWriter result = new StringWriter();
-      velocityEngine.mergeTemplate(templatePath, "UTF-8", vc, result);
+      velocityEngine.mergeTemplate("templates" + templatePath, "UTF-8", vc, result);
       String body = result.toString();
       message.setText(body, true);
 
       message.addInline("logo",
         new ClassPathResource("templates/images/logo.png"));
       message.addInline("watermark",
-          new ClassPathResource("templates/images/watermark.png"));
+        new ClassPathResource("templates/images/watermark.png"));
     };
     return preparator;
   }

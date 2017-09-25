@@ -31,7 +31,7 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
   @Autowired
   UserRepository userRepo;
   @Autowired
-  PasswordEncoder pwdRepo;
+  PasswordEncoder pwdEncoder;
   @Autowired
   CountryRepository counRepo;
   @Autowired
@@ -59,13 +59,14 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
 
     LOG.info("Task starts at ApplicationEventListener");
     checkOrCreateInitialNodes();
+    System.out.println("EncryPwd: " + pwdEncoder.encode("OO%zdXcu3VH2-%cH"));
 
   }
 
   public void encodeUserPwd() {
     Iterable<User> userItr = userRepo.findAll(0);
     userItr.forEach(u -> {
-      u.setPassword(pwdRepo.encode(u.getPassword()));
+      u.setPassword(pwdEncoder.encode(u.getPassword()));
       userRepo.save(u, 0);
     });
   }
