@@ -21,6 +21,7 @@ public class Poll extends Likeable implements Commentable {
   private String answers;
   private Long start;
   private Long duration;
+  private String image;
 
   @Relationship(type = DataConstants.CREATED_BY_LABEL)
   private Node creator;
@@ -55,6 +56,7 @@ public class Poll extends Likeable implements Commentable {
     pollDetails.setAnswers(this.getAnswers());
     pollDetails.setStart(this.getStart());
     pollDetails.setDuration(this.getDuration());
+    pollDetails.setImage(this.getImage());
 
     if (institution != null)
       pollDetails.setOwnerId(institution.getNodeId());
@@ -80,6 +82,8 @@ public class Poll extends Likeable implements Commentable {
     poll.setAnswers(pollDetails.getAnswers());
     poll.setStart(pollDetails.getStart());
     poll.setDuration(pollDetails.getDuration());
+    poll.setImage(pollDetails.getImage());
+
 //		Owner institution = new Owner(pollDetails.getOwnerId());
     Institution owner = new Institution();
     owner.setNodeId(pollDetails.getOwnerId());
@@ -96,6 +100,14 @@ public class Poll extends Likeable implements Commentable {
 
   public void setPollAnswers(List<PollAnswerRelation> pollAnswers) {
     this.pollAnswers = pollAnswers;
+  }
+
+  public String getImage() {
+    return image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
   }
 
   public String getQuestion() {

@@ -26,6 +26,7 @@ public class Poll extends ResourceSupport{
     private Long ownerId;
     private Long creatorId;
     private String creatorEmail;
+    private String image;
 
     private Integer numOfComments;
     private Integer numOfAnswers;
@@ -47,6 +48,7 @@ public class Poll extends ResourceSupport{
         poll.setNumOfComments(pollDetails.getNumOfComments());
         poll.setNumOfAnswers(pollDetails.getNumOfAnswers());
         poll.setCreatorEmail(pollDetails.getCreatorEmail());
+        poll.setImage(pollDetails.getImage());
 
 	    // {!begin selfRel}
         poll.add(linkTo(PollController.class).slash(name).slash(poll.getNodeId()).withSelfRel());
@@ -83,6 +85,7 @@ public class Poll extends ResourceSupport{
         pollDetails.setDuration(this.getDuration());
         pollDetails.setOwnerId(getOwnerId());
         pollDetails.setCreatorId(getCreatorId());
+        pollDetails.setImage(getImage());
         if (LOG.isTraceEnabled()) LOG.trace("pollDetails "+pollDetails);
         return pollDetails;
     }
@@ -150,7 +153,15 @@ public class Poll extends ResourceSupport{
         this.numOfComments = numOfComments;
     }
 
-    /**
+  public String getImage() {
+    return image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
+  }
+
+  /**
 	 * @return the numOfAnswers
 	 */
 	public Integer getNumOfAnswers()

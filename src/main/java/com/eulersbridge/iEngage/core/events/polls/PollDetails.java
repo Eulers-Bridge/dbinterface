@@ -16,6 +16,7 @@ public class PollDetails extends Details {
   private Long ownerId;
   private Long creatorId;
   private String creatorEmail;
+  private String image;
 
   private Integer numOfComments;
   private Integer numOfAnswers;
@@ -122,6 +123,14 @@ public class PollDetails extends Details {
 
   public void setCreatorEmail(String creatorEmail) {
     this.creatorEmail = creatorEmail;
+  }
+
+  public String getImage() {
+    return image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
   }
 
   @Override
