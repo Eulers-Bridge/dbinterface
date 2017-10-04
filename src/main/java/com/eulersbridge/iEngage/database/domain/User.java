@@ -37,6 +37,9 @@ public class User extends Node {
   private Long experience;
   private String resetPwdToken;
 
+  private String arn;
+  private String deviceToken;
+
   @Relationship(type = DataConstants.HAS_PERSONALITY_LABEL, direction = Relationship.OUTGOING)
   private Node personality;
   @Relationship(type = DataConstants.HAS_PPSEQuestions_LABEL, direction = Relationship.OUTGOING)
@@ -212,6 +215,22 @@ public class User extends Node {
     this.pPSEQuestions = pPSEQuestions;
   }
 
+  public String getArn() {
+    return arn;
+  }
+
+  public void setArn(String arn) {
+    this.arn = arn;
+  }
+
+  public String getDeviceToken() {
+    return deviceToken;
+  }
+
+  public void setDeviceToken(String deviceToken) {
+    this.deviceToken = deviceToken;
+  }
+
   //=============================================
 
   public List<TaskComplete> getCompletedTasks() {
@@ -313,6 +332,8 @@ public class User extends Node {
     UserDetails details = new UserDetails();
     details.setUserId(nodeId);
     BeanUtils.copyProperties(this, details);
+    details.setArn(arn);
+    details.setDeviceToken(deviceToken);
 
     details.setHasPersonality(personality != null);
     details.setHasPPSEQuestions(pPSEQuestions != null);
@@ -368,6 +389,8 @@ public class User extends Node {
     user.institution = inst.toNode();
     if (LOG.isTraceEnabled()) LOG.trace("user " + user);
     user.setExperience(userDetails.getExperience());
+    user.setArn(userDetails.getArn());
+    user.setDeviceToken(userDetails.getDeviceToken());
 
     return user;
   }

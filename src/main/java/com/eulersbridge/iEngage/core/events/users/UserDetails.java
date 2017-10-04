@@ -31,6 +31,8 @@ public class UserDetails extends Details {
   private Boolean optOutDataCollection;
   private Boolean trackingOff;
   private Long institutionId;
+  private String arn;
+  private String deviceToken;
 
   private Integer numOfCompTasks;
 //  private Integer totalTasks;
@@ -151,6 +153,22 @@ public class UserDetails extends Details {
 
   public void setProfilePhoto(String profilePhoto) {
     this.profilePhoto = profilePhoto;
+  }
+
+  public String getArn() {
+    return arn;
+  }
+
+  public void setArn(String arn) {
+    this.arn = arn;
+  }
+
+  public String getDeviceToken() {
+    return deviceToken;
+  }
+
+  public void setDeviceToken(String deviceToken) {
+    this.deviceToken = deviceToken;
   }
 
   /**

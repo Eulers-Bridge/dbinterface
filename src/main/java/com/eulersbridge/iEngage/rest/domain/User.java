@@ -41,6 +41,9 @@ public class User extends ResourceSupport {
   private Long experience;
   private Long level;
 
+  private String arn;
+  private String deviceToken;
+
   private static Logger LOG = LoggerFactory.getLogger(User.class);
 
   public String getEmail() {
@@ -129,6 +132,22 @@ public class User extends ResourceSupport {
 
   public void setNumOfCompBadges(Integer numOfCompBadges) {
     this.numOfCompBadges = numOfCompBadges;
+  }
+
+  public String getArn() {
+    return arn;
+  }
+
+  public void setArn(String arn) {
+    this.arn = arn;
+  }
+
+  public String getDeviceToken() {
+    return deviceToken;
+  }
+
+  public void setDeviceToken(String deviceToken) {
+    this.deviceToken = deviceToken;
   }
 
   /**
@@ -263,7 +282,8 @@ public class User extends ResourceSupport {
     details.setTrackingOff(isTrackingOff());
     details.setConsentGiven(isConsentGiven());
     details.setProfilePhoto(getProfilePhoto());
-
+    details.setArn(arn);
+    details.setDeviceToken(deviceToken);
     return details;
   }
 
@@ -303,6 +323,8 @@ public class User extends ResourceSupport {
     user.setLevel(calculateUserLevel(readUser.getExperience()));
     user.setNumOfCompBadges(readUser.getNumOfCompBadges());
     user.setNumOfCompTasks(readUser.getNumOfCompTasks());
+    user.setArn(readUser.getArn());
+    user.setDeviceToken(readUser.getDeviceToken());
 
     String simpleName = User.class.getSimpleName();
     String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
@@ -365,10 +387,10 @@ public class User extends ResourceSupport {
     return likes.iterator();
   }
 
-  public static Long calculateUserLevel(Long experience){
-    if (experience==null || experience<0)
+  public static Long calculateUserLevel(Long experience) {
+    if (experience == null || experience < 0)
       return 0l;
     else
-      return experience/1000;
+      return experience / 1000;
   }
 }
