@@ -484,7 +484,7 @@ public class UserEventHandlerTest {
     user1.setInstitution(new Institution(nADs.getInstitutionId()));
 
     UpdateUserEvent updateUserEvent = new UpdateUserEvent(nADs.getEmail(), nADs);
-    when(uRepo.findByEmail(any(String.class))).thenReturn(user);
+    when(uRepo.findByEmail(any(String.class), anyInt())).thenReturn(user);
     when(iRepo.findOne(any(Long.class))).thenReturn(inst);
     when(uRepo.save(any(User.class), anyInt())).thenReturn(user1);
 
@@ -526,7 +526,7 @@ public class UserEventHandlerTest {
   }
 
   @Test
-  public void shouldUpdateUserNoExistingUser() {
+  public void shouldNotUpdateNoExistingUser() {
     Institution inst = DatabaseDataFixture.populateInstUniMelb();
     UserDetails nADs;
     nADs = new UserDetails("gnewitt@hotmail.com");
@@ -541,20 +541,13 @@ public class UserEventHandlerTest {
     user.setInstitution(new Institution(nADs.getInstitutionId()));
 
     UpdateUserEvent updateUserEvent = new UpdateUserEvent(nADs.getEmail(), nADs);
-    when(uRepo.findByEmail(any(String.class))).thenReturn(null);
+    when(uRepo.findByEmail(any(String.class), anyInt())).thenReturn(null);
     when(iRepo.findOne(any(Long.class))).thenReturn(inst);
     when(uRepo.save(any(User.class), anyInt())).thenReturn(user);
 
     UserUpdatedEvent nude = (UserUpdatedEvent) userServiceMocked.updateUser(updateUserEvent);
     assertNotNull("UserUpdatedEvent returned null", nude);
-    assertNotNull("UserDetails returned null", nude.getDetails());
-    assertEquals("Email address not updated.", nude.getEmail(), nADs.getEmail());
-    assertEquals("Nationality not updated.", ((UserDetails) nude.getDetails()).getNationality(), nADs.getNationality());
-    assertEquals("First name not updated.", ((UserDetails) nude.getDetails()).getGivenName(), nADs.getGivenName());
-    assertEquals("Last name not updated.", ((UserDetails) nude.getDetails()).getFamilyName(), nADs.getFamilyName());
-    assertEquals("Year of Birth not updated.", ((UserDetails) nude.getDetails()).getYearOfBirth(), nADs.getYearOfBirth());
-    assertEquals("Gender not updated.", ((UserDetails) nude.getDetails()).getGender(), nADs.getGender());
-    assertEquals("Password not updated.", ((UserDetails) nude.getDetails()).getPassword(), nADs.getPassword());
+    assertNull("UserDetails returned not null", nude.getDetails());
   }
 
   @Test

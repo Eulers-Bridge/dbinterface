@@ -103,7 +103,7 @@ public class UserController {
     if (null != userEvent) {
       if (LOG.isDebugEnabled()) LOG.debug("userEvent - " + userEvent);
       if (!userEvent.isEntityFound()) {
-        result = new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
+        result = new ResponseEntity<User>(HttpStatus.NOT_FOUND);
       } else {
         User restUser = User.fromUserDetails((UserDetails) userEvent.getDetails());
         if (LOG.isDebugEnabled()) LOG.debug("restUser = " + restUser);

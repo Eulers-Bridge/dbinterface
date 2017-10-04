@@ -516,17 +516,17 @@ public class UserControllerTest
 		.andExpect(status().isOk())	;
 	}
 	
-	@Test
-	public void putShouldReturnInstitutionNotFound() throws Exception
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingUpdate()");
-		UserDetails dets=RestDataFixture.customEmailUser(email);
-		UserUpdatedEvent testData=UserUpdatedEvent.instituteNotFound(email);
-		String content=populateContent(dets);
-		when (userService.updateUser(any(UpdateUserEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(put(urlPrefix+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andExpect(status().isFailedDependency())	;
-	}
+//	@Test
+//	public void putShouldReturnInstitutionNotFound() throws Exception
+//	{
+//		if (LOG.isDebugEnabled()) LOG.debug("performingUpdate()");
+//		UserDetails dets=RestDataFixture.customEmailUser(email);
+//		UserUpdatedEvent testData=UserUpdatedEvent.instituteNotFound(email);
+//		String content=populateContent(dets);
+//		when (userService.updateUser(any(UpdateUserEvent.class))).thenReturn(testData);
+//		this.mockMvc.perform(put(urlPrefix+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
+//		.andExpect(status().isFailedDependency())	;
+//	}
 	
 	@Test
 	public void postShouldReturnUserCorrectly() throws Exception

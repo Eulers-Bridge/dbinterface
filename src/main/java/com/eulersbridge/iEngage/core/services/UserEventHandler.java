@@ -360,71 +360,55 @@ public class UserEventHandler implements UserService {
   @Transactional
   public UpdatedEvent updateUser(UpdateUserEvent updateUserEvent) {
     UserDetails newUser = (UserDetails) updateUserEvent.getDetails();
-    User user = null, result = null, userToUpdate = User
+    User user = null, result = null, updateUser = User
       .fromUserDetails(newUser);
     if (LOG.isDebugEnabled()) LOG.debug("User Details :" + newUser);
-    user = userRepository.findByEmail(updateUserEvent.getEmail());
+    user = userRepository.findByEmail(updateUserEvent.getEmail(), 0);
     if (null == user) {
-      if (LOG.isDebugEnabled())
-        LOG.debug("User does not exist, adding another.");
-      // Do not allow a new user to be created with account verified set
-      // to true.
-      newUser.setAccountVerified(false);
+      return UserUpdatedEvent.userNotFound(newUser.getEmail());
     } else {
-      userToUpdate.setNodeId(user.getNodeId());
-      userToUpdate.setPassword(user.getPassword());
-      userToUpdate.setRoles(user.getRoles());
+//      userToUpdate.setNodeId(user.getNodeId());
+//      userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
+//      userToUpdate.setRoles(user.getRoles());
+//      if (null != updateUserDetails.getEmail())
+//        user.setEmail(updateUserDetails.getEmail());
+      if (null != updateUser.getContactNumber())
+        user.setContactNumber(updateUser.getContactNumber());
+      if (null != updateUser.getFamilyName())
+        user.setFamilyName(updateUser.getFamilyName());
+      if (null != updateUser.getGender())
+        user.setGender(updateUser.getGender());
+      if (null != updateUser.getGivenName())
+        user.setGivenName(updateUser.getGivenName());
+      if (null != updateUser.getNationality())
+        user.setNationality(updateUser.getNationality());
+      if (null != updateUser.getYearOfBirth())
+        user.setYearOfBirth(updateUser.getYearOfBirth());
+      if (null != updateUser.getAccountVerified())
+        user.setAccountVerified(updateUser.getAccountVerified());
+      if (null != updateUser.getTrackingOff())
+        user.setTrackingOff(updateUser.getTrackingOff());
+      if (null != updateUser.getConsentGiven())
+        user.setConsentGiven(updateUser.getConsentGiven());
+      if (null != updateUser.getOptOutDataCollection())
+        user.setOptOutDataCollection(updateUser.getOptOutDataCollection());
+      if (null != updateUser.getArn())
+        user.setArn(updateUser.getArn());
+      if (null != updateUser.getDeviceToken())
+        user.setDeviceToken(updateUser.getDeviceToken());
 
-      if (null == userToUpdate.getEmail())
-        userToUpdate.setEmail(user.getEmail());
-      if (null == userToUpdate.getContactNumber())
-        userToUpdate.setContactNumber(user.getContactNumber());
-      if (null == userToUpdate.getFamilyName())
-        userToUpdate.setFamilyName(user.getFamilyName());
-      if (null == userToUpdate.getGender())
-        userToUpdate.setGender(user.getGender());
-      if (null == userToUpdate.getGivenName())
-        userToUpdate.setGivenName(user.getGivenName());
-      if (null == userToUpdate.getNationality())
-        userToUpdate.setNationality(user.getNationality());
-      if (null == userToUpdate.getYearOfBirth())
-        userToUpdate.setYearOfBirth(user.getYearOfBirth());
-      if (null == userToUpdate.getAccountVerified())
-        userToUpdate.setAccountVerified(user.getAccountVerified());
-      if (null == userToUpdate.getTrackingOff())
-        userToUpdate.setTrackingOff(user.getTrackingOff());
-      if (null == userToUpdate.getConsentGiven())
-        userToUpdate.setConsentGiven(user.getConsentGiven());
-      if (null == userToUpdate.getOptOutDataCollection())
-        userToUpdate.setOptOutDataCollection(user.getOptOutDataCollection());
-      if (null == newUser.getInstitutionId()) {
-        if (user.getInstitution() != null)
-          newUser.setInstitutionId(user.getInstitution().getNodeId());
-        if (user.getInstitution() instanceof Institution) {
-          userToUpdate.setInstitution(user.getInstitution$());
-        }
-      }
-      User.copyUntweakablePropoties(user, userToUpdate);
+//      if (null != newUser.getInstitutionId()) {
+//        if (user.getInstitution() != null)
+//          newUser.setInstitutionId(user.getInstitution().getNodeId());
+//        if (user.getInstitution() instanceof Institution) {
+//          user.setInstitution(user.getInstitution$());
+//        }
+//      }
+//      User.copyUntweakablePropoties(user, updateUserDetails);
 
+      result = userRepository.save(user, 0);
+      return new UserUpdatedEvent(result.getEmail(), result.toUserDetails());
     }
-    if (LOG.isDebugEnabled()) LOG.debug("userToUpdate :" + userToUpdate);
-
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding institution with instId = "
-        + newUser.getInstitutionId());
-    Institution inst = instRepository.findOne(newUser.getInstitutionId());
-
-    if (inst != null) {
-      if (LOG.isDebugEnabled()) LOG.debug("Found institution = " + inst);
-      userToUpdate.setInstitution(inst);
-      result = userRepository.save(userToUpdate, 0);
-      if (LOG.isDebugEnabled()) LOG.debug("test = " + result);
-    } else {
-      return UserUpdatedEvent.instituteNotFound(updateUserEvent
-        .getEmail());
-    }
-
-    return new UserUpdatedEvent(result.getEmail(), result.toUserDetails());
   }
 
   @Override
