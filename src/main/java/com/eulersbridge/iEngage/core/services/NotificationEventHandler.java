@@ -63,6 +63,7 @@ public class NotificationEventHandler implements NotificationService {
     Notification notif = Notification.fromNotificationDetails(nDets);
     if (LOG.isDebugEnabled())
       LOG.debug("Notification - " + notif + " className - " + notif.getClass().getSimpleName());
+    System.out.println("setupForSave");
     Boolean check = notif.setupForSave(repos);
     if (LOG.isDebugEnabled()) LOG.debug("Check - " + check);
     Notification result = null;

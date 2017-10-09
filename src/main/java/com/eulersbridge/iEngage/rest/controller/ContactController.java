@@ -3,6 +3,7 @@
  */
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
@@ -85,18 +86,15 @@ public class ContactController {
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_LABEL + "/{contactInfo}")
   public @ResponseBody
   ResponseEntity<ContactRequest> addContact(@PathVariable Long userId, @PathVariable String contactInfo) {
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to add contact " + contactInfo + " for " + userId);
+    LOG.info("Attempting to add contact " + contactInfo + " for " + userId);
 
     ReadUserEvent userEvent;
     ResponseEntity<ContactRequest> result;
-    boolean isEmail = emailValidator.isValid(contactInfo);
-
     userEvent = getUser(contactInfo);
-    if (((UserDetails) userEvent.getDetails()).getUserId() == userId) {
-      if (LOG.isDebugEnabled())
-        LOG.debug("Trying to add self as contact. UserId: " + userId);
-      return new ResponseEntity<ContactRequest>(HttpStatus.BAD_REQUEST);
+
+    if (((UserDetails) userEvent.getDetails()).getEmail().equals(Util.getUserEmailFromSession())) {
+      LOG.debug("Trying to add self as contact. UserId: " + userId);
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     // Look for existing contact request.
@@ -107,13 +105,10 @@ public class ContactController {
     ContactRequest restContactRequest;
 
     if (crEvt.isEntityFound()) {
-      if (LOG.isDebugEnabled())
-        LOG.debug("Contact Request details returned - " + (crEvt.getDetails()));
-      restContactRequest = ContactRequest.fromContactRequestDetails((ContactRequestDetails) (crEvt.getDetails()));
+      LOG.debug("Contact Request details returned - " + (crEvt.getDetails()));
+      ContactRequestDetails d = (ContactRequestDetails)crEvt.getDetails();
+      restContactRequest = ContactRequest.fromContactRequestDetails(d);
       // Request already exists, bounce out of here.
-      if (LOG.isDebugEnabled())
-        LOG.debug("Contact Request returned - " + restContactRequest);
-      // Has it been denied?  TODO
       result = new ResponseEntity<ContactRequest>(restContactRequest, HttpStatus.ACCEPTED);
     } else {
       CreateContactRequestEvent createEvt = new CreateContactRequestEvent(fr);
@@ -134,8 +129,6 @@ public class ContactController {
           Long contacteeId = userService.findUserId(userDets.getEmail());
           // Create a new contact request.
           Notification notification = new Notification(contacteeId, NotificationConstants.CONTACT_REQUEST, dets);
-
-
           if (LOG.isDebugEnabled()) {
             LOG.debug("userEvent - " + userEvent);
             LOG.debug("Notification - " + notification);

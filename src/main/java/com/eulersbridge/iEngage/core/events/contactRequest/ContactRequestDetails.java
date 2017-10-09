@@ -30,11 +30,12 @@ public class ContactRequestDetails extends Details {
                                Boolean rejected, Long userId, UserDetails requesterDetails) {
     super(nodeId);
     this.contactDetails = contactDetails;
+    this.userId = userId;
+
     this.requestDate = requestDate;
     this.responseDate = responseDate;
     this.accepted = accepted;
     this.rejected = rejected;
-    this.userId = userId;
     this.requesterDetails = requesterDetails;
   }
 
