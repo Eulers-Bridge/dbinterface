@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.email.EmailResetPWD;
 import com.eulersbridge.iEngage.rest.domain.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.LongValidator;
 import org.apache.velocity.Template;
@@ -933,12 +934,19 @@ public class UserController {
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.SEARCH_USER_LABEL + "/{inputName}")
   public @ResponseBody
   ResponseEntity<Iterator<UserProfile>> searchUserProfiles(@PathVariable String inputName) {
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to search User profiles Input:" + inputName);
-    RequestSearchUserEvent requestSearchUserEvent = new RequestSearchUserEvent(inputName);
-    SearchUserEvent searchUserEvent = userService.searchUserProfileByName(requestSearchUserEvent);
-    List<UserProfile> userProfileList = searchUserEvent.getUserProfileList();
-    ResponseEntity result = new ResponseEntity<Iterator<UserProfile>>(userProfileList.iterator(), HttpStatus.OK);
+    LOG.info("Attempting to search User profiles Input:" + inputName);
+    ResponseEntity result = null;
+    if (EmailValidator.getInstance().isValid(inputName)){
+      ResponseEntity<UserProfile> foundUser = findContact(inputName);
+      UserProfile u = foundUser.getBody();
+      List<UserProfile> uList = u == null ? Lists.newArrayList() :Lists.newArrayList(u);
+      result = new ResponseEntity<Iterator<UserProfile>>(uList.iterator(), HttpStatus.OK);
+    }else{
+      RequestSearchUserEvent requestSearchUserEvent = new RequestSearchUserEvent(inputName);
+      SearchUserEvent searchUserEvent = userService.searchUserProfileByName(requestSearchUserEvent);
+      List<UserProfile> userProfileList = searchUserEvent.getUserProfileList();
+      result = new ResponseEntity<Iterator<UserProfile>>(userProfileList.iterator(), HttpStatus.OK);
+    }
     return result;
   }
 

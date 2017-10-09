@@ -259,9 +259,12 @@ public class UserEventHandler implements UserService {
   @Override
   public SearchUserEvent searchUserProfileByName(RequestSearchUserEvent requestSearchUserEvent) {
     String[] input = requestSearchUserEvent.getqueryString().split(" ");
-    String pattern_1 = input[0];
-    String pattern_2 = input.length == 2 ? input[1] : "";
+    String pattern_1 = input[0].toLowerCase();
+    String pattern_2 = input.length == 2 ? input[1].toLowerCase() : " NULL ";
     List<User> users = userRepository.searchUserByName(pattern_1, pattern_2);
+    if (users.size() < 1) {
+      users = userRepository.searchUserByName2(pattern_1, pattern_1);
+    }
     if (users.size() < 1) {
       users = userRepository.searchUserByName2(pattern_1, pattern_2);
     }

@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.beans;
 
+import com.eulersbridge.iEngage.core.notification.SNSMobilePush;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.*;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -59,7 +61,11 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
 
     LOG.info("Task starts at ApplicationEventListener");
     checkOrCreateInitialNodes();
-    System.out.println("EncryPwd: " + pwdEncoder.encode("OO%zdXcu3VH2-%cH"));
+//    try {
+//      SNSMobilePush.main(new String[]{});
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
 
   }
 
