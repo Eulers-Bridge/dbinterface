@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class AmazonSNSClientWrapper {
 
-  private final AmazonSNS snsClient;
+  public final AmazonSNS snsClient;
 
   public AmazonSNSClientWrapper(AmazonSNS client) {
     this.snsClient = client;

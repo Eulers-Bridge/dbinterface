@@ -60,7 +60,8 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
     // (new Thread(() -> {   })).start();
 
     LOG.info("Task starts at ApplicationEventListener");
-    checkOrCreateInitialNodes();
+
+//    checkOrCreateInitialNodes();
 //    try {
 //      SNSMobilePush.main(new String[]{});
 //    } catch (IOException e) {

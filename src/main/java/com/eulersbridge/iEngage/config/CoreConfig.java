@@ -36,6 +36,4 @@ public class CoreConfig {
     executor.setCorePoolSize(2);
     return executor;
   }
-
-
 }

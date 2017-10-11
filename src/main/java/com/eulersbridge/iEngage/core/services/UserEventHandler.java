@@ -1064,4 +1064,21 @@ public class UserEventHandler implements UserService {
     return nare;
   }
 
+  @Override
+  public void updateSNSTokens(String userEmail, String topicArn, String deviceToken) {
+    assert (userEmail != null && topicArn != null && deviceToken != null);
+    User user = userRepository.findByEmail(userEmail, 0);
+    // Abort if user not found
+    if (user == null){
+      LOG.error("User not found in updateSNSTokens");
+      return;
+    }
+    // Abort if topicArn and deviceToken is already up-to-date.
+    if (topicArn.equals(user.getArn()) && deviceToken.equals(user.getDeviceToken()))
+      return;
+
+    user.setArn(topicArn);
+    user.setDeviceToken(deviceToken);
+    userRepository.save(user, 0);
+  }
 }

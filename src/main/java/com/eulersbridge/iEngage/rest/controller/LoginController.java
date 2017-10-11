@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.domain.Logout;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
@@ -21,10 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
@@ -44,27 +42,18 @@ public class LoginController {
 
   @RequestMapping(value = ControllerConstants.LOGIN_LABEL, method = RequestMethod.GET)
   public @ResponseBody
-  ResponseEntity<LogIn> login() {
-    SecurityContext context = SecurityContextHolder.getContext();
-    Authentication authentication = context.getAuthentication();
-    String username = authentication.getName();
-    String password = "*******";
-    Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
-    if (authentication.getCredentials() != null)
-      password = authentication.getCredentials().toString();
-    if (LOG.isInfoEnabled()) LOG.info(username + " attempting to login. ");
-    if (LOG.isDebugEnabled())
-      LOG.debug("auth - " + authentication + " username - " + username + " credentails - " + password + " roles - " + roles);
-
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to retrieve user. " + username);
-    ReadUserEvent userEvent = userService.readUser(new RequestReadUserEvent(username));
+  ResponseEntity<LogIn> login(@RequestParam(value = "topicArn", required = false) String topicArn,
+                              @RequestParam(value = "deviceToken", required = false) String deviceToken) {
+    String userEmail = Util.getUserEmailFromSession();
+    if (LOG.isInfoEnabled()) LOG.info(userEmail + " attempting to login. ");
+    if (topicArn != null && deviceToken != null) {
+      userService.updateSNSTokens(userEmail, topicArn, deviceToken);
+    }
+    ReadUserEvent userEvent = userService.readUser(new RequestReadUserEvent(userEmail));
     if (!userEvent.isEntityFound()) {
       return new ResponseEntity<LogIn>(HttpStatus.NOT_FOUND);
     }
-
     UserDetails userDetails = (UserDetails) userEvent.getDetails();
-
     int pageNumber = 0;
     int pageLength = 10;
     pageNumber = Integer.parseInt(ControllerConstants.PAGE_NUMBER);
@@ -100,14 +89,14 @@ public class LoginController {
     return response;
   }
 
-  public static String getUserIdentity(){
+  public static String getUserIdentity() {
     SecurityContext context = SecurityContextHolder.getContext();
     Authentication authentication = context.getAuthentication();
     String userIdentity = authentication.getName();
     return userIdentity;
   }
 
-  public static boolean verifyUserIdentity(String email){
+  public static boolean verifyUserIdentity(String email) {
     return email.equals(getUserIdentity());
   }
 }

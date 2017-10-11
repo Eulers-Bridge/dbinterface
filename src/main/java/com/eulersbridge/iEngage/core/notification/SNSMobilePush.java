@@ -26,7 +26,10 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.CreatePlatformEndpointRequest;
+import com.amazonaws.services.sns.model.CreatePlatformEndpointResult;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
+import com.amazonaws.services.sns.model.PublishRequest;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -74,9 +77,9 @@ public class SNSMobilePush {
     try {
       SNSMobilePush sample = new SNSMobilePush(sns);
 			/* TODO: Uncomment the services you wish to use. */
-      sample.demoAndroidAppNotification();
+//      sample.demoAndroidAppNotification();
       // sample.demoKindleAppNotification();
-      // sample.demoAppleAppNotification();
+       sample.demoAppleAppNotification();
       // sample.demoAppleSandboxAppNotification();
       // sample.demoBaiduAppNotification();
       // sample.demoWNSAppNotification();
@@ -126,18 +129,31 @@ public class SNSMobilePush {
   }
 
   public void demoAppleAppNotification() {
-    // TODO: Please fill in following values for your application. You can
-    // also change the notification payload as per your preferences using
-    // the method
-    // com.amazonaws.sns.samples.tools.SampleMessageGenerator.getSampleAppleMessage()
-    String certificate = ""; // This should be in pem format with \n at the
-    // end of each line.
-    String privateKey = ""; // This should be in pem format with \n at the
-    // end of each line.
-    String applicationName = "";
-    String deviceToken = ""; // This is 64 hex characters.
-    snsClientWrapper.demoNotification(SampleMessageGenerator.Platform.APNS, certificate,
-      privateKey, deviceToken, applicationName, attributesMap);
+//    // TODO: Please fill in following values for your application. You can
+//    // also change the notification payload as per your preferences using
+//    // the method
+//    // com.amazonaws.sns.samples.tools.SampleMessageGenerator.getSampleAppleMessage()
+//    String certificate = " "; // This should be in pem format with \n at the
+//    // end of each line.
+//    String privateKey = " "; // This should be in pem format with \n at the
+//    // end of each line.
+//    String applicationName = "isegoria_dev";
+    String topicArn = "arn:aws:sns:ap-southeast-2:715927704730:app/APNS_SANDBOX/isegoria_dev";
+    String message = "Hello World";
+    String subject = "My first programmatic post to an SNS Topic";
+    PublishRequest pubRequest = new PublishRequest();
+    pubRequest.setTargetArn(topicArn);
+    pubRequest.setSubject(subject);
+    pubRequest.setMessage(message);
+    String deviceToken = "51093f47a63b891ae7047633373e71814ef9a505b66db6875563c6dc456003dd"; // This is 64 hex characters.
+    CreatePlatformEndpointRequest platformEndpointRequest = new CreatePlatformEndpointRequest();
+    platformEndpointRequest.setToken(deviceToken);
+    platformEndpointRequest.setPlatformApplicationArn(topicArn);
+    CreatePlatformEndpointResult res = snsClientWrapper.snsClient.createPlatformEndpoint(platformEndpointRequest);
+    pubRequest.setTargetArn(res.getEndpointArn());
+    snsClientWrapper.snsClient.publish(pubRequest);
+//    snsClientWrapper.demoNotification(SampleMessageGenerator.Platform.APNS, certificate,
+//      privateKey, deviceToken, applicationName, attributesMap);
   }
 
   public void demoAppleSandboxAppNotification() {

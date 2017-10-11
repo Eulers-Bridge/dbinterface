@@ -1,14 +1,22 @@
 package com.eulersbridge.iEngage.core.beans;
 
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.model.CreatePlatformEndpointRequest;
+import com.amazonaws.services.sns.model.CreatePlatformEndpointResult;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.eulersbridge.iEngage.config.CoreConfig;
+import com.eulersbridge.iEngage.core.notification.SNSNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -18,6 +26,13 @@ import java.util.function.Function;
 @Component
 public class Util {
   private static Logger LOG = LoggerFactory.getLogger(Util.class);
+
+  private final AmazonSNS sns;
+
+  @Autowired
+  public Util(AmazonSNS sns) {
+    this.sns = sns;
+  }
 
   // @Async method must be public non-static and cannot be be called in the same
   // class. Therefore I put this method in a separate util bean.
@@ -29,6 +44,24 @@ public class Util {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  @Async(value = "threadPoolTaskExecutor")
+  public void sendNotification(SNSNotification notification){
+    CreatePlatformEndpointRequest endpointRequest = new CreatePlatformEndpointRequest();
+    endpointRequest.setToken(notification.getDeviceToken());
+    endpointRequest.setPlatformApplicationArn(notification.getTopicArn());
+    CreatePlatformEndpointResult creEndResult = sns.createPlatformEndpoint(endpointRequest);
+    PublishRequest pubRequest = new PublishRequest();
+    pubRequest.setTargetArn(creEndResult.getEndpointArn());
+    pubRequest.setSubject(notification.getSubject());
+    pubRequest.setMessage(notification.getMessage());
+    sns.publish(pubRequest);
+  }
+
+  @Async(value = "threadPoolTaskExecutor")
+  public void sendNotifications(List<SNSNotification> notifications){
+    notifications.forEach(this::sendNotification);
   }
 
   public static String getUserEmailFromSession(){

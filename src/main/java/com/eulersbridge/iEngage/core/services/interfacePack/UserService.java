@@ -97,5 +97,8 @@ public interface UserService extends UserDetailsService {
   public RequestHandledEvent requestResetPWD(String email);
 
   public RequestHandledEvent resetPwd(String email, String token, String newPwd);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #userEmail==authentication.name)")
+  public void updateSNSTokens(String userEmail, String topicArn, String deviceToken);
 }
 
