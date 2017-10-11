@@ -47,24 +47,32 @@ public class Util {
   }
 
   @Async(value = "threadPoolTaskExecutor")
-  public void sendNotification(SNSNotification notification){
+  public void sendNotification(SNSNotification notification) {
+    if (!notification.isValid()) {
+      LOG.warn("Send notification abort due to invalid SNSNotification");
+      return;
+    }
     CreatePlatformEndpointRequest endpointRequest = new CreatePlatformEndpointRequest();
     endpointRequest.setToken(notification.getDeviceToken());
     endpointRequest.setPlatformApplicationArn(notification.getTopicArn());
-    CreatePlatformEndpointResult creEndResult = sns.createPlatformEndpoint(endpointRequest);
-    PublishRequest pubRequest = new PublishRequest();
-    pubRequest.setTargetArn(creEndResult.getEndpointArn());
-    pubRequest.setSubject(notification.getSubject());
-    pubRequest.setMessage(notification.getMessage());
-    sns.publish(pubRequest);
+    try {
+      CreatePlatformEndpointResult creEndResult = sns.createPlatformEndpoint(endpointRequest);
+      PublishRequest pubRequest = new PublishRequest();
+      pubRequest.setTargetArn(creEndResult.getEndpointArn());
+      pubRequest.setSubject(notification.getSubject());
+      pubRequest.setMessage(notification.getMessage());
+      sns.publish(pubRequest);
+    } catch (Exception e) {
+      LOG.error("Failed in sending Notification. " + e.getMessage());
+    }
   }
 
   @Async(value = "threadPoolTaskExecutor")
-  public void sendNotifications(List<SNSNotification> notifications){
+  public void sendNotifications(List<SNSNotification> notifications) {
     notifications.forEach(this::sendNotification);
   }
 
-  public static String getUserEmailFromSession(){
+  public static String getUserEmailFromSession() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     String userEmail = "";
     if (!(auth instanceof AnonymousAuthenticationToken)) {

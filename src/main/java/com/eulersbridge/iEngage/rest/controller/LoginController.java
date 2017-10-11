@@ -8,6 +8,7 @@ import com.eulersbridge.iEngage.core.events.users.LoginDetails;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.notification.SNSNotification;
 import com.eulersbridge.iEngage.core.services.interfacePack.NewsService;
 import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.rest.domain.LogIn;
@@ -34,6 +35,8 @@ public class LoginController {
   UserService userService;
   @Autowired
   NewsService newsService;
+  @Autowired
+  Util util;
 
   private static Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
@@ -74,6 +77,11 @@ public class LoginController {
     LoginDetails result = new LoginDetails(articleEvent.getArticles().iterator(), userDetails, userId);
 
     LogIn response = LogIn.fromLoginDetails(result);
+
+    //TODO temp test code.
+    //TODO Load the content of notification from application.properties via ParamBean
+    SNSNotification notification = new SNSNotification(userDetails.getDeviceToken(), userDetails.getArn(), "Login Welcome", "Hi " + userDetails.getGivenName() + "! This is a testing notification on you login.");
+    util.sendNotification(notification);
 
     return new ResponseEntity<LogIn>(response, HttpStatus.OK);
   }
