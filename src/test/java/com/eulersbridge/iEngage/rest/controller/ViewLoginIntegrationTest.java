@@ -1,11 +1,13 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.ReadAllEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticlesReadEvent;
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
+import com.eulersbridge.iEngage.core.notification.SNSNotification;
 import com.eulersbridge.iEngage.core.services.interfacePack.NewsService;
 import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
@@ -58,6 +60,9 @@ public class ViewLoginIntegrationTest {
 	
 	@Mock
 	SecurityContextHolder contextHolder;
+
+	@Mock
+	Util util;
 	
 	UserDetails userDets;
 	
