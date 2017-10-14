@@ -20,6 +20,6 @@ public interface EventRepository extends GraphRepository<Event> {
 
   @Query("Match (n:`" + DataConstants.INSTITUTION + "`)-[r:" + DataConstants.HAS_NEWS_FEED_LABEL +
     "]-(f:`" + DataConstants.NEWS_FEED + "`)-[s:" + DataConstants.HAS_EVENT_LABEL +
-    "]-(e:`Event`) where id(n)={instId} return e")
+    "]-(e:`Event`) where id(n)={instId} with e match p=(e)-[*0..1]-(m) return p")
   Page<Event> findByInstitutionId(@Param("instId") Long instId, Pageable p);
 }
