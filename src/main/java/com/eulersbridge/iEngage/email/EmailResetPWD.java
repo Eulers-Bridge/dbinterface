@@ -49,7 +49,7 @@ public class EmailResetPWD extends Email implements Serializable {
       vc.put("emailAddress", getRecipientEmailAddress());
       vc.put("token", token);
       StringWriter result = new StringWriter();
-      velocityEngine.mergeTemplate("templates" + templatePath, "UTF-8", vc, result);
+      velocityEngine.mergeTemplate(templatePath, "UTF-8", vc, result);
       String body = result.toString();
       message.setText(body, true);
 

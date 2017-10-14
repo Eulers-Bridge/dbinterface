@@ -64,7 +64,7 @@ public class EmailConfig {
     // (Note: java/ and resources/ are merged together as the root entry of class resource loader)
     // Ref: http://velocity.apache.org/engine/1.7/developer-guide.html#configuring-resource-loaders
     // Ref: https://stackoverflow.com/questions/9051413/unable-to-find-velocity-template-resources
-    velocityEngine.getTemplate("/templates/sign_up_in_progress.vm");
+//    velocityEngine.getTemplate("/templates/sign_up_in_progress.vm");
     return velocityEngine;
 
   }
