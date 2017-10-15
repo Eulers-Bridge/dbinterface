@@ -2,7 +2,6 @@ package com.eulersbridge.iEngage.database.repository;
 
 import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.Poll;
-import com.eulersbridge.iEngage.database.domain.PollAnswerRelation;
 import com.eulersbridge.iEngage.database.domain.PollResultTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,5 +28,9 @@ public interface PollRepository extends GraphRepository<Poll> {
   @Query("MATCH (a:`User`)-[r:`" + DataConstants.APQ_LABEL + "`]->(b:`" + DataConstants.POLL + "`) WHERE id(b)={pollId} WITH collect(distinct r.answerIndex) as answers " +
     "unwind answers as x match (u:`User`)-[t:`" + DataConstants.APQ_LABEL + "`]-(p:`" + DataConstants.POLL + "`) where t.answerIndex=x and id(p)={pollId} return x as answer,count(t) as frequency order by x")
   List<PollResultTemplate> getPollResults(@Param("pollId") Long pollId);
+
+  @Query("MATCH l=()-[*0..1]-(p:Poll)-[r:HAS_POLL_OPTION]-(o:PollOption)-[*0..1]-() WHERE id(p)={pollId} return distinct l")
+  Poll findOneCustom(@Param("pollId") Long pollId);
+
 
 }

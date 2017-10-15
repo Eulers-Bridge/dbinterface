@@ -24,7 +24,7 @@ public interface PollService {
   public UpdatedEvent updatePoll(UpdatePollEvent updatePollEvent);
 
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public PollAnswerCreatedEvent answerPoll(CreatePollAnswerEvent pollAnswerEvent);
+  public RequestHandledEvent votePollOption(String userEmail, Long pollId, Long optionId);
 
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
   public AllReadEvent findPolls(ReadAllEvent readPollsEvent,

@@ -54,7 +54,6 @@ public class PollTest {
     assertEquals("", poll.getQuestion(), dets.getQuestion());
     assertEquals("", poll.getStart(), dets.getStart());
     assertEquals("", poll.getDuration(), dets.getDuration());
-    assertEquals("", poll.getAnswers(), dets.getAnswers());
     assertEquals("", poll.getInstitution$().getNodeId(), dets.getOwnerId());
     assertEquals("", poll.getCreator$().getNodeId(), dets.getCreatorId());
   }
@@ -72,7 +71,6 @@ public class PollTest {
     assertEquals("", dets.getQuestion(), pollTest.getQuestion());
     assertEquals("", dets.getStart(), pollTest.getStart());
     assertEquals("", dets.getDuration(), pollTest.getDuration());
-    assertEquals("", dets.getAnswers(), pollTest.getAnswers());
     assertEquals("", dets.getOwnerId(), pollTest.getInstitution$().getNodeId());
     assertEquals("", dets.getCreatorId(), pollTest.getCreator$().getNodeId());
   }
@@ -113,25 +111,6 @@ public class PollTest {
     assertNotEquals(poll.getQuestion(), question);
     poll.setQuestion(question);
     assertEquals(poll.getQuestion(), question);
-  }
-
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#getAnswers()}.
-   */
-  @Test
-  public final void testGetAnswers() {
-    assertEquals(poll.getAnswers(), dets.getAnswers());
-  }
-
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#setAnswers(java.lang.String)}.
-   */
-  @Test
-  public final void testSetAnswers() {
-    String answers = "Other Answers";
-    assertNotEquals(poll.getAnswers(), answers);
-    poll.setAnswers(answers);
-    assertEquals(poll.getAnswers(), answers);
   }
 
   /**
@@ -242,10 +221,8 @@ public class PollTest {
     assertNotEquals(poll.hashCode(), pollTest.hashCode());
     assertNotEquals(pollTest.hashCode(), poll.hashCode());
     pollTest.setQuestion(poll.getQuestion());
-    pollTest.setAnswers(null);
-    assertNotEquals(poll.hashCode(), pollTest.hashCode());
-    assertNotEquals(pollTest.hashCode(), poll.hashCode());
-    pollTest.setAnswers(poll.getAnswers());
+//    assertNotEquals(poll.hashCode(), pollTest.hashCode());
+//    assertNotEquals(pollTest.hashCode(), poll.hashCode());
     pollTest.setCreator(null);
     assertNotEquals(poll.hashCode(), pollTest.hashCode());
     assertNotEquals(pollTest.hashCode(), poll.hashCode());
@@ -300,12 +277,9 @@ public class PollTest {
     assertNotEquals(pollTest, poll);
     pollTest.setDuration(poll.getDuration());
 
-    pollTest.setAnswers("Some other answers");
-    assertNotEquals(poll, pollTest);
-    pollTest.setAnswers(null);
-    assertNotEquals(poll, pollTest);
-    assertNotEquals(pollTest, poll);
-    pollTest.setAnswers(poll.getAnswers());
+//    assertNotEquals(poll, pollTest);
+//    assertNotEquals(poll, pollTest);
+//    assertNotEquals(pollTest, poll);
 
     pollTest.setInstitution(new Institution(23l));
     assertNotEquals(poll, pollTest);

@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
+import com.eulersbridge.iEngage.rest.domain.PollOptionDomain;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
@@ -18,7 +19,6 @@ public class Poll extends Likeable implements Commentable {
   private static final Logger LOG = LoggerFactory.getLogger(Poll.class);
 
   private String question;
-  private String answers;
   private Long start;
   private Long duration;
   private String image;
@@ -29,10 +29,9 @@ public class Poll extends Likeable implements Commentable {
   private Node institution;
   @Relationship(type = DataConstants.HAS_COMMENT, direction = Relationship.UNDIRECTED)
   private List<Node> comments;
-  //  @Relationship(type = DataConstants.APQ_LABEL, direction = Relationship.UNDIRECTED)
-//  private List<Node> answeredUsers;
-  @Relationship(type = DataConstants.APQ_LABEL, direction = Relationship.UNDIRECTED)
-  private List<PollAnswerRelation> pollAnswers;
+  @Relationship(type = DataConstants.HAS_POLL_OPTION_LABEL, direction = Relationship.OUTGOING)
+  private List<Node> pollOptionsList;
+
 
   public Poll() {
   }
@@ -41,10 +40,9 @@ public class Poll extends Likeable implements Commentable {
     super(nodeId);
   }
 
-  public Poll(String question, String answers, Long start, Long duration) {
+  public Poll(String question, Long start, Long duration) {
     super();
     this.question = question;
-    this.answers = answers;
     this.start = start;
     this.duration = duration;
   }
@@ -53,11 +51,17 @@ public class Poll extends Likeable implements Commentable {
     PollDetails pollDetails = new PollDetails();
     pollDetails.setPollId(this.getNodeId());
     pollDetails.setQuestion(this.getQuestion());
-    pollDetails.setAnswers(this.getAnswers());
     pollDetails.setStart(this.getStart());
     pollDetails.setDuration(this.getDuration());
     pollDetails.setImage(this.getImage());
 
+    if (pollOptionsList != null) {
+      List<PollOptionDomain> pollOptionDomains = getPollOptionsList$()
+        .stream()
+        .map(pollOption -> pollOption.toDomainObj())
+        .collect(Collectors.toList());
+      pollDetails.setPollOptions(pollOptionDomains);
+    }
     if (institution != null)
       pollDetails.setOwnerId(institution.getNodeId());
     else
@@ -70,7 +74,6 @@ public class Poll extends Likeable implements Commentable {
     }
 
     pollDetails.setNumOfComments(getNumberOfComments());
-    pollDetails.setNumOfAnswers(getNumberOfAnswers());
     return pollDetails;
   }
 
@@ -79,28 +82,26 @@ public class Poll extends Likeable implements Commentable {
     Poll poll = new Poll();
     poll.setNodeId(pollDetails.getPollId());
     poll.setQuestion(pollDetails.getQuestion());
-    poll.setAnswers(pollDetails.getAnswers());
     poll.setStart(pollDetails.getStart());
     poll.setDuration(pollDetails.getDuration());
     poll.setImage(pollDetails.getImage());
 
-//		Owner institution = new Owner(pollDetails.getOwnerId());
     Institution owner = new Institution();
     owner.setNodeId(pollDetails.getOwnerId());
     poll.setInstitution(owner.toNode());
     User creator = new User(pollDetails.getCreatorId());
     poll.setCreator(creator.toNode());
+
+    if (pollDetails.getPollOptions() != null) {
+      List<Node> pollOptions = pollDetails.getPollOptions().stream()
+        .map(PollOption::fromPollOptionDomain)
+        .collect(Collectors.toList());
+      poll.setPollOptionsList(pollOptions);
+    }
     if (LOG.isTraceEnabled()) LOG.trace("poll " + poll);
     return poll;
   }
 
-  public List<PollAnswerRelation> getPollAnswers() {
-    return pollAnswers;
-  }
-
-  public void setPollAnswers(List<PollAnswerRelation> pollAnswers) {
-    this.pollAnswers = pollAnswers;
-  }
 
   public String getImage() {
     return image;
@@ -116,14 +117,6 @@ public class Poll extends Likeable implements Commentable {
 
   public void setQuestion(String question) {
     this.question = question;
-  }
-
-  public String getAnswers() {
-    return answers;
-  }
-
-  public void setAnswers(String answers) {
-    this.answers = answers;
   }
 
   public Long getStart() {
@@ -154,20 +147,20 @@ public class Poll extends Likeable implements Commentable {
     this.comments = comments;
   }
 
-  public List<User> getAnsweredUsers$() {
-    return castList(getAnsweredUsers(), User.class);
+
+  public List<Node> getPollOptionsList() {
+    return pollOptionsList;
   }
 
-  public List<Node> getAnsweredUsers() {
-    if (pollAnswers != null)
-      return pollAnswers.stream()
-        .map(pollAnswerRelation -> pollAnswerRelation.getUser())
-        .collect(Collectors.toList());
-    else
-      return null;
+  public List<PollOption> getPollOptionsList$() {
+    return castList(pollOptionsList, PollOption.class);
   }
 
-//  public void setAnsweredUsers(List<Node> answeredUsers) {
+  public void setPollOptionsList(List<Node> pollOptionsList) {
+    this.pollOptionsList = pollOptionsList;
+  }
+
+  //  public void setAnsweredUsers(List<Node> answeredUsers) {
 //    this.answeredUsers = answeredUsers;
 //  }
 
@@ -176,13 +169,6 @@ public class Poll extends Likeable implements Commentable {
       return 0;
     return comments.size();
   }
-
-  public Integer getNumberOfAnswers() {
-    if (pollAnswers == null)
-      return 0;
-    return pollAnswers.size();
-  }
-
 
   /**
    * @return the creator
@@ -226,7 +212,7 @@ public class Poll extends Likeable implements Commentable {
   @Override
   public String toString() {
     return "Poll [nodeId=" + nodeId + ", question=" + question
-      + ", answers=" + answers + ", start=" + start + ", duration="
+      + ", start=" + start + ", duration="
       + duration + ", creator=" + creator + ", institution=" + institution + "]";
   }
 
@@ -242,8 +228,6 @@ public class Poll extends Likeable implements Commentable {
     if (nodeId != null) {
       result = prime * result + nodeId.hashCode();
     } else {
-      result = prime * result
-        + ((answers == null) ? 0 : answers.hashCode());
       result = prime * result
         + ((creator == null) ? 0 : creator.hashCode());
       result = prime * result + ((institution == null) ? 0 : institution.hashCode());
@@ -273,9 +257,6 @@ public class Poll extends Likeable implements Commentable {
       else return false;
     } else {
       if (other.nodeId != null) return false;
-      if (answers == null) {
-        if (other.answers != null) return false;
-      } else if (!answers.equals(other.answers)) return false;
       if (institution == null) {
         if (other.institution != null) return false;
       } else if (!institution.equals(other.institution)) return false;

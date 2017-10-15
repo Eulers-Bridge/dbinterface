@@ -9,8 +9,6 @@ import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestE
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
 import com.eulersbridge.iEngage.core.events.notifications.Message;
 import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
-import com.eulersbridge.iEngage.core.events.polls.CreatePollAnswerEvent;
-import com.eulersbridge.iEngage.core.events.polls.PollAnswerCreatedEvent;
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
@@ -274,17 +272,17 @@ public class AspectServiceHandler {
   }
 
   @AfterReturning(
-    pointcut = "execution(* com.eulersbridge.iEngage.core.services.PollEventHandler.answerPoll(..)) && args(createPollAnswerEvent)",
+    pointcut = "execution(* com.eulersbridge.iEngage.core.services.PollEventHandler.votePollOption(..)) && args(userEmail, pollId, optionId)",
     returning = "result")
-  public void updateVoteInAPollTask(JoinPoint joinPoint, CreatePollAnswerEvent createPollAnswerEvent, PollAnswerCreatedEvent result) {
-    if (result.isPollFound() && result.isAnswererFound() && result.isAnswerValid()) {
-      String userEmail = Util.getUserEmailFromSession();
+  public void updateVoteInAPollTask(JoinPoint joinPoint, String userEmail, Long pollId, Long optionId, RequestHandledEvent result) {
+    if (result.getSuccess()) {
+      String userEmail1 = Util.getUserEmailFromSession();
       // async block
       util.asyncExecUserTask(userEmail, id -> {
         String taskAction = "Be a Pollster.";
-        Boolean success = updateTask(userEmail, taskAction, p.expVoteInPoll.longValue(), null);
+        Boolean success = updateTask(userEmail1, taskAction, p.expVoteInPoll.longValue(), null);
         if (success)
-          updateVoteInAPollBadge(userEmail, taskAction);
+          updateVoteInAPollBadge(userEmail1, taskAction);
         return null;
       });
     }

@@ -9,6 +9,7 @@ public class RequestHandledEvent<T> {
   private Boolean success = true;
 
   private Boolean userNotFound = false;
+  private Boolean targetNotFound = false;
   private Boolean badRequest = false;
   private Boolean notAllowed = false;
   private Boolean premissionExpired = false;
@@ -37,6 +38,12 @@ public class RequestHandledEvent<T> {
   public static RequestHandledEvent badRequest() {
     RequestHandledEvent r = new RequestHandledEvent(false);
     r.setBadRequest(Boolean.TRUE);
+    return r;
+  }
+
+  public static RequestHandledEvent targetNotFound(){
+    RequestHandledEvent r = new RequestHandledEvent(false);
+    r.setTargetNotFound(Boolean.TRUE);
     return r;
   }
 
@@ -103,5 +110,13 @@ public class RequestHandledEvent<T> {
 
   public void setPremissionExpired(Boolean premissionExpired) {
     this.premissionExpired = premissionExpired;
+  }
+
+  public Boolean getTargetNotFound() {
+    return targetNotFound;
+  }
+
+  public void setTargetNotFound(Boolean targetNotFound) {
+    this.targetNotFound = targetNotFound;
   }
 }

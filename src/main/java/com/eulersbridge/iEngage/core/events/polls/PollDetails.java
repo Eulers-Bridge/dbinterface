@@ -1,8 +1,11 @@
 package com.eulersbridge.iEngage.core.events.polls;
 
 import com.eulersbridge.iEngage.core.events.Details;
+import com.eulersbridge.iEngage.rest.domain.PollOptionDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * @author Yikai Gong
@@ -10,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class PollDetails extends Details {
   private String question;
-  private String answers;
+  private List<PollOptionDomain> pollOptions;
   private Long start;
   private Long duration;
   private Long ownerId;
@@ -43,13 +46,6 @@ public class PollDetails extends Details {
     this.question = question;
   }
 
-  public String getAnswers() {
-    return answers;
-  }
-
-  public void setAnswers(String answers) {
-    this.answers = answers;
-  }
 
   public Long getStart() {
     return start;
@@ -133,6 +129,22 @@ public class PollDetails extends Details {
     this.image = image;
   }
 
+  public List<PollOptionDomain> getPollOptions() {
+    return pollOptions;
+  }
+
+  public void setPollOptions(List<PollOptionDomain> pollOptions) {
+    this.pollOptions = pollOptions;
+  }
+
+  public static Logger getLOG() {
+    return LOG;
+  }
+
+  public static void setLOG(Logger LOG) {
+    PollDetails.LOG = LOG;
+  }
+
   @Override
   public String toString() {
     StringBuffer buff = new StringBuffer("[ id = ");
@@ -141,7 +153,6 @@ public class PollDetails extends Details {
     buff.append(", question = ");
     buff.append(getQuestion());
     buff.append(", answers = ");
-    buff.append(getAnswers());
     buff.append(", start = ");
     buff.append(getStart());
     buff.append(", duration = ");
@@ -164,7 +175,6 @@ public class PollDetails extends Details {
     if (nodeId != null) {
       result = prime * result + nodeId.hashCode();
     } else {
-      result = prime * result + ((answers == null) ? 0 : answers.hashCode());
       result = prime * result + ((ownerId == null) ? 0 : ownerId.hashCode());
       result = prime * result + ((creatorId == null) ? 0 : creatorId.hashCode());
       result = prime * result
@@ -194,11 +204,6 @@ public class PollDetails extends Details {
       else return false;
     } else {
       if (other.nodeId != null)
-        return false;
-      if (answers == null) {
-        if (other.answers != null)
-          return false;
-      } else if (!answers.equals(other.answers))
         return false;
       if (duration == null) {
         if (other.duration != null)

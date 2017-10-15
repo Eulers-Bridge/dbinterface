@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import com.eulersbridge.iEngage.core.events.Details;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 

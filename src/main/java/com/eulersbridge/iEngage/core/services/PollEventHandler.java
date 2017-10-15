@@ -4,10 +4,7 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.PollService;
 import com.eulersbridge.iEngage.database.domain.*;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.NodeRepository;
-import com.eulersbridge.iEngage.database.repository.PollAnswerRepository;
-import com.eulersbridge.iEngage.database.repository.PollRepository;
+import com.eulersbridge.iEngage.database.repository.*;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +16,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,9 +29,9 @@ public class PollEventHandler implements PollService {
   private static Logger LOG = LoggerFactory.getLogger(ElectionEventHandler.class);
 
   private PollRepository pollRepository;
-  private PollAnswerRepository answerRepository;
-  private NodeRepository nodeRepository;
+  private PollOptionRepository pollOptionRepository;
   private InstitutionRepository institutionRepository;
+  private final UserRepository userRepo;
 
   private Session session;
 
@@ -41,19 +39,18 @@ public class PollEventHandler implements PollService {
   @Autowired
   @SuppressWarnings("SpringJavaAutowiringInspection")
   public PollEventHandler(PollRepository pollRepository,
-                          PollAnswerRepository answerRepository,
-                          NodeRepository nodeRepository,
-                          InstitutionRepository institutionRepository, Session session) {
+                          InstitutionRepository institutionRepository, Session session, UserRepository userRepo,
+                          PollOptionRepository pollOptionRepository) {
     this.pollRepository = pollRepository;
-    this.answerRepository = answerRepository;
-    this.nodeRepository = nodeRepository;
     this.institutionRepository = institutionRepository;
     this.session = session;
+    this.userRepo = userRepo;
+    this.pollOptionRepository = pollOptionRepository;
   }
 
   @Override
   public ReadEvent requestReadPoll(RequestReadPollEvent requestReadPollEvent) {
-    Poll poll = pollRepository.findOne(requestReadPollEvent.getNodeId());
+    Poll poll = pollRepository.findOneCustom(requestReadPollEvent.getNodeId());
     ReadEvent readPollEvent;
     if (poll != null) {
       readPollEvent = new ReadPollEvent(requestReadPollEvent.getNodeId(),
@@ -67,32 +64,46 @@ public class PollEventHandler implements PollService {
 
   @Override
   public PollCreatedEvent createPoll(CreatePollEvent createPollEvent) {
+    PollCreatedEvent pollCreatedEvent;
     PollDetails pollDetails = (PollDetails) createPollEvent.getDetails();
     Poll poll = Poll.fromPollDetails(pollDetails);
 
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding owner with ownerId = " + pollDetails.getOwnerId());
-    Institution institution = institutionRepository.findOne(pollDetails.getOwnerId());
-    PollCreatedEvent pollCreatedEvent;
-    if (null == institution)
-      pollCreatedEvent = PollCreatedEvent.ownerNotFound(pollDetails.getOwnerId());
-    else {
+    Node creator = userRepo.findByEmail(pollDetails.getCreatorEmail());
+    if (creator == null)
+      return PollCreatedEvent.creatorNotFound(0l);
 
-      if (LOG.isDebugEnabled())
-        LOG.debug("Finding creator with creatorId = " + pollDetails.getCreatorId());
-      Node creator = nodeRepository.findOne(pollDetails.getCreatorId());
+    Institution institution = institutionRepository.findInstitutionByUserEMail(pollDetails.getCreatorEmail());
+    if (institution == null)
+      return PollCreatedEvent.ownerNotFound(pollDetails.getOwnerId());
 
-      if (null == creator)
-        pollCreatedEvent = PollCreatedEvent.creatorNotFound(pollDetails.getCreatorId());
-      else {
-        poll.setInstitution(institution.toNode());
-        poll.setCreator((new User(creator.getNodeId())).toNode());
-        Poll result = pollRepository.save(poll);
-        pollCreatedEvent = new PollCreatedEvent(result.toPollDetails());
-      }
-
-    }
+    poll.setInstitution(institution.toNode());
+    poll.setCreator(creator.toNode());
+    Poll result = pollRepository.save(poll);
+    pollCreatedEvent = new PollCreatedEvent(result.toPollDetails());
     return pollCreatedEvent;
+  }
+
+  @Override
+  public RequestHandledEvent votePollOption(String userEmail, Long pollId, Long optionId) {
+    User user = userRepo.findByEmail(userEmail, 0);
+    if (user == null)
+      return RequestHandledEvent.userNotFound();
+    PollOption option = pollOptionRepository.findPollOptionAndPoll(optionId);
+    if (option == null)
+      return RequestHandledEvent.targetNotFound();
+    if (!option.getPoll$().getNodeId().equals(pollId))
+      return RequestHandledEvent.badRequest();
+    Poll poll = option.getPoll$();
+    Long pollEndTime = poll.getStart() + poll.getDuration();
+    Long current = new Date().getTime();
+    if (pollEndTime < current)
+      return RequestHandledEvent.premissionExpired();
+    PollOption votedPollOpt = pollOptionRepository.checkIfUserHasVoted(pollId, userEmail);
+    if (votedPollOpt != null)
+      return RequestHandledEvent.notAllowed();
+
+    pollOptionRepository.votePollOption(userEmail, optionId);
+    return new RequestHandledEvent();
   }
 
   @Override
@@ -138,7 +149,7 @@ public class PollEventHandler implements PollService {
           LOG.debug("Finding creator with creatorId = " + pollDetails.getCreatorId());
         Node creator = null;
         if (null != pollDetails.getCreatorId())
-          creator = nodeRepository.findOne(pollDetails.getCreatorId());
+          creator = userRepo.findOne(pollDetails.getCreatorId());
 
         if (null == creator)
           resultEvt = PollUpdatedEvent.creatorNotFound(pollDetails.getCreatorId());
@@ -154,53 +165,6 @@ public class PollEventHandler implements PollService {
   }
 
   @Override
-  public PollAnswerCreatedEvent answerPoll(
-    CreatePollAnswerEvent pollAnswerEvent) {
-    PollAnswerDetails answerDetails = (PollAnswerDetails) pollAnswerEvent.getDetails();
-    PollAnswerRelation pollAnswerRelation = PollAnswerRelation.fromPollAnswerDetails(answerDetails);
-
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding owner with answererId = " + answerDetails.getAnswererId());
-    Node owner = nodeRepository.findOne(answerDetails.getAnswererId(), 0);
-    PollAnswerCreatedEvent answerCreatedEvent;
-    System.out.println("Owner = " + owner);
-    if (owner == null)
-      answerCreatedEvent = PollAnswerCreatedEvent.answererNotFound(answerDetails.getAnswererId());
-    else {
-      if (LOG.isDebugEnabled())
-        LOG.debug("Finding poll with pollId = " + answerDetails.getPollId());
-      Poll poll = pollRepository.findOne(answerDetails.getPollId(), 0);
-
-      if (null == poll)
-        answerCreatedEvent = PollAnswerCreatedEvent.pollNotFound(answerDetails.getPollId());
-      else {
-        pollAnswerRelation.setUser(owner);
-        pollAnswerRelation.setPoll(poll);
-        Integer answerIndex = pollAnswerRelation.getAnswer();
-        String answers = poll.getAnswers();
-        String[] answerArray = answers.split(",");
-        int numAnswers = answerArray.length;
-        if ((answerIndex == null) || (answerIndex < 0) || (answerIndex > numAnswers))
-          answerCreatedEvent = PollAnswerCreatedEvent.badAnswer(answerDetails.getAnswerIndex());
-        else {
-          if (LOG.isDebugEnabled())
-            LOG.debug("pollAnswer - " + pollAnswerRelation);
-          if (LOG.isDebugEnabled())
-            LOG.debug("userId - " + answerDetails.getAnswererId() + " pollId - " + answerDetails.getPollId() + " answer Index - " + answerDetails.getAnswerIndex());
-//	    			PollAnswer result = answerRepository.save(pollAnswer);
-          Long answerId = answerRepository.addPollAnswer(answerDetails.getAnswererId(), answerDetails.getPollId(), answerDetails.getAnswerIndex());
-          if (session != null)
-            session.clear();
-          PollAnswerRelation result = answerRepository.findOne(answerId);
-          if (LOG.isDebugEnabled()) LOG.debug("result - " + result);
-          answerCreatedEvent = new PollAnswerCreatedEvent(result.toPollAnswerDetails());
-        }
-      }
-    }
-    return answerCreatedEvent;
-  }
-
-  @Override
   public ReadEvent readPollResult(
     ReadPollResultEvent readPollResultEvent) {
     Long pollId = readPollResultEvent.getNodeId();
@@ -212,7 +176,7 @@ public class PollEventHandler implements PollService {
       List<PollResultTemplate> results = pollRepository.getPollResults(pollId);
       if (results != null) {
         if (LOG.isDebugEnabled()) LOG.debug("Got results");
-        String answers[] = poll.getAnswers().split(",");
+        String answers[] = "".split(",");
         int numAnswers = answers.length;
         ArrayList<PollResult> resultDetails = new ArrayList<PollResult>();
 
@@ -258,7 +222,7 @@ public class PollEventHandler implements PollService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found ownerId.
-        Node inst = nodeRepository.findOne(ownerId);
+        Node inst = institutionRepository.findOne(ownerId);
         if ((null == inst) || (null == inst.getNodeId())) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");

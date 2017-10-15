@@ -383,7 +383,7 @@ public class DatabaseDataFixture {
   }
 
   public static Poll populatePoll(Long nodeId, String question, String answers, Long duration, Long start, Long creatorId, Long ownerId) {
-    Poll poll = new Poll(question, answers, start, duration);
+    Poll poll = new Poll(question, start, duration);
     Node creator = new Node(creatorId);
     Institution owner = new Institution(ownerId);
     poll.setCreator(new User(creator.getNodeId()));
@@ -425,29 +425,6 @@ public class DatabaseDataFixture {
     return forumQuestions;
   }
 
-  public static PollAnswerRelation populatePollAnswer1() {
-    Long nodeId = 9l;
-    Integer answer = 1;
-    User answerer = populateUserGnewitt();
-    Poll poll = populatePoll1();
-    Long timestamp = Calendar.getInstance().getTimeInMillis();
-    return populatePollAnswer(nodeId, poll, answerer, answer, timestamp);
-  }
-
-  public static PollAnswerRelation populatePollAnswer2() {
-    Long nodeId = 9l;
-    Integer answer = 1;
-    User answerer = populateUserGnewitt();
-    Poll poll = populatePoll2();
-    Long timestamp = Calendar.getInstance().getTimeInMillis();
-    return populatePollAnswer(nodeId, poll, answerer, answer, timestamp);
-  }
-
-  public static PollAnswerRelation populatePollAnswer(Long id, Poll poll, User answerer, Integer answer, Long timeStamp) {
-    PollAnswerRelation fq = new PollAnswerRelation(new Node(answerer.getNodeId()), poll, answer);
-    fq.setNodeId(id);
-    return fq;
-  }
 
   public static List<PollResultTemplate> populatePollResultDetails1() {
     ArrayList<PollResultTemplate> prts = new ArrayList<PollResultTemplate>();

@@ -21,6 +21,7 @@ public class PreSaveEventListener extends EventListenerAdapter {
 
   @Override
   public void onPreSave(Event event) {
+    event.getLifeCycle();
     if (event.getObject().getClass().equals(Node.class))
       return;
     if (! (event.getObject() instanceof Node))
@@ -30,7 +31,7 @@ public class PreSaveEventListener extends EventListenerAdapter {
 
     List<Long> timestampList = node.getTimestampList() == null
       ? new ArrayList<>()
-      : node.getTimestampList();
+      : new ArrayList<>(); //node.getTimestampList();
     Long time = new Date().getTime();
     if (timestampList.isEmpty() || !timestampList.get(timestampList.size() - 1).equals(time)) {
       timestampList.add(time);

@@ -37,5 +37,7 @@ public interface InstitutionRepository extends GraphRepository<Institution> {
 
   Institution findByName(String name, @Depth int i);
 
+  @Query("MATCH (i:" + DataConstants.INSTITUTION + ")<-[r:"+ DataConstants.USERS_LABEL+"]-(u:"+DataConstants.USER+") WHERE u.email={email} RETURN i LIMIT 1")
+  Institution findInstitutionByUserEMail(@Param("email") String email);
 
 }

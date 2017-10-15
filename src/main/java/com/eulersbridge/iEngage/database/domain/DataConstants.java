@@ -26,6 +26,8 @@ public class DataConstants {
   public static final String HAS_PHOTO_LABEL = "HAS_PHOTO";
   public static final String HAS_PHOTO_ALBUM_LABEL = "HAS_PHOTO_ALBUM";
   public static final String HAS_POLL_LABEL = "HAS_POLL";
+  public static final String HAS_POLL_OPTION_LABEL="HAS_POLL_OPTION";
+  public static final String HAS_POLL_OPTION_ATTACHMENT_LABEL="HAS_POLL_OPTION_ATTACHMENT";
   public static final String HAS_POSITION_LABEL = "HAS_POSITION";
   public static final String HAS_EVENT_LABEL = "HAS_EVENT";
   public static final String HAS_TICKET_LABEL = "HAS_TICKET";
@@ -37,6 +39,7 @@ public class DataConstants {
   public static final String SUPPORT_LABEL = "SUPPORTS";
   public static final String HAS_COMMENT = "HAS_COMMENT";
   public static final String POST_COMMENT = "POST_COMMENT";
+  public static final String VOTE_POLL_OPTION = "VOTE_POLL_OPTION";
 
   public static final String BADGE = "Badge";
   public static final String CANDIDATE = "Candidate";

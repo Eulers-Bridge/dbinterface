@@ -28,7 +28,6 @@ public class UpdatePollEventTest
 		pollDetails = new PollDetails();
 		pollDetails.setPollId(pollId);
 		pollDetails.setQuestion(question);
-		pollDetails.setAnswers(answers);
 		pollDetails.setStart(start);
 		pollDetails.setDuration(duration);
 

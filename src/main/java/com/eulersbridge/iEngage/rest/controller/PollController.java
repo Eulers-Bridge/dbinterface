@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
@@ -7,6 +8,7 @@ import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.LikesService;
 import com.eulersbridge.iEngage.core.services.interfacePack.PollService;
 import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
+import com.eulersbridge.iEngage.database.repository.PollOptionRepository;
 import com.eulersbridge.iEngage.rest.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +32,16 @@ public class PollController {
   PollService pollService;
 
   @Autowired
+  PollOptionRepository pollOptRepo;
+
+  @Autowired
   UserService userService;
 
   @Autowired
   LikesService likesService;
+
+  @Autowired
+  Util util;
 
   public PollController() {
   }
@@ -128,6 +136,8 @@ public class PollController {
   public @ResponseBody
   ResponseEntity<Poll> createPoll(@RequestBody Poll poll) {
     if (LOG.isInfoEnabled()) LOG.info("attempting to create poll " + poll);
+    String userEmail = Util.getUserEmailFromSession();
+    poll.setCreatorEmail(userEmail);
     CreatePollEvent createPollEvent = new CreatePollEvent(
       poll.toPollDetails());
     PollCreatedEvent pollCreatedEvent = pollService
@@ -205,38 +215,35 @@ public class PollController {
   }
 
   // Answer Poll
-  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL + "/{pollId}/answer")
+  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.POLL_LABEL + "/{pollId}/vote/{optionId}")
   public @ResponseBody
-  ResponseEntity<PollAnswer> answerPoll(@PathVariable Long pollId, @RequestBody PollAnswer pollAnswer) {
-    if (LOG.isInfoEnabled())
-      LOG.info("attempting to answer poll " + pollId + " answer - " + pollAnswer);
-    ResponseEntity<PollAnswer> response;
-    if ((null == pollAnswer) || (null == pollId) || (null == pollAnswer.getPollId()) || (null == pollAnswer.getAnswererId())) {
-      response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
-    } else {
-      CreatePollAnswerEvent createPollAnswerEvent = new CreatePollAnswerEvent(
-        pollAnswer.toPollAnswerDetails());
-      PollAnswerCreatedEvent pollAnswerCreatedEvent = pollService.answerPoll(createPollAnswerEvent);
-      if (null == pollAnswerCreatedEvent) {
-        response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
-      } else if (!(pollAnswerCreatedEvent.isPollFound())) {
-        response = new ResponseEntity<PollAnswer>(HttpStatus.NOT_FOUND);
-      } else if (!(pollAnswerCreatedEvent.isAnswererFound())) {
-        LOG.debug("Answerer not found- ID:"+ pollAnswer.getAnswererId());
-        response = new ResponseEntity<PollAnswer>(HttpStatus.NOT_FOUND);
-      } else if (!(pollAnswerCreatedEvent.isAnswerValid())) {
-        response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
-      } else if ((null == pollAnswerCreatedEvent.getDetails())
-        || (null == pollAnswerCreatedEvent.getDetails().getNodeId())) {
-        response = new ResponseEntity<PollAnswer>(HttpStatus.BAD_REQUEST);
-      } else {
-        PollAnswer result = PollAnswer.fromPollAnswerDetails((PollAnswerDetails) pollAnswerCreatedEvent
-          .getDetails());
-        if (LOG.isDebugEnabled()) LOG.debug(result.toString());
-        return new ResponseEntity<PollAnswer>(result, HttpStatus.CREATED);
-      }
+  ResponseEntity answerPoll(@PathVariable Long pollId, @PathVariable Long optionId) {
+    String userEmail = Util.getUserEmailFromSession();
+    if ((optionId == null) || (pollId == null) || userEmail == null) {
+      return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-    return response;
+    RequestHandledEvent result = pollService.votePollOption(userEmail, pollId, optionId);
+    if (result.getSuccess())
+      return new ResponseEntity(HttpStatus.OK);
+    else {
+      if (result.getUserNotFound()) {
+        System.out.println("usernotfond");
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
+
+      }
+      if (result.getTargetNotFound()) {
+        System.out.println("target not found");
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
+
+      }
+      if (result.getNotAllowed())
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+      if (result.getPremissionExpired())
+        return new ResponseEntity(HttpStatus.GONE);
+      if (result.getBadRequest())
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity(HttpStatus.NOT_MODIFIED);
+    }
   }
 
   // like

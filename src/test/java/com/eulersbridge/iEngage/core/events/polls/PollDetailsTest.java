@@ -25,7 +25,6 @@ public class PollDetailsTest {
         assertNotNull("pollDetails is null", pollDetails);
         pollDetails.setPollId(pollId);
         pollDetails.setQuestion(question);
-        pollDetails.setAnswers(answers);
         pollDetails.setStart(start);
         pollDetails.setDuration(duration);
     }
@@ -58,19 +57,6 @@ public class PollDetailsTest {
         String newQuestion="Who was the worst Prime Minister?";
         pollDetails1.setQuestion(newQuestion);
         assertEquals("title does not match", newQuestion, pollDetails1.getQuestion());
-    }
-
-    @Test
-    public void testGetAnswers() throws Exception {
-        assertEquals("ElectionStart does not match", answers, pollDetails.getAnswers());
-    }
-
-    @Test
-    public void testSetAnswers() throws Exception {
-        PollDetails pollDetails1 = new PollDetails();
-        String newAnswers="Harold Holt, Billy Hughes, Robert Menzies, McEwen";
-        pollDetails1.setAnswers(newAnswers);
-        assertEquals("Answers do not match", newAnswers, pollDetails1.getAnswers());
     }
 
     @Test

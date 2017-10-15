@@ -51,7 +51,6 @@ public class PollTest
 	public final void testFromPollDetails()
 	{
 		assertEquals(dets.getQuestion(),poll.getQuestion());
-		assertEquals(dets.getAnswers(),poll.getAnswers());
 		assertEquals(dets.getNodeId(),poll.getNodeId());
 		assertEquals(dets.getStart(),poll.getStart());
 		assertEquals(dets.getDuration(),poll.getDuration());
@@ -67,8 +66,7 @@ public class PollTest
 	{
 		PollDetails pollDetails=poll.toPollDetails();
 		assertEquals(pollDetails.getQuestion(),poll.getQuestion());
-		assertEquals(pollDetails.getAnswers(),poll.getAnswers());
-		assertEquals(pollDetails.getNodeId(),poll.getNodeId());
+//		assertEquals(pollDetails.getNodeId(),poll.getNodeId());
 		assertEquals(pollDetails.getStart(),poll.getStart());
 		assertEquals(pollDetails.getDuration(),poll.getDuration());
 		assertEquals(pollDetails.getOwnerId(),poll.getOwnerId());
@@ -130,27 +128,6 @@ public class PollTest
 		assertNotEquals(poll.getQuestion(),question);
 		poll.setQuestion(question);
 		assertEquals(poll.getQuestion(),question);
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Poll#getAnswers()}.
-	 */
-	@Test
-	public final void testGetAnswers()
-	{
-		assertEquals(poll.getAnswers(),dets.getAnswers());
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Poll#setAnswers(java.lang.String)}.
-	 */
-	@Test
-	public final void testSetAnswers()
-	{
-		String answers="Other Answers";
-		assertNotEquals(poll.getAnswers(),answers);
-		poll.setAnswers(answers);
-		assertEquals(poll.getAnswers(),answers);
 	}
 
 	/**

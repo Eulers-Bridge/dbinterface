@@ -10,6 +10,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -17,141 +18,103 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * @author Yikai Gong
  */
 
-public class Poll extends ResourceSupport{
-    private Long nodeId;
-    private String question;
-    private String answers;
-    private Long start;
-    private Long duration;
-    private Long ownerId;
-    private Long creatorId;
-    private String creatorEmail;
-    private String image;
+public class Poll extends ResourceSupport {
+  private Long nodeId;
+  private String question;
+  private List<PollOptionDomain> pollOptions;
+  private Long start;
+  private Long duration;
+  private Long ownerId;
+  private Long creatorId;
+  private String creatorEmail;
+  private String image;
 
-    private Integer numOfComments;
-    private Integer numOfAnswers;
+//    private Integer numOfComments;
+//    private Integer numOfAnswers;
 
-    private static Logger LOG = LoggerFactory.getLogger(Poll.class);
+  private static Logger LOG = LoggerFactory.getLogger(Poll.class);
 
-    public static Poll fromPollDetails(PollDetails pollDetails){
-        Poll poll = new Poll();
-        String simpleName=Poll.class.getSimpleName();
-        String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
+  public static Poll fromPollDetails(PollDetails pollDetails) {
+    Poll poll = new Poll();
+    String simpleName = Poll.class.getSimpleName();
+    String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
+    poll.setNodeId(pollDetails.getPollId());
+    poll.setQuestion(pollDetails.getQuestion());
+    poll.setStart(pollDetails.getStart());
+    poll.setDuration(pollDetails.getDuration());
+    poll.setOwnerId(pollDetails.getOwnerId());
+    poll.setCreatorId(pollDetails.getCreatorId());
+    poll.setCreatorEmail(pollDetails.getCreatorEmail());
+    poll.setImage(pollDetails.getImage());
+    poll.setPollOptions(pollDetails.getPollOptions());
 
-        poll.setNodeId(pollDetails.getPollId());
-        poll.setQuestion(pollDetails.getQuestion());
-        poll.setAnswers(pollDetails.getAnswers());
-        poll.setStart(pollDetails.getStart());
-        poll.setDuration(pollDetails.getDuration());
-        poll.setOwnerId(pollDetails.getOwnerId());
-        poll.setCreatorId(pollDetails.getCreatorId());
-        poll.setNumOfComments(pollDetails.getNumOfComments());
-        poll.setNumOfAnswers(pollDetails.getNumOfAnswers());
-        poll.setCreatorEmail(pollDetails.getCreatorEmail());
-        poll.setImage(pollDetails.getImage());
+    poll.add(linkTo(PollController.class).slash(name).slash(poll.getNodeId()).withSelfRel());
+    poll.add(linkTo(PollController.class).slash(name + 's').withRel(RestDomainConstants.READALL_LABEL));
+    return poll;
+  }
 
-	    // {!begin selfRel}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.getNodeId()).withSelfRel());
-	    // {!end selfRel}
-	    // {!begin previous}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.PREVIOUS).withRel(RestDomainConstants.PREVIOUS_LABEL));
-	    // {!end previous}
-	    // {!begin next}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.NEXT).withRel(RestDomainConstants.NEXT_LABEL));
-	    // {!end next}
-	    // {!begin likedBy}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.LIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.LIKEDBY_LABEL));
-	    // {!end likedBy}
-	    // {!begin unlikedBy}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.UNLIKEDBY).slash(RestDomainConstants.USERID).withRel(RestDomainConstants.UNLIKEDBY_LABEL));
-	    // {!end unlikedBy}
-	    // {!begin likes}
-        poll.add(linkTo(PollController.class).slash(name).slash(poll.nodeId).slash(RestDomainConstants.LIKES).withRel(RestDomainConstants.LIKES_LABEL));
-	    // {!end likes}
-	    // {!begin readAll}
-        poll.add(linkTo(PollController.class).slash(name+'s').withRel(RestDomainConstants.READALL_LABEL));
-	    // {!end readAll}
-
-        return poll;
-    }
-
-    public PollDetails toPollDetails(){
-        PollDetails pollDetails = new PollDetails();
+  public PollDetails toPollDetails() {
+    PollDetails pollDetails = new PollDetails();
 //        BeanUtils.copyProperties(pollDetails, this);
-        pollDetails.setPollId(this.getNodeId());
-        pollDetails.setQuestion(this.getQuestion());
-        pollDetails.setAnswers(this.getAnswers());
-        pollDetails.setStart(this.getStart());
-        pollDetails.setDuration(this.getDuration());
-        pollDetails.setOwnerId(getOwnerId());
-        pollDetails.setCreatorId(getCreatorId());
-        pollDetails.setImage(getImage());
-        if (LOG.isTraceEnabled()) LOG.trace("pollDetails "+pollDetails);
-        return pollDetails;
-    }
+//    pollDetails.setPollId(this.getNodeId());
+    pollDetails.setCreatorEmail(creatorEmail);
+    pollDetails.setQuestion(this.getQuestion());
+    pollDetails.setStart(this.getStart());
+    pollDetails.setDuration(this.getDuration());
+    pollDetails.setOwnerId(getOwnerId());
+    pollDetails.setCreatorId(getCreatorId());
+    pollDetails.setImage(getImage());
+    pollDetails.setPollOptions(getPollOptions());
+    if (LOG.isTraceEnabled()) LOG.trace("pollDetails " + pollDetails);
+    return pollDetails;
+  }
 
-	public static Iterator<Poll> toPollsIterator( Iterator<? extends Details> iter)
-	{
-		if (null==iter) return null;
-		ArrayList <Poll> polls=new ArrayList<Poll>();
-		while(iter.hasNext())
-		{
-			PollDetails dets=(PollDetails)iter.next();
-			Poll thisPoll=Poll.fromPollDetails(dets);
-			Link self = thisPoll.getLink("self");
-			thisPoll.removeLinks();
-			thisPoll.add(self);
-			polls.add(thisPoll);		
-		}
-		return polls.iterator();
-	}
-    public Long getNodeId() {
-        return nodeId;
+  public static Iterator<Poll> toPollsIterator(Iterator<? extends Details> iter) {
+    if (null == iter) return null;
+    ArrayList<Poll> polls = new ArrayList<Poll>();
+    while (iter.hasNext()) {
+      PollDetails dets = (PollDetails) iter.next();
+      Poll thisPoll = Poll.fromPollDetails(dets);
+      Link self = thisPoll.getLink("self");
+      thisPoll.removeLinks();
+      thisPoll.add(self);
+      polls.add(thisPoll);
     }
+    return polls.iterator();
+  }
 
-    public void setNodeId(Long pollId) {
-        this.nodeId = pollId;
-    }
+  public Long getNodeId() {
+    return nodeId;
+  }
 
-    public String getQuestion() {
-        return question;
-    }
+  public void setNodeId(Long pollId) {
+    this.nodeId = pollId;
+  }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
+  public String getQuestion() {
+    return question;
+  }
 
-    public String getAnswers() {
-        return answers;
-    }
+  public void setQuestion(String question) {
+    this.question = question;
+  }
 
-    public void setAnswers(String answers) {
-        this.answers = answers;
-    }
+  public Long getStart() {
+    return start;
+  }
 
-    public Long getStart() {
-        return start;
-    }
+  public void setStart(Long start) {
+    this.start = start;
+  }
 
-    public void setStart(Long start) {
-        this.start = start;
-    }
+  public Long getDuration() {
+    return duration;
+  }
 
-    public Long getDuration() {
-        return duration;
-    }
+  public void setDuration(Long duration) {
+    this.duration = duration;
+  }
 
-    public void setDuration(Long duration) {
-        this.duration = duration;
-    }
-
-    public Integer getNumOfComments() {
-        return numOfComments;
-    }
-
-    public void setNumOfComments(Integer numOfComments) {
-        this.numOfComments = numOfComments;
-    }
 
   public String getImage() {
     return image;
@@ -161,59 +124,47 @@ public class Poll extends ResourceSupport{
     this.image = image;
   }
 
+  public List<PollOptionDomain> getPollOptions() {
+    return pollOptions;
+  }
+
+  public void setPollOptions(List<PollOptionDomain> pollOptions) {
+    this.pollOptions = pollOptions;
+  }
+
   /**
-	 * @return the numOfAnswers
-	 */
-	public Integer getNumOfAnswers()
-	{
-		return numOfAnswers;
-	}
+   * @return the ownerId
+   */
+  public Long getOwnerId() {
+    return ownerId;
+  }
 
-	/**
-	 * @param numOfAnswers the numOfAnswers to set
-	 */
-	public void setNumOfAnswers(Integer numOfAnswers)
-	{
-		this.numOfAnswers = numOfAnswers;
-	}
+  /**
+   * @param newsFeedId the ownerId to set
+   */
+  public void setOwnerId(Long newsFeedId) {
+    this.ownerId = newsFeedId;
+  }
 
-	/**
-	 * @return the ownerId
-	 */
-	public Long getOwnerId()
-	{
-		return ownerId;
-	}
+  /**
+   * @return the creatorId
+   */
+  public Long getCreatorId() {
+    return creatorId;
+  }
 
-	/**
-	 * @param newsFeedId the ownerId to set
-	 */
-	public void setOwnerId(Long newsFeedId)
-	{
-		this.ownerId = newsFeedId;
-	}
+  /**
+   * @param creatorId the creatorId to set
+   */
+  public void setCreatorId(Long creatorId) {
+    this.creatorId = creatorId;
+  }
 
-	/**
-	 * @return the creatorId
-	 */
-	public Long getCreatorId()
-	{
-		return creatorId;
-	}
+  public String getCreatorEmail() {
+    return creatorEmail;
+  }
 
-	/**
-	 * @param creatorId the creatorId to set
-	 */
-	public void setCreatorId(Long creatorId)
-	{
-		this.creatorId = creatorId;
-	}
-
-    public String getCreatorEmail() {
-        return creatorEmail;
-    }
-
-    public void setCreatorEmail(String creatorEmail) {
-        this.creatorEmail = creatorEmail;
-    }
+  public void setCreatorEmail(String creatorEmail) {
+    this.creatorEmail = creatorEmail;
+  }
 }
