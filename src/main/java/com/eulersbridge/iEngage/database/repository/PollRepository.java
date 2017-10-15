@@ -29,7 +29,7 @@ public interface PollRepository extends GraphRepository<Poll> {
     "unwind answers as x match (u:`User`)-[t:`" + DataConstants.APQ_LABEL + "`]-(p:`" + DataConstants.POLL + "`) where t.answerIndex=x and id(p)={pollId} return x as answer,count(t) as frequency order by x")
   List<PollResultTemplate> getPollResults(@Param("pollId") Long pollId);
 
-  @Query("MATCH l=()-[*0..1]-(p:Poll)-[r:HAS_POLL_OPTION]-(o:PollOption)-[*0..1]-() WHERE id(p)={pollId} return distinct l")
+  @Query("MATCH l=()-[*0..1]-(p:Poll)-[r:HAS_POLL_OPTION]-(o:PollOption)-[*0..1]-(:Photo) WHERE id(p)={pollId} return distinct l")
   Poll findOneCustom(@Param("pollId") Long pollId);
 
 

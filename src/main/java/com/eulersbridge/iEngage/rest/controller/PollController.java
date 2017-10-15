@@ -226,22 +226,18 @@ public class PollController {
     if (result.getSuccess())
       return new ResponseEntity(HttpStatus.OK);
     else {
-      if (result.getUserNotFound()) {
-        System.out.println("usernotfond");
+      if (result.getUserNotFound())
         return new ResponseEntity(HttpStatus.NOT_FOUND);
-
-      }
-      if (result.getTargetNotFound()) {
-        System.out.println("target not found");
+      if (result.getTargetNotFound())
         return new ResponseEntity(HttpStatus.NOT_FOUND);
-
-      }
       if (result.getNotAllowed())
         return new ResponseEntity(HttpStatus.FORBIDDEN);
       if (result.getPremissionExpired())
         return new ResponseEntity(HttpStatus.GONE);
       if (result.getBadRequest())
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
+      if (result.getCanNotModify())
+        return new ResponseEntity(HttpStatus.LOCKED);
       return new ResponseEntity(HttpStatus.NOT_MODIFIED);
     }
   }

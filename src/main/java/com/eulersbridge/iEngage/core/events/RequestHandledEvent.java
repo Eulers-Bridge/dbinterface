@@ -13,6 +13,7 @@ public class RequestHandledEvent<T> {
   private Boolean badRequest = false;
   private Boolean notAllowed = false;
   private Boolean premissionExpired = false;
+  private Boolean canNotModify = false;
 
   private T responseEntity;
 
@@ -61,6 +62,12 @@ public class RequestHandledEvent<T> {
   public static RequestHandledEvent premissionExpired(){
     RequestHandledEvent r = new RequestHandledEvent(false);
     r.setPremissionExpired(true);
+    return r;
+  }
+
+  public static RequestHandledEvent canNotModiry(){
+    RequestHandledEvent r = new RequestHandledEvent(false);
+    r.setCanNotModify(true);
     return r;
   }
 
@@ -118,5 +125,13 @@ public class RequestHandledEvent<T> {
 
   public void setTargetNotFound(Boolean targetNotFound) {
     this.targetNotFound = targetNotFound;
+  }
+
+  public Boolean getCanNotModify() {
+    return canNotModify;
+  }
+
+  public void setCanNotModify(Boolean canNotModify) {
+    this.canNotModify = canNotModify;
   }
 }

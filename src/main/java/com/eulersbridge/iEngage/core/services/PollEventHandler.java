@@ -95,7 +95,12 @@ public class PollEventHandler implements PollService {
       return RequestHandledEvent.badRequest();
     Poll poll = option.getPoll$();
     Long pollEndTime = poll.getStart() + poll.getDuration();
+    System.out.println(poll.getStart());
+    System.out.println(poll.getDuration());
+    System.out.println(pollEndTime);
     Long current = new Date().getTime();
+    if(poll.getStart()>current)
+      return RequestHandledEvent.canNotModiry();
     if (pollEndTime < current)
       return RequestHandledEvent.premissionExpired();
     PollOption votedPollOpt = pollOptionRepository.checkIfUserHasVoted(pollId, userEmail);
