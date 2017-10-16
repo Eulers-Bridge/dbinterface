@@ -104,18 +104,11 @@ public class PollController {
     @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
     @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
     @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize) {
-    int pageNumber = 0;
-    int pageLength = 10;
-    pageNumber = Integer.parseInt(page);
-    pageLength = Integer.parseInt(pageSize);
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to retrieve photoAlbums for owner " + ownerId + '.');
-
+    int pageNumber = Integer.parseInt(page);
+    int pageLength = Integer.parseInt(pageSize);
     Direction sortDirection = Direction.DESC;
     if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-
     ResponseEntity<Polls> response;
-
     AllReadEvent pollEvent = pollService.findPolls(
       new ReadAllEvent(ownerId), sortDirection, pageNumber,
       pageLength);

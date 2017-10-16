@@ -95,9 +95,6 @@ public class PollEventHandler implements PollService {
       return RequestHandledEvent.badRequest();
     Poll poll = option.getPoll$();
     Long pollEndTime = poll.getStart() + poll.getDuration();
-    System.out.println(poll.getStart());
-    System.out.println(poll.getDuration());
-    System.out.println(pollEndTime);
     Long current = new Date().getTime();
     if(poll.getStart()>current)
       return RequestHandledEvent.canNotModiry();
@@ -210,7 +207,6 @@ public class PollEventHandler implements PollService {
 
     AllReadEvent result = null;
 
-    if (LOG.isDebugEnabled()) LOG.debug("OwnerId " + ownerId);
     Pageable pageable = new PageRequest(pageNumber, pageLength, dir, "p.date");
     polls = pollRepository.findByOwnerId(ownerId, pageable);
 
