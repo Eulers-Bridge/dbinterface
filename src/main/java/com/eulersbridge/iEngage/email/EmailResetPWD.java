@@ -20,15 +20,18 @@ import java.io.StringWriter;
 public class EmailResetPWD extends Email implements Serializable {
   public static final String emailTitle = "Reset your Password - from Eulersbridge";
   public static final String senderAddress = "support@eulersbridge.com";
+  public static final String domainUrl = "https://www.isegoria.com.au/forgot-password";
   private static final String templatePath = EmailConstants.EmailResetPWDTemplate;
 
   private final String token;
+  private final Long institutionID;
 
   public EmailResetPWD(VelocityEngine velocityEngine, User user, String token) {
     super(velocityEngine, user.getEmail(),
       user.getGivenName() + " " + user.getFamilyName(),
       senderAddress, emailTitle);
     this.token = token;
+    this.institutionID = user.getInstitution().getNodeId();
     if (this.velocityEngine != null)
       this.velocityEngine.init();
   }
@@ -45,9 +48,11 @@ public class EmailResetPWD extends Email implements Serializable {
       message.setSubject(getSubject());
 
       VelocityContext vc = new VelocityContext();
+      vc.put("domainUrl", domainUrl);
       vc.put("recipientName", getRecipientName());
       vc.put("emailAddress", getRecipientEmailAddress());
       vc.put("token", token);
+      vc.put("institution", Long.toString(institutionID));
       StringWriter result = new StringWriter();
       velocityEngine.mergeTemplate(templatePath, "UTF-8", vc, result);
       String body = result.toString();

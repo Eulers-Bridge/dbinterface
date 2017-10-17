@@ -649,6 +649,8 @@ public class UserEventHandler implements UserService {
     User savedUser = userRepository.save(user, 0);
     if (savedUser == null || savedUser.getResetPwdToken() == null)
       return RequestHandledEvent.failed();
+    Institution institution = instRepository.findInstitutionByUserEMail(email);
+    savedUser.setInstitution(institution);
     EmailResetPWD emailResetPWD =
       new EmailResetPWD(velocityEngine, savedUser, savedUser.getResetPwdToken());
 
