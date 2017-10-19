@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.polls.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.PollService;
@@ -50,7 +51,7 @@ public class PollEventHandler implements PollService {
 
   @Override
   public ReadEvent requestReadPoll(RequestReadPollEvent requestReadPollEvent) {
-    Poll poll = pollRepository.findOneCustom(requestReadPollEvent.getNodeId());
+    Poll poll = pollRepository.findOneCustom(requestReadPollEvent.getNodeId(), Util.getUserEmailFromSession());
     ReadEvent readPollEvent;
     if (poll != null) {
       readPollEvent = new ReadPollEvent(requestReadPollEvent.getNodeId(),
@@ -96,7 +97,7 @@ public class PollEventHandler implements PollService {
     Poll poll = option.getPoll$();
     Long pollEndTime = poll.getStart() + poll.getDuration();
     Long current = new Date().getTime();
-    if(poll.getStart()>current)
+    if (poll.getStart() > current)
       return RequestHandledEvent.canNotModiry();
     if (pollEndTime < current)
       return RequestHandledEvent.premissionExpired();
@@ -208,7 +209,7 @@ public class PollEventHandler implements PollService {
     AllReadEvent result = null;
 
     Pageable pageable = new PageRequest(pageNumber, pageLength, dir, "p.date");
-    polls = pollRepository.findByOwnerId(ownerId, pageable);
+    polls = pollRepository.findByOwnerId(ownerId, Util.getUserEmailFromSession(), pageable);
 
     if (polls != null) {
       if (LOG.isDebugEnabled())

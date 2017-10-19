@@ -22,6 +22,9 @@ public class PollOption extends Node {
   @Relationship(type = DataConstants.HAS_PHOTO_LABEL, direction = Relationship.OUTGOING)
   private Node attachedImage;
 
+  @Relationship(type = DataConstants.VOTE_POLL_OPTION, direction = Relationship.INCOMING)
+  private Node user;
+
   public PollOption() {
   }
 
@@ -54,6 +57,14 @@ public class PollOption extends Node {
     return attachedImage;
   }
 
+  public Node getUser() {
+    return user;
+  }
+
+  public void setUser(Node user) {
+    this.user = user;
+  }
+
   public Photo getAttachedImage$() {
     if (attachedImage == null)
       return null;
@@ -71,10 +82,12 @@ public class PollOption extends Node {
     PollOptionDomain domain = new PollOptionDomain();
     domain.setId(getNodeId());
     domain.setTxt(getTxt());
-    if (attachedImage != null){
+    if (attachedImage != null) {
       Photo photo = getAttachedImage$();
       domain.setPhoto(com.eulersbridge.iEngage.rest.domain.Photo.fromPhotoDetails(photo.toPhotoDetails()));
     }
+    if (user != null)
+      domain.setVoted(true);
     return domain;
   }
 

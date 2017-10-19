@@ -14,8 +14,8 @@ import java.util.List;
 
 @Repository
 public interface PollRepository extends GraphRepository<Poll> {
-  @Query("MATCH (own)<-[:HAS_POLL]-(p:Poll)-[:HAS_POLL_OPTION]->(o:PollOption)-[*0..1]->(x) where id(own)={ownerId} and (x:Photo OR x:PollOption) return (own)--(p)--(o)-[*0..1]-(x)")
-  Page<Poll> findByOwnerId(@Param("ownerId") Long ownerId, Pageable p);
+  @Query("MATCH (own)<-[:HAS_POLL]-(p:Poll)-[:HAS_POLL_OPTION]->(o:PollOption)-[*0..1]-(x) where id(own)={ownerId} and (x:Photo OR x:PollOption OR (x:User and x.email={email})) return (own)--(p)--(o)-[*0..1]-(x)")
+  Page<Poll> findByOwnerId(@Param("ownerId") Long ownerId, @Param("email") String email, Pageable p);
 
   @Query("MATCH (p:`" + DataConstants.POLL + "`)-[r:`" + DataConstants.CREATED_BY_LABEL + "`]-(o) where id(o)={creatorId} RETURN p")
   Page<Poll> findByCreatorId(@Param("creatorId") Long creatorId, Pageable p);
@@ -29,8 +29,8 @@ public interface PollRepository extends GraphRepository<Poll> {
     "unwind answers as x match (u:`User`)-[t:`" + DataConstants.APQ_LABEL + "`]-(p:`" + DataConstants.POLL + "`) where t.answerIndex=x and id(p)={pollId} return x as answer,count(t) as frequency order by x")
   List<PollResultTemplate> getPollResults(@Param("pollId") Long pollId);
 
-  @Query("MATCH l=()-[*0..1]-(p:Poll)-[r:HAS_POLL_OPTION]-(o:PollOption)-[*0..1]-(x) WHERE id(p)={pollId} and (x:Photo OR x:PollOption) return distinct l")
-  Poll findOneCustom(@Param("pollId") Long pollId);
+  @Query("MATCH l=()-[*0..1]-(p:Poll)-[r:HAS_POLL_OPTION]-(o:PollOption)-[*0..1]-(x) WHERE id(p)={pollId} and (x:Photo OR x:PollOption OR (x:User and x.email={email})) return distinct l")
+  Poll findOneCustom(@Param("pollId") Long pollId, @Param("email") String email);
 
 
 }

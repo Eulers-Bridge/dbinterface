@@ -387,7 +387,7 @@ public class PollEventHandlerTest {
 
     Pageable p = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<Poll> testData = new PageImpl<Poll>(evts, p, evts.size());
-    when(pollRepository.findByOwnerId(any(Long.class), any(Pageable.class))).thenReturn(testData);
+    when(pollRepository.findByOwnerId(any(Long.class), any(), any(Pageable.class))).thenReturn(testData);
     AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
     assertEquals(evtData.getTotalPages(), new Integer(1));
@@ -410,7 +410,7 @@ public class PollEventHandlerTest {
 
     Pageable p = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<Poll> testData = new PageImpl<Poll>(evts, p, evts.size());
-    when(pollRepository.findByOwnerId(any(Long.class), any(Pageable.class))).thenReturn(testData);
+    when(pollRepository.findByOwnerId(any(Long.class), any(), any(Pageable.class))).thenReturn(testData);
     when(nodeRepo.findOne(any(Long.class))).thenReturn(testOwner);
     AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
@@ -432,7 +432,7 @@ public class PollEventHandlerTest {
 
     Pageable p = new PageRequest(pageNumber, pageLength, Direction.ASC, "a.date");
     Page<Poll> testData = new PageImpl<Poll>(evts, p, evts.size());
-    when(pollRepository.findByOwnerId(any(Long.class), any(Pageable.class))).thenReturn(testData);
+    when(pollRepository.findByOwnerId(any(Long.class), any(), any(Pageable.class))).thenReturn(testData);
     when(pollRepository.findOne(any(Long.class))).thenReturn(null);
     AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
@@ -453,7 +453,7 @@ public class PollEventHandlerTest {
     int pageLength = 10;
     int pageNumber = 0;
 
-    when(pollRepository.findByOwnerId(any(Long.class), any(Pageable.class))).thenReturn(null);
+    when(pollRepository.findByOwnerId(any(Long.class), any(), any(Pageable.class))).thenReturn(null);
     AllReadEvent evtData = service.findPolls(readPollsEvent, Direction.ASC, pageNumber, pageLength);
     assertNotNull(evtData);
     assertNull(evtData.getDetails());
