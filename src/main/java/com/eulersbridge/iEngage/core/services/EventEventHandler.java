@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Yikai Gong
@@ -136,18 +137,19 @@ public class EventEventHandler implements EventService {
   public AllReadEvent readEvents(ReadAllEvent readAllEvent,
                                  Direction sortDirection, int pageNumber, int pageLength) {
     Long institutionId = readAllEvent.getParentId();
-    Page<Event> events;
+    List<Event> events;
     ArrayList<EventDetails> dets = new ArrayList<>();
     AllReadEvent nare;
 
     if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + institutionId);
     Pageable pageable = new PageRequest(pageNumber, pageLength,
       sortDirection, "e.starts");
-    events = eventRepository.findByInstitutionId(institutionId, pageable);
+//    events = eventRepository.findByInstitutionId(institutionId, pageable);
+    events = eventRepository.findByInstitutionId(institutionId, pageNumber * pageLength, pageLength, "DESC");
     if (events != null) {
       if (LOG.isDebugEnabled())
-        LOG.debug("Total elements = " + events.getTotalElements()
-          + " total pages =" + events.getTotalPages());
+        LOG.debug("Total elements = " + events.size()
+          + " total pages =" + events.size());
       for (Event na : events) {
         if (LOG.isTraceEnabled())
           LOG.trace("Converting to details - " + na.getName());
@@ -166,11 +168,11 @@ public class EventEventHandler implements EventService {
           nare = AllReadEvent.notFound(null);
         } else {
           nare = new AllReadEvent(institutionId, dets,
-            events.getTotalElements(), events.getTotalPages());
+            new Integer(events.size()).longValue(), -1);
         }
       } else {
         nare = new AllReadEvent(institutionId, dets,
-          events.getTotalElements(), events.getTotalPages());
+          new Integer(events.size()).longValue(), -1);
       }
     } else {
       if (LOG.isDebugEnabled())
