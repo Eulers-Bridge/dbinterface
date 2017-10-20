@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Greg Newitt
  *
  */
-public class ReadPhotoEventTest
+public class ReadPhotoDomainEventTest
 {
     Long nodeId;
     ReadPhotoEvent readPhotoEvent;

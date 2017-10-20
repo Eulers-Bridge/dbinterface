@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  * @author Greg Newitt
  *
  */
-public class PhotoReadEventTest
+public class PhotoDomainReadEventTest
 {
     Long nodeId;
     ReadEvent photoReadEvent;

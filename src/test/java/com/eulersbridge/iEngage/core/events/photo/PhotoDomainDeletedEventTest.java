@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Greg Newitt
  *
  */
-public class PhotoDeletedEventTest
+public class PhotoDomainDeletedEventTest
 {
     Long nodeId;
     DeletedEvent photoDeletedEvent;

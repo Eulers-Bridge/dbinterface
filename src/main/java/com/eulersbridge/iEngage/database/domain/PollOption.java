@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.database.domain;
 
+import com.eulersbridge.iEngage.rest.domain.PhotoDomain;
 import com.eulersbridge.iEngage.rest.domain.PollOptionDomain;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -84,7 +85,7 @@ public class PollOption extends Node {
     domain.setTxt(getTxt());
     if (attachedImage != null) {
       Photo photo = getAttachedImage$();
-      domain.setPhoto(com.eulersbridge.iEngage.rest.domain.Photo.fromPhotoDetails(photo.toPhotoDetails()));
+      domain.setPhoto(PhotoDomain.fromPhotoDetails(photo.toPhotoDetails()));
     }
     if (user != null)
       domain.setVoted(true);

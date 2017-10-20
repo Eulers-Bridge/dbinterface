@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * @author Greg Newitt
  */
-public class PhotoAlbumTest {
+public class PhotoDomainAlbumTest {
   PhotoAlbum photoAlbum;
   PhotoAlbum photoAlbum2;
 

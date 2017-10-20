@@ -7,12 +7,15 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.photo.*;
 import com.eulersbridge.iEngage.core.events.photoAlbums.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.PhotoService;
+import com.eulersbridge.iEngage.database.domain.Institution;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
+import com.eulersbridge.iEngage.rest.domain.PhotoDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Greg Newitt
@@ -33,16 +38,18 @@ import java.util.Iterator;
 public class PhotoEventHandler implements PhotoService {
   private static Logger LOG = LoggerFactory.getLogger(PhotoEventHandler.class);
 
-  private PhotoRepository photoRepository;
-  private PhotoAlbumRepository photoAlbumRepository;
-  private NodeRepository nodeRepository;
+  private final PhotoRepository photoRepository;
+  private final PhotoAlbumRepository photoAlbumRepository;
+  private final NodeRepository nodeRepository;
+  private final InstitutionRepository insRepo;
 
   @Autowired
-  public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository, NodeRepository nodeRepository) {
+  public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository, NodeRepository nodeRepository, InstitutionRepository insRepo) {
     super();
     this.photoRepository = photoRepository;
     this.photoAlbumRepository = photoAlbumRepository;
     this.nodeRepository = nodeRepository;
+    this.insRepo = insRepo;
   }
 
   @Override
@@ -313,4 +320,16 @@ public class PhotoEventHandler implements PhotoService {
     return result;
   }
 
+  @Override
+  public RequestHandledEvent<List<PhotoDomain>> findPhotosToInstitution(Long institutionId) {
+    Institution ins = insRepo.findOne(institutionId, 0);
+    if (ins == null)
+      return RequestHandledEvent.targetNotFound();
+    List<Photo> photos = photoRepository.findPhotosByInstitution(institutionId);
+    assert (photos != null);
+    List<PhotoDomain> photoDomains = photos.stream().map(photo -> {
+      return PhotoDomain.fromPhotoDetails(photo.toPhotoDetails());
+    }).collect(Collectors.toList());
+    return new RequestHandledEvent<>(photoDomains);
+  }
 }

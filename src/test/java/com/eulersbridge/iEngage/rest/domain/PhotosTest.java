@@ -21,7 +21,7 @@ public class PhotosTest
 	Photos fotos;
 	private Integer totalPages;
 	private Long totalPhotos;
-	private Iterator<Photo> photos;
+	private Iterator<PhotoDomain> photos;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -94,7 +94,7 @@ public class PhotosTest
 	@Test
 	public final void testSetPhotos()
 	{
-		Iterator<Photo> fotes=new ArrayList<Photo>().iterator();
+		Iterator<PhotoDomain> fotes=new ArrayList<PhotoDomain>().iterator();
 		assertNotEquals(fotos.getPhotos(),fotes);
 		fotos.setPhotos(fotes);
 		assertEquals(fotos.getPhotos(),fotes);

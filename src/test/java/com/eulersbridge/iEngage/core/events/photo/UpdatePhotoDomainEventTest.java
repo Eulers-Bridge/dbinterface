@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Greg Newitt
  *
  */
-public class UpdatePhotoEventTest
+public class UpdatePhotoDomainEventTest
 {
     Photo photo;
     PhotoDetails photoDetails;

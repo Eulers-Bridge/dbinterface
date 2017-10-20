@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class PhotoAlbumDetailsTest
+public class PhotoDomainAlbumDetailsTest
 {
 	PhotoAlbumDetails dets;
 	PhotoAlbum photoAlbum;

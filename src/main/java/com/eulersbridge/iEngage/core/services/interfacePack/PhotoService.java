@@ -9,9 +9,12 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
+import com.eulersbridge.iEngage.rest.domain.PhotoDomain;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
 
 /**
  * @author Greg Newitt
@@ -48,4 +51,7 @@ public interface PhotoService {
   public AllReadEvent findPhotoAlbums(ReadAllEvent readAllEvent, Direction dir, int pageNumber, int pageLength);
 
   public PhotosReadEvent deletePhotos(ReadPhotosEvent any);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "')")
+  public RequestHandledEvent<List<PhotoDomain>> findPhotosToInstitution(Long institutionId);
 }

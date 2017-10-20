@@ -66,7 +66,7 @@ public class ViewNewsIntegrationTest {
 		while (iter.hasNext())
 		{
 			PhotoDetails picDets=iter.next();
-			String photoDets=PhotoControllerTest.setupContent(picDets).replace("{","{\"nodeId\":"+picDets.getNodeId()+',');
+			String photoDets= PhotoDomainControllerTest.setupContent(picDets).replace("{","{\"nodeId\":"+picDets.getNodeId()+',');
 			photoString.append(photoDets+',');
 		}
 		int length=photoString.length();

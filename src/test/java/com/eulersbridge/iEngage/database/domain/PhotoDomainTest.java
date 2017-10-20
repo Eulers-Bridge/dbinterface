@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  * @author Greg Newitt
  *
  */
-public class PhotoTest
+public class PhotoDomainTest
 {
 	Photo testPhoto;
 	Photo testPhoto2;

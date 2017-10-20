@@ -18,7 +18,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 /**
  * @author Greg Newitt
  */
-public class Photo extends ResourceSupport {
+public class PhotoDomain extends ResourceSupport {
   Long nodeId;
   String url;
   String thumbNailUrl;
@@ -30,7 +30,7 @@ public class Photo extends ResourceSupport {
   private boolean inappropriateContent = false;
   private Integer numOfLikes;
 
-  private static Logger LOG = LoggerFactory.getLogger(Photo.class);
+  private static Logger LOG = LoggerFactory.getLogger(PhotoDomain.class);
 
   /**
    * @return the nodeId
@@ -172,9 +172,9 @@ public class Photo extends ResourceSupport {
     this.numOfLikes = numOfLikes;
   }
 
-  public static Photo fromPhotoDetails(PhotoDetails photoDetails) {
-    Photo photo = new Photo();
-    String simpleName = Photo.class.getSimpleName();
+  public static PhotoDomain fromPhotoDetails(PhotoDetails photoDetails) {
+    PhotoDomain photo = new PhotoDomain();
+    String simpleName = PhotoDomain.class.getSimpleName();
     String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
     photo.setNodeId(photoDetails.getNodeId());
     photo.setTitle(photoDetails.getTitle());
@@ -209,12 +209,12 @@ public class Photo extends ResourceSupport {
     return photoDetails;
   }
 
-  public static Iterator<Photo> toPhotosIterator(Iterator<PhotoDetails> iter) {
+  public static Iterator<PhotoDomain> toPhotosIterator(Iterator<PhotoDetails> iter) {
     if (null == iter) return null;
-    ArrayList<Photo> photos = new ArrayList<Photo>();
+    ArrayList<PhotoDomain> photos = new ArrayList<PhotoDomain>();
     while (iter.hasNext()) {
       PhotoDetails dets = iter.next();
-      Photo thisPhoto = Photo.fromPhotoDetails(dets);
+      PhotoDomain thisPhoto = PhotoDomain.fromPhotoDetails(dets);
       Link self = thisPhoto.getLink("self");
       thisPhoto.removeLinks();
       thisPhoto.add(self);

@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Greg Newitt
  *
  */
-public class DeletePhotoEventTest
+public class DeletePhotoDomainEventTest
 {
     Long nodeId;
     DeletePhotoEvent deletePhotoEvent;

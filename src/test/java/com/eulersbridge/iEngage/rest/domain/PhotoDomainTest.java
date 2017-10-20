@@ -19,13 +19,13 @@ import static org.junit.Assert.*;
  * @author Greg Newitt
  *
  */
-public class PhotoTest
+public class PhotoDomainTest
 {
 
 	@Mock
 	private ServletRequestAttributes attrs;
 	
-	Photo photo;
+	PhotoDomain photo;
 	PhotoDetails photoDetails;
 	
 	/**
@@ -40,11 +40,11 @@ public class PhotoTest
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 		
 		photoDetails=DatabaseDataFixture.populatePhoto1().toPhotoDetails();
-		photo=Photo.fromPhotoDetails(photoDetails);
+		photo= PhotoDomain.fromPhotoDetails(photoDetails);
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getNodeId()}.
+	 * Test method for {@link PhotoDomain#getNodeId()}.
 	 */
 	@Test
 	public final void testGetNodeId()
@@ -53,7 +53,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setNodeId(java.lang.Long)}.
+	 * Test method for {@link PhotoDomain#setNodeId(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetNodeId()
@@ -66,7 +66,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getUrl()}.
+	 * Test method for {@link PhotoDomain#getUrl()}.
 	 */
 	@Test
 	public final void testGetUrl()
@@ -75,7 +75,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setUrl(java.lang.String)}.
+	 * Test method for {@link PhotoDomain#setUrl(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetUrl()
@@ -88,7 +88,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getUrl()}.
+	 * Test method for {@link PhotoDomain#getUrl()}.
 	 */
 	@Test
 	public final void testGetThumbNailUrl()
@@ -97,7 +97,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setUrl(java.lang.String)}.
+	 * Test method for {@link PhotoDomain#setUrl(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetThumbNailUrl()
@@ -110,7 +110,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getTitle()}.
+	 * Test method for {@link PhotoDomain#getTitle()}.
 	 */
 	@Test
 	public final void testGetTitle()
@@ -119,7 +119,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setTitle(java.lang.String)}.
+	 * Test method for {@link PhotoDomain#setTitle(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetTitle()
@@ -132,7 +132,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getDescription()}.
+	 * Test method for {@link PhotoDomain#getDescription()}.
 	 */
 	@Test
 	public final void testGetDescription()
@@ -141,7 +141,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setDescription(java.lang.String)}.
+	 * Test method for {@link PhotoDomain#setDescription(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetDescription()
@@ -154,7 +154,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getDate()}.
+	 * Test method for {@link PhotoDomain#getDate()}.
 	 */
 	@Test
 	public final void testGetDate()
@@ -163,7 +163,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setDate(java.lang.Long)}.
+	 * Test method for {@link PhotoDomain#setDate(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetDate()
@@ -176,7 +176,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getOwnerId()}.
+	 * Test method for {@link PhotoDomain#getOwnerId()}.
 	 */
 	@Test
 	public final void testGetOwnerId()
@@ -185,7 +185,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setOwnerId(java.lang.Long)}.
+	 * Test method for {@link PhotoDomain#setOwnerId(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetOwnerId()
@@ -198,7 +198,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#getOwnerId()}.
+	 * Test method for {@link PhotoDomain#getOwnerId()}.
 	 */
 	@Test
 	public final void testGetSequence()
@@ -207,7 +207,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#setOwnerId(java.lang.Long)}.
+	 * Test method for {@link PhotoDomain#setOwnerId(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetSequence()
@@ -220,7 +220,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#fromPhotoDetails(com.eulersbridge.iEngage.core.events.photo.PhotoDetails)}.
+	 * Test method for {@link PhotoDomain#fromPhotoDetails(com.eulersbridge.iEngage.core.events.photo.PhotoDetails)}.
 	 */
 	@Test
 	public final void testFromPhotoDetails()
@@ -235,7 +235,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#toPhotoDetails()}.
+	 * Test method for {@link PhotoDomain#toPhotoDetails()}.
 	 */
 	@Test
 	public final void testToPhotoDetails()
@@ -251,7 +251,7 @@ public class PhotoTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Photo#toString()}.
+	 * Test method for {@link PhotoDomain#toString()}.
 	 */
 	@Test
 	public final void testToString()

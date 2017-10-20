@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
 import com.eulersbridge.iEngage.database.repository.PhotoRepository;
@@ -36,8 +37,8 @@ import static org.mockito.Mockito.when;
 /**
  * @author Greg Newitt
  */
-public class PhotoEventHandlerTest {
-  private static Logger LOG = LoggerFactory.getLogger(PhotoEventHandlerTest.class);
+public class PhotoDomainEventHandlerTest {
+  private static Logger LOG = LoggerFactory.getLogger(PhotoDomainEventHandlerTest.class);
 
   @Mock
   PhotoRepository photoRepository;
@@ -45,6 +46,8 @@ public class PhotoEventHandlerTest {
   PhotoAlbumRepository photoAlbumRepository;
   @Mock
   NodeRepository nodeRepository;
+  @Mock
+  InstitutionRepository insRepo;
 
   PhotoEventHandler service;
 
@@ -55,7 +58,7 @@ public class PhotoEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    service = new PhotoEventHandler(photoRepository, photoAlbumRepository, nodeRepository);
+    service = new PhotoEventHandler(photoRepository, photoAlbumRepository, nodeRepository, insRepo);
   }
 
   /**

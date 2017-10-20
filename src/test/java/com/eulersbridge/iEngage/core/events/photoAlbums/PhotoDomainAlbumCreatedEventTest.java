@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Greg Newitt
  *
  */
-public class PhotoAlbumCreatedEventTest
+public class PhotoDomainAlbumCreatedEventTest
 {
 	PhotoAlbumDetails dets;
 	PhotoAlbumCreatedEvent evt;

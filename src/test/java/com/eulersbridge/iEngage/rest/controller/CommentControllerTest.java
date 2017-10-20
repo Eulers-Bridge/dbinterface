@@ -97,7 +97,7 @@ public class CommentControllerTest {
 
       String photoDets = null;
       if (dets.getProfilePhotoDetails() != null) {
-        photoDets = PhotoControllerTest.setupContent(dets.getProfilePhotoDetails());
+        photoDets = PhotoDomainControllerTest.setupContent(dets.getProfilePhotoDetails());
         photoDets = photoDets.replace("{",
           "{\"nodeId\":" + dets.getProfilePhotoDetails().getNodeId() + ',');
       }

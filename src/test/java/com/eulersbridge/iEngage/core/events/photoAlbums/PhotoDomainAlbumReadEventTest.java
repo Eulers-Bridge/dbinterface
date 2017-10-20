@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Greg Newitt
  *
  */
-public class PhotoAlbumReadEventTest
+public class PhotoDomainAlbumReadEventTest
 {
 	PhotoAlbumReadEvent evt;
 	Long nodeId;

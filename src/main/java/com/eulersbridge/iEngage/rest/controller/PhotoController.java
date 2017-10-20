@@ -48,7 +48,7 @@ public class PhotoController
 	// Get
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_LABEL
 			+ "/{photoId}")
-	public @ResponseBody ResponseEntity<Photo> findPhoto(
+	public @ResponseBody ResponseEntity<PhotoDomain> findPhoto(
 			@PathVariable Long photoId)
 	{
 		if (LOG.isInfoEnabled())
@@ -57,13 +57,13 @@ public class PhotoController
 		ReadEvent photoReadEvent = photoService.readPhoto(readPhotoEvent);
 		if (photoReadEvent.isEntityFound())
 		{
-			Photo photo = Photo.fromPhotoDetails((PhotoDetails) photoReadEvent
+			PhotoDomain photo = PhotoDomain.fromPhotoDetails((PhotoDetails) photoReadEvent
 					.getDetails());
-			return new ResponseEntity<Photo>(photo, HttpStatus.OK);
+			return new ResponseEntity<PhotoDomain>(photo, HttpStatus.OK);
 		}
 		else
 		{
-			return new ResponseEntity<Photo>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<PhotoDomain>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -94,15 +94,15 @@ public class PhotoController
 
 	// Create
 	@RequestMapping(method = RequestMethod.POST, value = ControllerConstants.PHOTO_LABEL)
-	public @ResponseBody ResponseEntity<Photo> createPhoto(
-			@RequestBody Photo photo)
+	public @ResponseBody ResponseEntity<PhotoDomain> createPhoto(
+			@RequestBody PhotoDomain photo)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("attempting to create photo " + photo);
-		ResponseEntity<Photo> response;
+		ResponseEntity<PhotoDomain> response;
 		if (null==photo)
 		{
-			response = new ResponseEntity<Photo>(HttpStatus.BAD_REQUEST);
+			response = new ResponseEntity<PhotoDomain>(HttpStatus.BAD_REQUEST);
 		}
 		else
 		{
@@ -113,19 +113,19 @@ public class PhotoController
 			if ((null == photoCreatedEvent)
 					|| (null == photoCreatedEvent.getNodeId()))
 			{
-				response = new ResponseEntity<Photo>(HttpStatus.BAD_REQUEST);
+				response = new ResponseEntity<PhotoDomain>(HttpStatus.BAD_REQUEST);
 			}
 			else if (!(photoCreatedEvent.isOwnerFound()))
 			{
-				response = new ResponseEntity<Photo>(HttpStatus.NOT_FOUND);
+				response = new ResponseEntity<PhotoDomain>(HttpStatus.NOT_FOUND);
 			}
 			else
 			{
-				Photo result = Photo
+				PhotoDomain result = PhotoDomain
 						.fromPhotoDetails((PhotoDetails) photoCreatedEvent
 								.getDetails());
 				if (LOG.isDebugEnabled()) LOG.debug("photo " + result.toString());
-				response = new ResponseEntity<Photo>(result, HttpStatus.CREATED);
+				response = new ResponseEntity<PhotoDomain>(result, HttpStatus.CREATED);
 			}
 		}
 		return response;
@@ -240,8 +240,8 @@ public class PhotoController
 	// Update
 	@RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.PHOTO_LABEL
 			+ "/{photoId}")
-	public @ResponseBody ResponseEntity<Photo> updatePhoto(
-			@PathVariable Long photoId, @RequestBody Photo photo)
+	public @ResponseBody ResponseEntity<PhotoDomain> updatePhoto(
+			@PathVariable Long photoId, @RequestBody PhotoDomain photo)
 	{
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to update photo. " + photoId);
@@ -255,20 +255,20 @@ public class PhotoController
 				LOG.debug("photoUpdatedEvent - " + photoUpdatedEvent);
 			if (photoUpdatedEvent.isEntityFound())
 			{
-				Photo restPhoto = Photo.fromPhotoDetails((PhotoDetails) photoUpdatedEvent
+				PhotoDomain restPhoto = PhotoDomain.fromPhotoDetails((PhotoDetails) photoUpdatedEvent
 						.getDetails());
 				if (LOG.isDebugEnabled())
 					LOG.debug("restPhoto = " + restPhoto);
-				return new ResponseEntity<Photo>(restPhoto, HttpStatus.OK);
+				return new ResponseEntity<PhotoDomain>(restPhoto, HttpStatus.OK);
 			}
 			else
 			{
-				return new ResponseEntity<Photo>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<PhotoDomain>(HttpStatus.NOT_FOUND);
 			}
 		}
 		else
 		{
-			return new ResponseEntity<Photo>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<PhotoDomain>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -444,7 +444,7 @@ public class PhotoController
 		}
 		else
 		{
-			Iterator<Photo> photoIter = Photo.toPhotosIterator(photoEvent
+			Iterator<PhotoDomain> photoIter = PhotoDomain.toPhotosIterator(photoEvent
 					.getPhotos().iterator());
 			Photos photos = Photos.fromPhotosIterator(photoIter,
 					photoEvent.getTotalPhotos(), photoEvent.getTotalPages());
@@ -625,7 +625,7 @@ public class PhotoController
 			LOG.info("Attempting to have " + email + " like news article. "
 					+ photoId);
 		LikedEvent event = likesService
-				.like(new LikeEvent(photoId, email, Photo.class));
+				.like(new LikeEvent(photoId, email, PhotoDomain.class));
 
 		ResponseEntity<Response> response;
 

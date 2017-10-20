@@ -13,6 +13,7 @@ import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.Photo;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import com.eulersbridge.iEngage.rest.domain.PhotoDomain;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -41,9 +42,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 /**
  * @author Greg Newitt
  */
-public class PhotoControllerTest {
+public class PhotoDomainControllerTest {
 
-  private static Logger LOG = LoggerFactory.getLogger(PhotoControllerTest.class);
+  private static Logger LOG = LoggerFactory.getLogger(PhotoDomainControllerTest.class);
 
   private String urlPrefix = ControllerConstants.API_PREFIX + ControllerConstants.PHOTO_LABEL;
   private String urlPrefix2 = ControllerConstants.API_PREFIX + ControllerConstants.PHOTO_ALBUM_LABEL;
@@ -179,7 +180,7 @@ public class PhotoControllerTest {
 
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#createPhoto(com.eulersbridge.iEngage.rest.domain.Photo)}.
+   * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#createPhoto(PhotoDomain)}.
    *
    * @throws Exception
    */
@@ -446,7 +447,7 @@ public class PhotoControllerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#updatePhoto(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Photo)}.
+   * Test method for {@link com.eulersbridge.iEngage.rest.controller.PhotoController#updatePhoto(java.lang.Long, PhotoDomain)}.
    *
    * @throws Exception
    */

@@ -11,11 +11,9 @@ import com.eulersbridge.iEngage.core.events.newsFeed.ReadNewsFeedEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.CreateVotingLocationEvent;
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 import com.eulersbridge.iEngage.core.services.interfacePack.InstitutionService;
+import com.eulersbridge.iEngage.core.services.interfacePack.PhotoService;
 import com.eulersbridge.iEngage.core.services.interfacePack.VotingLocationService;
-import com.eulersbridge.iEngage.rest.domain.GeneralInfo;
-import com.eulersbridge.iEngage.rest.domain.Institution;
-import com.eulersbridge.iEngage.rest.domain.NewsFeed;
-import com.eulersbridge.iEngage.rest.domain.VotingLocation;
+import com.eulersbridge.iEngage.rest.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +23,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
 public class InstitutionController {
-  @Autowired
+  final
   InstitutionService instService;
-  @Autowired
+  final
   VotingLocationService locationService;
+  final
+  PhotoService photoService;
 
   private static Logger LOG = LoggerFactory.getLogger(InstitutionController.class);
 
-  public InstitutionController() {
+  @Autowired
+  public InstitutionController(InstitutionService instService, VotingLocationService locationService, PhotoService photoService) {
+    this.instService = instService;
+    this.locationService = locationService;
+    this.photoService = photoService;
   }
 
   /**
@@ -109,6 +114,17 @@ public class InstitutionController {
       result = new ResponseEntity<Institution>(restInst, HttpStatus.OK);
     }
     return result;
+  }
+
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.INSTITUTION_LABEL + "/{institutionId}" + ControllerConstants.PHOTOS_LABEL)
+  public @ResponseBody
+  ResponseEntity<List<PhotoDomain>> findAllInstitutionPhoto(@PathVariable Long institutionId) {
+    RequestHandledEvent<List<PhotoDomain>> res = photoService.findPhotosToInstitution(institutionId);
+    if (res.getTargetNotFound())
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    if (!res.getSuccess())
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(res.getResponseEntity(), HttpStatus.OK);
   }
 
   /**

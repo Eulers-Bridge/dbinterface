@@ -7,7 +7,7 @@ package com.eulersbridge.iEngage.rest.domain;
 public class PollOptionDomain {
   private Long id;
   private String txt;
-  private Photo photo;
+  private PhotoDomain photo;
   private Boolean voted = false;
 
   public PollOptionDomain() {
@@ -29,11 +29,11 @@ public class PollOptionDomain {
     this.txt = txt;
   }
 
-  public Photo getPhoto() {
+  public PhotoDomain getPhoto() {
     return photo;
   }
 
-  public void setPhoto(Photo photo) {
+  public void setPhoto(PhotoDomain photo) {
     this.photo = photo;
   }
 

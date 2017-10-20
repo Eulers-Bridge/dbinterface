@@ -15,7 +15,7 @@ public class Photos extends ResourceSupport
 {
 	Long totalPhotos;
 	Integer totalPages;
-	Iterator<Photo> photos;
+	Iterator<PhotoDomain> photos;
 
 	/**
 	 * @return the totalPhotos
@@ -52,7 +52,7 @@ public class Photos extends ResourceSupport
 	/**
 	 * @return the photos
 	 */
-	public Iterator<Photo> getPhotos()
+	public Iterator<PhotoDomain> getPhotos()
 	{
 		return photos;
 	}
@@ -60,12 +60,12 @@ public class Photos extends ResourceSupport
 	/**
 	 * @param photos the photos to set
 	 */
-	public void setPhotos(Iterator<Photo> photos)
+	public void setPhotos(Iterator<PhotoDomain> photos)
 	{
 		this.photos = photos;
 	}
 
-	public static  Photos fromPhotosIterator(Iterator<Photo> iter, Long totalPhotos, Integer totalPages)
+	public static  Photos fromPhotosIterator(Iterator<PhotoDomain> iter, Long totalPhotos, Integer totalPages)
 	{
 	    Photos fotos = new Photos();
 //	    String simpleName=NewsArticles.class.getSimpleName();

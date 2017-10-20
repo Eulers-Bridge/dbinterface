@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DeletePhotoAlbumEventTest
+public class DeletePhotoDomainAlbumEventTest
 {
 	DeletePhotoAlbumEvent evt;
 	Long nodeId;
