@@ -175,7 +175,7 @@ public class PhotoDomain extends ResourceSupport {
   public static PhotoDomain fromPhotoDetails(PhotoDetails photoDetails) {
     PhotoDomain photo = new PhotoDomain();
     String simpleName = PhotoDomain.class.getSimpleName();
-    String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
+    String name = "photo";
     photo.setNodeId(photoDetails.getNodeId());
     photo.setTitle(photoDetails.getTitle());
     photo.setDescription(photoDetails.getDescription());
