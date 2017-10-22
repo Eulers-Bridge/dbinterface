@@ -20,6 +20,7 @@ import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.rest.domain.Contact;
 import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
 
+import com.eulersbridge.iEngage.rest.domain.UserProfile;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.LongValidator;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class ContactController {
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUESTS_LABEL + "/rec")
   public @ResponseBody
-  ResponseEntity<List<ContactRequestDomain>> findContactRequestsReceived(@PathVariable Long userId){
+  ResponseEntity<List<ContactRequestDomain>> findContactRequestsReceived(@PathVariable Long userId) {
     String userEmail = Util.getUserEmailFromSession();
     RequestHandledEvent<List<ContactRequestDomain>> res = contactRequestService.readContactRequestsReceived(userEmail);
     return res.toResponseEntity();
@@ -95,6 +96,15 @@ public class ContactController {
   ResponseEntity<ContactRequestDomain> rejectContact(@PathVariable Long contactRequestId) {
     String userEmail = Util.getUserEmailFromSession();
     RequestHandledEvent<ContactRequestDomain> res = contactRequestService.rejectContactRequest(userEmail, contactRequestId);
+    return res.toResponseEntity();
+  }
+
+
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACTS_LABEL)
+  public @ResponseBody
+  ResponseEntity<List<UserProfile>> getFriendsList() {
+    String userEmail = Util.getUserEmailFromSession();
+    RequestHandledEvent<List<UserProfile>> res = contactRequestService.readFriendsList(userEmail);
     return res.toResponseEntity();
   }
 }

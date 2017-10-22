@@ -497,102 +497,6 @@ public class UserController {
     return response;
   }
 
-  /**
-   * Is passed all the necessary data to read a user from the database.
-   * The request must be a GET with the user email presented
-   * as the final portion of the URL.
-   * <p/>
-   * This method will return the user object read from the database.
-   *
-   * @param contactInfo
-   * @return the user object.
-   */
-  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACT_LABEL + "/{contactInfo}")
-  public @ResponseBody
-  ResponseEntity<UserProfile> findContact(@PathVariable String contactInfo) {
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to find contact. " + contactInfo);
-
-    ReadUserEvent userEvent;
-    ResponseEntity<UserProfile> result;
-    boolean isEmail = emailValidator.isValid(contactInfo);
-    String email = null;
-
-    if (isEmail) {
-      email = contactInfo;
-      userEvent = userService.readUserByContactEmail(new RequestReadUserEvent(email));
-    } else {
-      userEvent = userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
-    }
-
-    if (!userEvent.isEntityFound()) {
-      result = new ResponseEntity<UserProfile>(HttpStatus.NOT_FOUND);
-    } else {
-      UserDetails dets = (UserDetails) userEvent.getDetails();
-      if (!isEmail)
-        dets.setEmail(null);
-      if (LOG.isDebugEnabled()) LOG.debug("dets - " + dets);
-      UserProfile restUser = UserProfile.fromUserDetails(dets);
-      restUser.setTotalTasks(taskService.getTotalNumOfTasks());
-      restUser.setTotalBadges(badgeService.getTotalNumOfBadges());
-      result = new ResponseEntity<UserProfile>(restUser, HttpStatus.OK);
-      if (LOG.isDebugEnabled()) LOG.debug("result - " + result);
-    }
-    return result;
-  }
-
-  /**
-   * Is passed all the necessary data to read contacts from the database. The
-   * request must be a GET with the userId presented as the final
-   * portion of the URL.
-   * <p/>
-   * This method will return the contacts read from the database.
-   *
-   * @param contactInfo the userId who has the contact objects to be read.
-   * @return the contacts.
-   */
-  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACTS_LABEL + "/{contactInfo}")
-  public @ResponseBody
-  ResponseEntity<FindsParent> findExistingContacts(@PathVariable String contactInfo,
-                                                   @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
-                                                   @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
-                                                   @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
-  ) {
-    int pageNumber = 0;
-    int pageLength = 10;
-    pageNumber = Integer.parseInt(page);
-    pageLength = Integer.parseInt(pageSize);
-    Direction sortDirection = Direction.DESC;
-    if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to find existing contacts. " + contactInfo);
-
-    ReadAllEvent userEvent;
-    AllReadEvent contactEvent;
-    ResponseEntity<FindsParent> result;
-
-    if (longValidator.isValid(contactInfo)) {
-      Long id = longValidator.validate(contactInfo);
-      if (LOG.isDebugEnabled()) LOG.debug("UserId supplied. - " + id);
-      userEvent = new ReadAllEvent(id);
-      contactEvent = userService.readExistingContactsById(userEvent, sortDirection, pageNumber, pageLength);
-    } else if (emailValidator.isValid(contactInfo)) {
-      if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
-      contactEvent = userService.readExistingContactsByEmail(new RequestReadUserEvent(contactInfo), sortDirection, pageNumber, pageLength);
-    } else
-      return new ResponseEntity<FindsParent>(HttpStatus.BAD_REQUEST);
-
-
-    if (!contactEvent.isEntityFound()) {
-      return new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
-    }
-    Iterator<UserProfile> contactProfiles = UserProfile
-      .toUserProfilesIterator(contactEvent.getDetails().iterator());
-    FindsParent theUsers = FindsParent.fromArticlesIterator(contactProfiles, contactEvent.getTotalItems(), contactEvent.getTotalPages());
-    result = new ResponseEntity<FindsParent>(theUsers, HttpStatus.OK);
-
-    return result;
-  }
 
   /**
    * Is passed all the necessary data to read contacts from the database. The
@@ -934,7 +838,7 @@ public class UserController {
     LOG.info("Attempting to search User profiles Input:" + inputName);
     ResponseEntity result = null;
     if (EmailValidator.getInstance().isValid(inputName)){
-      ResponseEntity<UserProfile> foundUser = findContact(inputName);
+      ResponseEntity<UserProfile> foundUser = findUserProfile(inputName);
       UserProfile u = foundUser.getBody();
       List<UserProfile> uList = u == null ? Lists.newArrayList() :Lists.newArrayList(u);
       result = new ResponseEntity<Iterator<UserProfile>>(uList.iterator(), HttpStatus.OK);
@@ -947,33 +851,41 @@ public class UserController {
     return result;
   }
 
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACT_LABEL + "/{contactInfo}")
+  public @ResponseBody
+  ResponseEntity<UserProfile> findUserProfile(@PathVariable String contactInfo) {
+    if (LOG.isInfoEnabled())
+      LOG.info("Attempting to find contact. " + contactInfo);
 
-//    @RequestMapping(method=RequestMethod.GET,value=ControllerConstants.USER_LABEL+"/{email}" + ControllerConstants.LIKES_LABEL)
-//    public @ResponseBody ResponseEntity<Iterator<LikeInfo>> findLikes(
-//            @PathVariable String email,
-//            @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
-//            @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
-//            @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
-//    {
-//        int pageNumber = 0;
-//        int pageLength = 10;
-//        pageNumber = Integer.parseInt(page);
-//        pageLength = Integer.parseInt(pageSize);
-//        if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve liked users via user "+email+'.');
-//        Direction sortDirection = Direction.DESC;
-//        if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-//
-//        LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(email), sortDirection, pageNumber, pageLength);
-//        Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
-//        if (likes.hasNext() == false){
-//            ReadUserEvent readUserEvent=userService.requestReadUser(new RequestReadUserEvent(email));
-//            if (!readUserEvent.isEntityFound())
-//                return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
-//            else
-//                return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
-//        }
-//        else
-//            return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
-//    }
+    ReadUserEvent userEvent;
+    ResponseEntity<UserProfile> result;
+    boolean isEmail = emailValidator.isValid(contactInfo);
+    String email = null;
+
+    if (isEmail) {
+      email = contactInfo;
+      userEvent = userService.readUserByContactEmail(new RequestReadUserEvent(email));
+    } else {
+      userEvent = userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+    }
+
+    if (!userEvent.isEntityFound()) {
+      result = new ResponseEntity<UserProfile>(HttpStatus.NOT_FOUND);
+    } else {
+      UserDetails dets = (UserDetails) userEvent.getDetails();
+      if (!isEmail)
+        dets.setEmail(null);
+      if (LOG.isDebugEnabled()) LOG.debug("dets - " + dets);
+      UserProfile restUser = UserProfile.fromUserDetails(dets);
+      restUser.setTotalTasks(taskService.getTotalNumOfTasks());
+      restUser.setTotalBadges(badgeService.getTotalNumOfBadges());
+      result = new ResponseEntity<UserProfile>(restUser, HttpStatus.OK);
+      if (LOG.isDebugEnabled()) LOG.debug("result - " + result);
+    }
+    return result;
+  }
+
+
+
 }
 

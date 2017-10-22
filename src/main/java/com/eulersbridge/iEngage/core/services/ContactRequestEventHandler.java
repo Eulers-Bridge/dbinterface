@@ -15,6 +15,7 @@ import com.eulersbridge.iEngage.database.repository.ContactRepository;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
+import com.eulersbridge.iEngage.rest.domain.UserProfile;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,6 @@ public class ContactRequestEventHandler implements ContactRequestService {
     newReq.setCreator(user);
     newReq.setTarget(target);
     newReq = contactRequestRepository.save(newReq);
-    newReq = contactRequestRepository.findExistingRequest(newReq.getId());
     return new RequestHandledEvent<>(newReq.toDomain());
   }
 
@@ -149,49 +149,17 @@ public class ContactRequestEventHandler implements ContactRequestService {
     return new RequestHandledEvent<>(req.toDomain());
   }
 
-  //  /* (non-Javadoc)
-//   * @see com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService#readContactRequest(com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent)
-//   */
-//  @Override
-//  public ReadEvent readContactRequest(
-//    ReadContactRequestEvent readContactRequestEvent) {
-//    ContactRequest task = contactRequestRepository.findOne(readContactRequestEvent.getId());
-//    ReadEvent readTaskEvent;
-//    if (task != null) {
-//      readTaskEvent = new ContactRequestReadEvent(task.getId(), task.toContactRequestDetails());
-//    } else {
-//      readTaskEvent = ContactRequestReadEvent.notFound(readContactRequestEvent.getId());
-//    }
-//    return readTaskEvent;
-//  }
-//
-//  /* (non-Javadoc)
-//   * @see com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService#readContactRequestByUserIdContactNumber(com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent)
-//   */
-//  @Override
-//  public ReadEvent readContactRequestByUserIdContactNumber(
-//    ReadContactRequestEvent readContactRequestEvent) {
-//    String contactInfo = readContactRequestEvent.getDetails().getContactDetails();
-//    Long userId = readContactRequestEvent.getDetails().getUserId();
-//    if (LOG.isDebugEnabled())
-//      LOG.debug("Looking for Contact " + userId + " contactInfo " + contactInfo);
-//    ContactRequest contactRequest = contactRequestRepository.findContactRequestByUserIdContactInfo(userId, contactInfo);
-//    ReadEvent contactRequestReadEvent;
-//    if (contactRequest != null) {
-//      if (LOG.isDebugEnabled())
-//        LOG.debug("Contact found." + contactRequest.getId());
-//      contactRequestReadEvent = new ContactRequestReadEvent(contactRequest.getId(), contactRequest.toContactRequestDetails());
-//    } else {
-//      if (LOG.isDebugEnabled()) LOG.debug("Contact not found.");
-//      contactRequestReadEvent = ContactRequestReadEvent.notFound(readContactRequestEvent.getId());
-//    }
-//    return contactRequestReadEvent;
-//  }
-//
-
-
-
-//
-
-
+  @Override
+  public RequestHandledEvent readFriendsList(String userEmail) {
+    if (!emailValidator.isValid(userEmail))
+      return RequestHandledEvent.badRequest();
+    User user = userRepository.findByEmail(userEmail, 0);
+    if (user == null)
+      return RequestHandledEvent.userNotFound();
+    List<User> friends = userRepository.findContacts(userEmail);
+    List<UserProfile> friendsProfiles = friends.stream()
+      .map(u-> UserProfile.fromUserDetails(u.toUserDetails()))
+      .collect(Collectors.toList());
+    return new RequestHandledEvent(friendsProfiles);
+  }
 }
