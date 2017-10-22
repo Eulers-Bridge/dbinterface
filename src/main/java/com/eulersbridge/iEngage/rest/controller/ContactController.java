@@ -57,7 +57,7 @@ public class ContactController {
     longValidator = LongValidator.getInstance();
   }
 
-  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUEST_LABEL + "/{targetEmail}")
+  @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUEST_LABEL + "/{targetEmail}")
   public @ResponseBody
   ResponseEntity<ContactRequestDomain> addContact(@PathVariable Long userId, @PathVariable String targetEmail) {
     String userEmail = Util.getUserEmailFromSession();
