@@ -27,7 +27,7 @@ public class PreSaveEventListener extends EventListenerAdapter {
     if (! (event.getObject() instanceof Node))
       return;
     Node node = (Node) event.getObject();
-//    System.out.println("Fired event " + node.getNodeId());
+//    System.out.println("Fired event " + node.getId());
 
     List<Long> timestampList = node.getTimestampList() == null
       ? new ArrayList<>()

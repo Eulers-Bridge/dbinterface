@@ -16,24 +16,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface ContactRequestService {
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public CreatedEvent createContactRequest(CreateContactRequestEvent createContactRequestEvent);
+  public RequestHandledEvent createContactRequest(String userEmail, String targetEmail);
 
-  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public ReadEvent readContactRequest(ReadContactRequestEvent readContactRequestEvent);
-
-  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public ReadEvent readContactRequestByUserIdContactNumber(ReadContactRequestEvent readContactRequestEvent);
-
-  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public UpdatedEvent acceptContactRequest(AcceptContactRequestEvent acceptContactRequestEvent);
-
-  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-  UpdatedEvent rejectContactRequest(UpdateEvent acceptContactRequestEvent);
-
-  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public AllReadEvent readContactRequestsReceived(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
-
-  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public AllReadEvent readContactRequestsMade(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
+//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+//  public ReadEvent readContactRequest(ReadContactRequestEvent readContactRequestEvent);
+//
+//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+//  public ReadEvent readContactRequestByUserIdContactNumber(ReadContactRequestEvent readContactRequestEvent);
+//
+//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+//  public UpdatedEvent acceptContactRequest(AcceptContactRequestEvent acceptContactRequestEvent);
+//
+//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+//  UpdatedEvent rejectContactRequest(UpdateEvent acceptContactRequestEvent);
+//
+//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+//  public AllReadEvent readContactRequestsReceived(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
+//
+//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+//  public AllReadEvent readContactRequestsMade(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
 
 }

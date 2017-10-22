@@ -168,8 +168,8 @@ public class CandidateControllerTest
 		CandidateDetails dets=DatabaseDataFixture.populateCandidate1().toCandidateDetails();
 		CandidateCreatedEvent testData=new CandidateCreatedEvent(dets);
 		String content=setupContent(dets);
-//		String returnedContent="{\"candidateId\":"+dets.getNodeId().intValue()+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+"\",\"electionId\":"+dets.getElectionId().intValue()+
-//								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+dets.getNodeId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/candidates\"}]}";
+//		String returnedContent="{\"candidateId\":"+dets.getId().intValue()+",\"name\":\""+dets.getName()+"\",\"description\":\""+dets.getDescription()+"\",\"electionId\":"+dets.getElectionId().intValue()+
+//								",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/candidate/"+dets.getId().intValue()+"\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/candidate/"+dets.getId().intValue()+"/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/candidate/"+dets.getId().intValue()+"/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/candidates\"}]}";
 		when (candidateService.createCandidate(any(CreateCandidateEvent.class))).thenReturn(testData);
 		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())

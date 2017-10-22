@@ -7,14 +7,11 @@ import com.eulersbridge.iEngage.core.events.comments.CreateCommentEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.contactRequest.CreateContactRequestEvent;
 import com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent;
-import com.eulersbridge.iEngage.core.events.notifications.Message;
-import com.eulersbridge.iEngage.core.events.notifications.NotificationDetails;
+
 import com.eulersbridge.iEngage.core.events.users.AddPersonalityEvent;
 import com.eulersbridge.iEngage.core.events.users.PersonalityAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.AddVoteReminderEvent;
-import com.eulersbridge.iEngage.core.services.interfacePack.NotificationService;
 import com.eulersbridge.iEngage.database.domain.*;
-import com.eulersbridge.iEngage.database.domain.notifications.NotificationConstants;
 import com.eulersbridge.iEngage.database.repository.BadgeRepository;
 import com.eulersbridge.iEngage.database.repository.TaskRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
@@ -22,13 +19,9 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,7 +35,6 @@ public class AspectServiceHandler {
   private final UserRepository userRepository;
   private final BadgeRepository badgeRepository;
   private final TaskRepository taskRepository;
-  private final NotificationService notificationService;
   private final Util util;
   private final ParamBean p;
 
@@ -52,14 +44,12 @@ public class AspectServiceHandler {
                               ParamBean paramBean,
                               UserRepository userRepository,
                               BadgeRepository badgeRepository,
-                              TaskRepository taskRepository,
-                              NotificationService notificationService) {
+                              TaskRepository taskRepository) {
     this.util = util;
     this.p = paramBean;
     this.userRepository = userRepository;
     this.badgeRepository = badgeRepository;
     this.taskRepository = taskRepository;
-    this.notificationService = notificationService;
   }
 
   public boolean updateTask(String userEmail, String taskAction, Long gainedExp, String tag) {
@@ -101,19 +91,19 @@ public class AspectServiceHandler {
 
 
   public void buildTaskCompletedNotification(String userEmail, String txt) {
-    Message message = new Message(null, txt);
-    Long userId = userRepository.getUserId(userEmail);
-    NotificationDetails notificationDetails = new NotificationDetails(null, userId, new Date().getTime(), false, NotificationConstants.MESSAGE, message);
-    CreateEvent createNotificationEvent = new CreateEvent(notificationDetails);
-    notificationService.createNotification(createNotificationEvent);
+//    Message message = new Message(null, txt);
+//    Long userId = userRepository.getUserId(userEmail);
+//    NotificationDetails notificationDetails = new NotificationDetails(null, userId, new Date().getTime(), false, NotificationConstants.MESSAGE, message);
+//    CreateEvent createNotificationEvent = new CreateEvent(notificationDetails);
+//    notificationService.createNotification(createNotificationEvent);
   }
 
   public void buildBadgeAwardedNotification(String userEmail, String txt) {
-    Message message = new Message(null, txt);
-    Long userId = userRepository.getUserId(userEmail);
-    NotificationDetails notificationDetails = new NotificationDetails(null, userId, new Date().getTime(), false, NotificationConstants.MESSAGE, message);
-    CreateEvent createNotificationEvent = new CreateEvent(notificationDetails);
-    notificationService.createNotification(createNotificationEvent);
+//    Message message = new Message(null, txt);
+//    Long userId = userRepository.getUserId(userEmail);
+//    NotificationDetails notificationDetails = new NotificationDetails(null, userId, new Date().getTime(), false, NotificationConstants.MESSAGE, message);
+//    CreateEvent createNotificationEvent = new CreateEvent(notificationDetails);
+//    notificationService.createNotification(createNotificationEvent);
   }
 
   // Use Spring Aspect to call the method below and check the result

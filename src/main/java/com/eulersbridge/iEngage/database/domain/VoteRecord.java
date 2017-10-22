@@ -51,7 +51,7 @@ public class VoteRecord {
     if (LOG.isTraceEnabled()) LOG.trace("voteRecord " + this);
 
     BeanUtils.copyProperties(this, details);
-/*	    details.setElectionId(this.getElection().getNodeId());
+/*	    details.setElectionId(this.getElection().getId());
       details.setVoterId(this.getVoter().getEmail());
 	    if (LOG.isTraceEnabled()) LOG.trace("instDetails "+details);
 */

@@ -3,7 +3,6 @@
  */
 package com.eulersbridge.iEngage.core.events.notifications;
 
-import com.eulersbridge.iEngage.database.domain.notifications.*;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
@@ -63,36 +62,5 @@ public class NotificationHelper
         }
         return false;
     }
-	public static Notification notificationFactory(NotificationDetails nDets)
-	{
-		Notification notif;
-		if (NotificationConstants.CONTACT_REQUEST.equals(nDets.getType()))
-		{
-			NotificationContactRequest notifCR=NotificationContactRequest.fromNotificationDetails(nDets);
-			notif=notifCR;
-		}
-		else
-			if (NotificationConstants.MESSAGE.equals(nDets.getType()))
-			{
-				NotificationMessage notifMessage=NotificationMessage.fromNotificationDetails(nDets);
-				notif=notifMessage;
-			}
-		else
-			if (NotificationConstants.CONTACT_ACCEPTED.equals(nDets.getType()))
-			{
-				NotificationContactAccepted notifMessage=NotificationContactAccepted.fromNotificationDetails(nDets);
-				notif=notifMessage;
-			}
-		else
-			if (NotificationConstants.CONTACT_REJECTED.equals(nDets.getType()))
-			{
-				NotificationContactRejected notifMessage=NotificationContactRejected.fromNotificationDetails(nDets);
-				notif=notifMessage;
-			}
-		else
-		{
-			notif=new Notification();
-		}
-		return notif;
-	}
+
 }

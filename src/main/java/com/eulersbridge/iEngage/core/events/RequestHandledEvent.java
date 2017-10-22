@@ -14,6 +14,7 @@ public class RequestHandledEvent<T> {
   private Boolean notAllowed = false;
   private Boolean premissionExpired = false;
   private Boolean canNotModify = false;
+  private Boolean conflicted = false;
 
   private T responseEntity;
 
@@ -68,6 +69,12 @@ public class RequestHandledEvent<T> {
   public static RequestHandledEvent canNotModiry(){
     RequestHandledEvent r = new RequestHandledEvent(false);
     r.setCanNotModify(true);
+    return r;
+  }
+
+  public static RequestHandledEvent conflicted(){
+    RequestHandledEvent r = new RequestHandledEvent(false);
+    r.setConflicted(true);
     return r;
   }
 
@@ -133,5 +140,13 @@ public class RequestHandledEvent<T> {
 
   public void setCanNotModify(Boolean canNotModify) {
     this.canNotModify = canNotModify;
+  }
+
+  public Boolean getConflicted() {
+    return conflicted;
+  }
+
+  public void setConflicted(Boolean conflicted) {
+    this.conflicted = conflicted;
   }
 }

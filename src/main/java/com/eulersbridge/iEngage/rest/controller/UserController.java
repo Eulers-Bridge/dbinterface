@@ -44,7 +44,6 @@ public class UserController {
   final EmailService emailService;
   final LikesService likesService;
   final ContactRequestService contactRequestService;
-  final NotificationService notificationService;
   final ServletContext servletContext;
   final VelocityEngine velocityEngine;
   final JavaMailSender emailSender;
@@ -57,7 +56,6 @@ public class UserController {
   public UserController(UserService userService, EmailService emailService,
                         LikesService likesService,
                         ContactRequestService contactRequestService,
-                        NotificationService notificationService,
                         ServletContext servletContext,
                         VelocityEngine velocityEngine,
                         JavaMailSender emailSender, BadgeService badgeService,
@@ -69,7 +67,6 @@ public class UserController {
     this.emailService = emailService;
     this.likesService = likesService;
     this.contactRequestService = contactRequestService;
-    this.notificationService = notificationService;
     this.servletContext = servletContext;
     this.velocityEngine = velocityEngine;
     this.emailSender = emailSender;

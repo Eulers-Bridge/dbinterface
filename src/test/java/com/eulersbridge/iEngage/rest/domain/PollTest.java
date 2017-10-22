@@ -66,7 +66,7 @@ public class PollTest
 	{
 		PollDetails pollDetails=poll.toPollDetails();
 		assertEquals(pollDetails.getQuestion(),poll.getQuestion());
-//		assertEquals(pollDetails.getNodeId(),poll.getNodeId());
+//		assertEquals(pollDetails.getId(),poll.getId());
 		assertEquals(pollDetails.getStart(),poll.getStart());
 		assertEquals(pollDetails.getDuration(),poll.getDuration());
 		assertEquals(pollDetails.getOwnerId(),poll.getOwnerId());

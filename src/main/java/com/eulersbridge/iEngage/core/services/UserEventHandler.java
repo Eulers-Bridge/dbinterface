@@ -159,9 +159,7 @@ public class UserEventHandler implements UserService {
     RequestReadUserEvent requestReadUserEvent) {
     ReadUserEvent response;
     if (requestReadUserEvent != null) {
-      if (LOG.isDebugEnabled())
-        LOG.debug("requestReadUser(" + requestReadUserEvent.getEmail()
-          + ")");
+      System.out.println("!!!" + requestReadUserEvent.getEmail());
       User user = userRepository.findByEmail(requestReadUserEvent.getEmail());
       if (user == null) {
         response = ReadUserEvent.notFound(requestReadUserEvent.getEmail());
@@ -370,7 +368,7 @@ public class UserEventHandler implements UserService {
     if (null == user) {
       return UserUpdatedEvent.userNotFound(newUser.getEmail());
     } else {
-//      userToUpdate.setNodeId(user.getNodeId());
+//      userToUpdate.setId(user.getId());
 //      userToUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
 //      userToUpdate.setRoles(user.getRoles());
 //      if (null != updateUserDetails.getEmail())
@@ -402,7 +400,7 @@ public class UserEventHandler implements UserService {
 
 //      if (null != newUser.getInstitutionId()) {
 //        if (user.getInstitution() != null)
-//          newUser.setInstitutionId(user.getInstitution().getNodeId());
+//          newUser.setInstitutionId(user.getInstitution().getId());
 //        if (user.getInstitution() instanceof Institution) {
 //          user.setInstitution(user.getInstitution$());
 //        }

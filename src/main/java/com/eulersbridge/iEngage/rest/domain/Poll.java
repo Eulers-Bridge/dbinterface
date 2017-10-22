@@ -56,7 +56,7 @@ public class Poll extends ResourceSupport {
   public PollDetails toPollDetails() {
     PollDetails pollDetails = new PollDetails();
 //        BeanUtils.copyProperties(pollDetails, this);
-//    pollDetails.setPollId(this.getNodeId());
+//    pollDetails.setPollId(this.getId());
     pollDetails.setCreatorEmail(creatorEmail);
     pollDetails.setQuestion(this.getQuestion());
     pollDetails.setStart(this.getStart());

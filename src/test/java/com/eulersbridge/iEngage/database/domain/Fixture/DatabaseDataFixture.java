@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.database.domain.Fixture;
 
 import com.eulersbridge.iEngage.database.domain.*;
-import com.eulersbridge.iEngage.database.domain.notifications.*;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 
 import java.util.*;
@@ -720,46 +719,6 @@ public class DatabaseDataFixture {
     return badges;
   }
 
-  public static ContactRequest populateContactRequest1() {
-    Long nodeId = 123l;
-    String contactDetails = populateUserGnewitt().getContactNumber();
-    User user = populateUserGnewitt2();
-    Long requestDate = Calendar.getInstance().getTimeInMillis();
-    Boolean accepted = false, rejected = false;
-    Long responseDate = requestDate + 32324;
-    return populateContactRequest(nodeId, contactDetails, user, accepted, rejected, requestDate, responseDate);
-  }
-
-  public static ContactRequest populateContactRequest2() {
-    Long nodeId = 128l;
-    String contactDetails = populateUserGnewitt2().getEmail();
-    User user = populateUserGnewitt();
-    Long requestDate = Calendar.getInstance().getTimeInMillis();
-    Boolean accepted = false, rejected = false;
-    Long responseDate = requestDate + 323324;
-    return populateContactRequest(nodeId, contactDetails, user, accepted, rejected, requestDate, responseDate);
-  }
-
-  public static ContactRequest populateContactRequest(Long nodeId, String contactDetails, User user, Boolean accepted, Boolean rejected, Long requestDate, Long responseDate) {
-    ContactRequest contactRequest = new ContactRequest();
-    contactRequest.setContactDetails(contactDetails);
-    contactRequest.setNodeId(nodeId);
-    contactRequest.setRejected(rejected);
-    contactRequest.setAccepted(accepted);
-    contactRequest.setRequestDate(requestDate);
-    contactRequest.setResponseDate(responseDate);
-    contactRequest.setUser(user);
-    return contactRequest;
-  }
-
-  public static HashMap<Long, ContactRequest> populateContactRequests() {
-    HashMap<Long, ContactRequest> tasks = new HashMap<Long, ContactRequest>();
-    ContactRequest initialTask = populateContactRequest1();
-    tasks.put(initialTask.getNodeId(), initialTask);
-    initialTask = populateContactRequest2();
-    tasks.put(initialTask.getNodeId(), initialTask);
-    return tasks;
-  }
 
   public static Contact populateContact1() {
     Long nodeId = 7123l;
@@ -791,82 +750,6 @@ public class DatabaseDataFixture {
     support.setTicket(ticket);
     support.setTimeStamp(0l);
     return support;
-  }
-
-  public static Notification populateNotification1() {
-    Boolean read = false;
-    String type = NotificationConstants.MESSAGE;
-    User user = populateUserGnewitt2();
-    Long nodeId = 23342l;
-    Long timeStamp = Calendar.getInstance().getTimeInMillis();
-    return populateNotificationMessage(nodeId, read, timeStamp, type, user, "test message 1");
-  }
-
-  public static Notification populateNotification2() {
-    Boolean read = true;
-    String type = NotificationConstants.MESSAGE;
-    User user = populateUserGnewitt();
-    Long nodeId = 2342l;
-    Long timeStamp = Calendar.getInstance().getTimeInMillis();
-    return populateNotificationMessage(nodeId, read, timeStamp, type, user, "test message 2");
-  }
-
-  public static Notification populateNotification(Long nodeId, Boolean read, Long timestamp, String type, User user) {
-    Notification notification = new Notification();
-    notification.setNodeId(nodeId);
-    notification.setRead(read);
-    notification.setTimestamp(timestamp);
-    notification.setType(type);
-    HasNotification hasNotification = new HasNotification();
-    hasNotification.setUser(user);
-    notification.setHasNotificationRelationship(hasNotification);
-    return notification;
-  }
-
-  public static NotificationMessage populateNotificationMessage(Long nodeId, Boolean read, Long timestamp, String type, User user, String message) {
-    NotificationMessage notification = new NotificationMessage();
-    notification.setNodeId(nodeId);
-    notification.setRead(read);
-    notification.setTimestamp(timestamp);
-    notification.setType(type);
-    HasNotification hasNotification = new HasNotification();
-    hasNotification.setUser(user);
-    notification.setHasNotificationRelationship(hasNotification);
-    notification.setMessage(message);
-    return notification;
-  }
-
-  public static HashMap<Long, Notification> populateNotifications() {
-    HashMap<Long, Notification> notifications = new HashMap<Long, Notification>();
-    Notification initialInst = populateNotification1();
-    notifications.put(initialInst.getNodeId(), initialInst);
-    initialInst = populateNotification2();
-    notifications.put(initialInst.getNodeId(), initialInst);
-    return notifications;
-  }
-
-  public static NotificationContactRequest populateNotificationContactRequest1() {
-    Boolean read = true;
-    String type = "contactRequest";
-    User user = populateUserGnewitt();
-    Long nodeId = 2342l;
-    Long timeStamp = Calendar.getInstance().getTimeInMillis();
-    ContactRequest contactRequest = populateContactRequest1();
-    return populateNotificationContactRequest(nodeId, read, timeStamp, type, user, contactRequest);
-  }
-
-  public static NotificationContactRequest populateNotificationContactRequest(Long nodeId, Boolean read, Long timestamp, String type, User user, ContactRequest contactRequest) {
-    NotificationContactRequest ncr = new NotificationContactRequest();
-    ncr.setContactRequest(contactRequest);
-    ncr.setNodeId(nodeId);
-    ncr.setRead(read);
-    ncr.setTimestamp(timestamp);
-    ncr.setType(type);
-    HasNotification hasNotification = new HasNotification();
-    hasNotification.setUser(user);
-    ncr.setHasNotificationRelationship(hasNotification);
-
-    return ncr;
   }
 
   public static Node populateOwner1() {

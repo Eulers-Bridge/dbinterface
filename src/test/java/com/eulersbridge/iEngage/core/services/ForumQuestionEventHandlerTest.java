@@ -93,7 +93,7 @@ public class ForumQuestionEventHandlerTest {
     ForumQuestionCreatedEvent evtData = service.createForumQuestion(createEventEvent);
     ForumQuestionDetails returnedDets = (ForumQuestionDetails) evtData.getDetails();
 //		assertFalse(evtData.isInstitutionFound());
-//		assertEquals(evtData.getEventId(),testData.getNewsFeed().getInstitution().getNodeId());
+//		assertEquals(evtData.getEventId(),testData.getNewsFeed().getInstitution().getId());
     assertNull(evtData.getDetails());
   }
 

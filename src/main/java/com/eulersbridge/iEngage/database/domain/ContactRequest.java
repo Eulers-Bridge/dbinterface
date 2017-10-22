@@ -1,220 +1,98 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
+import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
+import com.eulersbridge.iEngage.rest.domain.UserProfile;
+import org.neo4j.ogm.annotation.*;
 
 /**
- * @author Greg Newitt
+ * @author Yikai Gong
  */
-@NodeEntity
-public class ContactRequest extends Node {
-  private static Logger LOG = LoggerFactory.getLogger(ContactRequest.class);
-
-  private String contactDetails;
+@RelationshipEntity(type = DataConstants.CONTACT_REQUEST_LABEL)
+public class ContactRequest {
+  @GraphId
+  private Long id;
   private Long requestDate;
   private Long responseDate;
   private Boolean accepted;
-  private Boolean rejected;
-  @Relationship(type = DataConstants.CONTACT_REQUEST_LABEL, direction = Relationship.INCOMING)
-  private Node user;
 
-  public ContactRequestDetails toContactRequestDetails() {
-    Long userId = null;
-    UserDetails requesterDetails = null;
-    if (user != null) {
-      userId = user.getNodeId();
-      if(user instanceof User)
-        requesterDetails = getUser$().toUserDetails();
-    }
-    ContactRequestDetails details = new ContactRequestDetails(getNodeId(), getContactDetails(),
-      getRequestDate(), getResponseDate(), getAccepted(), getRejected(), userId, requesterDetails);
+  @StartNode
+  private Node creator;
+  @EndNode
+  private Node target;
 
-    BeanUtils.copyProperties(this, details);
-    return details;
+  public ContactRequest() {
   }
 
-  public static ContactRequest fromContactRequestDetails(ContactRequestDetails dets) {
-    if (LOG.isTraceEnabled()) LOG.trace("fromContactRequestDetails()");
+  public ContactRequestDomain toDomain() {
+    ContactRequestDomain domain = new ContactRequestDomain();
+    domain.setId(id);
+    domain.setRequestDate(requestDate);
+    domain.setResponseDate(responseDate);
+    domain.setAccepted(accepted);
+    domain.setRequesterProfile(UserProfile.fromUserDetails(getCreator$().toUserDetails()));
+    domain.setRequestReceiverProfile(UserProfile.fromUserDetails(getTarget$().toUserDetails()));
 
-    ContactRequest contactRequest = new ContactRequest();
-    contactRequest.setNodeId(dets.getNodeId());
-    contactRequest.setContactDetails(dets.getContactDetails());
-    contactRequest.setRequestDate(dets.getRequestDate());
-    contactRequest.setResponseDate(dets.getResponseDate());
-    User user = new User();
-    user.setNodeId(dets.getUserId());
-    contactRequest.setUser(user.toNode());
-    contactRequest.setAccepted(dets.getAccepted());
-    contactRequest.setRejected(dets.getRejected());
-
-    if (LOG.isTraceEnabled())
-      LOG.trace("contactRequest " + contactRequest + " contactRequestDetails " + dets);
-    return contactRequest;
+    return domain;
   }
 
-  /**
-   * @return the contactDetails
-   */
-  public String getContactDetails() {
-    return contactDetails;
+  public Long getId() {
+    return id;
   }
 
-  /**
-   * @param contactDetails the contactDetails to set
-   */
-  public void setContactDetails(String contactDetails) {
-    this.contactDetails = contactDetails;
+  public void setId(Long id) {
+    this.id = id;
   }
 
-  /**
-   * @return the requestDate
-   */
   public Long getRequestDate() {
     return requestDate;
   }
 
-  /**
-   * @param requestDate the requestDate to set
-   */
   public void setRequestDate(Long requestDate) {
     this.requestDate = requestDate;
   }
 
-  /**
-   * @return the responseDate
-   */
   public Long getResponseDate() {
     return responseDate;
   }
 
-  /**
-   * @param responseDate the responseDate to set
-   */
   public void setResponseDate(Long responseDate) {
     this.responseDate = responseDate;
   }
 
-  /**
-   * @return the accepted
-   */
   public Boolean getAccepted() {
     return accepted;
   }
 
-  /**
-   * @param accepted the accepted to set
-   */
   public void setAccepted(Boolean accepted) {
     this.accepted = accepted;
   }
 
-  /**
-   * @return the rejected
-   */
-  public Boolean getRejected() {
-    return rejected;
+  public Node getCreator() {
+    return creator;
   }
 
-  /**
-   * @param rejected the rejected to set
-   */
-  public void setRejected(Boolean rejected) {
-    this.rejected = rejected;
+  public User getCreator$() {
+    if (creator instanceof User)
+      return (User) creator;
+    return new User(creator.nodeId);
   }
 
-  /**
-   * @return the user
-   */
-  public User getUser$() {
-    return (User) user;
+  public void setCreator(Node creator) {
+    this.creator = creator;
   }
 
-  public Node getUser() {
-    return user;
+  public Node getTarget() {
+    return target;
   }
 
-  /**
-   * @param user the user to set
-   */
-  public void setUser(Node user) {
-    this.user = user;
+  public User getTarget$() {
+    if (target instanceof User)
+      return (User) target;
+    return new User(target.nodeId);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  public String toString() {
-    return "ContactRequest [nodeId=" + nodeId + ", contactDetails="
-      + contactDetails + ", requestDate=" + requestDate
-      + ", responseDate=" + responseDate + ", accepted=" + accepted
-      + ", rejected=" + rejected + ", user=" + user + "]";
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    if (this.nodeId != null) {
-      result = prime * result + nodeId.hashCode();
-    } else {
-      result = prime * result
-        + ((accepted == null) ? 0 : accepted.hashCode());
-      result = prime * result
-        + ((contactDetails == null) ? 0 : contactDetails.hashCode());
-      result = prime * result
-        + ((rejected == null) ? 0 : rejected.hashCode());
-      result = prime * result
-        + ((requestDate == null) ? 0 : requestDate.hashCode());
-      result = prime * result
-        + ((responseDate == null) ? 0 : responseDate.hashCode());
-      result = prime * result + ((user == null) ? 0 : user.hashCode());
-    }
-    return result;
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    ContactRequest other = (ContactRequest) obj;
-
-    if (nodeId != null) {
-      return nodeId.equals(other.nodeId);
-    } else {
-      if (other.nodeId != null) return false;
-
-      if (accepted == null) {
-        if (other.accepted != null) return false;
-      } else if (!accepted.equals(other.accepted)) return false;
-      if (contactDetails == null) {
-        if (other.contactDetails != null) return false;
-      } else if (!contactDetails.equals(other.contactDetails)) return false;
-      if (rejected == null) {
-        if (other.rejected != null) return false;
-      } else if (!rejected.equals(other.rejected)) return false;
-      if (requestDate == null) {
-        if (other.requestDate != null) return false;
-      } else if (!requestDate.equals(other.requestDate)) return false;
-      if (responseDate == null) {
-        if (other.responseDate != null) return false;
-      } else if (!responseDate.equals(other.responseDate)) return false;
-      if (user == null) {
-        if (other.user != null) return false;
-      } else if (!user.equals(other.user)) return false;
-    }
-    return true;
+  public void setTarget(Node target) {
+    this.target = target;
   }
 }
