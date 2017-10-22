@@ -26,14 +26,16 @@ public interface ContactRequestService {
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
   public RequestHandledEvent readContactRequestsReceived(String userEmail);
 
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public RequestHandledEvent acceptContactRequest(String userEmail, Long requestId);
+
 //  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
 //  public ReadEvent readContactRequest(ReadContactRequestEvent readContactRequestEvent);
 //
 //  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
 //  public ReadEvent readContactRequestByUserIdContactNumber(ReadContactRequestEvent readContactRequestEvent);
 //
-//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-//  public UpdatedEvent acceptContactRequest(AcceptContactRequestEvent acceptContactRequestEvent);
+
 //
 //  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
 //  UpdatedEvent rejectContactRequest(UpdateEvent acceptContactRequestEvent);

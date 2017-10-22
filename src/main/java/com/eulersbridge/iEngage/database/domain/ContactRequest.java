@@ -14,6 +14,7 @@ public class ContactRequest {
   private Long id;
   private Long requestDate;
   private Long responseDate;
+  @Index
   private Boolean accepted;
 
   @StartNode

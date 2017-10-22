@@ -736,7 +736,7 @@ public class DatabaseDataFixture {
 
   public static Contact populateContact(Long nodeId, User contactor, User contactee) {
     Contact contact = new Contact();
-    contact.setNodeId(nodeId);
+    contact.setId(nodeId);
     contact.setContactor(contactor);
     contact.setContactee(contactee);
     contact.setTimestamp(Calendar.getInstance().getTimeInMillis());

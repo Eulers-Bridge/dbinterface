@@ -50,7 +50,7 @@ public class NotificationController
 //    	{
 //    		response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //    	}
-//    	else if(null==notificationCreatedEvent.getNodeId())
+//    	else if(null==notificationCreatedEvent.getId())
 //        {
 //            response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 //        }

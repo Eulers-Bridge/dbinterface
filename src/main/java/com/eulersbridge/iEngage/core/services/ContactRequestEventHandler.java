@@ -11,6 +11,7 @@ import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
 import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.ContactRepository;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
@@ -37,15 +38,17 @@ import java.util.stream.Collectors;
 public class ContactRequestEventHandler implements ContactRequestService {
   private static Logger LOG = LoggerFactory.getLogger(ContactRequestEventHandler.class);
 
-  private ContactRequestRepository contactRequestRepository;
-  private UserRepository userRepository;
-  private EmailValidator emailValidator;
+  private final ContactRequestRepository contactRequestRepository;
+  private final UserRepository userRepository;
+  private final EmailValidator emailValidator;
+  private final ContactRepository contactRepo;
 
   @Autowired
-  public ContactRequestEventHandler(ContactRequestRepository contactRequestRepository, UserRepository userRepository) {
+  public ContactRequestEventHandler(ContactRequestRepository contactRequestRepository, UserRepository userRepository, ContactRepository contactRepo) {
     this.contactRequestRepository = contactRequestRepository;
     this.userRepository = userRepository;
     emailValidator = EmailValidator.getInstance();
+    this.contactRepo = contactRepo;
   }
 
   @Override
@@ -84,7 +87,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
   }
 
   @Override
-  public RequestHandledEvent readContactRequestsReceived(String userEmail) {
+  public RequestHandledEvent<List<ContactRequestDomain>> readContactRequestsReceived(String userEmail) {
     if (!emailValidator.isValid(userEmail))
       return RequestHandledEvent.badRequest();
     List<ContactRequest> requests = contactRequestRepository.findReceivedRequests(userEmail);
@@ -93,18 +96,46 @@ public class ContactRequestEventHandler implements ContactRequestService {
     return new RequestHandledEvent<>(domains);
   }
 
+  @Override
+  public RequestHandledEvent<ContactRequestDomain> acceptContactRequest(String userEmail, Long requestId) {
+    if (!emailValidator.isValid(userEmail))
+      return RequestHandledEvent.badRequest();
+    ContactRequest req = contactRequestRepository.findExistingRequest(requestId);
+    if (req == null || req.getCreator() == null || req.getTarget() == null)
+      return RequestHandledEvent.targetNotFound();
+    if (!userEmail.equals(req.getTarget().getEmail()))
+      return RequestHandledEvent.notAllowed();
+    if (req.getAccepted() != null || req.getResponseDate() != null)
+      return RequestHandledEvent.canNotModiry();
+
+    Contact contact = new Contact();
+    contact.setContactor(req.getCreator());
+    contact.setContactee(req.getTarget());
+    contact.setTimestamp(System.currentTimeMillis());
+    contact = contactRepo.save(contact);
+    if (contact == null)
+      return RequestHandledEvent.failed();
+
+    req.setAccepted(true);
+    req.setResponseDate(System.currentTimeMillis());
+    req = contactRequestRepository.save(req);
+    if (req == null)
+      return RequestHandledEvent.failed();
+    return new RequestHandledEvent<>(req.toDomain());
+  }
+
   //  /* (non-Javadoc)
 //   * @see com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService#readContactRequest(com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent)
 //   */
 //  @Override
 //  public ReadEvent readContactRequest(
 //    ReadContactRequestEvent readContactRequestEvent) {
-//    ContactRequest task = contactRequestRepository.findOne(readContactRequestEvent.getNodeId());
+//    ContactRequest task = contactRequestRepository.findOne(readContactRequestEvent.getId());
 //    ReadEvent readTaskEvent;
 //    if (task != null) {
-//      readTaskEvent = new ContactRequestReadEvent(task.getNodeId(), task.toContactRequestDetails());
+//      readTaskEvent = new ContactRequestReadEvent(task.getId(), task.toContactRequestDetails());
 //    } else {
-//      readTaskEvent = ContactRequestReadEvent.notFound(readContactRequestEvent.getNodeId());
+//      readTaskEvent = ContactRequestReadEvent.notFound(readContactRequestEvent.getId());
 //    }
 //    return readTaskEvent;
 //  }
@@ -123,11 +154,11 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //    ReadEvent contactRequestReadEvent;
 //    if (contactRequest != null) {
 //      if (LOG.isDebugEnabled())
-//        LOG.debug("Contact found." + contactRequest.getNodeId());
-//      contactRequestReadEvent = new ContactRequestReadEvent(contactRequest.getNodeId(), contactRequest.toContactRequestDetails());
+//        LOG.debug("Contact found." + contactRequest.getId());
+//      contactRequestReadEvent = new ContactRequestReadEvent(contactRequest.getId(), contactRequest.toContactRequestDetails());
 //    } else {
 //      if (LOG.isDebugEnabled()) LOG.debug("Contact not found.");
-//      contactRequestReadEvent = ContactRequestReadEvent.notFound(readContactRequestEvent.getNodeId());
+//      contactRequestReadEvent = ContactRequestReadEvent.notFound(readContactRequestEvent.getId());
 //    }
 //    return contactRequestReadEvent;
 //  }
@@ -135,12 +166,12 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //  @Override
 //  public UpdatedEvent acceptContactRequest(
 //    AcceptContactRequestEvent acceptContactRequestEvent) {
-//    Long contactRequestId = acceptContactRequestEvent.getNodeId();
+//    Long contactRequestId = acceptContactRequestEvent.getId();
 //    if (LOG.isDebugEnabled())
 //      LOG.debug("Looking for ContactRequest " + contactRequestId);
 //    ContactRequest cr = contactRequestRepository.findOne(contactRequestId);
 //    UpdatedEvent uEvt;
-//    if ((cr != null) && (cr.getNodeId() != null) && (null == cr.getResponseDate())) {
+//    if ((cr != null) && (cr.getId() != null) && (null == cr.getResponseDate())) {
 //      EmailValidator emailValidator = EmailValidator.getInstance();
 //      boolean isEmail = emailValidator.isValid(cr.getContactDetails());
 //      User contactee;
@@ -154,8 +185,8 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //        cr.setAccepted(true);
 //        cr.setRejected(false);
 //        cr.setResponseDate(Calendar.getInstance().getTimeInMillis());
-//        Contact contact = userRepository.addContact(contactor.getNodeId(), contactee.getNodeId());
-//        if ((contact != null) && (contact.getNodeId() != null)) {
+//        Contact contact = userRepository.addContact(contactor.getId(), contactee.getId());
+//        if ((contact != null) && (contact.getId() != null)) {
 //          ContactDetails cDets = contact.toContactDetails();
 //          if (LOG.isDebugEnabled()) LOG.debug("contactDetails = " + cDets);
 //          ContactRequest result = contactRequestRepository.save(cr, 0);
@@ -172,7 +203,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //      } else {
 //        uEvt = UpdatedEvent.notFound(contactRequestId);
 //      }
-//    } else if ((null == cr) || (null == cr.getNodeId())) {
+//    } else if ((null == cr) || (null == cr.getId())) {
 //      uEvt = UpdatedEvent.notFound(contactRequestId);
 //    } else
 //    //	if (cr.getResponseDate()!=null)
@@ -196,11 +227,11 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //    UpdateEvent rejectContactRequestEvent) {
 //    UpdatedEvent uEvt;
 //    if (rejectContactRequestEvent != null) {
-//      Long contactRequestId = rejectContactRequestEvent.getNodeId();
+//      Long contactRequestId = rejectContactRequestEvent.getId();
 //      if (LOG.isDebugEnabled())
 //        LOG.debug("Looking for ContactRequest " + contactRequestId);
 //      ContactRequest cr = contactRequestRepository.findOne(contactRequestId);
-//      if ((cr != null) && (cr.getNodeId() != null) && (null == cr.getResponseDate())) {
+//      if ((cr != null) && (cr.getId() != null) && (null == cr.getResponseDate())) {
 //        // We have a contact request that has not been responded to.
 //        EmailValidator emailValidator = EmailValidator.getInstance();
 //        boolean isEmail = emailValidator.isValid(cr.getContactDetails());
@@ -223,7 +254,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //        } else {
 //          uEvt = UpdatedEvent.notFound(contactRequestId);
 //        }
-//      } else if ((null == cr) || (null == cr.getNodeId())) {
+//      } else if ((null == cr) || (null == cr.getId())) {
 //        uEvt = UpdatedEvent.notFound(contactRequestId);
 //      } else
 //      //	if (cr.getResponseDate()!=null)

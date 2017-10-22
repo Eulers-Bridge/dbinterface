@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * @author Greg Newitt
+ * @author Yikai Gong
  */
 @Repository
 public interface ContactRequestRepository extends

@@ -61,31 +61,31 @@ public class ContactTest
 	{
 		ContactDetails dets=contact.toContactDetails();
 		assertEquals("electionDetails not of ElectionDetails class",dets.getClass(),ContactDetails.class);
-		assertEquals("",contact.getNodeId(),dets.getNodeId());
+		assertEquals("",contact.getId(),dets.getNodeId());
 		assertEquals("",contact.getContactee().getNodeId(),dets.getContacteeId());
 		assertEquals("",contact.getContactor().getNodeId(),dets.getContactorId());
 		assertEquals("",contact.getTimestamp(),dets.getTimestamp());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Contact#getNodeId()}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Contact#getId()}.
 	 */
 	@Test
 	public final void testGetNodeId()
 	{
-		assertEquals("",contact.getNodeId(),dets.getNodeId());
+		assertEquals("",contact.getId(),dets.getNodeId());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Contact#setNodeId(java.lang.Long)}.
+	 * Test method for {@link com.eulersbridge.iEngage.database.domain.Contact#setId(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetNodeId()
 	{
 		Long id=535l;
-		assertNotEquals("",contact.getNodeId(),id);
-		contact.setNodeId(id);
-		assertEquals("",id,contact.getNodeId());
+		assertNotEquals("",contact.getId(),id);
+		contact.setId(id);
+		assertEquals("",id,contact.getId());
 	}
 
 	/**
@@ -169,9 +169,9 @@ public class ContactTest
 		Contact contactTest=DatabaseDataFixture.populateContact1();
 		assertEquals(contactTest.hashCode(),contactTest.hashCode());
 		assertEquals(contactTest.hashCode(),contact.hashCode());
-		contactTest.setNodeId(null);
+		contactTest.setId(null);
 		checkHashCode(contact,contactTest);
-		contact.setNodeId(null);
+		contact.setId(null);
 		
 		contactTest.setContactee(null);
 		checkHashCode(contact,contactTest);
@@ -202,11 +202,11 @@ public class ContactTest
 		assertEquals(contactTest,contactTest);
 		assertEquals(contactTest,contact);
 		
-		contactTest.setNodeId(54l);
+		contactTest.setId(54l);
 		checkNotEquals(contact,contactTest);
-		contact.setNodeId(null);
+		contact.setId(null);
 		checkNotEquals(contact,contactTest);
-		contactTest.setNodeId(null);
+		contactTest.setId(null);
 		
 		assertEquals(contact, contactTest);
 		assertEquals(contactTest, contact);

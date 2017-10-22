@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 @RelationshipEntity(type = DataConstants.CONTACT_LABEL)
 public class Contact {
   @GraphId
-  private Long nodeId;
+  private Long id;
   private Long timestamp;
 
-  @EndNode
+  @StartNode
   private User contactor;
   @EndNode
   private User contactee;
@@ -38,7 +38,7 @@ public class Contact {
       contactorId = getContactor().getNodeId();
     if (getContactee() != null)
       contacteeId = getContactee().getNodeId();
-    ContactDetails details = new ContactDetails(getNodeId(), contactorId, contacteeId, getTimestamp());
+    ContactDetails details = new ContactDetails(getId(), contactorId, contacteeId, getTimestamp());
     if (LOG.isTraceEnabled()) LOG.trace("Contact " + this);
 
     return details;
@@ -51,7 +51,7 @@ public class Contact {
     User contactee;
     if (details != null) {
       contact = new Contact();
-      contact.setNodeId(details.getNodeId());
+      contact.setId(details.getNodeId());
       contact.setTimestamp(details.getTimestamp());
       contactor = new User(details.getContactorId());
       contactee = new User(details.getContacteeId());
@@ -65,15 +65,15 @@ public class Contact {
     return contact;
   }
 
-  public Long getNodeId() {
-    return nodeId;
+  public Long getId() {
+    return id;
   }
 
   /**
-   * @param nodeId the nodeId to set
+   * @param id the id to set
    */
-  public void setNodeId(Long nodeId) {
-    this.nodeId = nodeId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
   public Long getTimestamp() {
@@ -116,67 +116,4 @@ public class Contact {
     this.contactee = contactee;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  public String toString() {
-    return "Contact [nodeId=" + nodeId + ", contactor=" + contactor
-      + ", contactee=" + contactee + ", timestamp=" + timestamp
-      + "]";
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    if (getNodeId() == null) {
-      result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
-      result = prime * result
-        + ((contactee == null) ? 0 : contactee.hashCode());
-      result = prime * result + ((contactor == null) ? 0 : contactor.hashCode());
-    } else {
-      result = getNodeId().hashCode();
-    }
-    return result;
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Contact other = (Contact) obj;
-    if (nodeId != null) {
-      return nodeId.equals(other.nodeId);
-    } else {
-      if (other.nodeId != null)
-        return false;
-      if (timestamp == null) {
-        if (other.timestamp != null)
-          return false;
-      } else if (!timestamp.equals(other.timestamp))
-        return false;
-      if (contactee == null) {
-        if (other.contactee != null)
-          return false;
-      } else if (!contactee.equals(other.contactee))
-        return false;
-      if (contactor == null) {
-        if (other.contactor != null)
-          return false;
-      } else if (!contactor.equals(other.contactor))
-        return false;
-    }
-    return true;
-  }
 }

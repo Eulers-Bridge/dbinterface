@@ -35,7 +35,7 @@ public class ContactDetailsTest
 	@Test
 	public final void testContactDetails()
 	{
-		dets=new ContactDetails(testPhoto.getNodeId(), testPhoto.getContactor().getNodeId(), testPhoto.getContactee().getNodeId(), testPhoto.getTimestamp());
+		dets=new ContactDetails(testPhoto.getId(), testPhoto.getContactor().getNodeId(), testPhoto.getContactee().getNodeId(), testPhoto.getTimestamp());
 		assertNotNull("Not yet implemented",dets);
 	}
 

@@ -56,23 +56,7 @@ public class ContactController {
     longValidator = LongValidator.getInstance();
   }
 
-//  private ReadUserEvent getUser(String contactInfo) {
-//    ReadUserEvent userEvent = null;
-//
-//    if (contactInfo != null) {
-//      boolean isEmail = emailValidator.isValid(contactInfo);
-//      String email = null;
-//      if (isEmail) {
-//        email = contactInfo;
-//        userEvent = userService.readUserByContactEmail(new RequestReadUserEvent(email));
-//      } else
-//        userEvent = userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
-//    }
-//    return userEvent;
-//  }
-
-
-  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_LABEL + "/{targetEmail}")
+  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUEST_LABEL + "/{targetEmail}")
   public @ResponseBody
   ResponseEntity<ContactRequestDomain> addContact(@PathVariable Long userId, @PathVariable String targetEmail) {
     String userEmail = Util.getUserEmailFromSession();
@@ -98,57 +82,13 @@ public class ContactController {
     return res.toResponseEntity();
   }
 
-//  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CONTACT_LABEL + "/{contactRequestId}")
-//  public @ResponseBody
-//  ResponseEntity<Contact> acceptContact(@PathVariable Long contactRequestId) {
-//    if (LOG.isInfoEnabled())
-//      LOG.info("Attempting to add contact from " + contactRequestId);
-//
-//    ResponseEntity<Contact> result;
-//    Contact restContact;
-//
-//    ReadContactRequestEvent readContactRequestEvent = new ReadContactRequestEvent(contactRequestId);
-//    ReadEvent rEvt = contactRequestService.readContactRequest(readContactRequestEvent);
-//
-//    if (rEvt.isEntityFound()) {
-//      ContactRequestDetails crDets = (ContactRequestDetails) rEvt.getDetails();
-//      if (LOG.isDebugEnabled())
-//        LOG.debug("Contact Request details returned - " + crDets);
-//
-//
-//      AcceptContactRequestEvent acceptContactRequestEvent = new AcceptContactRequestEvent(contactRequestId);
-//      UpdatedEvent uEvt = contactRequestService.acceptContactRequest(acceptContactRequestEvent);
-//      if (uEvt.isEntityFound()) {
-//        if (LOG.isDebugEnabled()) LOG.debug("uEvt - " + uEvt);
-//        ContactDetails cDets = (ContactDetails) uEvt.getDetails();
-//        restContact = Contact.fromContactDetails(cDets);
-//        result = new ResponseEntity<Contact>(restContact, HttpStatus.CREATED);
-//        if (LOG.isDebugEnabled())
-//          LOG.debug("Contact Request returned - " + restContact);
-//        if (LOG.isDebugEnabled()) LOG.debug("Contact Details - " + cDets);
-//
-//        crDets.getContactDetails();
-//        ReadUserEvent contacteeEvt = getUser(crDets.getContactDetails());
-//        UserDetails contacteeDets = (UserDetails) contacteeEvt.getDetails();
-//        String givenName = contacteeDets.getGivenName();
-//        String familyName = contacteeDets.getFamilyName();
-//        // Create a new contact request.
-//        Message message = new Message(null, givenName + ' ' + familyName + " accepted your contact request.");
-//        Notification notification = new Notification(crDets.getUserId(), NotificationConstants.MESSAGE, message);
-//
-//        CreateEvent createNotificationEvent = new CreateEvent(notification.toNotificationDetails());
-//        CreatedEvent notificationCreatedEvent = notificationService.createNotification(createNotificationEvent);
-//        if (notificationCreatedEvent.isFailed()) {
-//          if (LOG.isDebugEnabled()) LOG.debug("Notification failed.");
-//        }
-//      } else {
-//        result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
-//      }
-//    } else {
-//      result = new ResponseEntity<Contact>(HttpStatus.NOT_FOUND);
-//    }
-//    return result;
-//  }
+  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + ControllerConstants.CONTACT_REQUEST_LABEL + "/{contactRequestId}/accept")
+  public @ResponseBody
+  ResponseEntity<ContactRequestDomain> acceptContact(@PathVariable Long contactRequestId) {
+    String userEmail = Util.getUserEmailFromSession();
+    RequestHandledEvent<ContactRequestDomain> res = contactRequestService.acceptContactRequest(userEmail, contactRequestId);
+    return res.toResponseEntity();
+  }
 //
 //  @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CONTACT_LABEL + "/{contactRequestId}")
 //  public @ResponseBody
