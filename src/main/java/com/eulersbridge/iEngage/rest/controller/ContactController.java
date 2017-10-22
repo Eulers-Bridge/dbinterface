@@ -5,19 +5,8 @@ package com.eulersbridge.iEngage.rest.controller;
 
 import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
-import com.eulersbridge.iEngage.core.events.contactRequest.AcceptContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contactRequest.ContactRequestDetails;
-import com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent;
-import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
-import com.eulersbridge.iEngage.core.events.notifications.Message;
-import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.RequestReadUserEvent;
-import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService;
-import com.eulersbridge.iEngage.core.services.interfacePack.NotificationService;
 import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
-import com.eulersbridge.iEngage.database.domain.ContactRequest;
-import com.eulersbridge.iEngage.rest.domain.Contact;
 import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
 
 import com.eulersbridge.iEngage.rest.domain.UserProfile;
@@ -26,12 +15,10 @@ import org.apache.commons.validator.routines.LongValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**

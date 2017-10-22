@@ -10,7 +10,7 @@ import org.springframework.hateoas.ResourceSupport;
  * @author Greg Newitt
  *
  */
-public class Contact extends ResourceSupport
+public class ContactDomain extends ResourceSupport
 {
 	private Long nodeId;
 	private Long contactorId;
@@ -72,9 +72,9 @@ public class Contact extends ResourceSupport
 	{
 		this.timestamp = timestamp;
 	}
-	public static Contact fromContactDetails(ContactDetails contactDetails)
+	public static ContactDomain fromContactDetails(ContactDetails contactDetails)
 	{
-		Contact result=new Contact();
+		ContactDomain result=new ContactDomain();
 		result.setNodeId(contactDetails.getNodeId());
 		result.setContacteeId(contactDetails.getContacteeId());
 		result.setContactorId(contactDetails.getContactorId());
