@@ -51,8 +51,13 @@ public class User extends Node {
   @Relationship(type = DataConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> photos;
 
+  @Relationship(type = DataConstants.CONTACT_REQUEST_LABEL, direction = Relationship.OUTGOING)
+  private List<ContactRequest> sentConReq;
+  @Relationship(type = DataConstants.CONTACT_REQUEST_LABEL, direction = Relationship.INCOMING)
+  private List<ContactRequest> recConReq;
+
   @Relationship(type = DataConstants.CONTACT_LABEL, direction = Relationship.UNDIRECTED)
-  private List<Contact> contacts;
+  private List<Node> friends;
   @Relationship(type = DataConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.OUTGOING)
   private List<TaskComplete> completedTasks;
   @Relationship(type = DataConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.OUTGOING)
@@ -266,10 +271,10 @@ public class User extends Node {
   }
 
   public Integer getNumOfContacts() {
-    if (contacts == null)
+    if (friends == null)
       return 0;
     else
-      return contacts.size();
+      return friends.size();
   }
 
   public Institution getInstitution$() {
@@ -320,12 +325,32 @@ public class User extends Node {
     this.photos = photos;
   }
 
-  public List<Contact> getContacts() {
-    return contacts;
+  public List<Node> getFriends() {
+    return friends;
   }
 
-  public void setContacts(List<Contact> contacts) {
-    this.contacts = contacts;
+  public List<User> getFriends$(){
+    return castList(friends, User.class);
+  }
+
+  public void setFriends(List<Node> friends) {
+    this.friends = friends;
+  }
+
+  public List<ContactRequest> getSentConReq() {
+    return sentConReq;
+  }
+
+  public void setSentConReq(List<ContactRequest> sentConReq) {
+    this.sentConReq = sentConReq;
+  }
+
+  public List<ContactRequest> getRecConReq() {
+    return recConReq;
+  }
+
+  public void setRecConReq(List<ContactRequest> recConReq) {
+    this.recConReq = recConReq;
   }
 
   public UserDetails toUserDetails() {

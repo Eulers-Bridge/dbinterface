@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Greg Newitt
@@ -56,13 +57,17 @@ public class ContactRequestEventHandler implements ContactRequestService {
     User target = userRepository.findByEmail(targetEmail, 0);
     if (target == null)
       return RequestHandledEvent.targetNotFound();
-    ContactRequest request = contactRequestRepository.findExistingRequest(user.getEmail(), target.getEmail());
-    if (request != null)
+    if (userRepository.isFriend(userEmail, targetEmail))
       return RequestHandledEvent.conflicted();
+    List<ContactRequest> request = contactRequestRepository.findExistingRequest(user.getEmail(), target.getEmail());
+    for (ContactRequest c : request){
+      if (c.getAccepted() == null)
+        return RequestHandledEvent.conflicted();
+    }
     ContactRequest newReq = new ContactRequest();
     newReq.setRequestDate(System.currentTimeMillis());
-    newReq.setCreator(user.toNode());
-    newReq.setTarget(target.toNode());
+    newReq.setCreator(user);
+    newReq.setTarget(target);
     newReq = contactRequestRepository.save(newReq);
     return new RequestHandledEvent<>(newReq.toDomain());
   }

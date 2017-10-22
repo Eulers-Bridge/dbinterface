@@ -97,4 +97,6 @@ public interface UserRepository extends GraphRepository<User> {
   @Query("MATCH (u:`" + DataConstants.USER + "`) WHERE u.email={userEmail} SET u.experience=u.experience+{expValue}")
   void addExpPoint(@Param("userEmail") String userEmail, @Param("expValue") Long expValue);
 
+  @Query("Match (u1:User), (u2:User) where u1.email={userEmail1} and u2.email={userEmail2} return Exists ( (u1)-[:HAS_CONTACT]-(u2) )")
+  boolean isFriend(@Param("userEmail1") String userEmail1, @Param("userEmail2") String userEmail2);
 }

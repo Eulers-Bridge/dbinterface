@@ -17,9 +17,10 @@ public class ContactRequest {
   private Boolean accepted;
 
   @StartNode
-  private Node creator;
+  private User creator;
   @EndNode
-  private Node target;
+  private User target;
+
 
   public ContactRequest() {
   }
@@ -30,8 +31,8 @@ public class ContactRequest {
     domain.setRequestDate(requestDate);
     domain.setResponseDate(responseDate);
     domain.setAccepted(accepted);
-    domain.setRequesterProfile(UserProfile.fromUserDetails(getCreator$().toUserDetails()));
-    domain.setRequestReceiverProfile(UserProfile.fromUserDetails(getTarget$().toUserDetails()));
+    domain.setRequesterProfile(UserProfile.fromUserDetails(getCreator().toUserDetails()));
+    domain.setRequestReceiverProfile(UserProfile.fromUserDetails(getTarget().toUserDetails()));
 
     return domain;
   }
@@ -68,31 +69,19 @@ public class ContactRequest {
     this.accepted = accepted;
   }
 
-  public Node getCreator() {
+  public User getCreator() {
     return creator;
   }
 
-  public User getCreator$() {
-    if (creator instanceof User)
-      return (User) creator;
-    return new User(creator.nodeId);
-  }
-
-  public void setCreator(Node creator) {
+  public void setCreator(User creator) {
     this.creator = creator;
   }
 
-  public Node getTarget() {
+  public User getTarget() {
     return target;
   }
 
-  public User getTarget$() {
-    if (target instanceof User)
-      return (User) target;
-    return new User(target.nodeId);
-  }
-
-  public void setTarget(Node target) {
+  public void setTarget(User target) {
     this.target = target;
   }
 }

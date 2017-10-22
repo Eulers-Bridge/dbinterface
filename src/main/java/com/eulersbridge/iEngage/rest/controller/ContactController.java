@@ -31,6 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Greg Newitt
@@ -55,20 +56,20 @@ public class ContactController {
     longValidator = LongValidator.getInstance();
   }
 
-  private ReadUserEvent getUser(String contactInfo) {
-    ReadUserEvent userEvent = null;
-
-    if (contactInfo != null) {
-      boolean isEmail = emailValidator.isValid(contactInfo);
-      String email = null;
-      if (isEmail) {
-        email = contactInfo;
-        userEvent = userService.readUserByContactEmail(new RequestReadUserEvent(email));
-      } else
-        userEvent = userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
-    }
-    return userEvent;
-  }
+//  private ReadUserEvent getUser(String contactInfo) {
+//    ReadUserEvent userEvent = null;
+//
+//    if (contactInfo != null) {
+//      boolean isEmail = emailValidator.isValid(contactInfo);
+//      String email = null;
+//      if (isEmail) {
+//        email = contactInfo;
+//        userEvent = userService.readUserByContactEmail(new RequestReadUserEvent(email));
+//      } else
+//        userEvent = userService.readUserByContactNumber(new RequestReadUserEvent(contactInfo));
+//    }
+//    return userEvent;
+//  }
 
 
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_LABEL + "/{targetEmail}")
@@ -80,15 +81,20 @@ public class ContactController {
     RequestHandledEvent<ContactRequestDomain> res = contactRequestService.createContactRequest(userEmail, targetEmail);
     if(res.getUserNotFound() || res.getTargetNotFound())
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    if(res.getCanNotModify())
+    if(res.getConflicted())
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     if(res.getBadRequest())
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     if(!res.getSuccess())
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    return new ResponseEntity<ContactRequestDomain>(res.getResponseEntity(), HttpStatus.OK);
+    return new ResponseEntity<>(res.getResponseEntity(), HttpStatus.OK);
   }
 
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUESTS_LABEL)
+  public @ResponseBody
+  ResponseEntity<List<ContactRequestDomain>> findContactRequestsMade(@PathVariable Long userId) {
+    return null;
+  }
 
 //  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CONTACT_LABEL + "/{contactRequestId}")
 //  public @ResponseBody
@@ -222,37 +228,6 @@ public class ContactController {
 //  }
 
 
-//  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUESTS_LABEL)
-//  public @ResponseBody
-//  ResponseEntity<FindsParent> findContactRequestsMade(
-//    @PathVariable(value = "") Long userId,
-//    @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
-//    @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
-//    @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize) {
-//    int pageNumber = 0;
-//    int pageLength = 10;
-//    pageNumber = Integer.parseInt(page);
-//    pageLength = Integer.parseInt(pageSize);
-//    ResponseEntity<FindsParent> response;
-//    if (LOG.isInfoEnabled())
-//      LOG.info("Attempting to retrieve contactRequests for user "
-//        + userId + '.');
-//
-//    Direction sortDirection = Direction.DESC;
-//    if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-//    AllReadEvent contactRequestEvent = contactRequestService.readContactRequestsMade(
-//      new ReadAllEvent(userId), sortDirection,
-//      pageNumber, pageLength);
-//
-//    if (!contactRequestEvent.isEntityFound()) {
-//      response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
-//    } else {
-//      Iterator<ContactRequestDomain> contactRequests = ContactRequestDomain
-//        .toContactRequestsIterator(contactRequestEvent.getDetails().iterator());
-//      FindsParent theContactRequests = FindsParent.fromArticlesIterator(contactRequests, contactRequestEvent.getTotalItems(), contactRequestEvent.getTotalPages());
-//      response = new ResponseEntity<FindsParent>(theContactRequests, HttpStatus.OK);
-//    }
-//    return response;
-//  }
+
 
 }

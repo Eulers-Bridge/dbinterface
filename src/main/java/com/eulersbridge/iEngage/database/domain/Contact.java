@@ -15,11 +15,12 @@ import org.slf4j.LoggerFactory;
 public class Contact {
   @GraphId
   private Long nodeId;
-  @StartNode
+  private Long timestamp;
+
+  @EndNode
   private User contactor;
   @EndNode
   private User contactee;
-  private Long timestamp;
 
   private static Logger LOG = LoggerFactory.getLogger(Contact.class);
 
