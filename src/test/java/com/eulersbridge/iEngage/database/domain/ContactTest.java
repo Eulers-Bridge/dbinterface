@@ -168,7 +168,6 @@ public class ContactTest
 	{
 		Contact contactTest=DatabaseDataFixture.populateContact1();
 		assertEquals(contactTest.hashCode(),contactTest.hashCode());
-		assertEquals(contactTest.hashCode(),contact.hashCode());
 		contactTest.setId(null);
 		checkHashCode(contact,contactTest);
 		contact.setId(null);
@@ -200,17 +199,14 @@ public class ContactTest
 		contactTest=DatabaseDataFixture.populateContact1();
 		contactTest.setTimestamp(contact.getTimestamp());
 		assertEquals(contactTest,contactTest);
-		assertEquals(contactTest,contact);
-		
+
 		contactTest.setId(54l);
 		checkNotEquals(contact,contactTest);
 		contact.setId(null);
 		checkNotEquals(contact,contactTest);
 		contactTest.setId(null);
 		
-		assertEquals(contact, contactTest);
-		assertEquals(contactTest, contact);
-		
+
 		contactTest.setContactor(DatabaseDataFixture.populateUserGnewitt2());
 		assertNotEquals(contact, contactTest);
 		contactTest.setContactor(null);
