@@ -89,42 +89,12 @@ public class ContactController {
     RequestHandledEvent<ContactRequestDomain> res = contactRequestService.acceptContactRequest(userEmail, contactRequestId);
     return res.toResponseEntity();
   }
-//
-//  @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CONTACT_LABEL + "/{contactRequestId}")
-//  public @ResponseBody
-//  ResponseEntity<ContactRequestDomain> rejectContact(@PathVariable Long contactRequestId) {
-//    if (LOG.isInfoEnabled())
-//      LOG.info("Attempting to reject contact request from " + contactRequestId);
-//
-//    ResponseEntity<ContactRequestDomain> result;
-//    ContactRequestDomain restContact;
-//
-//    ReadContactRequestEvent readContactRequestEvent = new ReadContactRequestEvent(contactRequestId);
-//    ReadEvent rEvt = contactRequestService.readContactRequest(readContactRequestEvent);
-//
-//    if (rEvt.isEntityFound()) {
-//      ContactRequestDetails crDets = (ContactRequestDetails) rEvt.getDetails();
-//      if (LOG.isDebugEnabled())
-//        LOG.debug("Contact Request details returned - " + crDets);
-//
-//
-//      UpdateEvent acceptContactRequestEvent = new UpdateEvent(contactRequestId, crDets);
-//      UpdatedEvent uEvt = contactRequestService.rejectContactRequest(acceptContactRequestEvent);
-//      if (uEvt.isEntityFound()) {
-//        ContactRequestDetails cDets = (ContactRequestDetails) uEvt.getDetails();
-//        restContact = ContactRequestDomain.fromContactRequestDetails(cDets);
-//        result = new ResponseEntity<ContactRequestDomain>(restContact, HttpStatus.OK);
-//        if (LOG.isDebugEnabled())
-//          LOG.debug("Contact Request returned - " + restContact);
-//      } else {
-//        result = new ResponseEntity<ContactRequestDomain>(HttpStatus.NOT_FOUND);
-//      }
-//    } else {
-//      result = new ResponseEntity<ContactRequestDomain>(HttpStatus.NOT_FOUND);
-//    }
-//    return result;
-//  }
-//
 
-
+  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + ControllerConstants.CONTACT_REQUEST_LABEL + "/{contactRequestId}/reject")
+  public @ResponseBody
+  ResponseEntity<ContactRequestDomain> rejectContact(@PathVariable Long contactRequestId) {
+    String userEmail = Util.getUserEmailFromSession();
+    RequestHandledEvent<ContactRequestDomain> res = contactRequestService.rejectContactRequest(userEmail, contactRequestId);
+    return res.toResponseEntity();
+  }
 }

@@ -73,6 +73,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
     newReq.setCreator(user);
     newReq.setTarget(target);
     newReq = contactRequestRepository.save(newReq);
+    newReq = contactRequestRepository.findExistingRequest(newReq.getId());
     return new RequestHandledEvent<>(newReq.toDomain());
   }
 
@@ -108,6 +109,10 @@ public class ContactRequestEventHandler implements ContactRequestService {
     if (req.getAccepted() != null || req.getResponseDate() != null)
       return RequestHandledEvent.canNotModiry();
 
+    boolean isAlreadyFriend =
+      userRepository.isFriend(req.getCreator().getEmail(), req.getTarget().getEmail());
+    if (isAlreadyFriend)
+      return RequestHandledEvent.conflicted();
     Contact contact = new Contact();
     contact.setContactor(req.getCreator());
     contact.setContactee(req.getTarget());
@@ -117,6 +122,26 @@ public class ContactRequestEventHandler implements ContactRequestService {
       return RequestHandledEvent.failed();
 
     req.setAccepted(true);
+    req.setResponseDate(System.currentTimeMillis());
+    req = contactRequestRepository.save(req);
+    if (req == null)
+      return RequestHandledEvent.failed();
+    return new RequestHandledEvent<>(req.toDomain());
+  }
+
+  @Override
+  public RequestHandledEvent rejectContactRequest(String userEmail, Long requestId) {
+    if (!emailValidator.isValid(userEmail))
+      return RequestHandledEvent.badRequest();
+    ContactRequest req = contactRequestRepository.findExistingRequest(requestId);
+    if (req == null || req.getCreator() == null || req.getTarget() == null)
+      return RequestHandledEvent.targetNotFound();
+    if (!userEmail.equals(req.getTarget().getEmail()))
+      return RequestHandledEvent.notAllowed();
+    if (req.getAccepted() != null || req.getResponseDate() != null)
+      return RequestHandledEvent.canNotModiry();
+
+    req.setAccepted(false);
     req.setResponseDate(System.currentTimeMillis());
     req = contactRequestRepository.save(req);
     if (req == null)
@@ -163,118 +188,9 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //    return contactRequestReadEvent;
 //  }
 //
-//  @Override
-//  public UpdatedEvent acceptContactRequest(
-//    AcceptContactRequestEvent acceptContactRequestEvent) {
-//    Long contactRequestId = acceptContactRequestEvent.getId();
-//    if (LOG.isDebugEnabled())
-//      LOG.debug("Looking for ContactRequest " + contactRequestId);
-//    ContactRequest cr = contactRequestRepository.findOne(contactRequestId);
-//    UpdatedEvent uEvt;
-//    if ((cr != null) && (cr.getId() != null) && (null == cr.getResponseDate())) {
-//      EmailValidator emailValidator = EmailValidator.getInstance();
-//      boolean isEmail = emailValidator.isValid(cr.getContactDetails());
-//      User contactee;
-//      Node contactor;
-//      if (isEmail)
-//        contactee = userRepository.findByEmail(cr.getContactDetails());
-//      else
-//        contactee = userRepository.findByContactNumber(cr.getContactDetails());
-//      if (contactee != null) {
-//        contactor = cr.getUser();
-//        cr.setAccepted(true);
-//        cr.setRejected(false);
-//        cr.setResponseDate(Calendar.getInstance().getTimeInMillis());
-//        Contact contact = userRepository.addContact(contactor.getId(), contactee.getId());
-//        if ((contact != null) && (contact.getId() != null)) {
-//          ContactDetails cDets = contact.toContactDetails();
-//          if (LOG.isDebugEnabled()) LOG.debug("contactDetails = " + cDets);
-//          ContactRequest result = contactRequestRepository.save(cr, 0);
-//          if (result != null)
-//            uEvt = new UpdatedEvent(contactRequestId, cDets);
-//            //TODO Should really be failed.
-////		           	else uEvt=UpdatedEvent.notFound(null);
-//          else uEvt = new UpdatedEvent(contactRequestId, cDets);
-//          // Probably should remove the other contactRequest, if there is one.
-//        } else {
-//          //TODO Should really be failed.
-//          uEvt = UpdatedEvent.notFound(null);
-//        }
-//      } else {
-//        uEvt = UpdatedEvent.notFound(contactRequestId);
-//      }
-//    } else if ((null == cr) || (null == cr.getId())) {
-//      uEvt = UpdatedEvent.notFound(contactRequestId);
-//    } else
-//    //	if (cr.getResponseDate()!=null)
-//    {
-//      // TODO Should be something else to indicate CR has already been responded too.
-//      Boolean rejected = cr.getRejected();
-//      Boolean accepted = cr.getAccepted();
-//      if ((rejected != null) && (true == rejected))
-//        uEvt = UpdatedEvent.notFound(null);
-//      else if ((accepted != null) && (true == accepted))
-//        uEvt = UpdatedEvent.notFound(null);
-//      else
-//        uEvt = UpdatedEvent.notFound(null);
-//
-//    }
-//    return uEvt;
-//  }
-//
-//  @Override
-//  public UpdatedEvent rejectContactRequest(
-//    UpdateEvent rejectContactRequestEvent) {
-//    UpdatedEvent uEvt;
-//    if (rejectContactRequestEvent != null) {
-//      Long contactRequestId = rejectContactRequestEvent.getId();
-//      if (LOG.isDebugEnabled())
-//        LOG.debug("Looking for ContactRequest " + contactRequestId);
-//      ContactRequest cr = contactRequestRepository.findOne(contactRequestId);
-//      if ((cr != null) && (cr.getId() != null) && (null == cr.getResponseDate())) {
-//        // We have a contact request that has not been responded to.
-//        EmailValidator emailValidator = EmailValidator.getInstance();
-//        boolean isEmail = emailValidator.isValid(cr.getContactDetails());
-//        User contactee;
-//        if (isEmail)
-//          contactee = userRepository.findByEmail(cr.getContactDetails());
-//        else
-//          contactee = userRepository.findByContactNumber(cr.getContactDetails());
-//        if (contactee != null) {
-//          cr.setAccepted(false);
-//          cr.setRejected(true);
-//          cr.setResponseDate(Calendar.getInstance().getTimeInMillis());
-//          ContactRequest result = contactRequestRepository.save(cr, 0);
-//          if (result != null)
-//            uEvt = new UpdatedEvent(contactRequestId, cr.toContactRequestDetails());
-//            //TODO Should really be failed.
-////		           	else uEvt=UpdatedEvent.notFound(null);
-//          else uEvt = UpdatedEvent.notFound(contactRequestId);
-//          // Probably should remove the other contactRequest, if there is one.
-//        } else {
-//          uEvt = UpdatedEvent.notFound(contactRequestId);
-//        }
-//      } else if ((null == cr) || (null == cr.getId())) {
-//        uEvt = UpdatedEvent.notFound(contactRequestId);
-//      } else
-//      //	if (cr.getResponseDate()!=null)
-//      {
-//        // TODO Should be something else to indicate CR has already been responded too.
-//        Boolean rejected = cr.getRejected();
-//        Boolean accepted = cr.getAccepted();
-//        if ((rejected != null) && (true == rejected))
-//          uEvt = UpdatedEvent.notFound(null);
-//        else if ((accepted != null) && (true == accepted))
-//          uEvt = UpdatedEvent.notFound(null);
-//        else
-//          uEvt = UpdatedEvent.notFound(null);
-//
-//      }
-//    } else {
-//      uEvt = UpdatedEvent.notFound(null);
-//    }
-//    return uEvt;
-//  }
+
+
+
 //
 
 
