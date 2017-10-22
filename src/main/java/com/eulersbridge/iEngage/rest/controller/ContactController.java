@@ -79,21 +79,15 @@ public class ContactController {
     if(!emailValidator.isValid(targetEmail))
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     RequestHandledEvent<ContactRequestDomain> res = contactRequestService.createContactRequest(userEmail, targetEmail);
-    if(res.getUserNotFound() || res.getTargetNotFound())
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    if(res.getConflicted())
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    if(res.getBadRequest())
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    if(!res.getSuccess())
-      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    return new ResponseEntity<>(res.getResponseEntity(), HttpStatus.OK);
+    return res.toResponseEntity();
   }
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUESTS_LABEL)
   public @ResponseBody
   ResponseEntity<List<ContactRequestDomain>> findContactRequestsMade(@PathVariable Long userId) {
-    return null;
+    String userEmail = Util.getUserEmailFromSession();
+    RequestHandledEvent<List<ContactRequestDomain>> res = contactRequestService.readContactRequestsMade(userEmail);
+    return res.toResponseEntity();
   }
 
 //  @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CONTACT_LABEL + "/{contactRequestId}")

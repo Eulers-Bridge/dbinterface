@@ -1,5 +1,8 @@
 package com.eulersbridge.iEngage.core.events;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 /**
  * @author Yikai Gong
  */
@@ -76,6 +79,24 @@ public class RequestHandledEvent<T> {
     RequestHandledEvent r = new RequestHandledEvent(false);
     r.setConflicted(true);
     return r;
+  }
+
+  public ResponseEntity<T> toResponseEntity(){
+    if(this.getUserNotFound() || this.getTargetNotFound())
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    if(this.getConflicted())
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
+    if(this.getBadRequest())
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    if(this.getPremissionExpired())
+      return new ResponseEntity<>(HttpStatus.GONE);
+    if(this.getCanNotModify())
+      return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    if(this.getNotAllowed())
+      return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    if(!this.getSuccess())
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(this.getResponseEntity(), HttpStatus.OK);
   }
 
   public Boolean getSuccess() {

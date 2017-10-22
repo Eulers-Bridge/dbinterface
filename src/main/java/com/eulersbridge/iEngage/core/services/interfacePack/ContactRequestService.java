@@ -11,12 +11,17 @@ import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
+
 /**
  * @author Greg Newitt
  */
 public interface ContactRequestService {
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
   public RequestHandledEvent createContactRequest(String userEmail, String targetEmail);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public RequestHandledEvent readContactRequestsMade(String userEmail);
 
 //  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
 //  public ReadEvent readContactRequest(ReadContactRequestEvent readContactRequestEvent);
@@ -33,7 +38,6 @@ public interface ContactRequestService {
 //  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
 //  public AllReadEvent readContactRequestsReceived(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
 //
-//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
-//  public AllReadEvent readContactRequestsMade(ReadAllEvent readAllEvent, Direction sortDirection, int pageNumber, int pageLength);
+
 
 }

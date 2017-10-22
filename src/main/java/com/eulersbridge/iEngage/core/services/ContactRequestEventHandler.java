@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Greg Newitt
@@ -72,7 +73,17 @@ public class ContactRequestEventHandler implements ContactRequestService {
     return new RequestHandledEvent<>(newReq.toDomain());
   }
 
-//  /* (non-Javadoc)
+  @Override
+  public RequestHandledEvent<List<ContactRequestDomain>> readContactRequestsMade(String userEmail) {
+    if (!emailValidator.isValid(userEmail))
+      return RequestHandledEvent.badRequest();
+    List<ContactRequest> requests = contactRequestRepository.findSentRequests(userEmail);
+    List<ContactRequestDomain> domains = requests.stream()
+      .map(req-> req.toDomain()).collect(Collectors.toList());
+    return new RequestHandledEvent<>(domains);
+  }
+
+  //  /* (non-Javadoc)
 //   * @see com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService#readContactRequest(com.eulersbridge.iEngage.core.events.contactRequest.ReadContactRequestEvent)
 //   */
 //  @Override
@@ -266,49 +277,5 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //    return nare;
 //  }
 //
-//  @Override
-//  public AllReadEvent readContactRequestsMade(ReadAllEvent readAllEvent,
-//                                              Direction sortDirection, int pageNumber, int pageLength) {
-//    AllReadEvent nare = AllReadEvent.notFound(null);
-//    if (readAllEvent != null) {
-//      Long userId = readAllEvent.getParentId();
-//      Page<ContactRequest> contactRequests = null;
-//      ArrayList<ContactRequestDetails> dets = new ArrayList<ContactRequestDetails>();
-//
-//      if (LOG.isDebugEnabled()) LOG.debug("UserId " + userId);
-//      Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "c.requestDate");
-//      contactRequests = contactRequestRepository.findSentRequests(userId, pageable);
-//      if (contactRequests != null) {
-//        if (LOG.isDebugEnabled())
-//          LOG.debug("Total elements = " + contactRequests.getTotalElements() + " total pages =" + contactRequests.getTotalPages());
-//        Iterator<ContactRequest> iter = contactRequests.iterator();
-//        while (iter.hasNext()) {
-//          ContactRequest na = iter.next();
-//          ContactRequestDetails det = na.toContactRequestDetails();
-//          User requestReceiver = userRepository.findByEmail(det.getContactDetails());
-//          det.setRequestReceiverDetails(requestReceiver.toUserDetails());
-//          dets.add(det);
-//        }
-//        if (0 == dets.size()) {
-//          // Need to check if we actually found parentId.
-//          User user = userRepository.findOne(userId);
-//          if ((null == user) ||
-//            ((null == user.getEmail()) || ((null == user.getFamilyName()) && (null == user.getGivenName()) && (null == user.getGender())))) {
-//            if (LOG.isDebugEnabled())
-//              LOG.debug("Null or null properties returned by findOne(ElectionId)");
-//            nare = AllReadEvent.notFound(userId);
-//          } else {
-//            nare = new AllReadEvent(userId, dets, contactRequests.getTotalElements(), contactRequests.getTotalPages());
-//          }
-//        } else {
-//          nare = new AllReadEvent(userId, dets, contactRequests.getTotalElements(), contactRequests.getTotalPages());
-//        }
-//      } else {
-//        if (LOG.isDebugEnabled()) LOG.debug("Null returned by findByUserId()");
-//      }
-//    }
-//    return nare;
-//  }
-
 
 }
