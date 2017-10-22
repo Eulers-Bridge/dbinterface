@@ -23,11 +23,11 @@ public interface ContactRequestRepository extends
   @Query("MATCH (u:`" + DataConstants.USER + "`)-[r:`" + DataConstants.CONTACT_REQUEST_LABEL + "`]-(c:`" + DataConstants.CONTACT_REQUEST + "`) where id(u)={userId} and c.contactDetails={contactInfo} RETURN c")
   ContactRequest findContactRequestByUserIdContactInfo(@Param("userId") Long userId, @Param("contactInfo") String contactInfo);
 
-  @Query("MATCH (u:`" + DataConstants.USER + "`), (c:`" + DataConstants.CONTACT_REQUEST + "`) where id(u)={userId} and ((c.contactDetails=u.contactNumber)or(c.contactDetails=u.email)) RETURN c")
-  Page<ContactRequest> findReceivedRequestsByUserId(@Param("userId") Long userId, Pageable pageable);
-
-  @Query("MATCH l=(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where u.email={userEmail} return l")
+  @Query("MATCH l=(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where u.email={userEmail} return l order by r.requestDate")
   List<ContactRequest> findSentRequests(@Param("userEmail") String userEmail);
+
+  @Query("MATCH l=(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where t.email={userEmail} return l order by r.requestDate")
+  List<ContactRequest> findReceivedRequests(@Param("userEmail") String userEmail);
 
   @Query("MATCH l=(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where u.email={userEmail} and t.email={targetEmail} return l")
   List<ContactRequest> findExistingRequest(@Param("userEmail") String userEmail, @Param("targetEmail") String targetEmail);

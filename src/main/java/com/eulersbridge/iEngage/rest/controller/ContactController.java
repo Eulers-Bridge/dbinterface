@@ -76,7 +76,7 @@ public class ContactController {
   public @ResponseBody
   ResponseEntity<ContactRequestDomain> addContact(@PathVariable Long userId, @PathVariable String targetEmail) {
     String userEmail = Util.getUserEmailFromSession();
-    if(!emailValidator.isValid(targetEmail))
+    if (!emailValidator.isValid(targetEmail))
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     RequestHandledEvent<ContactRequestDomain> res = contactRequestService.createContactRequest(userEmail, targetEmail);
     return res.toResponseEntity();
@@ -87,6 +87,14 @@ public class ContactController {
   ResponseEntity<List<ContactRequestDomain>> findContactRequestsMade(@PathVariable Long userId) {
     String userEmail = Util.getUserEmailFromSession();
     RequestHandledEvent<List<ContactRequestDomain>> res = contactRequestService.readContactRequestsMade(userEmail);
+    return res.toResponseEntity();
+  }
+
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUESTS_LABEL + "/rec")
+  public @ResponseBody
+  ResponseEntity<List<ContactRequestDomain>> findContactRequestsReceived(@PathVariable Long userId){
+    String userEmail = Util.getUserEmailFromSession();
+    RequestHandledEvent<List<ContactRequestDomain>> res = contactRequestService.readContactRequestsReceived(userEmail);
     return res.toResponseEntity();
   }
 
@@ -177,51 +185,6 @@ public class ContactController {
 //    return result;
 //  }
 //
-//  /**
-//   * Is passed all the necessary data to read contactRequests received from the database. The
-//   * request must be a GET with the userId of the receiver presented as the final
-//   * portion of the URL.
-//   * <p/>
-//   * This method will return the contactRequests received from the database.
-//   *
-//   * @param userId the userId whose contactRequests are to be read.
-//   * @return the contactRequests.
-//   */
-//  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACT_REQUESTS_LABEL
-//    + "/{userId}")
-//  public @ResponseBody
-//  ResponseEntity<FindsParent> findContactRequestsReceived(
-//    @PathVariable(value = "") Long userId,
-//    @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
-//    @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
-//    @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize) {
-//    int pageNumber = 0;
-//    int pageLength = 10;
-//    pageNumber = Integer.parseInt(page);
-//    pageLength = Integer.parseInt(pageSize);
-//    ResponseEntity<FindsParent> response;
-//    if (LOG.isInfoEnabled())
-//      LOG.info("Attempting to retrieve contactRequests for user "
-//        + userId + '.');
-//
-//    Direction sortDirection = Direction.DESC;
-//    if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-//    AllReadEvent contactRequestEvent = contactRequestService.readContactRequestsReceived(
-//      new ReadAllEvent(userId), sortDirection,
-//      pageNumber, pageLength);
-//
-//    if (!contactRequestEvent.isEntityFound()) {
-//      response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
-//    } else {
-//      Iterator<ContactRequestDomain> contactRequests = ContactRequestDomain
-//        .toContactRequestsIterator(contactRequestEvent.getDetails().iterator());
-//      FindsParent theContactRequests = FindsParent.fromArticlesIterator(contactRequests, contactRequestEvent.getTotalItems(), contactRequestEvent.getTotalPages());
-//      response = new ResponseEntity<FindsParent>(theContactRequests, HttpStatus.OK);
-//    }
-//    return response;
-//  }
-
-
 
 
 }
