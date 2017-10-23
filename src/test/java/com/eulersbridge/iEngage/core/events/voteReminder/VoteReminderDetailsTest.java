@@ -65,7 +65,7 @@ public class VoteReminderDetailsTest
 	{
 		String email="test@email.com";
 		VoteReminderDetails vr1=new VoteReminderDetails();
-		vr1.setUserId(email);
+		vr1.setUserEmail(email);
 		assertEquals(email,vr1.getUserId());
 	}
 
@@ -183,12 +183,12 @@ public class VoteReminderDetailsTest
 		assertNotEquals(vrd, vrTest);
 		assertNotEquals(vrTest, vrd);
 		vrTest.setElectionId(vrd.getElectionId());
-		vrTest.setUserId("test@email.com");
+		vrTest.setUserEmail("test@email.com");
 		assertNotEquals(vrd, vrTest);
-		vrTest.setUserId(null);
+		vrTest.setUserEmail(null);
 		assertNotEquals(vrd, vrTest);
 		assertNotEquals(vrTest, vrd);
-		vrTest.setUserId(vrd.getUserId());
+		vrTest.setUserEmail(vrd.getUserId());
 	}
 
 	@Test
@@ -213,10 +213,10 @@ public class VoteReminderDetailsTest
 		assertNotEquals(vrd.hashCode(), voteRecordDetailsTest.hashCode());
 		assertNotEquals(voteRecordDetailsTest.hashCode(), vrd.hashCode());
 		voteRecordDetailsTest.setLocation(vrd.getLocation());
-		voteRecordDetailsTest.setUserId(null);
+		voteRecordDetailsTest.setUserEmail(null);
 		assertNotEquals(vrd.hashCode(), voteRecordDetailsTest.hashCode());
 		assertNotEquals(voteRecordDetailsTest.hashCode(), vrd.hashCode());
-		voteRecordDetailsTest.setUserId(vrd.getUserId());
+		voteRecordDetailsTest.setUserEmail(vrd.getUserId());
 		voteRecordDetailsTest.setElectionId(null);
 		assertNotEquals(vrd.hashCode(), voteRecordDetailsTest.hashCode());
 		assertNotEquals(voteRecordDetailsTest.hashCode(), vrd.hashCode());

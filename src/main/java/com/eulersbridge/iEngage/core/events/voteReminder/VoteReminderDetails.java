@@ -52,9 +52,9 @@ public class VoteReminderDetails extends Details
 	}
 
 	/**
-	 * @param userId the userId to set
+	 * @param userEmail the userEmail to set
 	 */
-	public void setUserId(String userEmail) {
+	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
 	}
 

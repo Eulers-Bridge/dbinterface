@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.events.users.UserAccountVerifiedEvent.VerificationErrorType;
@@ -186,35 +187,12 @@ public class UserController {
 
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{email}" + ControllerConstants.VOTE_REMINDER_LABEL)
   public @ResponseBody
-  ResponseEntity<VoteReminder> addVoteReminder(@PathVariable String email,
-                                               @RequestBody VoteReminder voteReminder) {
-    ResponseEntity<VoteReminder> result;
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to add vote reminder to user. ");
-    if (LOG.isDebugEnabled()) LOG.debug("VoteReminder - " + voteReminder);
+  ResponseEntity<VoteReminderDomain> addVoteReminder(@PathVariable String email,
+                                                     @RequestBody VoteReminderDomain voteReminder) {
 
-    VoteReminderDetails remDetails = voteReminder.toVoteReminderDetails();
-    remDetails.setUserId(email);
-    AddVoteReminderEvent addEvt = new AddVoteReminderEvent(remDetails);
-    if (LOG.isDebugEnabled()) LOG.debug("AddPersonalityEvent - " + addEvt);
-
-    CreatedEvent vrEvent = userService.addVoteReminder(addEvt);
-    if (vrEvent != null) {
-      if (LOG.isDebugEnabled()) LOG.debug("personalityEvent - " + vrEvent);
-      if (vrEvent.isFailed())
-        result = new ResponseEntity<VoteReminder>(HttpStatus.BAD_REQUEST);
-      else if (((VoteReminderAddedEvent) vrEvent).isUserFound()) {
-        VoteReminder restVoteReminder = VoteReminder.fromVoteReminderDetails((VoteReminderDetails) vrEvent.getDetails());
-        if (LOG.isDebugEnabled()) LOG.debug("restUser = " + restVoteReminder);
-        result = new ResponseEntity<VoteReminder>(restVoteReminder, HttpStatus.CREATED);
-      } else {
-        result = new ResponseEntity<VoteReminder>(HttpStatus.FAILED_DEPENDENCY);
-      }
-    } else {
-      if (LOG.isWarnEnabled()) LOG.warn("voteReminderEvent null");
-      result = new ResponseEntity<VoteReminder>(HttpStatus.BAD_REQUEST);
-    }
-    return result;
+    voteReminder.setUserEmail(Util.getUserEmailFromSession());
+    RequestHandledEvent res = userService.addVoteReminder(voteReminder);
+    return res.toResponseEntity();
   }
 
   /**
@@ -304,7 +282,7 @@ public class UserController {
     if (!voteRemindersEvent.isEntityFound()) {
       response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
     } else {
-      Iterator<VoteReminder> voteReminders = VoteReminder.toVoteRemindersIterator(voteRemindersEvent.getDetails().iterator());
+      Iterator<VoteReminderDomain> voteReminders = VoteReminderDomain.toVoteRemindersIterator(voteRemindersEvent.getDetails().iterator());
       FindsParent theVoteReminders = FindsParent.fromArticlesIterator(voteReminders, voteRemindersEvent.getTotalItems(), voteRemindersEvent.getTotalPages());
       response = new ResponseEntity<FindsParent>(theVoteReminders, HttpStatus.OK);
     }
@@ -374,16 +352,16 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + ControllerConstants.VOTE_REMINDER_LABEL + "/{id}")
   public @ResponseBody
-  ResponseEntity<VoteReminder> findVoteReminder(@PathVariable Long id) {
+  ResponseEntity<VoteReminderDomain> findVoteReminder(@PathVariable Long id) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to retrieve voteReminder. " + id);
     ReadEvent evt = userService.readVoteReminder(new ReadVoteReminderEvent(id));
 
     if (!evt.isEntityFound()) {
-      return new ResponseEntity<VoteReminder>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<VoteReminderDomain>(HttpStatus.NOT_FOUND);
     }
-    VoteReminder restVoteReminder = VoteReminder.fromVoteReminderDetails((VoteReminderDetails) evt.getDetails());
-    return new ResponseEntity<VoteReminder>(restVoteReminder, HttpStatus.OK);
+    VoteReminderDomain restVoteReminder = VoteReminderDomain.fromVoteReminderDetails((VoteReminderDetails) evt.getDetails());
+    return new ResponseEntity<VoteReminderDomain>(restVoteReminder, HttpStatus.OK);
   }
 
   /**
@@ -422,17 +400,17 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.USER_LABEL + ControllerConstants.VOTE_REMINDER_LABEL + "/{id}")
   public @ResponseBody
-  ResponseEntity<VoteReminder> deleteVoteReminder(@PathVariable Long id) {
+  ResponseEntity<VoteReminderDomain> deleteVoteReminder(@PathVariable Long id) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to delete voteReminder. " + id);
     DeletedEvent evt = userService.deleteVoteReminder(new DeleteVoteReminderEvent(id));
 
     if (!evt.isEntityFound()) {
-      return new ResponseEntity<VoteReminder>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<VoteReminderDomain>(HttpStatus.NOT_FOUND);
     }
-    VoteReminder restVoteReminder = new VoteReminder();
+    VoteReminderDomain restVoteReminder = new VoteReminderDomain();
     restVoteReminder.setNodeId(evt.getNodeId());
-    return new ResponseEntity<VoteReminder>(restVoteReminder, HttpStatus.OK);
+    return new ResponseEntity<VoteReminderDomain>(restVoteReminder, HttpStatus.OK);
   }
 
   /**

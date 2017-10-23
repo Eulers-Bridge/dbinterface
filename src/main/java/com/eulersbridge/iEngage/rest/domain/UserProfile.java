@@ -198,7 +198,7 @@ public class UserProfile extends ResourceSupport {
   public static UserProfile fromUserDetails(UserDetails readUser) {
     UserProfile user = new UserProfile();
 
-//    user.setUserId(readUser.getUserId());
+//    user.setUserEmail(readUser.getUserId());
     user.email = readUser.getEmail();
     user.givenName = readUser.getGivenName();
     user.familyName = readUser.getFamilyName();

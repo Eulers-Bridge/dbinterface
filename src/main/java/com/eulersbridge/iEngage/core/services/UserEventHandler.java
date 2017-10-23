@@ -13,6 +13,7 @@ import com.eulersbridge.iEngage.email.EmailResetPWD;
 import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.rest.domain.PPSEQuestions;
 import com.eulersbridge.iEngage.rest.domain.UserProfile;
+import com.eulersbridge.iEngage.rest.domain.VoteReminderDomain;
 import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import com.eulersbridge.iEngage.security.UserCredentialDetails;
@@ -44,15 +45,15 @@ import java.util.*;
 public class UserEventHandler implements UserService {
 
   private static Logger LOG = LoggerFactory.getLogger(UserEventHandler.class);
-  private PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
-  private UserRepository userRepository;
-  private PersonalityRepository personRepository;
-  private InstitutionRepository instRepository;
-  private PPSEQuestionsRepository ppseQuestionsRepository;
-  private VerificationTokenRepository tokenRepository;
-
-  private VelocityEngine velocityEngine;
+  private final UserRepository userRepository;
+  private final PersonalityRepository personRepository;
+  private final InstitutionRepository instRepository;
+  private final PPSEQuestionsRepository ppseQuestionsRepository;
+  private final VerificationTokenRepository tokenRepository;
+  private final ElectionRepository eleRepo;
+  private final VelocityEngine velocityEngine;
 
   @Autowired
   public UserEventHandler(PasswordEncoder passwordEncoder,
@@ -61,7 +62,7 @@ public class UserEventHandler implements UserService {
                           InstitutionRepository instRepo,
                           VerificationTokenRepository tokenRepo,
                           VelocityEngine velocityEngine,
-                          PPSEQuestionsRepository ppseQuestionsRepository) {
+                          PPSEQuestionsRepository ppseQuestionsRepository, ElectionRepository eleRepo) {
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
     this.personRepository = personRepository;
@@ -69,6 +70,7 @@ public class UserEventHandler implements UserService {
     this.tokenRepository = tokenRepo;
     this.velocityEngine = velocityEngine;
     this.ppseQuestionsRepository = ppseQuestionsRepository;
+    this.eleRepo = eleRepo;
   }
 
   @Override
@@ -683,7 +685,8 @@ public class UserEventHandler implements UserService {
   }
 
   @Override
-  public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+  public org.springframework.security.core.userdetails.UserDetails
+  loadUserByUsername(String s) throws UsernameNotFoundException {
     User user = userRepository.findByEmail(s, 0);
     if (user == null)
       throw new UsernameNotFoundException("User: " + s + " not found");
@@ -691,48 +694,22 @@ public class UserEventHandler implements UserService {
   }
 
   @Override
-  public CreatedEvent addVoteReminder(
-    AddVoteReminderEvent addVoteReminderEvent) {
-    VoteReminderAddedEvent evt;
-    VoteReminderDetails details;
-
-    if (null == addVoteReminderEvent)
-      return VoteReminderAddedEvent.userNotFound();
-    details = addVoteReminderEvent.getVoteReminderDetails();
-    if ((null == details) || (null == details.getUserId()))
-      return VoteReminderAddedEvent.userNotFound();
-    if (null == addVoteReminderEvent.getVoteReminderDetails().getDate())
-      return VoteReminderAddedEvent.failed(details);
-    String emailAddress = addVoteReminderEvent.getVoteReminderDetails()
-      .getUserId();
-    if (LOG.isDebugEnabled()) LOG.debug("Email address - " + emailAddress);
-
-    User user = userRepository.findByEmail(emailAddress);
-    if (user != null) { // Valid User
-      if (LOG.isDebugEnabled())
-        LOG.debug("UserId - " + user.getNodeId());
-      Long electionId = addVoteReminderEvent.getVoteReminderDetails()
-        .getElectionId();
-      Long date = addVoteReminderEvent.getVoteReminderDetails().getDate();
-      String location = addVoteReminderEvent.getVoteReminderDetails()
-        .getLocation();
-      if (LOG.isDebugEnabled())
-        LOG.debug("Election id - " + electionId + " Location - "
-          + location + " Date - " + date);
-
-      VoteReminder voteReminderAdded = userRepository.addVoteReminder(
-        user.getNodeId(), electionId, date, location);
-      if (voteReminderAdded != null) {
-        evt = new VoteReminderAddedEvent();
-        evt.setDetails(voteReminderAdded.toVoteReminderDetails());
-      } else {
-        evt = VoteReminderAddedEvent.electionNotFound();
-      }
-    } else {
-      if (LOG.isDebugEnabled()) LOG.debug("No such account.");
-      evt = VoteReminderAddedEvent.userNotFound();
-    }
-    return evt;
+  public RequestHandledEvent<VoteReminderDomain>
+  addVoteReminder(VoteReminderDomain voteReminderDomain) {
+    if (voteReminderDomain == null || !voteReminderDomain.isValidInput())
+      return RequestHandledEvent.badRequest();
+    User user = userRepository.findByEmail(voteReminderDomain.getUserEmail(), 0);
+    if (user == null)
+      return RequestHandledEvent.userNotFound();
+    Election election = eleRepo.findOne(voteReminderDomain.getElectionId(), 0);
+    if (election == null)
+      return RequestHandledEvent.targetNotFound();
+    VoteReminder voteReminder = userRepository.addVoteReminder(
+      user.getNodeId(), election.getNodeId(), voteReminderDomain.getDate()
+      , voteReminderDomain.getLocation());
+    if (voteReminder == null)
+      return RequestHandledEvent.failed();
+    return new RequestHandledEvent<>(voteReminder.toDomain());
   }
 
   @Override
@@ -1069,7 +1046,7 @@ public class UserEventHandler implements UserService {
     assert (userEmail != null && topicArn != null && deviceToken != null);
     User user = userRepository.findByEmail(userEmail, 0);
     // Abort if user not found
-    if (user == null){
+    if (user == null) {
       LOG.error("User not found in updateSNSTokens");
       return;
     }

@@ -198,63 +198,6 @@ public class UserControllerTest
 	}
 	
 	@Test
-	public void putShouldAddVoteReminderToUserCorrectly() throws Exception
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
-		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
-		VoteReminderAddedEvent resEvt=new VoteReminderAddedEvent();
-		resEvt.setDetails(dets);
-		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
-		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(resEvt);
-		String content=populateVoteReminderContent(dets);
-		String returnedContent=populateVoteReminderReturnedContent(dets);
-		this.mockMvc.perform(put(urlPrefix+"/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
-		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
-		.andExpect(jsonPath("$.date",is((dets.getDate().intValue()))))
-		.andExpect(jsonPath("$.timestamp",is(dets.getTimestamp().intValue())))
-		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
-		.andExpect(jsonPath("$.location",is(dets.getLocation())))
-		.andExpect(jsonPath("$.userEmail",is(dets.getUserId())))
-		.andExpect(content().string(returnedContent))
-		.andExpect(status().isCreated());
-	}
-	
-	@Test
-	public void putVoteReminderShouldReturnUserNotFound() throws Exception
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
-		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
-		VoteReminderAddedEvent resEvt=VoteReminderAddedEvent.userNotFound();
-		resEvt.setDetails(dets);
-		if (LOG.isDebugEnabled()) LOG.debug("resEvent - "+resEvt);
-		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(resEvt);
-		String content=populateVoteReminderContent(dets);
-		this.mockMvc.perform(put(urlPrefix+"/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andExpect(status().isFailedDependency());
-	}
-	
-	@Test
-	public void putVoteReminderShouldReturnBadRequest() throws Exception
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
-		VoteReminderDetails dets=DatabaseDataFixture.populateVoteReminder1().toVoteReminderDetails();
-		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(null);
-		String content=populateVoteReminderContent(dets);
-		this.mockMvc.perform(put(urlPrefix+"/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andExpect(status().isBadRequest());
-	}
-	
-	@Test
-	public void putVoteReminderShouldReturnUserBadRequest2() throws Exception
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("addingVoteReminder()");	
-		when(userService.addVoteReminder(any(AddVoteReminderEvent.class))).thenReturn(null);
-		this.mockMvc.perform(put(urlPrefix+"/{email}/voteReminder",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isBadRequest());
-	}
-	
-	@Test
 	public void putShouldAddVoteRecordToUserCorrectly() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("addingVoteRecord()");	
@@ -351,7 +294,6 @@ public class UserControllerTest
 		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
 		.andExpect(jsonPath("$.location",is(dets.getLocation())))
 		.andExpect(jsonPath("$.userEmail",is(dets.getUserId())))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk());
 	}
 	

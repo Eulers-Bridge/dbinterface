@@ -29,8 +29,8 @@ public interface UserRepository extends GraphRepository<User> {
     "]->(p) return p;")
   Personality addPersonality(@Param("userId") Long userId, @Param("personalityId") Long personalityId);
 
-  @Query("Match (a:`" + DataConstants.USER + "`),(b) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE (a)-[r:" + DataConstants.VREMINDER_LABEL +
-    "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='VoteReminder',r.location={location},r.date={date} return r")
+  @Query("Match (a:`" + DataConstants.USER + "`),(b:Election) where id(a)={userId} and id(b)={electionId} CREATE UNIQUE (a)-[r:" + DataConstants.VREMINDER_LABEL +
+    "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.location={location},r.date={date} return (a)-[r]->(b)")
   VoteReminder addVoteReminder(@Param("userId") Long userId, @Param("electionId") Long electionId,
                                @Param("date") Long date, @Param("location") String location);
 
