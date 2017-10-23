@@ -3,6 +3,7 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.events.voteRecord.*;
@@ -53,6 +54,8 @@ public class UserEventHandlerTest {
   PersonalityRepository pRepo;
   @Mock
   ElectionRepository eleRepo;
+  @Mock
+  Util util;
 
   UserEventHandler userServiceMocked;
 
@@ -79,7 +82,7 @@ public class UserEventHandlerTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    userServiceMocked = new UserEventHandler(new BCryptPasswordEncoder(), uRepo, pRepo, iRepo, tRepo, null, null, eleRepo);
+    userServiceMocked = new UserEventHandler(new BCryptPasswordEncoder(), uRepo, pRepo, iRepo, tRepo, null, null, eleRepo, util);
   }
 
   /**
@@ -94,7 +97,7 @@ public class UserEventHandlerTest {
    */
   @Test
   public void testUserEventHandler() {
-    UserEventHandler userService2 = new UserEventHandler(null, uRepo, pRepo, iRepo, tRepo, null, null, eleRepo);
+    UserEventHandler userService2 = new UserEventHandler(null, uRepo, pRepo, iRepo, tRepo, null, null, eleRepo, util);
     assertNotNull("newsService not being created by constructor.", userService2);
   }
 

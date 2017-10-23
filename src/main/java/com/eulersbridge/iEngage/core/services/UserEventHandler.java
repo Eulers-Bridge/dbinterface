@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.users.*;
@@ -54,6 +55,7 @@ public class UserEventHandler implements UserService {
   private final VerificationTokenRepository tokenRepository;
   private final ElectionRepository eleRepo;
   private final VelocityEngine velocityEngine;
+  private final Util util;
 
   @Autowired
   public UserEventHandler(PasswordEncoder passwordEncoder,
@@ -62,7 +64,7 @@ public class UserEventHandler implements UserService {
                           InstitutionRepository instRepo,
                           VerificationTokenRepository tokenRepo,
                           VelocityEngine velocityEngine,
-                          PPSEQuestionsRepository ppseQuestionsRepository, ElectionRepository eleRepo) {
+                          PPSEQuestionsRepository ppseQuestionsRepository, ElectionRepository eleRepo, Util util) {
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
     this.personRepository = personRepository;
@@ -71,6 +73,7 @@ public class UserEventHandler implements UserService {
     this.velocityEngine = velocityEngine;
     this.ppseQuestionsRepository = ppseQuestionsRepository;
     this.eleRepo = eleRepo;
+    this.util = util;
   }
 
   @Override
@@ -709,6 +712,10 @@ public class UserEventHandler implements UserService {
       , voteReminderDomain.getLocation());
     if (voteReminder == null)
       return RequestHandledEvent.failed();
+    util.asyncExecUserTask(user, u->{
+      util.boardcastNotifiToFriends(u, election, userRepository);
+      return null;
+    });
     return new RequestHandledEvent<>(voteReminder.toDomain());
   }
 
