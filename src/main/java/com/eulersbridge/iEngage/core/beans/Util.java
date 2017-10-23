@@ -7,6 +7,7 @@ import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 import com.eulersbridge.iEngage.config.CoreConfig;
 import com.eulersbridge.iEngage.core.notification.SNSNotification;
+import com.eulersbridge.iEngage.database.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,5 +80,29 @@ public class Util {
       userEmail = auth.getName();
     }
     return userEmail;
+  }
+
+  public static String getUserFullName(User user){
+    String givenName = user.getGivenName();
+    String familyName = user.getFamilyName();
+    String fullName = "";
+    if(givenName != null && !givenName.isEmpty())
+      fullName = givenName;
+    if(familyName != null && !familyName.isEmpty())
+      fullName = fullName + " " + familyName;
+    if(fullName.isEmpty())
+      fullName = "Someone anonymous";
+    return fullName;
+  }
+
+  public static SNSNotification buildFriReqNotif(User receiver, User sender){
+    String subject = "New Friend Request";
+    String senderName = getUserFullName(sender);
+    String msg = senderName + " has sent an invitation to connect [U+1F91D]";
+
+    String arn = receiver.getArn();
+    String devToken = receiver.getDeviceToken();
+    SNSNotification noti = new SNSNotification(devToken, arn, subject, msg);
+    return noti;
   }
 }

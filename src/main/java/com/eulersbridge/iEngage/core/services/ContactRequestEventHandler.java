@@ -3,9 +3,11 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.contactRequest.*;
 import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
+import com.eulersbridge.iEngage.core.notification.SNSNotification;
 import com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService;
 import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
@@ -16,6 +18,7 @@ import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
 import com.eulersbridge.iEngage.rest.domain.UserProfile;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,18 +46,22 @@ public class ContactRequestEventHandler implements ContactRequestService {
   private final UserRepository userRepository;
   private final EmailValidator emailValidator;
   private final ContactRepository contactRepo;
+  private final Util util;
 
   @Autowired
-  public ContactRequestEventHandler(ContactRequestRepository contactRequestRepository, UserRepository userRepository, ContactRepository contactRepo) {
+  public ContactRequestEventHandler(ContactRequestRepository contactRequestRepository, UserRepository userRepository, ContactRepository contactRepo, Util util) {
     this.contactRequestRepository = contactRequestRepository;
     this.userRepository = userRepository;
     emailValidator = EmailValidator.getInstance();
     this.contactRepo = contactRepo;
+    this.util = util;
   }
 
   @Override
   public RequestHandledEvent<ContactRequestDomain> createContactRequest(String userEmail, String targetEmail) {
     if (!(emailValidator.isValid(userEmail) && emailValidator.isValid(targetEmail)))
+      return RequestHandledEvent.badRequest();
+    if (userEmail.equals(targetEmail))
       return RequestHandledEvent.badRequest();
     User user = userRepository.findByEmail(userEmail, 0);
     if (user == null)
@@ -74,6 +81,8 @@ public class ContactRequestEventHandler implements ContactRequestService {
     newReq.setCreator(user);
     newReq.setTarget(target);
     newReq = contactRequestRepository.save(newReq);
+
+    util.sendNotification(Util.buildFriReqNotif(target, user));
     return new RequestHandledEvent<>(newReq.toDomain());
   }
 

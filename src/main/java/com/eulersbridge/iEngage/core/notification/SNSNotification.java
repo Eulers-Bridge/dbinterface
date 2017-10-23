@@ -35,6 +35,7 @@ public class SNSNotification {
   }
 
   public boolean isValid() {
-    return deviceToken != null && topicArn != null && subject != null && message != null;
+    return deviceToken != null && topicArn != null && subject != null && message != null
+      && !deviceToken.isEmpty() && !topicArn.isEmpty();
   }
 }

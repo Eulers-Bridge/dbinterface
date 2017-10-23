@@ -21,6 +21,8 @@ public class User extends Node {
   @Email
   @Index(unique = true, primary = false)
   private String email;
+  @NotNull
+  @NotBlank
   private String givenName;
   private String familyName;
   private String gender;
