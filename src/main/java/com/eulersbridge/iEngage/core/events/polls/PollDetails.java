@@ -20,6 +20,7 @@ public class PollDetails extends Details {
   private Long creatorId;
   private String creatorEmail;
   private String image;
+  private Boolean closed;
 
   private Integer numOfComments;
   private Integer numOfAnswers;
@@ -71,30 +72,28 @@ public class PollDetails extends Details {
     this.numOfComments = numOfComments;
   }
 
-  /**
-   * @return the numOfAnswers
-   */
+  public Boolean getClosed() {
+    return closed;
+  }
+
+  public void setClosed(Boolean closed) {
+    this.closed = closed;
+  }
+
   public Integer getNumOfAnswers() {
     return numOfAnswers;
   }
 
-  /**
-   * @param numOfAnswers the numOfAnswers to set
-   */
   public void setNumOfAnswers(Integer numOfAnswers) {
     this.numOfAnswers = numOfAnswers;
   }
 
-  /**
-   * @return the ownerId
-   */
+
   public Long getOwnerId() {
     return ownerId;
   }
 
-  /**
-   * @param ownerId the ownerId to set
-   */
+
   public void setOwnerId(Long ownerId) {
     this.ownerId = ownerId;
   }

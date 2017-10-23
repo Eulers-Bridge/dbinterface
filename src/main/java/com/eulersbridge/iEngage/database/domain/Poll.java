@@ -2,11 +2,13 @@ package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.polls.PollDetails;
 import com.eulersbridge.iEngage.rest.domain.PollOptionDomain;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +21,17 @@ public class Poll extends Likeable implements Commentable {
   private static final Logger LOG = LoggerFactory.getLogger(Poll.class);
 
   private String question;
+  @NotNull
   private Long start;
+  @NotNull
   private Long duration;
+  @NotNull
+  @Index
+  private Long end;
   private String image;
+
+  @Index
+  private Boolean closed = false;
 
   @Relationship(type = DataConstants.CREATED_BY_LABEL)
   private Node creator;
@@ -54,6 +64,7 @@ public class Poll extends Likeable implements Commentable {
     pollDetails.setStart(this.getStart());
     pollDetails.setDuration(this.getDuration());
     pollDetails.setImage(this.getImage());
+    pollDetails.setClosed(this.getClosed());
 
     if (pollOptionsList != null) {
       List<PollOptionDomain> pollOptionDomains = getPollOptionsList$()
@@ -84,8 +95,10 @@ public class Poll extends Likeable implements Commentable {
     poll.setQuestion(pollDetails.getQuestion());
     poll.setStart(pollDetails.getStart());
     poll.setDuration(pollDetails.getDuration());
-    poll.setImage(pollDetails.getImage());
+    if (pollDetails.getStart() != null && pollDetails.getDuration() != null)
+      poll.setEnd(pollDetails.getStart() + pollDetails.getDuration());
 
+    poll.setImage(pollDetails.getImage());
     Institution owner = new Institution();
     owner.setNodeId(pollDetails.getOwnerId());
     poll.setInstitution(owner.toNode());
@@ -160,9 +173,6 @@ public class Poll extends Likeable implements Commentable {
     this.pollOptionsList = pollOptionsList;
   }
 
-  //  public void setAnsweredUsers(List<Node> answeredUsers) {
-//    this.answeredUsers = answeredUsers;
-//  }
 
   public Integer getNumberOfComments() {
     if (comments == null)
@@ -170,9 +180,7 @@ public class Poll extends Likeable implements Commentable {
     return comments.size();
   }
 
-  /**
-   * @return the creator
-   */
+
   public User getCreator$() {
     return (User) creator;
   }
@@ -181,16 +189,10 @@ public class Poll extends Likeable implements Commentable {
     return creator;
   }
 
-  /**
-   * @param creator the creator to set
-   */
   public void setCreator(Node creator) {
     this.creator = creator;
   }
 
-  /**
-   * @return the institution
-   */
   public Institution getInstitution$() {
     return (Institution) institution;
   }
@@ -199,81 +201,31 @@ public class Poll extends Likeable implements Commentable {
     return institution;
   }
 
-  /**
-   * @param institution the institution to set
-   */
   public void setInstitution(Node institution) {
     this.institution = institution;
   }
 
-  /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
+  public Long getEnd() {
+    return end;
+  }
+
+  public void setEnd(Long end) {
+    this.end = end;
+  }
+
+  public Boolean getClosed() {
+    return closed;
+  }
+
+  public void setClosed(Boolean closed) {
+    this.closed = closed;
+  }
+
   @Override
   public String toString() {
     return "Poll [nodeId=" + nodeId + ", question=" + question
       + ", start=" + start + ", duration="
       + duration + ", creator=" + creator + ", institution=" + institution + "]";
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    if (nodeId != null) {
-      result = prime * result + nodeId.hashCode();
-    } else {
-      result = prime * result
-        + ((creator == null) ? 0 : creator.hashCode());
-      result = prime * result + ((institution == null) ? 0 : institution.hashCode());
-      result = prime * result
-        + ((duration == null) ? 0 : duration.hashCode());
-      result = prime * result
-        + ((question == null) ? 0 : question.hashCode());
-      result = prime * result + ((start == null) ? 0 : start.hashCode());
-    }
-    return result;
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    Poll other = (Poll) obj;
-    if (nodeId != null) {
-      if (nodeId.equals(other.nodeId))
-        return true;
-      else return false;
-    } else {
-      if (other.nodeId != null) return false;
-      if (institution == null) {
-        if (other.institution != null) return false;
-      } else if (!institution.equals(other.institution)) return false;
-      if (creator == null) {
-        if (other.creator != null) return false;
-      } else if (!creator.equals(other.creator)) return false;
-      if (duration == null) {
-        if (other.duration != null) return false;
-      } else if (!duration.equals(other.duration)) return false;
-      if (question == null) {
-        if (other.question != null) return false;
-      } else if (!question.equals(other.question)) return false;
-      if (start == null) {
-        if (other.start != null) return false;
-      } else if (!start.equals(other.start)) return false;
-    }
-    return true;
   }
 
 }

@@ -9,6 +9,7 @@ public class PollOptionDomain {
   private String txt;
   private PhotoDomain photo;
   private Boolean voted = false;
+  private Long numOfVoters;
 
   public PollOptionDomain() {
   }
@@ -43,5 +44,13 @@ public class PollOptionDomain {
 
   public void setVoted(Boolean voted) {
     this.voted = voted;
+  }
+
+  public Long getNumOfVoters() {
+    return numOfVoters;
+  }
+
+  public void setNumOfVoters(Long numOfVoters) {
+    this.numOfVoters = numOfVoters;
   }
 }

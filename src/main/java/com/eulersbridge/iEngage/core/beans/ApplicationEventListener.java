@@ -42,6 +42,8 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
   BadgeRepository bdgRepo;
   @Autowired
   TaskRepository taskRepo;
+  @Autowired
+  ScheduledTasks scheduledTasks;
 
   @Value("${institution.name}")
   String institutionName;
@@ -62,12 +64,7 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
     LOG.info("Task starts at ApplicationEventListener");
 
     checkOrCreateInitialNodes();
-//    try {
-//      SNSMobilePush.main(new String[]{});
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-
+    scheduledTasks.setAppReady(true);
   }
 
   public void encodeUserPwd() {

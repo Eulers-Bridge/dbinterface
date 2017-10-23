@@ -101,6 +101,8 @@ public class PollEventHandler implements PollService {
       return RequestHandledEvent.canNotModiry();
     if (pollEndTime < current)
       return RequestHandledEvent.premissionExpired();
+    if (poll.getClosed() != null && poll.getClosed())
+      return RequestHandledEvent.premissionExpired();
     PollOption votedPollOpt = pollOptionRepository.checkIfUserHasVoted(pollId, userEmail);
     if (votedPollOpt != null)
       return RequestHandledEvent.notAllowed();

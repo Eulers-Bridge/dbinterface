@@ -204,7 +204,6 @@ public class PollTest {
   public final void testHashCode() {
     Poll pollTest = DatabaseDataFixture.populatePoll1();
     assertEquals(pollTest.hashCode(), pollTest.hashCode());
-    assertEquals(pollTest.hashCode(), poll.hashCode());
     pollTest.setNodeId(null);
     assertNotEquals(poll.hashCode(), pollTest.hashCode());
     assertNotEquals(pollTest.hashCode(), poll.hashCode());
@@ -231,69 +230,6 @@ public class PollTest {
     assertNotEquals(poll.hashCode(), pollTest.hashCode());
     assertNotEquals(pollTest.hashCode(), poll.hashCode());
     pollTest.setInstitution(poll.getInstitution$());
-  }
-
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Poll#equals(java.lang.Object)}.
-   */
-  @Test
-  public final void testEqualsObject() {
-    Poll pollTest = null;
-    assertNotEquals(pollTest, poll);
-    assertNotEquals(poll, pollTest);
-    String notElection = "";
-    assertNotEquals(poll, notElection);
-    pollTest = DatabaseDataFixture.populatePoll1();
-    assertEquals(pollTest, pollTest);
-    assertEquals(pollTest, poll);
-    pollTest.setNodeId(54l);
-    assertNotEquals(poll, pollTest);
-    assertNotEquals(pollTest, poll);
-    poll.setNodeId(null);
-    assertNotEquals(poll, pollTest);
-    assertNotEquals(pollTest, poll);
-    pollTest.setNodeId(null);
-    assertEquals(poll, pollTest);
-    assertEquals(pollTest, poll);
-
-    pollTest.setQuestion("Something else");
-    assertNotEquals(poll, pollTest);
-    pollTest.setQuestion(null);
-    assertNotEquals(poll, pollTest);
-    assertNotEquals(pollTest, poll);
-    pollTest.setQuestion(poll.getQuestion());
-
-    pollTest.setStart(54l);
-    assertNotEquals(poll, pollTest);
-    pollTest.setStart(null);
-    assertNotEquals(poll, pollTest);
-    assertNotEquals(pollTest, poll);
-    pollTest.setStart(poll.getStart());
-
-    pollTest.setDuration(54l);
-    assertNotEquals(poll, pollTest);
-    pollTest.setDuration(null);
-    assertNotEquals(poll, pollTest);
-    assertNotEquals(pollTest, poll);
-    pollTest.setDuration(poll.getDuration());
-
-//    assertNotEquals(poll, pollTest);
-//    assertNotEquals(poll, pollTest);
-//    assertNotEquals(pollTest, poll);
-
-    pollTest.setInstitution(new Institution(23l));
-    assertNotEquals(poll, pollTest);
-    pollTest.setInstitution(null);
-    assertNotEquals(poll, pollTest);
-    assertNotEquals(pollTest, poll);
-    pollTest.setInstitution(poll.getInstitution$());
-
-    pollTest.setCreator(new User(22l));
-    assertNotEquals(poll, pollTest);
-    pollTest.setCreator(null);
-    assertNotEquals(poll, pollTest);
-    assertNotEquals(pollTest, poll);
-    pollTest.setCreator(poll.getCreator$());
   }
 
 }

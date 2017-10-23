@@ -32,5 +32,7 @@ public interface PollRepository extends GraphRepository<Poll> {
   @Query("MATCH l=()-[*0..1]-(p:Poll)-[r:HAS_POLL_OPTION]-(o:PollOption)-[*0..1]-(x) WHERE id(p)={pollId} and (x:Photo OR x:PollOption OR (x:User and x.email={email})) return distinct l")
   Poll findOneCustom(@Param("pollId") Long pollId, @Param("email") String email);
 
-
+//  p.end<{now} and
+  @Query("Match l=(p:Poll)-[*0..1]->(x)<-[*0..1]-(y) where p.end<{now} and p.closed=false AND (x:Poll OR x:PollOption) AND (y:PollOption OR y:User) return distinct l")
+  List<Poll> findExpiredUnclosedPolls(@Param("now") Long now);
 }

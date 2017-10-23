@@ -30,9 +30,9 @@
   </logger>
 
 
-  <root level="INFO">
+  <root level="OFF">
     <appender-ref ref="STDOUT"/>
-    <!-- appender-ref ref="FILE2" /-->
+    <!-- appender-ref ref="FILE2"  INFO /-->
   </root>
 </configuration>
 

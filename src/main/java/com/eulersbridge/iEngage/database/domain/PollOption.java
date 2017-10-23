@@ -7,6 +7,8 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * @author Yikai Gong
  */
@@ -24,7 +26,9 @@ public class PollOption extends Node {
   private Node attachedImage;
 
   @Relationship(type = DataConstants.VOTE_POLL_OPTION, direction = Relationship.INCOMING)
-  private Node user;
+  private List<Node> voters;
+
+  private Long numOfVoters;
 
   public PollOption() {
   }
@@ -58,12 +62,20 @@ public class PollOption extends Node {
     return attachedImage;
   }
 
-  public Node getUser() {
-    return user;
+  public List<Node> getVoters() {
+    return voters;
   }
 
-  public void setUser(Node user) {
-    this.user = user;
+  public void setVoters(List<Node> voters) {
+    this.voters = voters;
+  }
+
+  public Long getNumOfVoters() {
+    return numOfVoters;
+  }
+
+  public void setNumOfVoters(Long numOfVoters) {
+    this.numOfVoters = numOfVoters;
   }
 
   public Photo getAttachedImage$() {
@@ -83,11 +95,12 @@ public class PollOption extends Node {
     PollOptionDomain domain = new PollOptionDomain();
     domain.setId(getNodeId());
     domain.setTxt(getTxt());
+    domain.setNumOfVoters(getNumOfVoters());
     if (attachedImage != null) {
       Photo photo = getAttachedImage$();
       domain.setPhoto(PhotoDomain.fromPhotoDetails(photo.toPhotoDetails()));
     }
-    if (user != null)
+    if (voters != null && !voters.isEmpty())
       domain.setVoted(true);
     return domain;
   }

@@ -9,11 +9,13 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @EnableAsync
+@EnableScheduling
 @PropertySource("classpath:application.properties")
 public class Launcher extends SpringBootServletInitializer {
   private static Logger LOG = LoggerFactory.getLogger(Launcher.class);

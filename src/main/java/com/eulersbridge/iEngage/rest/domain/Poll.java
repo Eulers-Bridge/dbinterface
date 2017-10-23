@@ -28,6 +28,7 @@ public class Poll extends ResourceSupport {
   private Long creatorId;
   private String creatorEmail;
   private String image;
+  private Boolean closed;
 
 //    private Integer numOfComments;
 //    private Integer numOfAnswers;
@@ -47,7 +48,7 @@ public class Poll extends ResourceSupport {
     poll.setCreatorEmail(pollDetails.getCreatorEmail());
     poll.setImage(pollDetails.getImage());
     poll.setPollOptions(pollDetails.getPollOptions());
-
+    poll.setClosed(pollDetails.getClosed());
     poll.add(linkTo(PollController.class).slash(name).slash(poll.getNodeId()).withSelfRel());
     poll.add(linkTo(PollController.class).slash(name + 's').withRel(RestDomainConstants.READALL_LABEL));
     return poll;
@@ -130,6 +131,14 @@ public class Poll extends ResourceSupport {
 
   public void setPollOptions(List<PollOptionDomain> pollOptions) {
     this.pollOptions = pollOptions;
+  }
+
+  public Boolean getClosed() {
+    return closed;
+  }
+
+  public void setClosed(Boolean closed) {
+    this.closed = closed;
   }
 
   /**

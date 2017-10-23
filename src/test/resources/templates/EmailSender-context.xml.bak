@@ -11,7 +11,7 @@
 
     <context:component-scan base-package="com.eulersbridge.iEngage.email" />
 
-    <!-- Edit 'mail.properties' to set a valid user and password for the mail sender. -->
+    <!-- Edit 'mail.properties' to set a valid voters and password for the mail sender. -->
     <context:property-placeholder location="classpath:/email.properties" />
     
     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean" 
