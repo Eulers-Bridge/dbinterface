@@ -101,7 +101,7 @@ public class CandidateController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CANDIDATES_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<FindsParent> findCandidates(
+	public @ResponseBody ResponseEntity<WrappedDomainList> findCandidates(
 			@PathVariable(value = "") Long electionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -114,7 +114,7 @@ public class CandidateController {
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve candidates from institution "
 					+ electionId + '.');
-		ResponseEntity<FindsParent> response;
+		ResponseEntity<WrappedDomainList> response;
 		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
@@ -124,14 +124,14 @@ public class CandidateController {
 
 		if (!articleEvent.isEntityFound())
 		{
-			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
 			Iterator<Candidate> candidates = Candidate
 					.toCandidatesIterator(articleEvent.getDetails().iterator());
-			FindsParent theBadges = FindsParent.fromArticlesIterator(candidates, articleEvent.getTotalItems(), articleEvent.getTotalPages());
-			response = new ResponseEntity<FindsParent>(theBadges, HttpStatus.OK);
+			WrappedDomainList theBadges = WrappedDomainList.fromIterator(candidates, articleEvent.getTotalItems(), articleEvent.getTotalPages());
+			response = new ResponseEntity<WrappedDomainList>(theBadges, HttpStatus.OK);
 		}
 		return response;
 	}

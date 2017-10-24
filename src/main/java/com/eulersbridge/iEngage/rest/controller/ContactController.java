@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
 
 import com.eulersbridge.iEngage.rest.domain.UserProfile;
+import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.LongValidator;
 import org.slf4j.Logger;
@@ -50,23 +51,26 @@ public class ContactController {
     String userEmail = Util.getUserEmailFromSession();
     if (!emailValidator.isValid(targetEmail))
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    RequestHandledEvent<ContactRequestDomain> res = contactRequestService.createContactRequest(userEmail, targetEmail);
+    RequestHandledEvent<ContactRequestDomain> res =
+      contactRequestService.createContactRequest(userEmail, targetEmail);
     return res.toResponseEntity();
   }
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUESTS_LABEL)
   public @ResponseBody
-  ResponseEntity<List<ContactRequestDomain>> findContactRequestsMade(@PathVariable Long userId) {
+  ResponseEntity<WrappedDomainList<ContactRequestDomain>> findContactRequestsMade(@PathVariable Long userId) {
     String userEmail = Util.getUserEmailFromSession();
-    RequestHandledEvent<List<ContactRequestDomain>> res = contactRequestService.readContactRequestsMade(userEmail);
+    RequestHandledEvent<WrappedDomainList<ContactRequestDomain>> res =
+      contactRequestService.readContactRequestsMade(userEmail);
     return res.toResponseEntity();
   }
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{userId}" + ControllerConstants.CONTACT_REQUESTS_LABEL + "/rec")
   public @ResponseBody
-  ResponseEntity<List<ContactRequestDomain>> findContactRequestsReceived(@PathVariable Long userId) {
+  ResponseEntity<WrappedDomainList<ContactRequestDomain>> findContactRequestsReceived(@PathVariable Long userId) {
     String userEmail = Util.getUserEmailFromSession();
-    RequestHandledEvent<List<ContactRequestDomain>> res = contactRequestService.readContactRequestsReceived(userEmail);
+    RequestHandledEvent<WrappedDomainList<ContactRequestDomain>> res =
+      contactRequestService.readContactRequestsReceived(userEmail);
     return res.toResponseEntity();
   }
 
@@ -74,7 +78,8 @@ public class ContactController {
   public @ResponseBody
   ResponseEntity<ContactRequestDomain> acceptContact(@PathVariable Long contactRequestId) {
     String userEmail = Util.getUserEmailFromSession();
-    RequestHandledEvent<ContactRequestDomain> res = contactRequestService.acceptContactRequest(userEmail, contactRequestId);
+    RequestHandledEvent<ContactRequestDomain> res =
+      contactRequestService.acceptContactRequest(userEmail, contactRequestId);
     return res.toResponseEntity();
   }
 
@@ -82,16 +87,17 @@ public class ContactController {
   public @ResponseBody
   ResponseEntity<ContactRequestDomain> rejectContact(@PathVariable Long contactRequestId) {
     String userEmail = Util.getUserEmailFromSession();
-    RequestHandledEvent<ContactRequestDomain> res = contactRequestService.rejectContactRequest(userEmail, contactRequestId);
+    RequestHandledEvent<ContactRequestDomain> res =
+      contactRequestService.rejectContactRequest(userEmail, contactRequestId);
     return res.toResponseEntity();
   }
 
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CONTACTS_LABEL)
   public @ResponseBody
-  ResponseEntity<List<UserProfile>> getFriendsList() {
+  ResponseEntity<WrappedDomainList<UserProfile>> getFriendsList() {
     String userEmail = Util.getUserEmailFromSession();
-    RequestHandledEvent<List<UserProfile>> res = contactRequestService.readFriendsList(userEmail);
+    RequestHandledEvent<WrappedDomainList<UserProfile>> res = contactRequestService.readFriendsList(userEmail);
     return res.toResponseEntity();
   }
 }

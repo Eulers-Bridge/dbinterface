@@ -18,6 +18,7 @@ import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
 import com.eulersbridge.iEngage.rest.domain.UserProfile;
+import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
@@ -87,23 +88,27 @@ public class ContactRequestEventHandler implements ContactRequestService {
   }
 
   @Override
-  public RequestHandledEvent<List<ContactRequestDomain>> readContactRequestsMade(String userEmail) {
+  public RequestHandledEvent<WrappedDomainList<ContactRequestDomain>> readContactRequestsMade(String userEmail) {
     if (!emailValidator.isValid(userEmail))
       return RequestHandledEvent.badRequest();
     List<ContactRequest> requests = contactRequestRepository.findSentRequests(userEmail);
     List<ContactRequestDomain> domains = requests.stream()
       .map(req -> req.toDomain()).collect(Collectors.toList());
-    return new RequestHandledEvent<>(domains);
+    WrappedDomainList<ContactRequestDomain> wl =
+      new WrappedDomainList<>(domains, domains.size(), 1);
+    return new RequestHandledEvent<>(wl);
   }
 
   @Override
-  public RequestHandledEvent<List<ContactRequestDomain>> readContactRequestsReceived(String userEmail) {
+  public RequestHandledEvent<WrappedDomainList<ContactRequestDomain>> readContactRequestsReceived(String userEmail) {
     if (!emailValidator.isValid(userEmail))
       return RequestHandledEvent.badRequest();
     List<ContactRequest> requests = contactRequestRepository.findReceivedRequests(userEmail);
     List<ContactRequestDomain> domains = requests.stream()
       .map(req -> req.toDomain()).collect(Collectors.toList());
-    return new RequestHandledEvent<>(domains);
+    WrappedDomainList<ContactRequestDomain> wl =
+      new WrappedDomainList<>(domains, domains.size(), 1);
+    return new RequestHandledEvent<>(wl);
   }
 
   @Override
@@ -160,7 +165,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
   }
 
   @Override
-  public RequestHandledEvent readFriendsList(String userEmail) {
+  public RequestHandledEvent<WrappedDomainList<UserProfile>> readFriendsList(String userEmail) {
     if (!emailValidator.isValid(userEmail))
       return RequestHandledEvent.badRequest();
     User user = userRepository.findByEmail(userEmail, 0);
@@ -168,8 +173,10 @@ public class ContactRequestEventHandler implements ContactRequestService {
       return RequestHandledEvent.userNotFound();
     List<User> friends = userRepository.findContacts(userEmail);
     List<UserProfile> friendsProfiles = friends.stream()
-      .map(u-> UserProfile.fromUserDetails(u.toUserDetails()))
+      .map(u -> UserProfile.fromUserDetails(u.toUserDetails()))
       .collect(Collectors.toList());
-    return new RequestHandledEvent(friendsProfiles);
+    WrappedDomainList<UserProfile> wl =
+      new WrappedDomainList(friendsProfiles, friendsProfiles.size(), 1);
+    return new RequestHandledEvent(wl);
   }
 }

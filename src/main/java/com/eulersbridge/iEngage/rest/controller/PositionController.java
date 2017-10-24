@@ -4,7 +4,7 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.PositionService;
 import com.eulersbridge.iEngage.rest.domain.Candidate;
-import com.eulersbridge.iEngage.rest.domain.FindsParent;
+import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import com.eulersbridge.iEngage.rest.domain.Position;
 import com.eulersbridge.iEngage.rest.domain.Response;
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ public class PositionController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POSITION_LABEL
 			+ "/{positionId}"+ControllerConstants.CANDIDATES_LABEL)
-	public @ResponseBody ResponseEntity<FindsParent> findCandidatesForPosition(
+	public @ResponseBody ResponseEntity<WrappedDomainList> findCandidatesForPosition(
 			@PathVariable(value = "") Long positionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -104,7 +104,7 @@ public class PositionController {
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve candidates for position"
 					+ positionId + '.');
-		ResponseEntity<FindsParent> response;
+		ResponseEntity<WrappedDomainList> response;
 		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
@@ -114,14 +114,14 @@ public class PositionController {
 
 		if (!candidatesEvent.isEntityFound())
 		{
-			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
 			Iterator<Candidate> candidates = Candidate
 					.toCandidatesIterator(candidatesEvent.getDetails().iterator());
-			FindsParent theCandidates = FindsParent.fromArticlesIterator(candidates, candidatesEvent.getTotalItems(), candidatesEvent.getTotalPages());
-			response = new ResponseEntity<FindsParent>(theCandidates, HttpStatus.OK);
+			WrappedDomainList theCandidates = WrappedDomainList.fromIterator(candidates, candidatesEvent.getTotalItems(), candidatesEvent.getTotalPages());
+			response = new ResponseEntity<WrappedDomainList>(theCandidates, HttpStatus.OK);
 		}
 		return response;
 	}
@@ -140,7 +140,7 @@ public class PositionController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.POSITIONS_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<FindsParent> findPositions(
+	public @ResponseBody ResponseEntity<WrappedDomainList> findPositions(
 			@PathVariable(value = "") Long electionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -153,7 +153,7 @@ public class PositionController {
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve positions from institution "
 					+ electionId + '.');
-		ResponseEntity<FindsParent> response;
+		ResponseEntity<WrappedDomainList> response;
 		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
@@ -163,14 +163,14 @@ public class PositionController {
 
 		if (!positionsEvent.isEntityFound())
 		{
-			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
 			Iterator<Position> badges = Position
 					.toPositionsIterator(positionsEvent.getDetails().iterator());
-			FindsParent thePositions = FindsParent.fromArticlesIterator(badges, positionsEvent.getTotalItems(), positionsEvent.getTotalPages());
-			response = new ResponseEntity<FindsParent>(thePositions, HttpStatus.OK);
+			WrappedDomainList thePositions = WrappedDomainList.fromIterator(badges, positionsEvent.getTotalItems(), positionsEvent.getTotalPages());
+			response = new ResponseEntity<WrappedDomainList>(thePositions, HttpStatus.OK);
 		}
 		return response;
 	}

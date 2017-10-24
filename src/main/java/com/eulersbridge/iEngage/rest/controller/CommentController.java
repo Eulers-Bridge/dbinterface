@@ -4,7 +4,7 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.comments.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.CommentService;
 import com.eulersbridge.iEngage.rest.domain.Comment;
-import com.eulersbridge.iEngage.rest.domain.FindsParent;
+import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import com.eulersbridge.iEngage.rest.domain.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +89,7 @@ public class CommentController {
     //Read All
     @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.COMMENTS_LABEL
             + "/{targetId}")
-    public @ResponseBody ResponseEntity<FindsParent> findComments(
+    public @ResponseBody ResponseEntity<WrappedDomainList> findComments(
             @PathVariable Long targetId,
             @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
             @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -102,7 +102,7 @@ public class CommentController {
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to retrieve comments from target " + targetId + '.');
 
-		ResponseEntity<FindsParent> response;
+		ResponseEntity<WrappedDomainList> response;
         Direction sortDirection = Direction.DESC;
         if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
         AllReadEvent commentsReadEvent = commentService.readComments(new ReadAllEvent(targetId), sortDirection,
@@ -110,13 +110,13 @@ public class CommentController {
 
         if (!commentsReadEvent.isEntityFound())
         {
-            response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
         }
         else
         {
 	        Iterator<Comment> candidates = Comment.toCommentIterator(commentsReadEvent.getDetails().iterator());
-			FindsParent theComments = FindsParent.fromArticlesIterator(candidates, commentsReadEvent.getTotalItems(), commentsReadEvent.getTotalPages());
-			response = new ResponseEntity<FindsParent>(theComments, HttpStatus.OK);
+			WrappedDomainList theComments = WrappedDomainList.fromIterator(candidates, commentsReadEvent.getTotalItems(), commentsReadEvent.getTotalPages());
+			response = new ResponseEntity<WrappedDomainList>(theComments, HttpStatus.OK);
         }
 		return response;
     }

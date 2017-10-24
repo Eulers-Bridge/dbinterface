@@ -89,7 +89,7 @@ public class TicketController {
             + "/{electionId}")
     public
     @ResponseBody
-    ResponseEntity<FindsParent> findTickets(
+    ResponseEntity<WrappedDomainList> findTickets(
             @PathVariable(value = "") Long electionId,
             @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
             @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -98,7 +98,7 @@ public class TicketController {
         int pageLength = 10;
         pageNumber = Integer.parseInt(page);
         pageLength = Integer.parseInt(pageSize);
-        ResponseEntity<FindsParent> response;
+        ResponseEntity<WrappedDomainList> response;
 
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to retrieve tickets from institution "
@@ -111,12 +111,12 @@ public class TicketController {
                 pageNumber, pageLength);
 
         if (!ticketsEvent.isEntityFound()) {
-            response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
         } else {
             Iterator<Ticket> tickets = Ticket
                     .toTicketsIterator(ticketsEvent.getDetails().iterator());
-            FindsParent theTickets = FindsParent.fromArticlesIterator(tickets, ticketsEvent.getTotalItems(), ticketsEvent.getTotalPages());
-            response = new ResponseEntity<FindsParent>(theTickets, HttpStatus.OK);
+            WrappedDomainList theTickets = WrappedDomainList.fromIterator(tickets, ticketsEvent.getTotalItems(), ticketsEvent.getTotalPages());
+            response = new ResponseEntity<WrappedDomainList>(theTickets, HttpStatus.OK);
         }
         return response;
     }
@@ -135,7 +135,7 @@ public class TicketController {
             + "/{ticketId}" + ControllerConstants.CANDIDATES_LABEL)
     public
     @ResponseBody
-    ResponseEntity<FindsParent> findCandidatesForPosition(
+    ResponseEntity<WrappedDomainList> findCandidatesForPosition(
             @PathVariable(value = "") Long ticketId,
             @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
             @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -147,7 +147,7 @@ public class TicketController {
         if (LOG.isInfoEnabled())
             LOG.info("Attempting to retrieve candidates for a ticket "
                     + ticketId + '.');
-        ResponseEntity<FindsParent> response;
+        ResponseEntity<WrappedDomainList> response;
 
         Direction sortDirection = Direction.DESC;
         if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
@@ -156,12 +156,12 @@ public class TicketController {
                 pageNumber, pageLength);
 
         if (!candidatesEvent.isEntityFound()) {
-            response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+            response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
         } else {
             Iterator<Candidate> candidates = Candidate
                     .toCandidatesIterator(candidatesEvent.getDetails().iterator());
-            FindsParent theCandidates = FindsParent.fromArticlesIterator(candidates, candidatesEvent.getTotalItems(), candidatesEvent.getTotalPages());
-            response = new ResponseEntity<FindsParent>(theCandidates, HttpStatus.OK);
+            WrappedDomainList theCandidates = WrappedDomainList.fromIterator(candidates, candidatesEvent.getTotalItems(), candidatesEvent.getTotalPages());
+            response = new ResponseEntity<WrappedDomainList>(theCandidates, HttpStatus.OK);
         }
         return response;
     }

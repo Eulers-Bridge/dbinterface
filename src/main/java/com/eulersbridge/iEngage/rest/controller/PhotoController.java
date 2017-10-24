@@ -467,7 +467,7 @@ public class PhotoController
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_ALBUMS_LABEL
 			+ "/{ownerId}")
-	public @ResponseBody ResponseEntity<FindsParent> findPhotoAlbums(
+	public @ResponseBody ResponseEntity<WrappedDomainList> findPhotoAlbums(
 			@PathVariable(value = "") Long ownerId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -482,7 +482,7 @@ public class PhotoController
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-		ResponseEntity<FindsParent> response;
+		ResponseEntity<WrappedDomainList> response;
 
 		AllReadEvent photoAlbumEvent = photoService.findPhotoAlbums(
 				new ReadAllEvent(ownerId), sortDirection, pageNumber,
@@ -490,14 +490,14 @@ public class PhotoController
 
 		if (!photoAlbumEvent.isEntityFound())
 		{
-			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
 			Iterator<PhotoAlbum> photoAlbumIter = PhotoAlbum.toPhotoAlbumsIterator(photoAlbumEvent.getDetails().iterator());
-			FindsParent photoAlbums = FindsParent.fromArticlesIterator(photoAlbumIter,
+			WrappedDomainList photoAlbums = WrappedDomainList.fromIterator(photoAlbumIter,
 					photoAlbumEvent.getTotalItems(), photoAlbumEvent.getTotalPages());
-			response = new ResponseEntity<FindsParent>(photoAlbums, HttpStatus.OK);
+			response = new ResponseEntity<WrappedDomainList>(photoAlbums, HttpStatus.OK);
 		}
 		return response;
 	}

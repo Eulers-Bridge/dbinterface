@@ -291,10 +291,10 @@ public class NewsController
 
 	*/
 	@RequestMapping(method=RequestMethod.GET,value=ControllerConstants.NEWS_ARTICLES_LABEL+"/{institutionId}")
-	public @ResponseBody ResponseEntity<FindsParent> findArticles(@PathVariable(value="") Long institutionId,
-			@RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
-			@RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
-			@RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize) 
+	public @ResponseBody ResponseEntity<WrappedDomainList> findArticles(@PathVariable(value="") Long institutionId,
+                                                                      @RequestParam(value="direction",required=false,defaultValue=ControllerConstants.DIRECTION) String direction,
+                                                                      @RequestParam(value="page",required=false,defaultValue=ControllerConstants.PAGE_NUMBER) String page,
+                                                                      @RequestParam(value="pageSize",required=false,defaultValue=ControllerConstants.PAGE_LENGTH) String pageSize)
 	{
 		int pageNumber=0;
 		int pageLength=10;
@@ -302,7 +302,7 @@ public class NewsController
 		pageLength=Integer.parseInt(pageSize);
 		if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve news articles from institution "+institutionId+'.');
 				
-		ResponseEntity<FindsParent> response;
+		ResponseEntity<WrappedDomainList> response;
 		
 		Direction sortDirection=Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection=Direction.ASC;
@@ -310,14 +310,14 @@ public class NewsController
   	
 		if (!articleEvent.isEntityFound())
 		{
-			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
 		}
 		
 		else
 		{
 			Iterator<NewsArticle> articles = NewsArticle.toArticlesIterator(articleEvent.getArticles().iterator());
-			FindsParent newsArticles = FindsParent.fromArticlesIterator(articles, articleEvent.getTotalArticles(), articleEvent.getTotalPages());
-			response = new ResponseEntity<FindsParent>(newsArticles,HttpStatus.OK);
+			WrappedDomainList newsArticles = WrappedDomainList.fromIterator(articles, articleEvent.getTotalArticles(), articleEvent.getTotalPages());
+			response = new ResponseEntity<WrappedDomainList>(newsArticles,HttpStatus.OK);
 		}
 
 		return response;

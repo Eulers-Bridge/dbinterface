@@ -109,7 +109,7 @@ public class VotingLocationController
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.VOTING_LOCATIONS_LABEL
 			+ "/{institutionId}")
-	public @ResponseBody ResponseEntity<FindsParent> findVotingLocations(
+	public @ResponseBody ResponseEntity<WrappedDomainList> findVotingLocations(
 			@PathVariable(value = "") Long institutionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -122,7 +122,7 @@ public class VotingLocationController
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve votingLocations from institution "
 					+ institutionId + '.');
-		ResponseEntity<FindsParent> response;
+		ResponseEntity<WrappedDomainList> response;
 		
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
@@ -132,14 +132,14 @@ public class VotingLocationController
 
 		if (!votingLocationsEvent.isEntityFound())
 		{
-			response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
 			Iterator<VotingLocation> votingLocations = VotingLocation
 					.toVotingLocationsIterator(votingLocationsEvent.getDetails().iterator());
-			FindsParent theVotingLocations = FindsParent.fromArticlesIterator(votingLocations, votingLocationsEvent.getTotalItems(), votingLocationsEvent.getTotalPages());
-			response = new ResponseEntity<FindsParent>(theVotingLocations, HttpStatus.OK);
+			WrappedDomainList theVotingLocations = WrappedDomainList.fromIterator(votingLocations, votingLocationsEvent.getTotalItems(), votingLocationsEvent.getTotalPages());
+			response = new ResponseEntity<WrappedDomainList>(theVotingLocations, HttpStatus.OK);
 		}
 		return response;
 	}
@@ -158,7 +158,7 @@ public class VotingLocationController
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = ControllerConstants.VOTING_BOOTHS_LABEL
 			+ "/{electionId}")
-	public @ResponseBody ResponseEntity<FindsParent> findVotingBooths(
+	public @ResponseBody ResponseEntity<WrappedDomainList> findVotingBooths(
 			@PathVariable(value = "") Long electionId,
 			@RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
 			@RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -171,7 +171,7 @@ public class VotingLocationController
 		if (LOG.isInfoEnabled())
 			LOG.info("Attempting to retrieve votingLocations from institution "
 					+ electionId + '.');
-		ResponseEntity<FindsParent> response;
+		ResponseEntity<WrappedDomainList> response;
 
 		Direction sortDirection = Direction.DESC;
 		if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
@@ -181,14 +181,14 @@ public class VotingLocationController
 
 		if (!votingBoothsEvent.isEntityFound())
 		{
-			return new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
 		}
 		else
 		{
 			Iterator<VotingLocation> votingLocations = VotingLocation
 					.toVotingLocationsIterator(votingBoothsEvent.getDetails().iterator());
-			FindsParent theVotingLocations = FindsParent.fromArticlesIterator(votingLocations, votingBoothsEvent.getTotalItems(), votingBoothsEvent.getTotalPages());
-			response = new ResponseEntity<FindsParent>(theVotingLocations, HttpStatus.OK);
+			WrappedDomainList theVotingLocations = WrappedDomainList.fromIterator(votingLocations, votingBoothsEvent.getTotalItems(), votingBoothsEvent.getTotalPages());
+			response = new ResponseEntity<WrappedDomainList>(theVotingLocations, HttpStatus.OK);
 		}
 		return response;
 	}

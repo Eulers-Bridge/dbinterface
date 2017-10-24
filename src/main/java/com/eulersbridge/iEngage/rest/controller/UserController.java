@@ -249,10 +249,10 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{email}" + ControllerConstants.VOTE_REMINDERS_LABEL)
   public @ResponseBody
-  ResponseEntity<FindsParent> findVoteReminders(@PathVariable String email,
-                                                @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
-                                                @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
-                                                @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
+  ResponseEntity<WrappedDomainList> findVoteReminders(@PathVariable String email,
+                                                      @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+                                                      @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+                                                      @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
   ) {
     int pageNumber = 0;
     int pageLength = 10;
@@ -262,7 +262,7 @@ public class UserController {
     if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to find existing vote reminders. " + email);
-    ResponseEntity<FindsParent> response;
+    ResponseEntity<WrappedDomainList> response;
 
     ReadAllEvent userEvent;
     AllReadEvent voteRemindersEvent;
@@ -276,15 +276,15 @@ public class UserController {
       if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
       voteRemindersEvent = userService.readVoteRemindersByEmail(new RequestReadUserEvent(email), sortDirection, pageNumber, pageLength);
     } else
-      return new ResponseEntity<FindsParent>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<WrappedDomainList>(HttpStatus.BAD_REQUEST);
 
 
     if (!voteRemindersEvent.isEntityFound()) {
-      response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+      response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
       Iterator<VoteReminderDomain> voteReminders = VoteReminderDomain.toVoteRemindersIterator(voteRemindersEvent.getDetails().iterator());
-      FindsParent theVoteReminders = FindsParent.fromArticlesIterator(voteReminders, voteRemindersEvent.getTotalItems(), voteRemindersEvent.getTotalPages());
-      response = new ResponseEntity<FindsParent>(theVoteReminders, HttpStatus.OK);
+      WrappedDomainList theVoteReminders = WrappedDomainList.fromIterator(voteReminders, voteRemindersEvent.getTotalItems(), voteRemindersEvent.getTotalPages());
+      response = new ResponseEntity<WrappedDomainList>(theVoteReminders, HttpStatus.OK);
     }
     return response;
   }
@@ -300,10 +300,10 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{email}" + ControllerConstants.VOTE_RECORDS_LABEL)
   public @ResponseBody
-  ResponseEntity<FindsParent> findVoteRecords(@PathVariable String email,
-                                              @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
-                                              @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
-                                              @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
+  ResponseEntity<WrappedDomainList> findVoteRecords(@PathVariable String email,
+                                                    @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
+                                                    @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
+                                                    @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize
   ) {
     int pageNumber = 0;
     int pageLength = 10;
@@ -316,7 +316,7 @@ public class UserController {
 
     ReadAllEvent userEvent;
     AllReadEvent voteRecordsEvent;
-    ResponseEntity<FindsParent> response;
+    ResponseEntity<WrappedDomainList> response;
 
     if (longValidator.isValid(email)) {
       Long id = longValidator.validate(email);
@@ -327,15 +327,15 @@ public class UserController {
       if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
       voteRecordsEvent = userService.readVoteRecordsByEmail(new RequestReadUserEvent(email), sortDirection, pageNumber, pageLength);
     } else
-      return new ResponseEntity<FindsParent>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<WrappedDomainList>(HttpStatus.BAD_REQUEST);
 
 
     if (!voteRecordsEvent.isEntityFound()) {
-      response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+      response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
       Iterator<VoteRecord> voteRecords = VoteRecord.toVoteRecordsIterator(voteRecordsEvent.getDetails().iterator());
-      FindsParent theVoteRecords = FindsParent.fromArticlesIterator(voteRecords, voteRecordsEvent.getTotalItems(), voteRecordsEvent.getTotalPages());
-      response = new ResponseEntity<FindsParent>(theVoteRecords, HttpStatus.OK);
+      WrappedDomainList theVoteRecords = WrappedDomainList.fromIterator(voteRecords, voteRecordsEvent.getTotalItems(), voteRecordsEvent.getTotalPages());
+      response = new ResponseEntity<WrappedDomainList>(theVoteRecords, HttpStatus.OK);
     }
     return response;
   }

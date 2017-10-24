@@ -8,7 +8,7 @@ import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails
 import com.eulersbridge.iEngage.core.services.interfacePack.ElectionService;
 import com.eulersbridge.iEngage.core.services.interfacePack.VotingLocationService;
 import com.eulersbridge.iEngage.rest.domain.Election;
-import com.eulersbridge.iEngage.rest.domain.FindsParent;
+import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.VotingLocation;
 import org.slf4j.Logger;
@@ -70,7 +70,7 @@ public class ElectionController {
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTIONS_LABEL
     + "/{institutionId}")
   public @ResponseBody
-  ResponseEntity<FindsParent> findElections(
+  ResponseEntity<WrappedDomainList> findElections(
     @PathVariable(value = "") Long institutionId,
     @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
     @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -82,7 +82,7 @@ public class ElectionController {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to retrieve elections from institution "
         + institutionId + '.');
-    ResponseEntity<FindsParent> response;
+    ResponseEntity<WrappedDomainList> response;
 
     Direction sortDirection = Direction.DESC;
     if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
@@ -91,12 +91,12 @@ public class ElectionController {
       pageNumber, pageLength);
 
     if (!electionEvent.isEntityFound()) {
-      response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+      response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
       Iterator<Election> elections = Election
         .toElectionsIterator(electionEvent.getDetails().iterator());
-      FindsParent theElections = FindsParent.fromArticlesIterator(elections, electionEvent.getTotalItems(), electionEvent.getTotalPages());
-      response = new ResponseEntity<FindsParent>(theElections, HttpStatus.OK);
+      WrappedDomainList theElections = WrappedDomainList.fromIterator(elections, electionEvent.getTotalItems(), electionEvent.getTotalPages());
+      response = new ResponseEntity<WrappedDomainList>(theElections, HttpStatus.OK);
     }
     return response;
   }

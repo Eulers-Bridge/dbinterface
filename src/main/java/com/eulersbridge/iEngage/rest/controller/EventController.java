@@ -95,7 +95,7 @@ public class EventController {
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.EVENTS_LABEL
     + "/{institutionId}")
   public @ResponseBody
-  ResponseEntity<FindsParent> findEvents(
+  ResponseEntity<WrappedDomainList> findEvents(
     @PathVariable(value = "") Long institutionId,
     @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
     @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
@@ -108,7 +108,7 @@ public class EventController {
       LOG.info("Attempting to retrieve events from institution "
         + institutionId + '.');
 
-    ResponseEntity<FindsParent> response;
+    ResponseEntity<WrappedDomainList> response;
 
     Direction sortDirection = Direction.DESC;
     if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
@@ -116,13 +116,13 @@ public class EventController {
       institutionId), sortDirection, pageNumber, pageLength);
 
     if (!evtEvent.isEntityFound()) {
-      response = new ResponseEntity<FindsParent>(HttpStatus.NOT_FOUND);
+      response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
       Iterator<Event> evts = Event.toEventsIterator(evtEvent.getDetails()
         .iterator());
-      FindsParent events = FindsParent.fromArticlesIterator(evts,
+      WrappedDomainList events = WrappedDomainList.fromIterator(evts,
         evtEvent.getTotalItems(), evtEvent.getTotalPages());
-      response = new ResponseEntity<FindsParent>(events, HttpStatus.OK);
+      response = new ResponseEntity<WrappedDomainList>(events, HttpStatus.OK);
     }
 
     return response;
