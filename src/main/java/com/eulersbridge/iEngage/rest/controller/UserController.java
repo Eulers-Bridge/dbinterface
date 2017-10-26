@@ -528,28 +528,7 @@ public class UserController {
     return result;
   }
 
-  /**
-   * Is passed all the necessary data to delete a user.
-   * The request must be a DELETE with the user email presented
-   * as the final portion of the URL.
-   * <p/>
-   * This method will return the deleted user object.
-   *
-   * @param email the email address of the user object to be deleted.
-   * @return the user object deleted.
-   */
-  @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.USER_LABEL + "/{email}")
-  public @ResponseBody
-  ResponseEntity<User> deleteUser(@PathVariable String email) {
-    if (LOG.isInfoEnabled()) LOG.info("Attempting to delete user. " + email);
-    UserDeletedEvent userEvent = userService.deleteUser(new DeleteUserEvent(email));
 
-    if (!userEvent.isEntityFound()) {
-      return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-    }
-    User restUser = User.fromUserDetails((UserDetails) userEvent.getDetails());
-    return new ResponseEntity<User>(restUser, HttpStatus.OK);
-  }
 
 
   /**

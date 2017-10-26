@@ -545,33 +545,6 @@ public class UserControllerTest
 		.andExpect(status().isConflict())	;
 	}
 	
-	@Test
-	public void deleteShouldReturnUserCorrectly() throws Exception
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingDelete()");
-		ReadUserEvent readData=RestDataFixture.customEmailUser2(email);
-		UserDetails dets=(UserDetails) readData.getDetails();
-		UserDeletedEvent testData=new UserDeletedEvent(email, dets);
-		when (userService.deleteUser(any(DeleteUserEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(delete(urlPrefix+"/{email}/",email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))		
-		.andExpect(jsonPath("$.givenName",is(dets.getGivenName())))
-		.andExpect(jsonPath("$.familyName",is(dets.getFamilyName())))
-		.andExpect(jsonPath("$.gender",is(dets.getGender())))
-		.andExpect(jsonPath("$.nationality",is(dets.getNationality())))
-		.andExpect(jsonPath("$.yearOfBirth",is(dets.getYearOfBirth())))
-		.andExpect(jsonPath("$.accountVerified",is(dets.isAccountVerified())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
-		.andExpect(jsonPath("$.email",is(dets.getEmail())))
-		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(status().isOk())	;
-	}
-	
-	@Test
-	public void deleteShouldReturnUserNotFound() throws Exception
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingDelete()");
-		when (userService.deleteUser(any(DeleteUserEvent.class))).thenReturn(UserDeletedEvent.notFound(email2));
-		this.mockMvc.perform(delete(urlPrefix+"/{email}/",email2).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotFound());
-	}
+
+
 }

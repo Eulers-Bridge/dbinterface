@@ -40,8 +40,8 @@ public interface UserService extends UserDetailsService {
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #updateUserEvent.getEmail()==authentication.name)")
   public UpdatedEvent updateUser(UpdateUserEvent updateUserEvent);
 
-  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #deleteUserEvent.getEmail()==authentication.name)")
-  public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent);
+//  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #deleteUserEvent.getEmail()==authentication.name)")
+//  public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent);
 
   public UserAccountVerifiedEvent validateUserAccount(VerifyUserAccountEvent verifyUserAccountEvent);
 

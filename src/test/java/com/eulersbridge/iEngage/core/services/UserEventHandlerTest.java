@@ -433,37 +433,6 @@ public class UserEventHandlerTest {
     assertFalse(rane.isEntityFound());
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#deleteUser(com.eulersbridge.iEngage.core.events.users.DeleteUserEvent)}.
-   */
-  @Test
-  public void testDeleteUser() {
-    User userData = DatabaseDataFixture.populateUserGnewitt();
-    DeleteUserEvent deleteUserEvent = new DeleteUserEvent(userData.getEmail());
-    when(uRepo.findByEmail(any(String.class))).thenReturn(userData);
-    doNothing().when(uRepo).delete(any(Long.class));
-    UserDeletedEvent nUDe = userServiceMocked.deleteUser(deleteUserEvent);
-
-    assertNotNull(nUDe);
-    assertTrue(nUDe.isEntityFound());
-    assertTrue(nUDe.isDeletionCompleted());
-    assertEquals(nUDe.getEmail(), userData.getEmail());
-
-  }
-
-  @Test
-  public void testDeleteUserNotFound() {
-
-    User userData = DatabaseDataFixture.populateUserGnewitt();
-    DeleteUserEvent deleteUserEvent = new DeleteUserEvent(userData.getEmail());
-    when(uRepo.findByEmail(any(String.class))).thenReturn(null);
-    UserDeletedEvent nUDe = userServiceMocked.deleteUser(deleteUserEvent);
-
-    assertNotNull(nUDe);
-    assertFalse(nUDe.isEntityFound());
-    assertFalse(nUDe.isDeletionCompleted());
-    assertEquals(nUDe.getEmail(), userData.getEmail());
-  }
 
   /**
    * Test method for {@link com.eulersbridge.iEngage.core.services.UserEventHandler#updateUser(com.eulersbridge.iEngage.core.events.users.UpdateUserEvent)}.

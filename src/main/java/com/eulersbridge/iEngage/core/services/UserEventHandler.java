@@ -348,19 +348,19 @@ public class UserEventHandler implements UserService {
     return nare;
   }
 
-  @Override
-  @Transactional
-  public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent) {
-    if (LOG.isDebugEnabled())
-      LOG.debug("requestDeleteUser(" + deleteUserEvent.getEmail() + ")");
-    User user = userRepository.findByEmail(deleteUserEvent.getEmail());
-    if (user == null) {
-      return UserDeletedEvent.notFound(deleteUserEvent.getEmail());
-    }
-    userRepository.delete(user.getNodeId());
-    return new UserDeletedEvent(deleteUserEvent.getEmail(),
-      user.toUserDetails());
-  }
+//  @Override
+//  @Transactional
+//  public UserDeletedEvent deleteUser(DeleteUserEvent deleteUserEvent) {
+//    if (LOG.isDebugEnabled())
+//      LOG.debug("requestDeleteUser(" + deleteUserEvent.getEmail() + ")");
+//    User user = userRepository.findByEmail(deleteUserEvent.getEmail());
+//    if (user == null) {
+//      return UserDeletedEvent.notFound(deleteUserEvent.getEmail());
+//    }
+//    userRepository.delete(user.getNodeId());
+//    return new UserDeletedEvent(deleteUserEvent.getEmail(),
+//      user.toUserDetails());
+//  }
 
   @Override
   @Transactional
