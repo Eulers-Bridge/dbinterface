@@ -100,4 +100,20 @@ public class ContactController {
     RequestHandledEvent<WrappedDomainList<UserProfile>> res = contactRequestService.readFriendsList(userEmail);
     return res.toResponseEntity();
   }
+
+  @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.CONTACT_LABEL + "/{friendEmail}")
+  public @ResponseBody
+  ResponseEntity deleteFriendship(@PathVariable String friendEmail) {
+    String userEmail = Util.getUserEmailFromSession();
+    RequestHandledEvent<WrappedDomainList<UserProfile>> res = contactRequestService.deleteFriend(userEmail, friendEmail);
+    return res.toResponseEntity();
+  }
+
+  @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.USER_LABEL + ControllerConstants.CONTACT_REQUEST_LABEL + "/{contactRequestId}")
+  public @ResponseBody
+  ResponseEntity revokeContactRequest(@PathVariable Long contactRequestId) {
+    String userEmail = Util.getUserEmailFromSession();
+    RequestHandledEvent<WrappedDomainList<UserProfile>> res = contactRequestService.revokeContactRequest(userEmail, contactRequestId);
+    return res.toResponseEntity();
+  }
 }

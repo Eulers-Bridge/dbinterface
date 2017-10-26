@@ -5,13 +5,9 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
-import com.eulersbridge.iEngage.core.events.contactRequest.*;
-import com.eulersbridge.iEngage.core.events.contacts.ContactDetails;
-import com.eulersbridge.iEngage.core.notification.SNSNotification;
 import com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService;
 import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
-import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.ContactRepository;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
@@ -19,20 +15,12 @@ import com.eulersbridge.iEngage.database.repository.UserRepository;
 import com.eulersbridge.iEngage.rest.domain.ContactRequestDomain;
 import com.eulersbridge.iEngage.rest.domain.UserProfile;
 import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -131,7 +119,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
 //    contact.setContactor(req.getCreator());
 //    contact.setContactee(req.getTarget());
 //    contact.setTimestamp(System.currentTimeMillis());
-    Contact contact = contactRepo.createUnique(req.getCreator().getEmail(),
+    Contact contact = contactRepo.createUniqueFriendship(req.getCreator().getEmail(),
       req.getTarget().getEmail(), System.currentTimeMillis());
     if (contact == null)
       return RequestHandledEvent.failed();
@@ -178,5 +166,25 @@ public class ContactRequestEventHandler implements ContactRequestService {
     WrappedDomainList<UserProfile> wl =
       new WrappedDomainList(friendsProfiles, friendsProfiles.size(), 1);
     return new RequestHandledEvent(wl);
+  }
+
+  @Override
+  public RequestHandledEvent deleteFriend(String userEmail, String friendEmail) {
+    if (!emailValidator.isValid(userEmail) || !emailValidator.isValid(friendEmail))
+      return RequestHandledEvent.badRequest();
+    Long delId = contactRepo.deleteFriendship(userEmail, friendEmail);
+    if (delId == null)
+      return RequestHandledEvent.targetNotFound();
+    return RequestHandledEvent.success();
+  }
+
+  @Override
+  public RequestHandledEvent revokeContactRequest(String userEmail, Long requestId) {
+    if (!emailValidator.isValid(userEmail))
+      return RequestHandledEvent.badRequest();
+    Long delId = contactRequestRepository.revokeSentRequest(userEmail, requestId);
+    if (delId == null)
+      return RequestHandledEvent.targetNotFound();
+    return RequestHandledEvent.success();
   }
 }

@@ -20,8 +20,6 @@ import java.util.List;
 @Repository
 public interface ContactRequestRepository extends
   GraphRepository<ContactRequest> {
-  @Query("MATCH (u:`" + DataConstants.USER + "`)-[r:`" + DataConstants.CONTACT_REQUEST_LABEL + "`]-(c:`" + DataConstants.CONTACT_REQUEST + "`) where id(u)={userId} and c.contactDetails={contactInfo} RETURN c")
-  ContactRequest findContactRequestByUserIdContactInfo(@Param("userId") Long userId, @Param("contactInfo") String contactInfo);
 
   @Query("MATCH l=(x)-[*0..1]-(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User)-[*0..1]-(y) where u.email={userEmail} and (x:Institution or x:Badge or x:Task or id(x)=id(u)) and (y:Institution or y:Badge or y:Task or id(t)=id(y)) return l order by r.requestDate DESC")
   List<ContactRequest> findSentRequests(@Param("userEmail") String userEmail);
@@ -35,5 +33,8 @@ public interface ContactRequestRepository extends
 
   @Query("MATCH l= (u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where id(r)={requestId} return l")
   ContactRequest findExistingRequest(@Param("requestId") Long requestId);
+
+  @Query("MATCH (u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) WHERE u.email={userEmail} and id(r)={requestId} WITH r, id(r) as id DELETE r return id")
+  Long revokeSentRequest(@Param("userEmail") String userEmail, @Param("requestId") Long requestId);
 
 }

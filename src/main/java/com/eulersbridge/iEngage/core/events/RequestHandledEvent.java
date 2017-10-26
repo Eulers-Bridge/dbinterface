@@ -34,6 +34,10 @@ public class RequestHandledEvent<T> {
     this.responseEntity = responseEntity;
   }
 
+  public static RequestHandledEvent success(){
+    return new RequestHandledEvent(true);
+  }
+
   public static RequestHandledEvent userNotFound() {
     RequestHandledEvent r = new RequestHandledEvent(false);
     r.setUserNotFound(Boolean.TRUE);

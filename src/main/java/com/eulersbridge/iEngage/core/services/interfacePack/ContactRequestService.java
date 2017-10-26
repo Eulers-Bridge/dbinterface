@@ -35,6 +35,12 @@ public interface ContactRequestService {
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
   public RequestHandledEvent readFriendsList(String userEmail);
 
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #userEmail==authentication.name)")
+  public RequestHandledEvent deleteFriend(String userEmail, String friendEmail);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #userEmail==authentication.name)")
+  public RequestHandledEvent revokeContactRequest(String userEmail, Long requestId);
+
 //  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
 //  public ReadEvent readContactRequestByUserIdContactNumber(ReadContactRequestEvent readContactRequestEvent);
 //

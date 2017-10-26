@@ -14,5 +14,8 @@ import org.springframework.stereotype.Repository;
 public interface ContactRepository extends GraphRepository<Contact> {
 
   @Query("Match (u1:User),(u2:User) where u1.email={email1} and u2.email={email2} CREATE UNIQUE (u1)-[r:HAS_CONTACT]->(u2) SET r.timestamp={timestamp} return (u1)-[r]->(u2)")
-  Contact createUnique(@Param("email1") String senderEmail, @Param("email2") String receiverEmail, @Param("timestamp") Long timestamp);
+  Contact createUniqueFriendship(@Param("email1") String senderEmail, @Param("email2") String receiverEmail, @Param("timestamp") Long timestamp);
+
+  @Query("Match (u1:User)-[r:HAS_CONTACT]-(u2:User) where u1.email={userEmail} and u2.email={friendEmail} with r, id(r) as id delete r return id")
+  Long deleteFriendship(@Param("userEmail") String userEmail, @Param("friendEmail") String friendEmail);
 }
