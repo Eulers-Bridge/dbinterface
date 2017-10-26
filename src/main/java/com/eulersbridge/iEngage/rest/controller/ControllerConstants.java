@@ -8,6 +8,7 @@ package com.eulersbridge.iEngage.rest.controller;
  */
 public class ControllerConstants {
   public static final String API_PREFIX = "/api";
+  public static final String RANKING_LABEL = "/ranking";
   public static final String BADGE_LABEL = "/badge";
   public static final String BADGES_LABEL = BADGE_LABEL + 's';
   public static final String CANDIDATE_LABEL = "/candidate";

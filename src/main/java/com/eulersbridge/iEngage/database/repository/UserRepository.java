@@ -105,4 +105,7 @@ public interface UserRepository extends GraphRepository<User> {
 
   @Query("Match (u1:User), (u2:User) where u1.email={userEmail1} and u2.email={userEmail2} return Exists ( (u1)-[:HAS_CONTACT]-(u2) )")
   boolean isFriend(@Param("userEmail1") String userEmail1, @Param("userEmail2") String userEmail2);
+
+  @Query("Match (u:User)-[:HAS_CONTACT]-(x:User) return u, count(x) as numOfContacts order by numOfContacts DESC limit 20")
+  List<User> getTopRankingUsersByNumOfContacts();
 }

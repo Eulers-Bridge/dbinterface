@@ -11,6 +11,7 @@ import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.rest.domain.PPSEQuestions;
 import com.eulersbridge.iEngage.rest.domain.VoteReminderDomain;
 import com.eulersbridge.iEngage.security.SecurityConstants;
+import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
@@ -100,5 +101,8 @@ public interface UserService extends UserDetailsService {
 
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #userEmail==authentication.name)")
   public void updateSNSTokens(String userEmail, String topicArn, String deviceToken);
+
+  @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
+  public RequestHandledEvent getRankedUserProfiles(String ranKey);
 }
 

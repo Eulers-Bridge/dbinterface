@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author Greg Newitt
+ * @author Yikai Gong
  */
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)

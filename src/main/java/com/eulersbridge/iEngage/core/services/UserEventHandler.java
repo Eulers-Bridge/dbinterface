@@ -15,6 +15,7 @@ import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.rest.domain.PPSEQuestions;
 import com.eulersbridge.iEngage.rest.domain.UserProfile;
 import com.eulersbridge.iEngage.rest.domain.VoteReminderDomain;
+import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import com.eulersbridge.iEngage.security.UserCredentialDetails;
@@ -41,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserEventHandler implements UserService {
@@ -1064,5 +1066,19 @@ public class UserEventHandler implements UserService {
     user.setArn(topicArn);
     user.setDeviceToken(deviceToken);
     userRepository.save(user, 0);
+  }
+
+  @Override
+  public RequestHandledEvent getRankedUserProfiles(String ranKey) {
+    if (ranKey.equals("numOfContacts")){
+      List<UserProfile> sortedUserProfiles =
+        userRepository.getTopRankingUsersByNumOfContacts().stream().map(u->
+          UserProfile.fromUserDetails(u.toUserDetails()))
+          .collect(Collectors.toList());
+      WrappedDomainList<UserProfile> wl =
+        new WrappedDomainList<>(sortedUserProfiles, sortedUserProfiles.size(), 1);
+      return new RequestHandledEvent(wl);
+    }
+    return RequestHandledEvent.badRequest();
   }
 }
