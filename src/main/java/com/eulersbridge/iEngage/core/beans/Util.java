@@ -108,9 +108,9 @@ public class Util {
     return noti;
   }
 
-  public static SNSNotification buildAddedVoteRemindNotifi(User receiver, Election election) {
+  public static SNSNotification buildAddedVoteRemindNotifi(User sender, User receiver, Election election) {
     String subject = "Your friend's Vote Reminder";
-    String senderName = getUserFullName(receiver);
+    String senderName = getUserFullName(sender);
     String msg = senderName + " will be a voter in the \""+ election.getTitle() +"\". Play your part [U+1F5F3]";
     String arn = receiver.getArn();
     String devToken = receiver.getDeviceToken();
@@ -120,8 +120,8 @@ public class Util {
 
   public void boardcastNotifiToFriends(User user, Election election, UserRepository userRepo){
     List<User> friendsList = userRepo.findContactsZeroDepth(user.getEmail());
-    friendsList.forEach(u->{
-      this.sendNotification(Util.buildAddedVoteRemindNotifi(u, election));
+    friendsList.forEach(receiver->{
+      this.sendNotification(Util.buildAddedVoteRemindNotifi(user, receiver, election));
     });
   }
 }
