@@ -113,16 +113,12 @@ public class ContactRequestEventHandler implements ContactRequestService {
 
     boolean isAlreadyFriend =
       userRepository.isFriend(req.getCreator().getEmail(), req.getTarget().getEmail());
-    if (isAlreadyFriend)
-      return RequestHandledEvent.conflicted();
-//    Contact contact = new Contact();
-//    contact.setContactor(req.getCreator());
-//    contact.setContactee(req.getTarget());
-//    contact.setTimestamp(System.currentTimeMillis());
-    Contact contact = contactRepo.createUniqueFriendship(req.getCreator().getEmail(),
-      req.getTarget().getEmail(), System.currentTimeMillis());
-    if (contact == null)
-      return RequestHandledEvent.failed();
+    if (!isAlreadyFriend){
+      Contact contact = contactRepo.createUniqueFriendship(req.getCreator().getEmail(),
+        req.getTarget().getEmail(), System.currentTimeMillis());
+      if (contact == null)
+        return RequestHandledEvent.failed();
+    }
 
     req.setAccepted(true);
     req.setResponseDate(System.currentTimeMillis());
