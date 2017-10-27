@@ -38,7 +38,7 @@ public class UserDetails extends Details {
 //  private Integer totalTasks;
   private Integer numOfCompBadges;
 //  private Integer totalBadges;
-  private Long numOfContacts;
+  private Integer numOfContacts;
 
   private Long experience = 0l;
 
@@ -131,11 +131,11 @@ public class UserDetails extends Details {
 //    this.totalBadges = totalBadges;
 //  }
 
-  public Long getNumOfContacts() {
+  public Integer getNumOfContacts() {
     return numOfContacts;
   }
 
-  public void setNumOfContacts(Long numOfContacts) {
+  public void setNumOfContacts(Integer numOfContacts) {
     this.numOfContacts = numOfContacts;
   }
 

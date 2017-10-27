@@ -33,7 +33,7 @@ public class UserProfile extends ResourceSupport {
   private Integer totalTasks;
   private Integer numOfCompBadges;
   private Integer totalBadges;
-  private Long numOfContacts;
+  private Integer numOfContacts;
 
   private Long experience;
   private Long level;
@@ -96,11 +96,11 @@ public class UserProfile extends ResourceSupport {
     this.totalBadges = totalBadges;
   }
 
-  public Long getNumOfContacts() {
+  public Integer getNumOfContacts() {
     return numOfContacts;
   }
 
-  public void setNumOfContacts(Long numOfContacts) {
+  public void setNumOfContacts(Integer numOfContacts) {
     this.numOfContacts = numOfContacts;
   }
 

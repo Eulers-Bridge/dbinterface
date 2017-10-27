@@ -59,7 +59,7 @@ public class User extends Node {
   private List<ContactRequest> recConReq;
 
   @Relationship(type = DataConstants.CONTACT_LABEL, direction = Relationship.UNDIRECTED)
-  private List<Node> friends;
+  private List<Contact> friends;
   @Relationship(type = DataConstants.HAS_COMPLETED_TASK_LABEL, direction = Relationship.OUTGOING)
   private List<TaskComplete> completedTasks;
   @Relationship(type = DataConstants.HAS_COMPLETED_BADGE_LABEL, direction = Relationship.OUTGOING)
@@ -327,15 +327,11 @@ public class User extends Node {
     this.photos = photos;
   }
 
-  public List<Node> getFriends() {
+  public List<Contact> getFriends() {
     return friends;
   }
 
-  public List<User> getFriends$(){
-    return castList(friends, User.class);
-  }
-
-  public void setFriends(List<Node> friends) {
+  public void setFriends(List<Contact> friends) {
     this.friends = friends;
   }
 
@@ -391,6 +387,7 @@ public class User extends Node {
 
     details.setNumOfCompBadges(getNumOfCompBadges());
     details.setNumOfCompTasks(getNumOfCompTasks());
+    details.setNumOfContacts(getNumOfContacts());
     return details;
   }
 
