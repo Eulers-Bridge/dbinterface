@@ -74,14 +74,5 @@ public class Node {
       .collect(Collectors.toList());
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof Node))
-      return false;
-    Node t = (Node) obj;
-    if (!t.getNodeId().equals(getNodeId()))
-      return false;
 
-    return true;
-  }
 }

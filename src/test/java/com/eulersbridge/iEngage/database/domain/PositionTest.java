@@ -196,44 +196,5 @@ public class PositionTest {
     assertNotEquals(test2, test1);
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Position#equals(java.lang.Object)}.
-   */
-  @Test
-  public final void testEqualsObject() {
-    Position positionTest = null;
-    assertNotEquals(positionTest, position);
-    assertNotEquals(position, positionTest);
-    String notElection = "";
-    assertNotEquals(position, notElection);
-    positionTest = DatabaseDataFixture.populatePosition1();
-    assertEquals(positionTest, positionTest);
-    assertEquals(positionTest, position);
-
-    positionTest.setNodeId(54l);
-    checkNotEquals(position, positionTest);
-    position.setNodeId(null);
-    checkNotEquals(position, positionTest);
-    positionTest.setNodeId(null);
-
-    assertEquals(position, positionTest);
-    assertEquals(positionTest, position);
-
-    positionTest.setDescription("Some description");
-    assertNotEquals(position, positionTest);
-    positionTest.setDescription(null);
-    checkNotEquals(positionTest, position);
-    positionTest.setDescription(position.getDescription());
-
-    positionTest.setName("title");
-    assertNotEquals(position, positionTest);
-    positionTest.setName(null);
-    checkNotEquals(position, positionTest);
-    positionTest.setName(position.getName());
-
-    positionTest.setElection(null);
-    checkNotEquals(position, positionTest);
-    positionTest.setElection(position.getElection$());
-  }
 
 }

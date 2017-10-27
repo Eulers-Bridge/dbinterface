@@ -24,8 +24,7 @@ import java.util.Iterator;
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
 public class ElectionController {
-  private static Logger LOG = LoggerFactory
-    .getLogger(ElectionController.class);
+  private static Logger LOG = LoggerFactory.getLogger(ElectionController.class);
 
   @Autowired
   ElectionService electionService;
@@ -36,53 +35,18 @@ public class ElectionController {
     if (LOG.isDebugEnabled()) LOG.debug("ElectionController()");
   }
 
-
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL + "/{electionId}")
   public @ResponseBody
   ResponseEntity<ElectionDomain> findElection(@PathVariable Long electionId) {
-    RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(
-      electionId);
-    ReadEvent readElectionEvent = electionService
-      .readElection(requestReadElectionEvent);
-    if (readElectionEvent.isEntityFound()) {
-      ElectionDomain electionDomain = ElectionDomain.fromElectionDetails((ElectionDetails) readElectionEvent.getDetails());
-      return new ResponseEntity<ElectionDomain>(electionDomain, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<ElectionDomain>(HttpStatus.NOT_FOUND);
-    }
+    RequestHandledEvent res = electionService.readElection(electionId);
+    return res.toResponseEntity();
   }
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTIONS_LABEL + "/{institutionId}")
   public @ResponseBody
-  ResponseEntity<WrappedDomainList> findElections(
-    @PathVariable(value = "") Long institutionId,
-    @RequestParam(value = "direction", required = false, defaultValue = ControllerConstants.DIRECTION) String direction,
-    @RequestParam(value = "page", required = false, defaultValue = ControllerConstants.PAGE_NUMBER) String page,
-    @RequestParam(value = "pageSize", required = false, defaultValue = ControllerConstants.PAGE_LENGTH) String pageSize) {
-    int pageNumber = 0;
-    int pageLength = 10;
-    pageNumber = Integer.parseInt(page);
-    pageLength = Integer.parseInt(pageSize);
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to retrieve elections from institution "
-        + institutionId + '.');
-    ResponseEntity<WrappedDomainList> response;
-
-    Direction sortDirection = Direction.DESC;
-    if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
-    AllReadEvent electionEvent = electionService.readElections(
-      new ReadAllEvent(institutionId), sortDirection,
-      pageNumber, pageLength);
-
-    if (!electionEvent.isEntityFound()) {
-      response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
-    } else {
-      Iterator<ElectionDomain> elections = ElectionDomain
-        .toElectionsIterator(electionEvent.getDetails().iterator());
-      WrappedDomainList theElections = WrappedDomainList.fromIterator(elections, electionEvent.getTotalItems(), electionEvent.getTotalPages());
-      response = new ResponseEntity<WrappedDomainList>(theElections, HttpStatus.OK);
-    }
-    return response;
+  ResponseEntity<WrappedDomainList<ElectionDomain>> findElections(@PathVariable Long institutionId) {
+    RequestHandledEvent res = electionService.readElections(institutionId, 0, 1000);
+    return res.toResponseEntity();
   }
 
   // Create

@@ -10,6 +10,7 @@ import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.rest.domain.ElectionDomain;
 import com.eulersbridge.iEngage.rest.domain.InstitutionDomain;
+import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Yikai Gong
@@ -57,17 +60,14 @@ public class ElectionEventHandler implements ElectionService {
   }
 
   @Override
-  public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent) {
-    Election election = eleRepository.findOne(requestReadElectionEvent.getNodeId());
-    ReadEvent readElectionEvent;
-    if (election != null) {
-      readElectionEvent = new ReadElectionEvent(election.getNodeId(), election.toElectionDetails());
-    } else {
-      readElectionEvent = ReadElectionEvent.notFound(requestReadElectionEvent.getNodeId());
-    }
-    return readElectionEvent;
+  public RequestHandledEvent readElection(Long electionId) {
+    if (electionId == null)
+      return RequestHandledEvent.badRequest();
+    Election election = eleRepository.findOne(electionId);
+    if (election == null)
+      return RequestHandledEvent.targetNotFound();
+    return new RequestHandledEvent<>(election.toDomain());
   }
-
 
   @Override
   public ReadEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent) {
@@ -131,47 +131,16 @@ public class ElectionEventHandler implements ElectionService {
   }
 
   @Override
-  public AllReadEvent readElections(ReadAllEvent readElectionsEvent, Direction sortDirection, int pageNumber, int pageLength) {
-    Long institutionId = readElectionsEvent.getParentId();
-    Page<Election> elections = null;
-    ArrayList<ElectionDetails> dets = new ArrayList<ElectionDetails>();
-    AllReadEvent nare = null;
-
-    if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + institutionId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "e.start");
-    elections = eleRepository.findByInstitutionId(institutionId, pageable);
-    if (elections != null) {
-      Long numElements = elections.getTotalElements();
-      Integer numPages = elections.getTotalPages();
-      if (LOG.isDebugEnabled())
-        LOG.debug("Total elements = " + numElements + " total pages =" + numPages);
-      Iterator<Election> iter = elections.iterator();
-      while (iter.hasNext()) {
-        Election na = iter.next();
-        if (LOG.isTraceEnabled())
-          LOG.trace("Converting to details - " + na.getTitle());
-        ElectionDetails det = na.toElectionDetails();
-        dets.add(det);
-      }
-      if (0 == dets.size()) {
-        // Need to check if we actually found instId.
-        Institution inst = instRepository.findOne(institutionId);
-        if ((null == inst) ||
-          ((null == inst.getName()) || ((null == inst.getCampus()) && (null == inst.getState()) && (null == inst.getCountry())))) {
-          if (LOG.isDebugEnabled())
-            LOG.debug("Null or null properties returned by findOne(InstitutionId)");
-          nare = AllReadEvent.notFound(null);
-        } else {
-          nare = new AllReadEvent(institutionId, dets, numElements, numPages);
-        }
-      } else {
-        nare = new AllReadEvent(institutionId, dets, numElements, numPages);
-      }
-    } else {
-      if (LOG.isDebugEnabled())
-        LOG.debug("Null returned by findByInstitutionId");
-      nare = AllReadEvent.notFound(null);
-    }
-    return nare;
+  public RequestHandledEvent readElections(Long institutionID, int pageIndex, int pageSize) {
+    if (institutionID == null || pageIndex < 0 || pageSize <= 0)
+      return RequestHandledEvent.badRequest();
+    Institution ins = instRepository.findOne(institutionID, 0);
+    if (ins == null)
+      return RequestHandledEvent.targetNotFound();
+    List<ElectionDomain> elections =
+      eleRepository.findByInstitutionId(ins.getNodeId()).stream()
+        .map(Election::toDomain).collect(Collectors.toList());
+    WrappedDomainList<ElectionDomain> wl = new WrappedDomainList<>(elections, elections.size(), 1);
+    return new RequestHandledEvent<>(wl);
   }
 }

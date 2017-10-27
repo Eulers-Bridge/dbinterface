@@ -142,51 +142,6 @@ public class VoteRecordTest
 		assertNotNull("Not yet implemented",vr.toString());
 	}
 
-	@Test
-	public final void testEqualsObject() 
-	{
-		VoteRecord vrTest=null;
-		assertNotEquals(vrTest,vr);
-		assertNotEquals(vr,vrTest);
-		String notElection="";
-		assertNotEquals(vr,notElection);
-		vrTest=DatabaseDataFixture.populateVoteRecord1();
-		assertEquals(vrTest,vrTest);
-		assertEquals(vrTest,vr);
-		vrTest.setNodeId(54l);
-		assertNotEquals(vr, vrTest);
-		assertNotEquals(vrTest, vr);
-		vr.setNodeId(null);
-		assertNotEquals(vr, vrTest);
-		assertNotEquals(vrTest, vr);
-		vrTest.setNodeId(null);
-		assertEquals(vr, vrTest);
-		assertEquals(vrTest, vr);
-		vrTest.setLocation("Something else");
-		assertNotEquals(vr, vrTest);
-		vrTest.setLocation(null);
-		assertNotEquals(vr, vrTest);
-		assertNotEquals(vrTest, vr);
-		vrTest.setLocation(vr.getLocation());
-		vrTest.setDate(54l);
-		assertNotEquals(vr, vrTest);
-		vrTest.setDate(null);
-		assertNotEquals(vr, vrTest);
-		assertNotEquals(vrTest, vr);
-		vrTest.setDate(vr.getDate());
-		vrTest.setElection(new Election());
-		assertNotEquals(vr, vrTest);
-		vrTest.setElection(null);
-		assertNotEquals(vr, vrTest);
-		assertNotEquals(vrTest, vr);
-		vrTest.setElection(vr.getElection());
-		vrTest.setVoter(new User());
-		assertNotEquals(vr, vrTest);
-		vrTest.setVoter(null);
-		assertNotEquals(vr, vrTest);
-		assertNotEquals(vrTest, vr);
-		vrTest.setVoter(vr.getVoter());
-	}
 
 	@Test
 	public final void testHashCode() 

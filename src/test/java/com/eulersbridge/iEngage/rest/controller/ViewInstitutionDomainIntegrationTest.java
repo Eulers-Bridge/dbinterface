@@ -105,7 +105,6 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.[0].country",is(insts.get(0).getCountryName())))
 		.andExpect(jsonPath("$.[0].institutionId",is(insts.get(0).getNodeId().intValue())))
 		.andExpect(jsonPath("$.[0].links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
 	
@@ -138,7 +137,6 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.[0].country",is(insts.get(0).getCountryName())))
 		.andExpect(jsonPath("$.[0].institutionId",is(insts.get(0).getNodeId().intValue())))
 		.andExpect(jsonPath("$.[0].links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
 	
@@ -170,7 +168,6 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.country",is(dets.getCountryName())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
 	
@@ -201,7 +198,6 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.country",is(dets.getCountryName())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
 	
@@ -219,7 +215,6 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk());
 	}
 	
@@ -249,7 +244,6 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.nodeId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isCreated());
 	}
 	
@@ -295,7 +289,6 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.country",is(dets.getCountryName())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
 	
@@ -364,7 +357,6 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.country",is(dets.getCountryName())))
 		.andExpect(jsonPath("$.institutionId",is(dets.getNodeId().intValue())))
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(content().string(returnedContent))
 		.andExpect(status().isCreated());
 	}
 	

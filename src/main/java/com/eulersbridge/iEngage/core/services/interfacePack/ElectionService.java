@@ -12,8 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface ElectionService {
 
-  @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent);
+  @PreAuthorize("hasAnyRole('" + SecurityConstants.USER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
+  public RequestHandledEvent readElection(Long electionId);
 
   @PreAuthorize("hasAnyRole('" + SecurityConstants.RETURNING_OFFICER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
   public RequestHandledEvent createElection(ElectionDomain electionDomain);
@@ -31,7 +31,6 @@ public interface ElectionService {
   public UpdatedEvent updateElection(UpdateElectionEvent updateElectionEvent);
 
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public AllReadEvent readElections(ReadAllEvent readElectionsEvent,
-                                    Direction sortDirection, int pageNumber, int pageLength);
+  public RequestHandledEvent readElections(Long institutionID, int pageIndex, int pageSize);
 
 }

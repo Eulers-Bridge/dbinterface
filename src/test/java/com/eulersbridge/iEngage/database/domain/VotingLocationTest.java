@@ -203,45 +203,7 @@ public class VotingLocationTest
 		votingLocationTest.setOwner(votingLocation.getOwner());
 		}
 
-	/**
-	 * Test method for {@link java.lang.Object#equals(java.lang.Object)}.
-	 */
-	@Test
-	public final void testEquals()
-	{
-		VotingLocation votingLocationTest=null;
-		assertNotEquals(votingLocationTest,votingLocation);
-		assertNotEquals(votingLocation,votingLocationTest);
-		String notElection="";
-		assertNotEquals(votingLocation,notElection);
-		votingLocationTest=DatabaseDataFixture.populateVotingLocation1();
-		assertEquals(votingLocationTest,votingLocationTest);
-		assertEquals(votingLocationTest,votingLocation);
-		
-		votingLocationTest.setNodeId(54l);
-		checkNotEquals(votingLocation,votingLocationTest);
-		votingLocation.setNodeId(null);
-		checkNotEquals(votingLocation,votingLocationTest);
-		votingLocationTest.setNodeId(null);
-		
-		assertEquals(votingLocation, votingLocationTest);
-		assertEquals(votingLocationTest, votingLocation);
-		
-		votingLocationTest.setInformation("Some description");
-		assertNotEquals(votingLocation, votingLocationTest);
-		votingLocationTest.setInformation(null);
-		checkNotEquals(votingLocationTest, votingLocation);
-		votingLocationTest.setInformation(votingLocation.getInformation());
-		
-		votingLocationTest.setName("title");
-		assertNotEquals(votingLocation, votingLocationTest);
-		votingLocationTest.setName(null);
-		checkNotEquals(votingLocation, votingLocationTest);
-		votingLocationTest.setName(votingLocation.getName());
-		
-		votingLocationTest.setOwner(null);
-		checkNotEquals(votingLocation, votingLocationTest);
-	}
+
 
 	/**
 	 * Test method for {@link java.lang.Object#toString()}.

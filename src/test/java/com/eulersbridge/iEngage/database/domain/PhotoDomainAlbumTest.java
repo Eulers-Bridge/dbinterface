@@ -149,13 +149,7 @@ public class PhotoDomainAlbumTest {
     assertEquals(created, photoAlbum.getCreated());
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#getOwner()}.
-   */
-  @Test
-  public final void testGetOwner() {
-    assertEquals(photoAlbum.getOwner(), photoAlbum2.getOwner());
-  }
+
 
   /**
    * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#(com.eulersbridge.iEngage.database.domain)}.
@@ -166,8 +160,6 @@ public class PhotoDomainAlbumTest {
     assertNotEquals(owner, photoAlbum.getOwner());
     photoAlbum.setOwner(owner);
     assertEquals(owner, photoAlbum.getOwner());
-    Node owner2 = new Node(543l);
-    assertEquals(owner2, photoAlbum.getOwner());
   }
 
   /**
@@ -189,21 +181,6 @@ public class PhotoDomainAlbumTest {
     assertEquals(modified, photoAlbum.getModified());
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#fromPhotoAlbumDetails(com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails)}.
-   */
-  @Test
-  public final void testFromPhotoAlbumDetails() {
-    PhotoAlbumDetails dets = photoAlbum.toPhotoAlbumDetails();
-    photoAlbum2 = PhotoAlbum.fromPhotoAlbumDetails(dets);
-    assertEquals(photoAlbum.getNodeId(), photoAlbum2.getNodeId());
-    assertEquals(photoAlbum.getName(), photoAlbum2.getName());
-    assertEquals(photoAlbum.getDescription(), photoAlbum2.getDescription());
-    assertEquals(photoAlbum.getCreated(), photoAlbum2.getCreated());
-    assertEquals(photoAlbum.getModified(), photoAlbum2.getModified());
-    assertEquals(photoAlbum.getOwner(), photoAlbum2.getOwner());
-    assertEquals(photoAlbum.getCreator(), photoAlbum2.getCreator());
-  }
 
   /**
    * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#toPhotoAlbumDetails()}.
@@ -292,70 +269,7 @@ public class PhotoDomainAlbumTest {
     photoAlbum2.setOwner(photoAlbum.getOwner());
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#equals(java.lang.Object)}.
-   */
-  @Test
-  public final void testEqualsObject() {
-    photoAlbum2 = null;
-    assertNotEquals(photoAlbum2, photoAlbum);
-    assertNotEquals(photoAlbum, photoAlbum2);
-    String notElection = "";
-    assertNotEquals(photoAlbum, notElection);
-    photoAlbum2 = DatabaseDataFixture.populatePhotoAlbum1();
-    assertEquals(photoAlbum2, photoAlbum2);
-    assertEquals(photoAlbum2, photoAlbum);
-    photoAlbum2.setNodeId(54l);
-    checkNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum.setNodeId(null);
-    checkNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setNodeId(null);
-    photoAlbum2.setCreated(photoAlbum.getCreated());
-    assertEquals(photoAlbum, photoAlbum2);
-    assertEquals(photoAlbum2, photoAlbum);
-    photoAlbum2.setCreated(4321l);
-    assertNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setCreated(null);
-    checkNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setCreated(photoAlbum.getCreated());
 
-    photoAlbum2.setDescription("Some description");
-    assertNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setDescription(null);
-    checkNotEquals(photoAlbum2, photoAlbum);
-    photoAlbum2.setDescription(photoAlbum.getDescription());
-
-    photoAlbum2.setLocation("Some location");
-    assertNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setLocation(null);
-    checkNotEquals(photoAlbum2, photoAlbum);
-    photoAlbum2.setLocation(photoAlbum.getLocation());
-
-    photoAlbum2.setThumbNailUrl("Some thumbNailUrl");
-    assertNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setThumbNailUrl(null);
-    checkNotEquals(photoAlbum2, photoAlbum);
-    photoAlbum2.setThumbNailUrl(photoAlbum.getThumbNailUrl());
-
-    photoAlbum2.setModified(54l);
-    checkNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setModified(null);
-    assertEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setModified(photoAlbum.getModified());
-
-    photoAlbum.setName("some name");
-    assertNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setName(null);
-    checkNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setName(photoAlbum.getName());
-
-    photoAlbum2.setOwner(new Node(54l));
-    assertNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setOwner(null);
-    checkNotEquals(photoAlbum, photoAlbum2);
-    photoAlbum2.setOwner(photoAlbum.getOwner());
-
-  }
 
   /**
    * Test method for {@link com.eulersbridge.iEngage.database.domain.PhotoAlbum#toString()}.

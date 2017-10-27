@@ -325,16 +325,6 @@ public class EventTest {
     assertEquals(dets.getInstitutionId(), event.getNewsFeed$().getInstitution$().getNodeId());
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Event(com.eulersbridge.iEngage.database.domain.Institution)}.
-   */
-  @Test
-  public final void testSetInstitution() {
-    Institution institution = DatabaseDataFixture.populateInstUniMelb();
-    NewsFeed newsFeed = DatabaseDataFixture.populateNewsFeed1();
-    event.setNewsFeed(newsFeed);
-    assertEquals(institution, event.getNewsFeed$().getInstitution$());
-  }
 
   private void checkHashCode(Event test1, Event test2) {
     assertNotEquals(test1.hashCode(), test2.hashCode());

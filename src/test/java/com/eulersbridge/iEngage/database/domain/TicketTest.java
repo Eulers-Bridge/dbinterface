@@ -225,15 +225,6 @@ public class TicketTest {
   }
 
   /**
-   * Test method for {@link Ticket#getElection$()}.
-   */
-  @Test
-  public final void testGetElection() {
-    Election election = DatabaseDataFixture.populateTicket1().getElection$();
-    assertEquals(election, ticket.getElection$());
-  }
-
-  /**
    * Test method for {@link com.eulersbridge.iEngage.database.domain.Ticket(com.eulersbridge.iEngage.database.domain.Election)}.
    */
   @Test
@@ -255,84 +246,4 @@ public class TicketTest {
     assertNotEquals(test2, test1);
   }
 
-  /**
-   * Test method for {@link java.lang.Object#hashCode()}.
-   */
-  @Test
-  public final void testHashCode() {
-    Ticket ticketTest = DatabaseDataFixture.populateTicket1();
-    assertEquals(ticketTest.hashCode(), ticketTest.hashCode());
-    assertEquals(ticketTest.hashCode(), ticket.hashCode());
-    ticketTest.setNodeId(null);
-    checkHashCode(ticket, ticketTest);
-    ticket.setNodeId(null);
-    ticketTest.setName(null);
-    checkHashCode(ticket, ticketTest);
-    ticketTest.setName(ticket.getName());
-    ticketTest.setLogo(null);
-    checkHashCode(ticket, ticketTest);
-    ticketTest.setLogo(ticket.getLogo());
-    ticketTest.setInformation(null);
-    checkHashCode(ticket, ticketTest);
-    ticketTest.setInformation(ticket.getInformation());
-    ticketTest.setElection(null);
-    checkHashCode(ticket, ticketTest);
-    ticketTest.setElection(ticket.getElection$());
-    ticketTest.setCandidates(null);
-    ;
-    checkHashCode(ticket, ticketTest);
-    ticketTest.setCandidates(Node.castList(ticket.getCandidates$()));
-  }
-
-  /**
-   * Test method for {@link java.lang.Object#equals(java.lang.Object)}.
-   */
-  @Test
-  public final void testEquals() {
-    Ticket ticketTest = null;
-    assertNotEquals(ticketTest, ticket);
-    assertNotEquals(ticket, ticketTest);
-    String notElection = "";
-    assertNotEquals(ticket, notElection);
-    ticketTest = DatabaseDataFixture.populateTicket1();
-    assertEquals(ticketTest, ticketTest);
-    assertEquals(ticketTest, ticket);
-    ticketTest.setNodeId(54l);
-    checkNotEquals(ticket, ticketTest);
-    ticket.setNodeId(null);
-    checkNotEquals(ticket, ticketTest);
-    ticketTest.setNodeId(null);
-    assertEquals(ticket, ticketTest);
-    assertEquals(ticketTest, ticket);
-
-    ticketTest.setName("Some other name.");
-    assertNotEquals(ticket, ticketTest);
-    ticketTest.setName(null);
-    checkNotEquals(ticket, ticketTest);
-    ticketTest.setName(ticket.getName());
-
-    ticketTest.setInformation("Some information");
-    assertNotEquals(ticket, ticketTest);
-    ticketTest.setInformation(null);
-    checkNotEquals(ticketTest, ticket);
-    ticketTest.setInformation(ticket.getInformation());
-
-    ticketTest.setLogo("some logo");
-    assertNotEquals(ticket, ticketTest);
-    ticketTest.setLogo(null);
-    checkNotEquals(ticket, ticketTest);
-    ticketTest.setLogo(ticket.getLogo());
-
-    ticketTest.setElection(DatabaseDataFixture.populateTicket2().getElection$());
-    assertNotEquals(ticket, ticketTest);
-    ticketTest.setElection(null);
-    checkNotEquals(ticket, ticketTest);
-    ticketTest.setElection(ticket.getElection$());
-
-    ticketTest.setCandidates(Node.castList(DatabaseDataFixture.populateTicket2().getCandidates$()));
-    assertNotEquals(ticket, ticketTest);
-    ticketTest.setCandidates(null);
-    checkNotEquals(ticket, ticketTest);
-    ticketTest.setCandidates(Node.castList(ticket.getCandidates$()));
-  }
 }
