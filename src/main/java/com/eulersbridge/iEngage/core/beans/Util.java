@@ -100,7 +100,7 @@ public class Util {
   public static SNSNotification buildFriReqNotif(User receiver, User sender) {
     String subject = "New Friend Request";
     String senderName = getUserFullName(sender);
-    String msg = senderName + " has sent an invitation to connect [U+1F91D]";
+    String msg = senderName + " has sent an invitation to connect \uD83E\uDD1D";
 
     String arn = receiver.getArn();
     String devToken = receiver.getDeviceToken();
@@ -111,7 +111,7 @@ public class Util {
   public static SNSNotification buildAddedVoteRemindNotifi(User sender, User receiver, Election election) {
     String subject = "Your friend's Vote Reminder";
     String senderName = getUserFullName(sender);
-    String msg = senderName + " will be a voter in the \""+ election.getTitle() +"\". Play your part [U+1F5F3]";
+    String msg = senderName + " will be a voter in the \""+ election.getTitle() +"\". Play your part \uD83D\uDDF3️";
     String arn = receiver.getArn();
     String devToken = receiver.getDeviceToken();
     SNSNotification noti = new SNSNotification(devToken, arn, subject, msg);
