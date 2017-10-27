@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class ElectionDetailsTest {
+public class ElectionDomainDetailsTest {
     ElectionDetails electionDetails;
     Long electionId;
     String title;

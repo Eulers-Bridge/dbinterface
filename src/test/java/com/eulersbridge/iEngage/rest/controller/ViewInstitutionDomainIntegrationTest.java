@@ -33,9 +33,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 
-public class ViewInstitutionIntegrationTest
+public class ViewInstitutionDomainIntegrationTest
 {
-    private static Logger LOG = LoggerFactory.getLogger(ViewInstitutionIntegrationTest.class);
+    private static Logger LOG = LoggerFactory.getLogger(ViewInstitutionDomainIntegrationTest.class);
 
     MockMvc mockMvc;
 	

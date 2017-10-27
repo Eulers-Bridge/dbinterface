@@ -11,14 +11,15 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class UpdateInstitutionEventTest {
+public class CreateInstitutionDomainEventTest {
     final Long institutionId = new Long(1);
     final String name = new String("University of Melbourne");
     final String campus = new String("Parkville");
     final String state = new String("Victroia");
     final String countryName = new String("Australia");
     InstitutionDetails institutionDetails = null;
-    UpdateInstitutionEvent updateInstitutionEvent = null;
+    CreateInstitutionEvent createInstitutionEvent = null;
+    final Long eventId = new Long(1);
 
     @Before
     public void setUp() throws Exception {
@@ -27,7 +28,7 @@ public class UpdateInstitutionEventTest {
         institutionDetails.setCampus(campus);
         institutionDetails.setState(state);
         institutionDetails.setCountryName(countryName);
-        updateInstitutionEvent = new UpdateInstitutionEvent(institutionId, institutionDetails);
+        createInstitutionEvent = new CreateInstitutionEvent(institutionDetails);
     }
 
     @After
@@ -36,24 +37,26 @@ public class UpdateInstitutionEventTest {
     }
 
     @Test
-    public void testUpdateInstitutionEvent() throws Exception {
-        assertNotNull("updateInstitutionEvent is not null", updateInstitutionEvent);
+    public void testCreateInstitutionEvent() throws Exception {
+        InstitutionDetails institutionDetails1 = new InstitutionDetails(new Long(0));
+        CreateInstitutionEvent createInstitutionEvent1 = new CreateInstitutionEvent(institutionDetails1);
+        assertNotNull("CreateInstitutionEvent is null", createInstitutionEvent1);
     }
 
     @Test
-    public void testGetId() throws Exception {
-        assertEquals("eventId does not match", institutionId, updateInstitutionEvent.getNodeId());
+    public void testGetDetails() throws Exception {
+        assertEquals("InstitutionDetail does not match", institutionDetails, createInstitutionEvent.getDetails());
     }
 
     @Test
-    public void testGetInstDetails() throws Exception {
+    public void testSetInstitutionDetails() throws Exception {
         InstitutionDetails institutionDetails1 = new InstitutionDetails(institutionId);
         institutionDetails1.setName(name);
         institutionDetails1.setCampus(campus);
         institutionDetails1.setState(state);
         institutionDetails1.setCountryName(countryName);
-        assertEquals("InstitutionDetails does not match", institutionDetails, updateInstitutionEvent.getDetails());
-        assertEquals("InstitutionDetails does not match", institutionDetails1, updateInstitutionEvent.getDetails());
-
+        createInstitutionEvent.setDetails(institutionDetails1);
+        assertEquals("InstitutionDetail does not match", institutionDetails1, createInstitutionEvent.getDetails());
+        assertEquals("InstitutionDetail does not match", institutionDetails, createInstitutionEvent.getDetails());
     }
 }

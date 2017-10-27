@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
  * @author Greg Newitt
  *
  */
-public class TestInstitution 
+public class TestInstitutionDomain
 {
 
 	/**
@@ -43,34 +43,34 @@ public class TestInstitution
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Institution#University(int, java.lang.String)}.
+	 * Test method for {@link InstitutionDomain#University(int, java.lang.String)}.
 	 */
 	@Test
 	public final void testShouldCreateUniversityObject() 
 	{
-		Institution testObj=new Institution(new Long(1), "University of Melbourne");
-		assertEquals("University constructor does not return a class of type university.",Institution.class,testObj.getClass()); 
+		InstitutionDomain testObj=new InstitutionDomain(new Long(1), "University of Melbourne");
+		assertEquals("University constructor does not return a class of type university.",InstitutionDomain.class,testObj.getClass());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Institution#getUniversityId()}.
+	 * Test method for {@link InstitutionDomain#getUniversityId()}.
 	 */
 	@Test
 	public final void testShouldGetUniversityId() 
 	{
 		Long instId=new Long(1);
-		Institution testObj=new Institution(instId, "University of Melbourne");
+		InstitutionDomain testObj=new InstitutionDomain(instId, "University of Melbourne");
 		assertEquals("Id returned does not match id object created with.",instId,testObj.getInstitutionId());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Institution#getUniversityName()}.
+	 * Test method for {@link InstitutionDomain#getUniversityName()}.
 	 */
 	@Test
 	public final void testShouldGetUniversityName() 
 	{
 		String name="University of Melbourne";
-		Institution testObj=new Institution(new Long(1), name);
+		InstitutionDomain testObj=new InstitutionDomain(new Long(1), name);
 		assertEquals("Name returned does not match name object created with.",name,testObj.getName());
 	}
 

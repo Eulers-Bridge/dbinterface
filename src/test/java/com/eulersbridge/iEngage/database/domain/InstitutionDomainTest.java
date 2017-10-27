@@ -15,9 +15,9 @@ import static org.junit.Assert.*;
 /**
  * @author Greg Newitt
  */
-public class InstitutionTest {
+public class InstitutionDomainTest {
   private Institution institution;
-  private static Logger LOG = LoggerFactory.getLogger(InstitutionTest.class);
+  private static Logger LOG = LoggerFactory.getLogger(InstitutionDomainTest.class);
 
   /**
    * @throws java.lang.Exception

@@ -33,8 +33,8 @@ import static org.mockito.Mockito.when;
 /**
  * @author Greg Newitt
  */
-public class InstitutionEventHandlerTest {
-  private static Logger LOG = LoggerFactory.getLogger(InstitutionEventHandlerTest.class);
+public class InstitutionDomainEventHandlerTest {
+  private static Logger LOG = LoggerFactory.getLogger(InstitutionDomainEventHandlerTest.class);
 
   @Mock
   CountryRepository countryRepository;

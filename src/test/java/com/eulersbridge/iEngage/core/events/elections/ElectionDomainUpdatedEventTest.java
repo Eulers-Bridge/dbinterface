@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class ElectionUpdatedEventTest {
+public class ElectionDomainUpdatedEventTest {
     ElectionDetails electionDetails;
     final Long electionId = new Long(0);
     final String title = "election title";

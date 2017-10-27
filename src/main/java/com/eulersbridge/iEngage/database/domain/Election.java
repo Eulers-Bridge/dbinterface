@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
+import com.eulersbridge.iEngage.rest.domain.ElectionDomain;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
@@ -22,13 +23,10 @@ public class Election extends Likeable {
   private Node institution;
 
   public Election() {
-    if (LOG.isTraceEnabled()) LOG.trace("Constructor");
   }
 
   public Election(Long nodeId, String title, Long start, Long end, Long votingStart,
                   Long votingEnd, Institution inst, String introduction, String process) {
-    if (LOG.isDebugEnabled())
-      LOG.debug("Constructor(" + nodeId + ',' + start + ',' + end + ',' + votingStart + ',' + votingEnd + ',' + introduction + ',' + process + ')');
     this.nodeId = nodeId;
     this.title = title;
     this.start = start;
@@ -41,27 +39,22 @@ public class Election extends Likeable {
   }
 
   public Long getStart() {
-    if (LOG.isDebugEnabled()) LOG.debug("getStart() = " + start);
     return start;
   }
 
   public Long getEnd() {
-    if (LOG.isDebugEnabled()) LOG.debug("getEnd() = " + end);
     return end;
   }
 
   public Long getVotingStart() {
-    if (LOG.isDebugEnabled()) LOG.debug("getVotingStart() = " + votingStart);
     return votingStart;
   }
 
   public String getTitle() {
-    if (LOG.isDebugEnabled()) LOG.debug("getTitle() = " + title);
     return this.title;
   }
 
   public Long getVotingEnd() {
-    if (LOG.isDebugEnabled()) LOG.debug("getVotingEnd() = " + votingEnd);
     return votingEnd;
   }
 
@@ -85,9 +78,6 @@ public class Election extends Likeable {
     this.title = title;
   }
 
-  /**
-   * @return the institution
-   */
   public Institution getInstitution$() {
     return (Institution) institution;
   }
@@ -96,54 +86,24 @@ public class Election extends Likeable {
     return institution;
   }
 
-  /**
-   * @param institution the institution to set
-   */
   public void setInstitution(Node institution) {
     this.institution = institution;
   }
 
-  /**
-   * @return the introduction
-   */
   public String getIntroduction() {
     return introduction;
   }
 
-  /**
-   * @param introduction the introduction to set
-   */
   public void setIntroduction(String introduction) {
     this.introduction = introduction;
   }
 
-  /**
-   * @return the process
-   */
   public String getProcess() {
     return process;
   }
 
-  /**
-   * @param process the process to set
-   */
   public void setProcess(String process) {
     this.process = process;
-  }
-
-  public String toString() {
-    String buff = "[ nodeId = " + getNodeId() +
-      ", title = " + getTitle() +
-      ", start = " + getStart() +
-      ", end = " + getEnd() +
-      " , voting start = " + getVotingStart() +
-      ", voting end = " + getVotingEnd() +
-      ", institution = " + getInstitution() +
-      ", introduction = " + getIntroduction() +
-      ", process = " + getProcess() +
-      " ]";
-    if (LOG.isDebugEnabled()) LOG.debug("toString() = " + buff);
-    return buff;
   }
 
   public ElectionDetails toElectionDetails() {
@@ -184,90 +144,49 @@ public class Election extends Likeable {
     return election;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    if (this.nodeId != null) {
-      result = prime * result + nodeId.hashCode();
-    } else {
-      result = prime * result + ((end == null) ? 0 : end.hashCode());
-      result = prime * result
-        + ((institution == null) ? 0 : institution.hashCode());
-      result = prime * result + ((start == null) ? 0 : start.hashCode());
-      result = prime * result + ((title == null) ? 0 : title.hashCode());
-      result = prime * result + ((introduction == null) ? 0 : introduction.hashCode());
-      result = prime * result + ((process == null) ? 0 : process.hashCode());
-      result = prime * result
-        + ((votingEnd == null) ? 0 : votingEnd.hashCode());
-      result = prime * result
-        + ((votingStart == null) ? 0 : votingStart.hashCode());
-    }
-    return result;
+  public static Election fromDomain(ElectionDomain electionDomain) {
+    Election election = new Election();
+    election.setNodeId(electionDomain.getElectionId());
+    election.setEnd(electionDomain.getEnd());
+    election.setVotingEnd(electionDomain.getEndVoting());
+    election.setProcess(electionDomain.getProcess());
+    election.setStart(electionDomain.getStart());
+    election.setVotingStart(electionDomain.getStartVoting());
+    election.setTitle(electionDomain.getTitle());
+
+    return election;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Election other = (Election) obj;
+  public ElectionDomain toDomain() {
+    ElectionDomain domain = new ElectionDomain();
+    domain.setElectionId(nodeId);
+    domain.setTitle(title);
+    domain.setEnd(end);
+    domain.setStart(start);
+    domain.setStartVoting(votingStart);
+    domain.setEndVoting(votingEnd);
+    domain.setProcess(process);
 
-    if (nodeId != null) {
-      return nodeId.equals(other.nodeId);
-    } else {
-      if (other.nodeId != null)
-        return false;
-      if (end == null) {
-        if (other.end != null)
-          return false;
-      } else if (!end.equals(other.end))
-        return false;
-      if (institution == null) {
-        if (other.institution != null)
-          return false;
-      } else if (!institution.equals(other.institution))
-        return false;
-      if (start == null) {
-        if (other.start != null)
-          return false;
-      } else if (!start.equals(other.start))
-        return false;
-      if (title == null) {
-        if (other.title != null)
-          return false;
-      } else if (!title.equals(other.title))
-        return false;
-      if (introduction == null) {
-        if (other.introduction != null)
-          return false;
-      } else if (!introduction.equals(other.introduction))
-        return false;
-      if (process == null) {
-        if (other.process != null)
-          return false;
-      } else if (!process.equals(other.process))
-        return false;
-      if (votingEnd == null) {
-        if (other.votingEnd != null)
-          return false;
-      } else if (!votingEnd.equals(other.votingEnd))
-        return false;
-      if (votingStart == null) {
-        if (other.votingStart != null)
-          return false;
-      } else if (!votingStart.equals(other.votingStart))
-        return false;
-    }
+    if (getInstitution$() != null)
+      domain.setInstitutionDomain(getInstitution$().toDomain());
+    return domain;
+  }
+
+  public boolean isValidForCreation() {
+    if (nodeId != null)
+      return false;
+    return isValid();
+  }
+
+  public boolean isValidForUpdate() {
+    if (nodeId == null)
+      return false;
+    return isValid();
+  }
+
+  public boolean isValid() {
+    if (title == null || start == null || end == null || votingEnd == null || votingStart == null)
+      return false;
     return true;
   }
 }

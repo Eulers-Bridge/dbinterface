@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class InstitutionDetailsTest
+public class InstitutionDomainDetailsTest
 {
 	final Long institutionId = new Long(1);
 	final Long newsFeedId = new Long(12);

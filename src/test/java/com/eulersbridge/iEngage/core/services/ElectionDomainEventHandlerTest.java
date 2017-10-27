@@ -35,8 +35,8 @@ import static org.mockito.Mockito.when;
 /**
  * @author Greg Newitt
  */
-public class ElectionEventHandlerTest {
-  private static Logger LOG = LoggerFactory.getLogger(ElectionEventHandlerTest.class);
+public class ElectionDomainEventHandlerTest {
+  private static Logger LOG = LoggerFactory.getLogger(ElectionDomainEventHandlerTest.class);
 
   @Mock
   ElectionRepository electionRepository;
@@ -183,42 +183,6 @@ public class ElectionEventHandlerTest {
     assertFalse(evtData.isEntityFound());
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#createElection(com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent)}.
-   */
-  @Test
-  public final void testCreateElection() {
-    if (LOG.isDebugEnabled()) LOG.debug("CreatingElection()");
-    Election testData = DatabaseDataFixture.populateElection1();
-    Institution testInst = DatabaseDataFixture.populateInstUniMelb();
-    when(institutionRepository.findOne(any(Long.class), anyInt())).thenReturn(testInst);
-    when(electionRepository.save(any(Election.class))).thenReturn(testData);
-    ElectionDetails dets = testData.toElectionDetails();
-    CreateElectionEvent createElectionEvent = new CreateElectionEvent(dets);
-    ElectionCreatedEvent evtData = service.createElection(createElectionEvent);
-    ElectionDetails returnedDets = (ElectionDetails) evtData.getDetails();
-    assertEquals(returnedDets, testData.toElectionDetails());
-    assertNotNull(evtData.getElectionId());
-    assertEquals(evtData.getElectionId(), returnedDets.getElectionId());
-  }
-
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#createElection(com.eulersbridge.iEngage.core.events.elections.CreateElectionEvent)}.
-   */
-  @Test
-  public final void testCreateElectionInstNotFound() {
-    if (LOG.isDebugEnabled()) LOG.debug("CreatingElection()");
-    Election testData = DatabaseDataFixture.populateElection1();
-    Institution testInst = null;
-    when(institutionRepository.findOne(any(Long.class))).thenReturn(testInst);
-    when(electionRepository.save(any(Election.class))).thenReturn(testData);
-    ElectionDetails dets = testData.toElectionDetails();
-    CreateElectionEvent createElectionEvent = new CreateElectionEvent(dets);
-    ElectionCreatedEvent evtData = service.createElection(createElectionEvent);
-    assertFalse(evtData.isInstitutionFound());
-    assertEquals(evtData.getElectionId(), testData.getInstitution$().getNodeId());
-    assertNull(evtData.getDetails());
-  }
 
   /**
    * Test method for {@link com.eulersbridge.iEngage.core.services.ElectionEventHandler#readPreviousElection(com.eulersbridge.iEngage.core.events.elections.RequestReadElectionEvent)}.

@@ -64,7 +64,7 @@ public class NewsFeed extends ResourceSupport
 		  newsFeed.nodeId = readNewsFeed.getNodeId();
 		  newsFeed.institutionId = readNewsFeed.getInstitutionId();
 	    
-		  String simpleName=Institution.class.getSimpleName();
+		  String simpleName=InstitutionDomain.class.getSimpleName();
 		  String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
 	    //this section is all that is actually needed in our model to add hateoas support.

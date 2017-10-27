@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
+import com.eulersbridge.iEngage.rest.domain.InstitutionDomain;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
@@ -87,9 +88,6 @@ public class Institution extends Likeable {
     this.country = country;
   }
 
-  /**
-   * @return the students
-   */
   public List<User> getStudents$() {
     return castList(students, User.class);
   }
@@ -98,16 +96,10 @@ public class Institution extends Likeable {
     return students;
   }
 
-  /**
-   * @param students the students to set
-   */
   public void setStudents(List<Node> students) {
     this.students = students;
   }
 
-  /**
-   * @return the studentYears
-   */
   public NewsFeed getNewsFeed$() {
     return (NewsFeed) newsFeed;
   }
@@ -116,31 +108,8 @@ public class Institution extends Likeable {
     return newsFeed;
   }
 
-  /**
-   * @param newsFeed the studentYears to set
-   */
   public void setNewsFeed(Node newsFeed) {
     this.newsFeed = newsFeed;
-  }
-
-  @Override
-  public String toString() {
-    String buff = "[ nodeId = " + getNodeId() +
-      ", name = " +
-      getName() +
-      ", campus = " +
-      getCampus() +
-      ", state = " +
-      getState() +
-      ", country = " +
-      getCountry() +
-      ", newsFeed = " +
-      getNewsFeed() +
-      " ]";
-    String retValue;
-    retValue = buff;
-    if (LOG.isDebugEnabled()) LOG.debug("toString() = " + retValue);
-    return retValue;
   }
 
   public InstitutionDetails toInstDetails() {
@@ -175,78 +144,20 @@ public class Institution extends Likeable {
     return inst;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    if (nodeId != null) {
-      result = prime * result + nodeId.hashCode();
-    } else {
-      result = prime * result + ((campus == null) ? 0 : campus.hashCode());
-      result = prime * result + ((country == null) ? 0 : country.hashCode());
-      result = prime * result + ((name == null) ? 0 : name.hashCode());
-      result = prime * result
-        + ((newsFeed == null) ? 0 : newsFeed.hashCode());
-      result = prime * result + ((state == null) ? 0 : state.hashCode());
-      result = prime * result
-        + ((students == null) ? 0 : students.hashCode());
-    }
-    return result;
+  public static Institution fromDomain() {
+    return null;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Institution other = (Institution) obj;
-    if (nodeId != null) {
-      return nodeId.equals(other.nodeId);
-    } else {
-      if (other.nodeId != null)
-        return false;
-
-      if (campus == null) {
-        if (other.campus != null)
-          return false;
-      } else if (!campus.equals(other.campus))
-        return false;
-      if (country == null) {
-        if (other.country != null)
-          return false;
-      } else if (!country.equals(other.country))
-        return false;
-      if (name == null) {
-        if (other.name != null)
-          return false;
-      } else if (!name.equals(other.name))
-        return false;
-      if (newsFeed == null) {
-        if (other.newsFeed != null)
-          return false;
-      } else if (!newsFeed.equals(other.newsFeed))
-        return false;
-      if (state == null) {
-        if (other.state != null)
-          return false;
-      } else if (!state.equals(other.state))
-        return false;
-      if (students == null) {
-        if (other.students != null)
-          return false;
-      } else if (!students.equals(other.students))
-        return false;
-    }
-    return true;
+  public InstitutionDomain toDomain() {
+    InstitutionDomain domain = new InstitutionDomain();
+    domain.setInstitutionId(nodeId);
+    domain.setCampus(campus);
+    domain.setName(name);
+    domain.setState(state);
+    if (getCountry$() != null)
+      domain.setCountry(getCountry$().getCountryName());
+    if (getNewsFeed$()!=null)
+      domain.setNewsFeedId(getNewsFeed$().getNodeId());
+    return domain;
   }
-
 }

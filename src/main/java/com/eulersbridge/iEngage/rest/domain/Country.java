@@ -12,9 +12,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class Country extends ResourceSupport {
   Long countryId;
   String countryName;
-  Iterable<Institution> institutions;
+  Iterable<InstitutionDomain> institutions;
 
-  public Country(Long id, String name, Iterable<Institution> institutions) {
+  public Country(Long id, String name, Iterable<InstitutionDomain> institutions) {
     countryId = id;
     countryName = name;
     this.institutions = institutions;
@@ -43,11 +43,11 @@ public class Country extends ResourceSupport {
     country.countryId = readCountry.getCountryId();
     country.countryName = readCountry.getCountryName();
     if (readCountry.getInstitutions() != null){
-      Set<Institution> institutions = new HashSet<>();
+      Set<InstitutionDomain> institutionDomains = new HashSet<>();
       readCountry.getInstitutions().forEach(institutionDetails -> {
-        institutions.add(Institution.fromInstDetails(institutionDetails));
+        institutionDomains.add(InstitutionDomain.fromInstDetails(institutionDetails));
       });
-      country.setInstitutions(institutions);
+      country.setInstitutions(institutionDomains);
     } else {
       country.setInstitutions(null);
     }
@@ -72,7 +72,7 @@ public class Country extends ResourceSupport {
     this.countryId = countryId;
   }
 
-  public Iterable<Institution> getInstitutions() {
+  public Iterable<InstitutionDomain> getInstitutions() {
     return institutions;
   }
 
@@ -84,7 +84,7 @@ public class Country extends ResourceSupport {
     this.countryName = countryName;
   }
 
-  public void setInstitutions(Iterable<Institution> institutions) {
+  public void setInstitutions(Iterable<InstitutionDomain> institutions) {
     this.institutions = institutions;
   }
 }

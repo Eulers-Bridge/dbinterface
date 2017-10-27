@@ -7,7 +7,7 @@ import com.eulersbridge.iEngage.core.events.votingLocation.RemoveVotingLocationE
 import com.eulersbridge.iEngage.core.events.votingLocation.VotingLocationDetails;
 import com.eulersbridge.iEngage.core.services.interfacePack.ElectionService;
 import com.eulersbridge.iEngage.core.services.interfacePack.VotingLocationService;
-import com.eulersbridge.iEngage.rest.domain.Election;
+import com.eulersbridge.iEngage.rest.domain.ElectionDomain;
 import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import com.eulersbridge.iEngage.rest.domain.Response;
 import com.eulersbridge.iEngage.rest.domain.VotingLocation;
@@ -24,6 +24,8 @@ import java.util.Iterator;
 @RestController
 @RequestMapping(ControllerConstants.API_PREFIX)
 public class ElectionController {
+  private static Logger LOG = LoggerFactory
+    .getLogger(ElectionController.class);
 
   @Autowired
   ElectionService electionService;
@@ -34,41 +36,23 @@ public class ElectionController {
     if (LOG.isDebugEnabled()) LOG.debug("ElectionController()");
   }
 
-  private static Logger LOG = LoggerFactory
-    .getLogger(ElectionController.class);
 
-  // Get
-  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL
-    + "/{electionId}")
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL + "/{electionId}")
   public @ResponseBody
-  ResponseEntity<Election> findElection(
-    @PathVariable Long electionId) {
-    if (LOG.isInfoEnabled())
-      LOG.info(electionId + " attempting to get election. ");
+  ResponseEntity<ElectionDomain> findElection(@PathVariable Long electionId) {
     RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(
       electionId);
     ReadEvent readElectionEvent = electionService
       .readElection(requestReadElectionEvent);
     if (readElectionEvent.isEntityFound()) {
-      Election election = Election.fromElectionDetails((ElectionDetails) readElectionEvent.getDetails());
-      return new ResponseEntity<Election>(election, HttpStatus.OK);
+      ElectionDomain electionDomain = ElectionDomain.fromElectionDetails((ElectionDetails) readElectionEvent.getDetails());
+      return new ResponseEntity<ElectionDomain>(electionDomain, HttpStatus.OK);
     } else {
-      return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<ElectionDomain>(HttpStatus.NOT_FOUND);
     }
   }
 
-  /**
-   * Is passed all the necessary data to read elections from the database. The
-   * request must be a GET with the institutionId presented as the final
-   * portion of the URL.
-   * <p/>
-   * This method will return the elections read from the database.
-   *
-   * @param institutionId the instituitonId of the election objects to be read.
-   * @return the elections.
-   */
-  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTIONS_LABEL
-    + "/{institutionId}")
+  @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTIONS_LABEL + "/{institutionId}")
   public @ResponseBody
   ResponseEntity<WrappedDomainList> findElections(
     @PathVariable(value = "") Long institutionId,
@@ -93,7 +77,7 @@ public class ElectionController {
     if (!electionEvent.isEntityFound()) {
       response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
-      Iterator<Election> elections = Election
+      Iterator<ElectionDomain> elections = ElectionDomain
         .toElectionsIterator(electionEvent.getDetails().iterator());
       WrappedDomainList theElections = WrappedDomainList.fromIterator(elections, electionEvent.getTotalItems(), electionEvent.getTotalPages());
       response = new ResponseEntity<WrappedDomainList>(theElections, HttpStatus.OK);
@@ -104,27 +88,9 @@ public class ElectionController {
   // Create
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.ELECTION_LABEL)
   public @ResponseBody
-  ResponseEntity<Election> createElection(
-    @RequestBody Election election) {
-    if (LOG.isInfoEnabled())
-      LOG.info("attempting to create election " + election);
-    ElectionCreatedEvent electionCreatedEvent = electionService
-      .createElection(new CreateElectionEvent(election
-        .toElectionDetails()));
-    ResponseEntity<Election> response;
-    if ((null == electionCreatedEvent)
-      || (null == electionCreatedEvent.getElectionId())) {
-      response = new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
-    } else if (!(electionCreatedEvent.isInstitutionFound())) {
-      response = new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
-    } else {
-      Election result = Election.fromElectionDetails((ElectionDetails) electionCreatedEvent
-        .getDetails());
-      if (LOG.isDebugEnabled())
-        LOG.debug("election" + result.toString());
-      response = new ResponseEntity<Election>(result, HttpStatus.CREATED);
-    }
-    return response;
+  ResponseEntity<ElectionDomain> createElection(@RequestBody ElectionDomain electionDomain) {
+    RequestHandledEvent<ElectionDomain> res = electionService.createElection(electionDomain);
+    return res.toResponseEntity();
   }
 
   // Add Voting Location
@@ -183,7 +149,7 @@ public class ElectionController {
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL
     + "/{electionId}/previous")
   public @ResponseBody
-  ResponseEntity<Election> findPreviousElection(
+  ResponseEntity<ElectionDomain> findPreviousElection(
     @PathVariable Long electionId) {
     if (LOG.isInfoEnabled())
       LOG.info("attempting to get previous election");
@@ -192,10 +158,10 @@ public class ElectionController {
     ReadEvent readElectionEvent = electionService
       .readPreviousElection(requestReadElectionEvent);
     if (readElectionEvent.isEntityFound()) {
-      Election election = Election.fromElectionDetails((ElectionDetails) readElectionEvent.getDetails());
-      return new ResponseEntity<Election>(election, HttpStatus.OK);
+      ElectionDomain electionDomain = ElectionDomain.fromElectionDetails((ElectionDetails) readElectionEvent.getDetails());
+      return new ResponseEntity<ElectionDomain>(electionDomain, HttpStatus.OK);
     } else {
-      return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<ElectionDomain>(HttpStatus.NOT_FOUND);
     }
   }
 
@@ -203,17 +169,17 @@ public class ElectionController {
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.ELECTION_LABEL
     + "/{electionId}/next")
   public @ResponseBody
-  ResponseEntity<Election> findNextElection(
+  ResponseEntity<ElectionDomain> findNextElection(
     @PathVariable Long electionId) {
     if (LOG.isInfoEnabled()) LOG.info("attempting to get next election");
     RequestReadElectionEvent requestReadElectionEvent = new RequestReadElectionEvent(
       electionId);
     ReadEvent readElectionEvent = electionService.readNextElection(requestReadElectionEvent);
     if (readElectionEvent.isEntityFound()) {
-      Election election = Election.fromElectionDetails((ElectionDetails) readElectionEvent.getDetails());
-      return new ResponseEntity<Election>(election, HttpStatus.OK);
+      ElectionDomain electionDomain = ElectionDomain.fromElectionDetails((ElectionDetails) readElectionEvent.getDetails());
+      return new ResponseEntity<ElectionDomain>(electionDomain, HttpStatus.OK);
     } else {
-      return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<ElectionDomain>(HttpStatus.NOT_FOUND);
     }
   }
 
@@ -248,28 +214,28 @@ public class ElectionController {
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.ELECTION_LABEL
     + "/{electionId}")
   public @ResponseBody
-  ResponseEntity<Election> updateElection(
-    @PathVariable Long electionId, @RequestBody Election election) {
+  ResponseEntity<ElectionDomain> updateElection(
+    @PathVariable Long electionId, @RequestBody ElectionDomain electionDomain) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to update election. " + electionId);
     UpdatedEvent electionUpdatedEvent = electionService
-      .updateElection(new UpdateElectionEvent(electionId, election
+      .updateElection(new UpdateElectionEvent(electionId, electionDomain
         .toElectionDetails()));
     if ((null != electionUpdatedEvent)) {
       if (LOG.isDebugEnabled())
         LOG.debug("electionUpdatedEvent - " + electionUpdatedEvent);
       if (electionUpdatedEvent.isEntityFound()) {
-        Election restElection = Election
+        ElectionDomain restElectionDomain = ElectionDomain
           .fromElectionDetails((ElectionDetails) electionUpdatedEvent
             .getDetails());
         if (LOG.isDebugEnabled())
-          LOG.debug("restElection = " + restElection);
-        return new ResponseEntity<Election>(restElection, HttpStatus.OK);
+          LOG.debug("restElection = " + restElectionDomain);
+        return new ResponseEntity<ElectionDomain>(restElectionDomain, HttpStatus.OK);
       } else {
-        return new ResponseEntity<Election>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ElectionDomain>(HttpStatus.NOT_FOUND);
       }
     } else {
-      return new ResponseEntity<Election>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<ElectionDomain>(HttpStatus.BAD_REQUEST);
     }
   }
 }

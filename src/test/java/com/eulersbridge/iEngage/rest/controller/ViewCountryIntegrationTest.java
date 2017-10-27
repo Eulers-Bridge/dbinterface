@@ -6,7 +6,7 @@ import com.eulersbridge.iEngage.core.events.ReadEvent;
 import com.eulersbridge.iEngage.core.events.countrys.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.CountryService;
 import com.eulersbridge.iEngage.rest.domain.Country;
-import com.eulersbridge.iEngage.rest.domain.Institution;
+import com.eulersbridge.iEngage.rest.domain.InstitutionDomain;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -212,9 +212,9 @@ public class ViewCountryIntegrationTest
 		String returnedContent="[{\"countryId\":"+id.intValue()+",\"countryName\":\""+countryName+"\",\"institutions\":null,\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/country/"+id.intValue()+
 								"\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/countrys\"}]}]";
 		ArrayList<CountryDetails> countrys=new ArrayList<CountryDetails>();
-		Institution institution=new Institution(id, "University of Melbourne");
-		Institution institutions[]={institution};
-		Country country=new Country(id, countryName, Arrays.asList(institutions));
+		InstitutionDomain institutionDomain =new InstitutionDomain(id, "University of Melbourne");
+		InstitutionDomain institutionDomains[]={institutionDomain};
+		Country country=new Country(id, countryName, Arrays.asList(institutionDomains));
 		CountryDetails countryDetails=country.toCountryDetails();
 		countrys.add(countryDetails);
 		CountrysReadEvent testData=new CountrysReadEvent(countrys);

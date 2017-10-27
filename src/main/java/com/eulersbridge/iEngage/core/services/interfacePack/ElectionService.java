@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services.interfacePack;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.elections.*;
+import com.eulersbridge.iEngage.rest.domain.ElectionDomain;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +16,7 @@ public interface ElectionService {
   public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent);
 
   @PreAuthorize("hasAnyRole('" + SecurityConstants.RETURNING_OFFICER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
-  public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent);
+  public RequestHandledEvent createElection(ElectionDomain electionDomain);
 
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
   public ReadEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent);

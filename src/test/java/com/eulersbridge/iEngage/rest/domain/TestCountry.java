@@ -37,12 +37,12 @@ public class TestCountry {
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Country#Country(int, java.lang.String,Institution[])}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Country#Country(int, java.lang.String, InstitutionDomain[])}.
 	 */
 	@Test
 	public final void testShouldCreateCountryObject() 
 	{
-		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
+		InstitutionDomain unis[]={new InstitutionDomain(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(new Long(61), name, Arrays.asList(unis));
 		assertEquals("Country constructor does not return a class of type Country.",Country.class,testObj.getClass()); 
@@ -54,7 +54,7 @@ public class TestCountry {
 	@Test
 	public final void testShouldGetCountryId() 
 	{
-		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
+		InstitutionDomain unis[]={new InstitutionDomain(new Long(1), "University of Melbourne")};
 		Long countryId=new Long(61);
 		String name="Australia";
 		Country testObj=new Country(countryId, name, Arrays.asList(unis));
@@ -67,7 +67,7 @@ public class TestCountry {
 	@Test
 	public final void testShouldGetCountryName() 
 	{
-		Institution unis[]={new Institution(new Long(1), "University of Melbourne")};
+		InstitutionDomain unis[]={new InstitutionDomain(new Long(1), "University of Melbourne")};
 		String name="Australia";
 		Country testObj=new Country(new Long(61), name, Arrays.asList(unis));
 		assertEquals("Name returned does not match name object created with.",name,testObj.getCountryName());
@@ -79,10 +79,10 @@ public class TestCountry {
 	@Test
 	public final void testShouldGetUniversityObjects() 
 	{
-		Institution institutions[]={new Institution(new Long(1), "University of Melbourne")};
+		InstitutionDomain institutionDomains[]={new InstitutionDomain(new Long(1), "University of Melbourne")};
 		String name="Australia";
-		Country testObj=new Country(new Long(61), name, Arrays.asList(institutions));
-		assertEquals("Name returned does not match name object created with.",institutions[0],testObj.getInstitutions().iterator().next());
+		Country testObj=new Country(new Long(61), name, Arrays.asList(institutionDomains));
+		assertEquals("Name returned does not match name object created with.", institutionDomains[0],testObj.getInstitutions().iterator().next());
 	}
 
 

@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class InstitutionCreatedEventTest {
+public class InstitutionDomainCreatedEventTest {
     final Long institutionId = new Long(1);
     final String name = new String("University of Melbourne");
     final String campus = new String("Parkville");

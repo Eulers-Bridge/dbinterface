@@ -5,8 +5,11 @@ import com.eulersbridge.iEngage.core.events.elections.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.ElectionService;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.Institution;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.repository.ElectionRepository;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
+import com.eulersbridge.iEngage.rest.domain.ElectionDomain;
+import com.eulersbridge.iEngage.rest.domain.InstitutionDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,22 @@ public class ElectionEventHandler implements ElectionService {
   }
 
   @Override
+  public RequestHandledEvent createElection(ElectionDomain electionDomain) {
+    Election election = Election.fromDomain(electionDomain);
+    InstitutionDomain institutionDomain = electionDomain.getInstitutionDomain();
+    if (institutionDomain != null && institutionDomain.getInstitutionId() != null) {
+      Institution ins = instRepository.findOne(institutionDomain.getInstitutionId(), 0);
+      if (ins == null)
+        return RequestHandledEvent.targetNotFound();
+      election.setInstitution(ins.toNode());
+    }
+    if (!election.isValidForCreation())
+      return RequestHandledEvent.badRequest();
+    election = eleRepository.save(election, 1);
+    return new RequestHandledEvent<>(election.toDomain());
+  }
+
+  @Override
   public ReadEvent readElection(RequestReadElectionEvent requestReadElectionEvent) {
     Election election = eleRepository.findOne(requestReadElectionEvent.getNodeId());
     ReadEvent readElectionEvent;
@@ -49,24 +68,6 @@ public class ElectionEventHandler implements ElectionService {
     return readElectionEvent;
   }
 
-  @Override
-  public ElectionCreatedEvent createElection(CreateElectionEvent createElectionEvent) {
-    ElectionDetails electionDetails = (ElectionDetails) createElectionEvent.getDetails();
-    Election election = Election.fromElectionDetails(electionDetails);
-
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding institution with instId = " + electionDetails.getInstitutionId());
-    Institution inst = instRepository.findOne(electionDetails.getInstitutionId(), 0);
-    ElectionCreatedEvent electionCreatedEvent;
-    if (inst != null) {
-      election.setInstitution(inst.toNode());
-      Election result = eleRepository.save(election);
-      electionCreatedEvent = new ElectionCreatedEvent(result.getNodeId(), result.toElectionDetails());
-    } else {
-      electionCreatedEvent = ElectionCreatedEvent.institutionNotFound(electionDetails.getInstitutionId());
-    }
-    return electionCreatedEvent;
-  }
 
   @Override
   public ReadEvent readPreviousElection(RequestReadElectionEvent requestReadElectionEvent) {

@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class ElectionDeletedEventTest {
+public class ElectionDomainDeletedEventTest {
     final Long electionId = (long) 10;
     ElectionDeletedEvent electionDeletedEvent;
 

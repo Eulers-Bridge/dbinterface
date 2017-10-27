@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class RequestReadElectionEventTest {
+public class RequestReadElectionDomainEventTest {
     RequestReadElectionEvent requestReadElectionEvent;
     final Long electionId = new Long(0);
 

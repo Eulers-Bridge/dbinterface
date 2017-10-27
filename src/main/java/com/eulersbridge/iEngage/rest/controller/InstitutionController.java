@@ -61,13 +61,13 @@ public class InstitutionController {
 
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.INSTITUTION_LABEL + "/{institutionId}")
   public @ResponseBody
-  ResponseEntity<Institution> alterInstitution(@PathVariable Long institutionId,
-                                               @RequestBody Institution inst) {
+  ResponseEntity<InstitutionDomain> alterInstitution(@PathVariable Long institutionId,
+                                                     @RequestBody InstitutionDomain inst) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to edit institution. " + institutionId);
     if (LOG.isInfoEnabled()) LOG.info("institution. " + inst);
-    Institution restInst = null;
-    ResponseEntity<Institution> result;
+    InstitutionDomain restInst = null;
+    ResponseEntity<InstitutionDomain> result;
     UpdateInstitutionEvent updEvt = new UpdateInstitutionEvent(institutionId, inst.toInstitutionDetails());
     if (LOG.isDebugEnabled()) LOG.debug("updateEvt = " + updEvt);
     UpdatedEvent instEvent = instService.updateInstitution(updEvt);
@@ -80,10 +80,10 @@ public class InstitutionController {
           LOG.debug("countryFound = " + instEvent.isEntityFound());
         }
       }
-      result = new ResponseEntity<Institution>(HttpStatus.FAILED_DEPENDENCY);
+      result = new ResponseEntity<InstitutionDomain>(HttpStatus.FAILED_DEPENDENCY);
     } else {
-      restInst = Institution.fromInstDetails((InstitutionDetails) instEvent.getDetails());
-      result = new ResponseEntity<Institution>(restInst, HttpStatus.OK);
+      restInst = InstitutionDomain.fromInstDetails((InstitutionDetails) instEvent.getDetails());
+      result = new ResponseEntity<InstitutionDomain>(restInst, HttpStatus.OK);
     }
     return result;
   }
@@ -100,18 +100,18 @@ public class InstitutionController {
    */
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.INSTITUTION_LABEL + "/{institutionId}")
   public @ResponseBody
-  ResponseEntity<Institution> findInstitution(@PathVariable Long institutionId) {
+  ResponseEntity<InstitutionDomain> findInstitution(@PathVariable Long institutionId) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to retrieve institution. " + institutionId);
-    Institution restInst = null;
-    ResponseEntity<Institution> result;
+    InstitutionDomain restInst = null;
+    ResponseEntity<InstitutionDomain> result;
     ReadEvent instEvent = instService.requestReadInstitution(new RequestReadInstitutionEvent(institutionId));
 
     if (!instEvent.isEntityFound()) {
-      result = new ResponseEntity<Institution>(HttpStatus.NOT_FOUND);
+      result = new ResponseEntity<InstitutionDomain>(HttpStatus.NOT_FOUND);
     } else {
-      restInst = Institution.fromInstDetails((InstitutionDetails) instEvent.getDetails());
-      result = new ResponseEntity<Institution>(restInst, HttpStatus.OK);
+      restInst = InstitutionDomain.fromInstDetails((InstitutionDetails) instEvent.getDetails());
+      result = new ResponseEntity<InstitutionDomain>(restInst, HttpStatus.OK);
     }
     return result;
   }
@@ -139,18 +139,18 @@ public class InstitutionController {
    */
   @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.INSTITUTION_LABEL + "/{institutionId}")
   public @ResponseBody
-  ResponseEntity<Institution> deleteInstitution(@PathVariable Long institutionId) {
+  ResponseEntity<InstitutionDomain> deleteInstitution(@PathVariable Long institutionId) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to delete institution. " + institutionId);
-    Institution restInst = null;
-    ResponseEntity<Institution> result;
+    InstitutionDomain restInst = null;
+    ResponseEntity<InstitutionDomain> result;
     DeletedEvent instEvent = instService.deleteInstitution(new DeleteInstitutionEvent(institutionId));
 
     if (!instEvent.isEntityFound()) {
-      result = new ResponseEntity<Institution>(HttpStatus.NOT_FOUND);
+      result = new ResponseEntity<InstitutionDomain>(HttpStatus.NOT_FOUND);
     } else {
-      restInst = Institution.fromInstDetails((InstitutionDetails) instEvent.getDetails());
-      result = new ResponseEntity<Institution>(restInst, HttpStatus.OK);
+      restInst = InstitutionDomain.fromInstDetails((InstitutionDetails) instEvent.getDetails());
+      result = new ResponseEntity<InstitutionDomain>(restInst, HttpStatus.OK);
     }
     return result;
   }
@@ -171,19 +171,19 @@ public class InstitutionController {
 
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.INSTITUTION_LABEL)
   public @ResponseBody
-  ResponseEntity<Institution> createInstitution(@RequestBody Institution inst) {
+  ResponseEntity<InstitutionDomain> createInstitution(@RequestBody InstitutionDomain inst) {
     if (LOG.isInfoEnabled()) LOG.info("attempting to save institution " + inst);
-    Institution restInst = null;
-    ResponseEntity<Institution> result;
+    InstitutionDomain restInst = null;
+    ResponseEntity<InstitutionDomain> result;
     InstitutionCreatedEvent instEvent = instService.createInstitution(new CreateInstitutionEvent(inst.toInstitutionDetails()));
 
     if (instEvent.getId() == null) {
-      result = new ResponseEntity<Institution>(HttpStatus.BAD_REQUEST);
+      result = new ResponseEntity<InstitutionDomain>(HttpStatus.BAD_REQUEST);
     } else if (!instEvent.isCountryFound()) {
-      result = new ResponseEntity<Institution>(HttpStatus.FAILED_DEPENDENCY);
+      result = new ResponseEntity<InstitutionDomain>(HttpStatus.FAILED_DEPENDENCY);
     } else {
-      restInst = Institution.fromInstDetails((InstitutionDetails) instEvent.getDetails());
-      result = new ResponseEntity<Institution>(restInst, HttpStatus.CREATED);
+      restInst = InstitutionDomain.fromInstDetails((InstitutionDetails) instEvent.getDetails());
+      result = new ResponseEntity<InstitutionDomain>(restInst, HttpStatus.CREATED);
     }
     return result;
   }
@@ -286,7 +286,7 @@ public class InstitutionController {
 
   @RequestMapping(value = "/displayInstParams")
   public @ResponseBody
-  ResponseEntity<Boolean> displayDetails(@RequestBody Institution inst) {
+  ResponseEntity<Boolean> displayDetails(@RequestBody InstitutionDomain inst) {
     if (LOG.isInfoEnabled())
       LOG.info("inst = " + inst);
     return new ResponseEntity<Boolean>(true, HttpStatus.OK);
@@ -305,7 +305,7 @@ public class InstitutionController {
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.INSTITUTIONS_LABEL)
   public @ResponseBody
-  ResponseEntity<Iterator<Institution>> getInstitutions() {
+  ResponseEntity<Iterator<InstitutionDomain>> getInstitutions() {
     if (LOG.isInfoEnabled()) LOG.info(" attempting to retrieve institutions. ");
 
     ReadAllEvent rie = new ReadAllEvent(null);
@@ -314,7 +314,7 @@ public class InstitutionController {
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.INSTITUTIONS_LABEL + "/{countryId}")
   public @ResponseBody
-  ResponseEntity<Iterator<Institution>> getInstitutions(@PathVariable Long countryId) {
+  ResponseEntity<Iterator<InstitutionDomain>> getInstitutions(@PathVariable Long countryId) {
     if (LOG.isInfoEnabled())
       LOG.info(" attempting to retrieve institutions from country " + countryId + ". ");
 
@@ -323,16 +323,16 @@ public class InstitutionController {
   }
 
   public @ResponseBody
-  ResponseEntity<Iterator<Institution>> readInstitutions(ReadAllEvent rie) {
+  ResponseEntity<Iterator<InstitutionDomain>> readInstitutions(ReadAllEvent rie) {
     InstitutionsReadEvent ire = instService.readInstitutions(rie);
 
     Iterator<InstitutionDetails> iter = ire.getInstitutions().iterator();
-    ArrayList<Institution> institutions = new ArrayList<Institution>();
+    ArrayList<InstitutionDomain> institutionDomains = new ArrayList<InstitutionDomain>();
     while (iter.hasNext()) {
       InstitutionDetails dets = iter.next();
-      Institution thisInst = Institution.fromInstDetails(dets);
-      institutions.add(thisInst);
+      InstitutionDomain thisInst = InstitutionDomain.fromInstDetails(dets);
+      institutionDomains.add(thisInst);
     }
-    return new ResponseEntity<Iterator<Institution>>(institutions.iterator(), HttpStatus.OK);
+    return new ResponseEntity<Iterator<InstitutionDomain>>(institutionDomains.iterator(), HttpStatus.OK);
   }
 }

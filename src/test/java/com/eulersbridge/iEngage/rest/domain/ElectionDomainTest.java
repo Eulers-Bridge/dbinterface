@@ -19,13 +19,13 @@ import static org.junit.Assert.assertNotNull;
  * @author Greg Newitt
  *
  */
-public class ElectionTest 
+public class ElectionDomainTest
 {
 	
 	@Mock
 	private ServletRequestAttributes attrs;
 	
-	Election elec;
+	ElectionDomain elec;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -54,50 +54,48 @@ public class ElectionTest
     	return election;
     }
 
-    public Election populateElection()
+    public ElectionDomain populateElection()
     {
-		Election election=new Election();
-		election.setElectionId(id);
-		election.setTitle(title);
-		election.setStart(start);
-		election.setEnd(end);
-		election.setStartVoting(startVote);
-		election.setEndVoting(endVote);
-		election.setInstitutionId(instId);
-		election.setIntroduction(introduction);
-		election.setProcess(process);
-    	return election;
+		ElectionDomain electionDomain =new ElectionDomain();
+		electionDomain.setElectionId(id);
+		electionDomain.setTitle(title);
+		electionDomain.setStart(start);
+		electionDomain.setEnd(end);
+		electionDomain.setStartVoting(startVote);
+		electionDomain.setEndVoting(endVote);
+		electionDomain.setIntroduction(introduction);
+		electionDomain.setProcess(process);
+    	return electionDomain;
     }
 
 	@Test
 	public final void testElection()
 	{
-		Election election=new Election();
-		assertNotNull("Not yet implemented",election);
+		ElectionDomain electionDomain =new ElectionDomain();
+		assertNotNull("Not yet implemented", electionDomain);
 
 	}
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#fromElectionDetails(com.eulersbridge.iEngage.core.events.elections.ElectionDetails)}.
+	 * Test method for {@link ElectionDomain#fromElectionDetails(com.eulersbridge.iEngage.core.events.elections.ElectionDetails)}.
 	 */
 	@Test
 	public final void testFromElectionDetails() 
 	{
 		ElectionDetails dets=populateElectionDetails();
-		Election election=Election.fromElectionDetails(dets);
-		assertNotNull("Not yet implemented",election);
-		assertEquals("Elec Id doesn't match.",dets.getElectionId(),election.getElectionId());
-		assertEquals("Title doesn't match.",dets.getTitle(),election.getTitle());
-		assertEquals("Start doesn't match.",dets.getStart(),election.getStart());
-		assertEquals("End doesn't match.",dets.getEnd(),election.getEnd());
-		assertEquals("Start Voting doesn't match.",dets.getStartVoting(),election.getStartVoting());
-		assertEquals("End Voting doesn't match.",dets.getEndVoting(),election.getEndVoting());
-		assertEquals("Inst Id doesn't match.",dets.getInstitutionId(),election.getInstitutionId());
-		assertEquals("Introduction doesn't match.",dets.getIntroduction(),election.getIntroduction());
-		assertEquals("Process doesn't match.",dets.getProcess(),election.getProcess());
+		ElectionDomain electionDomain = ElectionDomain.fromElectionDetails(dets);
+		assertNotNull("Not yet implemented", electionDomain);
+		assertEquals("Elec Id doesn't match.",dets.getElectionId(), electionDomain.getElectionId());
+		assertEquals("Title doesn't match.",dets.getTitle(), electionDomain.getTitle());
+		assertEquals("Start doesn't match.",dets.getStart(), electionDomain.getStart());
+		assertEquals("End doesn't match.",dets.getEnd(), electionDomain.getEnd());
+		assertEquals("Start Voting doesn't match.",dets.getStartVoting(), electionDomain.getStartVoting());
+		assertEquals("End Voting doesn't match.",dets.getEndVoting(), electionDomain.getEndVoting());
+		assertEquals("Introduction doesn't match.",dets.getIntroduction(), electionDomain.getIntroduction());
+		assertEquals("Process doesn't match.",dets.getProcess(), electionDomain.getProcess());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#toElectionDetails()}.
+	 * Test method for {@link ElectionDomain#toElectionDetails()}.
 	 */
 	@Test
 	public final void testToElectionDetails() 
@@ -110,13 +108,12 @@ public class ElectionTest
 		assertEquals("End doesn't match.",elec.getEnd(),dets.getEnd());
 		assertEquals("Start Voting doesn't match.",elec.getStartVoting(),dets.getStartVoting());
 		assertEquals("End Voting doesn't match.",elec.getEndVoting(),dets.getEndVoting());
-		assertEquals("Inst Id doesn't match.",elec.getInstitutionId(),dets.getInstitutionId());
 		assertEquals("Introduction doesn't match.",elec.getIntroduction(),dets.getIntroduction());
 		assertEquals("Process doesn't match.",elec.getProcess(),dets.getProcess());
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getElectionId()}.
+	 * Test method for {@link ElectionDomain#getElectionId()}.
 	 */
 	@Test
 	public final void testGetElectionId() 
@@ -125,7 +122,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getTitle()}.
+	 * Test method for {@link ElectionDomain#getTitle()}.
 	 */
 	@Test
 	public final void testGetTitle() 
@@ -134,7 +131,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getStart()}.
+	 * Test method for {@link ElectionDomain#getStart()}.
 	 */
 	@Test
 	public final void testGetStart() 
@@ -143,7 +140,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getEnd()}.
+	 * Test method for {@link ElectionDomain#getEnd()}.
 	 */
 	@Test
 	public final void testGetEnd() 
@@ -152,7 +149,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getStartVoting()}.
+	 * Test method for {@link ElectionDomain#getStartVoting()}.
 	 */
 	@Test
 	public final void testGetStartVoting() 
@@ -161,7 +158,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getEndVoting()}.
+	 * Test method for {@link ElectionDomain#getEndVoting()}.
 	 */
 	@Test
 	public final void testGetEndVoting() 
@@ -169,17 +166,9 @@ public class ElectionTest
 		assertEquals("End Voting doesn't match.",endVote,elec.getEndVoting());
 	}
 
+
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getInstitutionId()}.
-	 */
-	@Test
-	public final void testGetInstitutionId() 
-	{
-		assertEquals("Inst Id doesn't match.",instId,elec.getInstitutionId());
-	}
-	
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getIntroduction()}.
+	 * Test method for {@link ElectionDomain#getIntroduction()}.
 	 */
 	@Test
 	public final void testGetIntroduction() 
@@ -188,7 +177,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#getProcess()}.
+	 * Test method for {@link ElectionDomain#getProcess()}.
 	 */
 	@Test
 	public final void testGetProcess() 
@@ -197,7 +186,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#setElectionId(java.lang.Long)}.
+	 * Test method for {@link ElectionDomain#setElectionId(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetElectionId() 
@@ -208,7 +197,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#setTitle(java.lang.String)}.
+	 * Test method for {@link ElectionDomain#setTitle(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetTitle() 
@@ -219,7 +208,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#setStart(java.lang.Long)}.
+	 * Test method for {@link ElectionDomain#setStart(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetStart() 
@@ -230,7 +219,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#setEnd(java.lang.Long)}.
+	 * Test method for {@link ElectionDomain#setEnd(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetEnd() 
@@ -241,7 +230,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#setStartVoting(java.lang.Long)}.
+	 * Test method for {@link ElectionDomain#setStartVoting(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetStartVoting() 
@@ -252,7 +241,7 @@ public class ElectionTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#setEndVoting(java.lang.Long)}.
+	 * Test method for {@link ElectionDomain#setEndVoting(java.lang.Long)}.
 	 */
 	@Test
 	public final void testSetEndVoting() 
@@ -262,15 +251,5 @@ public class ElectionTest
 		assertEquals("End Voting doesn't match.",endVote,elec.getEndVoting());
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.domain.Election#setElectionId(java.lang.Long)}.
-	 */
-	@Test
-	public final void testSetInstitutionId() 
-	{
-		Long instId=25l;
-		elec.setInstitutionId(instId);
-		assertEquals("Elec Id doesn't match.",instId,elec.getInstitutionId());
-	}
 
 }

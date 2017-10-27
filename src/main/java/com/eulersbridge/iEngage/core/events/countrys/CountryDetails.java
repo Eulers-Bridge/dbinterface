@@ -2,7 +2,6 @@ package com.eulersbridge.iEngage.core.events.countrys;
 
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.institutions.InstitutionDetails;
-import com.eulersbridge.iEngage.rest.domain.Institution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

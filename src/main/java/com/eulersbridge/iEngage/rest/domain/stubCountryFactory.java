@@ -7,24 +7,24 @@ public class stubCountryFactory extends CountriesFactory {
   Country cs[] = new Country[1];
 
   public stubCountryFactory() {
-    Institution uniOfMelb = new Institution(new Long(26), "University of Melbourne");
-    Institution deakin = new Institution(new Long(25), "Deakin University");
-    Institution monash = new Institution(new Long(27), "Monash University");
+    InstitutionDomain uniOfMelb = new InstitutionDomain(new Long(26), "University of Melbourne");
+    InstitutionDomain deakin = new InstitutionDomain(new Long(25), "Deakin University");
+    InstitutionDomain monash = new InstitutionDomain(new Long(27), "Monash University");
 
-    ArrayList<Institution> ozUniversities = new ArrayList<Institution>();
+    ArrayList<InstitutionDomain> ozUniversities = new ArrayList<InstitutionDomain>();
     ozUniversities.add(uniOfMelb);
     ozUniversities.add(deakin);
     ozUniversities.add(monash);
 
-    Institution cambridge = new Institution(new Long(1), "Cambridge University");
-    Institution oxford = new Institution(new Long(2), "Oxford University");
-    ArrayList<Institution> ukUniversities = new ArrayList<Institution>();
+    InstitutionDomain cambridge = new InstitutionDomain(new Long(1), "Cambridge University");
+    InstitutionDomain oxford = new InstitutionDomain(new Long(2), "Oxford University");
+    ArrayList<InstitutionDomain> ukUniversities = new ArrayList<InstitutionDomain>();
     ukUniversities.add(cambridge);
     ukUniversities.add(oxford);
 
-    Institution[] ozUnis = new Institution[1];
+    InstitutionDomain[] ozUnis = new InstitutionDomain[1];
     ozUnis = ozUniversities.toArray(ozUnis);
-    Institution[] ukUnis = new Institution[1];
+    InstitutionDomain[] ukUnis = new InstitutionDomain[1];
     ukUnis = ukUniversities.toArray(ukUnis);
     Country australia = new Country(new Long(61), "Australia", Arrays.asList(ozUnis));
     Country uk = new Country(new Long(44), "United Kingdom", Arrays.asList(ukUnis));

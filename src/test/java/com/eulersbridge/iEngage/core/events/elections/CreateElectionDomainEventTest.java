@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class CreateElectionEventTest {
+public class CreateElectionDomainEventTest {
     ElectionDetails electionDetails;
     final Long electionId = new Long(0);
     final String title = "election title";

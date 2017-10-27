@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class DeleteElectionEventTest {
+public class DeleteElectionDomainEventTest {
     final Long electionId = new Long(0);
     DeleteElectionEvent deleteElectionEvent;
 

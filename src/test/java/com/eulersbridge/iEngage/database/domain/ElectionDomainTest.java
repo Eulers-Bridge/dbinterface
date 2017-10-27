@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 /**
  * @author Greg Newitt
  */
-public class ElectionTest {
+public class ElectionDomainTest {
 
   private Election election;
   private ElectionDetails elecDets;

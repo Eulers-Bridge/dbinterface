@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class ReadElectionEventTest {
+public class ReadElectionDomainEventTest {
     ReadElectionEvent readElectionEvent;
     ElectionDetails electionDetails;
     final Long electionId = new Long(0);

@@ -8,7 +8,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-public class Institution extends ResourceSupport
+public class InstitutionDomain extends ResourceSupport
 {
 	Long institutionId;
 	Long newsFeedId;
@@ -30,13 +30,13 @@ public class Institution extends ResourceSupport
 		this.newsFeedId = newsFeedId;
 	}
 
-	private static Logger LOG = LoggerFactory.getLogger(Institution.class);
+	private static Logger LOG = LoggerFactory.getLogger(InstitutionDomain.class);
 
-	public Institution()
+	public InstitutionDomain()
 	{
 	}
 
-	public Institution(Long id)
+	public InstitutionDomain(Long id)
 	{
 		this.institutionId = id;
 	}
@@ -91,7 +91,7 @@ public class Institution extends ResourceSupport
 		this.country = country;
 	}
 
-	public Institution(Long id, String name)
+	public InstitutionDomain(Long id, String name)
 	{
 		this.institutionId = id;
 		this.name = name;
@@ -110,9 +110,9 @@ public class Institution extends ResourceSupport
 	}
 
 	// {!begin fromOrderDetails}
-	public static Institution fromInstDetails(InstitutionDetails readInstitute)
+	public static InstitutionDomain fromInstDetails(InstitutionDetails readInstitute)
 	{
-		Institution inst = new Institution();
+		InstitutionDomain inst = new InstitutionDomain();
 
 		inst.institutionId = readInstitute.getNodeId();
 		inst.name = readInstitute.getName();
@@ -121,7 +121,7 @@ public class Institution extends ResourceSupport
 		inst.country = readInstitute.getCountryName();
 		inst.newsFeedId = readInstitute.getNewsFeedId();
 
-		String simpleName = Institution.class.getSimpleName();
+		String simpleName = InstitutionDomain.class.getSimpleName();
 		String name = simpleName.substring(0, 1).toLowerCase()
 				+ simpleName.substring(1);
 

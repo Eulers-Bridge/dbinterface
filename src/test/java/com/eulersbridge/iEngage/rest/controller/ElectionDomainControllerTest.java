@@ -12,6 +12,7 @@ import com.eulersbridge.iEngage.core.services.interfacePack.InstitutionService;
 import com.eulersbridge.iEngage.core.services.interfacePack.VotingLocationService;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import com.eulersbridge.iEngage.rest.domain.ElectionDomain;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -41,9 +42,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
  * @author Greg Newitt
  *
  */
-public class ElectionControllerTest
+public class ElectionDomainControllerTest
 {
-    private static Logger LOG = LoggerFactory.getLogger(ElectionControllerTest.class);
+    private static Logger LOG = LoggerFactory.getLogger(ElectionDomainControllerTest.class);
     
     private String urlPrefix=ControllerConstants.API_PREFIX+ControllerConstants.ELECTION_LABEL;
     
@@ -122,95 +123,6 @@ public class ElectionControllerTest
 		.andExpect(status().isNotFound())	;
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#createElection(com.eulersbridge.iEngage.rest.domain.Election)}.
-	 * @throws Exception 
-	 */
-	@Test
-	public final void testCreateElection() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingCreateElection()");
-		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ElectionCreatedEvent testData=new ElectionCreatedEvent(dets.getElectionId(), dets);
-		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1,\"introduction\":\"introduction 1\",\"process\":\"process 1\"}";
-		String returnedContent="{\"electionId\":"+dets.getElectionId().intValue()+",\"title\":\""+dets.getTitle()+"\",\"start\":"+dets.getStart().intValue()+",\"end\":"+dets.getEnd().intValue()+
-								",\"startVoting\":"+dets.getStartVoting().intValue()+",\"endVoting\":"+dets.getEndVoting()+",\"institutionId\":"+dets.getInstitutionId()+
-								",\"introduction\":\""+dets.getIntroduction()+"\",\"process\":\""+dets.getProcess()+"\",\"links\":[{\"rel\":\"self\",\"href\":\"http://localhost/api/election/1\"},{\"rel\":\"Previous\",\"href\":\"http://localhost/api/election/1/previous\"},{\"rel\":\"Next\",\"href\":\"http://localhost/api/election/1/next\"},{\"rel\":\"Read all\",\"href\":\"http://localhost/api/elections\"}]}";
-		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
-		.andExpect(jsonPath("$.title",is(dets.getTitle())))
-		.andExpect(jsonPath("$.start",is(dets.getStart().intValue())))
-		.andExpect(jsonPath("$.end",is(dets.getEnd().intValue())))
-		.andExpect(jsonPath("$.startVoting",is(dets.getStartVoting().intValue())))
-		.andExpect(jsonPath("$.endVoting",is(dets.getEndVoting().intValue())))
-		.andExpect(jsonPath("$.electionId",is(dets.getElectionId().intValue())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
-		.andExpect(jsonPath("$.introduction",is(dets.getIntroduction())))
-		.andExpect(jsonPath("$.process",is(dets.getProcess())))
-		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
-		.andExpect(jsonPath("$.links[2].rel",is("Next")))
-		.andExpect(jsonPath("$.links[3].rel",is("Read all")))
-		.andExpect(content().string(returnedContent))
-		.andExpect(status().isCreated())	;		
-	}
-
-	@Test
-	public final void testCreateElectionInvalidContent() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
-		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ElectionCreatedEvent testData=new ElectionCreatedEvent(dets.getElectionId(), dets);
-		String content="{\"electionId1\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
-		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
-		.andExpect(status().isBadRequest())	;		
-	}
-
-	@Test
-	public final void testCreateElectionNoContent() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingCreateNewsArticle()");
-		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ElectionCreatedEvent testData=new ElectionCreatedEvent(dets.getElectionId(), dets);
-		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
-		.andExpect(status().isBadRequest())	;		
-	}
-
-	@Test
-	public final void testCreateElectionNotFound() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingCreateElection()");
-		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ElectionCreatedEvent testData=ElectionCreatedEvent.institutionNotFound(dets.getInstitutionId());
-		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
-		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
-		.andExpect(status().isNotFound())	;		
-	}
-
-	@Test
-	public final void testCreateElectionNullIdReturned() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingCreateElection()");
-		ElectionDetails dets=DatabaseDataFixture.populateElection1().toElectionDetails();
-		ElectionCreatedEvent testData=new ElectionCreatedEvent(null, dets);
-		String content="{\"electionId\":1,\"title\":\"Test Election\",\"start\":123456,\"end\":123756,\"startVoting\":123456,\"endVoting\":123756,\"institutionId\":1}";
-		when (electionService.createElection(any(CreateElectionEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(post(urlPrefix+"/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-		.andDo(print())
-		.andExpect(status().isBadRequest())	;		
-	}
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#findPreviousElection(java.lang.Long)}.
-	 * @throws Exception 
-	 */
 	@Test
 	public final void testFindPreviousElection() throws Exception 
 	{
@@ -327,7 +239,7 @@ public class ElectionControllerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#updateElection(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Election)}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#updateElection(java.lang.Long, ElectionDomain)}.
 	 * @throws Exception 
 	 */
 	@Test
@@ -483,7 +395,7 @@ public class ElectionControllerTest
 	}
 
 	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#updateElection(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Election)}.
+	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#updateElection(java.lang.Long, ElectionDomain)}.
 	 * @throws Exception 
 	 */
 	@Test

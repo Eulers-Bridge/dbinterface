@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class ElectionCreatedEventTest
+public class ElectionDomainCreatedEventTest
 {
 	ElectionDetails electionDetails;
 	final Long electionId = new Long(0);
