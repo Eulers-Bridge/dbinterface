@@ -5,6 +5,7 @@ import org.neo4j.ogm.session.SessionFactory;
 import org.neo4j.ogm.session.event.EventListener;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.neo4j.Neo4jProperties;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +27,14 @@ import java.util.List;
 public class SDNConfig extends Neo4jDataAutoConfiguration {
 
   final PreSaveEventListener preSaveEventListener;
+
+  @Value("${neo4j.uri}")
+  String neo4jURI;
+  @Value("${neo4j.username}")
+  String neo4jUserName;
+  @Value("${neo4j.password}")
+  String neo4jPWD;
+
 
   @Autowired
   public SDNConfig(PreSaveEventListener preSaveEventListener) {
@@ -51,6 +60,9 @@ public class SDNConfig extends Neo4jDataAutoConfiguration {
   // Setup auto-index strategy
   @Override
   public org.neo4j.ogm.config.Configuration configuration(Neo4jProperties properties) {
+    properties.setUri(neo4jURI);
+    properties.setUsername(neo4jUserName);
+    properties.setPassword(neo4jPWD);
     org.neo4j.ogm.config.Configuration configuration =  super.configuration(properties);
     // Can using "assert" during dev validate  none/assert/validate/dump
     // Ref: https://neo4j.com/docs/ogm-manual/current/reference/#reference:indexing:creation
