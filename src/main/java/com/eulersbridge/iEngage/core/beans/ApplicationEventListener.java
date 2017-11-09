@@ -77,19 +77,20 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
 
   private void checkOrCreateInitialNodes() {
     Country country = new Country(countryName);
-    persistNode(country, counRepo, counRepo.findByCountryName(country.getCountryName(), 0));
+    persistNode(country, counRepo, counRepo.findByCountryName(country.getCountryName(), 0), 0);
+    country = counRepo.findByCountryName(country.getCountryName(), 0);
     Institution institution = new Institution(institutionName, institutionCampus, institutionState, country.toNode());
-    persistNode(institution, instRepo, instRepo.findByName(institution.getName(), 0));
+    persistNode(institution, instRepo, instRepo.findByName(institution.getName(), 0), 1);
 
-    forEachTaskNode(task -> persistNode(task, taskRepo, taskRepo.findByAction(task.getAction(), 0)));
-    forEachBadgeNode(badge -> persistNode(badge, bdgRepo, bdgRepo.findByNameAndLevel(badge.getName(), badge.getLevel(), 0)));
+    forEachTaskNode(task -> persistNode(task, taskRepo, taskRepo.findByAction(task.getAction(), 0), 0));
+    forEachBadgeNode(badge -> persistNode(badge, bdgRepo, bdgRepo.findByNameAndLevel(badge.getName(), badge.getLevel(), 0), 0));
 
   }
 
-  private <N extends Node, R extends GraphRepository<N>> Object persistNode(N newNode, R repo, N entity) {
+  private <N extends Node, R extends GraphRepository<N>> Object persistNode(N newNode, R repo, N entity, Integer saveDepth) {
     if (entity == null) {
       LOG.info(newNode.getClass().getSimpleName() + " node does not exist. Creating...");
-      repo.save(newNode, 0);
+      repo.save(newNode, saveDepth);
     } else {
       LOG.info("OK.. " + newNode.getClass().getSimpleName() + " node exists");
     }
