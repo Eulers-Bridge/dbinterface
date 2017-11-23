@@ -63,8 +63,8 @@ public interface UserRepository extends GraphRepository<User> {
   @Query("Match (a:`" + DataConstants.USER + "`),(b) where a.email={email} and id(b)={likedId} CREATE UNIQUE (a)-[r:" + DataConstants.LIKES_LABEL + "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Like' return count(r)")
   Long like(@Param("email") String email, @Param("likedId") Long likedId);
 
-  @Query("Match (a:`" + DataConstants.USER + "`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
-  void unlike(@Param("email") String email, @Param("likedId") Long likedId);
+  @Query("Match (a:`" + DataConstants.USER + "`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r return count(r)")
+  Long unlike(@Param("email") String email, @Param("likedId") Long likedId);
 
   User findByContactNumber(String contactNumber);
 

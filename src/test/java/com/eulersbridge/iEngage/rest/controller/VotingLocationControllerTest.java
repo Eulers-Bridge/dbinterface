@@ -503,67 +503,7 @@ public class VotingLocationControllerTest
 		.andDo(print())
 		.andExpect(status().isNotFound());
 	}
-
-
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.VotingLocationController#unlikeVotingLocation(java.lang.Long, java.lang.String)}.
-	 * @throws Exception 
-	 */
-	@Test
-	public final void testUnlikeVotingLocation() throws Exception
-	{
-        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
-        Long id=1L;
-        User user=DatabaseDataFixture.populateUserGnewitt();
-        LikedEvent evt= new LikedEvent(id, user.getEmail(), true);
-
-		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
-                .andExpect(status().isOk())	;
-	}
-
-	@Test
-	public final void testUnlikeVotingLocationFailed() throws Exception
-	{
-        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
-        Long id=1L;
-        User user=DatabaseDataFixture.populateUserGnewitt();
-        LikedEvent evt= new LikedEvent(id, user.getEmail(), false);
-
-		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
-                .andExpect(status().isOk())	;
-	}
-	@Test
-	public final void testUnlikeVotingLocationEntityNotFound() throws Exception
-	{
-		User user=DatabaseDataFixture.populateUserGnewitt();
-		String email=user.getEmail();
-        Long id=1L;
-		LikedEvent event=LikedEvent.entityNotFound(id, email);
-		when(likesService.unlike(any(LikeEvent.class))).thenReturn(event);
-
-		this.mockMvc.perform(delete(urlPrefix+"/{id}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",id,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
-		.andExpect(status().isGone());
-	}
-	@Test
-	public final void testUnlikeVotingLocationUserNotFound() throws Exception
-	{
-		User user=DatabaseDataFixture.populateUserGnewitt();
-		String email=user.getEmail();
-		Long id=1l;
-		LikedEvent event=LikedEvent.userNotFound(id, email);
-		when(likesService.unlike(any(LikeEvent.class))).thenReturn(event);
-
-		this.mockMvc.perform(delete(urlPrefix+"/{id}/"+ControllerConstants.LIKED_BY_LABEL+"/{email}/",id,email).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
-		.andExpect(status().isNotFound());
-	}
+	
 
 	/**
 	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.VotingLocationController#findLikes(java.lang.Long, java.lang.String, java.lang.String, java.lang.String)}.

@@ -1,5 +1,6 @@
 package com.eulersbridge.iEngage.rest.controller;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
@@ -197,29 +198,11 @@ public class EventController {
   @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.EVENT_LABEL
     + "/{eventId}" + ControllerConstants.LIKED_BY_LABEL + "/{email}/")
   public @ResponseBody
-  ResponseEntity<Response> unlikeEvent(
+  ResponseEntity unlikeEvent(
     @PathVariable Long eventId, @PathVariable String email) {
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to have " + email + " unlike news article. "
-        + eventId);
-    LikedEvent event = likesService.unlike(new LikeEvent(eventId,
-      email));
-
-    ResponseEntity<Response> response;
-
-    if (!event.isEntityFound()) {
-      response = new ResponseEntity<Response>(HttpStatus.GONE);
-    } else if (!event.isUserFound()) {
-      response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
-    } else {
-      Response restEvent;
-      if (event.isResultSuccess())
-        restEvent = new Response();
-      else
-        restEvent = Response.failed("Could not unlike.");
-      response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
-    }
-    return response;
+    email = Util.getUserEmailFromSession();
+    RequestHandledEvent result = likesService.unlike(email, eventId);
+    return result.toResponseEntity();
   }
 
   /**

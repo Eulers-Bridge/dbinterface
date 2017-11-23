@@ -251,24 +251,9 @@ public class PollController {
   public @ResponseBody
   ResponseEntity<Response> unlikePoll(
     @PathVariable Long pollId, @PathVariable String email) {
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to have " + email + " unlike poll. " + pollId);
-    LikedEvent unlikedPollEvent = likesService.unlike(new LikeEvent(pollId,
-      email));
-    ResponseEntity<Response> response;
-    if (!unlikedPollEvent.isEntityFound()) {
-      response = new ResponseEntity<Response>(HttpStatus.GONE);
-    } else if (!unlikedPollEvent.isUserFound()) {
-      response = new ResponseEntity<Response>(HttpStatus.NOT_FOUND);
-    } else {
-      Response restEvent;
-      if (unlikedPollEvent.isResultSuccess())
-        restEvent = new Response();
-      else
-        restEvent = Response.failed("Could not unlike.");
-      response = new ResponseEntity<Response>(restEvent, HttpStatus.OK);
-    }
-    return response;
+    email = Util.getUserEmailFromSession();
+    RequestHandledEvent result = likesService.unlike(email, pollId);
+    return result.toResponseEntity();
   }
 
   // likes

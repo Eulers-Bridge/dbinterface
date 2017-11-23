@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services;
 
 import com.eulersbridge.iEngage.core.events.LikeEvent;
 import com.eulersbridge.iEngage.core.events.LikedEvent;
+import com.eulersbridge.iEngage.core.events.RequestHandledEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikeableObjectLikesEvent;
 import com.eulersbridge.iEngage.core.events.likes.LikesLikeableObjectEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
@@ -10,6 +11,8 @@ import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.email.Email;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +34,13 @@ public class LikesEventHandler implements LikesService {
 
   UserRepository userRepository;
   NodeRepository nodeRepository;
+  EmailValidator emailValidator;
 
   @Autowired
   public LikesEventHandler(UserRepository userRepository, NodeRepository nodeRepository) {
     this.userRepository = userRepository;
     this.nodeRepository = nodeRepository;
+    this.emailValidator = EmailValidator.getInstance();
   }
 
   @Override
@@ -77,18 +82,13 @@ public class LikesEventHandler implements LikesService {
   }
 
   @Override
-  public LikedEvent unlike(LikeEvent unlikeEvent) {
-    boolean result = true;
-    LikedEvent retValue = null;
-    String email = unlikeEvent.getEmailAddress();
-    Long nodeId = unlikeEvent.getNodeId();
-
-    retValue = checkParams(email, nodeId);
-    if (null == retValue) {
-      userRepository.unlike(email, nodeId);
-      retValue = new LikedEvent(nodeId, email, result);
-    }
-    return retValue;
+  public RequestHandledEvent unlike(String email, Long objId) {
+    if (!emailValidator.isValid(email) || objId == null)
+      return RequestHandledEvent.badRequest();
+    Long numOfDeleted = userRepository.unlike(email, objId);
+    if (numOfDeleted == 0)
+      return RequestHandledEvent.targetNotFound();
+    return RequestHandledEvent.success();
   }
 
   private LikedEvent checkParams(String email, Long nodeId) {

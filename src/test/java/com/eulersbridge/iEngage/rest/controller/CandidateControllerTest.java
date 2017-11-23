@@ -567,66 +567,6 @@ public class CandidateControllerTest
 		.andExpect(status().isGone())	;		
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.CandidateController#unlikeCandidate(java.lang.Long, java.lang.String)}.
-	 */
-	@Test
-	public final void testUnlikeCandidate() throws Exception
-	{
-        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
-        Long id=1L;
-        User user=DatabaseDataFixture.populateUserGnewitt();
-        LikedEvent evt= new LikedEvent(id, user.getEmail(), true);
-
-		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
-                .andExpect(status().isOk())	;
-	}
-
-	@Test
-	public final void testUnlikeCandidateFailed() throws Exception
-	{
-        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
-        Long id=1L;
-        User user=DatabaseDataFixture.populateUserGnewitt();
-        LikedEvent evt= new LikedEvent(id, user.getEmail(), false);
-
-		when(likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(jsonPath("success",is(evt.isResultSuccess())))
-                .andExpect(status().isOk())	;
-	}
-
-    @Test
-    public final void testUnLikedByCandidateNotFound() throws Exception
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
-        Long id=1L;
-        User user=DatabaseDataFixture.populateUserGnewitt();
-        LikedEvent evt=LikedEvent.userNotFound(id,  user.getEmail());
-
-        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound())	;
-    }
-
-    @Test
-    public final void testUnLikedByCandidateGone() throws Exception
-    {
-        if (LOG.isDebugEnabled()) LOG.debug("performingUnLikedByEvent()");
-        Long id=1L;
-        User user=DatabaseDataFixture.populateUserGnewitt();
-        LikedEvent evt=LikedEvent.entityNotFound(id, user.getEmail());
-
-        when (likesService.unlike(any(LikeEvent.class))).thenReturn(evt);
-        this.mockMvc.perform(delete(urlPrefix+"/{id}"+ControllerConstants.LIKED_BY_LABEL+"/{userId}/",id.intValue(),user.getEmail()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isGone())	;
-    }
 
 	/**
 	 * 

@@ -200,26 +200,4 @@ public class LikesEventHandlerTest
 		assertFalse(evtData.isResultSuccess());
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.core.services.EventEventHandler(com.eulersbridge.iEngage.core.events.events)}.
-	 */
-	@Test
-	public final void testUnlikeEvent()
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("UnlikingEvent()");
-		User liker=DatabaseDataFixture.populateUserGnewitt();
-		Event liked=DatabaseDataFixture.populateEvent1();
-		LikeEvent evt=new LikeEvent(liked.getNodeId(), liker.getEmail());
-		when(userRepository.findByEmail(any(String.class), anyInt())).thenReturn(liker);
-		when(nodeRepository.findOne(any(Long.class), anyInt())).thenReturn(new Node(liked.getNodeId()));
-		doNothing().when(userRepository).unlike(any(String.class),any(Long.class));
-		
-		LikedEvent evtData = service.unlike(evt);
-		assertEquals(evtData.getNodeId(),liked.getNodeId());
-		assertEquals(evtData.getUserEmail(),liker.getEmail());
-		assertTrue(evtData.isEntityFound());
-		assertTrue(evtData.isUserFound());
-		assertTrue(evtData.isResultSuccess());
-	}
-
 }
