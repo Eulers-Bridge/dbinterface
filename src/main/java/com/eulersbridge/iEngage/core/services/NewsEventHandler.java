@@ -1,9 +1,6 @@
 package com.eulersbridge.iEngage.core.services;
 
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.interfacePack.NewsService;
@@ -72,15 +69,12 @@ public class NewsEventHandler implements NewsService {
   }
 
   @Override
-  public ReadEvent requestReadNewsArticle(
-    RequestReadNewsArticleEvent requestReadNewsArticleEvent) {
-    NewsArticle na = newsRepo.findOne(requestReadNewsArticleEvent.getNodeId());
-    ReadEvent nade;
-    if (na != null)
-      nade = new ReadNewsArticleEvent(requestReadNewsArticleEvent.getNodeId(), na.toNewsArticleDetails());
-    else
-      nade = ReadNewsArticleEvent.notFound(requestReadNewsArticleEvent.getNodeId());
-    return nade;
+  public RequestHandledEvent requestReadNewsArticle(Long articleId, String userEmail) {
+    NewsArticle article = newsRepo.readOne(articleId, userEmail);
+    if (article == null)
+      return RequestHandledEvent.targetNotFound();
+
+    return new RequestHandledEvent(com.eulersbridge.iEngage.rest.domain.NewsArticle.fromNewsArticleDetails(article.toNewsArticleDetails()));
   }
 
   @Override

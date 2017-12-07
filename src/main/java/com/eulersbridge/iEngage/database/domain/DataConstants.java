@@ -12,6 +12,7 @@ public class DataConstants {
   public static final String HAS_NEWS_LABEL = "HAS_NEWS";
   public static final String HAS_PERSONALITY_LABEL = "hasPersonality";
   public static final String HAS_PPSEQuestions_LABEL = "hasPPSEQuestions";
+  public static final String HAS_READ_LABEL = "HAS_READ";
   public static final String USERS_LABEL = "USER_OF";
   public static final String VERIFIED_BY_LABEL = "verifiedBy";
   public static final String HAS_CANDIDATE_LABEL = "HAS_CANDIDATE";

@@ -152,16 +152,9 @@ public class NewsController {
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.NEWS_ARTICLE_LABEL + "/{articleId}")
   public @ResponseBody
   ResponseEntity<NewsArticle> findArticle(@PathVariable Long articleId) {
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to retrieve news article. " + articleId);
-
-    ReadEvent articleEvent = newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
-
-    if (!articleEvent.isEntityFound()) {
-      return new ResponseEntity<NewsArticle>(HttpStatus.NOT_FOUND);
-    }
-    NewsArticle restNews = NewsArticle.fromNewsArticleDetails((NewsArticleDetails) articleEvent.getDetails());
-    return new ResponseEntity<NewsArticle>(restNews, HttpStatus.OK);
+    String userEmail = Util.getUserEmailFromSession();
+    RequestHandledEvent res = newsService.requestReadNewsArticle(articleId, userEmail);
+    return res.toResponseEntity();
   }
 
   /**
@@ -288,21 +281,9 @@ public class NewsController {
     Direction sortDirection = Direction.DESC;
     if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
 
-//        NewsArticleLikesEvent newsArticleLikesEvent = newsService.likesNewsArticle(new LikesNewsArticleEvent(articleId), sortDirection, pageNumber, pageLength);
-//        if (!newsArticleLikesEvent.isArticlesFound())
-//        {
-//            return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
-//        }
 
     LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(articleId), sortDirection, pageNumber, pageLength);
     Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
-    if (likes.hasNext() == false) {
-      ReadEvent articleEvent = newsService.requestReadNewsArticle(new RequestReadNewsArticleEvent(articleId));
-      if (!articleEvent.isEntityFound())
-        return new ResponseEntity<Iterator<LikeInfo>>(HttpStatus.NOT_FOUND);
-      else
-        return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
-    } else
-      return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
+    return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
   }
 }

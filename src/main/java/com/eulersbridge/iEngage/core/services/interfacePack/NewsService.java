@@ -1,9 +1,6 @@
 package com.eulersbridge.iEngage.core.services.interfacePack;
 
-import com.eulersbridge.iEngage.core.events.DeletedEvent;
-import com.eulersbridge.iEngage.core.events.ReadAllEvent;
-import com.eulersbridge.iEngage.core.events.ReadEvent;
-import com.eulersbridge.iEngage.core.events.UpdatedEvent;
+import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.springframework.data.domain.Sort.Direction;
@@ -14,7 +11,7 @@ public interface NewsService {
   public NewsArticleCreatedEvent createNewsArticle(CreateNewsArticleEvent createNewsArticleEvent);
 
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
-  public ReadEvent requestReadNewsArticle(RequestReadNewsArticleEvent requestReadNewsArticleEvent);
+  public RequestHandledEvent requestReadNewsArticle(Long articleId, String userEmail);
 
   @PreAuthorize("hasAnyRole('" + SecurityConstants.CONTENT_MANAGER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
   public UpdatedEvent updateNewsArticle(UpdateNewsArticleEvent updateNewsArticleEvent);

@@ -106,19 +106,6 @@ public class NewsEventHandlerTest {
     assertTrue(nace.isCreatorFound());
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.core.services.NewsEventHandler#requestReadNewsArticle(com.eulersbridge.iEngage.core.events.newsArticles.RequestReadNewsArticleEvent)}.
-   */
-  @Test
-  public void testRequestReadNewsArticle() {
-    NewsArticle value = DatabaseDataFixture.populateNewsArticle1();
-    RequestReadNewsArticleEvent rnae = new RequestReadNewsArticleEvent(value.getNodeId());
-    when(newsRepos.findOne(any(Long.class))).thenReturn(value);
-    ReadNewsArticleEvent rane = (ReadNewsArticleEvent) service.requestReadNewsArticle(rnae);
-    assertNotNull("Null read news article event returned.", rane);
-    assertEquals(rane.getDetails(), value.toNewsArticleDetails());
-    assertEquals("article ids do not match.", rane.getNodeId(), rnae.getNodeId());
-  }
 
   /**
    * Test method for {@link com.eulersbridge.iEngage.core.services.NewsEventHandler(com.eulersbridge.iEngage.core.events.newsArticles.UpdateNewsArticleEvent)}.

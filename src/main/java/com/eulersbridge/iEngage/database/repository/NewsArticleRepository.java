@@ -25,5 +25,7 @@ public interface NewsArticleRepository extends GraphRepository<NewsArticle> {
   @Query("Match (a:`User`)-[r:LIKES]-(b) where a.email={email} and id(b)={likedId} delete r")
   void unlikeArticle(@Param("email") String email, @Param("likedId") Long likedId);
 
-
+  @Query("Match l=(a)-[:CREATED_BY]->(x),(u:User) where id(a)={articleId} and u.email={userEmail} with l, a, u , Exists ( (u)-[:HAS_READ]->(a) ) as hasRead " +
+    "Merge (u)-[r:HAS_READ]->(a) ON CREATE SET r.timestamp = [timestamp()] ON MATCH SET r.timestamp = r.timestamp + timestamp() return l")
+  NewsArticle readOne(@Param("articleId") Long articleId, @Param("userEmail") String userEmail);
 }

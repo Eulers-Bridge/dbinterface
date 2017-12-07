@@ -140,46 +140,6 @@ public class NewsControllerTest
 		assertNotNull("Not yet implemented", newsController1);
 	}
 
-	/**
-	 * Test method for {@link com.eulersbridge.iEngage.rest.controller.ElectionController#findElection(java.lang.Long)}.
-	 * @throws Exception 
-	 */
-	@Test
-	public final void testFindArticle() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticle()");
-		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
-		ReadEvent testData=new ReadNewsArticleEvent(dets.getNodeId(), dets);
-		when (newsService.requestReadNewsArticle(any(RequestReadNewsArticleEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get(urlPrefix+"/{newsArticleId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
-		.andExpect(jsonPath("$.title",is(dets.getTitle())))
-		.andExpect(jsonPath("$.content",is(dets.getContent())))
-		.andExpect(jsonPath("$.date",is(dets.getDate())))
-		.andExpect(jsonPath("$.creatorEmail",is(dets.getCreatorEmail())))
-		.andExpect(jsonPath("$.articleId",is(dets.getNodeId().intValue())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
-		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
-		.andExpect(jsonPath("$.links[2].rel",is("Next")))
-		.andExpect(jsonPath("$.links[3].rel",is("Liked By")))
-		.andExpect(jsonPath("$.links[4].rel",is("UnLiked By")))
-		.andExpect(jsonPath("$.links[5].rel",is("Likes")))
-		.andExpect(jsonPath("$.links[6].rel",is("Read all")))
-		.andExpect(status().isOk())	;
-	}
-
-	@Test
-	public final void testFindArticleNotFound() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticle()");
-		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
-		ReadEvent testData=ReadNewsArticleEvent.notFound(dets.getNodeId());
-		when (newsService.requestReadNewsArticle(any(RequestReadNewsArticleEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get(urlPrefix+"/{articleId}/",dets.getNodeId()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andDo(print())
-		.andExpect(status().isNotFound())	;
-	}
 
 	@Test
 	public void testAlterNewsArticle() throws Exception

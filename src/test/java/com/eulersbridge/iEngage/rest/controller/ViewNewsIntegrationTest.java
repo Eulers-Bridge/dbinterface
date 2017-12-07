@@ -245,45 +245,6 @@ public class ViewNewsIntegrationTest {
 
 
 	@Test
-	public final void testFindArticle() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticle()");
-		Long newsArticleId=1l;
-		NewsArticleDetails dets=DatabaseDataFixture.populateNewsArticle1().toNewsArticleDetails();
-		ReadNewsArticleEvent testData=new ReadNewsArticleEvent(newsArticleId, dets);
-		when (newsService.requestReadNewsArticle(any(RequestReadNewsArticleEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$.title",is(dets.getTitle())))
-		.andExpect(jsonPath("$.date",is(dets.getDate())))
-		.andExpect(jsonPath("$.creatorEmail",is(dets.getCreatorEmail())))
-		.andExpect(jsonPath("$.content",is(dets.getContent())))
-		.andExpect(jsonPath("$.articleId",is(dets.getNewsArticleId().intValue())))
-		.andExpect(jsonPath("$.institutionId",is(dets.getInstitutionId().intValue())))
-//TODO
-/*		.andExpect(jsonPath("$.photos",is(dets.getPhotos())))
-		.andExpect(jsonPath("$.likers",is(dets.getLikers())))
-*/		.andExpect(jsonPath("$.links[0].rel",is("self")))
-		.andExpect(jsonPath("$.links[1].rel",is("Previous")))
-		.andExpect(jsonPath("$.links[2].rel",is("Next")))
-		.andExpect(jsonPath("$.links[3].rel",is("Liked By")))
-		.andExpect(jsonPath("$.links[4].rel",is("UnLiked By")))
-		.andExpect(jsonPath("$.links[5].rel",is("Likes")))
-		.andExpect(jsonPath("$.links[6].rel",is("Read all")))
-		.andExpect(status().isOk())	;
-	}
-
-	@Test
-	public final void testFindArticleNoArticle() throws Exception 
-	{
-		if (LOG.isDebugEnabled()) LOG.debug("performingFindArticle()");
-		Long newsArticleId=5l;
-		ReadEvent testData=ReadNewsArticleEvent.notFound(newsArticleId);
-		when (newsService.requestReadNewsArticle(any(RequestReadNewsArticleEvent.class))).thenReturn(testData);
-		this.mockMvc.perform(get(urlPrefix+"/{newsArticleId}/",newsArticleId).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isNotFound())	;
-	}
-
-	@Test
 	public final void testDeleteNewsArticle() throws Exception 
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("performingDeleteArticle()");
