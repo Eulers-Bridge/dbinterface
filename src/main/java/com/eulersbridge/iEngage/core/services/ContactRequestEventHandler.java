@@ -8,6 +8,7 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.ContactRequestService;
 import com.eulersbridge.iEngage.database.domain.Contact;
 import com.eulersbridge.iEngage.database.domain.ContactRequest;
+import com.eulersbridge.iEngage.database.domain.Node;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.repository.ContactRepository;
 import com.eulersbridge.iEngage.database.repository.ContactRequestRepository;
@@ -21,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -113,7 +116,7 @@ public class ContactRequestEventHandler implements ContactRequestService {
 
     boolean isAlreadyFriend =
       userRepository.isFriend(req.getCreator().getEmail(), req.getTarget().getEmail());
-    if (!isAlreadyFriend){
+    if (!isAlreadyFriend) {
       Contact contact = contactRepo.createUniqueFriendship(req.getCreator().getEmail(),
         req.getTarget().getEmail(), System.currentTimeMillis());
       if (contact == null)
@@ -155,9 +158,14 @@ public class ContactRequestEventHandler implements ContactRequestService {
     User user = userRepository.findByEmail(userEmail, 0);
     if (user == null)
       return RequestHandledEvent.userNotFound();
-    List<User> friends = userRepository.findContacts(userEmail);
+    List<Contact> friends = userRepository.findByEmail(userEmail, 2).getFriends();
+    if (friends == null)
+      friends = new ArrayList<>();
     List<UserProfile> friendsProfiles = friends.stream()
-      .map(u -> UserProfile.fromUserDetails(u.toUserDetails()))
+      .map(u -> {
+        User friend = u.getOpposedFriend(userEmail);
+        return UserProfile.fromUserDetails(friend.toUserDetails());
+      })
       .collect(Collectors.toList());
     WrappedDomainList<UserProfile> wl =
       new WrappedDomainList(friendsProfiles, friendsProfiles.size(), 1);

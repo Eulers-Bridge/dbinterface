@@ -26,6 +26,14 @@ public class Contact {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");
   }
 
+  public User getOpposedFriend(String myEmail){
+    if (contactee.getEmail().equals(myEmail))
+      return contactor;
+    if (contactor.getEmail().equals(myEmail))
+      return contactee;
+    return null;
+  }
+
   public ContactDetails toContactDetails() {
     if (LOG.isTraceEnabled()) LOG.trace("toContactDetails()");
 
