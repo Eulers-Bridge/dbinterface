@@ -76,7 +76,7 @@ public interface UserRepository extends GraphRepository<User> {
     "`) where id(a)={userId} return b")
   Page<User> findContacts(@Param("userId") Long userId, Pageable pageable);
 
-  @Query("MATCH (u:User)-[r:HAS_CONTACT]-(t:User) where u.email={userEmail} with distinct r, t, id(u) as userId match l=(t)-[*0..1]-(x) where not x:User return l order by r.timestamp DESC")
+  @Query("MATCH (u:User)-[r:HAS_CONTACT]-(t:User) where u.email={userEmail} with distinct r, t, id(u) as userId match l=(t)-[*0..1]-(x) return l order by r.timestamp DESC")
   List<User> findContacts(@Param("userEmail") String userEmail);
 
   @Query("MATCH (u:User)-[r:HAS_CONTACT]-(t:User) where u.email={userEmail} and id(t)<>id(u) Return distinct t,r order by r.timestamp DESC")
