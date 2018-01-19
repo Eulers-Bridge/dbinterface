@@ -166,7 +166,6 @@ public class UserEventHandler implements UserService {
     RequestReadUserEvent requestReadUserEvent) {
     ReadUserEvent response;
     if (requestReadUserEvent != null) {
-      System.out.println("!!!" + requestReadUserEvent.getEmail());
       User user = userRepository.findByEmail(requestReadUserEvent.getEmail());
       if (user == null) {
         response = ReadUserEvent.notFound(requestReadUserEvent.getEmail());
@@ -206,21 +205,24 @@ public class UserEventHandler implements UserService {
   }
 
   private UserDetails removeConfidentialDetails(UserDetails userDetails) {
-    UserDetails publicDetails = new UserDetails();
-    publicDetails.setContactNumber(userDetails.getContactNumber());
-    publicDetails.setEmail(userDetails.getEmail());
-    publicDetails.setFamilyName(userDetails.getFamilyName());
-    publicDetails.setGivenName(userDetails.getGivenName());
-    publicDetails.setGender(userDetails.getGender());
-    publicDetails.setNationality(userDetails.getNationality());
-    publicDetails.setInstitutionId(userDetails.getInstitutionId());
-    publicDetails.setPhotos(userDetails.getPhotos());
-    publicDetails.setProfilePhoto(userDetails.getProfilePhoto());
-    publicDetails.setNumOfCompTasks(userDetails.getNumOfCompTasks());
-//    publicDetails.setTotalTasks(userDetails.getTotalTasks());
-    publicDetails.setNumOfCompBadges(userDetails.getNumOfCompBadges());
-//    publicDetails.setTotalBadges(userDetails.getTotalBadges());
-    publicDetails.setExperience(userDetails.getExperience());
+    UserDetails publicDetails = userDetails;
+    publicDetails.setDeviceToken(null);
+    publicDetails.setArn(null);
+    publicDetails.setPassword(null);
+//    publicDetails.setContactNumber(userDetails.getContactNumber());
+//    publicDetails.setEmail(userDetails.getEmail());
+//    publicDetails.setFamilyName(userDetails.getFamilyName());
+//    publicDetails.setGivenName(userDetails.getGivenName());
+//    publicDetails.setGender(userDetails.getGender());
+//    publicDetails.setNationality(userDetails.getNationality());
+//    publicDetails.setInstitutionId(userDetails.getInstitutionId());
+//    publicDetails.setPhotos(userDetails.getPhotos());
+//    publicDetails.setProfilePhoto(userDetails.getProfilePhoto());
+//    publicDetails.setNumOfCompTasks(userDetails.getNumOfCompTasks());
+////    publicDetails.setTotalTasks(userDetails.getTotalTasks());
+//    publicDetails.setNumOfCompBadges(userDetails.getNumOfCompBadges());
+////    publicDetails.setTotalBadges(userDetails.getTotalBadges());
+//    publicDetails.setExperience(userDetails.getExperience());
 
     return publicDetails;
   }
