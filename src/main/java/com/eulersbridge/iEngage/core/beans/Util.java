@@ -56,7 +56,9 @@ public class Util {
       return;
     }
     CreatePlatformEndpointRequest endpointRequest = new CreatePlatformEndpointRequest();
+//    System.out.println("DeviceToken: " + notification.getDeviceToken());
     endpointRequest.setToken(notification.getDeviceToken());
+//    System.out.println("TopicArn: " + notification.getTopicArn());
     endpointRequest.setPlatformApplicationArn(notification.getTopicArn());
     try {
       CreatePlatformEndpointResult creEndResult = sns.createPlatformEndpoint(endpointRequest);
