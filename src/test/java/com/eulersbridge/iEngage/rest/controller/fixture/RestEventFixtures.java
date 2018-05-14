@@ -35,7 +35,7 @@ public class RestEventFixtures
 		int expirationTimeInMinutes=60;
 		VerificationTokenType tokenType=VerificationTokenType.emailVerification;
 		VerificationToken token=new VerificationToken(tokenType, user, expirationTimeInMinutes);
-		EmailVerification verifyEmail=new EmailVerification(null, user, token);
+		EmailVerification verifyEmail=new EmailVerification(null, user, token, null);
 		UserCreatedEvent testData=new UserCreatedEvent(readData.getEmail(), dets,verifyEmail);
 		return testData;
 	}

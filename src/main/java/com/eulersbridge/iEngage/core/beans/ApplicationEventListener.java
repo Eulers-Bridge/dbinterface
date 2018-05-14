@@ -44,6 +44,8 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
   TaskRepository taskRepo;
   @Autowired
   ScheduledTasks scheduledTasks;
+  @Autowired
+  Util util;
 
   @Value("${institution.name}")
   String institutionName;
@@ -65,6 +67,7 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
 
     checkOrCreateInitialNodes();
     scheduledTasks.setAppReady(true);
+    LOG.info("Server IP: " + Util.serverIp);
   }
 
   public void encodeUserPwd() {

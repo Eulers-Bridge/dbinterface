@@ -123,7 +123,7 @@ public class UserEventHandler implements UserService {
         VerificationToken t = tokenRepository.save(token);
         System.out.println("velocityEngine=" + velocityEngine);
         EmailVerification verifyEmail = new EmailVerification(
-          velocityEngine, createdUser, token);
+          velocityEngine, createdUser, token, Util.serverIp);
         result = new UserCreatedEvent(createdUser.getEmail(),
           createdUser.toUserDetails(), verifyEmail);
 
@@ -153,7 +153,7 @@ public class UserEventHandler implements UserService {
         LOG.debug("Verification token = " + token.toString());
 
       EmailVerification verifyEmail = new EmailVerification(
-        velocityEngine, createdUser, token);
+        velocityEngine, createdUser, token, Util.serverIp);
       result = new UserCreatedEvent(userEmail,
         createdUser.toUserDetails(), verifyEmail);
     } else

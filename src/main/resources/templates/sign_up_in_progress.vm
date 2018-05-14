@@ -281,7 +281,7 @@ footer a:hover {
                                 -moz-font-smoothing: subpixel-antialiased;
                                 -o-font-smoothing: subpixel-antialiased;
                                 font-smoothing: subpixel-antialiased;
-                                text-decoration: underline;" href="http://54.79.70.241:8080/dbInterface/api/emailVerification/$emailAddress/$verificationToken">Verify $recipientName</a>
+                                text-decoration: underline;" href="http://$serverIp:8080/dbInterface/api/emailVerification/$emailAddress/$verificationToken">Verify $recipientName</a>
                         </div>
                         </td>
                     </tr>

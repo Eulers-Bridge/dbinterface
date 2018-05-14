@@ -26,14 +26,16 @@ public class EmailVerification extends Email implements Serializable {
   private final VerificationToken token;
   private final String tokenType;
   private final String resourceName;
+  private final String serverIp;
 
   private static Logger LOG = LoggerFactory.getLogger(EmailVerification.class);
 
-  public EmailVerification(VelocityEngine velocityEngine, User user, VerificationToken token) {
+  public EmailVerification(VelocityEngine velocityEngine, User user, VerificationToken token, String serverIP) {
     super(velocityEngine, user.getEmail(), user.getGivenName() + " " + user.getFamilyName(), "support@eulersbridge.com", "Email Verification");
     resourceName = EmailConstants.EmailVerificationTemplate;
     this.token = token;
     this.tokenType = token.getTokenType();
+    this.serverIp = serverIP;
     if (LOG.isDebugEnabled())
       LOG.debug("this.velocityEngine = " + this.velocityEngine);
     if (this.velocityEngine != null)
@@ -67,6 +69,7 @@ public class EmailVerification extends Email implements Serializable {
       hTemplateVariables.put("recipientName", getRecipientName());
       hTemplateVariables.put("emailAddress", getRecipientEmailAddress());
       hTemplateVariables.put("verificationToken", getEncodedToken());
+      hTemplateVariables.put("serverIp", serverIp);
 
       if (LOG.isDebugEnabled())
         LOG.debug("Velocity engine :" + velocityEngine);
