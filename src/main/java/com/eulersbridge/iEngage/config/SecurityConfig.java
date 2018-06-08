@@ -3,6 +3,8 @@
  */
 package com.eulersbridge.iEngage.config;
 
+import java.util.Arrays;
+
 import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.rest.controller.ControllerConstants;
 import org.slf4j.Logger;
@@ -16,6 +18,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author Greg Newitt
@@ -69,6 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //      .logout().permitAll();
 
     http
+      .cors()
+      .and()
       .sessionManagement()
       .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       .and()
@@ -84,6 +92,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
 
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("*"));
+    configuration.setAllowCredentials(true);
+    configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Headers","Access-Control-Allow-Origin","Access-Control-Request-Method", "Access-Control-Request-Headers","Origin","Cache-Control", "Content-Type", "Authorization"));
+    configuration.setAllowedMethods(Arrays.asList("DELETE", "GET", "OPTIONS", "POST", "PATCH", "PUT"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
 //  @Bean
 //  public DigestAuthenticationFilter digestFilter() {
 //    if (LOG.isDebugEnabled()) LOG.debug("digestFilter()");
