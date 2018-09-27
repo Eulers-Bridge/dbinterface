@@ -117,11 +117,11 @@ public class PollEventHandler implements PollService {
       LOG.debug("Entered deletePollEvent= " + deletePollEvent);
     Long pollId = deletePollEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deletePoll(" + pollId + ")");
-    Poll poll = pollRepository.findOne(pollId);
+    Poll poll = pollRepository.findById(pollId).get();
     if (poll == null) {
       return PollDeletedEvent.notFound(pollId);
     } else {
-      pollRepository.delete(pollId);
+      pollRepository.deleteById(pollId);
       PollDeletedEvent pollDeletedEvent = new PollDeletedEvent(pollId);
       return pollDeletedEvent;
     }
@@ -135,7 +135,7 @@ public class PollEventHandler implements PollService {
     UpdatedEvent resultEvt;
 
     if (LOG.isDebugEnabled()) LOG.debug("poll Id is " + pollId);
-    Poll pollOld = pollRepository.findOne(pollId);
+    Poll pollOld = pollRepository.findById(pollId).get();
     if (pollOld == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("poll entity not found " + pollId);
@@ -145,7 +145,7 @@ public class PollEventHandler implements PollService {
         LOG.debug("Finding owner with ownerId = " + pollDetails.getOwnerId());
       Institution institution = null;
       if (null != pollDetails.getOwnerId())
-        institution = institutionRepository.findOne(pollDetails.getOwnerId());
+        institution = institutionRepository.findById(pollDetails.getOwnerId()).get();
       if (null == institution)
         resultEvt = PollUpdatedEvent.ownerNotFound(pollDetails.getOwnerId());
       else {
@@ -154,7 +154,7 @@ public class PollEventHandler implements PollService {
           LOG.debug("Finding creator with creatorId = " + pollDetails.getCreatorId());
         Node creator = null;
         if (null != pollDetails.getCreatorId())
-          creator = userRepo.findOne(pollDetails.getCreatorId());
+          creator = userRepo.findById(pollDetails.getCreatorId()).get();
 
         if (null == creator)
           resultEvt = PollUpdatedEvent.creatorNotFound(pollDetails.getCreatorId());
@@ -174,7 +174,7 @@ public class PollEventHandler implements PollService {
     ReadPollResultEvent readPollResultEvent) {
     Long pollId = readPollResultEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("Finding results for poll - " + pollId);
-    Poll poll = pollRepository.findOne(pollId);
+    Poll poll = pollRepository.findById(pollId).get();
     ReadEvent pollResultReadEvent = null;
     if (poll != null) {
       if (LOG.isDebugEnabled()) LOG.debug("poll - " + poll);
@@ -210,7 +210,7 @@ public class PollEventHandler implements PollService {
 
     AllReadEvent result = null;
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, dir, "p.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, dir, "p.date");
     polls = pollRepository.findByOwnerId(ownerId, Util.getUserEmailFromSession(), pageable);
 
     if (polls != null) {
@@ -226,7 +226,7 @@ public class PollEventHandler implements PollService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found ownerId.
-        Node inst = institutionRepository.findOne(ownerId);
+        Node inst = institutionRepository.findById(ownerId).get();
         if ((null == inst) || (null == inst.getNodeId())) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");

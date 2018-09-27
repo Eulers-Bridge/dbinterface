@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.ui.velocity.VelocityEngineFactoryBean;
 
 import java.util.Properties;
 
@@ -53,17 +52,7 @@ public class TestEmailConfig
 		ClasspathResourceLoader resLoader=new ClasspathResourceLoader();
 		return resLoader;
 	}
-	
-	@Bean
-	public VelocityEngineFactoryBean velocityEngine()
-	{
-		VelocityEngineFactoryBean ve=new VelocityEngineFactoryBean();
-		Properties velocityProperties=new Properties();
-		velocityProperties.setProperty("resource.loader", "class");
-		velocityProperties.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-		ve.setVelocityProperties(velocityProperties);
-		return ve;
-	}
+
 	
 	private Properties getSmtpMailProperties()
 	{

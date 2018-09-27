@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -90,7 +90,7 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
 
   }
 
-  private <N extends Node, R extends GraphRepository<N>> Object persistNode(N newNode, R repo, N entity, Integer saveDepth) {
+  private <N extends Node, R extends Neo4jRepository<N, Long>> Object persistNode(N newNode, R repo, N entity, Integer saveDepth) {
     if (entity == null) {
       LOG.info(newNode.getClass().getSimpleName() + " node does not exist. Creating...");
       repo.save(newNode, saveDepth);

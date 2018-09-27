@@ -52,7 +52,7 @@ public class TaskEventHandler implements TaskService {
 
   @Override
   public ReadEvent requestReadTask(RequestReadTaskEvent requestReadTaskEvent) {
-    Task task = taskRepository.findOne(requestReadTaskEvent.getNodeId());
+    Task task = taskRepository.findById(requestReadTaskEvent.getNodeId()).get();
     ReadEvent readTaskEvent;
     if (task != null) {
       readTaskEvent = new ReadTaskEvent(task.getNodeId(), task.toTaskDetails());
@@ -68,7 +68,7 @@ public class TaskEventHandler implements TaskService {
     ArrayList<TaskDetails> dets = new ArrayList<TaskDetails>();
     AllReadEvent nare = null;
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "action");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "action");
     tasks = taskRepository.findAll(pageable);
     if (tasks != null) {
       if (LOG.isDebugEnabled())
@@ -83,7 +83,7 @@ public class TaskEventHandler implements TaskService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        User elec = userRepository.findOne(null);
+        User elec = userRepository.findById(null).get();
         if ((null == elec) ||
           ((null == elec.getGivenName()) || ((null == elec.getFamilyName()) && (null == elec.getEmail()) && (null == elec.getInstitution())))) {
           if (LOG.isDebugEnabled())
@@ -110,7 +110,7 @@ public class TaskEventHandler implements TaskService {
     Task task = Task.fromTaskDetails(taskDetails);
     Long taskId = taskDetails.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("taskId is " + taskId);
-    Task taskOld = taskRepository.findOne(taskId);
+    Task taskOld = taskRepository.findById(taskId).get();
     if (taskOld == null) {
       if (LOG.isDebugEnabled()) LOG.debug("task entity not found " + taskId);
       return TaskUpdatedEvent.notFound(taskId);
@@ -130,12 +130,12 @@ public class TaskEventHandler implements TaskService {
     UpdatedEvent response = null;
     if (LOG.isDebugEnabled())
       LOG.debug("taskId is " + taskId + " userId - " + userId);
-    Task task = taskRepository.findOne(taskId);
+    Task task = taskRepository.findById(taskId).get();
     if (task == null) {
       if (LOG.isDebugEnabled()) LOG.debug("task entity not found " + taskId);
       response = TaskUpdatedEvent.notFound(taskId);
     } else {
-      User user = userRepository.findOne(userId);
+      User user = userRepository.findById(userId).get();
       if (null == user) {
         if (LOG.isDebugEnabled()) LOG.debug("user entity not found " + taskId);
         response = TaskUpdatedEvent.notFound(userId);
@@ -156,7 +156,7 @@ public class TaskEventHandler implements TaskService {
       LOG.debug("Entered deleteTaskEvent= " + deleteTaskEvent);
     Long taskId = deleteTaskEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deleteTask(" + taskId + ")");
-    Task task = taskRepository.findOne(taskId);
+    Task task = taskRepository.findById(taskId).get();
     if (task == null) {
       return TaskDeletedEvent.notFound(taskId);
     } else {
@@ -175,7 +175,7 @@ public class TaskEventHandler implements TaskService {
     AllReadEvent nare = null;
     Long userId = readCompletedTasksEvent.getParentId();
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "r.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "r.date");
     tasks = taskRepository.findCompletedTasks(userId, pageable);
     if (tasks != null) {
       if (LOG.isDebugEnabled())
@@ -190,7 +190,7 @@ public class TaskEventHandler implements TaskService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        User elec = userRepository.findOne(userId);
+        User elec = userRepository.findById(userId).get();
         if ((null == elec) ||
           ((null == elec.getGivenName()) || ((null == elec.getFamilyName()) && (null == elec.getEmail()) && (null == elec.getInstitution())))) {
           if (LOG.isDebugEnabled())
@@ -218,7 +218,7 @@ public class TaskEventHandler implements TaskService {
     AllReadEvent nare = null;
     Long userId = readCompletedTasksEvent.getParentId();
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "t.xpValue");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "t.xpValue");
     tasks = taskRepository.findRemainingTasks(userId, pageable);
     if (tasks != null) {
       if (LOG.isDebugEnabled())
@@ -233,7 +233,7 @@ public class TaskEventHandler implements TaskService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        User elec = userRepository.findOne(userId);
+        User elec = userRepository.findById(userId).get();
         if ((null == elec) ||
           ((null == elec.getGivenName()) || ((null == elec.getFamilyName()) && (null == elec.getEmail()) && (null == elec.getInstitution())))) {
           if (LOG.isDebugEnabled())

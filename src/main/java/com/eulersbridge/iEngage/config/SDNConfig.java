@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.config;
 
 import com.eulersbridge.iEngage.core.beans.PreSaveEventListener;
+import org.neo4j.ogm.config.AutoIndexMode;
 import org.neo4j.ogm.session.SessionFactory;
 import org.neo4j.ogm.session.event.EventListener;
 import org.springframework.beans.factory.ObjectProvider;
@@ -51,10 +52,10 @@ public class SDNConfig extends Neo4jDataAutoConfiguration {
   // Setup auto-index strategy
   @Override
   public org.neo4j.ogm.config.Configuration configuration(Neo4jProperties properties) {
-    org.neo4j.ogm.config.Configuration configuration =  super.configuration(properties);
+    properties.setAutoIndex(AutoIndexMode.NONE);
+    org.neo4j.ogm.config.Configuration configuration = super.configuration(properties);
     // Can using "assert" during dev validate  none/assert/validate/dump
     // Ref: https://neo4j.com/docs/ogm-manual/current/reference/#reference:indexing:creation
-    configuration.autoIndexConfiguration().setAutoIndex("none");
     return configuration;
   }
 

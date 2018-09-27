@@ -51,7 +51,7 @@ public class EmailConfig {
 
   // TODO: Witch to FreeMarker as Spring in favor of
   @Bean
-  public VelocityEngine velocityEngine(ServletContext servletContext) {
+  public VelocityEngine velocityEngine(ServletContext servletContext) throws Exception {
     if (LOG.isDebugEnabled()) LOG.debug("velocityEngine()");
     
     Properties velocityProperties = new Properties();

@@ -95,8 +95,8 @@ public class NewsEventHandler implements NewsService {
     Long newsArticleId = deleteNewsArticleEvent.getNodeId();
     if (LOG.isDebugEnabled())
       LOG.debug("deleteNewsArticle(" + newsArticleId + ")");
-    if (newsRepo.exists(newsArticleId)) {
-      newsRepo.delete(newsArticleId);
+    if (newsRepo.existsById(newsArticleId)) {
+      newsRepo.deleteById(newsArticleId);
       nade = new NewsArticleDeletedEvent(newsArticleId);
     } else {
       nade = NewsArticleDeletedEvent.notFound(newsArticleId);
@@ -113,7 +113,7 @@ public class NewsEventHandler implements NewsService {
     NewsArticlesReadEvent nare = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + institutionId);
-    Pageable pageable = new PageRequest(pageNumber, pageSize, sortDirection, "a.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, sortDirection, "a.date");
     articles = newsRepo.findByInstitutionId(institutionId, pageable);
 //    articles = pages.map(newsArticleData -> newsArticleData.getNewsArticle());
     if (articles != null) {
@@ -133,7 +133,7 @@ public class NewsEventHandler implements NewsService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found instId.
-        Institution inst = instRepo.findOne(institutionId);
+        Institution inst = instRepo.findById(institutionId).get();
         if ((null == inst) ||
           ((null == inst.getName()) || ((null == inst.getCampus()) && (null == inst.getState()) && (null == inst.getCountry())))) {
           if (LOG.isDebugEnabled())
@@ -161,7 +161,7 @@ public class NewsEventHandler implements NewsService {
     NewsArticleLikesEvent newsArticleLikesEvent = new NewsArticleLikesEvent();
 
     if (LOG.isDebugEnabled()) LOG.debug("articleId " + articleId);
-    Pageable pageable = new PageRequest(pageNumber, pageSize, sortDirection, "a.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, sortDirection, "a.date");
     Page<User> users = userRepository.findByArticleId(articleId, pageable);
     if (LOG.isDebugEnabled())
       LOG.debug("Total elements = " + users.getTotalElements() + " total pages =" + users.getTotalPages());
@@ -177,7 +177,7 @@ public class NewsEventHandler implements NewsService {
       }
       if (0 == userDetailses.size()) {
         // Need to check if we actually found article.
-        NewsArticle newsArticle = newsRepo.findOne(articleId);
+        NewsArticle newsArticle = newsRepo.findById(articleId).get();
         if ((null == newsArticle) ||
           ((null == newsArticle.getTitle()) || ((null == newsArticle.getContent()) && (null == newsArticle.getCreator()) && (null == newsArticle.getNewsFeed())))) {
           if (LOG.isDebugEnabled())

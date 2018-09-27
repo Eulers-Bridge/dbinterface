@@ -32,8 +32,8 @@ public class EmailResetPWD extends Email implements Serializable {
       senderAddress, emailTitle);
     this.token = token;
     this.institutionID = user.getInstitution().getNodeId();
-    if (this.velocityEngine != null)
-      this.velocityEngine.init();
+//    if (this.velocityEngine != null)
+//      this.velocityEngine.init();
   }
 
   @Override

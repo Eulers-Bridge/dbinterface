@@ -51,7 +51,7 @@ public class EventEventHandler implements EventService {
 
     if (LOG.isDebugEnabled())
       LOG.debug("Finding institution with instId = " + instId);
-    Institution inst = institutionRepository.findOne(instId, 0);
+    Institution inst = institutionRepository.findById(instId, 0).get();
     NewsFeed nf = institutionRepository.findNewsFeedByInstitutionId(instId);
     User creator = userRepo.findByEmail(eventDetails.getOrganizerEmail(), 0);
     if (creator == null)
@@ -75,8 +75,8 @@ public class EventEventHandler implements EventService {
 
   @Override
   public ReadEvent readEvent(RequestReadEventEvent requestReadEventEvent) {
-    Event event = eventRepository.findOne(requestReadEventEvent
-      .getNodeId());
+    Event event = eventRepository.findById(requestReadEventEvent
+      .getNodeId()).get();
     ReadEvent readEventEvent;
     if (event != null) {
       readEventEvent = new ReadEventEvent(
@@ -103,7 +103,7 @@ public class EventEventHandler implements EventService {
     if (LOG.isDebugEnabled())
       LOG.debug("news feed - " + nf + ",event Id is " + eventId);
 
-    Event eventOld = eventRepository.findOne(eventId);
+    Event eventOld = eventRepository.findById(eventId).get();
     if (eventOld == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("event entity not found " + eventId);
@@ -124,11 +124,11 @@ public class EventEventHandler implements EventService {
       LOG.debug("Entered deleteEventEvent= " + deleteEventEvent);
     Long eventId = deleteEventEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deleteEvent(" + eventId + ")");
-    Event event = eventRepository.findOne(eventId);
+    Event event = eventRepository.findById(eventId).get();
     if (event == null) {
       return EventDeletedEvent.notFound(eventId);
     } else {
-      eventRepository.delete(eventId);
+      eventRepository.deleteById(eventId);
       return new EventDeletedEvent(eventId);
     }
   }
@@ -142,7 +142,7 @@ public class EventEventHandler implements EventService {
     AllReadEvent nare;
 
     if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + institutionId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength,
+    Pageable pageable = PageRequest.of(pageNumber, pageLength,
       sortDirection, "e.starts");
 //    events = eventRepository.findByInstitutionId(institutionId, pageable);
     events = eventRepository.findByInstitutionId(institutionId, pageNumber * pageLength, pageLength, "DESC");
@@ -158,7 +158,7 @@ public class EventEventHandler implements EventService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        Institution inst = institutionRepository.findOne(institutionId);
+        Institution inst = institutionRepository.findById(institutionId).get();
         if ((null == inst)
           || ((null == inst.getName()) || ((null == inst
           .getCampus()) && (null == inst.getState()) && (null == inst

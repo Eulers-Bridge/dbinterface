@@ -27,7 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -733,7 +732,7 @@ public class UserController {
 
   @RequestMapping(value = "/testResources")
   public @ResponseBody
-  ResponseEntity<StringWriter> testResources() {
+  ResponseEntity<StringWriter> testResources() throws Exception {
     if (LOG.isInfoEnabled())
       LOG.info("testResources()");
     if (LOG.isDebugEnabled())
@@ -757,10 +756,10 @@ public class UserController {
       context.put("verificationToken", "blahblahblah");
 
       final Map<String, Object> hTemplateVariables = new HashMap<String, Object>();
-
-      hTemplateVariables.put("recipientName", "Greg Newitt");
-      hTemplateVariables.put("emailAddress", "gnewitt@hotmail.com");
-      hTemplateVariables.put("verificationToken", "blahblahblah");
+      VelocityContext velocityContext = new VelocityContext();
+      velocityContext.put("recipientName", "Greg Newitt");
+      velocityContext.put("emailAddress", "gnewitt@hotmail.com");
+      velocityContext.put("verificationToken", "blahblahblah");
 
 
       boolean exists = velocityEngine.resourceExists(resourceName);
@@ -771,11 +770,13 @@ public class UserController {
         else
           LOG.warn("validate template2 does not exist. ");
       }
-      t = velocityEngine.getTemplate(resourceName);
-      t.merge(context, sw);
+//      t = velocityEngine.getTemplate(resourceName);
+//      t.merge(context, sw);
 
       String velocityModel = resourceName;
-      String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, velocityModel, "UTF-8", hTemplateVariables);
+      velocityEngine.mergeTemplate(velocityModel, "UTF-8", velocityContext, sw);
+      String body = sw.toString();
+//      String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, velocityModel, "UTF-8", hTemplateVariables);
 
       LOG.debug(sw.toString());
       LOG.debug(body);

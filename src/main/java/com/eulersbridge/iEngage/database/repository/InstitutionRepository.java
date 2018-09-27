@@ -8,14 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.neo4j.annotation.Depth;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface InstitutionRepository extends GraphRepository<Institution> {
+public interface InstitutionRepository extends Neo4jRepository<Institution, Long> {
   static Logger LOG = LoggerFactory.getLogger(InstitutionRepository.class);
 
   //	@Query("MATCH (n:`StudentYear`)-[:HAS_STUDENT_YEAR]-(q:`Institution`) where id(q)={instId}"+

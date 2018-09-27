@@ -4,7 +4,7 @@ import com.eulersbridge.iEngage.database.domain.DataConstants;
 import com.eulersbridge.iEngage.database.domain.Poll;
 import com.eulersbridge.iEngage.database.domain.PollOption;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface PollOptionRepository extends GraphRepository<PollOption> {
+public interface PollOptionRepository extends Neo4jRepository<PollOption, Long> {
 
   @Query("MATCH l=(p:Poll)-[r:"+ DataConstants.HAS_POLL_OPTION_LABEL+"]->(o:PollOption) where id(o)={optionId} return l")
   public PollOption findPollOptionAndPoll(@Param("optionId") Long optionId);

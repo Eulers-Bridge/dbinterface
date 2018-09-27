@@ -7,14 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Depth;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface UserRepository extends GraphRepository<User> {
+public interface UserRepository extends Neo4jRepository<User, Long> {
   static Logger LOG = LoggerFactory.getLogger(UserRepository.class);
 
   User findByEmail(String email);
@@ -50,10 +50,12 @@ public interface UserRepository extends GraphRepository<User> {
   @Query("Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(e:`Election`) where id(r)={id} delete r return r")
   VoteReminder deleteVoteReminder(@Param("id") Long id);
 
-  @Query("Match (" + DataConstants.USER + ")-[r:" + DataConstants.LIKES_LABEL + "]-(a:`NewsArticle`) WHERE id(a)={articleId} RETURN u")
+  @Query(value = "Match (" + DataConstants.USER + ")-[r:" + DataConstants.LIKES_LABEL + "]-(a:`NewsArticle`) WHERE id(a)={articleId} RETURN u",
+  countQuery = "Match (" + DataConstants.USER + ")-[r:" + DataConstants.LIKES_LABEL + "]-(a:`NewsArticle`) WHERE id(a)={articleId} RETURN count(u)")
   Page<User> findByArticleId(@Param("articleId") Long id, Pageable p);
 
-  @Query("Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.LIKES_LABEL + "]-(a) WHERE id(a)={objId} RETURN u")
+  @Query(value = "Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.LIKES_LABEL + "]-(a) WHERE id(a)={objId} RETURN u",
+  countQuery = "Match (u:`" + DataConstants.USER + "`)-[r:" + DataConstants.LIKES_LABEL + "]-(a) WHERE id(a)={objId} RETURN count(u)")
   Page<User> findByLikeableObjId(@Param("objId") Long id, Pageable p);
 
 
@@ -72,8 +74,10 @@ public interface UserRepository extends GraphRepository<User> {
     "]->(b) SET r.timestamp=coalesce(r.timestamp,timestamp()),r.__type__='Contact' return r")
   Contact addContact(@Param("contactorId") Long contactorId, @Param("contacteeId") Long contacteeId);
 
-  @Query("Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.CONTACT_LABEL + "]-(b:`" + DataConstants.USER +
-    "`) where id(a)={userId} return b")
+  @Query(value = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.CONTACT_LABEL + "]-(b:`" + DataConstants.USER +
+    "`) where id(a)={userId} return b",
+  countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.CONTACT_LABEL + "]-(b:`" + DataConstants.USER +
+    "`) where id(a)={userId} return count(b)")
   Page<User> findContacts(@Param("userId") Long userId, Pageable pageable);
 
 //  @Query("MATCH (u:User) where u.email={userEmail} with u match l=(u)-[*0..2]-() return l")
@@ -83,13 +87,16 @@ public interface UserRepository extends GraphRepository<User> {
   @Query("MATCH (u:User)-[r:HAS_CONTACT]-(t:User) where u.email={userEmail} and id(t)<>id(u) Return distinct t,r order by r.timestamp DESC")
   List<User> findContactsZeroDepth(@Param("userEmail") String userEmail);
 
-  @Query("Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.SUPPORT_LABEL + "]-(b:`" + DataConstants.TICKET + "`) where id(a)={userId} return b")
+  @Query(value = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.SUPPORT_LABEL + "]-(b:`" + DataConstants.TICKET + "`) where id(a)={userId} return b",
+  countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.SUPPORT_LABEL + "]-(b:`" + DataConstants.TICKET + "`) where id(a)={userId} return count(b)")
   Page<Ticket> findSupports(@Param("userId") Long userId, Pageable pageable);
 
-  @Query("Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r")
+  @Query(value = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r",
+  countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r")
   Page<VoteReminder> findVoteReminders(@Param("userId") Long userId, Pageable pageable);
 
-  @Query("Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r")
+  @Query(value = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r",
+  countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return count(r)")
   Page<VoteRecord> findVoteRecords(@Param("userId") Long userId, Pageable pageable);
 
   @Query("Match (a:`User`) WHERE a.email={userEmail} RETURN id(a)")

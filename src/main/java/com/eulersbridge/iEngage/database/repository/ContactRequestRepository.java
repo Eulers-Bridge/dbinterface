@@ -8,7 +8,7 @@ import com.eulersbridge.iEngage.database.domain.DataConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Repository
 public interface ContactRequestRepository extends
-  GraphRepository<ContactRequest> {
+  Neo4jRepository<ContactRequest, Long> {
 
   @Query("MATCH l=(x)-[r1*0..1]-(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User)-[r2*0..1]-(y) where u.email={userEmail} and NONE (a IN r1 WHERE type(a)= 'HAS_CONTACT_REQUEST') and NONE (a IN r2 WHERE type(a)= 'HAS_CONTACT_REQUEST') return l order by r.requestDate DESC")
   List<ContactRequest> findSentRequests(@Param("userEmail") String userEmail);

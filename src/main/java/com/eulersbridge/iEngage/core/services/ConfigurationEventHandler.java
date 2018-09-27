@@ -45,7 +45,7 @@ public class ConfigurationEventHandler implements ConfigurationService {
   public ReadEvent requestReadConfiguration(
     RequestReadConfigurationEvent requestReadConfigurationEvent) {
     Configuration configuration = configurationRepository
-      .findOne(requestReadConfigurationEvent.getNodeId());
+      .findById(requestReadConfigurationEvent.getNodeId()).get();
     ReadEvent readConfigurationEvent;
     if (configuration != null) {
       readConfigurationEvent = new ReadConfigurationEvent(
@@ -68,7 +68,7 @@ public class ConfigurationEventHandler implements ConfigurationService {
     Long configId = configurationDetails.getConfigId();
     if (LOG.isDebugEnabled()) LOG.debug("configId is " + configId);
     Configuration configurationOld = configurationRepository
-      .findOne(configId);
+      .findById(configId).get();
     if (configurationOld == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("configuration entity not found " + configId);
@@ -91,11 +91,11 @@ public class ConfigurationEventHandler implements ConfigurationService {
     Long configId = deleteConfigurationEvent.getNodeId();
     if (LOG.isDebugEnabled())
       LOG.debug("deleteConfiguration(" + configId + ")");
-    Configuration configuration = configurationRepository.findOne(configId);
+    Configuration configuration = configurationRepository.findById(configId).get();
     if (configuration == null) {
       return ConfigurationDeletedEvent.notFound(configId);
     } else {
-      configurationRepository.delete(configId);
+      configurationRepository.deleteById(configId);
       return new ConfigurationDeletedEvent(configId);
     }
   }

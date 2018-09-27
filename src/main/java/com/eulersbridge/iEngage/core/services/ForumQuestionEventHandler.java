@@ -44,7 +44,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
 
   @Override
   public ReadEvent readForumQuestion(ReadForumQuestionEvent readForumQuestionEvent) {
-    ForumQuestion forumQuestion = forumQuestionRepository.findOne(readForumQuestionEvent.getNodeId());
+    ForumQuestion forumQuestion = forumQuestionRepository.findById(readForumQuestionEvent.getNodeId()).get();
     ReadEvent forumQuestionReadEvent;
     if (forumQuestion != null) {
       forumQuestionReadEvent = new ForumQuestionReadEvent(readForumQuestionEvent.getNodeId(), forumQuestion.toForumQuestionDetails());
@@ -61,7 +61,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
     Long forumQuestionId = forumQuestionDetails.getNodeId();
     if (LOG.isDebugEnabled())
       LOG.debug("forumQuestionId is " + forumQuestionId);
-    ForumQuestion forumQuestionOld = forumQuestionRepository.findOne(forumQuestionId);
+    ForumQuestion forumQuestionOld = forumQuestionRepository.findById(forumQuestionId).get();
     if (forumQuestionOld == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("forumQuestion entity not found " + forumQuestionId);
@@ -81,11 +81,11 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
     Long forumQuestionId = deleteForumQuestionEvent.getNodeId();
     if (LOG.isDebugEnabled())
       LOG.debug("deleteForumQuestion(" + forumQuestionId + ")");
-    ForumQuestion forumQuestion = forumQuestionRepository.findOne(forumQuestionId);
+    ForumQuestion forumQuestion = forumQuestionRepository.findById(forumQuestionId).get();
     if (forumQuestion == null) {
       return ForumQuestionDeletedEvent.notFound(forumQuestionId);
     } else {
-      forumQuestionRepository.delete(forumQuestionId);
+      forumQuestionRepository.deleteById(forumQuestionId);
       ForumQuestionDeletedEvent forumQuestionDeletedEvent = new ForumQuestionDeletedEvent(forumQuestionId);
       return forumQuestionDeletedEvent;
     }
@@ -104,7 +104,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
     ForumQuestionsReadEvent result = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("OwnerId " + ownerId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "p.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "p.date");
     forumQuestions = forumQuestionRepository.findByOwnerId(ownerId, pageable);
 
     if (forumQuestions != null) {
@@ -120,7 +120,7 @@ public class ForumQuestionEventHandler implements ForumQuestionService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found ownerId.
-        ForumQuestion inst = forumQuestionRepository.findOne(ownerId);
+        ForumQuestion inst = forumQuestionRepository.findById(ownerId).get();
         if ((null == inst) || (null == inst.getNodeId())) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");

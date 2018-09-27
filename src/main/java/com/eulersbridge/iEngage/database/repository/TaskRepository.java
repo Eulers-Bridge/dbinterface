@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Depth;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
  * @author Yikai Gong
  */
 @Repository
-public interface TaskRepository extends GraphRepository<Task> {
+public interface TaskRepository extends Neo4jRepository<Task, Long> {
   @Query("Match (a:`User`),(b:`Task`) where id(a)={userId} and id(b)={taskId} CREATE (a)-[r:" + DataConstants.HAS_COMPLETED_TASK_LABEL +
     "]->(b) SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete' return r")
   TaskComplete taskCompleted(@Param("taskId") Long taskId, @Param("userId") Long userId);
@@ -28,11 +28,14 @@ public interface TaskRepository extends GraphRepository<Task> {
     "]->(b) SET r.date=coalesce(r.date,timestamp()),r.__type__='TaskComplete',r.tag={targetType} return r")
   TaskComplete taskCompleted(@Param("taskAction") String taskAction, @Param("userEmail") String userEmail, @Param("targetType") String targetType);
 
-  @Query("Match (a:`User`)-[r:`" + DataConstants.HAS_COMPLETED_TASK_LABEL + "`]-(b:`Task`) where id(a)={userId} return b")
+  @Query(value = "Match (a:`User`)-[r:`" + DataConstants.HAS_COMPLETED_TASK_LABEL + "`]-(b:`Task`) where id(a)={userId} return b",
+  countQuery = "Match (a:`User`)-[r:`" + DataConstants.HAS_COMPLETED_TASK_LABEL + "`]-(b:`Task`) where id(a)={userId} return count(b)")
   Page<Task> findCompletedTasks(@Param("userId") Long userId, Pageable pageable);
 
-  @Query("Match (u:`" + DataConstants.USER + "`),(t:`" + DataConstants.TASK + "`) where id(u)={userId} and" +
-    " not (u)-[:" + DataConstants.HAS_COMPLETED_TASK_LABEL + "]-(t) return t")
+  @Query(value = "Match (u:`" + DataConstants.USER + "`),(t:`" + DataConstants.TASK + "`) where id(u)={userId} and" +
+    " not (u)-[:" + DataConstants.HAS_COMPLETED_TASK_LABEL + "]-(t) return t",
+    countQuery = "Match (u:`" + DataConstants.USER + "`),(t:`" + DataConstants.TASK + "`) where id(u)={userId} and" +
+      " not (u)-[:" + DataConstants.HAS_COMPLETED_TASK_LABEL + "]-(t) return count(t)")
   Page<Task> findRemainingTasks(@Param("userId") Long userId, Pageable pageable);
 
   @Query("Match (a:`User`)-[r:`" + DataConstants.HAS_COMPLETED_TASK_LABEL + "`]-(b:`Task`) where a.email={userEmail} and b.action={action} return r.numOfTimes")

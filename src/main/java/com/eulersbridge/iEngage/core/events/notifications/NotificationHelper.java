@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.eulersbridge.iEngage.core.events.notifications;
 
@@ -40,16 +40,16 @@ public class NotificationHelper
         return value;
     }
 
-    public static void checkFieldNames(Iterator<String> fields,String [] notificationfieldsArray) throws JsonMappingException
-    {
-	    while (fields.hasNext())
-	    {
-	    	String field = fields.next();
-	    	boolean valid=NotificationHelper.stringContainsValidNotificationField(field,notificationfieldsArray);
-	    	if (LOG.isDebugEnabled()) LOG.debug("field - "+field+" validField - "+valid);
-	    	if (!valid) throw new JsonMappingException("Invalid field name -"+field);
-	    }
-    }
+//    public static void checkFieldNames(Iterator<String> fields,String [] notificationfieldsArray) throws JsonMappingException
+//    {
+//	    while (fields.hasNext())
+//	    {
+//	    	String field = fields.next();
+//	    	boolean valid=NotificationHelper.stringContainsValidNotificationField(field,notificationfieldsArray);
+//	    	if (LOG.isDebugEnabled()) LOG.debug("field - "+field+" validField - "+valid);
+//	    	if (!valid) throw new JsonMappingException("Invalid field name -"+field);
+//	    }
+//    }
 
     public static boolean stringContainsValidNotificationField(String inputString, String [] notificationfieldsArray)
     {

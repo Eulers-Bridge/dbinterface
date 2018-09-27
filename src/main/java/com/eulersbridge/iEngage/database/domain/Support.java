@@ -1,10 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
+import org.neo4j.ogm.annotation.*;
 
 import java.util.Calendar;
 
@@ -14,7 +11,7 @@ import java.util.Calendar;
 
 @RelationshipEntity(type = DataConstants.SUPPORT_LABEL)
 public class Support {
-  @GraphId
+  @Id @GeneratedValue
   private Long id;
   @StartNode
   private User supporter;

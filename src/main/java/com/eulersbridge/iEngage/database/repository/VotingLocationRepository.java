@@ -8,7 +8,7 @@ import com.eulersbridge.iEngage.database.domain.VotingLocation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -17,9 +17,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface VotingLocationRepository extends
-  GraphRepository<VotingLocation> {
+  Neo4jRepository<VotingLocation, Long> {
 
-  @Query("MATCH (p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_LOCATION_LABEL + "`]-(o) where id(o)={ownerId} RETURN p")
+  @Query(value = "MATCH (p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_LOCATION_LABEL + "`]-(o) where id(o)={ownerId} RETURN p",
+  countQuery = "MATCH (p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_LOCATION_LABEL + "`]-(o) where id(o)={ownerId} RETURN count(p)")
   Page<VotingLocation> findByInstitutionId(@Param("ownerId") Long ownerId, Pageable pageable);
 
   @Query("Match (a:`Election`),(b:`VotingLocation`) where id(a)={electionId} and id(b)={votingLocationId} CREATE UNIQUE a-[r:" + DataConstants.HAS_VOTING_BOOTH_LABEL +
@@ -29,7 +30,8 @@ public interface VotingLocationRepository extends
   @Query("Match (v:`VotingLocation`)-[r:" + DataConstants.HAS_VOTING_BOOTH_LABEL + "]-(e:`Election`) where id(v)={votingLocationId} and id(e)=electionId delete r return v")
   VotingLocation deleteElection(@Param("votingLocationId") Long votingLocationId, @Param("electionId") Long electionId);
 
-  @Query("MATCH (p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_BOOTH_LABEL + "`]-(o) where id(o)={ownerId} RETURN p")
+  @Query(value = "MATCH (p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_BOOTH_LABEL + "`]-(o) where id(o)={ownerId} RETURN p",
+  countQuery = "MATCH (p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_BOOTH_LABEL + "`]-(o) where id(o)={ownerId} RETURN count(p)")
   Page<VotingLocation> findByElectionId(@Param("ownerId") Long ownerId, Pageable pageable);
 
 }

@@ -91,8 +91,8 @@ public class UserEventHandler implements UserService {
       if (LOG.isDebugEnabled())
         LOG.debug("Finding institution with instId = "
           + newUser.getInstitutionId());
-      Institution inst = instRepository.findOne(newUser
-        .getInstitutionId(), 0);
+      Institution inst = instRepository.findById(newUser
+        .getInstitutionId(), 0).get();
       if (LOG.isDebugEnabled()) LOG.debug("User Details :" + newUser);
       User userToInsert = User.fromUserDetails(newUser);
 
@@ -113,7 +113,7 @@ public class UserEventHandler implements UserService {
         User test = userRepository.save(userToInsert);
         // TODO what happens if this fails?
         if (LOG.isDebugEnabled()) LOG.debug("test = " + test);
-        createdUser = userRepository.findOne(test.getNodeId());
+        createdUser = userRepository.findById(test.getNodeId()).get();
 
         VerificationToken token = new VerificationToken(
           VerificationToken.VerificationTokenType.emailVerification,
@@ -189,7 +189,7 @@ public class UserEventHandler implements UserService {
       if (LOG.isDebugEnabled())
         LOG.debug("requestReadUser(" + requestReadUserEvent.getNodeId()
           + ")");
-      User user = userRepository.findOne(requestReadUserEvent.getNodeId());
+      User user = userRepository.findById(requestReadUserEvent.getNodeId()).get();
       if (user == null) {
         response = ReadUserEvent.notFound((String) null);
       } else {
@@ -304,7 +304,7 @@ public class UserEventHandler implements UserService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        User user = userRepository.findOne(userId);
+        User user = userRepository.findById(userId).get();
         if ((null == user) ||
           ((null == user.getEmail()) || ((null == user.getGivenName()) && (null == user.getFamilyName()) && (null == user.getGender())))) {
           if (LOG.isDebugEnabled())
@@ -329,7 +329,7 @@ public class UserEventHandler implements UserService {
     Long userId = readContactsEvent.getParentId();
     AllReadEvent nare = null;
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "b.familyName");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "b.familyName");
     nare = readExistingContacts(userId, pageable);
 
 
@@ -344,7 +344,7 @@ public class UserEventHandler implements UserService {
     Long userId = findUserId(email);
     AllReadEvent nare = null;
     if (userId != null) {
-      Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "b.familyName");
+      Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "b.familyName");
       nare = readExistingContacts(userId, pageable);
     } else
       nare = AllReadEvent.notFound(null);
@@ -708,7 +708,7 @@ public class UserEventHandler implements UserService {
     User user = userRepository.findByEmail(voteReminderDomain.getUserEmail(), 0);
     if (user == null)
       return RequestHandledEvent.userNotFound();
-    Election election = eleRepo.findOne(voteReminderDomain.getElectionId(), 0);
+    Election election = eleRepo.findById(voteReminderDomain.getElectionId(), 0).get();
     if (election == null)
       return RequestHandledEvent.targetNotFound();
     VoteReminder voteReminder = userRepository.addVoteReminder(
@@ -866,7 +866,7 @@ public class UserEventHandler implements UserService {
       LOG.debug("findUserEmail(" + userId + ")");
     String response = null;
     if (userId != null) {
-      User user = userRepository.findOne(userId);
+      User user = userRepository.findById(userId).get();
       if (user != null) {
         response = user.getEmail();
       }
@@ -893,7 +893,7 @@ public class UserEventHandler implements UserService {
     Long userId = findUserId(email);
     AllReadEvent nare = null;
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "b.name");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "b.name");
 
     Page<Ticket> tickets = null;
     ArrayList<TicketDetails> dets = new ArrayList<TicketDetails>();
@@ -952,7 +952,7 @@ public class UserEventHandler implements UserService {
     Long userId = findUserId(email);
     AllReadEvent nare = null;
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "r.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "r.date");
 
     Page<VoteReminder> tickets = null;
     ArrayList<VoteReminderDetails> dets = new ArrayList<VoteReminderDetails>();
@@ -1011,7 +1011,7 @@ public class UserEventHandler implements UserService {
     Long userId = findUserId(email);
     AllReadEvent nare = null;
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "r.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "r.date");
 
     Page<VoteRecord> tickets = null;
     ArrayList<VoteRecordDetails> dets = new ArrayList<VoteRecordDetails>();

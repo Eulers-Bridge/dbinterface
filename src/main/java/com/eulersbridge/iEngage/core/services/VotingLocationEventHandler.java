@@ -50,7 +50,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
   public ReadEvent readVotingLocation(
     ReadVotingLocationEvent readVotingLocationEvent) {
     VotingLocation votingLocation = votingLocationRepository
-      .findOne(readVotingLocationEvent.getNodeId());
+      .findById(readVotingLocationEvent.getNodeId()).get();
     ReadEvent votingLocationReadEvent;
     if (votingLocation != null) {
       votingLocationReadEvent = new VotingLocationReadEvent(
@@ -76,7 +76,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
       LOG.debug("Finding owner with nodeId = " + ownerId);
     CreatedEvent votingLocationCreatedEvent;
     if (ownerId != null) {
-      Node owner = nodeRepository.findOne(ownerId);
+      Node owner = nodeRepository.findById(ownerId).get();
 
       if (owner != null) {
         votingLocation.setOwner(new Node(owner.getNodeId()));
@@ -104,11 +104,11 @@ public class VotingLocationEventHandler implements VotingLocationService {
     Long positionId = deleteVotingLocationEvent.getNodeId();
     if (LOG.isDebugEnabled())
       LOG.debug("deleteVotingLocation(" + positionId + ")");
-    VotingLocation position = votingLocationRepository.findOne(positionId);
+    VotingLocation position = votingLocationRepository.findById(positionId).get();
     if (position == null) {
       return VotingLocationDeletedEvent.notFound(positionId);
     } else {
-      votingLocationRepository.delete(positionId);
+      votingLocationRepository.deleteById(positionId);
       VotingLocationDeletedEvent positionDeletedEvent = new VotingLocationDeletedEvent(
         positionId);
       return positionDeletedEvent;
@@ -124,7 +124,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
       .fromVotingLocationDetails(votingLocationDetails);
     Long votingLocationId = votingLocationDetails.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("positionId is " + votingLocationId);
-    VotingLocation votingLocationOld = votingLocationRepository.findOne(votingLocationId);
+    VotingLocation votingLocationOld = votingLocationRepository.findById(votingLocationId).get();
     if (votingLocationOld == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("votingLocation entity not found " + votingLocationId);
@@ -154,7 +154,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
     AllReadEvent nare = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("InstitutionId " + ownerId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength,
+    Pageable pageable = PageRequest.of(pageNumber, pageLength,
       sortDirection, "p.name");
     votingLocations = votingLocationRepository.findByInstitutionId(ownerId, pageable);
     if (votingLocations != null) {
@@ -171,7 +171,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        Node elec = nodeRepository.findOne(ownerId, 0);
+        Node elec = nodeRepository.findById(ownerId, 0).get();
         if (null == elec) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");
@@ -211,7 +211,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
     AllReadEvent nare = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("ElectionId " + ownerId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength,
+    Pageable pageable = PageRequest.of(pageNumber, pageLength,
       sortDirection, "p.name");
     votingLocations = votingLocationRepository.findByElectionId(ownerId, pageable);
     if (votingLocations != null) {
@@ -228,7 +228,7 @@ public class VotingLocationEventHandler implements VotingLocationService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        Node elec = nodeRepository.findOne(ownerId, 0);
+        Node elec = nodeRepository.findById(ownerId, 0).get();
         if (null == elec) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");
@@ -260,11 +260,11 @@ public class VotingLocationEventHandler implements VotingLocationService {
       Long votingLocationId = addVotingLocationEvent.getVotingLocationId();
       Long electionId = addVotingLocationEvent.getElectionId();
 
-      VotingLocation votingLocation = votingLocationRepository.findOne(votingLocationId);
+      VotingLocation votingLocation = votingLocationRepository.findById(votingLocationId).get();
       if (votingLocation != null) { // Valid VotingLocation
         if (LOG.isDebugEnabled())
           LOG.debug("Found votingLocation - " + votingLocation);
-        Election election = electionRepository.findOne(electionId);
+        Election election = electionRepository.findById(electionId).get();
         if (election != null) {
           if (LOG.isDebugEnabled())
             LOG.debug("votingLocationRepository.addElection(" + votingLocationId + ", " + electionId + ')');
@@ -302,9 +302,9 @@ public class VotingLocationEventHandler implements VotingLocationService {
           + ',' + removeVotingLocationEvent.getElectionId() + ")");
 
 
-      VotingLocation votingLocation = votingLocationRepository.findOne(votingLocationId);
+      VotingLocation votingLocation = votingLocationRepository.findById(votingLocationId).get();
       if (votingLocation != null) { // Valid VotingLocation
-        Election election = electionRepository.findOne(electionId);
+        Election election = electionRepository.findById(electionId).get();
         if (election != null) {
           VotingLocation vl = votingLocationRepository.deleteElection(votingLocationId, electionId);
           if (vl != null) {

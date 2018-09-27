@@ -10,7 +10,7 @@ import org.neo4j.ogm.annotation.*;
  */
 @RelationshipEntity(type = DataConstants.CONTACT_REQUEST_LABEL)
 public class ContactRequest {
-  @GraphId
+  @Id @GeneratedValue
   private Long id;
   private Long requestDate;
   private Long responseDate;

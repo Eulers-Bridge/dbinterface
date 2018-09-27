@@ -61,7 +61,7 @@ public class PhotoEventHandler implements PhotoService {
     if (LOG.isDebugEnabled())
       LOG.debug("Finding owner with ownerId = " + ownerId);
     Node owner = null;
-    if (ownerId != null) owner = nodeRepository.findOne(ownerId);
+    if (ownerId != null) owner = nodeRepository.findById(ownerId).get();
 
     PhotoCreatedEvent photoCreatedEvent;
     if (null == owner) {
@@ -76,7 +76,7 @@ public class PhotoEventHandler implements PhotoService {
 
   @Override
   public ReadEvent readPhoto(ReadPhotoEvent readPhotoEvent) {
-    Photo photo = photoRepository.findOne(readPhotoEvent.getNodeId());
+    Photo photo = photoRepository.findById(readPhotoEvent.getNodeId()).get();
     ReadEvent photoReadEvent;
     if (photo != null) {
       photoReadEvent = new PhotoReadEvent(photo.getNodeId(), photo.toPhotoDetails());
@@ -94,7 +94,7 @@ public class PhotoEventHandler implements PhotoService {
     UpdatedEvent resultEvt;
 
     if (LOG.isDebugEnabled()) LOG.debug("photo Id is " + photoId);
-    Photo photoOld = photoRepository.findOne(photoId);
+    Photo photoOld = photoRepository.findById(photoId).get();
     if (photoOld == null) {
       if (LOG.isDebugEnabled()) LOG.debug("photo entity not found " + photoId);
       resultEvt = PhotoUpdatedEvent.notFound(photoId);
@@ -114,11 +114,11 @@ public class PhotoEventHandler implements PhotoService {
     Long photoId = deletePhotoEvent.getNodeId();
     DeletedEvent photoDeletedEvent;
     if (LOG.isDebugEnabled()) LOG.debug("deletePhoto(" + photoId + ")");
-    Photo photo = photoRepository.findOne(photoId);
+    Photo photo = photoRepository.findById(photoId).get();
     if (null == photo) {
       photoDeletedEvent = PhotoDeletedEvent.notFound(photoId);
     } else {
-      photoRepository.delete(photoId);
+      photoRepository.deleteById(photoId);
       photoDeletedEvent = new PhotoDeletedEvent(photoId);
     }
     return photoDeletedEvent;
@@ -134,7 +134,7 @@ public class PhotoEventHandler implements PhotoService {
     PhotosReadEvent result = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("OwnerId " + ownerId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, dir, "p.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, dir, "p.date");
     photos = photoRepository.findByOwnerId(ownerId, pageable);
 
     if (photos != null) {
@@ -150,7 +150,7 @@ public class PhotoEventHandler implements PhotoService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found ownerId.
-        Photo inst = photoRepository.findOne(ownerId);
+        Photo inst = photoRepository.findById(ownerId).get();
         if ((null == inst) || (null == inst.getNodeId())) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");
@@ -195,7 +195,7 @@ public class PhotoEventHandler implements PhotoService {
     if (LOG.isDebugEnabled())
       LOG.debug("Finding owner with ownerId = " + ownerId);
     Node owner = null;
-    if (ownerId != null) owner = nodeRepository.findOne(ownerId);
+    if (ownerId != null) owner = nodeRepository.findById(ownerId).get();
 
     PhotoAlbumCreatedEvent photoAlbumCreatedEvent;
     if (null == owner) {
@@ -207,7 +207,7 @@ public class PhotoEventHandler implements PhotoService {
       if (LOG.isDebugEnabled())
         LOG.debug("Finding owner with creatorId = " + creatorId);
       Node creator = null;
-      if (creatorId != null) creator = nodeRepository.findOne(creatorId);
+      if (creatorId != null) creator = nodeRepository.findById(creatorId).get();
       if (null == creator) {
         photoAlbumCreatedEvent = PhotoAlbumCreatedEvent.creatorNotFound(photoAlbumDetails.getCreatorId());
       } else {
@@ -221,7 +221,7 @@ public class PhotoEventHandler implements PhotoService {
 
   @Override
   public ReadEvent readPhotoAlbum(RequestReadEvent readPhotoAlbumEvent) {
-    PhotoAlbum photoAlbum = photoAlbumRepository.findOne(readPhotoAlbumEvent.getNodeId());
+    PhotoAlbum photoAlbum = photoAlbumRepository.findById(readPhotoAlbumEvent.getNodeId()).get();
     ReadEvent photoAlbumReadEvent;
     if (photoAlbum != null) {
       photoAlbumReadEvent = new PhotoAlbumReadEvent(photoAlbum.getNodeId(), photoAlbum.toPhotoAlbumDetails());
@@ -240,7 +240,7 @@ public class PhotoEventHandler implements PhotoService {
     UpdatedEvent resultEvt;
 
     if (LOG.isDebugEnabled()) LOG.debug("photoAlbum Id is " + photoAlbumId);
-    PhotoAlbum photoAlbumOld = photoAlbumRepository.findOne(photoAlbumId);
+    PhotoAlbum photoAlbumOld = photoAlbumRepository.findById(photoAlbumId).get();
     if (photoAlbumOld == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("photo album entity not found " + photoAlbumId);
@@ -263,11 +263,11 @@ public class PhotoEventHandler implements PhotoService {
     DeletedEvent photoDeletedEvent;
     if (LOG.isDebugEnabled())
       LOG.debug("deletePhotoAlbum(" + photoAlbumId + ")");
-    PhotoAlbum photoAlbum = photoAlbumRepository.findOne(photoAlbumId);
+    PhotoAlbum photoAlbum = photoAlbumRepository.findById(photoAlbumId).get();
     if (null == photoAlbum) {
       photoDeletedEvent = PhotoAlbumDeletedEvent.notFound(photoAlbumId);
     } else {
-      photoAlbumRepository.delete(photoAlbumId);
+      photoAlbumRepository.deleteById(photoAlbumId);
       photoDeletedEvent = new PhotoAlbumDeletedEvent(photoAlbumId);
     }
     return photoDeletedEvent;
@@ -286,7 +286,7 @@ public class PhotoEventHandler implements PhotoService {
     AllReadEvent result = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("OwnerId " + ownerId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, dir, "p.created");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, dir, "p.created");
     photoAlbums = photoAlbumRepository.findByOwnerId(ownerId, pageable);
 
     if (photoAlbums != null) {
@@ -302,7 +302,7 @@ public class PhotoEventHandler implements PhotoService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found ownerId.
-        Node owner = nodeRepository.findOne(ownerId);
+        Node owner = nodeRepository.findById(ownerId).get();
         if ((null == owner) || (null == owner.getNodeId())) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");
@@ -322,7 +322,7 @@ public class PhotoEventHandler implements PhotoService {
 
   @Override
   public RequestHandledEvent<List<PhotoDomain>> findPhotosToInstitution(Long institutionId) {
-    Institution ins = insRepo.findOne(institutionId, 0);
+    Institution ins = insRepo.findById(institutionId, 0).get();
     if (ins == null)
       return RequestHandledEvent.targetNotFound();
     List<Photo> photos = photoRepository.findPhotosByInstitution(institutionId);

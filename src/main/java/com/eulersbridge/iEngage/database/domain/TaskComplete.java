@@ -1,10 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.task.TaskCompleteDetails;
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
+import org.neo4j.ogm.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -15,7 +12,7 @@ import java.util.Date;
 
 @RelationshipEntity(type = DataConstants.HAS_COMPLETED_TASK_LABEL)
 public class TaskComplete {
-  @GraphId
+  @Id @GeneratedValue
   private Long nodeId;
   @StartNode
   private User user;

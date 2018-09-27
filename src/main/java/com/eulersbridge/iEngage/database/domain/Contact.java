@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
  */
 @RelationshipEntity(type = DataConstants.CONTACT_LABEL)
 public class Contact {
-  @GraphId
+  @Id @GeneratedValue
   private Long id;
   @Index
   private Long timestamp;

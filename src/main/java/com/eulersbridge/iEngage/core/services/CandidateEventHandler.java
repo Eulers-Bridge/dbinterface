@@ -56,7 +56,7 @@ public class CandidateEventHandler implements CandidateService {
     if (userId != null) {
       if (LOG.isDebugEnabled())
         LOG.debug("Finding user with nodeId = " + userId);
-      user = userRepository.findOne(userId);
+      user = userRepository.findById(userId).get();
     } else if (userEmail != null) {
       if (LOG.isDebugEnabled())
         LOG.debug("Finding user with email = " + userEmail);
@@ -69,7 +69,7 @@ public class CandidateEventHandler implements CandidateService {
       if (LOG.isDebugEnabled())
         LOG.debug("Finding position with nodeId = " + positionId);
       Position position = null;
-      if (positionId != null) position = positionRepository.findOne(positionId);
+      if (positionId != null) position = positionRepository.findById(positionId).get();
       if (position != null) {
         Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
         candidate.setUser(user.toNode());
@@ -90,7 +90,7 @@ public class CandidateEventHandler implements CandidateService {
 
   @Override
   public ReadEvent requestReadCandidate(RequestReadCandidateEvent requestReadCandidateEvent) {
-    Candidate candidate = candidateRepository.findOne(requestReadCandidateEvent.getNodeId());
+    Candidate candidate = candidateRepository.findById(requestReadCandidateEvent.getNodeId()).get();
     ReadEvent readCandidateEvent;
     if (candidate != null) {
       readCandidateEvent = new CandidateReadEvent(candidate.getNodeId(), candidate.toCandidateDetails());
@@ -108,7 +108,7 @@ public class CandidateEventHandler implements CandidateService {
     AllReadEvent nare;
 
     if (LOG.isDebugEnabled()) LOG.debug("ElectionId " + electionId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "e.name");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "e.name");
     candidates = candidateRepository.findByElectionId(electionId, pageable);
     if (candidates != null) {
       if (LOG.isDebugEnabled())
@@ -122,7 +122,7 @@ public class CandidateEventHandler implements CandidateService {
       });
       if (0 == dets.size()) {
         // Need to check if we actually found instId.
-        Election elec = electionRepository.findOne(electionId);
+        Election elec = electionRepository.findById(electionId).get();
         if ((null == elec) ||
           ((null == elec.getTitle()) || ((null == elec.getStart()) && (null == elec.getEnd()) && (null == elec.getIntroduction())))) {
           if (LOG.isDebugEnabled())
@@ -150,7 +150,7 @@ public class CandidateEventHandler implements CandidateService {
       Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
       Long candidateId = candidateDetails.getNodeId();
       if (LOG.isDebugEnabled()) LOG.debug("candidateId is " + candidateId);
-      Candidate candidateOld = candidateRepository.findOne(candidateId);
+      Candidate candidateOld = candidateRepository.findById(candidateId).get();
       if (candidateOld == null) {
         if (LOG.isDebugEnabled())
           LOG.debug("candidate entity not found " + candidateId);
@@ -190,7 +190,7 @@ public class CandidateEventHandler implements CandidateService {
       LOG.debug("Entered deleteCandidateEvent= " + deleteCandidateEvent);
     Long candidateId = deleteCandidateEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deleteCandidate(" + candidateId + ")");
-    Candidate candidate = candidateRepository.findOne(candidateId);
+    Candidate candidate = candidateRepository.findById(candidateId).get();
     if (candidate == null) {
       return CandidateDeletedEvent.notFound(candidateId);
     } else {
@@ -202,8 +202,8 @@ public class CandidateEventHandler implements CandidateService {
   @Override
   public UpdatedEvent addTicket(AddTicketEvent addTicketEvent) {
     UpdatedEvent ticketAddedEvent;
-    Candidate candidate = candidateRepository.findOne(addTicketEvent.getCandidateId());
-    Ticket ticket = ticketRepository.findOne(addTicketEvent.getTicketId());
+    Candidate candidate = candidateRepository.findById(addTicketEvent.getCandidateId()).get();
+    Ticket ticket = ticketRepository.findById(addTicketEvent.getTicketId()).get();
     if (candidate == null)
       ticketAddedEvent = UpdatedEvent.notFound(addTicketEvent.getCandidateId());
     else if (ticket == null)
@@ -223,7 +223,7 @@ public class CandidateEventHandler implements CandidateService {
   @Override
   public UpdatedEvent removeTicket(DeleteEvent removeTicketEvent) {
     UpdatedEvent ticketRemovedEvent;
-    Candidate candidate = candidateRepository.findOne(removeTicketEvent.getNodeId());
+    Candidate candidate = candidateRepository.findById(removeTicketEvent.getNodeId()).get();
     if (candidate == null)
       ticketRemovedEvent = UpdatedEvent.notFound(removeTicketEvent.getNodeId());
     else {

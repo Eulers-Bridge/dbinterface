@@ -86,7 +86,7 @@ public class InstitutionEventHandler implements InstitutionService {
     RequestReadInstitutionEvent requestReadInstitutionEvent) {
     if (LOG.isDebugEnabled())
       LOG.debug("requestReadInstitution(" + requestReadInstitutionEvent.getNodeId() + ")");
-    Institution inst = instRepository.findOne(requestReadInstitutionEvent.getNodeId());
+    Institution inst = instRepository.findById(requestReadInstitutionEvent.getNodeId()).get();
 
     if (inst == null) {
       return ReadInstitutionEvent.notFound(requestReadInstitutionEvent.getNodeId());
@@ -132,11 +132,11 @@ public class InstitutionEventHandler implements InstitutionService {
     DeleteInstitutionEvent deleteInstitutionEvent) {
     if (LOG.isDebugEnabled())
       LOG.debug("deleteInstitution(" + deleteInstitutionEvent.getNodeId() + ")");
-    Institution inst = instRepository.findOne(deleteInstitutionEvent.getNodeId());
+    Institution inst = instRepository.findById(deleteInstitutionEvent.getNodeId()).get();
     if (inst == null) {
       return InstitutionDeletedEvent.notFound(deleteInstitutionEvent.getNodeId());
     }
-    instRepository.delete(inst.getNodeId());
+    instRepository.deleteById(inst.getNodeId());
     return new InstitutionDeletedEvent(deleteInstitutionEvent.getNodeId(), inst.toInstDetails());
   }
 
@@ -166,7 +166,7 @@ public class InstitutionEventHandler implements InstitutionService {
     NewsFeedDetails newFeed = (NewsFeedDetails) createNewsFeedEvent.getDetails();
     if (LOG.isDebugEnabled())
       LOG.debug("Finding institution with institutionId = " + newFeed.getInstitutionId());
-    Institution inst = instRepository.findOne(newFeed.getInstitutionId());
+    Institution inst = instRepository.findById(newFeed.getInstitutionId()).get();
     if (LOG.isDebugEnabled()) LOG.debug("inst - " + inst);
 
 

@@ -5,14 +5,14 @@ import com.eulersbridge.iEngage.database.domain.Election;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ElectionRepository extends GraphRepository<Election> {
+public interface ElectionRepository extends Neo4jRepository<Election, Long> {
   @Query("START tag=node({id}) MATCH (n:Election) WHERE n.start<tag.start RETURN n ORDER BY n.start DESC LIMIT 1")
   Election findPreviousElection(@Param("id") Long id);
 

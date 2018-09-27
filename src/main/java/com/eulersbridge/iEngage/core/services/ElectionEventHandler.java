@@ -48,7 +48,7 @@ public class ElectionEventHandler implements ElectionService {
     Election election = Election.fromDomain(electionDomain);
     InstitutionDomain institutionDomain = electionDomain.getInstitutionDomain();
     if (institutionDomain != null && institutionDomain.getInstitutionId() != null) {
-      Institution ins = instRepository.findOne(institutionDomain.getInstitutionId(), 0);
+      Institution ins = instRepository.findById(institutionDomain.getInstitutionId(), 0).get();
       if (ins == null)
         return RequestHandledEvent.targetNotFound();
       election.setInstitution(ins.toNode());
@@ -63,7 +63,7 @@ public class ElectionEventHandler implements ElectionService {
   public RequestHandledEvent readElection(Long electionId) {
     if (electionId == null)
       return RequestHandledEvent.badRequest();
-    Election election = eleRepository.findOne(electionId);
+    Election election = eleRepository.findById(electionId).get();
     if (election == null)
       return RequestHandledEvent.targetNotFound();
     return new RequestHandledEvent<>(election.toDomain());
@@ -101,11 +101,11 @@ public class ElectionEventHandler implements ElectionService {
       LOG.debug("Entered deleteElectionEvent= " + deleteElectionEvent);
     Long electionId = deleteElectionEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deleteElection(" + electionId + ")");
-    Election election = eleRepository.findOne(electionId);
+    Election election = eleRepository.findById(electionId).get();
     if (election == null) {
       return ElectionDeletedEvent.notFound(electionId);
     } else {
-      eleRepository.delete(electionId);
+      eleRepository.deleteById(electionId);
       ElectionDeletedEvent electionDeletedEvent = new ElectionDeletedEvent(electionId);
       return electionDeletedEvent;
     }
@@ -117,7 +117,7 @@ public class ElectionEventHandler implements ElectionService {
     Election election = Election.fromElectionDetails(electionDetails);
     Long electionId = electionDetails.getElectionId();
     if (LOG.isDebugEnabled()) LOG.debug("election Id is " + electionId);
-    Election electionOld = eleRepository.findOne(electionId);
+    Election electionOld = eleRepository.findById(electionId).get();
     if (electionOld == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("election entity not found " + electionId);
@@ -134,7 +134,7 @@ public class ElectionEventHandler implements ElectionService {
   public RequestHandledEvent readElections(Long institutionID, int pageIndex, int pageSize) {
     if (institutionID == null || pageIndex < 0 || pageSize <= 0)
       return RequestHandledEvent.badRequest();
-    Institution ins = instRepository.findOne(institutionID, 0);
+    Institution ins = instRepository.findById(institutionID, 0).get();
     if (ins == null)
       return RequestHandledEvent.targetNotFound();
     List<ElectionDomain> elections =

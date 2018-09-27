@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.database.domain.resultMap;
 
 import com.eulersbridge.iEngage.database.domain.Support;
 import org.neo4j.ogm.annotation.Property;
+import org.neo4j.ogm.annotation.Transient;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 /**
@@ -13,7 +14,7 @@ import org.springframework.data.neo4j.annotation.QueryResult;
 
 @QueryResult
 public class SupportAndNum {
-    @Property(name = "support")
+    @Property(name = "support") @Transient
     Support support;
     @Property(name = "numOfSupport")
     Long numOfSupport;

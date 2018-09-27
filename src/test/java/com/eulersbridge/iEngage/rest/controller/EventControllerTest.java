@@ -101,7 +101,7 @@ public class EventControllerTest {
       dets.getStarts().intValue() + ",\"ends\":" + dets.getEnds().intValue() +
       ",\"description\":\"" + dets.getDescription());
     returnedContent.append("\",\"photos\":");
-    returnedContent.append(NewsControllerTest.createPhotosString(dets.getPhotos().iterator()));
+//    returnedContent.append(NewsControllerTest.createPhotosString(dets.getPhotos().iterator()));
 
     returnedContent.append(",\"volunteerPositions\":" + dets.getVolunteerPositions() + ",\"created\":" + dets.getCreated() +
       ",\"organizer\":\"" + dets.getOrganizer() + "\",\"organizerEmail\":\"" + dets.getOrganizerEmail() +

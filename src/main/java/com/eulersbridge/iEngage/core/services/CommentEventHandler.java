@@ -51,7 +51,7 @@ public class CommentEventHandler implements CommentService {
     if (user == null) {
       commentCreatedEvent = CommentCreatedEvent.userNotFound();
     } else {
-      Node object = nodeRepository.findOne(targetId, 0);
+      Node object = nodeRepository.findById(targetId, 0).get();
       if (object == null) {
         commentCreatedEvent = CommentCreatedEvent.targetNotFound(targetId);
       } else {
@@ -71,7 +71,7 @@ public class CommentEventHandler implements CommentService {
 
   @Override
   public ReadEvent requestReadComment(RequestReadCommentEvent requestReadCommentEvent) {
-    Comment comment = commentRepository.findOne(requestReadCommentEvent.getNodeId());
+    Comment comment = commentRepository.findById(requestReadCommentEvent.getNodeId()).get();
     ReadEvent commentReadEvent;
     if (comment != null) {
       commentReadEvent = new CommentReadEvent(comment.getNodeId(), comment.toCommentDetails());
@@ -87,7 +87,7 @@ public class CommentEventHandler implements CommentService {
       LOG.debug("Entered deleteCommentEvent= " + deleteCommentEvent);
     Long commentId = deleteCommentEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deleteComment(" + commentId + ")");
-    Comment comment = commentRepository.findOne(commentId);
+    Comment comment = commentRepository.findById(commentId).get();
     if (comment == null) {
       return CommentDeletedEvent.notFound(commentId);
     } else {
@@ -105,7 +105,7 @@ public class CommentEventHandler implements CommentService {
     AllReadEvent commentsReadEvent = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("targetId " + targetId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "r.timestamp");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "r.timestamp");
     comments = commentRepository.findByTargetId(targetId, pageable);
     if (comments != null) {
       if (LOG.isDebugEnabled())
@@ -120,7 +120,7 @@ public class CommentEventHandler implements CommentService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found instId.
-        Node owner = nodeRepository.findOne(targetId, 0);
+        Node owner = nodeRepository.findById(targetId, 0).get();
         if ((null == owner) || (null == owner.getNodeId())) {
           if (LOG.isDebugEnabled()) LOG.debug("Comment-able Object not found");
           commentsReadEvent = AllReadEvent.notFound(targetId);
@@ -146,10 +146,10 @@ public class CommentEventHandler implements CommentService {
     String userEmail = commentDetails.getUserEmail();
 
     User user = userRepository.findByEmail(userEmail);
-    Node object = nodeRepository.findOne(targetId, 0);
+    Node object = nodeRepository.findById(targetId, 0).get();
 
     if (LOG.isDebugEnabled()) LOG.debug("commentId is " + commentId);
-    Comment commentOld = commentRepository.findOne(commentId);
+    Comment commentOld = commentRepository.findById(commentId).get();
     if (commentOld == null || user == null || object == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("comment or user/target entity not found " + commentId);

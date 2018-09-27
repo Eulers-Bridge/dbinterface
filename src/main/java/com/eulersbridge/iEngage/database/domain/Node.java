@@ -1,7 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import com.eulersbridge.iEngage.core.events.Details;
-import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.GeneratedValue;
+import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 import java.util.List;
@@ -13,10 +13,11 @@ import java.util.stream.Collectors;
 
 @NodeEntity
 public class Node {
-  @GraphId
+  @Id
+  @GeneratedValue
   protected Long nodeId;
 
-  protected List<Long> timestampList;
+  private List<Long> timestampList;
 
   public Node() {
   }

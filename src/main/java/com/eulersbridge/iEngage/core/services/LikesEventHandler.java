@@ -96,7 +96,7 @@ public class LikesEventHandler implements LikesService {
     if (null == user) {
       return LikedEvent.userNotFound(nodeId, email);
     }
-    Node item = nodeRepository.findOne(nodeId, 0);
+    Node item = nodeRepository.findById(nodeId, 0).get();
     if (null == item) {
       return LikedEvent.entityNotFound(nodeId, email);
     }
@@ -115,7 +115,7 @@ public class LikesEventHandler implements LikesService {
     LikeableObjectLikesEvent likeableObjectLikesEvent;
 
     if (LOG.isDebugEnabled()) LOG.debug("objId " + objId);
-    Pageable pageable = new PageRequest(pageNumber, pageSize, sortDirection, "a.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, sortDirection, "a.date");
     Page<User> users = userRepository.findByLikeableObjId(objId, pageable);
     if (users != null) {
       Iterator<User> iter = users.iterator();

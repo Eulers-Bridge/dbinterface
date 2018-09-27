@@ -59,7 +59,7 @@ public class TicketEventHandler implements TicketService {
     TicketCreatedEvent ticketCreatedEvent;
 
     if (electionId != null) {
-      Election elect = electionRepository.findOne(electionId, 0);
+      Election elect = electionRepository.findById(electionId, 0).get();
 
       if (elect != null) {
         Ticket ticket = Ticket.fromTicketDetails(ticketDetails);
@@ -77,7 +77,7 @@ public class TicketEventHandler implements TicketService {
 
   @Override
   public ReadEvent requestReadTicket(RequestReadTicketEvent requestReadTicketEvent) {
-    Ticket ticket = ticketRepository.findOne(requestReadTicketEvent.getNodeId());
+    Ticket ticket = ticketRepository.findById(requestReadTicketEvent.getNodeId()).get();
     ReadEvent readTicketEvent;
     if (ticket != null) {
       readTicketEvent = new ReadTicketEvent(ticket.getNodeId(), ticket.toTicketDetails());
@@ -93,7 +93,7 @@ public class TicketEventHandler implements TicketService {
     Ticket ticket = Ticket.fromTicketDetails(ticketDetails);
     Long ticketId = ticketDetails.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("ticketId is " + ticketId);
-    Ticket ticketOld = ticketRepository.findOne(ticketId);
+    Ticket ticketOld = ticketRepository.findById(ticketId).get();
     if (ticketOld == null) {
       if (LOG.isDebugEnabled())
         LOG.debug("ticket entity not found " + ticketId);
@@ -112,7 +112,7 @@ public class TicketEventHandler implements TicketService {
       LOG.debug("Entered deleteTicketEvent= " + deleteTicketEvent);
     Long ticketId = deleteTicketEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deleteTicket(" + ticketId + ")");
-    Ticket ticket = ticketRepository.findOne(ticketId);
+    Ticket ticket = ticketRepository.findById(ticketId).get();
     if (ticket == null) {
       return TicketDeletedEvent.notFound(ticketId);
     } else {
@@ -130,7 +130,7 @@ public class TicketEventHandler implements TicketService {
     AllReadEvent nare = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("ElectionId " + electionId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "e.name");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "e.name");
     elections = ticketRepository.findByElectionId(electionId, pageable);
     if (elections != null) {
       if (LOG.isDebugEnabled())
@@ -145,7 +145,7 @@ public class TicketEventHandler implements TicketService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        Election elec = electionRepository.findOne(electionId);
+        Election elec = electionRepository.findById(electionId).get();
         if ((null == elec) ||
           ((null == elec.getTitle()) || ((null == elec.getStart()) && (null == elec.getEnd()) && (null == elec.getIntroduction())))) {
           if (LOG.isDebugEnabled())
@@ -174,7 +174,7 @@ public class TicketEventHandler implements TicketService {
     AllReadEvent nare = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("PositionId " + ticketId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "e.name");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "e.name");
     candidates = candidateRepository.findByTicketId(ticketId, pageable);
     if (candidates != null) {
       if (LOG.isDebugEnabled())
@@ -189,7 +189,7 @@ public class TicketEventHandler implements TicketService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found instId.
-        Ticket ticket = ticketRepository.findOne(ticketId);
+        Ticket ticket = ticketRepository.findById(ticketId).get();
         if ((null == ticket) ||
           ((null == ticket.getName()))) {
           if (LOG.isDebugEnabled())
@@ -212,7 +212,7 @@ public class TicketEventHandler implements TicketService {
   @Override
   public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent) {
     TicketSupportedEvent ticketSupportedEvent;
-    Ticket ticket = ticketRepository.findOne(supportTicketEvent.getTicketId());
+    Ticket ticket = ticketRepository.findById(supportTicketEvent.getTicketId()).get();
     User user = userRepository.findByEmail(supportTicketEvent.getEmailAddress());
     if (ticket == null)
       ticketSupportedEvent = TicketSupportedEvent.entityNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
@@ -240,7 +240,7 @@ public class TicketEventHandler implements TicketService {
   @Override
   public TicketSupportedEvent withdrawSupportTicket(SupportTicketEvent supportTicketEvent) {
     TicketSupportedEvent ticketSupportedEvent;
-    Ticket ticket = ticketRepository.findOne(supportTicketEvent.getTicketId());
+    Ticket ticket = ticketRepository.findById(supportTicketEvent.getTicketId()).get();
     User user = userRepository.findByEmail(supportTicketEvent.getEmailAddress());
     if (ticket == null)
       ticketSupportedEvent = TicketSupportedEvent.entityNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
@@ -260,7 +260,7 @@ public class TicketEventHandler implements TicketService {
     LikeableObjectLikesEvent likeableObjectLikesEvent;
 
     if (LOG.isDebugEnabled()) LOG.debug("ticketId " + ticketId);
-    Pageable pageable = new PageRequest(pageNumber, pageSize, sortDirection, "a.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, sortDirection, "a.date");
     Page<User> users = ticketRepository.findSupporters(ticketId, pageable);
     if (users != null) {
       Iterator<User> iter = users.iterator();

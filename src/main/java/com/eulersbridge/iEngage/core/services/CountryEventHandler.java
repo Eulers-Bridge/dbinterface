@@ -52,7 +52,7 @@ public class CountryEventHandler implements CountryService {
     ReadCountryEvent readCountryEvent) {
     if (LOG.isDebugEnabled())
       LOG.debug("readCountry(" + readCountryEvent.getNodeId() + ")");
-    Country country = countryRepository.findOne(readCountryEvent.getNodeId());
+    Country country = countryRepository.findById(readCountryEvent.getNodeId()).get();
 
     if (country == null) {
       return CountryReadEvent.notFound(readCountryEvent.getNodeId());
@@ -84,11 +84,11 @@ public class CountryEventHandler implements CountryService {
     DeleteCountryEvent deleteCountryEvent) {
     if (LOG.isDebugEnabled())
       LOG.debug("deleteCountry(" + deleteCountryEvent.getNodeId() + ")");
-    Country country = countryRepository.findOne(deleteCountryEvent.getNodeId());
+    Country country = countryRepository.findById(deleteCountryEvent.getNodeId()).get();
     if (country == null) {
       return DeletedEvent.notFound(deleteCountryEvent.getNodeId());
     }
-    countryRepository.delete(country.getNodeId());
+    countryRepository.deleteById(country.getNodeId());
     return new DeletedEvent(deleteCountryEvent.getNodeId(), country.toCountryDetails());
   }
 

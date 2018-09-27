@@ -2,18 +2,18 @@ package com.eulersbridge.iEngage.email;
 
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.database.domain.VerificationToken;
+import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
-import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,8 +38,8 @@ public class EmailVerification extends Email implements Serializable {
     this.serverIp = serverIP;
     if (LOG.isDebugEnabled())
       LOG.debug("this.velocityEngine = " + this.velocityEngine);
-    if (this.velocityEngine != null)
-      this.velocityEngine.init();
+//    if (this.velocityEngine != null)
+//      this.velocityEngine.init();
   }
 
   public String getEncodedToken() {
@@ -63,18 +63,17 @@ public class EmailVerification extends Email implements Serializable {
       message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
       message.setFrom(new InternetAddress(getSenderEmailAddress(), "Eulers Bridge"));
       message.setSubject(getSubject());
-      final Map<String, Object> hTemplateVariables = new HashMap<String, Object>();
+      VelocityContext velocityContext = new VelocityContext();
+//    			velocityContext.put("email", this);
+      velocityContext.put("recipientName", getRecipientName());
+      velocityContext.put("emailAddress", getRecipientEmailAddress());
+      velocityContext.put("verificationToken", getEncodedToken());
+      velocityContext.put("serverIp", serverIp);
 
-//    			hTemplateVariables.put("email", this);
-      hTemplateVariables.put("recipientName", getRecipientName());
-      hTemplateVariables.put("emailAddress", getRecipientEmailAddress());
-      hTemplateVariables.put("verificationToken", getEncodedToken());
-      hTemplateVariables.put("serverIp", serverIp);
-
-      if (LOG.isDebugEnabled())
-        LOG.debug("Velocity engine :" + velocityEngine);
-
-        body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, resourceName, "UTF-8", hTemplateVariables);
+      if (LOG.isDebugEnabled()) LOG.debug("Velocity engine :" + velocityEngine);
+      StringWriter sw = new StringWriter();
+      velocityEngine.mergeTemplate(resourceName, "UTF-8", velocityContext, sw);
+      body = sw.toString();
 //    			body="Dear "+getRecipientName()+", your token is "+getToken()+" your url is \nhttp://eulersbridge.com:8080/dbInterface/api/emailVerification/"+getRecipientEmailAddress()+"/"+getToken()+" Thankyou.";
       if (LOG.isDebugEnabled()) LOG.debug("body={}", body);
       message.setText(body, true);

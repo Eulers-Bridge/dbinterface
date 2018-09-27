@@ -48,7 +48,7 @@ public class PositionEventHandler implements PositionService {
 
     if (LOG.isDebugEnabled())
       LOG.debug("Finding election with nodeId = " + positionDetails.getElectionId());
-    Election elect = electionRepository.findOne(positionDetails.getElectionId());
+    Election elect = electionRepository.findById(positionDetails.getElectionId()).get();
 
     PositionCreatedEvent positionCreatedEvent;
     if (elect != null) {
@@ -63,7 +63,7 @@ public class PositionEventHandler implements PositionService {
 
   @Override
   public ReadEvent readPosition(RequestReadPositionEvent requestReadPositionEvent) {
-    Position position = positionRepository.findOne(requestReadPositionEvent.getNodeId());
+    Position position = positionRepository.findById(requestReadPositionEvent.getNodeId()).get();
     ReadEvent readPositionEvent;
     if (position != null) {
       readPositionEvent = new PositionReadEvent(position.getNodeId(), position.toPositionDetails());
@@ -81,7 +81,7 @@ public class PositionEventHandler implements PositionService {
     AllReadEvent nare = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("ElectionId " + electionId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "e.name");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "e.name");
     positions = positionRepository.findByElectionId(electionId, pageable);
     if (positions != null) {
       if (LOG.isDebugEnabled())
@@ -96,7 +96,7 @@ public class PositionEventHandler implements PositionService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        Election elec = electionRepository.findOne(electionId);
+        Election elec = electionRepository.findById(electionId).get();
         if ((null == elec) ||
           ((null == elec.getTitle()) || ((null == elec.getStart()) && (null == elec.getEnd()) && (null == elec.getIntroduction())))) {
           if (LOG.isDebugEnabled())
@@ -125,7 +125,7 @@ public class PositionEventHandler implements PositionService {
     AllReadEvent nare = null;
 
     if (LOG.isDebugEnabled()) LOG.debug("PositionId " + positionId);
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "e.name");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "e.name");
     candidates = candidateRepository.findByPositionId(positionId, pageable);
     if (candidates != null) {
       if (LOG.isDebugEnabled())
@@ -140,7 +140,7 @@ public class PositionEventHandler implements PositionService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found instId.
-        Position position = positionRepository.findOne(positionId);
+        Position position = positionRepository.findById(positionId).get();
         if ((null == position) ||
           ((null == position.getName()) || (null == position.getDescription()))) {
           if (LOG.isDebugEnabled())
@@ -168,7 +168,7 @@ public class PositionEventHandler implements PositionService {
       Position position = Position.fromPositionDetails(positionDetails);
       Long positionId = positionDetails.getNodeId();
       if (LOG.isDebugEnabled()) LOG.debug("positionId is " + positionId);
-      Position positionOld = positionRepository.findOne(positionId, 0);
+      Position positionOld = positionRepository.findById(positionId, 0).get();
       if (null == positionOld) {
         if (LOG.isDebugEnabled())
           LOG.debug("position entity not found " + positionId);
@@ -195,11 +195,11 @@ public class PositionEventHandler implements PositionService {
       LOG.debug("Entered deletePositionEvent= " + deletePositionEvent);
     Long positionId = deletePositionEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deletePosition(" + positionId + ")");
-    Position position = positionRepository.findOne(positionId);
+    Position position = positionRepository.findById(positionId).get();
     if (position == null) {
       return PositionDeletedEvent.notFound(positionId);
     } else {
-      positionRepository.delete(positionId);
+      positionRepository.deleteById(positionId);
       PositionDeletedEvent positionDeletedEvent = new PositionDeletedEvent(positionId);
       return positionDeletedEvent;
     }

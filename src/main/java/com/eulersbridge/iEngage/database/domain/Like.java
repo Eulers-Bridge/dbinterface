@@ -1,16 +1,14 @@
 package com.eulersbridge.iEngage.database.domain;
 
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
+import org.neo4j.ogm.annotation.*;
 
 import java.util.Calendar;
 
 
 @RelationshipEntity(type = DataConstants.LIKES_LABEL)
 public class Like {
-  @GraphId
+  @Id
+  @GeneratedValue
   private Long id;
   @StartNode
   private User liker;

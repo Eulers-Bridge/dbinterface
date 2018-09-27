@@ -56,7 +56,7 @@ public class BadgeEventHandler implements BadgeService {
 
   @Override
   public ReadEvent requestReadBadge(RequestReadBadgeEvent requestReadBadgeEvent) {
-    Badge badge = badgeRepository.findOne(requestReadBadgeEvent.getNodeId());
+    Badge badge = badgeRepository.findById(requestReadBadgeEvent.getNodeId()).get();
     ReadEvent readBadgeEvent;
     if (badge != null) {
       readBadgeEvent = new ReadBadgeEvent(badge.getNodeId(), badge.toBadgeDetails());
@@ -72,7 +72,7 @@ public class BadgeEventHandler implements BadgeService {
     ArrayList<BadgeDetails> dets = new ArrayList<BadgeDetails>();
     AllReadEvent nare = null;
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "name");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "name");
     badges = badgeRepository.findAll(pageable);
     if (badges != null) {
       if (LOG.isDebugEnabled())
@@ -99,7 +99,7 @@ public class BadgeEventHandler implements BadgeService {
     Badge badge = Badge.fromBadgeDetails(badgeDetails);
     Long badgeId = badgeDetails.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("badgeId is " + badgeId);
-    Badge badgeOld = badgeRepository.findOne(badgeId);
+    Badge badgeOld = badgeRepository.findById(badgeId).get();
     if (badgeOld == null) {
       if (LOG.isDebugEnabled()) LOG.debug("badge entity not found " + badgeId);
       return BadgeUpdatedEvent.notFound(badgeId);
@@ -119,12 +119,12 @@ public class BadgeEventHandler implements BadgeService {
     UpdatedEvent response = null;
     if (LOG.isDebugEnabled())
       LOG.debug("badgeId is " + badgeId + " userId - " + userId);
-    Badge badge = badgeRepository.findOne(badgeId);
+    Badge badge = badgeRepository.findById(badgeId).get();
     if (badge == null) {
       if (LOG.isDebugEnabled()) LOG.debug("badge entity not found " + badgeId);
       response = BadgeUpdatedEvent.notFound(badgeId);
     } else {
-      User user = userRepository.findOne(userId);
+      User user = userRepository.findById(userId).get();
       if (null == user) {
         if (LOG.isDebugEnabled()) LOG.debug("user entity not found " + badgeId);
         response = BadgeUpdatedEvent.notFound(userId);
@@ -145,7 +145,7 @@ public class BadgeEventHandler implements BadgeService {
       LOG.debug("Entered deleteBadgeEvent= " + deleteBadgeEvent);
     Long badgeId = deleteBadgeEvent.getNodeId();
     if (LOG.isDebugEnabled()) LOG.debug("deleteBadge(" + badgeId + ")");
-    Badge badge = badgeRepository.findOne(badgeId);
+    Badge badge = badgeRepository.findById(badgeId).get();
     if (badge == null) {
       return DeletedEvent.notFound(badgeId);
     } else {
@@ -163,7 +163,7 @@ public class BadgeEventHandler implements BadgeService {
     AllReadEvent nare = null;
     Long userId = readCompletedBadgesEvent.getParentId();
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "r.date");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "r.date");
     badges = badgeRepository.findCompletedBadges(userId, pageable);
     if (badges != null) {
       if (LOG.isDebugEnabled())
@@ -178,7 +178,7 @@ public class BadgeEventHandler implements BadgeService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        User elec = userRepository.findOne(userId);
+        User elec = userRepository.findById(userId).get();
         if ((null == elec) ||
           ((null == elec.getGivenName()) || ((null == elec.getFamilyName()) && (null == elec.getEmail()) && (null == elec.getInstitution())))) {
           if (LOG.isDebugEnabled())
@@ -205,7 +205,7 @@ public class BadgeEventHandler implements BadgeService {
     AllReadEvent nare = null;
     Long userId = readAllEvent.getParentId();
 
-    Pageable pageable = new PageRequest(pageNumber, pageLength, sortDirection, "t.xpValue");
+    Pageable pageable = PageRequest.of(pageNumber, pageLength, sortDirection, "t.xpValue");
     badges = badgeRepository.findRemainingBadges(userId, pageable);
     if (badges != null) {
       if (LOG.isDebugEnabled())
@@ -220,7 +220,7 @@ public class BadgeEventHandler implements BadgeService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found parentId.
-        User elec = userRepository.findOne(userId);
+        User elec = userRepository.findById(userId).get();
         if ((null == elec) ||
           ((null == elec.getGivenName()) || ((null == elec.getFamilyName()) && (null == elec.getEmail()) && (null == elec.getInstitution())))) {
           if (LOG.isDebugEnabled())
