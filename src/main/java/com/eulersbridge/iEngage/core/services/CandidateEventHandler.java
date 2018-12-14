@@ -63,28 +63,38 @@ public class CandidateEventHandler implements CandidateService {
       user = userRepository.findByEmail(userEmail);
     }
 
-
     if (user != null) {
       Long positionId = candidateDetails.getPositionId();
       if (LOG.isDebugEnabled())
         LOG.debug("Finding position with nodeId = " + positionId);
       Position position = null;
       if (positionId != null) position = positionRepository.findById(positionId).get();
+      Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
       if (position != null) {
-        Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
         candidate.setUser(user.toNode());
         candidate.setPosition(position.toNode());
-        Candidate result = candidateRepository.save(candidate);
-        if ((null == result) || (null == result.getNodeId()))
-          candidateCreatedEvent = CreatedEvent.failed(candidateDetails);
-        else
-          candidateCreatedEvent = new CandidateCreatedEvent(result.toCandidateDetails());
       } else {
         candidateCreatedEvent = CandidateCreatedEvent.positionNotFound(candidateDetails.getPositionId());
+        return candidateCreatedEvent;
       }
+      Long ticketId = candidateDetails.getTicketDetails().getNodeId();
+      Ticket ticket = null;
+      if (ticketId != null) ticket = ticketRepository.findById(ticketId).orElse(null);
+      if (ticket != null) {
+        candidate.setTicket(ticket.toNode());
+      }
+
+      //save
+
+      Candidate result = candidateRepository.save(candidate);
+      if ((null == result) || (null == result.getNodeId()))
+        candidateCreatedEvent = CreatedEvent.failed(candidateDetails);
+      else
+        candidateCreatedEvent = new CandidateCreatedEvent(result.toCandidateDetails());
     } else {
       candidateCreatedEvent = CandidateCreatedEvent.userNotFound(candidateDetails.getUserId());
     }
+
     return candidateCreatedEvent;
   }
 

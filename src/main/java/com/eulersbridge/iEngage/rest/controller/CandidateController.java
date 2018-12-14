@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.services.interfacePack.CandidateService;
 import com.eulersbridge.iEngage.core.services.interfacePack.LikesService;
 import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.rest.domain.*;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,8 @@ public class CandidateController {
       LOG.info("attempting to create candidate " + candidate);
     CreateCandidateEvent createCandidateEvent = new CreateCandidateEvent(candidate.toCandidateDetails());
     CreatedEvent candidateCreatedEvent = null;
-    if ((candidate.getUserId() != null) && (candidate.getPositionId() != null))
+    System.out.println();
+    if ((candidate.getUserId() != null || Strings.isNotEmpty(candidate.getEmail())) && (candidate.getPositionId() != null))
       candidateCreatedEvent = candidateService.createCandidate(createCandidateEvent);
     ResponseEntity<Candidate> response;
     if (null == candidateCreatedEvent) {

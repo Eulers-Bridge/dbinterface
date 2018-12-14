@@ -26,7 +26,7 @@ public class Ticket extends Likeable {
 
   @Relationship(type = DataConstants.HAS_TICKET_LABEL, direction = Relationship.INCOMING)
   private Node election;
-  @Relationship(type = DataConstants.HAS_MEMBER_LABEL, direction = Relationship.INCOMING)
+  @Relationship(type = DataConstants.IS_ON_TICKET_LABEL, direction = Relationship.INCOMING) //fixme
   private List<Node> candidates;
   @Relationship(type = DataConstants.SUPPORT_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> supporters;
