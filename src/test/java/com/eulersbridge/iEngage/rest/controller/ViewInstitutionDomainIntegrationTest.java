@@ -38,24 +38,24 @@ public class ViewInstitutionDomainIntegrationTest
     private static Logger LOG = LoggerFactory.getLogger(ViewInstitutionDomainIntegrationTest.class);
 
     MockMvc mockMvc;
-	
+
 	@InjectMocks
 	InstitutionController controller;
-	
+
 	@Mock
 	InstitutionService instService;
-	
-	
+
+
 	@Before
 	public void setup() throws Exception
 	{
 		if (LOG.isDebugEnabled()) LOG.debug("setup()");
 		MockitoAnnotations.initMocks(this);
-		
+
 		MappingJackson2HttpMessageConverter converter=RestDataFixture.setUpConverter();
 		this.mockMvc = standaloneSetup(controller).setMessageConverters(converter).build();
 	}
-	
+
 	@Test
 	public void getShouldReturnGeneralInfoCorrectly() throws Exception
 	{
@@ -87,7 +87,7 @@ public class ViewInstitutionDomainIntegrationTest
 //		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
-	
+
 	@Test
 	public void getShouldReturnInstitutionsCorrectly() throws Exception
 	{
@@ -107,7 +107,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.[0].links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
-	
+
 	@Test
 	public void getShouldReturnUserNotFound() throws Exception
 	{
@@ -118,7 +118,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(get("/api/institution/{instId}/",instId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
 	}
-	
+
 	@Test
 	public void getShouldReturnInstitutionsCorrectlyCountrySet() throws Exception
 	{
@@ -139,7 +139,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.[0].links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
-	
+
 	@Test
 	public void getShouldReturnTrue() throws Exception
 	{
@@ -151,7 +151,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(content().string(returnedContent))
 		.andExpect(status().isOk())	;
 	}
-	
+
 	@Test
 	public void getShouldReturnInstitutionCorrectly() throws Exception
 	{
@@ -170,7 +170,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
-	
+
 	@Test
 	public void deleteShouldReturnUserNotFound() throws Exception
 	{
@@ -181,7 +181,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(delete("/api/institution/{instId}/",instId.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound())	;
 	}
-	
+
 	@Test
 	public void deleteShouldReturnInstitutionCorrectly() throws Exception
 	{
@@ -200,7 +200,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
-	
+
 	@Test
 	public void getShouldReadNewsFeedCorrectly() throws Exception
 	{
@@ -217,7 +217,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void getShouldNotReadNewsFeedCorrectlyEntityNotFound() throws Exception
 	{
@@ -228,7 +228,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(get("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void putShouldCreateNewsFeedCorrectly() throws Exception
 	{
@@ -246,7 +246,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isCreated());
 	}
-	
+
 	@Test
 	public void putShouldNotCreateNewsFeedCorrectlyIdNull() throws Exception
 	{
@@ -259,7 +259,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(put("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void putShouldNotCreateNewsFeedCorrectlyInstNotFound() throws Exception
 	{
@@ -271,7 +271,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(put("/api/institution/{id}/newsFeed",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isFailedDependency());
 	}
-	
+
 	@Test
 	public void putShouldReturnInstitutionCorrectly() throws Exception
 	{
@@ -291,7 +291,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isOk())	;
 	}
-	
+
 	@Test
 	public void putShouldReturnBadRequestNoContent() throws Exception
 	{	// Empty content.
@@ -302,7 +302,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())	;
 	}
-	
+
 	@Test
 	public void putShouldReturnBadRequest() throws Exception
 	{	// Empty content.
@@ -315,7 +315,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;
 	}
-	
+
 	@Test
 	public void putShouldReturnFailedDepPutEvtNull() throws Exception
 	{	// Empty content.
@@ -327,7 +327,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isFailedDependency())	;
 	}
-	
+
 	@Test
 	public void putShouldReturnFailedDepCountryNotFound() throws Exception
 	{
@@ -339,7 +339,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(put("/api/institution/{id}",id.intValue()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isFailedDependency())	;
 	}
-	
+
 	@Test
 	public void postShouldReturnInstitutionCorrectly() throws Exception
 	{
@@ -359,7 +359,7 @@ public class ViewInstitutionDomainIntegrationTest
 		.andExpect(jsonPath("$.links[0].rel",is("self")))
 		.andExpect(status().isCreated());
 	}
-	
+
 	@Test
 	public void postShouldReturnBadRequestNoContent() throws Exception
 	{	// Empty content.
@@ -370,7 +370,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isBadRequest())	;
 	}
-	
+
 	@Test
 	public void postShouldReturnBadRequest() throws Exception
 	{	// Empty content.
@@ -383,7 +383,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;
 	}
-	
+
 	@Test
 	public void postShouldReturnBadRequestIDNull() throws Exception
 	{	// Empty content.
@@ -395,7 +395,7 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andExpect(status().isBadRequest())	;
 	}
-	
+
 	@Test
 	public void postShouldReturnFailedDependency() throws Exception
 	{	// Empty content.
@@ -407,5 +407,5 @@ public class ViewInstitutionDomainIntegrationTest
 		this.mockMvc.perform(post("/api/institution/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
 		.andDo(print())
 		.andExpect(status().isFailedDependency())	;
-	}	
+	}
 }

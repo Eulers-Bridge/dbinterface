@@ -4,12 +4,10 @@ import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.interfacePack.NewsService;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.NewsArticle;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
-import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
+import com.eulersbridge.iEngage.database.repository.NodeRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,15 +25,17 @@ import java.util.Iterator;
 public class NewsEventHandler implements NewsService {
   private static Logger LOG = LoggerFactory.getLogger(NewsEventHandler.class);
 
+  private NodeRepository nodeRepository;
   private UserRepository userRepository;
   private NewsArticleRepository newsRepo;
   private InstitutionRepository instRepo;
 
   @Autowired
-  public NewsEventHandler(NewsArticleRepository newsRepo, UserRepository userRepository, InstitutionRepository instRepo) {
+  public NewsEventHandler(NewsArticleRepository newsRepo, UserRepository userRepository, InstitutionRepository instRepo, NodeRepository nodeRepository) {
     this.newsRepo = newsRepo;
     this.userRepository = userRepository;
     this.instRepo = instRepo;
+    this.nodeRepository= nodeRepository;
   }
 
   @Override
@@ -54,9 +54,13 @@ public class NewsEventHandler implements NewsService {
     if (LOG.isDebugEnabled()) LOG.debug("User Details :" + creator);
     NewsArticleCreatedEvent nACE;
     if ((creator != null) && (nf != null)) {
-      na.setCreator(creator.toNode());
-      na.setNewsFeed(nf.toNode());
-      NewsArticle result = newsRepo.save(na);
+//      na.setCreator(creator.toNode());
+//      na.setNewsFeed(nf.toNode());
+      NewsArticle result = newsRepo.save(na, 0);
+      nodeRepository.createdBy(result.getNodeId(), creator.getNodeId());
+      nodeRepository.hasNews(nf.getNodeId(), result.getNodeId());
+
+      result = newsRepo.findById(result.getNodeId()).orElse(null);
       nACE = new NewsArticleCreatedEvent(result.getNodeId(), result.toNewsArticleDetails());
     } else {
       if (null == creator) {
@@ -124,11 +128,10 @@ public class NewsEventHandler implements NewsService {
         NewsArticle na = iter.next();
         // FIXME: Should read institution ID from db instead from request.
         NewsFeed newsFeed = new NewsFeed();
-        newsFeed.setInstitution(new Institution(readNewsArticlesEvent.getParentId()));
-        na.setNewsFeed(newsFeed);
         if (LOG.isTraceEnabled())
           LOG.trace("Converting to details - " + na.getTitle());
         NewsArticleDetails det = na.toNewsArticleDetails();
+        det.setInstitutionId(readNewsArticlesEvent.getParentId());
         dets.add(det);
       }
       if (0 == dets.size()) {

@@ -43,9 +43,11 @@ public class ScheduledTasks {
     for (Poll p : polls) {
       List<PollOption> options = p.getPollOptionsList$();
       for (PollOption op : options) {
-        Long numOfVoters = new Integer(op.getVoters().size()).longValue();
-        op.setNumOfVoters(numOfVoters);
-        pollOptionRepo.save(op, 0);
+        if(op.getVoters()!=null){
+          Long numOfVoters = new Integer(op.getVoters().size()).longValue();
+          op.setNumOfVoters(numOfVoters);
+          pollOptionRepo.save(op, 0);
+        }
       }
       p.setClosed(true);
       pollRepo.save(p, 0);

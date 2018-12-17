@@ -7,10 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.util.Arrays;
 
 
 @SpringBootApplication
@@ -24,11 +27,19 @@ public class Launcher extends SpringBootServletInitializer {
   public static void main(String[] args) {
     SpringApplication app = new SpringApplication(Launcher.class);
 //    app.setBannerMode(Banner.Mode.LOG);
-    app.run(args);
+    ConfigurableApplicationContext context = app.run(args);
+
+//    String[] beanNames = context.getBeanDefinitionNames();
+//    Arrays.sort(beanNames);
+//    for (String beanName : beanNames) {
+//      System.out.println(beanName);
+//    }
   }
 
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
     return builder.sources(Launcher.class);
   }
+
+
 }

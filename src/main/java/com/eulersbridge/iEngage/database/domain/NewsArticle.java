@@ -1,12 +1,20 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
+import com.eulersbridge.iEngage.database.repository.NewsFeedRepository;
+import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.fasterxml.jackson.databind.deser.impl.CreatorCandidate;
 import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.Calendar;
@@ -24,9 +32,11 @@ public class NewsArticle extends Likeable {
   @Relationship(type = DataConstants.HAS_PHOTO_LABEL)
   private List<Node> photos;
   @Relationship(type = DataConstants.CREATED_BY_LABEL, direction = Relationship.OUTGOING)
-  private Node creator;
+  private User creator;
+
   @Relationship(type = DataConstants.HAS_NEWS_LABEL, direction = Relationship.INCOMING)
-  private Node newsFeed;
+  private NewsFeed newsFeed;
+
 
 //  @Query("START n = node({self}) match (n)-[r:" + DatabaseDomainConstants.CREATED_BY_LABEL + "]-(c) RETURN c.email ")
 //  private String creatorEmail;
@@ -110,13 +120,11 @@ public class NewsArticle extends Likeable {
     return creator;
   }
 
-  public void setCreator(Node creator) {
+  public void setCreator(User creator) {
     this.creator = creator;
   }
 
-  /**
-   * @return the studentYear
-   */
+
   public NewsFeed getNewsFeed$() {
     return (NewsFeed) newsFeed;
   }
@@ -128,7 +136,7 @@ public class NewsArticle extends Likeable {
   /**
    * @param newsFeed the studentYear to set
    */
-  public void setNewsFeed(Node newsFeed) {
+  public void setNewsFeed(NewsFeed newsFeed) {
     this.newsFeed = newsFeed;
   }
 
@@ -174,18 +182,19 @@ public class NewsArticle extends Likeable {
     details.setNewsArticleId(getNodeId());
     BeanUtils.copyProperties(this, details);
 
-    if (creator != null && creator instanceof User){
+    if (creator != null) {
+      System.out.println(creator.nodeId);
       details.setCreatorEmail(getCreator$().getEmail());
       details.setCreatorDetails(getCreator$().toUserDetails());
     }
 
-    if (newsFeed != null && newsFeed instanceof NewsFeed) {
+    if (newsFeed != null) {
       NewsFeed newsFeed = getNewsFeed$();
       if (newsFeed.getInstitution() != null)
         details.setInstitutionId(newsFeed.getInstitution().getNodeId());
     }
 
-    if (photos!=null && photos.size()>0 && photos.iterator().next() instanceof Photo)
+    if (photos != null && photos.size() > 0 && photos.iterator().next() instanceof Photo)
       details.setPhotos(Photo.photosToPhotoDetails(getPhotos$()));
 
     details.setLikes(getNumOfLikes().intValue());
