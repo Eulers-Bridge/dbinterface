@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 public interface VotingLocationRepository extends
   Neo4jRepository<VotingLocation, Long> {
 
-  @Query(value = "MATCH (p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_LOCATION_LABEL + "`]-(o) where id(o)={ownerId} RETURN p",
+  @Query(value = "MATCH l=(p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_LOCATION_LABEL + "`]-(o) where id(o)={ownerId} RETURN l",
   countQuery = "MATCH (p:`" + DataConstants.VOTING_LOCATION + "`)-[r:`" + DataConstants.HAS_VOTING_LOCATION_LABEL + "`]-(o) where id(o)={ownerId} RETURN count(p)")
   Page<VotingLocation> findByInstitutionId(@Param("ownerId") Long ownerId, Pageable pageable);
 
