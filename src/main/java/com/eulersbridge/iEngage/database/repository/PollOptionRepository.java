@@ -21,6 +21,6 @@ public interface PollOptionRepository extends Neo4jRepository<PollOption, Long> 
   @Query("Match (p:Poll)-[r:HAS_POLL_OPTION]->(o:PollOption) where id(p)={pollId} with distinct o Match (u:User)-[x:VOTE_POLL_OPTION]->(o) where u.email={userEmail} return distinct o")
   public PollOption checkIfUserHasVoted(@Param("pollId") Long pollId, @Param("userEmail") String userEmail);
 
-  @Query("MATCH l=(o:PollOption),(u:User) where id(o)={optionId} and u.email={userEmail} CREATE UNIQUE (u)-[r:VOTE_POLL_OPTION]->(o) SET r.timestamp=coalesce(r.timestamp,timestamp()) return r")
+  @Query("MATCH (o:PollOption), (u:User) where id(o)={optionId} and u.email={userEmail} CREATE UNIQUE (u)-[r:VOTE_POLL_OPTION]->(o) SET r.timestamp=coalesce(r.timestamp,timestamp())")
   public void votePollOption(@Param("userEmail") String userEmail, @Param("optionId") Long optionId);
 }

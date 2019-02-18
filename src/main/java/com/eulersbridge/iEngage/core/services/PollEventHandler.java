@@ -106,7 +106,6 @@ public class PollEventHandler implements PollService {
     PollOption votedPollOpt = pollOptionRepository.checkIfUserHasVoted(pollId, userEmail);
     if (votedPollOpt != null)
       return RequestHandledEvent.notAllowed();
-
     pollOptionRepository.votePollOption(userEmail, optionId);
     return new RequestHandledEvent();
   }
