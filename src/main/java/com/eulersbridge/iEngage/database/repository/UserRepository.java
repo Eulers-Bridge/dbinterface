@@ -91,11 +91,11 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
   countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.SUPPORT_LABEL + "]-(b:`" + DataConstants.TICKET + "`) where id(a)={userId} return count(b)")
   Page<Ticket> findSupports(@Param("userId") Long userId, Pageable pageable);
 
-  @Query(value = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r",
-  countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r")
+  @Query(value = "Match l=(a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return l",
+  countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VREMINDER_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return count(r)")
   Page<VoteReminder> findVoteReminders(@Param("userId") Long userId, Pageable pageable);
 
-  @Query(value = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return r",
+  @Query(value = "Match l=(a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return l",
   countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.VRECORD_LABEL + "]-(b:`" + DataConstants.ELECTION + "`) where id(a)={userId} return count(r)")
   Page<VoteRecord> findVoteRecords(@Param("userId") Long userId, Pageable pageable);
 
