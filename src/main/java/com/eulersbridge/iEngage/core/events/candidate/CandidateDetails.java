@@ -3,6 +3,7 @@ package com.eulersbridge.iEngage.core.events.candidate;
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,7 @@ public class CandidateDetails extends Details {
   private String familyName;
   private Long positionId;
   private TicketDetails ticketDetails;
+  private UserDetails userDetails;
 
   private static Logger LOG = LoggerFactory.getLogger(CandidateDetails.class);
 
@@ -218,5 +220,13 @@ public class CandidateDetails extends Details {
    */
   public void setPhotos(Iterable<PhotoDetails> photos) {
     this.photos = photos;
+  }
+
+  public UserDetails getUserDetails() {
+    return userDetails;
+  }
+
+  public void setUserDetails(UserDetails userDetails) {
+    this.userDetails = userDetails;
   }
 }

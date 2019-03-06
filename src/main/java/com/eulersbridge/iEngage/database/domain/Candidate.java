@@ -88,6 +88,7 @@ public class Candidate extends Likeable {
       candidateDetails.setFamilyName(getUser$().getFamilyName());
       candidateDetails.setGivenName(getUser$().getGivenName());
       candidateDetails.setEmail(getUser$().getEmail());
+      candidateDetails.setUserDetails(getUser$().toUserDetails());
     } else {
       candidateDetails.setUserId(user.nodeId);
     }

@@ -30,6 +30,7 @@ public class Candidate extends ResourceSupport {
   private String familyName;
   private Long positionId;
   private Long ticketId;
+  private UserProfile userProfile;
 //    private Ticket ticket;
 
   private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
@@ -53,6 +54,9 @@ public class Candidate extends ResourceSupport {
     candidate.setGivenName(candidateDetails.getGivenName());
     candidate.setFamilyName(candidateDetails.getFamilyName());
     candidate.setPositionId(candidateDetails.getPositionId());
+
+    candidate.setUserProfile(UserProfile.fromUserDetails(candidateDetails.getUserDetails()));
+
     Long ticketId = null;
     if (candidateDetails.getTicketDetails() != null)
       ticketId = candidateDetails.getTicketDetails().getNodeId();
@@ -196,6 +200,14 @@ public class Candidate extends ResourceSupport {
 
   public void setPositionId(Long positionId) {
     this.positionId = positionId;
+  }
+
+  public UserProfile getUserProfile() {
+    return userProfile;
+  }
+
+  public void setUserProfile(UserProfile userProfile) {
+    this.userProfile = userProfile;
   }
 
   public static Iterator<Candidate> toCandidatesIterator(
