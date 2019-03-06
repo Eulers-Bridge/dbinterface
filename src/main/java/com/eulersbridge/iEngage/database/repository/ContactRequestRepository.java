@@ -21,16 +21,17 @@ import java.util.List;
 public interface ContactRequestRepository extends
   Neo4jRepository<ContactRequest, Long> {
 
-  @Query("MATCH (u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) optional match l=(x)-[r1]-(u)-[r]->(t)-[r2]-(y) where u.email={userEmail} and type(r1)<>'HAS_CONTACT_REQUEST' and type(r2)<>'HAS_CONTACT_REQUEST' return l order by r.requestDate DESC")
+  @Query("MATCH l=(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where u.email={userEmail} return l order by r.requestDate DESC")
+//  @Query("MATCH (u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) optional match l=(x)-[r1]-(u)-[r]->(t)-[r2]-(y) where u.email={userEmail} and type(r1)<>'HAS_CONTACT_REQUEST' and type(r2)<>'HAS_CONTACT_REQUEST' return l order by r.requestDate DESC")
 //  @Query("MATCH l=(x)-[r1*0..1]-(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User)-[r2*0..1]-(y) where u.email={userEmail} and NONE (a IN r1 WHERE type(a)= 'HAS_CONTACT_REQUEST') and NONE (a IN r2 WHERE type(a)= 'HAS_CONTACT_REQUEST') return l order by r.requestDate DESC")
   List<ContactRequest> findSentRequests(@Param("userEmail") String userEmail);
 
 //  @Query("MATCH l=(x)-[*0..1]-(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User)-[*0..1]-(y) where t.email={userEmail} and (x:Institution or x:Badge or x:Task or id(x)=id(u)) and (y:Institution or y:Badge or y:Task or id(t)=id(y)) return l order by r.requestDate DESC")
 //  and NONE (a IN x WHERE type(a)= 'HAS_CONTACT_REQUEST') and NONE (a IN y WHERE type(a)= 'HAS_CONTACT_REQUEST')
 
-//  @Query("MATCH l=(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where t.email={userEmail} return l order by r.requestDate DESC")
+  @Query("MATCH l=(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where t.email={userEmail} return l order by r.requestDate DESC")
 //  @Query("MATCH (u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) where t.email={userEmail} with u, r, t optional match l=(x)-[r1]-(u)-[r]->(t)-[r2]-(y) where type(r1)<>'HAS_CONTACT_REQUEST' and type(r2)<>'HAS_CONTACT_REQUEST' return l order by r.requestDate DESC")
-  @Query("MATCH (u:User)-[r:HAS_CONTACT_REQUEST]->(t:User) optional match l=(x)-[r1]-(u)-[r]->(t)-[r2]-(y) where t.email={userEmail} and type(r1)<>'HAS_CONTACT_REQUEST' and type(r2)<>'HAS_CONTACT_REQUEST' return l order by r.requestDate DESC")
+//  @Query("MATCH (t:User)<-[r:HAS_CONTACT_REQUEST]-(u:User) optional match l=(x)-[r1]-(t)<-[r]-(u)-[r2]-(y) where t.email={userEmail} and type(r1)<>'HAS_CONTACT_REQUEST' and type(r2)<>'HAS_CONTACT_REQUEST' return l order by r.requestDate DESC")
   //  @Query("MATCH l=(x)-[r1*0..1]-(u:User)-[r:HAS_CONTACT_REQUEST]->(t:User)-[r2*0..1]-(y) where t.email={userEmail} and NONE (a IN r1 WHERE type(a)= 'HAS_CONTACT_REQUEST') and NONE (a IN r2 WHERE type(a)= 'HAS_CONTACT_REQUEST') return l order by r.requestDate DESC")
   List<ContactRequest> findReceivedRequests(@Param("userEmail") String userEmail);
 
