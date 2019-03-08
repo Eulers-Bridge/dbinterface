@@ -29,7 +29,7 @@ public interface CandidateService {
                                      Direction sortDirection, int pageNumber, int pageLength);
 
   @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','" + SecurityConstants.ADMIN_ROLE + "')")
-  public UpdatedEvent addTicket(AddTicketEvent addTicketEvent);
+  public RequestHandledEvent<Boolean> addTicket(AddTicketEvent addTicketEvent);
 
   @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','" + SecurityConstants.ADMIN_ROLE + "')")
   public UpdatedEvent removeTicket(DeleteEvent deleteEvent);

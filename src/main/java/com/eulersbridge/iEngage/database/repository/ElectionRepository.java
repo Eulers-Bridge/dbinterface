@@ -23,4 +23,8 @@ public interface ElectionRepository extends Neo4jRepository<Election, Long> {
     "]-(e:`Election`) where id(n)={instId} return l")
   List<Election> findByInstitutionId(@Param("instId") Long instId);
 
+
+  @Query(value = "Match (p:'" + DataConstants.POSITION + "')-[r:'" + DataConstants.HAS_POSITION_LABEL + "']->(e:'"
+    + DataConstants.ELECTION + "') where id(p)={positionId} return e")
+  Election findByPositionId(@Param("positionId") Long positionId);
 }

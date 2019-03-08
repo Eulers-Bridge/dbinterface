@@ -238,23 +238,9 @@ public class CandidateController {
   public @ResponseBody
   ResponseEntity<Boolean> addTicket(
     @PathVariable Long candidateId, @PathVariable Long ticketId) {
-    if (LOG.isInfoEnabled())
-      LOG.info("Attempting to add ticket " + ticketId + " to candidate " + candidateId);
-    ResponseEntity<Boolean> response;
-    UpdatedEvent ticketAddedEvent = candidateService.addTicket(new AddTicketEvent(candidateId, ticketId));
-    if (!ticketAddedEvent.isEntityFound()) {
-      if (ticketAddedEvent.getNodeId() == candidateId)
-        response = new ResponseEntity<Boolean>(HttpStatus.GONE);
-      else if (ticketAddedEvent.getNodeId() == ticketId)
-        response = new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
-      else
-        response = new ResponseEntity<Boolean>(HttpStatus.FAILED_DEPENDENCY);
-    } else if (ticketAddedEvent.isFailed()) {
-      response = new ResponseEntity<Boolean>(HttpStatus.FORBIDDEN);
-    } else {
-      response = new ResponseEntity<Boolean>(HttpStatus.OK);
-    }
-    return response;
+    if (LOG.isInfoEnabled()) LOG.info("Attempting to add ticket " + ticketId + " to candidate " + candidateId);
+    RequestHandledEvent<Boolean> requestHandledEvent = candidateService.addTicket(new AddTicketEvent(candidateId, ticketId));
+    return requestHandledEvent.toResponseEntity();
   }
 
   // remove ticket from candidate

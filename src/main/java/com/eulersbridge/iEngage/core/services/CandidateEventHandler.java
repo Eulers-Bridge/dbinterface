@@ -220,24 +220,35 @@ public class CandidateEventHandler implements CandidateService {
   }
 
   @Override
-  public UpdatedEvent addTicket(AddTicketEvent addTicketEvent) {
+  public RequestHandledEvent<Boolean> addTicket(AddTicketEvent addTicketEvent) {
     UpdatedEvent ticketAddedEvent;
-    Candidate candidate = candidateRepository.findById(addTicketEvent.getCandidateId()).get();
-    Ticket ticket = ticketRepository.findById(addTicketEvent.getTicketId()).get();
-    if (candidate == null)
-      ticketAddedEvent = UpdatedEvent.notFound(addTicketEvent.getCandidateId());
-    else if (ticket == null)
-      ticketAddedEvent = UpdatedEvent.notFound(addTicketEvent.getTicketId());
-    else {
-      candidate.prune();
-      candidate.setTicket(ticket.toNode());
-      Candidate savedCandidate = candidateRepository.save(candidate);
-      if (savedCandidate == null)
-        ticketAddedEvent = UpdatedEvent.failed(addTicketEvent.getCandidateId());
-      else
-        ticketAddedEvent = new UpdatedEvent(addTicketEvent.getCandidateId());
-    }
-    return ticketAddedEvent;
+    Long candidateId = addTicketEvent.getCandidateId();
+    Long ticketId = addTicketEvent.getTicketId();
+    if (candidateId == null || ticketId == null)
+      return RequestHandledEvent.badRequest();
+
+    Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+    Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
+    if (candidate == null || ticket == null)
+      return RequestHandledEvent.targetNotFound();
+
+    // Check if the user is already a candidate on ticket - Rule 2
+    Long userId = candidate.getUser().getNodeId();
+    Integer i = candidateRepository.countUserToTicketChains(userId, ticketId);
+    if (i>0)
+      return RequestHandledEvent.conflicted();
+
+    // Check if the election of Ticket is the same election or the position - Rule 4
+    Election electionOfCandidate = electionRepository.findByPositionId(candidate.getPosition().getNodeId());
+    if (electionOfCandidate.getNodeId() != ticket.getElection().getNodeId())
+      return RequestHandledEvent.conflicted();
+
+    candidate.setTicket(ticket.toNode());
+    Candidate savedCandidate = candidateRepository.save(candidate);
+    if (savedCandidate == null)
+      return RequestHandledEvent.failed();
+
+    return new RequestHandledEvent<>(HttpStatus.OK);
   }
 
   @Override

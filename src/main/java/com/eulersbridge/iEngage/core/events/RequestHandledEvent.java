@@ -26,6 +26,11 @@ public class RequestHandledEvent<T> {
     success = true;
   }
 
+  public RequestHandledEvent(HttpStatus expectedHttpStatus) {
+    this();
+    this.expectedHttpStatus = expectedHttpStatus;
+  }
+
   public RequestHandledEvent(Boolean success) {
     this.success = success;
   }
