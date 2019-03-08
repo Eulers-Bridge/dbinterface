@@ -5,6 +5,8 @@ import com.eulersbridge.iEngage.core.events.candidate.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.CandidateService;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.*;
+import com.eulersbridge.iEngage.rest.domain.CandidateDomain;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,57 +48,64 @@ public class CandidateEventHandler implements CandidateService {
   }
 
   @Override
-  public CreatedEvent createCandidate(CreateCandidateEvent createCandidateEvent) {
+  public RequestHandledEvent<CandidateDomain> createCandidate(CreateCandidateEvent createCandidateEvent) {
     CandidateDetails candidateDetails = (CandidateDetails) createCandidateEvent.getDetails();
-    CreatedEvent candidateCreatedEvent;
-
     Long userId = candidateDetails.getUserId();
     String userEmail = candidateDetails.getEmail();
+    Long positionId = candidateDetails.getPositionId();
+    if ((userId == null && Strings.isEmpty(userEmail) || positionId == null))
+      return RequestHandledEvent.badRequest();
 
+    // Check user existence
     User user = null;
-    if (userId != null) {
-      if (LOG.isDebugEnabled())
-        LOG.debug("Finding user with nodeId = " + userId);
-      user = userRepository.findById(userId).get();
-    } else if (userEmail != null) {
-      if (LOG.isDebugEnabled())
-        LOG.debug("Finding user with email = " + userEmail);
-      user = userRepository.findByEmail(userEmail);
+    if (userId != null)
+      user = userRepository.findById(userId, 0).orElse(null);
+    else if (userEmail != null)
+      user = userRepository.findByEmail(userEmail, 0);
+    if (user == null)
+      return RequestHandledEvent.userNotFound();
+    // Check position existence
+    Position position = null;
+    if (positionId != null)
+      position = positionRepository.findById(positionId).orElse(null);
+    if (position == null)
+      return RequestHandledEvent.targetNotFound();
+    // Check election existence
+    Election election = position.getElection$();  //TODO may not work
+    if (election == null)
+      return RequestHandledEvent.targetNotFound();
+    // Check if user is already a candidate to the election - Rule 1
+    Integer i = candidateRepository.countUserToElectionChains(user.getNodeId(), election.getNodeId());
+    if (i > 0)
+      return RequestHandledEvent.conflicted();
+
+    // Setup candidate entity for creation
+    Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
+    candidate.setUser(user.toNode());
+    candidate.setPosition(position.toNode());
+    // If ticketId is presented
+    Long ticketId = candidateDetails.getTicketDetails().getNodeId();
+    if (ticketId != null) {
+      // Check ticket existence
+      Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
+      if (ticket == null)
+        return RequestHandledEvent.targetNotFound();
+      // Check if user is already on the ticket - Rule 2
+      Integer j = candidateRepository.countUserToTicketChains(user.getNodeId(), ticket.getNodeId());
+      if (j > 0)
+        return RequestHandledEvent.conflicted();
+      // Check if the election of Ticket is the same election or the position - Rule 4
+      if (ticket.getElection().getNodeId() != election.getNodeId())
+        return RequestHandledEvent.conflicted();
+      candidate.setTicket(ticket.toNode());
     }
+    // Save candidate entity
+    Candidate result = candidateRepository.save(candidate);
+    if (null == result)
+      return RequestHandledEvent.failed();
 
-    if (user != null) {
-      Long positionId = candidateDetails.getPositionId();
-      if (LOG.isDebugEnabled())
-        LOG.debug("Finding position with nodeId = " + positionId);
-      Position position = null;
-      if (positionId != null) position = positionRepository.findById(positionId).get();
-      Candidate candidate = Candidate.fromCandidateDetails(candidateDetails);
-      if (position != null) {
-        candidate.setUser(user.toNode());
-        candidate.setPosition(position.toNode());
-      } else {
-        candidateCreatedEvent = CandidateCreatedEvent.positionNotFound(candidateDetails.getPositionId());
-        return candidateCreatedEvent;
-      }
-      Long ticketId = candidateDetails.getTicketDetails().getNodeId();
-      Ticket ticket = null;
-      if (ticketId != null) ticket = ticketRepository.findById(ticketId).orElse(null);
-      if (ticket != null) {
-        candidate.setTicket(ticket.toNode());
-      }
+    return new RequestHandledEvent<>(CandidateDomain.fromCandidateDetails(result.toCandidateDetails()), HttpStatus.CREATED);
 
-      //save
-
-      Candidate result = candidateRepository.save(candidate);
-      if ((null == result) || (null == result.getNodeId()))
-        candidateCreatedEvent = CreatedEvent.failed(candidateDetails);
-      else
-        candidateCreatedEvent = new CandidateCreatedEvent(result.toCandidateDetails());
-    } else {
-      candidateCreatedEvent = CandidateCreatedEvent.userNotFound(candidateDetails.getUserId());
-    }
-
-    return candidateCreatedEvent;
   }
 
   @Override

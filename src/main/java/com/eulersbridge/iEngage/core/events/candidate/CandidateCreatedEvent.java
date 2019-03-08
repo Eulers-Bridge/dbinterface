@@ -9,83 +9,75 @@ import org.slf4j.LoggerFactory;
  */
 
 public class CandidateCreatedEvent extends CreatedEvent {
-    private Long failedId;
-	boolean positionFound=true;
-	boolean userFound=true;
+  private Long failedId;
+  boolean positionFound = true;
+  boolean userFound = true;
 
-    private static Logger LOG = LoggerFactory.getLogger(CandidateCreatedEvent.class);
+  private static Logger LOG = LoggerFactory.getLogger(CandidateCreatedEvent.class);
 
-    public CandidateCreatedEvent(Long failedId) {
-        if (LOG.isDebugEnabled()) LOG.debug("constructor()");
-        this.failedId = failedId;
-    }
+  public CandidateCreatedEvent(Long failedId) {
+    if (LOG.isDebugEnabled()) LOG.debug("constructor()");
+    this.failedId = failedId;
+  }
 
-    public CandidateCreatedEvent(CandidateDetails candidateDetails) {
-        super(candidateDetails);
-    }
+  public CandidateCreatedEvent(CandidateDetails candidateDetails) {
+    super(candidateDetails);
+  }
 
-	/**
-	 * @return the failedId
-	 */
-	public Long getFailedId()
-	{
-		return failedId;
-	}
+  /**
+   * @return the failedId
+   */
+  public Long getFailedId() {
+    return failedId;
+  }
 
-	/**
-	 * @param failedId the failedId to set
-	 */
-	public void setFailedId(Long failedId)
-	{
-		this.failedId = failedId;
-	}
+  /**
+   * @param failedId the failedId to set
+   */
+  public void setFailedId(Long failedId) {
+    this.failedId = failedId;
+  }
 
-	/**
-	 * @return the positionFound
-	 */
-	public boolean isPositionFound()
-	{
-		return positionFound;
-	}
+  /**
+   * @return the positionFound
+   */
+  public boolean isPositionFound() {
+    return positionFound;
+  }
 
-	/**
-	 * @param positionFound the positionFound to set
-	 */
-	public void setPositionFound(boolean positionFound)
-	{
-		this.positionFound = positionFound;
-	}
+  /**
+   * @param positionFound the positionFound to set
+   */
+  public void setPositionFound(boolean positionFound) {
+    this.positionFound = positionFound;
+  }
 
-	/**
-	 * @return the userFound
-	 */
-	public boolean isUserFound()
-	{
-		return userFound;
-	}
+  /**
+   * @return the userFound
+   */
+  public boolean isUserFound() {
+    return userFound;
+  }
 
-	/**
-	 * @param userFound the userFound to set
-	 */
-	public void setUserFound(boolean userFound)
-	{
-		this.userFound = userFound;
-	}
+  /**
+   * @param userFound the userFound to set
+   */
+  public void setUserFound(boolean userFound) {
+    this.userFound = userFound;
+  }
 
-	public static CandidateCreatedEvent positionNotFound(Long positionId)
-	{
-		CandidateCreatedEvent failedEvent = new CandidateCreatedEvent(positionId);
-		failedEvent.setFailed(true);
-		failedEvent.setPositionFound(false);
-		return failedEvent;
-	}
+  public static CandidateCreatedEvent positionNotFound(Long positionId) {
+    CandidateCreatedEvent failedEvent = new CandidateCreatedEvent(positionId);
+    failedEvent.setFailed(true);
+    failedEvent.setPositionFound(false);
+    return failedEvent;
+  }
 
-	public static CandidateCreatedEvent userNotFound(Long userId)
-	{
-		CandidateCreatedEvent failedEvent = new CandidateCreatedEvent(userId);
-		failedEvent.setFailed(true);
-		failedEvent.setUserFound(false);
-		return failedEvent;
-	}
+  public static CandidateCreatedEvent userNotFound(Long userId) {
+    CandidateCreatedEvent failedEvent = new CandidateCreatedEvent(userId);
+    failedEvent.setFailed(true);
+    failedEvent.setUserFound(false);
+    return failedEvent;
+  }
 
 }

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import javax.validation.constraints.Email;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class User extends ResourceSupport {
   private Boolean hasPersonality;
   private Boolean hasPPSEQuestions;
   private Long institutionId;
+  @Email
   private String email;
   private Iterable<PhotoDetails> photos;
   private Boolean consentGiven;

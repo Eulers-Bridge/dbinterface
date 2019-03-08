@@ -10,8 +10,8 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class RequestReadCandidateEventTest {
-    RequestReadCandidateEvent requestReadCandidateEvent = null;
+public class DeleteCandidateDomainEventTest {
+    DeleteCandidateEvent deleteCandidateEvent = null;
     Long candidateId = new Long(0);
 
     @Before
@@ -26,8 +26,8 @@ public class RequestReadCandidateEventTest {
 
     @Test
     public void testConstructor() throws Exception {
-        requestReadCandidateEvent = new RequestReadCandidateEvent(candidateId);
-        assertNotNull("requestReadCandidateEvent is null", requestReadCandidateEvent);
+        deleteCandidateEvent = new DeleteCandidateEvent(candidateId);
+        assertNotNull("deleteCandidateEvent is null", deleteCandidateEvent);
 
     }
 }

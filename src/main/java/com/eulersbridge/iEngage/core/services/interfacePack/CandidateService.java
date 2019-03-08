@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.core.services.interfacePack;
 
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.candidate.*;
+import com.eulersbridge.iEngage.rest.domain.CandidateDomain;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface CandidateService {
   @PreAuthorize("hasAnyRole('ROLE_CONTENT_MANAGER','" + SecurityConstants.ADMIN_ROLE + "')")
-  public CreatedEvent createCandidate(CreateCandidateEvent createCandidateEvent);
+  public RequestHandledEvent<CandidateDomain> createCandidate(CreateCandidateEvent createCandidateEvent);
 
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
   public ReadEvent requestReadCandidate(RequestReadCandidateEvent requestReadCandidateEvent);

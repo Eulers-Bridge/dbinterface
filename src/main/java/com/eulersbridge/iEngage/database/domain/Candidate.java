@@ -56,17 +56,6 @@ public class Candidate extends Likeable {
     candidate.setNodeId(candidateDetails.getNodeId());
     candidate.setInformation(candidateDetails.getInformation());
     candidate.setPolicyStatement(candidateDetails.getPolicyStatement());
-    User user = new User();
-    Long userId = candidateDetails.getUserId();
-    String email = candidateDetails.getEmail();
-    if (userId != null)
-      user.setNodeId(userId);
-    else if (email != null)
-      user.setEmail(email);
-    candidate.setUser(user.toNode());
-    Position position = new Position();
-    position.setNodeId(candidateDetails.getPositionId());
-    candidate.setPosition(position.toNode());
 
     if (LOG.isTraceEnabled()) LOG.trace("candidate " + candidate);
     return candidate;

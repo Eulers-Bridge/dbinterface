@@ -43,41 +43,25 @@ public class CandidateController {
   //Create
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.CANDIDATE_LABEL)
   public @ResponseBody
-  ResponseEntity<Candidate>
-  createCandidate(@RequestBody Candidate candidate) {
-    if (LOG.isInfoEnabled())
-      LOG.info("attempting to create candidate " + candidate);
+  ResponseEntity<CandidateDomain>
+  createCandidate(@RequestBody CandidateDomain candidate) {
+    if (LOG.isInfoEnabled()) LOG.info("attempting to create candidate " + candidate);
     CreateCandidateEvent createCandidateEvent = new CreateCandidateEvent(candidate.toCandidateDetails());
-    CreatedEvent candidateCreatedEvent = null;
-    System.out.println();
-    if ((candidate.getUserId() != null || Strings.isNotEmpty(candidate.getEmail())) && (candidate.getPositionId() != null))
-      candidateCreatedEvent = candidateService.createCandidate(createCandidateEvent);
-    ResponseEntity<Candidate> response;
-    if (null == candidateCreatedEvent) {
-      response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    } else if ((candidateCreatedEvent.getClass() == CandidateCreatedEvent.class) && (!(((CandidateCreatedEvent) candidateCreatedEvent).isPositionFound()) || !(((CandidateCreatedEvent) candidateCreatedEvent).isUserFound()))) {
-      response = new ResponseEntity<Candidate>(HttpStatus.NOT_FOUND);
-    } else if ((null == candidateCreatedEvent.getNodeId()) || (candidateCreatedEvent.isFailed())) {
-      response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    } else {
-      Candidate result = Candidate.fromCandidateDetails((CandidateDetails) candidateCreatedEvent.getDetails());
-      if (LOG.isDebugEnabled()) LOG.debug("candidate" + result.toString());
-      response = new ResponseEntity<>(result, HttpStatus.CREATED);
-    }
-    return response;
+    RequestHandledEvent requestHandledEvent = candidateService.createCandidate(createCandidateEvent);
+    return requestHandledEvent.toResponseEntity();
   }
 
   //Get
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.CANDIDATE_LABEL + "/{candidateId}")
   public @ResponseBody
-  ResponseEntity<Candidate>
+  ResponseEntity<CandidateDomain>
   findCandidate(@PathVariable Long candidateId) {
     if (LOG.isInfoEnabled())
       LOG.info(candidateId + " attempting to get candidate. ");
     RequestReadCandidateEvent requestReadCandidateEvent = new RequestReadCandidateEvent(candidateId);
     ReadEvent readCandidateEvent = candidateService.requestReadCandidate(requestReadCandidateEvent);
     if (readCandidateEvent.isEntityFound()) {
-      Candidate candidate = Candidate.fromCandidateDetails((CandidateDetails) (readCandidateEvent.getDetails()));
+      CandidateDomain candidate = CandidateDomain.fromCandidateDetails((CandidateDetails) (readCandidateEvent.getDetails()));
       return new ResponseEntity<>(candidate, HttpStatus.OK);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -120,7 +104,7 @@ public class CandidateController {
     if (!articleEvent.isEntityFound()) {
       response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
-      Iterator<Candidate> candidates = Candidate
+      Iterator<CandidateDomain> candidates = CandidateDomain
         .toCandidatesIterator(articleEvent.getDetails().iterator());
       WrappedDomainList theBadges = WrappedDomainList.fromIterator(candidates, articleEvent.getTotalItems(), articleEvent.getTotalPages());
       response = new ResponseEntity<WrappedDomainList>(theBadges, HttpStatus.OK);
@@ -131,8 +115,8 @@ public class CandidateController {
   //Update
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.CANDIDATE_LABEL + "/{candidateId}")
   public @ResponseBody
-  ResponseEntity<Candidate>
-  updateCandidate(@PathVariable Long candidateId, @RequestBody Candidate candidate) {
+  ResponseEntity<CandidateDomain>
+  updateCandidate(@PathVariable Long candidateId, @RequestBody CandidateDomain candidate) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to update candidate. " + candidateId);
     UpdatedEvent candidateUpdatedEvent = candidateService.updateCandidate(new UpdateCandidateEvent(candidateId, candidate.toCandidateDetails()));
@@ -140,7 +124,7 @@ public class CandidateController {
       if (LOG.isDebugEnabled())
         LOG.debug("candidateUpdatedEvent - " + candidateUpdatedEvent);
       if (candidateUpdatedEvent.isEntityFound()) {
-        Candidate result = Candidate.fromCandidateDetails((CandidateDetails) candidateUpdatedEvent.getDetails());
+        CandidateDomain result = CandidateDomain.fromCandidateDetails((CandidateDetails) candidateUpdatedEvent.getDetails());
         if (LOG.isDebugEnabled()) LOG.debug("result = " + result);
         return new ResponseEntity<>(result, HttpStatus.OK);
       } else {

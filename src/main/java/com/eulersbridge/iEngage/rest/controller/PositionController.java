@@ -3,7 +3,7 @@ package com.eulersbridge.iEngage.rest.controller;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.positions.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.PositionService;
-import com.eulersbridge.iEngage.rest.domain.Candidate;
+import com.eulersbridge.iEngage.rest.domain.CandidateDomain;
 import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
 import com.eulersbridge.iEngage.rest.domain.Position;
 import com.eulersbridge.iEngage.rest.domain.Response;
@@ -118,7 +118,7 @@ public class PositionController {
 		}
 		else
 		{
-			Iterator<Candidate> candidates = Candidate
+			Iterator<CandidateDomain> candidates = CandidateDomain
 					.toCandidatesIterator(candidatesEvent.getDetails().iterator());
 			WrappedDomainList theCandidates = WrappedDomainList.fromIterator(candidates, candidatesEvent.getTotalItems(), candidatesEvent.getTotalPages());
 			response = new ResponseEntity<WrappedDomainList>(theCandidates, HttpStatus.OK);

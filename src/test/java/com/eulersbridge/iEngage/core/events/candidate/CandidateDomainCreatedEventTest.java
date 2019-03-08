@@ -12,7 +12,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class CandidateCreatedEventTest {
+public class CandidateDomainCreatedEventTest {
     CandidateDetails candidateDetails;
     CandidateCreatedEvent candidateCreatedEvent;
 

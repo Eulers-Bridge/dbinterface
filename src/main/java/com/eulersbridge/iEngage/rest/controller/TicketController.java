@@ -158,7 +158,7 @@ public class TicketController {
         if (!candidatesEvent.isEntityFound()) {
             response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
         } else {
-            Iterator<Candidate> candidates = Candidate
+            Iterator<CandidateDomain> candidates = CandidateDomain
                     .toCandidatesIterator(candidatesEvent.getDetails().iterator());
             WrappedDomainList theCandidates = WrappedDomainList.fromIterator(candidates, candidatesEvent.getTotalItems(), candidatesEvent.getTotalPages());
             response = new ResponseEntity<WrappedDomainList>(theCandidates, HttpStatus.OK);

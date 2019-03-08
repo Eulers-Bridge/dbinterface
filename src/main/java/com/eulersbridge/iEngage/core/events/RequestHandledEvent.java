@@ -18,6 +18,7 @@ public class RequestHandledEvent<T> {
   private Boolean premissionExpired = false;
   private Boolean canNotModify = false;
   private Boolean conflicted = false;
+  HttpStatus expectedHttpStatus = HttpStatus.OK;
 
   private T responseEntity;
 
@@ -32,6 +33,12 @@ public class RequestHandledEvent<T> {
   public RequestHandledEvent(T responseEntity) {
     this();
     this.responseEntity = responseEntity;
+  }
+
+  public RequestHandledEvent(T responseEntitym, HttpStatus expectedHttpStatus) {
+    this();
+    this.responseEntity = responseEntity;
+    this.expectedHttpStatus = expectedHttpStatus;
   }
 
   public static RequestHandledEvent success(){
@@ -100,7 +107,7 @@ public class RequestHandledEvent<T> {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     if(!this.getSuccess())
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    return new ResponseEntity<>(this.getResponseEntity(), HttpStatus.OK);
+    return new ResponseEntity<>(this.getResponseEntity(), expectedHttpStatus);
   }
 
   public Boolean getSuccess() {

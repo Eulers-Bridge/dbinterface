@@ -10,7 +10,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class CandidateReadEventTest {
+public class CandidateDomainReadEventTest {
     CandidateReadEvent candidateReadEvent;
     CandidateDetails candidateDetails;
 

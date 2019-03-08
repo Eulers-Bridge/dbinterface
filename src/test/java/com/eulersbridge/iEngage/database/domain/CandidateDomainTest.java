@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  * @author Greg Newitt
  *
  */
-public class CandidateTest
+public class CandidateDomainTest
 {
 	private Candidate candidate;
 	private CandidateDetails dets;

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class CandidateDetailsTest
+public class CandidateDomainDetailsTest
 {
     CandidateDetails candidateDetails = null;
     Long candidateId = new Long(1);

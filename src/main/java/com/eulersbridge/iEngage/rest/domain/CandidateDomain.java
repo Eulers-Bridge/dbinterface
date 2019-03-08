@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -19,29 +21,31 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * @author Yikai Gong
  */
 
-public class Candidate extends ResourceSupport {
+public class CandidateDomain extends ResourceSupport {
   private Long candidateId;
   private String information;
   private String policyStatement;
   private Iterable<PhotoDetails> photos;
   private Long userId;
+  @Email
   private String email;
   private String givenName;
   private String familyName;
+  @NotNull
   private Long positionId;
   private Long ticketId;
   private UserProfile userProfile;
 //    private Ticket ticket;
 
-  private static Logger LOG = LoggerFactory.getLogger(Candidate.class);
+  private static Logger LOG = LoggerFactory.getLogger(CandidateDomain.class);
 
-  public Candidate() {
+  public CandidateDomain() {
     if (LOG.isDebugEnabled()) LOG.debug("constructor()");
   }
 
-  public static Candidate fromCandidateDetails(CandidateDetails candidateDetails) {
-    Candidate candidate = new Candidate();
-    String simpleName = Candidate.class.getSimpleName();
+  public static CandidateDomain fromCandidateDetails(CandidateDetails candidateDetails) {
+    CandidateDomain candidate = new CandidateDomain();
+    String simpleName = CandidateDomain.class.getSimpleName();
     String name = simpleName.substring(0, 1).toLowerCase()
       + simpleName.substring(1);
 
@@ -210,13 +214,13 @@ public class Candidate extends ResourceSupport {
     this.userProfile = userProfile;
   }
 
-  public static Iterator<Candidate> toCandidatesIterator(
+  public static Iterator<CandidateDomain> toCandidatesIterator(
     Iterator<? extends Details> iter) {
     if (null == iter) return null;
-    ArrayList<Candidate> elections = new ArrayList<Candidate>();
+    ArrayList<CandidateDomain> elections = new ArrayList<CandidateDomain>();
     while (iter.hasNext()) {
       CandidateDetails dets = (CandidateDetails) iter.next();
-      Candidate thisCandidate = Candidate.fromCandidateDetails(dets);
+      CandidateDomain thisCandidate = CandidateDomain.fromCandidateDetails(dets);
       Link self = thisCandidate.getLink("self");
       thisCandidate.removeLinks();
       thisCandidate.add(self);

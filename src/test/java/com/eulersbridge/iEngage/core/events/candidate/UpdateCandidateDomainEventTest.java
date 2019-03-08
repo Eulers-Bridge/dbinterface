@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class UpdateCandidateEventTest {
+public class UpdateCandidateDomainEventTest {
     UpdateCandidateEvent updateCandidateEvent;
     CandidateDetails candidateDetails;
 
