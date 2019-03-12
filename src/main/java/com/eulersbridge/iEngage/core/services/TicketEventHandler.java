@@ -212,23 +212,18 @@ public class TicketEventHandler implements TicketService {
   @Override
   public TicketSupportedEvent supportTicket(SupportTicketEvent supportTicketEvent) {
     TicketSupportedEvent ticketSupportedEvent;
-    Ticket ticket = ticketRepository.findById(supportTicketEvent.getTicketId()).get();
-    User user = userRepository.findByEmail(supportTicketEvent.getEmailAddress());
+    Ticket ticket = ticketRepository.findById(supportTicketEvent.getTicketId(), 0).orElse(null);
+    User user = userRepository.findByEmail(supportTicketEvent.getEmailAddress(), 0);
     if (ticket == null)
       ticketSupportedEvent = TicketSupportedEvent.entityNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
     else if (user == null)
       ticketSupportedEvent = TicketSupportedEvent.userNotFound(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
     else {
       ticketSupportedEvent = new TicketSupportedEvent(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress(), false);
-//            Support supportEntity = ticketRepository.supportTicket(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
-//            if(supportEntity==null)
-//                ticketSupportedEvent.setResult(false);
       SupportAndNum resultRow = ticketRepository.supportTicket_return_number_of_supports(supportTicketEvent.getTicketId(), supportTicketEvent.getEmailAddress());
-      Support supportEntity = resultRow.getSupport();
       Long numOfSupports = resultRow.getNumOfSupport();
-      System.out.println("support:" + supportEntity);
-      System.out.println("numOfSupports:" + numOfSupports);
-      if (supportEntity != null) {
+//      System.out.println(resultRow);
+      if (resultRow.getTimestamp() != null) {
         ticketSupportedEvent.setResult(true);
         ticketSupportedEvent.setNumOfSupports(numOfSupports);
       }

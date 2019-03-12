@@ -14,18 +14,12 @@ import org.springframework.data.neo4j.annotation.QueryResult;
 
 @QueryResult
 public class SupportAndNum {
-    @Property(name = "support") @Transient
-    Support support;
+    @Property
+    Long timestamp;
     @Property(name = "numOfSupport")
     Long numOfSupport;
 
-    public Support getSupport() {
-        return support;
-    }
 
-    public void setSupport(Support support) {
-        this.support = support;
-    }
 
     public Long getNumOfSupport() {
         return numOfSupport;
@@ -33,5 +27,21 @@ public class SupportAndNum {
 
     public void setNumOfSupport(Long numOfSupport) {
         this.numOfSupport = numOfSupport;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "SupportAndNum{" +
+          "timestamp=" + timestamp +
+          ", numOfSupport=" + numOfSupport +
+          '}';
     }
 }
