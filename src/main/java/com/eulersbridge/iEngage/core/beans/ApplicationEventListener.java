@@ -83,6 +83,7 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
     persistNode(country, counRepo, counRepo.findByCountryName(country.getCountryName(), 0), 0);
     country = counRepo.findByCountryName(country.getCountryName(), 0);
     Institution institution = new Institution(institutionName, institutionCampus, institutionState, country.toNode());
+    institution.setNewsFeed(new NewsFeed());
     persistNode(institution, instRepo, instRepo.findByName(institution.getName(), 0), 1);
 
     forEachTaskNode(task -> persistNode(task, taskRepo, taskRepo.findByAction(task.getAction(), 0), 0));
