@@ -17,6 +17,7 @@ public class Support {
   private User supporter;
   @EndNode
   private Ticket ticket;
+  @Property
   private Long timeStamp;
 
   public Support() {

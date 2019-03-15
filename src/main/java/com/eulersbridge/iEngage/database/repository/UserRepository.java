@@ -87,7 +87,7 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
   @Query("MATCH (u:User)-[r:HAS_CONTACT]-(t:User) where u.email={userEmail} and id(t)<>id(u) Return distinct t,r order by r.timestamp DESC")
   List<User> findContactsZeroDepth(@Param("userEmail") String userEmail);
 
-  @Query(value = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.SUPPORT_LABEL + "]-(b:`" + DataConstants.TICKET + "`) where id(a)={userId} return b",
+  @Query(value = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.SUPPORT_LABEL + "]-(b:`" + DataConstants.TICKET + "`) where id(a)={userId} with b return (b)-[*0..1]-()",
   countQuery = "Match (a:`" + DataConstants.USER + "`)-[r:" + DataConstants.SUPPORT_LABEL + "]-(b:`" + DataConstants.TICKET + "`) where id(a)={userId} return count(b)")
   Page<Ticket> findSupports(@Param("userId") Long userId, Pageable pageable);
 

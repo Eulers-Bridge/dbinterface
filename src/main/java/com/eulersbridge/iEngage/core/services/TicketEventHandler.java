@@ -77,7 +77,7 @@ public class TicketEventHandler implements TicketService {
 
   @Override
   public ReadEvent requestReadTicket(RequestReadTicketEvent requestReadTicketEvent) {
-    Ticket ticket = ticketRepository.findById(requestReadTicketEvent.getNodeId()).get();
+    Ticket ticket = ticketRepository.findById(requestReadTicketEvent.getNodeId()).orElse(null);
     ReadEvent readTicketEvent;
     if (ticket != null) {
       readTicketEvent = new ReadTicketEvent(ticket.getNodeId(), ticket.toTicketDetails());

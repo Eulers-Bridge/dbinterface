@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TicketRepository extends Neo4jRepository<Ticket, Long> {
   @Query(value = "Match (n:`" + DataConstants.ELECTION + "`)-[r:" + DataConstants.HAS_TICKET_LABEL +
-    "]-(e:`" + DataConstants.TICKET + "`) where id(n)={elecId} return e",
+    "]-(e:`" + DataConstants.TICKET + "`) where id(n)={elecId} with e return (e)-[*0..1]-()",
     countQuery = "Match (n:`" + DataConstants.ELECTION + "`)-[r:" + DataConstants.HAS_TICKET_LABEL +
       "]-(e:`" + DataConstants.TICKET + "`) where id(n)={elecId} return count(e)")
   Page<Ticket> findByElectionId(@Param("elecId") Long instId, Pageable p);

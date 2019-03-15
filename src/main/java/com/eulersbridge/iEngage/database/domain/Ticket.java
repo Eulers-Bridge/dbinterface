@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -26,10 +27,13 @@ public class Ticket extends Likeable {
 
   @Relationship(type = DataConstants.HAS_TICKET_LABEL, direction = Relationship.INCOMING)
   private Node election;
+
+  @Relationship(type = DataConstants.SUPPORT_LABEL, direction = Relationship.INCOMING)
+  private Set<Support> supporters;
+
   @Relationship(type = DataConstants.IS_ON_TICKET_LABEL, direction = Relationship.INCOMING) //fixme
   private List<Node> candidates;
-  @Relationship(type = DataConstants.SUPPORT_LABEL, direction = Relationship.UNDIRECTED)
-  private List<Node> supporters;
+
   @Relationship(type = DataConstants.HAS_PHOTO_LABEL, direction = Relationship.UNDIRECTED)
   private List<Node> photos;
 
@@ -184,15 +188,11 @@ public class Ticket extends Likeable {
     this.candidates = candidates;
   }
 
-  public List<User> getSupporters$() {
-    return castList(supporters, User.class);
-  }
-
-  public List<Node> getSupporters() {
+  public Set<Support> getSupporters() {
     return supporters;
   }
 
-  public void setSupporters(List<Node> supporters) {
+  public void setSupporters(Set<Support> supporters) {
     this.supporters = supporters;
   }
 
