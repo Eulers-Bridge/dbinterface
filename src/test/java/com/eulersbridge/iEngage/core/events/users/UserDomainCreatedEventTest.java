@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class UserCreatedEventTest {
+public class UserDomainCreatedEventTest {
     final String email = new String("yikaig@gmail.com");
     final String givenName = new String("Yikai");
     final String familyName = new String("Gong");

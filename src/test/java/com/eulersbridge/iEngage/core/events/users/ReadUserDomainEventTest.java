@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class UserUpdatedEventTest {
+public class ReadUserDomainEventTest {
     final String email = new String("yikaig@gmail.com");
     final String givenName = new String("Yikai");
     final String familyName = new String("Gong");
@@ -21,7 +21,7 @@ public class UserUpdatedEventTest {
     final Long institutionId = new Long(1);
     UserDetails userDetails = null;
 
-    UserUpdatedEvent userUpdatedEvent = null;
+    ReadUserEvent readUserEvent = null;
 
     @Before
     public void setUp() throws Exception {
@@ -34,7 +34,7 @@ public class UserUpdatedEventTest {
         userDetails.setPassword(password);
         userDetails.setInstitutionId(institutionId);
 
-        userUpdatedEvent = new UserUpdatedEvent(email, userDetails);
+        readUserEvent = new ReadUserEvent(email,userDetails);
     }
 
     @After
@@ -43,31 +43,24 @@ public class UserUpdatedEventTest {
     }
 
     @Test
-    public void testUserUpdatedEvent() throws Exception {
-        assertNotNull("userUpdatedEvent is null", userUpdatedEvent);
-        UserUpdatedEvent userUpdatedEvent1 = new UserUpdatedEvent(email);
-        assertNotNull("userUpdatedEvent is null", userUpdatedEvent1);
+    public void testReadUserEvent() throws Exception {
+        assertNotNull("readUserEvent is null", readUserEvent);
     }
 
     @Test
     public void testGetEmail() throws Exception {
-        assertEquals("email does not match", email, userUpdatedEvent.getEmail());
+        assertEquals("email does not match", email, userDetails.getEmail());
     }
 
     @Test
-    public void testGetUserDetails() throws Exception {
-        assertEquals("userDetails does not match", userDetails, userUpdatedEvent.getDetails());
+    public void testGetReadUserDetails() throws Exception {
+        assertEquals("userDetails does not match", userDetails, readUserEvent.getDetails());
     }
 
     @Test
-    public void testEntityNotFound() throws Exception {
-        UserUpdatedEvent userUpdatedEvent1 = UserUpdatedEvent.instituteNotFound(email);
-        assertNotNull("userUpdatedEvent is null", userUpdatedEvent1);
-        assertFalse("instituteFound is not false", userUpdatedEvent1.isEntityFound());
-    }
-
-    @Test
-    public void testIsEntityFound() throws Exception {
-        assertTrue("instituteFound is not true", userUpdatedEvent.isEntityFound());
+    public void testNotFound() throws Exception {
+        ReadUserEvent readUserEvent1 = ReadUserEvent.notFound(email);
+        assertNotNull("notFound() returns null", readUserEvent1);
+        assertFalse("entityFound is not false", readUserEvent1.isEntityFound());
     }
 }

@@ -40,7 +40,7 @@ public class VoteReminderDomain extends ResourceSupport {
     vr.setTimestamp(voteReminderDetails.getTimestamp());
     vr.setElectionId(voteReminderDetails.getElectionId());
 
-    String simpleName = User.class.getSimpleName();
+    String simpleName = UserDomain.class.getSimpleName();
     String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
 
     //TODOCUMENT.  Adding the library, the above extends ResourceSupport and

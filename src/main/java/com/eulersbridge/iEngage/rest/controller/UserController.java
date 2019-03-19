@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.voteReminder.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.*;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.email.EmailResetPWD;
+import com.eulersbridge.iEngage.email.EmailVerification;
 import com.eulersbridge.iEngage.rest.domain.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -49,6 +50,7 @@ public class UserController {
   final JavaMailSender emailSender;
   final BadgeService badgeService;
   final TaskService taskService;
+  final Util util;
   EmailValidator emailValidator;
   LongValidator longValidator;
 
@@ -59,7 +61,7 @@ public class UserController {
                         ServletContext servletContext,
                         VelocityEngine velocityEngine,
                         JavaMailSender emailSender, BadgeService badgeService,
-                        TaskService taskService) {
+                        TaskService taskService, Util util) {
     if (LOG.isDebugEnabled()) LOG.debug("UserController()");
     emailValidator = EmailValidator.getInstance();
     longValidator = LongValidator.getInstance();
@@ -72,6 +74,7 @@ public class UserController {
     this.emailSender = emailSender;
     this.badgeService = badgeService;
     this.taskService = taskService;
+    this.util = util;
   }
 
   /**
@@ -91,24 +94,24 @@ public class UserController {
 
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.USER_LABEL + "/{email}")
   public @ResponseBody
-  ResponseEntity<User> alterUser(@PathVariable String email,
-                                 @RequestBody User user) {
+  ResponseEntity<UserDomain> alterUser(@PathVariable String email,
+                                       @RequestBody UserDomain user) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to edit user. " + user.getEmail());
-    ResponseEntity<User> result;
+    ResponseEntity<UserDomain> result;
 
     UpdatedEvent userEvent = userService.updateUser(new UpdateUserEvent(email, user.toUserDetails()));
     if (null != userEvent) {
       if (LOG.isDebugEnabled()) LOG.debug("userEvent - " + userEvent);
       if (!userEvent.isEntityFound()) {
-        result = new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        result = new ResponseEntity<UserDomain>(HttpStatus.NOT_FOUND);
       } else {
-        User restUser = User.fromUserDetails((UserDetails) userEvent.getDetails());
+        UserDomain restUser = UserDomain.fromUserDetails((UserDetails) userEvent.getDetails());
         if (LOG.isDebugEnabled()) LOG.debug("restUser = " + restUser);
-        result = new ResponseEntity<User>(restUser, HttpStatus.OK);
+        result = new ResponseEntity<UserDomain>(restUser, HttpStatus.OK);
       }
     } else
-      result = new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+      result = new ResponseEntity<UserDomain>(HttpStatus.BAD_REQUEST);
     return result;
   }
 
@@ -448,10 +451,10 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.USER_LABEL + "/{email}")
   public @ResponseBody
-  ResponseEntity<User> findUser(@PathVariable String email) {
+  ResponseEntity<UserDomain> findUser(@PathVariable String email) {
     if (LOG.isInfoEnabled()) LOG.info("Attempting to retrieve user. " + email);
     ReadUserEvent userEvent;
-    ResponseEntity<User> response;
+    ResponseEntity<UserDomain> response;
 
     if (longValidator.isValid(email)) {
       Long id = longValidator.validate(email);
@@ -462,14 +465,14 @@ public class UserController {
       if (LOG.isDebugEnabled()) LOG.debug("Email supplied.");
       userEvent = userService.readUser(new RequestReadUserEvent(email));
     } else
-      return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<UserDomain>(HttpStatus.BAD_REQUEST);
 
 
     if (!userEvent.isEntityFound()) {
-      response = new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+      response = new ResponseEntity<UserDomain>(HttpStatus.NOT_FOUND);
     } else {
-      User restUser = User.fromUserDetails((UserDetails) userEvent.getDetails());
-      response = new ResponseEntity<User>(restUser, HttpStatus.OK);
+      UserDomain restUser = UserDomain.fromUserDetails((UserDetails) userEvent.getDetails());
+      response = new ResponseEntity<UserDomain>(restUser, HttpStatus.OK);
     }
     return response;
   }
@@ -545,22 +548,26 @@ public class UserController {
 
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.SIGNUP_LABEL)
   public @ResponseBody
-  ResponseEntity<User> saveNewUser(@RequestBody User user) {
+  ResponseEntity<UserDomain> saveNewUser(@RequestBody UserDomain user) {
     if (LOG.isInfoEnabled()) LOG.info("attempting to save user " + user);
     UserCreatedEvent userEvent = userService.signUpNewUser(new CreateUserEvent(user.toUserDetails()));
 
     if ((null == userEvent) || (null == userEvent.getEmail())) {
-      return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<UserDomain>(HttpStatus.BAD_REQUEST);
     } else if (!userEvent.isInstituteFound()) {
-      return new ResponseEntity<User>(HttpStatus.FAILED_DEPENDENCY);
+      return new ResponseEntity<UserDomain>(HttpStatus.FAILED_DEPENDENCY);
     } else if (!userEvent.isUserUnique()) {
-      return new ResponseEntity<User>(HttpStatus.CONFLICT);
+      return new ResponseEntity<UserDomain>(HttpStatus.CONFLICT);
     } else {
-      User restUser = User.fromUserDetails((UserDetails) userEvent.getDetails());
+      UserDomain restUser = UserDomain.fromUserDetails((UserDetails) userEvent.getDetails());
       if (LOG.isDebugEnabled())
         LOG.debug(userEvent.getVerificationEmail().toString());
-      emailService.sendEmail(userEvent.getVerificationEmail());
-      return new ResponseEntity<User>(restUser, HttpStatus.CREATED);
+      EmailVerification emailVerification = userEvent.getVerificationEmail();
+      util.asyncExecUserTask(emailVerification, mail->{
+        emailService.sendEmail(mail);
+        return null;
+      });
+      return new ResponseEntity<UserDomain>(restUser, HttpStatus.CREATED);
     }
   }
 
@@ -578,30 +585,12 @@ public class UserController {
 
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.EMAIL_VERIFICATION_LABEL + "/{email}/resendEmail")
   public @ResponseBody
-  ResponseEntity<User> resendVerificationEmail(@PathVariable String email) {
+  ResponseEntity<UserDomain> resendVerificationEmail(@PathVariable String email) {
     if (LOG.isInfoEnabled())
       LOG.info("attempting to resend verification email to user " + email);
 
-    UserCreatedEvent userEvent = userService.resendVerificationEmail(new RequestReadUserEvent(email));
-
-    ResponseEntity<User> response;
-
-    if (null == userEvent) {
-      response = new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
-    } else if (!userEvent.isInstituteFound()) {
-      response = new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-    } else if (!userEvent.isUserUnique()) {
-      response = new ResponseEntity<User>(HttpStatus.CONFLICT);
-    } else if (null == userEvent.getEmail()) {
-      response = new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
-    } else {
-      User restUser = User.fromUserDetails((UserDetails) userEvent.getDetails());
-      if (LOG.isDebugEnabled())
-        LOG.debug(userEvent.getVerificationEmail().toString());
-      emailService.sendEmail(userEvent.getVerificationEmail());
-      response = new ResponseEntity<User>(restUser, HttpStatus.OK);
-    }
-    return response;
+    RequestHandledEvent res = userService.resendVerificationEmail(email);
+    return res.toResponseEntity();
   }
 
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.REQUEST_RESET_PWD + "/{email}")
@@ -615,12 +604,10 @@ public class UserController {
     if (!r.getSuccess())
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     EmailResetPWD emailResetPWD = r.getResponseEntity();
-    try {
-      emailSender.send(emailResetPWD.generatePreparator());
-    } catch (MessagingException | MailException e) {
-      LOG.error(e.toString());
-      return new ResponseEntity<>("Email service failed", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    util.asyncExecUserTask(emailResetPWD, mail->{
+      emailService.sendEmail(mail);
+      return null;
+    });
     return new ResponseEntity<>("An email has been sent to your inbox", HttpStatus.OK);
   }
 
@@ -669,7 +656,7 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.EMAIL_VERIFICATION_LABEL + "/{email}/{token}")
   public @ResponseBody
-  ResponseEntity<User> verifyUserAccount1(@PathVariable String email, @PathVariable String token) {
+  ResponseEntity<UserDomain> verifyUserAccount1(@PathVariable String email, @PathVariable String token) {
     return verifyUserAccount(email, token);
   }
 
@@ -686,12 +673,12 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.EMAIL_VERIFICATION_LABEL + "/{email}/{token}")
   public @ResponseBody
-  ResponseEntity<User> verifyUserAccount2(@PathVariable String email, @PathVariable String token) {
+  ResponseEntity<UserDomain> verifyUserAccount2(@PathVariable String email, @PathVariable String token) {
     return verifyUserAccount(email, token);
   }
 
   public @ResponseBody
-  ResponseEntity<User> verifyUserAccount(String email, String token) {
+  ResponseEntity<UserDomain> verifyUserAccount(String email, String token) {
     if (LOG.isInfoEnabled())
       LOG.info("attempting to verify email by token " + email + " " + token);
 
@@ -703,28 +690,28 @@ public class UserController {
       VerificationErrorType verfError = userAccountVerifiedEvent.getVerificationError();
 
       if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.userNotFound))
-        return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<UserDomain>(HttpStatus.BAD_REQUEST);
       else {
-        User resultUser = User.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
+        UserDomain resultUser = UserDomain.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
         if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists.toString()))
-          return new ResponseEntity<User>(resultUser, HttpStatus.BAD_REQUEST);
+          return new ResponseEntity<UserDomain>(resultUser, HttpStatus.BAD_REQUEST);
         else if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed.toString())
           || verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired.toString())
           || verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch.toString()))
-          return new ResponseEntity<User>(resultUser, HttpStatus.FAILED_DEPENDENCY);
+          return new ResponseEntity<UserDomain>(resultUser, HttpStatus.FAILED_DEPENDENCY);
         else
-          return new ResponseEntity<User>(resultUser, HttpStatus.BAD_REQUEST);
+          return new ResponseEntity<UserDomain>(resultUser, HttpStatus.BAD_REQUEST);
       }
     } else {
-      User restUser = User.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
-      return new ResponseEntity<User>(restUser, HttpStatus.OK);
+      UserDomain restUser = UserDomain.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
+      return new ResponseEntity<UserDomain>(restUser, HttpStatus.OK);
     }
   }
 
 
   @RequestMapping(value = "/displayParams")
   public @ResponseBody
-  ResponseEntity<Boolean> displayDetails(@RequestBody User user) {
+  ResponseEntity<Boolean> displayDetails(@RequestBody UserDomain user) {
     if (LOG.isInfoEnabled())
       LOG.info("user = " + user);
     return new ResponseEntity<Boolean>(true, HttpStatus.OK);

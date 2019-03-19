@@ -3,22 +3,19 @@ package com.eulersbridge.iEngage.rest.domain;
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.rest.controller.UserController;
-import com.eulersbridge.iEngage.security.PasswordHash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.validation.constraints.Email;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 
-public class User extends ResourceSupport {
+public class UserDomain extends ResourceSupport {
   private String givenName;
   private String familyName;
   private String gender;
@@ -46,7 +43,7 @@ public class User extends ResourceSupport {
   private String arn;
   private String deviceToken;
 
-  private static Logger LOG = LoggerFactory.getLogger(User.class);
+  private static Logger LOG = LoggerFactory.getLogger(UserDomain.class);
 
   public String getEmail() {
     return email;
@@ -291,8 +288,8 @@ public class User extends ResourceSupport {
 
   // {!begin fromUserDetails}
 
-  public static User fromUserDetails(UserDetails readUser) {
-    User user = new User();
+  public static UserDomain fromUserDetails(UserDetails readUser) {
+    UserDomain user = new UserDomain();
 
     user.setEmail(readUser.getEmail());
     user.setGivenName(readUser.getGivenName());
@@ -328,7 +325,7 @@ public class User extends ResourceSupport {
     user.setArn(readUser.getArn());
     user.setDeviceToken(readUser.getDeviceToken());
 
-    String simpleName = User.class.getSimpleName();
+    String simpleName = UserDomain.class.getSimpleName();
     String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
 
     //TODOCUMENT.  Adding the library, the above extends ResourceSupport and

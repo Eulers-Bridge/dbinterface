@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class VerifyUserAccountEventTest {
+public class VerifyUserDomainAccountEventTest {
     final String email = new String("yikaig@gmail.com");
     final String token = new String("token00");
     VerifyUserAccountEvent verifyUserAccountEvent = null;

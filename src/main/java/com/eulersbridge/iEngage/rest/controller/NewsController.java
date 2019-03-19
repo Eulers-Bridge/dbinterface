@@ -283,7 +283,7 @@ public class NewsController {
 
 
     LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(articleId), sortDirection, pageNumber, pageLength);
-    Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
+    Iterator<LikeInfo> likes = UserDomain.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
     return new ResponseEntity<Iterator<LikeInfo>>(likes, HttpStatus.OK);
   }
 }

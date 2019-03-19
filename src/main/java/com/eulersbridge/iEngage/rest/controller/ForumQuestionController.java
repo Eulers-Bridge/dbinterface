@@ -210,7 +210,7 @@ public class ForumQuestionController {
     Direction sortDirection = Direction.DESC;
     if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;
     LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(new LikesLikeableObjectEvent(forumQuestionId), sortDirection, pageNumber, pageLength);
-    Iterator<LikeInfo> likes = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
+    Iterator<LikeInfo> likes = UserDomain.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
     if (likes.hasNext() == false) {
       ReadEvent readPollEvent = forumQuestionService.readForumQuestion(new ReadForumQuestionEvent(forumQuestionId));
       if (!readPollEvent.isEntityFound())

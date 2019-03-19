@@ -44,7 +44,7 @@ public class VoteRecord extends ResourceSupport
 		vr.setNodeId(voteRecordDetails.getNodeId());
 		vr.setElectionId(voteRecordDetails.getElectionId());
 
-	    String simpleName=User.class.getSimpleName();
+	    String simpleName= UserDomain.class.getSimpleName();
 	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and

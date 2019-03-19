@@ -284,7 +284,7 @@ public class TicketController {
 
     LikeableObjectLikesEvent likeableObjectLikesEvent = ticketService.findSupporters(new LikesLikeableObjectEvent(ticketId), sortDirection, pageNumber, pageLength);
 
-    Iterator<LikeInfo> supporters = User.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
+    Iterator<LikeInfo> supporters = UserDomain.toLikesIterator(likeableObjectLikesEvent.getUserDetails().iterator());
     if (!supporters.hasNext()) {
       ReadEvent readTicketEvent = ticketService.requestReadTicket(new RequestReadTicketEvent(ticketId));
       if (!readTicketEvent.isEntityFound())

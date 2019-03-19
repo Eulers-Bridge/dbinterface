@@ -11,13 +11,13 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class DeleteUserEventTest {
+public class RequestReadUserDomainEventTest {
     final String email = new String("yikaig@gmail.com");
-    DeleteUserEvent deleteUserEvent = null;
+    RequestReadUserEvent requestReadUserEvent = null;
 
     @Before
     public void setUp() throws Exception {
-        deleteUserEvent = new DeleteUserEvent(email);
+        requestReadUserEvent = new RequestReadUserEvent(email);
     }
 
     @After
@@ -26,12 +26,12 @@ public class DeleteUserEventTest {
     }
 
     @Test
-    public void tearDeleteUserEvent() throws Exception {
-        assertNotNull("deleteUserEvent is null", deleteUserEvent);
+    public void testRequestReadUserEvent() throws Exception {
+        assertNotNull("requestReadUserEvent is null", requestReadUserEvent);
     }
 
     @Test
     public void testGetEmail() throws Exception {
-        assertEquals("email does not match", email, deleteUserEvent.getEmail());
+        assertEquals("email does not match", email, requestReadUserEvent.getEmail());
     }
 }

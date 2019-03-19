@@ -2,7 +2,7 @@ package com.eulersbridge.iEngage.rest.controller.fixture;
 
 import com.eulersbridge.iEngage.core.events.users.ReadUserEvent;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
-import com.eulersbridge.iEngage.rest.domain.User;
+import com.eulersbridge.iEngage.rest.domain.UserDomain;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -25,9 +25,9 @@ public class RestDataFixture
 		else return value;
 	}
 	
-	public static User uniMelbUser()
+	public static UserDomain uniMelbUser()
 	{
-		User user = populateUser();
+		UserDomain user = populateUser();
 		return user;
 	}
 	public static UserDetails customEmailUser(String email)
@@ -45,7 +45,7 @@ public class RestDataFixture
 	
 	public static ReadUserEvent customEmailUser2(String email)
 	{
-		User user=populateUser();
+		UserDomain user=populateUser();
 		user.setEmail(email);
 		return new ReadUserEvent(email,user.toUserDetails());
 	}
@@ -56,9 +56,9 @@ public class RestDataFixture
 		return new ReadUserEvent(userDetails.getEmail(),userDetails);
 	}
 	
-	public static User populateUser()
+	public static UserDomain populateUser()
 	{
-		User user=new User();
+		UserDomain user=new UserDomain();
 		user.setEmail("gnewitt@hotmail.com");
 		user.setGivenName("Greg");
 		user.setFamilyName("Newitt");

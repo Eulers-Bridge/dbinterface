@@ -7,13 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+
 
 @Service
 public class EmailEventHandler implements EmailService {
@@ -29,17 +29,16 @@ public class EmailEventHandler implements EmailService {
 
   @Override
   public void sendEmail() {
-    if (LOG.isTraceEnabled()) LOG.trace("sendEmail()");
-    MimeMessage message = emailSender.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(message);
+
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setTo("yikaig@student.unimelb.edu.au");
+    message.setSubject("Testing");
+    message.setFrom("support@eulersbridge.com");
+    message.setText("This is a test message.");
+
     try {
-      InternetAddress to = new InternetAddress("gnewitt@hotmail.com");
-      helper.setTo(to);
-      helper.setSubject("Testing");
-      helper.setFrom(new InternetAddress("greg.newitt@eulersbridge.com"));
-      helper.setText("This is a test message.");
       emailSender.send(message);
-    } catch (MailException | MessagingException ex) {
+    } catch (MailException ex) {
       LOG.error(ex.toString());
     }
   }
@@ -48,7 +47,7 @@ public class EmailEventHandler implements EmailService {
   public void sendEmail(Email email) {
     if (LOG.isTraceEnabled()) LOG.trace("sendEmail(Email email)");
     try {
-      emailSender.send(email.generatePreparator());
+      emailSender.send(email.generatePreparator(emailSender));
     } catch (MailException | MessagingException ex) {
       LOG.error(ex.toString());
     }
@@ -58,7 +57,7 @@ public class EmailEventHandler implements EmailService {
   public void sendEmail(EmailVerification email) {
     if (LOG.isTraceEnabled()) LOG.trace("sendEmail(EmailVerification email)");
     try {
-      emailSender.send(email.generatePreparator());
+      emailSender.send(email.generatePreparator(emailSender));
     } catch (MailException | MessagingException ex) {
       LOG.error(ex.toString());
     }

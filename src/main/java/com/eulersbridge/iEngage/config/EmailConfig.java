@@ -20,31 +20,32 @@ import java.util.Properties;
 public class EmailConfig {
   private static Logger LOG = LoggerFactory.getLogger(EmailConfig.class);
 
-  @Value("${email.host}")
+  @Value("${spring.mail.host}")
   private String host;
 
-  @Value("${email.port}")
+  @Value("${spring.mail.properties.mail.smtp.port}")
   private Integer port;
 
-  @Value("${email.username}")
+  @Value("${spring.mail.username}")
   private String username;
 
-  @Value("${email.password}")
+  @Value("${spring.mail.password}")
   private String password;
 
   @Bean
   public JavaMailSender mailSender() {
-    if (LOG.isDebugEnabled()) LOG.debug("mailSender()");
     JavaMailSenderImpl sender = new JavaMailSenderImpl();
     sender.setHost(host);
     sender.setPort(port);
     sender.setUsername(username);
     sender.setPassword(password);
-    Properties smtpProperties = getSmtpMailProperties();
-    sender.setJavaMailProperties(smtpProperties);
-    if (LOG.isDebugEnabled()) LOG.debug("host = " + host + " port = " + port);
-    if (LOG.isDebugEnabled()) LOG.debug("properties = " + smtpProperties);
-    if (LOG.isDebugEnabled()) LOG.debug("Sender = " + sender);
+    Properties javaMailProperties = new Properties();
+    javaMailProperties.put("mail.transport.protocol", "smtp");
+    javaMailProperties.put("mail.smtp.auth", "true");
+    javaMailProperties.put("mail.smtp.starttls.enable", "true");
+    javaMailProperties.put("spring.mail.properties.mail.smtp.starttls.required", "true");
+    javaMailProperties.put("mail.debug", "true");
+    sender.setJavaMailProperties(javaMailProperties);
     return sender;
 
   }
@@ -53,7 +54,7 @@ public class EmailConfig {
   @Bean
   public VelocityEngine velocityEngine(ServletContext servletContext) throws Exception {
     if (LOG.isDebugEnabled()) LOG.debug("velocityEngine()");
-    
+
     Properties velocityProperties = new Properties();
     velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "class");
     velocityProperties.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
@@ -69,12 +70,4 @@ public class EmailConfig {
 
   }
 
-  private Properties getSmtpMailProperties() {
-    Properties javaMailProperties = new Properties();
-    javaMailProperties.setProperty("mail.transport.protocol", "smtp");
-    javaMailProperties.setProperty("mail.smtp.auth", "true");
-    javaMailProperties.setProperty("mail.smtp.starttls.enable", "true");
-    javaMailProperties.setProperty("mail.debug", "true");
-    return javaMailProperties;
-  }
 }

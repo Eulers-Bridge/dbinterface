@@ -123,7 +123,7 @@ public class Personality extends ResourceSupport
 	    personality.setPersonalityId(dets.getPersonalityId());
 	    if (LOG.isTraceEnabled()) LOG.trace("personality "+personality);
 
-	    String simpleName=User.class.getSimpleName();
+	    String simpleName= UserDomain.class.getSimpleName();
 	    String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 
 	    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and

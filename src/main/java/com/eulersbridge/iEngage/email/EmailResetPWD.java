@@ -4,11 +4,14 @@ import com.eulersbridge.iEngage.database.domain.User;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
+
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
 import java.io.StringWriter;
 
@@ -37,33 +40,27 @@ public class EmailResetPWD extends Email implements Serializable {
   }
 
   @Override
-  public MimeMessagePreparator generatePreparator() throws MessagingException {
-    MimeMessagePreparator preparator = mimeMessage -> {
-      MimeMessageHelper message =
-        new MimeMessageHelper(mimeMessage,
-          MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
-      message.setTo(new InternetAddress(getRecipientEmailAddress()));
-      message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
-      message.setFrom(new InternetAddress(getSenderEmailAddress(), "Eulers Bridge"));
-      message.setSubject(getSubject());
+  public MimeMessage generatePreparator(JavaMailSender sender) throws MessagingException {
+    MimeMessage message = sender.createMimeMessage();
+    MimeMessageHelper helper = setupMimeMessageHelper(message);
 
-      VelocityContext vc = new VelocityContext();
-      vc.put("domainUrl", domainUrl);
-      vc.put("recipientName", getRecipientName());
-      vc.put("emailAddress", getRecipientEmailAddress());
-      vc.put("token", token);
-      vc.put("institution", Long.toString(institutionID));
-      StringWriter result = new StringWriter();
-      velocityEngine.mergeTemplate(templatePath, "UTF-8", vc, result);
-      String body = result.toString();
-      message.setText(body, true);
+    VelocityContext vc = new VelocityContext();
+    vc.put("domainUrl", domainUrl);
+    vc.put("recipientName", getRecipientName());
+    vc.put("emailAddress", getRecipientEmailAddress());
+    vc.put("token", token);
+    vc.put("institution", Long.toString(institutionID));
+    StringWriter result = new StringWriter();
+    velocityEngine.mergeTemplate(templatePath, "UTF-8", vc, result);
+    String body = result.toString();
+    helper.setText(body, true);
 
-      message.addInline("logo",
-        new ClassPathResource("templates/images/logo.png"));
-      message.addInline("watermark",
-        new ClassPathResource("templates/images/watermark.png"));
-    };
-    return preparator;
+    helper.addInline("logo",
+      new ClassPathResource("templates/images/logo.png"));
+    helper.addInline("watermark",
+      new ClassPathResource("templates/images/watermark.png"));
+
+    return message;
   }
 
 

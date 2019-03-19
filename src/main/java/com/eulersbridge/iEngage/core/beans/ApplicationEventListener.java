@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.core.beans;
 
 import com.eulersbridge.iEngage.core.notification.SNSMobilePush;
+import com.eulersbridge.iEngage.core.services.interfacePack.EmailService;
 import com.eulersbridge.iEngage.database.domain.*;
 import com.eulersbridge.iEngage.database.repository.*;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +48,8 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
   ScheduledTasks scheduledTasks;
   @Autowired
   Util util;
+  @Autowired
+  EmailService emailService;
 
   @Value("${institution.name}")
   String institutionName;
@@ -64,7 +68,7 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
     // (new Thread(() -> {   })).start();
 
     LOG.info("Task starts at ApplicationEventListener");
-
+//    emailService.sendEmail();
     checkOrCreateInitialNodes();
     scheduledTasks.setAppReady(true);
     LOG.info("Server IP: " + Util.serverIp);

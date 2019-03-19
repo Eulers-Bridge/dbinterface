@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Greg Newitt
  *
  */
-public class UserAuthenticatedEventTest 
+public class UserDomainAuthenticatedEventTest
 {
 	SimpleGrantedAuthority auth=new SimpleGrantedAuthority("ROLE_USER");
 	List<GrantedAuthority> list;

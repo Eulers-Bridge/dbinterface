@@ -6,16 +6,17 @@ import com.eulersbridge.iEngage.core.events.ticket.TicketDetails;
 import com.eulersbridge.iEngage.core.events.users.*;
 import com.eulersbridge.iEngage.core.events.voteRecord.*;
 import com.eulersbridge.iEngage.core.events.voteReminder.*;
+import com.eulersbridge.iEngage.core.services.interfacePack.EmailService;
 import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.domain.Personality;
+import com.eulersbridge.iEngage.database.domain.Ticket;
+import com.eulersbridge.iEngage.database.domain.VoteRecord;
 import com.eulersbridge.iEngage.database.repository.*;
 import com.eulersbridge.iEngage.email.EmailConstants;
 import com.eulersbridge.iEngage.email.EmailResetPWD;
 import com.eulersbridge.iEngage.email.EmailVerification;
-import com.eulersbridge.iEngage.rest.domain.PPSEQuestions;
-import com.eulersbridge.iEngage.rest.domain.UserProfile;
-import com.eulersbridge.iEngage.rest.domain.VoteReminderDomain;
-import com.eulersbridge.iEngage.rest.domain.WrappedDomainList;
+import com.eulersbridge.iEngage.rest.domain.*;
 import com.eulersbridge.iEngage.security.PasswordHash;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import com.eulersbridge.iEngage.security.UserCredentialDetails;
@@ -58,6 +59,7 @@ public class UserEventHandler implements UserService {
   private final ElectionRepository eleRepo;
   private final VelocityEngine velocityEngine;
   private final Util util;
+  private final EmailService emailService;
 
   @Autowired
   public UserEventHandler(PasswordEncoder passwordEncoder,
@@ -66,7 +68,10 @@ public class UserEventHandler implements UserService {
                           InstitutionRepository instRepo,
                           VerificationTokenRepository tokenRepo,
                           VelocityEngine velocityEngine,
-                          PPSEQuestionsRepository ppseQuestionsRepository, ElectionRepository eleRepo, Util util) {
+                          PPSEQuestionsRepository ppseQuestionsRepository,
+                          ElectionRepository eleRepo,
+                          Util util,
+                          EmailService emailService) {
     this.passwordEncoder = passwordEncoder;
     this.userRepository = userRepository;
     this.personRepository = personRepository;
@@ -76,6 +81,7 @@ public class UserEventHandler implements UserService {
     this.ppseQuestionsRepository = ppseQuestionsRepository;
     this.eleRepo = eleRepo;
     this.util = util;
+    this.emailService = emailService;
   }
 
   @Override
@@ -137,28 +143,24 @@ public class UserEventHandler implements UserService {
   }
 
   @Override
-  public UserCreatedEvent resendVerificationEmail(RequestReadUserEvent createUserEvent) {
-    String userEmail = createUserEvent.getEmail();
-    UserCreatedEvent result;
-    User createdUser = userRepository.findByEmail(createUserEvent.getEmail());
-    if (createdUser != null && createdUser.getVerificationToken() != null && createdUser.getVerificationToken() instanceof VerificationToken) {
-      Iterable<VerificationToken> tokens = createdUser.getVerificationToken$();
-      Iterator<VerificationToken> tokenIter = tokens.iterator();
-      VerificationToken token = null;
+  public RequestHandledEvent<UserDomain> resendVerificationEmail(String userEmail) {
+    User user = userRepository.findByEmail(userEmail);
+    if (user == null)
+      return RequestHandledEvent.targetNotFound();
+    if (user.getVerificationToken$() == null || user.getVerificationToken$().isEmpty())
+      return RequestHandledEvent.failed();
 
-      if (tokenIter.hasNext())
-        token = tokenIter.next();
+    Iterator<VerificationToken> tokenIter = user.getVerificationToken$().iterator();
+    VerificationToken token = tokenIter.next();
 
-      if (LOG.isDebugEnabled())
-        LOG.debug("Verification token = " + token.toString());
+    EmailVerification verifyEmail = new EmailVerification(
+      velocityEngine, user, token, Util.serverIp);
+    util.asyncExecUserTask(verifyEmail, mail->{
+      emailService.sendEmail(mail);
+      return null;
+    });
+    return new RequestHandledEvent<UserDomain>(UserDomain.fromUserDetails(user.toUserDetails()));
 
-      EmailVerification verifyEmail = new EmailVerification(
-        velocityEngine, createdUser, token, Util.serverIp);
-      result = new UserCreatedEvent(userEmail,
-        createdUser.toUserDetails(), verifyEmail);
-    } else
-      result = UserCreatedEvent.instituteNotFound(null);
-    return result;
   }
 
   @Override
@@ -716,7 +718,7 @@ public class UserEventHandler implements UserService {
       , voteReminderDomain.getLocation());
     if (voteReminder == null)
       return RequestHandledEvent.failed();
-    util.asyncExecUserTask(user, u->{
+    util.asyncExecUserTask(user, u -> {
       util.boardcastNotifiToFriends(u, election, userRepository);
       return null;
     });
@@ -1072,9 +1074,9 @@ public class UserEventHandler implements UserService {
 
   @Override
   public RequestHandledEvent getRankedUserProfiles(String ranKey) {
-    if (ranKey.equals("numOfContacts")){
+    if (ranKey.equals("numOfContacts")) {
       List<UserProfile> sortedUserProfiles =
-        userRepository.getTopRankingUsersByNumOfContacts().stream().map(u->
+        userRepository.getTopRankingUsersByNumOfContacts().stream().map(u ->
           UserProfile.fromUserDetails(u.toUserDetails()))
           .collect(Collectors.toList());
       WrappedDomainList<UserProfile> wl =

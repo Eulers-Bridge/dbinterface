@@ -19,7 +19,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class LogIn extends ResourceSupport 
 {
 	Iterator <NewsArticle> articles;
-	User user;
+	UserDomain user;
 	Long userId;
 	/**
 	 * @return the articles
@@ -38,14 +38,14 @@ public class LogIn extends ResourceSupport
 	/**
 	 * @return the user
 	 */
-	public User getUser() {
+	public UserDomain getUser() {
 		return user;
 	}
 
 	/**
 	 * @param institutionId the institutionId to set
 	 */
-	public void setUser(User user) {
+	public void setUser(UserDomain user) {
 		this.user = user;
 	}
 
@@ -73,7 +73,7 @@ public class LogIn extends ResourceSupport
 		String name=simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
 		    
 		UserDetails returnedUser=loginDets.getUser();
-		User user=User.fromUserDetails(returnedUser);
+		UserDomain user= UserDomain.fromUserDetails(returnedUser);
 		user.removeLinks();
 		login.user = user;
 		login.userId=loginDets.getUserId();

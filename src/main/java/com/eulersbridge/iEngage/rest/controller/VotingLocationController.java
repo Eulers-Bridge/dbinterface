@@ -280,7 +280,7 @@ public class VotingLocationController {
     LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(
       new LikesLikeableObjectEvent(votingLocationId), sortDirection,
       pageNumber, pageLength);
-    Iterator<LikeInfo> likes = User
+    Iterator<LikeInfo> likes = UserDomain
       .toLikesIterator(likeableObjectLikesEvent.getUserDetails()
         .iterator());
     if (likes.hasNext() == false) {

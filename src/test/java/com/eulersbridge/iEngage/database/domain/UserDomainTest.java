@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 /**
  * @author Greg Newitt
  */
-public class UserTest {
+public class UserDomainTest {
 
   UserDetails userDetails;
   User user;

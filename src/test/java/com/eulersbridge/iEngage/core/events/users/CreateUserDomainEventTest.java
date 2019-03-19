@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Yikai Gong
  */
 
-public class CreateUserEventTest {
+public class CreateUserDomainEventTest {
     final String email = new String("yikaig@gmail.com");
     final String givenName = new String("Yikai");
     final String familyName = new String("Gong");

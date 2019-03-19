@@ -3,11 +3,11 @@ package com.eulersbridge.iEngage.email;
 import org.apache.velocity.app.VelocityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
 
@@ -41,22 +41,17 @@ public class Email implements Serializable {
     return senderEmailAddress;
   }
 
-  public MimeMessagePreparator generatePreparator() throws MessagingException {
-    MimeMessagePreparator preparator = mimeMessage -> {
-      MimeMessageHelper message = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_RELATED, "UTF-8");
-      message.setTo(new InternetAddress(getRecipientEmailAddress()));
-      String body = null;
-      message.setReplyTo(new InternetAddress(getSenderEmailAddress()));
-      message.setFrom(new InternetAddress(getSenderEmailAddress()));
-      message.setSubject(getSubject());
+  public MimeMessage generatePreparator(JavaMailSender sender) throws MessagingException {
+    MimeMessage message = sender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+    helper.setTo(getRecipientEmailAddress());
+    helper.setReplyTo(getSenderEmailAddress());
+    helper.setFrom(getSenderEmailAddress());
+    helper.setSubject(getSubject());
+    String body = "This is a test email.";
+    helper.setText(body);
 
-      body = "This is a test email.";
-
-      if (LOG.isDebugEnabled()) LOG.debug("body={}", body);
-      message.setText(body, true);
-    };
-
-    return preparator;
+    return message;
   }
 
   public String getSubject() {
@@ -74,6 +69,15 @@ public class Email implements Serializable {
     buff.append(" Subject:");
     buff.append(subject);
     return buff.toString();
+  }
+
+  public MimeMessageHelper setupMimeMessageHelper(MimeMessage message) throws MessagingException {
+    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+    helper.setTo(getRecipientEmailAddress());
+    helper.setFrom(getSenderEmailAddress());
+    helper.setReplyTo(getSenderEmailAddress());
+    helper.setSubject(getSubject());
+    return helper;
   }
 
 }

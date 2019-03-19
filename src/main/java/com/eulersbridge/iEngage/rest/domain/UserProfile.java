@@ -38,7 +38,7 @@ public class UserProfile extends ResourceSupport {
   private Long experience;
   private Long level;
 
-  private static Logger LOG = LoggerFactory.getLogger(User.class);
+  private static Logger LOG = LoggerFactory.getLogger(UserDomain.class);
 
   public String getEmail() {
     return email;
@@ -215,7 +215,7 @@ public class UserProfile extends ResourceSupport {
 
     Iterable<PhotoDetails> photos = readUser.getPhotos();
     user.profilePhoto = readUser.getProfilePhoto();
-    user.setLevel(User.calculateUserLevel(readUser.getExperience()));
+    user.setLevel(UserDomain.calculateUserLevel(readUser.getExperience()));
 //		if (photos!=null)
 //		{
 //			Iterator<PhotoDetails> iterator=photos.iterator();

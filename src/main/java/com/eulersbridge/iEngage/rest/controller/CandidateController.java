@@ -9,7 +9,6 @@ import com.eulersbridge.iEngage.core.services.interfacePack.CandidateService;
 import com.eulersbridge.iEngage.core.services.interfacePack.LikesService;
 import com.eulersbridge.iEngage.core.services.interfacePack.UserService;
 import com.eulersbridge.iEngage.rest.domain.*;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,7 +217,7 @@ public class CandidateController {
     LikeableObjectLikesEvent likeableObjectLikesEvent = likesService.likes(
       new LikesLikeableObjectEvent(candidateId), sortDirection,
       pageNumber, pageLength);
-    Iterator<LikeInfo> likes = User
+    Iterator<LikeInfo> likes = UserDomain
       .toLikesIterator(likeableObjectLikesEvent.getUserDetails()
         .iterator());
     if (likes.hasNext() == false) {

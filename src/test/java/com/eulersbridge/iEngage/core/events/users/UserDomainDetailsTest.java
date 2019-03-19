@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * @author Yikai Gong
  */
 
-public class UserDetailsTest {
+public class UserDomainDetailsTest {
     final String email = new String("yikaig@gmail.com");
     final Long userId=1l;
     final String givenName = new String("Yikai");

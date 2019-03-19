@@ -9,9 +9,9 @@ import com.eulersbridge.iEngage.core.events.voteRecord.VoteRecordAddedEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.DeleteVoteReminderEvent;
 import com.eulersbridge.iEngage.core.events.voteReminder.ReadVoteReminderEvent;
 import com.eulersbridge.iEngage.rest.domain.PPSEQuestions;
+import com.eulersbridge.iEngage.rest.domain.UserDomain;
 import com.eulersbridge.iEngage.rest.domain.VoteReminderDomain;
 import com.eulersbridge.iEngage.security.SecurityConstants;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
@@ -93,7 +93,7 @@ public interface UserService extends UserDetailsService {
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or (hasRole('" + SecurityConstants.USER_ROLE + "') and #requestReadUserEvent.getEmail()==authentication.name)")
   public AllReadEvent readVoteRecordsByEmail(RequestReadUserEvent requestReadUserEvent, Direction sortDirection, int pageNumber, int pageLength);
 
-  UserCreatedEvent resendVerificationEmail(RequestReadUserEvent createUserEvent);
+  RequestHandledEvent<UserDomain> resendVerificationEmail(String email);
 
   public RequestHandledEvent requestResetPWD(String email);
 
