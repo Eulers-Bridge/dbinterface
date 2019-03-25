@@ -14,6 +14,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.time.Year;
+import java.util.Calendar;
 
 
 /**
@@ -23,7 +25,7 @@ import java.io.StringWriter;
 public class EmailResetPWD extends Email implements Serializable {
   public static final String emailTitle = "Reset your Password - from Eulersbridge";
   public static final String senderAddress = "support@eulersbridge.com";
-  public static final String domainUrl = "https://www.isegoria.com.au/forgot-password";
+  public static final String domainUrl = "https://isegoria.app/forgot-password";
   private static final String templatePath = EmailConstants.EmailResetPWDTemplate;
 
   private final String token;
@@ -46,6 +48,7 @@ public class EmailResetPWD extends Email implements Serializable {
 
     VelocityContext vc = new VelocityContext();
     vc.put("domainUrl", domainUrl);
+    vc.put("year", Integer.toString(Year.now().getValue()));
     vc.put("recipientName", getRecipientName());
     vc.put("emailAddress", getRecipientEmailAddress());
     vc.put("token", token);

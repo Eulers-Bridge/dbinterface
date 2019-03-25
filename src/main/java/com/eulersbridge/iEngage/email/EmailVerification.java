@@ -17,6 +17,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.time.Year;
 
 public class EmailVerification extends Email implements Serializable {
 
@@ -65,6 +66,7 @@ public class EmailVerification extends Email implements Serializable {
     velocityContext.put("emailAddress", getRecipientEmailAddress());
     velocityContext.put("verificationToken", getEncodedToken());
     velocityContext.put("serverIp", serverIp);
+    velocityContext.put("year", Integer.toString(Year.now().getValue()));
     StringWriter sw = new StringWriter();
     velocityEngine.mergeTemplate(resourceName, "UTF-8", velocityContext, sw);
     String body = sw.toString();
