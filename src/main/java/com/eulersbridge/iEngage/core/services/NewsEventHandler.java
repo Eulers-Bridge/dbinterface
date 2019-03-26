@@ -43,6 +43,7 @@ public class NewsEventHandler implements NewsService {
     CreateNewsArticleEvent createNewsArticleEvent) {
     NewsArticleDetails nADs = (NewsArticleDetails) createNewsArticleEvent.getDetails();
     NewsArticle na = NewsArticle.fromNewsArticleDetails(nADs);
+    na.setDate(System.currentTimeMillis());
 
     if (LOG.isDebugEnabled())
       LOG.debug("Finding institution with id = " + nADs.getInstitutionId());
