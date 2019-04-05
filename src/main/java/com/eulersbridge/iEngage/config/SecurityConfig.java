@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    AppBasicAuthenticationEntryPoint entryPoint = new AppBasicAuthenticationEntryPoint();
 //    AppBasicAuthenticationSuccessHandler successHandler = new AppBasicAuthenticationSuccessHandler();
     http.authorizeRequests()
-      .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.GENERAL_INFO_LABEL).permitAll()
+      .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.GENERAL_INFO_LABEL+"/**").permitAll()
       .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.SIGNUP_LABEL).permitAll()
       .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.EMAIL_VERIFICATION_LABEL + "/**").permitAll()
       .antMatchers(ControllerConstants.API_PREFIX + ControllerConstants.REQUEST_RESET_PWD + "/**").permitAll()
