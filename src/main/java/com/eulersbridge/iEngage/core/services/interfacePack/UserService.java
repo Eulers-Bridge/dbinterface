@@ -104,5 +104,7 @@ public interface UserService extends UserDetailsService {
 
   @PreAuthorize("hasRole('" + SecurityConstants.ADMIN_ROLE + "') or hasRole('" + SecurityConstants.USER_ROLE + "')")
   public RequestHandledEvent getRankedUserProfiles(String ranKey);
+
+  public String getFormalNameByEmail(String email);
 }
 

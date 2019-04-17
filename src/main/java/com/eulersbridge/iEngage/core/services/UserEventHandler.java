@@ -1085,4 +1085,19 @@ public class UserEventHandler implements UserService {
     }
     return RequestHandledEvent.badRequest();
   }
+
+  @Override
+  public String getFormalNameByEmail(String email) {
+    User user = userRepository.findByEmail(email, 0);
+    if (user == null)
+      return "";
+
+    StringBuilder strBuilder = new StringBuilder();
+    if (user.getGender().toLowerCase().equals("male"))
+      strBuilder.append("Mr. ");
+    else if (user.getGender().toLowerCase().equals("female"))
+      strBuilder.append("Ms. ");
+    strBuilder.append(user.getFamilyName());
+    return strBuilder.toString();
+  }
 }

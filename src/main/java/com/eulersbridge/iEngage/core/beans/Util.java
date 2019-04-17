@@ -107,6 +107,7 @@ public class Util {
     return fullName;
   }
 
+
   public static SNSNotification buildFriReqNotif(User receiver, User sender) {
     String subject = "New Friend Request";
     String senderName = getUserFullName(sender);

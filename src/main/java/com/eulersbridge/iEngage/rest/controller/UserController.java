@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
@@ -531,8 +532,6 @@ public class UserController {
   }
 
 
-
-
   /**
    * Is passed all the necessary data to create a new user.
    * The request must be a POST with the necessary parameters in the
@@ -563,7 +562,7 @@ public class UserController {
       if (LOG.isDebugEnabled())
         LOG.debug(userEvent.getVerificationEmail().toString());
       EmailVerification emailVerification = userEvent.getVerificationEmail();
-      util.asyncExecUserTask(emailVerification, mail->{
+      util.asyncExecUserTask(emailVerification, mail -> {
         emailService.sendEmail(mail);
         return null;
       });
@@ -604,7 +603,7 @@ public class UserController {
     if (!r.getSuccess())
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     EmailResetPWD emailResetPWD = r.getResponseEntity();
-    util.asyncExecUserTask(emailResetPWD, mail->{
+    util.asyncExecUserTask(emailResetPWD, mail -> {
       emailService.sendEmail(mail);
       return null;
     });
@@ -656,7 +655,7 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.EMAIL_VERIFICATION_LABEL + "/{email}/{token}")
   public @ResponseBody
-  ResponseEntity<UserDomain> verifyUserAccount1(@PathVariable String email, @PathVariable String token) {
+  RedirectView verifyUserAccount1(@PathVariable String email, @PathVariable String token) {
     return verifyUserAccount(email, token);
   }
 
@@ -673,39 +672,42 @@ public class UserController {
    */
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.EMAIL_VERIFICATION_LABEL + "/{email}/{token}")
   public @ResponseBody
-  ResponseEntity<UserDomain> verifyUserAccount2(@PathVariable String email, @PathVariable String token) {
+  RedirectView verifyUserAccount2(@PathVariable String email, @PathVariable String token) {
     return verifyUserAccount(email, token);
   }
 
   public @ResponseBody
-  ResponseEntity<UserDomain> verifyUserAccount(String email, String token) {
+  RedirectView verifyUserAccount(String email, String token) {
     if (LOG.isInfoEnabled())
       LOG.info("attempting to verify email by token " + email + " " + token);
 
     UUID decodedToken = com.eulersbridge.iEngage.database.domain.VerificationToken.convertEncoded64URLStringtoUUID(token);
     if (LOG.isDebugEnabled()) LOG.debug("Decoded token - " + decodedToken);
     UserAccountVerifiedEvent userAccountVerifiedEvent = userService.validateUserAccount(new VerifyUserAccountEvent(email, decodedToken.toString()));
+    RedirectView redirectView = new RedirectView();
+    StringBuilder urlBuilder = new StringBuilder("https://isegoria.app/welcome?username=");
+    String formalName = userService.getFormalNameByEmail(email);
+    urlBuilder.append(formalName);
 
-    if (!userAccountVerifiedEvent.isAccountVerified()) {
-      VerificationErrorType verfError = userAccountVerifiedEvent.getVerificationError();
-
-      if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.userNotFound))
-        return new ResponseEntity<UserDomain>(HttpStatus.BAD_REQUEST);
-      else {
-        UserDomain resultUser = UserDomain.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
-        if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists.toString()))
-          return new ResponseEntity<UserDomain>(resultUser, HttpStatus.BAD_REQUEST);
-        else if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed.toString())
-          || verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired.toString())
-          || verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch.toString()))
-          return new ResponseEntity<UserDomain>(resultUser, HttpStatus.FAILED_DEPENDENCY);
-        else
-          return new ResponseEntity<UserDomain>(resultUser, HttpStatus.BAD_REQUEST);
-      }
+    if (userAccountVerifiedEvent.isAccountVerified()) {
+      urlBuilder.append("&success=true");
     } else {
-      UserDomain restUser = UserDomain.fromUserDetails(userAccountVerifiedEvent.getUserDetails());
-      return new ResponseEntity<UserDomain>(restUser, HttpStatus.OK);
+      urlBuilder.append("&success=false");
+      VerificationErrorType verfError = userAccountVerifiedEvent.getVerificationError();
+      if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.userNotFound)) {
+        urlBuilder.append("&message=This email address is not found");
+      }
+      else if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenDoesntExists.toString())) {
+        urlBuilder.append("&message=The verification token does not exist. Please contact the admin for help.");
+      }
+      else if (verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenAlreadyUsed.toString())
+        || verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenExpired.toString())
+        || verfError.equals(UserAccountVerifiedEvent.VerificationErrorType.tokenTypeMismatch.toString())) {
+        urlBuilder.append("&message=The verification token does not match or it is expired.");
+      }
     }
+    redirectView.setUrl(urlBuilder.toString());
+    return redirectView;
   }
 
 
@@ -782,12 +784,12 @@ public class UserController {
   ResponseEntity<Iterator<UserProfile>> searchUserProfiles(@PathVariable String inputName) {
     LOG.info("Attempting to search User profiles Input:" + inputName);
     ResponseEntity result = null;
-    if (EmailValidator.getInstance().isValid(inputName)){
+    if (EmailValidator.getInstance().isValid(inputName)) {
       ResponseEntity<UserProfile> foundUser = findUserProfile(inputName);
       UserProfile u = foundUser.getBody();
-      List<UserProfile> uList = u == null ? Lists.newArrayList() :Lists.newArrayList(u);
+      List<UserProfile> uList = u == null ? Lists.newArrayList() : Lists.newArrayList(u);
       result = new ResponseEntity<Iterator<UserProfile>>(uList.iterator(), HttpStatus.OK);
-    }else{
+    } else {
       RequestSearchUserEvent requestSearchUserEvent = new RequestSearchUserEvent(inputName);
       SearchUserEvent searchUserEvent = userService.searchUserProfileByName(requestSearchUserEvent);
       List<UserProfile> userProfileList = searchUserEvent.getUserProfileList();
@@ -830,7 +832,19 @@ public class UserController {
     return result;
   }
 
-
+//  @RequestMapping(value = "/redirect", method = RequestMethod.GET)
+//  public RedirectView localRedirect() {
+////    RedirectView redirectView = new RedirectView();
+////    redirectView.setUrl("http://www.google.com");
+//    String email = "yikaig@student.unimelb.edu.au";
+//    RedirectView redirectView = new RedirectView();
+//    StringBuilder urlBuilder = new StringBuilder("https://isegoria.app/welcome?username=");
+//    String formalName = userService.getFormalNameByEmail(email);
+//    urlBuilder.append(formalName);
+//
+//    redirectView.setUrl(urlBuilder.toString());
+//    return redirectView;
+//  }
 
 }
 
