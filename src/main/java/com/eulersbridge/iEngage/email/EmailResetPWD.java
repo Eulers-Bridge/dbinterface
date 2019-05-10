@@ -30,6 +30,7 @@ public class EmailResetPWD extends Email implements Serializable {
 
   private final String token;
   private final Long institutionID;
+  private final String institution_name;
 
   public EmailResetPWD(VelocityEngine velocityEngine, User user, String token) {
     super(velocityEngine, user.getEmail(),
@@ -37,6 +38,7 @@ public class EmailResetPWD extends Email implements Serializable {
       senderAddress, emailTitle);
     this.token = token;
     this.institutionID = user.getInstitution().getNodeId();
+    this.institution_name = user.getInstitution$().getName().toLowerCase();
 //    if (this.velocityEngine != null)
 //      this.velocityEngine.init();
   }
@@ -52,7 +54,7 @@ public class EmailResetPWD extends Email implements Serializable {
     vc.put("recipientName", getRecipientName());
     vc.put("emailAddress", getRecipientEmailAddress());
     vc.put("token", token);
-    vc.put("institution", Long.toString(institutionID));
+    vc.put("institution", institution_name);
     StringWriter result = new StringWriter();
     velocityEngine.mergeTemplate(templatePath, "UTF-8", vc, result);
     String body = result.toString();
