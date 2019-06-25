@@ -70,8 +70,10 @@ public class ApplicationEventListener implements ApplicationListener<ContextRefr
     LOG.info("Task starts at ApplicationEventListener");
 //    emailService.sendEmail();
     checkOrCreateInitialNodes();
+    util.loadDefaultInstitutionId(instRepo);
     scheduledTasks.setAppReady(true);
     LOG.info("Server IP: " + Util.serverIp);
+    LOG.info("Default Institution ID: " + util.getDefaultInstitutionId());
   }
 
   public void encodeUserPwd() {

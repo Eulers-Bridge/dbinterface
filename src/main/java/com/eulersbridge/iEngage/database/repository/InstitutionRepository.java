@@ -29,6 +29,10 @@ public interface InstitutionRepository extends Neo4jRepository<Institution, Long
   @Query("MATCH (i:`Institution`)-[]-(c:`Country`) where id(c)={countryId} return i")
   List<Institution> findByCountryId(@Param("countryId") Long countryId);
 
+  //TODO Allow configuration of default institution
+  @Query("MATCH (i:`Institution`) return i limit 1")
+  Institution findDefaultInstitution();
+
   @Query("match (c:Country)-[r:HAS_INSTITUTIONS]-(i:Institution) " +
     "return id(c) as countryId,c.countryName as countryName"
     + ",COLLECT(i.name) as institutionNames,COLLECT(id(i)) as institutionIds"
@@ -37,7 +41,7 @@ public interface InstitutionRepository extends Neo4jRepository<Institution, Long
 
   Institution findByName(String name, @Depth int i);
 
-  @Query("MATCH (i:" + DataConstants.INSTITUTION + ")<-[r:"+ DataConstants.USERS_LABEL+"]-(u:"+DataConstants.USER+") WHERE u.email={email} RETURN i LIMIT 1")
+  @Query("MATCH (i:" + DataConstants.INSTITUTION + ")<-[r:" + DataConstants.USERS_LABEL + "]-(u:" + DataConstants.USER + ") WHERE u.email={email} RETURN i LIMIT 1")
   Institution findInstitutionByUserEMail(@Param("email") String email);
 
 }

@@ -549,6 +549,10 @@ public class UserController {
   public @ResponseBody
   ResponseEntity<UserDomain> saveNewUser(@RequestBody UserDomain user) {
     if (LOG.isInfoEnabled()) LOG.info("attempting to save user " + user);
+    // Assign default institution Id if missing.
+    if (user.getInstitutionId() == null)
+      user.setInstitutionId(util.getDefaultInstitutionId());
+
     UserCreatedEvent userEvent = userService.signUpNewUser(new CreateUserEvent(user.toUserDetails()));
 
     if ((null == userEvent) || (null == userEvent.getEmail())) {

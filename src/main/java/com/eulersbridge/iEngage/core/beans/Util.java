@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.config.CoreConfig;
 import com.eulersbridge.iEngage.core.notification.SNSNotification;
 import com.eulersbridge.iEngage.database.domain.Election;
 import com.eulersbridge.iEngage.database.domain.User;
+import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
 import com.eulersbridge.iEngage.database.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ public class Util {
   private static Logger LOG = LoggerFactory.getLogger(Util.class);
 
   private final AmazonSNS sns;
+  private Long defaultInstitutionId = -1l;
   public static String serverIp;
   static  {
     serverIp = getPublicIP();
@@ -134,6 +136,14 @@ public class Util {
     friendsList.forEach(receiver->{
       this.sendNotification(Util.buildAddedVoteRemindNotifi(user, receiver, election));
     });
+  }
+
+  public void loadDefaultInstitutionId (InstitutionRepository institutionRepository){
+    defaultInstitutionId = institutionRepository.findDefaultInstitution().getNodeId();
+  }
+
+  public Long getDefaultInstitutionId() {
+    return defaultInstitutionId;
   }
 
   private static String getPublicIP() {
