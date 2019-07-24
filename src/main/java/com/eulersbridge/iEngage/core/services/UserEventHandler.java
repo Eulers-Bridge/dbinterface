@@ -408,6 +408,8 @@ public class UserEventHandler implements UserService {
         user.setArn(updateUser.getArn());
       if (null != updateUser.getDeviceToken())
         user.setDeviceToken(updateUser.getDeviceToken());
+      if (null != updateUser.getProfilePhoto())
+        user.setProfilePhoto(updateUser.getProfilePhoto());
 
 //      if (null != newUser.getInstitutionId()) {
 //        if (user.getInstitution() != null)

@@ -100,6 +100,8 @@ public class UserController {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to edit user. " + user.getEmail());
     ResponseEntity<UserDomain> result;
+    if (!Util.getUserEmailFromSession().equals(email))
+      return new ResponseEntity<UserDomain>(HttpStatus.UNAUTHORIZED);
 
     UpdatedEvent userEvent = userService.updateUser(new UpdateUserEvent(email, user.toUserDetails()));
     if (null != userEvent) {
