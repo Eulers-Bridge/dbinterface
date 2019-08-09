@@ -1,7 +1,6 @@
 package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.newsArticles.NewsArticleDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.NewsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,26 +9,29 @@ import org.springframework.hateoas.ResourceSupport;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-public class NewsArticle extends ResourceSupport {
+public class NewsArticleDomain extends ResourceSupport {
   private Long articleId;
   private Long institutionId;
   private String title;
   private String content;
-  private Iterable<PhotoDetails> photos;
+  private List<PhotoDomain> photos;
   private Integer likes;
   private Long date;
   private String creatorEmail;
   private UserProfile creatorProfile;
   private boolean inappropriateContent = false;
 
-  private static Logger LOG = LoggerFactory.getLogger(NewsArticle.class);
+  private static Logger LOG = LoggerFactory.getLogger(NewsArticleDomain.class);
 
-  public static NewsArticle fromNewsArticleDetails(NewsArticleDetails readNews) {
-    NewsArticle news = new NewsArticle();
-    String simpleName = NewsArticle.class.getSimpleName();
+  public static NewsArticleDomain fromNewsArticleDetails(NewsArticleDetails readNews) {
+    NewsArticleDomain news = new NewsArticleDomain();
+    String simpleName = NewsArticleDomain.class.getSimpleName();
     String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
 
     news.articleId = readNews.getNewsArticleId();
@@ -37,7 +39,8 @@ public class NewsArticle extends ResourceSupport {
     news.creatorEmail = readNews.getCreatorEmail();
     news.date = readNews.getDate();
     news.likes = readNews.getLikes();
-    news.photos = readNews.getPhotos();
+    if (readNews.getPhotos() != null)
+      news.photos = StreamSupport.stream(readNews.getPhotos().spliterator(), false).map(PhotoDomain::fromPhotoDetails).collect(Collectors.toList());
     news.title = readNews.getTitle();
     news.institutionId = readNews.getInstitutionId();
     news.setInappropriateContent(readNews.isInappropriateContent());
@@ -133,14 +136,14 @@ public class NewsArticle extends ResourceSupport {
   /**
    * @return the photos
    */
-  public Iterable<PhotoDetails> getPhotos() {
+  public List<PhotoDomain> getPhotos() {
     return photos;
   }
 
   /**
    * @param photos the photos to set
    */
-  public void setPhotos(Iterable<PhotoDetails> photos) {
+  public void setPhotos(List<PhotoDomain> photos) {
     this.photos = photos;
   }
 
@@ -222,12 +225,12 @@ public class NewsArticle extends ResourceSupport {
     this.creatorProfile = creatorProfile;
   }
 
-  public static Iterator<NewsArticle> toArticlesIterator(Iterator<NewsArticleDetails> iter) {
+  public static Iterator<NewsArticleDomain> toArticlesIterator(Iterator<NewsArticleDetails> iter) {
     if (null == iter) return null;
-    ArrayList<NewsArticle> articles = new ArrayList<NewsArticle>();
+    ArrayList<NewsArticleDomain> articles = new ArrayList<NewsArticleDomain>();
     while (iter.hasNext()) {
       NewsArticleDetails dets = iter.next();
-      NewsArticle thisArticle = NewsArticle.fromNewsArticleDetails(dets);
+      NewsArticleDomain thisArticle = NewsArticleDomain.fromNewsArticleDetails(dets);
       Link self = thisArticle.getLink("self");
       thisArticle.removeLinks();
       thisArticle.add(self);

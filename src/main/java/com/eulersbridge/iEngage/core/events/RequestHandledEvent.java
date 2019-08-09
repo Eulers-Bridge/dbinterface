@@ -40,7 +40,7 @@ public class RequestHandledEvent<T> {
     this.responseEntity = responseEntity;
   }
 
-  public RequestHandledEvent(T responseEntitym, HttpStatus expectedHttpStatus) {
+  public RequestHandledEvent(T responseEntity, HttpStatus expectedHttpStatus) {
     this();
     this.responseEntity = responseEntity;
     this.expectedHttpStatus = expectedHttpStatus;

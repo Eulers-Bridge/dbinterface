@@ -29,4 +29,7 @@ public interface PhotoRepository extends Neo4jRepository<Photo, Long> {
 
   @Query("MATCH (i)-[*0..3]-(p:Photo) where id(i)={insId} return distinct p order by p.date DESC")
   List<Photo> findPhotosByInstitution(@Param("insId") Long insId);
+
+  @Query("Match (p:"+ DataConstants.PHOTO +"), (o) where id(p)={photoId} and id(o)={ownerId} create unique (o)-[r:"+ DataConstants.HAS_PHOTO_LABEL+"]->(p)")
+  void setOwner(@Param("photoId") Long photoId, @Param("ownerId") Long ownerId);
 }

@@ -43,27 +43,27 @@ public class NewsController {
    * user who created the article.
    *
    * @param articleId   the id of the news article to be updated.
-   * @param newsArticle the newsArticle object passed across as JSON.
+   * @param newsArticleDomain the newsArticle object passed across as JSON.
    * @return the newsArticle object returned by the Graph Database.
    */
 
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.NEWS_ARTICLE_LABEL + "/{articleId}")
   public @ResponseBody
-  ResponseEntity<NewsArticle> alterNewsArticle(@PathVariable Long articleId,
-                                               @RequestBody NewsArticle newsArticle) {
+  ResponseEntity<NewsArticleDomain> alterNewsArticle(@PathVariable Long articleId,
+                                                     @RequestBody NewsArticleDomain newsArticleDomain) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to edit newsArticle. " + articleId);
-    UpdateNewsArticleEvent unae = new UpdateNewsArticleEvent(articleId, newsArticle.toNewsArticleDetails());
+    UpdateNewsArticleEvent unae = new UpdateNewsArticleEvent(articleId, newsArticleDomain.toNewsArticleDetails());
     if (LOG.isDebugEnabled())
       LOG.debug("Update na event - " + unae.getDetails());
     UpdatedEvent newsEvent = newsService.updateNewsArticle(unae);
     if (null != newsEvent) {
       if (LOG.isDebugEnabled()) LOG.debug("newsEvent - " + newsEvent);
-      NewsArticle restNews = NewsArticle.fromNewsArticleDetails((NewsArticleDetails) newsEvent.getDetails());
+      NewsArticleDomain restNews = NewsArticleDomain.fromNewsArticleDetails((NewsArticleDetails) newsEvent.getDetails());
       if (LOG.isDebugEnabled()) LOG.debug("restNews = " + restNews);
-      return new ResponseEntity<NewsArticle>(restNews, HttpStatus.OK);
+      return new ResponseEntity<NewsArticleDomain>(restNews, HttpStatus.OK);
     } else
-      return new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<NewsArticleDomain>(HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -102,7 +102,7 @@ public class NewsController {
   ResponseEntity<Response> likeArticle(@PathVariable Long articleId, @PathVariable String email) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to have " + email + " like news article. " + articleId);
-    LikedEvent articleEvent = likesService.like(new LikeEvent(articleId, email, NewsArticle.class));
+    LikedEvent articleEvent = likesService.like(new LikeEvent(articleId, email, NewsArticleDomain.class));
 
     ResponseEntity<Response> response;
 
@@ -151,7 +151,7 @@ public class NewsController {
    */
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.NEWS_ARTICLE_LABEL + "/{articleId}")
   public @ResponseBody
-  ResponseEntity<NewsArticle> findArticle(@PathVariable Long articleId) {
+  ResponseEntity<NewsArticleDomain> findArticle(@PathVariable Long articleId) {
     String userEmail = Util.getUserEmailFromSession();
     RequestHandledEvent res = newsService.requestReadNewsArticle(articleId, userEmail);
     return res.toResponseEntity();
@@ -206,23 +206,15 @@ public class NewsController {
 
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.NEWS_ARTICLE_LABEL)
   public @ResponseBody
-  ResponseEntity<NewsArticle> createNewsArticle(@RequestBody NewsArticle newsArticle) {
+  ResponseEntity<NewsArticleDomain> createNewsArticle(@RequestBody NewsArticleDomain newsArticleDomain) {
     if (LOG.isInfoEnabled())
-      LOG.info("attempting to create news article " + newsArticle);
-    NewsArticleCreatedEvent newsEvent = newsService.createNewsArticle(new CreateNewsArticleEvent(newsArticle.toNewsArticleDetails()));
-    ResponseEntity<NewsArticle> resp;
-    if (!newsEvent.isCreatorFound()) {
-      resp = new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
-    } else if (!newsEvent.isInstitutionFound()) {
-      resp = new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
-    } else if (newsEvent.getNewsArticleId() == null) {
-      resp = new ResponseEntity<NewsArticle>(HttpStatus.BAD_REQUEST);
-    } else {
-      NewsArticle restNews = NewsArticle.fromNewsArticleDetails((NewsArticleDetails) newsEvent.getDetails());
-      if (LOG.isDebugEnabled()) LOG.debug("News event" + newsEvent.toString());
-      resp = new ResponseEntity<NewsArticle>(restNews, HttpStatus.CREATED);
-    }
-    return resp;
+      LOG.info("attempting to create news article " + newsArticleDomain);
+    String userEmail = Util.getUserEmailFromSession();
+    newsArticleDomain.setCreatorEmail(userEmail);
+
+    RequestHandledEvent<NewsArticleDomain> requestHandledEvent = newsService.createNewsArticle(newsArticleDomain);
+
+    return requestHandledEvent.toResponseEntity();
   }
 
   /**
@@ -257,7 +249,7 @@ public class NewsController {
     if (!articleEvent.isEntityFound()) {
       response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
-      Iterator<NewsArticle> articles = NewsArticle.toArticlesIterator(articleEvent.getArticles().iterator());
+      Iterator<NewsArticleDomain> articles = NewsArticleDomain.toArticlesIterator(articleEvent.getArticles().iterator());
       WrappedDomainList newsArticles = WrappedDomainList.fromIterator(articles, articleEvent.getTotalArticles(), articleEvent.getTotalPages());
       response = new ResponseEntity<WrappedDomainList>(newsArticles, HttpStatus.OK);
     }

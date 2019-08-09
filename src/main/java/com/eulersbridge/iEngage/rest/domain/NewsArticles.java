@@ -15,7 +15,7 @@ public class NewsArticles extends ResourceSupport
 {
 	Long totalArticles;
 	Integer totalPages;
-	Iterator<NewsArticle> articles;
+	Iterator<NewsArticleDomain> articles;
 
 	/**
 	 * @return the totalArticles
@@ -48,18 +48,18 @@ public class NewsArticles extends ResourceSupport
 	/**
 	 * @return the articles
 	 */
-	public Iterator<NewsArticle> getArticles() {
+	public Iterator<NewsArticleDomain> getArticles() {
 		return articles;
 	}
 
 	/**
 	 * @param articles the articles to set
 	 */
-	public void setArticles(Iterator<NewsArticle> articles) {
+	public void setArticles(Iterator<NewsArticleDomain> articles) {
 		this.articles = articles;
 	}
 
-	public static  NewsArticles fromArticlesIterator(Iterator<NewsArticle> iter, Long totalArticles, Integer totalPages)
+	public static  NewsArticles fromArticlesIterator(Iterator<NewsArticleDomain> iter, Long totalArticles, Integer totalPages)
 	{
 	    NewsArticles news = new NewsArticles();
 //	    String simpleName=NewsArticles.class.getSimpleName();

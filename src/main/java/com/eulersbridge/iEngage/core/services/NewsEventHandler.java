@@ -5,10 +5,8 @@ import com.eulersbridge.iEngage.core.events.newsArticles.*;
 import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import com.eulersbridge.iEngage.core.services.interfacePack.NewsService;
 import com.eulersbridge.iEngage.database.domain.*;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.NewsArticleRepository;
-import com.eulersbridge.iEngage.database.repository.NodeRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.database.repository.*;
+import com.eulersbridge.iEngage.rest.domain.NewsArticleDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,48 +28,52 @@ public class NewsEventHandler implements NewsService {
   private UserRepository userRepository;
   private NewsArticleRepository newsRepo;
   private InstitutionRepository instRepo;
+  private PhotoRepository photoRepo;
 
   @Autowired
-  public NewsEventHandler(NewsArticleRepository newsRepo, UserRepository userRepository, InstitutionRepository instRepo, NodeRepository nodeRepository) {
+  public NewsEventHandler(NewsArticleRepository newsRepo, UserRepository userRepository, InstitutionRepository instRepo, NodeRepository nodeRepository, PhotoRepository photoRepo) {
     this.newsRepo = newsRepo;
     this.userRepository = userRepository;
     this.instRepo = instRepo;
-    this.nodeRepository= nodeRepository;
+    this.nodeRepository = nodeRepository;
+    this.photoRepo = photoRepo;
   }
 
   @Override
-  public NewsArticleCreatedEvent createNewsArticle(
-    CreateNewsArticleEvent createNewsArticleEvent) {
-    NewsArticleDetails nADs = (NewsArticleDetails) createNewsArticleEvent.getDetails();
-    NewsArticle na = NewsArticle.fromNewsArticleDetails(nADs);
-    na.setDate(System.currentTimeMillis());
+  public RequestHandledEvent<NewsArticleDomain> createNewsArticle(
+    NewsArticleDomain newsArticleDomain) {
 
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding institution with id = " + nADs.getInstitutionId());
-    NewsFeed nf = instRepo.findNewsFeedByInstitutionId(nADs.getInstitutionId());
-    if (LOG.isDebugEnabled()) LOG.debug("news feed - " + nf);
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding user with email = " + nADs.getCreatorEmail());
-    User creator = userRepository.findByEmail(nADs.getCreatorEmail(), 0);
-    if (LOG.isDebugEnabled()) LOG.debug("User Details :" + creator);
-    NewsArticleCreatedEvent nACE;
-    if ((creator != null) && (nf != null)) {
-//      na.setCreator(creator.toNode());
-//      na.setNewsFeed(nf.toNode());
-      NewsArticle result = newsRepo.save(na, 0);
-      nodeRepository.createdBy(result.getNodeId(), creator.getNodeId());
-      nodeRepository.hasNews(nf.getNodeId(), result.getNodeId());
+    newsArticleDomain.setDate(System.currentTimeMillis());
 
-      result = newsRepo.findById(result.getNodeId()).orElse(null);
-      nACE = new NewsArticleCreatedEvent(result.getNodeId(), result.toNewsArticleDetails());
-    } else {
-      if (null == creator) {
-        nACE = NewsArticleCreatedEvent.creatorNotFound();
-      } else {
-        nACE = NewsArticleCreatedEvent.institutionNotFound();
-      }
+    if (null == newsArticleDomain.getCreatorEmail() || null == newsArticleDomain.getInstitutionId())
+      return RequestHandledEvent.badRequest();
+    NewsFeed nf = instRepo.findNewsFeedByInstitutionId(newsArticleDomain.getInstitutionId());
+    if (null == nf)
+      return RequestHandledEvent.targetNotFound();
+    User creator = userRepository.findByEmail(newsArticleDomain.getCreatorEmail(), 0);
+    if (null == creator)
+      return RequestHandledEvent.userNotFound();
+
+    NewsArticle result = newsRepo.save(NewsArticle.fromNewsArticleDetails(newsArticleDomain.toNewsArticleDetails()), 0);
+    nodeRepository.createdBy(result.getNodeId(), creator.getNodeId());
+    nodeRepository.hasNews(nf.getNodeId(), result.getNodeId());
+    final Long newsId = result.getNodeId();
+    if (newsArticleDomain.getPhotos() != null && !newsArticleDomain.getPhotos().isEmpty()) {
+      newsArticleDomain.getPhotos().forEach(photoDomain -> {
+        Photo p = null;
+        if (photoDomain.getNodeId() != null)
+          p = photoRepo.findById(photoDomain.getNodeId(), 0).orElse(null);
+        if (p == null)
+          p = photoRepo.save(Photo.fromPhotoDetails(photoDomain.toPhotoDetails()), 0);
+        if (p != null && p.getNodeId() != null && newsId != null)
+          photoRepo.setOwner(p.getNodeId(), newsId);
+      });
     }
-    return nACE;
+
+    result = newsRepo.findById(result.getNodeId()).orElse(null);
+    if (result == null)
+      return RequestHandledEvent.failed();
+    return new RequestHandledEvent<>(NewsArticleDomain.fromNewsArticleDetails(result.toNewsArticleDetails()), HttpStatus.CREATED);
   }
 
   @Override
@@ -79,7 +82,7 @@ public class NewsEventHandler implements NewsService {
     if (article == null)
       return RequestHandledEvent.targetNotFound();
 
-    return new RequestHandledEvent(com.eulersbridge.iEngage.rest.domain.NewsArticle.fromNewsArticleDetails(article.toNewsArticleDetails()));
+    return new RequestHandledEvent(NewsArticleDomain.fromNewsArticleDetails(article.toNewsArticleDetails()));
   }
 
   @Override
