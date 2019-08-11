@@ -63,8 +63,10 @@ public class NewsEventHandler implements NewsService {
         Photo p = null;
         if (photoDomain.getNodeId() != null)
           p = photoRepo.findById(photoDomain.getNodeId(), 0).orElse(null);
-        if (p == null)
+        if (p == null){
+          photoDomain.setDate(System.currentTimeMillis());
           p = photoRepo.save(Photo.fromPhotoDetails(photoDomain.toPhotoDetails()), 0);
+        }
         if (p != null && p.getNodeId() != null && newsId != null)
           photoRepo.setOwner(p.getNodeId(), newsId);
       });
