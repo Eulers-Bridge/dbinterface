@@ -19,192 +19,180 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * @author Yikai Gong
  */
 
-public class Ticket extends ResourceSupport{
-    private Long ticketId=null;
-    private String name=null;
-    private String logo=null;
-    private Iterable<PhotoDetails> photos=null;
-    private String information=null;
-    private String colour=null;
-    private Iterable<String> candidateNames=null;
-    private Long electionId=null;
-    private String code = null;
-    private Integer numberOfSupporters = null;
+public class Ticket extends ResourceSupport {
+  private Long ticketId = null;
+  private String name = null;
+  private String logo = null;
+  private Iterable<PhotoDetails> photos = null;
+  private String information = null;
+  private String colour = null;
+  private Iterable<String> candidateNames = null;
+  private Long electionId = null;
+  private String code = null;
+  private Integer numberOfSupporters = null;
 
-    private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
+  private static Logger LOG = LoggerFactory.getLogger(Ticket.class);
 
-    public Ticket() {
-        if (LOG.isDebugEnabled()) LOG.debug("constructor()");
+  public Ticket() {
+    if (LOG.isDebugEnabled()) LOG.debug("constructor()");
+  }
+
+  public static Ticket fromTicketDetails(TicketDetails ticketDetails) {
+    Ticket ticket = new Ticket();
+    String simpleName = Ticket.class.getSimpleName();
+    String name = simpleName.substring(0, 1).toLowerCase()
+      + simpleName.substring(1);
+
+    if (ticketDetails != null) {
+      ticket.setTicketId(ticketDetails.getNodeId());
+      ticket.setName(ticketDetails.getName());
+      ticket.setLogo(ticketDetails.getLogo());
+      ticket.setPhotos(ticketDetails.getPhotos());
+      ticket.setInformation(ticketDetails.getInformation());
+      ticket.setColour(ticketDetails.getColour());
+      ticket.setCandidateNames(ticketDetails.getCandidateNames());
+      ticket.setElectionId(ticketDetails.getElectionId());
+      ticket.setCode(ticketDetails.getChararcterCode());
+      ticket.setNumberOfSupporters(ticketDetails.getNumberOfSupporters());
     }
+    // {!begin selfRel}
+    ticket.add(linkTo(TicketController.class).slash(name)
+      .slash(ticket.ticketId).withSelfRel());
+    // {!end selfRel}
+    // {!begin readAll}
+    ticket.add(linkTo(TicketController.class).slash(name + 's')
+      .withRel(RestDomainConstants.READALL_LABEL));
+    // {!end readAll}
+    return ticket;
+  }
 
-    public static Ticket fromTicketDetails(TicketDetails ticketDetails){
-        Ticket ticket = new Ticket();
-        String simpleName = Ticket.class.getSimpleName();
-        String name = simpleName.substring(0, 1).toLowerCase()
-                + simpleName.substring(1);
+  public TicketDetails toTicketDetails() {
+    TicketDetails ticketDetails = new TicketDetails();
+    ticketDetails.setNodeId(getTicketId());
+    ticketDetails.setName(getName());
+    ticketDetails.setLogo(getLogo());
+    ticketDetails.setInformation(getInformation());
+    ticketDetails.setColour(getColour());
+    ticketDetails.setElectionId(getElectionId());
+    ticketDetails.setChararcterCode(getCode());
+    return ticketDetails;
+  }
 
-        if (ticketDetails!=null)
-        {	
-	        ticket.setTicketId(ticketDetails.getNodeId());
-	        ticket.setName(ticketDetails.getName());
-	        ticket.setLogo(ticketDetails.getLogo());
-	        ticket.setPhotos(ticketDetails.getPhotos());
-	        ticket.setInformation(ticketDetails.getInformation());
-	        ticket.setColour(ticketDetails.getColour());
-	        ticket.setCandidateNames(ticketDetails.getCandidateNames());
-	        ticket.setElectionId(ticketDetails.getElectionId());
-	        ticket.setCode(ticketDetails.getChararcterCode());
-            ticket.setNumberOfSupporters(ticketDetails.getNumberOfSupporters());
-        }
-        // {!begin selfRel}
-        ticket.add(linkTo(TicketController.class).slash(name)
-                .slash(ticket.ticketId).withSelfRel());
-        // {!end selfRel}
-        // {!begin readAll}
-        ticket.add(linkTo(TicketController.class).slash(name + 's')
-                .withRel(RestDomainConstants.READALL_LABEL));
-        // {!end readAll}
-        return ticket;
+  public Long getTicketId() {
+    return ticketId;
+  }
+
+  public void setTicketId(Long ticketId) {
+    this.ticketId = ticketId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getLogo() {
+    return logo;
+  }
+
+  public void setLogo(String logo) {
+    this.logo = logo;
+  }
+
+  public Iterable<PhotoDetails> getPhotos() {
+    return photos;
+  }
+
+  public void setPhotos(Iterable<PhotoDetails> pictures) {
+    this.photos = pictures;
+  }
+
+  public String getInformation() {
+    return information;
+  }
+
+  public void setInformation(String information) {
+    this.information = information;
+  }
+
+  public Iterable<String> getCandidateNames() {
+    return candidateNames;
+  }
+
+  public void setCandidateNames(Iterable<String> candidateNames) {
+    this.candidateNames = candidateNames;
+  }
+
+  public Integer getNumberOfSupporters() {
+    return numberOfSupporters;
+  }
+
+  public void setNumberOfSupporters(Integer numberOfSupporters) {
+    this.numberOfSupporters = numberOfSupporters;
+  }
+
+  /**
+   * @return the colour
+   */
+  public String getColour() {
+    return colour;
+  }
+
+  /**
+   * @param colour the colour to set
+   */
+  public void setColour(String colour) {
+    this.colour = colour;
+  }
+
+  /**
+   * @return the electionId
+   */
+  public Long getElectionId() {
+    return electionId;
+  }
+
+  /**
+   * @param electionId the electionId to set
+   */
+  public void setElectionId(Long electionId) {
+    this.electionId = electionId;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "Ticket [ticketId=" + ticketId + ", name=" + name + ", logo="
+      + logo + ", photos=" + photos + ", information="
+      + information + ", candidateIds=" + candidateNames + ", electionId = " + electionId + "]";
+  }
+
+  public static Iterator<Ticket> toTicketsIterator(
+    Iterator<? extends Details> iter) {
+    if (null == iter) return null;
+    ArrayList<Ticket> elections = new ArrayList<Ticket>();
+    while (iter.hasNext()) {
+      TicketDetails dets = (TicketDetails) iter.next();
+      Ticket thisTicket = Ticket.fromTicketDetails(dets);
+      Link self = thisTicket.getLink("self");
+      thisTicket.removeLinks();
+      thisTicket.add(self);
+      elections.add(thisTicket);
     }
-
-    public TicketDetails toTicketDetails(){
-        TicketDetails ticketDetails = new TicketDetails();
-        ticketDetails.setNodeId(getTicketId());
-        ticketDetails.setName(getName());
-        ticketDetails.setLogo(getLogo());
-        ticketDetails.setInformation(getInformation());
-        ticketDetails.setColour(getColour());
-        ticketDetails.setElectionId(getElectionId());
-        ticketDetails.setChararcterCode(getCode());
-        return ticketDetails;
-    }
-
-    public Long getTicketId() {
-        return ticketId;
-    }
-
-    public void setTicketId(Long ticketId) {
-        this.ticketId = ticketId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
-    public Iterable<PhotoDetails> getPhotos()
-    {
-        return photos;
-    }
-
-    public void setPhotos(Iterable<PhotoDetails> pictures)
-    {
-        this.photos = pictures;
-    }
-
-    public String getInformation() {
-        return information;
-    }
-
-    public void setInformation(String information) {
-        this.information = information;
-    }
-
-    public Iterable<String> getCandidateNames() {
-        return candidateNames;
-    }
-
-    public void setCandidateNames(Iterable<String> candidateNames) {
-        this.candidateNames = candidateNames;
-    }
-
-    public Integer getNumberOfSupporters() {
-        return numberOfSupporters;
-    }
-
-    public void setNumberOfSupporters(Integer numberOfSupporters) {
-        this.numberOfSupporters = numberOfSupporters;
-    }
-
-    /**
-	 * @return the colour
-	 */
-	public String getColour()
-	{
-		return colour;
-	}
-
-	/**
-	 * @param colour the colour to set
-	 */
-	public void setColour(String colour)
-	{
-		this.colour = colour;
-	}
-
-	/**
-	 * @return the electionId
-	 */
-	public Long getElectionId()
-	{
-		return electionId;
-	}
-
-	/**
-	 * @param electionId the electionId to set
-	 */
-	public void setElectionId(Long electionId)
-	{
-		this.electionId = electionId;
-	}
-
-    public String getCode()
-    {
-        return code;
-    }
-
-    public void setCode(String code)
-    {
-        this.code = code;
-    }
-
-    /* (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
-	@Override
-	public String toString()
-	{
-		return "Ticket [ticketId=" + ticketId + ", name=" + name + ", logo="
-				+ logo + ", photos=" + photos + ", information="
-				+ information + ", candidateIds=" + candidateNames + ", electionId = "+electionId+"]";
-	}
-
-	public static Iterator<Ticket> toTicketsIterator(
-			Iterator<? extends Details> iter)
-	{
-		if (null==iter) return null;
-		ArrayList <Ticket> elections=new ArrayList<Ticket>();
-		while(iter.hasNext())
-		{
-			TicketDetails dets=(TicketDetails)iter.next();
-			Ticket thisTicket=Ticket.fromTicketDetails(dets);
-			Link self = thisTicket.getLink("self");
-			thisTicket.removeLinks();
-			thisTicket.add(self);
-			elections.add(thisTicket);		
-		}
-		return elections.iterator();
-	}
+    return elections.iterator();
+  }
 
 }

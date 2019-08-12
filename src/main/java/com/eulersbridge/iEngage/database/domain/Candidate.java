@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.candidate.CandidateDetails;
+import com.eulersbridge.iEngage.core.events.users.UserDetails;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
@@ -72,7 +73,7 @@ public class Candidate extends Likeable {
       candidateDetails.setFamilyName(null);
       candidateDetails.setGivenName(null);
       candidateDetails.setEmail(null);
-    } else if (user instanceof User) {
+    } else if (user instanceof User) {  //fixme user will never be instance of User here
       candidateDetails.setUserId(getUser$().getNodeId());
       candidateDetails.setFamilyName(getUser$().getFamilyName());
       candidateDetails.setGivenName(getUser$().getGivenName());
@@ -80,6 +81,9 @@ public class Candidate extends Likeable {
       candidateDetails.setUserDetails(getUser$().toUserDetails());
     } else {
       candidateDetails.setUserId(user.nodeId);
+      UserDetails userDetails = new UserDetails();
+      userDetails.setUserId(user.nodeId);
+      candidateDetails.setUserDetails(userDetails);
     }
 
     if (position == null)

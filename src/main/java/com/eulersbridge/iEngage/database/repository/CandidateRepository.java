@@ -36,15 +36,15 @@ public interface CandidateRepository extends Neo4jRepository<Candidate, Long> {
   Page<Candidate> findByTicketId(@Param("ticketId") Long ticketId, Pageable pageable);
 
 
-  @Query(value = "Match l=(u:'" + DataConstants.USER + "')-[r1:'" + DataConstants.IS_CANDIDATE_LABEL + "']->(c:'"
-    + DataConstants.CANDIDATE + "')-[r2:'" + DataConstants.HAS_CANDIDATE_LABEL + "']->(p:'" + DataConstants.POSITION +
-    "')-[r3:'" + DataConstants.HAS_POSITION_LABEL + "']->(e:'" + DataConstants.ELECTION
-    + "') where id(u)={userId} and id(e)={electionId} return count(l)")
+  @Query(value = "Match l=(u:" + DataConstants.USER + ")-[r1:" + DataConstants.IS_CANDIDATE_LABEL + "]->(c:"
+    + DataConstants.CANDIDATE + ")-[r2:" + DataConstants.HAS_CANDIDATE_LABEL + "]->(p:" + DataConstants.POSITION +
+    ")-[r3:" + DataConstants.HAS_POSITION_LABEL + "]->(e:" + DataConstants.ELECTION
+    + ") where id(u)={userId} and id(e)={electionId} return count(l)")
   Integer countUserToElectionChains(@Param("userId") Long userId, @Param("electionId") Long electionId);
 
 
-  @Query(value = "Match l=(u:'" + DataConstants.USER + "')-[r1:'" + DataConstants.IS_CANDIDATE_LABEL
-    + "']->(c:'" + DataConstants.CANDIDATE + "')-[r2:'" + DataConstants.IS_ON_TICKET_LABEL + "']->(t:'"
-    + DataConstants.TICKET + "') where id(u)={userId} and id(t)={ticketId} return count(l)")
+  @Query(value = "Match l=(u:" + DataConstants.USER + ")-[r1:" + DataConstants.IS_CANDIDATE_LABEL
+    + "]->(c:" + DataConstants.CANDIDATE + ")-[r2:" + DataConstants.IS_ON_TICKET_LABEL + "]->(t:"
+    + DataConstants.TICKET + ") where id(u)={userId} and id(t)={ticketId} return count(l)")
   Integer countUserToTicketChains(@Param("userId") Long userId, @Param("ticketId") Long ticketId);
 }
