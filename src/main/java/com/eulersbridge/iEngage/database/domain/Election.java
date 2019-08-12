@@ -154,6 +154,8 @@ public class Election extends Likeable {
     election.setStart(electionDomain.getStart());
     election.setVotingStart(electionDomain.getStartVoting());
     election.setTitle(electionDomain.getTitle());
+    election.setProcess(electionDomain.getProcess());
+    election.setIntroduction(electionDomain.getIntroduction());
 
     return election;
   }
@@ -167,6 +169,7 @@ public class Election extends Likeable {
     domain.setStartVoting(votingStart);
     domain.setEndVoting(votingEnd);
     domain.setProcess(process);
+    domain.setIntroduction(introduction);
 
     if (getInstitution() != null)
       domain.setInstitutionDomain(new InstitutionDomain(getInstitution().nodeId));
