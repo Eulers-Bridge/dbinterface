@@ -48,10 +48,12 @@ public class ElectionEventHandler implements ElectionService {
     Election election = Election.fromDomain(electionDomain);
     InstitutionDomain institutionDomain = electionDomain.getInstitutionDomain();
     if (institutionDomain != null && institutionDomain.getInstitutionId() != null) {
-      Institution ins = instRepository.findById(institutionDomain.getInstitutionId(), 0).get();
+      Institution ins = instRepository.findById(institutionDomain.getInstitutionId(), 0).orElse(null);
       if (ins == null)
         return RequestHandledEvent.targetNotFound();
       election.setInstitution(ins.toNode());
+    } else{
+      return RequestHandledEvent.badRequest();
     }
     if (!election.isValidForCreation())
       return RequestHandledEvent.badRequest();

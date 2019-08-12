@@ -2,6 +2,7 @@ package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.elections.ElectionDetails;
 import com.eulersbridge.iEngage.rest.domain.ElectionDomain;
+import com.eulersbridge.iEngage.rest.domain.InstitutionDomain;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
@@ -79,7 +80,7 @@ public class Election extends Likeable {
   }
 
   public Institution getInstitution$() {
-    return (Institution) institution;
+    return new Institution(institution.nodeId);
   }
 
   public Node getInstitution() {
@@ -167,8 +168,8 @@ public class Election extends Likeable {
     domain.setEndVoting(votingEnd);
     domain.setProcess(process);
 
-    if (getInstitution$() != null)
-      domain.setInstitutionDomain(getInstitution$().toDomain());
+    if (getInstitution() != null)
+      domain.setInstitutionDomain(new InstitutionDomain(getInstitution().nodeId));
     return domain;
   }
 
