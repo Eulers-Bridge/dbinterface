@@ -2,7 +2,6 @@ package com.eulersbridge.iEngage.rest.domain;
 
 import com.eulersbridge.iEngage.core.events.Details;
 import com.eulersbridge.iEngage.core.events.events.EventDetails;
-import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
 import com.eulersbridge.iEngage.rest.controller.EventController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +10,9 @@ import org.springframework.hateoas.ResourceSupport;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -18,14 +20,14 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * @author Yikai Gong
  */
 
-public class Event extends ResourceSupport {
+public class EventDomain extends ResourceSupport {
   private Long eventId;
   private String name;
   private String location;
   private Long starts;
   private Long ends;
   private String description;
-  private Iterable<PhotoDetails> photos;
+  private List<PhotoDomain> photos;
   private String volunteerPositions[];
   private Long created;
   private String organizer;
@@ -34,15 +36,15 @@ public class Event extends ResourceSupport {
   private Long modified;
   private UserProfile creatorProfile;
 
-  private static Logger LOG = LoggerFactory.getLogger(Event.class);
+  private static Logger LOG = LoggerFactory.getLogger(EventDomain.class);
 
-  public Event() {
+  public EventDomain() {
     if (LOG.isTraceEnabled()) LOG.trace("constructor()");
   }
 
-  public static Event fromEventDetails(EventDetails eventDetails) {
-    Event event = new Event();
-    String simpleName = Event.class.getSimpleName();
+  public static EventDomain fromEventDetails(EventDetails eventDetails) {
+    EventDomain event = new EventDomain();
+    String simpleName = EventDomain.class.getSimpleName();
     String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
 
     event.setEventId(eventDetails.getEventId());
@@ -51,7 +53,11 @@ public class Event extends ResourceSupport {
     event.setStarts(eventDetails.getStarts());
     event.setEnds(eventDetails.getEnds());
     event.setDescription(eventDetails.getDescription());
-    event.setPhotos(eventDetails.getPhotos());
+
+    if (eventDetails.getPhotos() != null)
+      event.photos = StreamSupport.stream(eventDetails.getPhotos().spliterator(), false)
+        .map(PhotoDomain::fromPhotoDetails).collect(Collectors.toList());
+
     event.setVolunteerPositions(eventDetails.getVolunteerPositions());
     event.setCreated(eventDetails.getCreated());
     event.setOrganizer(eventDetails.getOrganizer());
@@ -94,7 +100,7 @@ public class Event extends ResourceSupport {
     eventDetails.setStarts(getStarts());
     eventDetails.setEnds(getEnds());
     eventDetails.setDescription(getDescription());
-    eventDetails.setPhotos(getPhotos());
+//    eventDetails.setPhotos(getPhotos());
     eventDetails.setVolunteerPositions(getVolunteerPositions());
     eventDetails.setCreated(getCreated());
     eventDetails.setOrganizer(getOrganizer());
@@ -156,14 +162,14 @@ public class Event extends ResourceSupport {
   /**
    * @return the photos
    */
-  public Iterable<PhotoDetails> getPhotos() {
+  public List<PhotoDomain> getPhotos() {
     return photos;
   }
 
   /**
    * @param photos the photos to set
    */
-  public void setPhotos(Iterable<PhotoDetails> photos) {
+  public void setPhotos(List<PhotoDomain> photos) {
     this.photos = photos;
   }
 
@@ -235,12 +241,12 @@ public class Event extends ResourceSupport {
     this.institutionId = institutionId;
   }
 
-  public static Iterator<Event> toEventsIterator(Iterator<? extends Details> iter) {
+  public static Iterator<EventDomain> toEventsIterator(Iterator<? extends Details> iter) {
     if (null == iter) return null;
-    ArrayList<Event> events = new ArrayList<Event>();
+    ArrayList<EventDomain> events = new ArrayList<EventDomain>();
     while (iter.hasNext()) {
       EventDetails dets = (EventDetails) iter.next();
-      Event thisEvent = Event.fromEventDetails(dets);
+      EventDomain thisEvent = EventDomain.fromEventDetails(dets);
       Link self = thisEvent.getLink("self");
       thisEvent.removeLinks();
       thisEvent.add(self);

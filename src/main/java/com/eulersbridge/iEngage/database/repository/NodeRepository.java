@@ -19,4 +19,7 @@ public interface NodeRepository extends Neo4jRepository<Node, Long> {
 
   @Query("Match (s),(t) where id(s)={sourceId} And id(t)={targetId} create unique (s)-[r:"+ DataConstants.HAS_NEWS_LABEL+"]->(t)")
   void hasNews (@Param("sourceId") Long sourceId, @Param("targetId") Long targetId);
+
+  @Query("Match (s),(t) where id(s)={eventId} And id(t)={newsFeedId} create unique (s)-[r:"+ DataConstants.HAS_EVENT_LABEL+"]->(t)")
+  void hasEvent (@Param("eventId") Long eventId, @Param("newsFeedId") Long newsFeedId);
 }

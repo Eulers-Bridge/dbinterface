@@ -40,46 +40,34 @@ public class EventController {
   // Create
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.EVENT_LABEL)
   public @ResponseBody
-  ResponseEntity<Event> createEvent(
-    @RequestBody Event event) {
+  ResponseEntity<EventDomain> createEvent(@RequestBody EventDomain eventDomain) {
     if (LOG.isInfoEnabled())
-      LOG.info("attempting to create event " + event);
-    CreateEventEvent createEventEvent = new CreateEventEvent(
-      event.toEventDetails());
-    EventCreatedEvent eventCreatedEvent = eventService
-      .createEvent(createEventEvent);
-    ResponseEntity<Event> response;
-    if ((null == eventCreatedEvent)
-      || (eventCreatedEvent.getEventId() == null)) {
-      response = new ResponseEntity<Event>(HttpStatus.BAD_REQUEST);
-    } else if ((!eventCreatedEvent.isInstitutionFound()) || (!eventCreatedEvent.isCreatorFound())) {
-      response = new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
-    } else {
-      Event result = Event.fromEventDetails((EventDetails) eventCreatedEvent
-        .getDetails());
-      if (LOG.isDebugEnabled()) LOG.debug("event" + result.toString());
-      response = new ResponseEntity<Event>(result, HttpStatus.CREATED);
-    }
-    return response;
+      LOG.info("attempting to create eventDomain " + eventDomain);
+    String userEmail = Util.getUserEmailFromSession();
+    eventDomain.setOrganizerEmail(userEmail);
+
+    RequestHandledEvent<EventDomain> requestHandledEvent = eventService.createEvent(eventDomain);
+
+    return requestHandledEvent.toResponseEntity();
   }
 
   // Get
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.EVENT_LABEL
     + "/{eventId}")
   public @ResponseBody
-  ResponseEntity<Event> findEvent(
+  ResponseEntity<EventDomain> findEvent(
     @PathVariable Long eventId) {
     if (LOG.isInfoEnabled())
-      LOG.info(eventId + " attempting to get event. ");
+      LOG.info(eventId + " attempting to get eventDomain. ");
     RequestReadEventEvent requestReadEventEvent = new RequestReadEventEvent(
       eventId);
     ReadEvent readEventEvent = eventService
       .readEvent(requestReadEventEvent);
     if (readEventEvent.isEntityFound()) {
-      Event event = Event.fromEventDetails((EventDetails) readEventEvent.getDetails());
-      return new ResponseEntity<Event>(event, HttpStatus.OK);
+      EventDomain event = EventDomain.fromEventDetails((EventDetails) readEventEvent.getDetails());
+      return new ResponseEntity<EventDomain>(event, HttpStatus.OK);
     } else {
-      return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<EventDomain>(HttpStatus.NOT_FOUND);
     }
   }
 
@@ -119,7 +107,7 @@ public class EventController {
     if (!evtEvent.isEntityFound()) {
       response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
-      Iterator<Event> evts = Event.toEventsIterator(evtEvent.getDetails()
+      Iterator<EventDomain> evts = EventDomain.toEventsIterator(evtEvent.getDetails()
         .iterator());
       WrappedDomainList events = WrappedDomainList.fromIterator(evts,
         evtEvent.getTotalItems(), evtEvent.getTotalPages());
@@ -133,10 +121,10 @@ public class EventController {
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.EVENT_LABEL
     + "/{eventId}")
   public @ResponseBody
-  ResponseEntity<Event> updateEvent(
-    @PathVariable Long eventId, @RequestBody Event event) {
+  ResponseEntity<EventDomain> updateEvent(
+    @PathVariable Long eventId, @RequestBody EventDomain event) {
     if (LOG.isInfoEnabled())
-      LOG.info("Attempting to update event. " + eventId);
+      LOG.info("Attempting to update eventDomain. " + eventId);
     UpdatedEvent eventUpdatedEvent = eventService
       .updateEvent(new UpdateEventEvent(eventId, event
         .toEventDetails()));
@@ -144,16 +132,16 @@ public class EventController {
       if (LOG.isDebugEnabled())
         LOG.debug("eventUpdatedEvent - " + eventUpdatedEvent);
       if (eventUpdatedEvent.isEntityFound()) {
-        Event resultEvent = Event.fromEventDetails((EventDetails) eventUpdatedEvent
+        EventDomain resultEvent = EventDomain.fromEventDetails((EventDetails) eventUpdatedEvent
           .getDetails());
         if (LOG.isDebugEnabled())
           LOG.debug("resultEvent = " + resultEvent);
-        return new ResponseEntity<Event>(resultEvent, HttpStatus.OK);
+        return new ResponseEntity<EventDomain>(resultEvent, HttpStatus.OK);
       } else {
-        return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<EventDomain>(HttpStatus.NOT_FOUND);
       }
     } else {
-      return new ResponseEntity<Event>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<EventDomain>(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -164,7 +152,7 @@ public class EventController {
   ResponseEntity<Response> deleteEvent(
     @PathVariable Long eventId) {
     if (LOG.isInfoEnabled())
-      LOG.info("Attempting to delete event. " + eventId);
+      LOG.info("Attempting to delete eventDomain. " + eventId);
     ResponseEntity<Response> response;
     DeletedEvent eventDeletedEvent = eventService
       .deleteEvent(new DeleteEventEvent(eventId));
@@ -185,14 +173,14 @@ public class EventController {
   }
 
   /**
-   * Is passed all the necessary data to unlike an event from the database.
-   * The request must be a PUT with the event id presented along with the
+   * Is passed all the necessary data to unlike an eventDomain from the database.
+   * The request must be a PUT with the eventDomain id presented along with the
    * userid as the final portion of the URL.
    * <p/>
    * This method will return the a boolean result.
    *
-   * @param email the eventId eventId of the event object to be unliked.
-   * @param email the email address of the user unliking the event.
+   * @param email the eventId eventId of the eventDomain object to be unliked.
+   * @param email the email address of the user unliking the eventDomain.
    * @return the success or failure.
    */
   @RequestMapping(method = RequestMethod.DELETE, value = ControllerConstants.EVENT_LABEL
@@ -206,14 +194,14 @@ public class EventController {
   }
 
   /**
-   * Is passed all the necessary data to like an event from the database. The
-   * request must be a PUT with the event id presented along with the userid
+   * Is passed all the necessary data to like an eventDomain from the database. The
+   * request must be a PUT with the eventDomain id presented along with the userid
    * as the final portion of the URL.
    * <p/>
    * This method will return the a boolean result.
    *
-   * @param email the eventId eventId of the event object to be liked.
-   * @param email the email address of the user liking the event.
+   * @param email the eventId eventId of the eventDomain object to be liked.
+   * @param email the email address of the user liking the eventDomain.
    * @return the success or failure.
    */
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.EVENT_LABEL
@@ -225,7 +213,7 @@ public class EventController {
       LOG.info("Attempting to have " + email + " like news article. "
         + eventId);
     LikedEvent event = likesService
-      .like(new LikeEvent(eventId, email, Event.class));
+      .like(new LikeEvent(eventId, email, EventDomain.class));
 
     ResponseEntity<Response> response;
 
@@ -258,7 +246,7 @@ public class EventController {
     pageNumber = Integer.parseInt(page);
     pageLength = Integer.parseInt(pageSize);
     if (LOG.isInfoEnabled())
-      LOG.info("Attempting to retrieve liked users from event " + eventId
+      LOG.info("Attempting to retrieve liked users from eventDomain " + eventId
         + '.');
     Direction sortDirection = Direction.DESC;
     if (direction.equalsIgnoreCase("asc")) sortDirection = Direction.ASC;

@@ -3,13 +3,9 @@ package com.eulersbridge.iEngage.core.services;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.events.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.EventService;
-import com.eulersbridge.iEngage.database.domain.Event;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.NewsFeed;
-import com.eulersbridge.iEngage.database.domain.User;
-import com.eulersbridge.iEngage.database.repository.EventRepository;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.UserRepository;
+import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.repository.*;
+import com.eulersbridge.iEngage.rest.domain.EventDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,47 +26,61 @@ public class EventEventHandler implements EventService {
   private static Logger LOG = LoggerFactory
     .getLogger(EventEventHandler.class);
 
+  private NodeRepository nodeRepository;
   private EventRepository eventRepository;
   private InstitutionRepository institutionRepository;
   private UserRepository userRepo;
+  private PhotoRepository photoRepo;
 
   @Autowired
   public EventEventHandler(EventRepository eventRepository,
                            InstitutionRepository institutionRepository,
-                           UserRepository userRepo) {
+                           UserRepository userRepo,
+                           NodeRepository nodeRepository,
+                           PhotoRepository photoRepo) {
     this.eventRepository = eventRepository;
     this.institutionRepository = institutionRepository;
     this.userRepo = userRepo;
+    this.nodeRepository = nodeRepository;
+    this.photoRepo = photoRepo;
   }
 
   @Override
-  public EventCreatedEvent createEvent(CreateEventEvent createEventEvent) {
-    EventDetails eventDetails = (EventDetails) createEventEvent.getDetails();
-    Event event = Event.fromEventDetails(eventDetails);
-    Long instId = eventDetails.getInstitutionId();
+  public RequestHandledEvent<EventDomain> createEvent(EventDomain eventDomain) {
+    eventDomain.setCreated(System.currentTimeMillis());
+    if (null == eventDomain.getInstitutionId() || null == eventDomain.getOrganizerEmail())
+      return RequestHandledEvent.badRequest();
+    NewsFeed nf = institutionRepository.findNewsFeedByInstitutionId(eventDomain.getInstitutionId());
+    if (null == nf)
+      return RequestHandledEvent.targetNotFound();
+    User creator = userRepo.findByEmail(eventDomain.getOrganizerEmail(), 0);
+    if (null == creator)
+      return RequestHandledEvent.userNotFound();
 
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding institution with instId = " + instId);
-    Institution inst = institutionRepository.findById(instId, 0).get();
-    NewsFeed nf = institutionRepository.findNewsFeedByInstitutionId(instId);
-    User creator = userRepo.findByEmail(eventDetails.getOrganizerEmail(), 0);
-    if (creator == null)
-      return EventCreatedEvent.creatorNotFound(eventDetails.getEventId());
+    Event result = eventRepository.save(Event.fromEventDetails(eventDomain.toEventDetails()), 0);
 
-    if (LOG.isDebugEnabled()) LOG.debug("news feed - " + nf);
-
-    EventCreatedEvent eventCreatedEvent;
-    if ((inst != null) && (nf != null)) {
-      event.setNewsFeed(nf.toNode());
-      event.setCreator(creator.toNode());
-      Event result = eventRepository.save(event);
-      eventCreatedEvent = new EventCreatedEvent(result.getNodeId(),
-        result.toEventDetails());
-    } else {
-      eventCreatedEvent = EventCreatedEvent
-        .institutionNotFound(eventDetails.getInstitutionId());
+    final Long eventId = result.getNodeId();
+    nodeRepository.createdBy(eventId, creator.getNodeId());
+    nodeRepository.hasEvent(eventId, nf.getNodeId());
+    if (eventDomain.getPhotos() != null && !eventDomain.getPhotos().isEmpty()) {
+      eventDomain.getPhotos().forEach(photoDomain -> {
+        Photo p = null;
+        if (photoDomain.getNodeId() != null)
+          p = photoRepo.findById(photoDomain.getNodeId(), 0).orElse(null);
+        if (p == null){
+          photoDomain.setDate(System.currentTimeMillis());
+          p = photoRepo.save(Photo.fromPhotoDetails(photoDomain.toPhotoDetails()), 0);
+        }
+        if (p != null && p.getNodeId() != null && eventId != null)
+          photoRepo.setOwner(p.getNodeId(), eventId);
+      });
     }
-    return eventCreatedEvent;
+
+    result = eventRepository.findById(result.getNodeId()).orElse(null);
+    if (result == null)
+      return RequestHandledEvent.failed();
+
+    return  new RequestHandledEvent<>(EventDomain.fromEventDetails(result.toEventDetails()));
   }
 
   @Override

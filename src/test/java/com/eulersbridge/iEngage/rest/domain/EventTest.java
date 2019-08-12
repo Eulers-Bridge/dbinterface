@@ -33,7 +33,7 @@ public class EventTest {
     private Long institutionId = 15l;
 
     private EventDetails eventDetails;
-    private Event event;
+    private EventDomain event;
 
     @Before
     public void setUp() throws Exception 
@@ -43,7 +43,7 @@ public class EventTest {
 		
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     
-		event = new Event();
+		event = new EventDomain();
         assertNotNull("constructor returns null", event);
         eventDetails = new EventDetails();
         eventDetails.setEventId(eventId);
@@ -68,13 +68,13 @@ public class EventTest {
 
     @Test
     public void testFromEventDetails() throws Exception {
-        Event event1 = Event.fromEventDetails(eventDetails);
+        EventDomain event1 = EventDomain.fromEventDetails(eventDetails);
         assertNotNull("event is null", event1);
     }
 
     @Test
     public void testToEventDetails() throws Exception {
-        Event event1 = Event.fromEventDetails(eventDetails);
+        EventDomain event1 = EventDomain.fromEventDetails(eventDetails);
         EventDetails eventDetails1 = event1.toEventDetails();
         assertNotNull("eventDetails is null", eventDetails1);
         assertEquals("eventDetail does not match", eventDetails1, eventDetails);
@@ -124,12 +124,6 @@ public class EventTest {
         assertEquals("description does not match", des, description);
     }
 
-    @Test
-    public void testGetPhotos() throws Exception {
-        event.setPhotos(photos);
-        Iterable<PhotoDetails> pic = event.getPhotos();
-        assertEquals("picture does not match", pic, photos);
-    }
 
     @Test
     public void testGetVolunteerPositions() throws Exception {

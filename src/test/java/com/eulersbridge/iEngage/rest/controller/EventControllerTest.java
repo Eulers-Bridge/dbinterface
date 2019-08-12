@@ -15,6 +15,7 @@ import com.eulersbridge.iEngage.database.domain.Event;
 import com.eulersbridge.iEngage.database.domain.Fixture.DatabaseDataFixture;
 import com.eulersbridge.iEngage.database.domain.User;
 import com.eulersbridge.iEngage.rest.controller.fixture.RestDataFixture;
+import com.eulersbridge.iEngage.rest.domain.EventDomain;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -125,89 +126,7 @@ public class EventControllerTest {
     assertNotNull("Not yet implemented", eventController);
   }
 
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.rest.controller.EventController#createEvent(com.eulersbridge.iEngage.rest.domain.Event)}.
-   */
-  @Test
-  public final void testCreateEvent() throws Exception {
-    if (LOG.isDebugEnabled()) LOG.debug("performingCreateEvent()");
-    EventDetails dets = DatabaseDataFixture.populateEvent1().toEventDetails();
-    EventCreatedEvent testData = new EventCreatedEvent(dets.getEventId(), dets);
-    String content = setupContent(dets);
-    String returnedContent = setupReturnedContent(dets);
 
-    when(eventService.createEvent(any(CreateEventEvent.class))).thenReturn(testData);
-    this.mockMvc.perform(post(urlPrefix + "/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-      .andDo(print())
-      .andExpect(jsonPath("$.eventId", is(dets.getEventId().intValue())))
-      .andExpect(jsonPath("$.name", is(dets.getName())))
-      .andExpect(jsonPath("$.location", is(dets.getLocation())))
-      .andExpect(jsonPath("$.starts", is(dets.getStarts().intValue())))
-      .andExpect(jsonPath("$.ends", is(dets.getEnds().intValue())))
-      .andExpect(jsonPath("$.description", is(dets.getDescription())))
-//		.andExpect(jsonPath("$.picture",is(dets.getPhotos())))
-      .andExpect(jsonPath("$.volunteerPositions", is(dets.getVolunteerPositions())))
-      .andExpect(jsonPath("$.created", is(dets.getCreated().intValue())))
-      .andExpect(jsonPath("$.modified", is(dets.getModified().intValue())))
-      .andExpect(jsonPath("$.organizer", is(dets.getOrganizer())))
-      .andExpect(jsonPath("$.organizerEmail", is(dets.getOrganizerEmail())))
-      .andExpect(jsonPath("$.institutionId", is(dets.getInstitutionId().intValue())))
-      .andExpect(jsonPath("$.links[0].rel", is("self")))
-      .andExpect(jsonPath("$.links[1].rel", is("Previous")))
-      .andExpect(jsonPath("$.links[2].rel", is("Next")))
-      .andExpect(jsonPath("$.links[3].rel", is("Liked By")))
-      .andExpect(jsonPath("$.links[4].rel", is("UnLiked By")))
-      .andExpect(jsonPath("$.links[5].rel", is("Likes")))
-      .andExpect(jsonPath("$.links[6].rel", is("Read all")))
-//		.andExpect(content().string(returnedContent))
-      .andExpect(status().isCreated());
-  }
-
-  @Test
-  public final void testCreateEventInvalidContent() throws Exception {
-    if (LOG.isDebugEnabled()) LOG.debug("performingCreateEvent()");
-    EventCreatedEvent testData = null;
-    EventDetails dets = DatabaseDataFixture.populateEvent1().toEventDetails();
-    String content = setupInvalidContent(dets);
-    when(eventService.createEvent(any(CreateEventEvent.class))).thenReturn(testData);
-    this.mockMvc.perform(post(urlPrefix + "/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-      .andDo(print())
-      .andExpect(status().isBadRequest());
-  }
-
-  @Test
-  public final void testCreateEventNoContent() throws Exception {
-    if (LOG.isDebugEnabled()) LOG.debug("performingCreateEvent()");
-    EventCreatedEvent testData = null;
-    when(eventService.createEvent(any(CreateEventEvent.class))).thenReturn(testData);
-    this.mockMvc.perform(post(urlPrefix + "/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-      .andDo(print())
-      .andExpect(status().isBadRequest());
-  }
-
-  @Test
-  public final void testCreateEventNotFound() throws Exception {
-    if (LOG.isDebugEnabled()) LOG.debug("performingCreateEvent()");
-    EventDetails dets = DatabaseDataFixture.populateEvent1().toEventDetails();
-    EventCreatedEvent testData = EventCreatedEvent.institutionNotFound(dets.getInstitutionId());
-    String content = setupContent(dets);
-    when(eventService.createEvent(any(CreateEventEvent.class))).thenReturn(testData);
-    this.mockMvc.perform(post(urlPrefix + "/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-      .andDo(print())
-      .andExpect(status().isNotFound());
-  }
-
-  @Test
-  public final void testCreateEventNullIdReturned() throws Exception {
-    if (LOG.isDebugEnabled()) LOG.debug("performingCreateEvent()");
-    EventDetails dets = DatabaseDataFixture.populateEvent1().toEventDetails();
-    EventCreatedEvent testData = new EventCreatedEvent(null, dets);
-    String content = setupContent(dets);
-    when(eventService.createEvent(any(CreateEventEvent.class))).thenReturn(testData);
-    this.mockMvc.perform(post(urlPrefix + "/").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(content))
-      .andDo(print())
-      .andExpect(status().isBadRequest());
-  }
 
 
   /**
@@ -316,7 +235,7 @@ public class EventControllerTest {
   }
 
   /**
-   * Test method for {@link com.eulersbridge.iEngage.rest.controller.EventController#updateEvent(java.lang.Long, com.eulersbridge.iEngage.rest.domain.Event)}.
+   * Test method for {@link com.eulersbridge.iEngage.rest.controller.EventController#updateEvent(java.lang.Long, EventDomain)}.
    */
   @Test
   public final void testUpdateEvent() throws Exception {
