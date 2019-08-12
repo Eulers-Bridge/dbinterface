@@ -49,7 +49,6 @@ public class ElectionDomainTest {
     assertEquals("", election.getEnd(), electionTest.getEnd());
     assertEquals("", election.getVotingStart(), electionTest.getVotingStart());
     assertEquals("", election.getVotingEnd(), electionTest.getVotingEnd());
-    assertEquals("", election.getInstitution$(), electionTest.getInstitution$());
   }
 
   /**
@@ -202,26 +201,6 @@ public class ElectionDomainTest {
     assertEquals("", process, electionTest.getProcess());
   }
 
-  /**
-   * Test method for {@link Election#getInstitution$()}.
-   */
-  @Test
-  public final void testGetInstitution() {
-    Election electionTest = new Election(election.getNodeId(), election.getTitle(), election.getStart(), election.getEnd(), election.getVotingStart(), election.getVotingEnd(), election.getInstitution$(), election.getIntroduction(), election.getProcess());
-    assertEquals("", election.getInstitution$(), electionTest.getInstitution$());
-  }
-
-  /**
-   * Test method for {@link com.eulersbridge.iEngage.database.domain.Election#setInstitution(com.eulersbridge.iEngage.database.domain.Institution)}.
-   */
-  @Test
-  public final void testSetInstitution() {
-    Institution inst = DatabaseDataFixture.populateInstMonashUni();
-    Election electionTest = new Election(election.getNodeId(), election.getTitle(), election.getStart(), election.getEnd(), election.getVotingStart(), election.getVotingEnd(), election.getInstitution$(), election.getIntroduction(), election.getProcess());
-    assertEquals("", election.getInstitution$(), electionTest.getInstitution$());
-    electionTest.setInstitution(inst);
-    assertEquals("", inst, electionTest.getInstitution$());
-  }
 
   /**
    * Test method for {@link com.eulersbridge.iEngage.database.domain.Election#toString()}.
