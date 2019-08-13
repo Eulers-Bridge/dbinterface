@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumDetails;
+import com.eulersbridge.iEngage.rest.domain.PhotoAlbumDomain;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
@@ -39,6 +40,29 @@ public class PhotoAlbum extends Likeable {
 
   public PhotoAlbum() {
     if (LOG.isTraceEnabled()) LOG.trace("Constructor");
+  }
+
+  public static PhotoAlbum fromDomain(PhotoAlbumDomain domain) {
+    PhotoAlbum p = new PhotoAlbum();
+    p.setName(domain.getName());
+    p.setDescription(domain.getDescription());
+    p.setLocation(domain.getLocation());
+    p.setThumbNailUrl(domain.getThumbNailUrl());
+    p.setCreated(domain.getCreated());
+    return p;
+  }
+
+  public PhotoAlbumDomain toDomain(){
+    PhotoAlbumDomain domain = new PhotoAlbumDomain();
+    domain.setName(name);
+    domain.setDescription(description);
+    domain.setLocation(location);
+    domain.setThumbNailUrl(thumbNailUrl);
+    domain.setCreated(created);
+    domain.setModified(modified);
+    domain.setCreatorId(creator.nodeId);
+    domain.setOwnerId(owner.nodeId);
+    return domain;
   }
 
   /**
@@ -104,7 +128,7 @@ public class PhotoAlbum extends Likeable {
     return creator;
   }
 
-  public User getCreator$(){
+  public User getCreator$() {
     return (User) creator;
   }
 

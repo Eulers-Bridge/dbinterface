@@ -3,18 +3,14 @@
  */
 package com.eulersbridge.iEngage.core.services;
 
+import com.eulersbridge.iEngage.core.beans.Util;
 import com.eulersbridge.iEngage.core.events.*;
 import com.eulersbridge.iEngage.core.events.photo.*;
 import com.eulersbridge.iEngage.core.events.photoAlbums.*;
 import com.eulersbridge.iEngage.core.services.interfacePack.PhotoService;
-import com.eulersbridge.iEngage.database.domain.Institution;
-import com.eulersbridge.iEngage.database.domain.Node;
-import com.eulersbridge.iEngage.database.domain.Photo;
-import com.eulersbridge.iEngage.database.domain.PhotoAlbum;
-import com.eulersbridge.iEngage.database.repository.InstitutionRepository;
-import com.eulersbridge.iEngage.database.repository.NodeRepository;
-import com.eulersbridge.iEngage.database.repository.PhotoAlbumRepository;
-import com.eulersbridge.iEngage.database.repository.PhotoRepository;
+import com.eulersbridge.iEngage.database.domain.*;
+import com.eulersbridge.iEngage.database.repository.*;
+import com.eulersbridge.iEngage.rest.domain.PhotoAlbumDomain;
 import com.eulersbridge.iEngage.rest.domain.PhotoDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,14 +39,17 @@ public class PhotoEventHandler implements PhotoService {
   private final PhotoAlbumRepository photoAlbumRepository;
   private final NodeRepository nodeRepository;
   private final InstitutionRepository insRepo;
+  private final UserRepository userRepo;
 
   @Autowired
-  public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository, NodeRepository nodeRepository, InstitutionRepository insRepo) {
+  public PhotoEventHandler(PhotoRepository photoRepository, PhotoAlbumRepository photoAlbumRepository, NodeRepository nodeRepository, InstitutionRepository insRepo,
+                           UserRepository userRepo) {
     super();
     this.photoRepository = photoRepository;
     this.photoAlbumRepository = photoAlbumRepository;
     this.nodeRepository = nodeRepository;
     this.insRepo = insRepo;
+    this.userRepo = userRepo;
   }
 
   @Override
@@ -186,37 +186,28 @@ public class PhotoEventHandler implements PhotoService {
   }
 
   @Override
-  public PhotoAlbumCreatedEvent createPhotoAlbum(
-    CreatePhotoAlbumEvent createPhotoAlbumEvent) {
-    PhotoAlbumDetails photoAlbumDetails = (PhotoAlbumDetails) createPhotoAlbumEvent.getDetails();
-    PhotoAlbum photoAlbum = PhotoAlbum.fromPhotoAlbumDetails(photoAlbumDetails);
+  public RequestHandledEvent<PhotoAlbumDomain> createPhotoAlbum(
+    PhotoAlbumDomain photoAlbumDomain) {
 
-    Long ownerId = photoAlbumDetails.getOwnerId();
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding owner with ownerId = " + ownerId);
-    Node owner = null;
-    if (ownerId != null) owner = nodeRepository.findById(ownerId).get();
+    Long ownerId = photoAlbumDomain.getOwnerId();
+    if (ownerId == null || photoAlbumDomain.getName() == null)
+      return RequestHandledEvent.badRequest();
+    Node owner = nodeRepository.findById(ownerId).orElse(null);
+    if (owner == null)
+      return RequestHandledEvent.targetNotFound();
+    String creactorEmail = Util.getUserEmailFromSession();
+    User creator = userRepo.findByEmail(creactorEmail, 0);
+    if (creator == null)
+      return RequestHandledEvent.userNotFound();
 
-    PhotoAlbumCreatedEvent photoAlbumCreatedEvent;
-    if (null == owner) {
-      photoAlbumCreatedEvent = PhotoAlbumCreatedEvent.ownerNotFound(photoAlbumDetails.getOwnerId());
-    } else {
-      photoAlbum.setOwner(new Node(owner.getNodeId()));
+    PhotoAlbum photoAlbum = PhotoAlbum.fromDomain(photoAlbumDomain);
+    photoAlbum.setOwner(owner);
+    photoAlbum.setCreator(new Node(creator.getNodeId()));
 
-      Long creatorId = photoAlbumDetails.getCreatorId();
-      if (LOG.isDebugEnabled())
-        LOG.debug("Finding owner with creatorId = " + creatorId);
-      Node creator = null;
-      if (creatorId != null) creator = nodeRepository.findById(creatorId).get();
-      if (null == creator) {
-        photoAlbumCreatedEvent = PhotoAlbumCreatedEvent.creatorNotFound(photoAlbumDetails.getCreatorId());
-      } else {
-        photoAlbum.setCreator(new Node(creator.getNodeId()));
-        PhotoAlbum result = photoAlbumRepository.save(photoAlbum);
-        photoAlbumCreatedEvent = new PhotoAlbumCreatedEvent(result.toPhotoAlbumDetails());
-      }
-    }
-    return photoAlbumCreatedEvent;
+    PhotoAlbum result = photoAlbumRepository.save(photoAlbum, 1);
+    if (result == null)
+      return RequestHandledEvent.failed();
+    return new RequestHandledEvent<>(result.toDomain(), HttpStatus.CREATED);
   }
 
   @Override

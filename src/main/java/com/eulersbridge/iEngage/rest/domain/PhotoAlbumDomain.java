@@ -20,7 +20,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  * @author Greg Newitt
  *
  */
-public class PhotoAlbum extends ResourceSupport
+public class PhotoAlbumDomain extends ResourceSupport
 {
     private Long nodeId;
     private String name;
@@ -32,7 +32,7 @@ public class PhotoAlbum extends ResourceSupport
     private Long ownerId;
     private Long modified;
 
-    private static Logger LOG = LoggerFactory.getLogger(PhotoAlbum.class);
+    private static Logger LOG = LoggerFactory.getLogger(PhotoAlbumDomain.class);
 
 	/**
 	 * @return the nodeId
@@ -185,10 +185,10 @@ public class PhotoAlbum extends ResourceSupport
         return photoAlbumDetails;
 	}
 
-	public static PhotoAlbum fromPhotoAlbumDetails(PhotoAlbumDetails details)
+	public static PhotoAlbumDomain fromPhotoAlbumDetails(PhotoAlbumDetails details)
 	{
-    	PhotoAlbum photoAlbum = new PhotoAlbum();
-        String simpleName=PhotoAlbum.class.getSimpleName();
+    	PhotoAlbumDomain photoAlbum = new PhotoAlbumDomain();
+        String simpleName= PhotoAlbumDomain.class.getSimpleName();
         String name = simpleName.substring(0, 1).toLowerCase()+simpleName.substring(1);
         photoAlbum.setNodeId(details.getNodeId());
         photoAlbum.setName(details.getName());
@@ -216,14 +216,14 @@ public class PhotoAlbum extends ResourceSupport
         return photoAlbum;
 	}
 	
-	public static Iterator<PhotoAlbum> toPhotoAlbumsIterator( Iterator<? extends Details> iter)
+	public static Iterator<PhotoAlbumDomain> toPhotoAlbumsIterator(Iterator<? extends Details> iter)
 	{
 		if (null==iter) return null;
-		ArrayList <PhotoAlbum> photoAlbums=new ArrayList<PhotoAlbum>();
+		ArrayList <PhotoAlbumDomain> photoAlbums=new ArrayList<PhotoAlbumDomain>();
 		while(iter.hasNext())
 		{
 			PhotoAlbumDetails dets=(PhotoAlbumDetails)iter.next();
-			PhotoAlbum thisPhotoAlbum=PhotoAlbum.fromPhotoAlbumDetails(dets);
+			PhotoAlbumDomain thisPhotoAlbum= PhotoAlbumDomain.fromPhotoAlbumDetails(dets);
 			Link self = thisPhotoAlbum.getLink("self");
 			thisPhotoAlbum.removeLinks();
 			thisPhotoAlbum.add(self);

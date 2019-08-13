@@ -9,6 +9,7 @@ import com.eulersbridge.iEngage.core.events.photoAlbums.CreatePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.DeletePhotoAlbumEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.PhotoAlbumCreatedEvent;
 import com.eulersbridge.iEngage.core.events.photoAlbums.UpdatePhotoAlbumEvent;
+import com.eulersbridge.iEngage.rest.domain.PhotoAlbumDomain;
 import com.eulersbridge.iEngage.rest.domain.PhotoDomain;
 import com.eulersbridge.iEngage.security.SecurityConstants;
 import org.springframework.data.domain.Sort.Direction;
@@ -24,7 +25,7 @@ public interface PhotoService {
   public PhotoCreatedEvent createPhoto(CreatePhotoEvent createPhotoEvent);
 
   @PreAuthorize("hasAnyRole('" + SecurityConstants.USER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
-  public PhotoAlbumCreatedEvent createPhotoAlbum(CreatePhotoAlbumEvent createPhotoAlbumEvent);
+  public RequestHandledEvent createPhotoAlbum(PhotoAlbumDomain photoAlbumDomain);
 
   @PreAuthorize("hasRole('" + SecurityConstants.USER_ROLE + "')")
   public ReadEvent readPhoto(ReadPhotoEvent readPhotoEvent);

@@ -66,7 +66,7 @@ public class PhotoController {
   @RequestMapping(method = RequestMethod.GET, value = ControllerConstants.PHOTO_ALBUM_LABEL
     + "/{photoAlbumId}")
   public @ResponseBody
-  ResponseEntity<PhotoAlbum> findPhotoAlbum(
+  ResponseEntity<PhotoAlbumDomain> findPhotoAlbum(
     @PathVariable Long photoAlbumId) {
     if (LOG.isInfoEnabled())
       LOG.info(photoAlbumId + " attempting to get photo. ");
@@ -75,12 +75,12 @@ public class PhotoController {
     ReadEvent photoAlbumReadEvent = photoService
       .readPhotoAlbum(readPhotoAlbumEvent);
     if (photoAlbumReadEvent.isEntityFound()) {
-      PhotoAlbum photoAlbum = PhotoAlbum
+      PhotoAlbumDomain photoAlbum = PhotoAlbumDomain
         .fromPhotoAlbumDetails((PhotoAlbumDetails) photoAlbumReadEvent
           .getDetails());
-      return new ResponseEntity<PhotoAlbum>(photoAlbum, HttpStatus.OK);
+      return new ResponseEntity<PhotoAlbumDomain>(photoAlbum, HttpStatus.OK);
     } else {
-      return new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+      return new ResponseEntity<PhotoAlbumDomain>(HttpStatus.NOT_FOUND);
     }
   }
 
@@ -119,37 +119,13 @@ public class PhotoController {
   // Create
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.PHOTO_ALBUM_LABEL)
   public @ResponseBody
-  ResponseEntity<PhotoAlbum> createPhotoAlbum(
-    @RequestBody PhotoAlbum photoAlbum) {
-    if (LOG.isInfoEnabled())
-      LOG.info("attempting to create photoAlbum " + photoAlbum);
-    ResponseEntity<PhotoAlbum> response;
-    if (null == photoAlbum) {
-      response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
-    } else {
-      PhotoAlbumCreatedEvent photoAlbumCreatedEvent = photoService
-        .createPhotoAlbum(new CreatePhotoAlbumEvent(photoAlbum
-          .toPhotoAlbumDetails()));
-      if (null == photoAlbumCreatedEvent) {
-        response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
-      } else if (!(photoAlbumCreatedEvent.isOwnerFound())) {
-        response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
-      } else if (!(photoAlbumCreatedEvent.isCreatorFound())) {
-        response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
-      } else if ((null == photoAlbumCreatedEvent.getDetails())
-        || (null == photoAlbumCreatedEvent.getDetails().getNodeId())) {
-        response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
-      } else {
-        PhotoAlbum result = PhotoAlbum
-          .fromPhotoAlbumDetails((PhotoAlbumDetails) photoAlbumCreatedEvent
-            .getDetails());
-        if (LOG.isDebugEnabled())
-          LOG.debug("photoAlbum " + result.toString());
-        response = new ResponseEntity<PhotoAlbum>(result,
-          HttpStatus.CREATED);
-      }
-    }
-    return response;
+  ResponseEntity createPhotoAlbum(
+    @RequestBody PhotoAlbumDomain photoAlbum) {
+    if (LOG.isInfoEnabled()) LOG.info("attempting to create photoAlbum " + photoAlbum);
+
+    photoAlbum.setCreated(System.currentTimeMillis());
+    RequestHandledEvent result = photoService.createPhotoAlbum(photoAlbum);
+    return result.toResponseEntity();
   }
 
   // Delete
@@ -239,35 +215,35 @@ public class PhotoController {
   @RequestMapping(method = RequestMethod.PUT, value = ControllerConstants.PHOTO_ALBUM_LABEL
     + "/{photoAlbumId}")
   public @ResponseBody
-  ResponseEntity<PhotoAlbum> updatePhotoAlbum(
-    @PathVariable Long photoAlbumId, @RequestBody PhotoAlbum photoAlbum) {
+  ResponseEntity<PhotoAlbumDomain> updatePhotoAlbum(
+    @PathVariable Long photoAlbumId, @RequestBody PhotoAlbumDomain photoAlbum) {
     if (LOG.isInfoEnabled())
       LOG.info("Attempting to update photo. " + photoAlbumId);
-    ResponseEntity<PhotoAlbum> response;
+    ResponseEntity<PhotoAlbumDomain> response;
 
     UpdatedEvent photoAlbumUpdatedEvent = photoService
       .updatePhotoAlbum(new UpdatePhotoAlbumEvent(photoAlbumId, photoAlbum
         .toPhotoAlbumDetails()));
     if ((null == photoAlbumUpdatedEvent)) {
-      response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
+      response = new ResponseEntity<PhotoAlbumDomain>(HttpStatus.BAD_REQUEST);
     } else if (!((PhotoAlbumUpdatedEvent) photoAlbumUpdatedEvent).isOwnerFound()) {
-      response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+      response = new ResponseEntity<PhotoAlbumDomain>(HttpStatus.NOT_FOUND);
     } else if (!((PhotoAlbumUpdatedEvent) photoAlbumUpdatedEvent).isCreatorFound()) {
-      response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+      response = new ResponseEntity<PhotoAlbumDomain>(HttpStatus.NOT_FOUND);
     } else if ((null == photoAlbumUpdatedEvent.getDetails())
       || (null == photoAlbumUpdatedEvent.getDetails().getNodeId())) {
-      response = new ResponseEntity<PhotoAlbum>(HttpStatus.BAD_REQUEST);
+      response = new ResponseEntity<PhotoAlbumDomain>(HttpStatus.BAD_REQUEST);
     } else {
       if (LOG.isDebugEnabled())
         LOG.debug("photoUpdatedEvent - " + photoAlbumUpdatedEvent);
       if (photoAlbumUpdatedEvent.isEntityFound()) {
-        PhotoAlbum restPhotoAlbum = PhotoAlbum.fromPhotoAlbumDetails((PhotoAlbumDetails) photoAlbumUpdatedEvent
+        PhotoAlbumDomain restPhotoAlbum = PhotoAlbumDomain.fromPhotoAlbumDetails((PhotoAlbumDetails) photoAlbumUpdatedEvent
           .getDetails());
         if (LOG.isDebugEnabled())
           LOG.debug("restPhotoAlbum = " + restPhotoAlbum);
-        response = new ResponseEntity<PhotoAlbum>(restPhotoAlbum, HttpStatus.OK);
+        response = new ResponseEntity<PhotoAlbumDomain>(restPhotoAlbum, HttpStatus.OK);
       } else {
-        response = new ResponseEntity<PhotoAlbum>(HttpStatus.NOT_FOUND);
+        response = new ResponseEntity<PhotoAlbumDomain>(HttpStatus.NOT_FOUND);
       }
     }
     return response;
@@ -428,7 +404,7 @@ public class PhotoController {
     if (!photoAlbumEvent.isEntityFound()) {
       response = new ResponseEntity<WrappedDomainList>(HttpStatus.NOT_FOUND);
     } else {
-      Iterator<PhotoAlbum> photoAlbumIter = PhotoAlbum.toPhotoAlbumsIterator(photoAlbumEvent.getDetails().iterator());
+      Iterator<PhotoAlbumDomain> photoAlbumIter = PhotoAlbumDomain.toPhotoAlbumsIterator(photoAlbumEvent.getDetails().iterator());
       WrappedDomainList photoAlbums = WrappedDomainList.fromIterator(photoAlbumIter,
         photoAlbumEvent.getTotalItems(), photoAlbumEvent.getTotalPages());
       response = new ResponseEntity<WrappedDomainList>(photoAlbums, HttpStatus.OK);
