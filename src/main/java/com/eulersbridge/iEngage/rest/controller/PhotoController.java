@@ -87,33 +87,12 @@ public class PhotoController {
   // Create
   @RequestMapping(method = RequestMethod.POST, value = ControllerConstants.PHOTO_LABEL)
   public @ResponseBody
-  ResponseEntity<PhotoDomain> createPhoto(
-    @RequestBody PhotoDomain photo) {
-    if (LOG.isInfoEnabled())
-      LOG.info("attempting to create photo " + photo);
-    ResponseEntity<PhotoDomain> response;
-    if (null == photo) {
-      response = new ResponseEntity<PhotoDomain>(HttpStatus.BAD_REQUEST);
-    } else {
-      photo.setDate(new Date().getTime());
-      PhotoCreatedEvent photoCreatedEvent = photoService
-        .createPhoto(new CreatePhotoEvent(photo.toPhotoDetails()));
-      if (LOG.isDebugEnabled())
-        LOG.debug("photoCreatedEvent " + photoCreatedEvent);
-      if ((null == photoCreatedEvent)
-        || (null == photoCreatedEvent.getNodeId())) {
-        response = new ResponseEntity<PhotoDomain>(HttpStatus.BAD_REQUEST);
-      } else if (!(photoCreatedEvent.isOwnerFound())) {
-        response = new ResponseEntity<PhotoDomain>(HttpStatus.NOT_FOUND);
-      } else {
-        PhotoDomain result = PhotoDomain
-          .fromPhotoDetails((PhotoDetails) photoCreatedEvent
-            .getDetails());
-        if (LOG.isDebugEnabled()) LOG.debug("photo " + result.toString());
-        response = new ResponseEntity<PhotoDomain>(result, HttpStatus.CREATED);
-      }
-    }
-    return response;
+  ResponseEntity createPhoto(@RequestBody PhotoDomain photoDomain) {
+    if (LOG.isInfoEnabled()) LOG.info("attempting to create photo " + photoDomain);
+
+    photoDomain.setDate(System.currentTimeMillis());
+    RequestHandledEvent result = photoService.createPhoto(photoDomain);
+    return result.toResponseEntity();
   }
 
   // Create
@@ -121,7 +100,8 @@ public class PhotoController {
   public @ResponseBody
   ResponseEntity createPhotoAlbum(
     @RequestBody PhotoAlbumDomain photoAlbum) {
-    if (LOG.isInfoEnabled()) LOG.info("attempting to create photoAlbum " + photoAlbum);
+    if (LOG.isInfoEnabled())
+      LOG.info("attempting to create photoAlbum " + photoAlbum);
 
     photoAlbum.setCreated(System.currentTimeMillis());
     RequestHandledEvent result = photoService.createPhotoAlbum(photoAlbum);

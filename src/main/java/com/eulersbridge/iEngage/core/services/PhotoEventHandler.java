@@ -53,25 +53,19 @@ public class PhotoEventHandler implements PhotoService {
   }
 
   @Override
-  public PhotoCreatedEvent createPhoto(CreatePhotoEvent createPhotoEvent) {
-    PhotoDetails photoDetails = (PhotoDetails) createPhotoEvent.getDetails();
-    Photo photo = Photo.fromPhotoDetails(photoDetails);
+  public RequestHandledEvent<PhotoDomain> createPhoto(PhotoDomain photoDomain) {
+    if (photoDomain.getUrl() == null || photoDomain.getTitle() == null || photoDomain.getOwnerId() == null)
+      return RequestHandledEvent.badRequest();
 
-    Long ownerId = photoDetails.getOwnerId();
-    if (LOG.isDebugEnabled())
-      LOG.debug("Finding owner with ownerId = " + ownerId);
-    Node owner = null;
-    if (ownerId != null) owner = nodeRepository.findById(ownerId).get();
-
-    PhotoCreatedEvent photoCreatedEvent;
-    if (null == owner) {
-      photoCreatedEvent = PhotoCreatedEvent.ownerNotFound(photoDetails.getOwnerId());
-    } else {
-      photo.setOwner(new Node(owner.getNodeId()));
-      Photo result = photoRepository.save(photo);
-      photoCreatedEvent = new PhotoCreatedEvent(result.getNodeId(), result.toPhotoDetails());
-    }
-    return photoCreatedEvent;
+    Node owner = nodeRepository.findById(photoDomain.getOwnerId(), 0).orElse(null);
+    if (owner == null)
+      return RequestHandledEvent.targetNotFound();
+    Photo photo = Photo.fromDomain(photoDomain);
+    photo.setOwner(owner);
+    Photo result = photoRepository.save(photo, 1);
+    if(result == null)
+      return RequestHandledEvent.failed();
+    return new RequestHandledEvent<>(result.toDomain(), HttpStatus.CREATED);
   }
 
   @Override
@@ -150,7 +144,7 @@ public class PhotoEventHandler implements PhotoService {
       }
       if (0 == dets.size()) {
         // Need to check if we actually found ownerId.
-        Photo inst = photoRepository.findById(ownerId).get();
+        Node inst = nodeRepository.findById(ownerId).orElse(null);
         if ((null == inst) || (null == inst.getNodeId())) {
           if (LOG.isDebugEnabled())
             LOG.debug("Null or null properties returned by findOne(ownerId)");

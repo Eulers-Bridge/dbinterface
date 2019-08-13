@@ -23,7 +23,7 @@ public class PhotoAlbum extends Likeable {
 
   @Relationship(type = DataConstants.CREATED_BY_LABEL)
   private Node creator;
-  @Relationship(type = DataConstants.HAS_PHOTO_ALBUM_LABEL)
+  @Relationship(type = DataConstants.HAS_PHOTO_ALBUM_LABEL, direction = Relationship.INCOMING)
   private Node owner;
 
   public PhotoAlbum(String name, String description, String location, String thumbNailUrl, Node creator, Long created, Node owner, Long modified) {
@@ -54,6 +54,7 @@ public class PhotoAlbum extends Likeable {
 
   public PhotoAlbumDomain toDomain(){
     PhotoAlbumDomain domain = new PhotoAlbumDomain();
+    domain.setNodeId(nodeId);
     domain.setName(name);
     domain.setDescription(description);
     domain.setLocation(location);

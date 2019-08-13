@@ -1,6 +1,7 @@
 package com.eulersbridge.iEngage.database.domain;
 
 import com.eulersbridge.iEngage.core.events.photo.PhotoDetails;
+import com.eulersbridge.iEngage.rest.domain.PhotoDomain;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.slf4j.Logger;
@@ -46,6 +47,32 @@ public class Photo extends Likeable {
 
   public Photo(Long nodeId) {
     super(nodeId);
+  }
+
+  public static Photo fromDomain(PhotoDomain domain){
+    Photo p = new Photo();
+    p.setUrl(domain.getUrl());
+    p.setThumbNailUrl(domain.getThumbNailUrl());
+    p.setTitle(domain.getTitle());
+    p.setDescription(domain.getDescription());
+    p.setSequence(domain.getSequence());
+    p.setInappropriateContent(domain.isInappropriateContent());
+    p.setDate(domain.getDate());
+    return p;
+  }
+
+  public PhotoDomain toDomain(){
+    PhotoDomain domain = new PhotoDomain();
+    domain.setNodeId(nodeId);
+    domain.setUrl(url);
+    domain.setThumbNailUrl(thumbNailUrl);
+    domain.setTitle(title);
+    domain.setDescription(description);
+    domain.setSequence(sequence);
+    domain.setInappropriateContent(inappropriateContent);
+    domain.setDate(date);
+    domain.setOwnerId(owner.nodeId);
+    return domain;
   }
 
   /**

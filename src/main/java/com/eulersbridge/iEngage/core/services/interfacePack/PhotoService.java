@@ -22,7 +22,7 @@ import java.util.List;
  */
 public interface PhotoService {
   @PreAuthorize("hasAnyRole('" + SecurityConstants.USER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
-  public PhotoCreatedEvent createPhoto(CreatePhotoEvent createPhotoEvent);
+  public RequestHandledEvent createPhoto(PhotoDomain photoDomain);
 
   @PreAuthorize("hasAnyRole('" + SecurityConstants.USER_ROLE + "','" + SecurityConstants.ADMIN_ROLE + "')")
   public RequestHandledEvent createPhotoAlbum(PhotoAlbumDomain photoAlbumDomain);
