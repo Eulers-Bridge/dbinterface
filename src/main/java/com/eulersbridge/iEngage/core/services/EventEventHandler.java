@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class EventEventHandler implements EventService {
     if (result == null)
       return RequestHandledEvent.failed();
 
-    return  new RequestHandledEvent<>(EventDomain.fromEventDetails(result.toEventDetails()));
+    return  new RequestHandledEvent<>(EventDomain.fromEventDetails(result.toEventDetails()), HttpStatus.CREATED);
   }
 
   @Override
